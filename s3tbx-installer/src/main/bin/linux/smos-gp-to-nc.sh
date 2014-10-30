@@ -23,7 +23,7 @@ fi
 "${app_java_home}/bin/java" \
     -Xmx1024M \
     -Dceres.context=s3tbx \
-    "-Ds3tbx.mainClass=org.esa.beam.smos.ee2netcdf.GPToNetCDFExporterTool" \
+    "-Ds3tbx.mainClass=org.esa.beam.smos.ee2netcdf.NetcdfExportTool" \
     "-Ds3tbx.home=${S3TBX_HOME}" \
     -jar "${S3TBX_HOME}/bin/snap-launcher.jar" "$@"
 
