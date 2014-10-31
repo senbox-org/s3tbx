@@ -7,7 +7,7 @@ echo.
 @echo The following command-line tools are available:
 @echo   gpt.bat            - General Graph Processing Tool
 @echo   s3tbx-d.bat        - S3TBX application launcher for debugging
-@echo   smos-gp-to-nc.bat  - Convert SMOS grid points to NetCDF
+@echo   smos-ee-to-nc.bat  - Convert SMOS EE files to NetCDF
 @echo   smos-gp-export.bat - Export SMOS grid points to EE or CSV format
 @echo Typing the name of the tool will output its usage information.
 echo.

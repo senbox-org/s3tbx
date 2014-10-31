@@ -1832,8 +1832,8 @@ if (wizardContext != null) {
         <entry location="bin/s3tbx-d.sh" fileType="regular" />
         <entry location="bin/smos-gp-export.command" fileType="regular" />
         <entry location="bin/smos-gp-export.sh" fileType="regular" />
-        <entry location="bin/smos-gp-to-nc.command" fileType="regular" />
-        <entry location="bin/smos-gp-to-nc.sh" fileType="regular" />
+        <entry location="bin/smos-ee-to-nc.command" fileType="regular" />
+        <entry location="bin/smos-ee-to-nc.sh" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -1857,8 +1857,8 @@ if (wizardContext != null) {
         <entry location="bin/s3tbx-d.sh" fileType="regular" />
         <entry location="bin/smos-gp-export.command" fileType="regular" />
         <entry location="bin/smos-gp-export.sh" fileType="regular" />
-        <entry location="bin/smos-gp-to-nc.command" fileType="regular" />
-        <entry location="bin/smos-gp-to-nc.sh" fileType="regular" />
+        <entry location="bin/smos-ee-to-nc.command" fileType="regular" />
+        <entry location="bin/smos-ee-to-nc.sh" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -1882,8 +1882,8 @@ if (wizardContext != null) {
         <entry location="bin/s3tbx-d.sh" fileType="regular" />
         <entry location="bin/smos-gp-export.bat" fileType="regular" />
         <entry location="bin/smos-gp-export.sh" fileType="regular" />
-        <entry location="bin/smos-gp-to-nc.bat" fileType="regular" />
-        <entry location="bin/smos-gp-to-nc.sh" fileType="regular" />
+        <entry location="bin/smos-ee-to-nc.bat" fileType="regular" />
+        <entry location="bin/smos-ee-to-nc.sh" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -1906,8 +1906,8 @@ if (wizardContext != null) {
         <entry location="bin/s3tbx-d.command" fileType="regular" />
         <entry location="bin/smos-gp-export.bat" fileType="regular" />
         <entry location="bin/smos-gp-export.command" fileType="regular" />
-        <entry location="bin/smos-gp-to-nc.bat" fileType="regular" />
-        <entry location="bin/smos-gp-to-nc.command" fileType="regular" />
+        <entry location="bin/smos-ee-to-nc.bat" fileType="regular" />
+        <entry location="bin/smos-ee-to-nc.command" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
