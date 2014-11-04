@@ -36,7 +36,9 @@
     <packaging>pom</packaging>
 
     <properties>
+        <hdf.version>2.7</hdf.version>
         <snap.version>1.0.1-SNAPSHOT</snap.version>
+        <smos.version>4.1.0-SNAPSHOT</smos.version>
         <outputdir>../../output</outputdir>
     </properties>
 

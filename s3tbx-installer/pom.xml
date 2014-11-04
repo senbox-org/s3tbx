@@ -21,10 +21,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <smos.version>4.1.0-SNAPSHOT</smos.version>
-    </properties>
-
     <parent>
         <artifactId>s3tbx</artifactId>
         <groupId>org.esa.s3tbx</groupId>
@@ -442,6 +438,8 @@
             <!--</plugin>-->
         </plugins>
     </build>
+
+
 
 
 </project>
