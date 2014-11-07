@@ -21,7 +21,7 @@
 
     <groupId>org.esa.s3tbx</groupId>
     <artifactId>s3tbx</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>Sentinel-3 Toolbox</name>
     <description>Tools for the Sentinel-3 Satellite</description>
     <url>https://github.com/bcdev/s3tbx</url>
@@ -37,8 +37,8 @@
 
     <properties>
         <hdf.version>2.7</hdf.version>
-        <snap.version>1.0.1-SNAPSHOT</snap.version>
-        <smos.version>4.1.0-SNAPSHOT</smos.version>
+        <snap.version>1.0.1</snap.version>
+        <smos.version>4.1.0</smos.version>
         <outputdir>../../output</outputdir>
     </properties>
 
