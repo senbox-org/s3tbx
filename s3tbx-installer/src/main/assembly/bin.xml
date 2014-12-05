@@ -187,7 +187,6 @@
             </includes>
             <excludes>
                 <exclude>ncsa.hdf:lib-hdf</exclude>
-                <exclude>edu.ucar:bufr</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
