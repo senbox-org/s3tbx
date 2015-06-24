@@ -7,44 +7,66 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static java.lang.Math.*;
+import static java.lang.Math.PI;
+import static java.lang.Math.acos;
+import static java.lang.Math.cos;
+import static java.lang.Math.exp;
+import static java.lang.Math.log;
+import static java.lang.Math.sin;
+import static java.lang.Math.toDegrees;
+import static java.lang.Math.toRadians;
 
 /**
+ * @author Roland Doerffer
  * @author Norman Fomferra
  */
 public class C2RCCAlgorithm {
 
+    /**
+     * Structure for returning the algorithm's result.
+     */
+    public static class Result {
+        public final double[] rw;
+        public final double[] iops;
+
+        public Result(double[] rw, double[] iops) {
+            this.rw = rw;
+            this.iops = iops;
+        }
+    }
+
+
     // gas absorption constants for 12 MERIS channels
-    public static final double[] absorb_ozon = {
+    static final double[] absorb_ozon = {
             8.2e-04, 2.82e-03, 2.076e-02, 3.96e-02,
             1.022e-01, 1.059e-01, 5.313e-02, 3.552e-02,
             1.895e-02, 8.38e-03, 7.2e-04, 0.0};
 
     // polynom coefficients for band708 H2O correction
-    public static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
+    static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
 
-    public static final int[] merband12_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13};
+    static final int[] merband12_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13};
 
-    double[] solflux = new double[] {
-        1724.724,
-                1889.8026,
-                1939.5339,
-                1940.1365,
-                1813.5457,
-                1660.3589,
-                1540.5198,
-                1480.7161,
-                1416.1177,
-                1273.394,
-                1261.8658,
-                1184.0952,
-                963.94995,
-                935.23706,
-                900.659,
+    private double[] solflux = new double[]{
+            1724.724,
+            1889.8026,
+            1939.5339,
+            1940.1365,
+            1813.5457,
+            1660.3589,
+            1540.5198,
+            1480.7161,
+            1416.1177,
+            1273.394,
+            1261.8658,
+            1184.0952,
+            963.94995,
+            935.23706,
+            900.659,
     };
 
-    double temperature = 15.0;
-    double salinity = 35.0;
+    private double salinity = 35.0;
+    private double temperature = 15.0;
 
     private NNffbpAlphaTabFast inv_nn7;
     private NNffbpAlphaTabFast inv_ac_nn9;
@@ -61,14 +83,14 @@ public class C2RCCAlgorithm {
         this.solflux = solflux;
     }
 
-    public C2RCCResult processPixel(int px, int py,
-                                    double lat, double lon,
-                                    double[] toa_rad,
-                                    double sun_zeni,
-                                    double sun_azi,
-                                    double view_zeni,
-                                    double view_azi,
-                                    double dem_alt, double atm_press, double ozone) {
+    public Result processPixel(int px, int py,
+                               double lat, double lon,
+                               double[] toa_rad,
+                               double sun_zeni,
+                               double sun_azi,
+                               double view_zeni,
+                               double view_azi,
+                               double dem_alt, double atm_press, double ozone) {
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
         double cos_view = cos(toRadians(view_zeni));
@@ -207,7 +229,7 @@ public class C2RCCAlgorithm {
         double unc_abs_tsm = 1.73.*unc_abs_btot;
 */
 
-        return new C2RCCResult(rw, iops_nn1);
+        return new Result(rw, iops_nn1);
     }
 
     C2RCCAlgorithm() throws IOException {
@@ -273,4 +295,5 @@ public class C2RCCAlgorithm {
         }
         return text;
     }
+
 }

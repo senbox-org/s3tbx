@@ -1,13 +1,21 @@
 package org.esa.s3tbx.c2rcc;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.framework.datamodel.*;
+import org.esa.snap.framework.datamodel.Band;
+import org.esa.snap.framework.datamodel.GeoPos;
+import org.esa.snap.framework.datamodel.PixelPos;
+import org.esa.snap.framework.datamodel.Product;
+import org.esa.snap.framework.datamodel.ProductData;
 import org.esa.snap.framework.gpf.OperatorException;
 import org.esa.snap.framework.gpf.OperatorSpi;
 import org.esa.snap.framework.gpf.annotations.OperatorMetadata;
 import org.esa.snap.framework.gpf.annotations.Parameter;
 import org.esa.snap.framework.gpf.annotations.SourceProduct;
-import org.esa.snap.framework.gpf.pointop.*;
+import org.esa.snap.framework.gpf.pointop.PixelOperator;
+import org.esa.snap.framework.gpf.pointop.ProductConfigurer;
+import org.esa.snap.framework.gpf.pointop.Sample;
+import org.esa.snap.framework.gpf.pointop.SampleConfigurer;
+import org.esa.snap.framework.gpf.pointop.WritableSample;
 import org.esa.snap.util.BitRaster;
 import org.esa.snap.util.ProductUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
@@ -16,16 +24,19 @@ import java.io.IOException;
 
 
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs.
-// todo (nf) - add min/max values of NN inputs and outputs to metadata
+// todo (nf) - Add min/max values of NN inputs and outputs to metadata
 
 /**
+ * The Case 2 Regional / CoastColour Operator. Computes AC-reflectances and IOPs from MERIS L1b data products using
+ * an neural-network approach.
+ *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "C2RCC", version = "0.1-SNAPSHOT",
+@OperatorMetadata(alias = "C2RCC", version = "0.1a",
         authors = "Roland Doerffer, Norman Fomferra (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2015 by Brockmann Consult",
-        description = "Performs atmospheric correction and IOP retrieval on MERIS data products.")
+        description = "Performs atmospheric correction and IOP retrieval on MERIS L1b data products.")
 public class C2RCCOperator extends PixelOperator {
 
     // MERIS bands
@@ -43,8 +54,6 @@ public class C2RCCOperator extends PixelOperator {
     public static final int VIEW_AZI_IX = BAND_COUNT + 4;
     public static final int ATM_PRESS_IX = BAND_COUNT + 5;
     public static final int OZONE_IX = BAND_COUNT + 6;
-    public static final int VALID_MASK_IX = BAND_COUNT + 7;
-
 
     @SourceProduct(label = "MERIS L1b product", description = "MERIS L1b source product.")
     private Product source;
@@ -59,7 +68,7 @@ public class C2RCCOperator extends PixelOperator {
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
     private double temperature;
 
-    private C2RCCAlgorithm algo;
+    private C2RCCAlgorithm algorithm;
     private BitRaster mask;
 
     @Override
@@ -73,13 +82,15 @@ public class C2RCCOperator extends PixelOperator {
             }
 
             GeoPos geoPos = source.getGeoCoding().getGeoPos(new PixelPos(x + 0.5f, y + 0.5f), null);
-            C2RCCResult result = algo.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
-                    radiances,
-                    sourceSamples[SUN_ZEN_IX].getDouble(),
-                    sourceSamples[SUN_AZI_IX].getDouble(),
-                    sourceSamples[VIEW_AZI_IX].getDouble(),
-                    sourceSamples[VIEW_ZEN_IX].getDouble(),
-                    sourceSamples[DEM_ALT_IX].getDouble(), sourceSamples[ATM_PRESS_IX].getDouble(), sourceSamples[OZONE_IX].getDouble()
+            C2RCCAlgorithm.Result result = algorithm.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
+                                                                  radiances,
+                                                                  sourceSamples[SUN_ZEN_IX].getDouble(),
+                                                                  sourceSamples[SUN_AZI_IX].getDouble(),
+                                                                  sourceSamples[VIEW_AZI_IX].getDouble(),
+                                                                  sourceSamples[VIEW_ZEN_IX].getDouble(),
+                                                                  sourceSamples[DEM_ALT_IX].getDouble(),
+                                                                  sourceSamples[ATM_PRESS_IX].getDouble(),
+                                                                  sourceSamples[OZONE_IX].getDouble()
             );
 
             for (int i = 0; i < result.rw.length; i++) {
@@ -183,17 +194,18 @@ public class C2RCCOperator extends PixelOperator {
         }
 
         try {
-            algo = new C2RCCAlgorithm();
+            algorithm = new C2RCCAlgorithm();
         } catch (IOException e) {
             throw new OperatorException(e);
         }
-        algo.setTemperature(temperature);
-        algo.setSalinity(salinity);
-        algo.setSolflux(solflux);
+
+        algorithm.setTemperature(temperature);
+        algorithm.setSalinity(salinity);
+        algorithm.setSolflux(solflux);
     }
 
     private void assertSourceBand(String name) {
-        if (source.getBand(name) == null){
+        if (source.getBand(name) == null) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
         }
     }
