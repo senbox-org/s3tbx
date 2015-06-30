@@ -201,7 +201,18 @@ public class C2RCCOperator extends PixelOperator {
 
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
-        algorithm.setSolflux(solflux);
+        if(isSolfluxValid(solflux)) {
+            algorithm.setSolflux(solflux);
+        }
+    }
+
+    private boolean isSolfluxValid(double[] solflux) {
+        for (double v : solflux) {
+            if(v == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void assertSourceBand(String name) {
