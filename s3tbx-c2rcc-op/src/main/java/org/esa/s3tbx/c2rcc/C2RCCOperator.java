@@ -1,6 +1,5 @@
 package org.esa.s3tbx.c2rcc;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.framework.datamodel.Band;
 import org.esa.snap.framework.datamodel.GeoPos;
 import org.esa.snap.framework.datamodel.PixelPos;
@@ -14,9 +13,9 @@ import org.esa.snap.framework.gpf.annotations.SourceProduct;
 import org.esa.snap.framework.gpf.pointop.PixelOperator;
 import org.esa.snap.framework.gpf.pointop.ProductConfigurer;
 import org.esa.snap.framework.gpf.pointop.Sample;
-import org.esa.snap.framework.gpf.pointop.SampleConfigurer;
+import org.esa.snap.framework.gpf.pointop.SourceSampleConfigurer;
+import org.esa.snap.framework.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.WritableSample;
-import org.esa.snap.util.BitRaster;
 import org.esa.snap.util.ProductUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
@@ -58,7 +57,7 @@ public class C2RCCOperator extends PixelOperator {
     @SourceProduct(label = "MERIS L1b product", description = "MERIS L1b source product.")
     private Product source;
 
-    @Parameter(label = "Valid pixel expression", defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
+    @Parameter(label = "Valid-pixel expression", defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
@@ -69,69 +68,61 @@ public class C2RCCOperator extends PixelOperator {
     private double temperature;
 
     private C2RCCAlgorithm algorithm;
-    private BitRaster mask;
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
 
-        if (mask.isSet(x, y)) {
-
-            double[] radiances = new double[BAND_COUNT];
-            for (int i = 0; i < BAND_COUNT; i++) {
-                radiances[i] = sourceSamples[i].getDouble();
-            }
-
-            GeoPos geoPos = source.getGeoCoding().getGeoPos(new PixelPos(x + 0.5f, y + 0.5f), null);
-            C2RCCAlgorithm.Result result = algorithm.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
-                                                                  radiances,
-                                                                  sourceSamples[SUN_ZEN_IX].getDouble(),
-                                                                  sourceSamples[SUN_AZI_IX].getDouble(),
-                                                                  sourceSamples[VIEW_AZI_IX].getDouble(),
-                                                                  sourceSamples[VIEW_ZEN_IX].getDouble(),
-                                                                  sourceSamples[DEM_ALT_IX].getDouble(),
-                                                                  sourceSamples[ATM_PRESS_IX].getDouble(),
-                                                                  sourceSamples[OZONE_IX].getDouble()
-            );
-
-            for (int i = 0; i < result.rw.length; i++) {
-                targetSamples[i].set(result.rw[i]);
-            }
-
-            for (int i = 0; i < result.iops.length; i++) {
-                targetSamples[result.rw.length + i].set(result.iops[i]);
-            }
-
-        } else {
-            for (WritableSample targetSample : targetSamples) {
-                targetSample.set(Float.NaN);
-            }
-        }
-    }
-
-    @Override
-    protected void configureSourceSamples(SampleConfigurer sampleConfigurer) throws OperatorException {
+        double[] radiances = new double[BAND_COUNT];
         for (int i = 0; i < BAND_COUNT; i++) {
-            sampleConfigurer.defineSample(i, "radiance_" + (i + 1));
+            radiances[i] = sourceSamples[i].getDouble();
         }
-        sampleConfigurer.defineSample(DEM_ALT_IX, "dem_alt");
-        sampleConfigurer.defineSample(SUN_ZEN_IX, "sun_zenith");
-        sampleConfigurer.defineSample(SUN_AZI_IX, "sun_azimuth");
-        sampleConfigurer.defineSample(VIEW_ZEN_IX, "view_zenith");
-        sampleConfigurer.defineSample(VIEW_AZI_IX, "view_azimuth");
-        sampleConfigurer.defineSample(ATM_PRESS_IX, "atm_press");
-        sampleConfigurer.defineSample(OZONE_IX, "ozone");
+
+        GeoPos geoPos = source.getGeoCoding().getGeoPos(new PixelPos(x + 0.5f, y + 0.5f), null);
+        C2RCCAlgorithm.Result result = algorithm.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
+                                                              radiances,
+                                                              sourceSamples[SUN_ZEN_IX].getDouble(),
+                                                              sourceSamples[SUN_AZI_IX].getDouble(),
+                                                              sourceSamples[VIEW_AZI_IX].getDouble(),
+                                                              sourceSamples[VIEW_ZEN_IX].getDouble(),
+                                                              sourceSamples[DEM_ALT_IX].getDouble(),
+                                                              sourceSamples[ATM_PRESS_IX].getDouble(),
+                                                              sourceSamples[OZONE_IX].getDouble()
+        );
+
+        for (int i = 0; i < result.rw.length; i++) {
+            targetSamples[i].set(result.rw[i]);
+        }
+
+        for (int i = 0; i < result.iops.length; i++) {
+            targetSamples[result.rw.length + i].set(result.iops[i]);
+        }
     }
 
     @Override
-    protected void configureTargetSamples(SampleConfigurer sampleConfigurer) throws OperatorException {
-        for (int i = 0; i < C2RCCAlgorithm.merband12_ix.length; i++) {
-            sampleConfigurer.defineSample(i, "reflec_" + C2RCCAlgorithm.merband12_ix[i]);
+    protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
+        sc.setValidPixelMask(validPixelExpression);
+        for (int i = 0; i < BAND_COUNT; i++) {
+            sc.defineSample(i, "radiance_" + (i + 1));
         }
-        sampleConfigurer.defineSample(CONC_APIG_IX, "conc_apig");
-        sampleConfigurer.defineSample(CONC_ADET_IX, "conc_adet");
-        sampleConfigurer.defineSample(CONC_AGELB_IX, "conc_agelb");
-        sampleConfigurer.defineSample(CONC_BPART_IX, "conc_bpart");
-        sampleConfigurer.defineSample(CONC_BWIT_IX, "conc_bwit");
+        sc.defineSample(DEM_ALT_IX, "dem_alt");
+        sc.defineSample(SUN_ZEN_IX, "sun_zenith");
+        sc.defineSample(SUN_AZI_IX, "sun_azimuth");
+        sc.defineSample(VIEW_ZEN_IX, "view_zenith");
+        sc.defineSample(VIEW_AZI_IX, "view_azimuth");
+        sc.defineSample(ATM_PRESS_IX, "atm_press");
+        sc.defineSample(OZONE_IX, "ozone");
+    }
+
+    @Override
+    protected void configureTargetSamples(TargetSampleConfigurer sc) throws OperatorException {
+        for (int i = 0; i < C2RCCAlgorithm.merband12_ix.length; i++) {
+            sc.defineSample(i, "reflec_" + C2RCCAlgorithm.merband12_ix[i]);
+        }
+        sc.defineSample(CONC_APIG_IX, "conc_apig");
+        sc.defineSample(CONC_ADET_IX, "conc_adet");
+        sc.defineSample(CONC_AGELB_IX, "conc_agelb");
+        sc.defineSample(CONC_BPART_IX, "conc_bpart");
+        sc.defineSample(CONC_BWIT_IX, "conc_bwit");
     }
 
 
@@ -177,15 +168,6 @@ public class C2RCCOperator extends PixelOperator {
 
         if (source.getGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
-        }
-        if (!source.isCompatibleBandArithmeticExpression(validPixelExpression)) {
-            throw new OperatorException("The given valid-pixel expression can not be used with the given source product.");
-        }
-
-        try {
-            mask = source.createValidMask(validPixelExpression, ProgressMonitor.NULL);
-        } catch (IOException e) {
-            throw new OperatorException(e);
         }
 
         double[] solflux = new double[BAND_COUNT];
@@ -233,7 +215,7 @@ public class C2RCCOperator extends PixelOperator {
         Band band = targetProduct.addBand(name, expression);
         band.setUnit(unit);
         band.setDescription(description);
-        band.getSourceImage();
+        band.getSourceImage(); // trigger source image creation
     }
 
     public static class Spi extends OperatorSpi {
