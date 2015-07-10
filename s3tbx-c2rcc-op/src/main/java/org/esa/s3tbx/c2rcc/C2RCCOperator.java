@@ -67,6 +67,9 @@ public class C2RCCOperator extends PixelOperator {
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
     private double temperature;
 
+    @Parameter(defaultValue = "false")
+    private boolean useDefaultSolarFlux;
+
     private C2RCCAlgorithm algorithm;
 
     @Override
@@ -170,11 +173,6 @@ public class C2RCCOperator extends PixelOperator {
             throw new OperatorException("The source product must be geo-coded.");
         }
 
-        double[] solflux = new double[BAND_COUNT];
-        for (int i = 0; i < BAND_COUNT; i++) {
-            solflux[i] = source.getBand("radiance_" + (i + 1)).getSolarFlux();
-        }
-
         try {
             algorithm = new C2RCCAlgorithm();
         } catch (IOException e) {
@@ -183,18 +181,15 @@ public class C2RCCOperator extends PixelOperator {
 
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
-        if(isSolfluxValid(solflux)) {
-            algorithm.setSolflux(solflux);
-        }
-    }
-
-    private boolean isSolfluxValid(double[] solflux) {
-        for (double v : solflux) {
-            if(v == 0) {
-                return false;
+        if (!useDefaultSolarFlux) {
+            double[] solfluxFromL1b = new double[BAND_COUNT];
+            for (int i = 0; i < BAND_COUNT; i++) {
+                solfluxFromL1b[i] = source.getBand("radiance_" + (i + 1)).getSolarFlux();
+            }
+            if (isSolfluxValid(solfluxFromL1b)) {
+                algorithm.setSolflux(solfluxFromL1b);
             }
         }
-        return true;
     }
 
     private void assertSourceBand(String name) {
@@ -218,11 +213,19 @@ public class C2RCCOperator extends PixelOperator {
         band.getSourceImage(); // trigger source image creation
     }
 
+    private static boolean isSolfluxValid(double[] solflux) {
+        for (double v : solflux) {
+            if (v <= 0.0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static class Spi extends OperatorSpi {
 
         public Spi() {
             super(C2RCCOperator.class);
         }
     }
-
 }
