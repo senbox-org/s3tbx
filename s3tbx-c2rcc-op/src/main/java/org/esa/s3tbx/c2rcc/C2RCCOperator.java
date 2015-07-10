@@ -82,8 +82,8 @@ public class C2RCCOperator extends PixelOperator {
                                                               radiances,
                                                               sourceSamples[SUN_ZEN_IX].getDouble(),
                                                               sourceSamples[SUN_AZI_IX].getDouble(),
-                                                              sourceSamples[VIEW_AZI_IX].getDouble(),
                                                               sourceSamples[VIEW_ZEN_IX].getDouble(),
+                                                              sourceSamples[VIEW_AZI_IX].getDouble(),
                                                               sourceSamples[DEM_ALT_IX].getDouble(),
                                                               sourceSamples[ATM_PRESS_IX].getDouble(),
                                                               sourceSamples[OZONE_IX].getDouble()
