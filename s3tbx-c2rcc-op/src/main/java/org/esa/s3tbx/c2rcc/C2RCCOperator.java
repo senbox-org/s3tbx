@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "C2RCC", version = "0.1a",
+@OperatorMetadata(alias = "C2RCC", version = "0.2",
         authors = "Roland Doerffer, Norman Fomferra (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2015 by Brockmann Consult",
@@ -202,7 +202,7 @@ public class C2RCCOperator extends PixelOperator {
         Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
         targetBand.setUnit(unit);
         targetBand.setDescription(description);
-        targetBand.setNoDataValue(Double.NaN);
+        targetBand.setGeophysicalNoDataValue(Double.NaN);
         targetBand.setNoDataValueUsed(true);
     }
 
@@ -211,6 +211,8 @@ public class C2RCCOperator extends PixelOperator {
         band.setUnit(unit);
         band.setDescription(description);
         band.getSourceImage(); // trigger source image creation
+        band.setGeophysicalNoDataValue(Double.NaN);
+        band.setNoDataValueUsed(true);
     }
 
     private static boolean isSolfluxValid(double[] solflux) {
