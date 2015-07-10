@@ -17,10 +17,11 @@
     </folder>
 
     <folder name="Menu">
-        <folder name="Processing">
+        <folder name="Optical">
             <folder name="Thematic Water Processing">
                 <file name="org-esa-s3tbx-c2rcc-OpAction.shadow">
-                    <attr name="originalFile" stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-OpAction.instance"/>
+                    <attr name="originalFile"
+                          stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-OpAction.instance"/>
                     <attr name="position" intvalue="200"/>
                 </file>
             </folder>
