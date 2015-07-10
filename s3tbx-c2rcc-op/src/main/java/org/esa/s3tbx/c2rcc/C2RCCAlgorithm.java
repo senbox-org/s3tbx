@@ -68,8 +68,8 @@ public class C2RCCAlgorithm {
     private double salinity = 35.0;
     private double temperature = 15.0;
 
-    private NNffbpAlphaTabFast inv_nn7;
-    private NNffbpAlphaTabFast inv_ac_nn9;
+    private ThreadLocal<NNffbpAlphaTabFast> inv_nn7;
+    private ThreadLocal<NNffbpAlphaTabFast> inv_ac_nn9;
 
     public void setTemperature(double temperature) {
         this.temperature = temperature;
@@ -165,7 +165,7 @@ public class C2RCCAlgorithm {
         nn_in[6] = alti_press;
         System.arraycopy(log_rtosa, 0, nn_in, 7, log_rtosa.length);
 
-        double[] log_rw = inv_ac_nn9.calc(nn_in);
+        double[] log_rw = inv_ac_nn9.get().calc(nn_in);
         double[] rw = new double[log_rw.length];
         for (int i = 0; i < rw.length; i++) {
             rw[i] = exp(log_rw[i]);
@@ -182,7 +182,7 @@ public class C2RCCAlgorithm {
         nn_in_inv[3] = temperature;
         nn_in_inv[4] = salinity;
         System.arraycopy(log_rw, 0, nn_in_inv, 5, 10);
-        double[] log_iops_nn1 = inv_nn7.calc(nn_in_inv);
+        double[] log_iops_nn1 = inv_nn7.get().calc(nn_in_inv);
         double[] iops_nn1 = new double[5];
         for (int i = 0; i < iops_nn1.length; i++) {
             iops_nn1[i] = exp(log_iops_nn1[i]);
@@ -265,7 +265,7 @@ public class C2RCCAlgorithm {
         //NNffbpAlphaTabFast unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
     }
 
-    private NNffbpAlphaTabFast nnhs(String path) throws IOException {
+    private ThreadLocal<NNffbpAlphaTabFast> nnhs(String path) throws IOException {
         String name = "/auxdata/nets/" + path;
         InputStream stream = C2RCCAlgorithm.class.getResourceAsStream(name);
         if (stream == null) {
@@ -281,7 +281,7 @@ public class C2RCCAlgorithm {
                     throw new IllegalStateException(e);
                 }
             }
-        }.get();
+        };
     }
 
     private String readFully(InputStream stream) throws IOException {
