@@ -95,6 +95,9 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
+                <configuration>
+                    <nbmBuildDir>${project.basedir}/../target/nbm</nbmBuildDir>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>

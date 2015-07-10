@@ -18,21 +18,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
-	<parent>
+
+    <parent>
         <artifactId>s3tbx</artifactId>
         <groupId>org.esa.s3tbx</groupId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
-	
-    <groupId>org.esa.s3tbx</groupId>
+
     <artifactId>s3tbx-c2rcc</artifactId>
     <name>Case 2 Regional / CoastColour Processor Parent</name>
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
     <modules>
         <module>s3tbx-c2rcc-op</module>
         <module>s3tbx-c2rcc-ui</module>
     </modules>
+
+    <!--
+<build>
+<plugins>
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>nbm-maven-plugin</artifactId>
+    <inherited>false</inherited>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>cluster</goal>
+            </goals>
+        </execution>
+    </executions>
+            </plugin>
+        </plugins>
+    </build>
+    -->
 
 </project>
