@@ -90,7 +90,10 @@ public class C2RCCAlgorithm {
                                double sun_azi,
                                double view_zeni,
                                double view_azi,
-                               double dem_alt, double atm_press, double ozone) {
+                               double dem_alt,
+                               double atm_press,
+                               double ozone) {
+
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
         double cos_view = cos(toRadians(view_zeni));
