@@ -21,9 +21,9 @@ import org.esa.snap.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
 
-
-// todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs.
-// todo (nf) - Add min/max values of NN inputs and outputs to metadata
+// todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
+// todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
+// todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 
 /**
  * The Case 2 Regional / CoastColour Operator. Computes AC-reflectances and IOPs from MERIS L1b data products using
