@@ -26,32 +26,59 @@
     </parent>
 
     <artifactId>s3tbx-c2rcc</artifactId>
-    <name>Case 2 Regional / CoastColour Processor Parent</name>
-    <packaging>pom</packaging>
+    <name>Case 2 Regional / CoastColour Processor Operator</name>
+    <packaging>nbm</packaging>
+    <description>
+        Provides the Case-2 Regional / Coast Colour (C2RCC)
+        Atmospheric Correction (AC) and Inherent Optical Properties (IOP) Processor
+        for MERIS, MODIS and SeaWiFS.
+    </description>
 
-    <modules>
-        <module>s3tbx-c2rcc-op</module>
-        <module>s3tbx-c2rcc-ui</module>
-    </modules>
+    <properties>
+        <snap.version>2.0.0-SNAPSHOT</snap.version>
+    </properties>
 
-    <!--
-<build>
-<plugins>
-<plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>nbm-maven-plugin</artifactId>
-    <inherited>false</inherited>
-    <executions>
-        <execution>
-            <phase>package</phase>
-            <goals>
-                <goal>cluster</goal>
-            </goals>
-        </execution>
-    </executions>
+    <dependencies>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-jai</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-glayer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-gpf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-envisat-reader</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
-    -->
 
 </project>

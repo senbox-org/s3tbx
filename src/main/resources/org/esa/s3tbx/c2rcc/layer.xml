@@ -28,4 +28,18 @@
         </folder>
     </folder>
 
+    <folder name="Services">
+        <folder name="JavaHelp">
+            <file name="org-esa-s3tbx-c2rcc-docs.xml">
+                <!--org.esa.s3tbx.c2rcc.docs-->
+                <attr intvalue="4420" name="position"/><![CDATA[
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <!DOCTYPE helpsetref PUBLIC "-//NetBeans//DTD JavaHelp Help Set Reference 1.0//EN"
+                                                "http://www.netbeans.org/dtds/helpsetref-1_0.dtd">
+                    <helpsetref url="nbdocs:/org/esa/s3tbx/c2rcc/docs/help.hs" merge="true"/>
+                ]]>
+            </file>
+        </folder>
+    </folder>
+
 </filesystem>
