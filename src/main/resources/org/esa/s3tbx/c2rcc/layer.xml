@@ -10,7 +10,7 @@
                 <attr name="displayName" stringvalue="C2R/CC Processor"/>
                 <attr name="operatorName" stringvalue="C2RCC"/>
                 <attr name="dialogTitle" stringvalue="C2R/CC Processor"/>
-                <attr name="targetProductNameSuffix" stringvalue="_c2rcc"/>
+                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
             </file>
         </folder>
