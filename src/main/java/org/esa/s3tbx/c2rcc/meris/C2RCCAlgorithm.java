@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc;
+package org.esa.s3tbx.c2rcc.meris;
 
 import org.esa.snap.nn.NNffbpAlphaTabFast;
 

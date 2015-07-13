@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc;
+package org.esa.s3tbx.c2rcc.meris;
 
 import org.esa.snap.framework.datamodel.Band;
 import org.esa.snap.framework.datamodel.GeoPos;
@@ -26,7 +26,9 @@ import java.io.IOException;
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 
 /**
- * The Case 2 Regional / CoastColour Operator. Computes AC-reflectances and IOPs from MERIS L1b data products using
+ * The Case 2 Regional / CoastColour Operator for MERIS.
+ * <p>
+ * Computes AC-reflectances and IOPs from MERIS L1b data products using
  * an neural-network approach.
  *
  * @author Norman Fomferra
@@ -54,10 +56,12 @@ public class C2RCCOperator extends PixelOperator {
     public static final int ATM_PRESS_IX = BAND_COUNT + 5;
     public static final int OZONE_IX = BAND_COUNT + 6;
 
-    @SourceProduct(label = "MERIS L1b product", description = "MERIS L1b source product.")
+    @SourceProduct(label = "MERIS L1b product",
+            description = "MERIS L1b source product.")
     private Product source;
 
-    @Parameter(label = "Valid-pixel expression", defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
+    @Parameter(label = "Valid-pixel expression",
+            defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 

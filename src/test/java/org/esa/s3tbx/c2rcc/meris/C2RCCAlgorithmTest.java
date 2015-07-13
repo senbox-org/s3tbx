@@ -1,5 +1,6 @@
-package org.esa.s3tbx.c2rcc;
+package org.esa.s3tbx.c2rcc.meris;
 
+import org.esa.s3tbx.c2rcc.meris.C2RCCAlgorithm;
 import org.junit.Test;
 
 import java.util.Arrays;
