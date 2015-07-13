@@ -65,13 +65,14 @@ Start IDEA and select *File / New / Project from Existing Sources*. Select the `
 
 From the main menu select *Run / Edit Configurations*. In the dialog click the *+* (add) button and select *JAR Application*. Then the settings are as follows:
 
-*Name*: SNAP Desktop
-*Path to JAR:* `${SNAP_HOME}/snap/snap/core/snap-main.jar`
-*VM options:* `-Xmx4G -Dorg.netbeans.level=INFO -Dsun.java2d.noddraw=true -Dsun.awt.nopixfmt=true -Dsun.java2d.dpiaware=false` 
-*Program arguments:* `--userdir ${C2RCC_HOME}/target/testdir --clusters ${C2RCC_HOME}/target/nbm/netbeans/s3tbx --patches ${C2RCC_HOME}/$/target/nbm/netbeans/s3tbx`
-*Working directory:* `${SNAP_HOME}`
+* *Name*: SNAP Desktop
+* *Path to JAR:* `${SNAP_HOME}/snap/snap/core/snap-main.jar`
+* *VM options:* `-Xmx4G -Dorg.netbeans.level=INFO -Dsun.java2d.noddraw=true -Dsun.awt.nopixfmt=true -Dsun.java2d.dpiaware=false` 
+* *Program arguments:* `--userdir ${C2RCC_HOME}/target/testdir --clusters ${C2RCC_HOME}/target/nbm/netbeans/s3tbx --patches ${C2RCC_HOME}/$/target/nbm/netbeans/s3tbx`
+* *Working directory:* `${SNAP_HOME}`
 
 where 
+
 * `${SNAP_HOME}` must be replaced by your SNAP installation directory
 * `${C2RCC_HOME}` must be replaced by your C2R-CC project directory (where the `pom.xml` is located in)
 
