@@ -29,8 +29,8 @@ If you encounter test failures:
 
 The build creates a SNAP plugin module file `target/nbm/s3tbx-c2rcc-<version>.nbm`.
 
-How to install and run as SNAP plugin 
--------------------------------------
+How to install and run the processor as SNAP plugin 
+---------------------------------------------------
 
 Start SNAP (Desktop UI) and find the plugin manager in the main menu at 
 > **Tools / Plugins**
@@ -52,8 +52,8 @@ Or in batch mode using SNAP's `gpt` command-line tool found in `${SNAP_HOME}/bin
 > gpt C2RCC [-Psalinity=<num>]  [-Ptemperature=<num>] [-PuseDefaultSolarFlux=true|false] -t <target-file> <source-file>
 ```  
 
-Running and debugging the processor code
-----------------------------------------
+Modifying, running and debugging the processor code
+---------------------------------------------------
 
 This section explains how to run and debug the O2R-CC processor code from a Java IDE without having to install the plugin into SNAP.
 
