@@ -12,6 +12,11 @@ Clone or fork the repository at https://github.com/bcdev/s3tbx-c2rcc.
 > cd s3tbx-c2rcc
 ```
 
+Once after a while you can update your checked-out sources by running 
+```
+> git pull --rebase
+```
+
 Incremental build with Maven:
 ```
 > mvn package
