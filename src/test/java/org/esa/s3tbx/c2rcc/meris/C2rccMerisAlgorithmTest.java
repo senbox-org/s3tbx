@@ -1,6 +1,5 @@
 package org.esa.s3tbx.c2rcc.meris;
 
-import org.esa.s3tbx.c2rcc.meris.C2RCCAlgorithm;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -10,14 +9,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-public class C2RCCAlgorithmTest {
+public class C2rccMerisAlgorithmTest {
     @Test
     public void testIt() throws Exception {
-        C2RCCAlgorithm algo = new C2RCCAlgorithm();
+        C2rccMerisAlgorithm algo = new C2rccMerisAlgorithm();
 
 
-        C2RCCAlgorithm.Result result1 = algo.processPixel(
-                250, 575, 7.9456024, 54.150196,
+        C2rccMerisAlgorithm.Result result1 = algo.processPixel(
+                250, 575,
                 new double[]{55.086716, 49.46522, 38.112446, 33.45525, 23.108776, 14.337405, 11.306171, 10.365329, 8.529731, 6.4291587, 2.262602, 5.485246, 3.394396, 3.1312065, 2.291696},
                 64.19979, 158.32169, 24.818445, 102.8721, -34.242188, 1019.4312, 277.9019);
 
@@ -37,8 +36,8 @@ public class C2RCCAlgorithmTest {
         System.arraycopy(y1, 59, iopsExpected1, 0, iopsExpected1.length);
         assertArrayEquals(iopsExpected1, result1.iops, 1e-2);
 
-        C2RCCAlgorithm.Result result32 = algo.processPixel(278, 583, 8.346703, 54.009,
-                                                 new double[]{53.599163, 48.36246, 38.01977, 34.09759, 25.049278, 15.639317, 12.230661, 11.190948, 9.002904, 6.3771706, 2.244856, 5.44892, 3.3233092, 3.0518582, 2.2971265},
+        C2rccMerisAlgorithm.Result result32 = algo.processPixel(278, 583,
+                                                                new double[]{53.599163, 48.36246, 38.01977, 34.09759, 25.049278, 15.639317, 12.230661, 11.190948, 9.002904, 6.3771706, 2.244856, 5.44892, 3.3233092, 3.0518582, 2.2971265},
                                                  63.981014, // sun_zenith
                                                  158.73405, //sun_azimuth
                                                  22.776539, // view_zenith

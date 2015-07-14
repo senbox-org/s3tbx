@@ -33,19 +33,19 @@ import java.io.IOException;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "C2RCC", version = "0.2",
+@OperatorMetadata(alias = "meris.c2rcc", version = "0.2",
         authors = "Roland Doerffer, Norman Fomferra (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2015 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on MERIS L1b data products.")
-public class C2RCCOperator extends PixelOperator {
+public class C2rccMerisOperator extends PixelOperator {
 
     // MERIS bands
-    public static final int CONC_APIG_IX = C2RCCAlgorithm.merband12_ix.length;
-    public static final int CONC_ADET_IX = C2RCCAlgorithm.merband12_ix.length + 1;
-    public static final int CONC_AGELB_IX = C2RCCAlgorithm.merband12_ix.length + 2;
-    public static final int CONC_BPART_IX = C2RCCAlgorithm.merband12_ix.length + 3;
-    public static final int CONC_BWIT_IX = C2RCCAlgorithm.merband12_ix.length + 4;
+    public static final int CONC_APIG_IX = C2rccMerisAlgorithm.merband12_ix.length;
+    public static final int CONC_ADET_IX = C2rccMerisAlgorithm.merband12_ix.length + 1;
+    public static final int CONC_AGELB_IX = C2rccMerisAlgorithm.merband12_ix.length + 2;
+    public static final int CONC_BPART_IX = C2rccMerisAlgorithm.merband12_ix.length + 3;
+    public static final int CONC_BWIT_IX = C2rccMerisAlgorithm.merband12_ix.length + 4;
 
     public static final int BAND_COUNT = 15;
     public static final int DEM_ALT_IX = BAND_COUNT;
@@ -58,7 +58,7 @@ public class C2RCCOperator extends PixelOperator {
 
     @SourceProduct(label = "MERIS L1b product",
             description = "MERIS L1b source product.")
-    private Product source;
+    private Product sourceProduct;
 
     @Parameter(label = "Valid-pixel expression",
             defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
@@ -74,7 +74,23 @@ public class C2RCCOperator extends PixelOperator {
     @Parameter(defaultValue = "false")
     private boolean useDefaultSolarFlux;
 
-    private C2RCCAlgorithm algorithm;
+    private C2rccMerisAlgorithm algorithm;
+
+    public void setSalinity(double salinity) {
+        this.salinity = salinity;
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
+    public void setValidPixelExpression(String validPixelExpression) {
+        this.validPixelExpression = validPixelExpression;
+    }
+
+    public void setUseDefaultSolarFlux(boolean useDefaultSolarFlux) {
+        this.useDefaultSolarFlux = useDefaultSolarFlux;
+    }
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
@@ -84,9 +100,8 @@ public class C2RCCOperator extends PixelOperator {
             radiances[i] = sourceSamples[i].getDouble();
         }
 
-        GeoPos geoPos = source.getGeoCoding().getGeoPos(new PixelPos(x + 0.5f, y + 0.5f), null);
-        C2RCCAlgorithm.Result result = algorithm.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
-                                                              radiances,
+        C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y,
+                                                                   radiances,
                                                               sourceSamples[SUN_ZEN_IX].getDouble(),
                                                               sourceSamples[SUN_AZI_IX].getDouble(),
                                                               sourceSamples[VIEW_ZEN_IX].getDouble(),
@@ -122,8 +137,8 @@ public class C2RCCOperator extends PixelOperator {
 
     @Override
     protected void configureTargetSamples(TargetSampleConfigurer sc) throws OperatorException {
-        for (int i = 0; i < C2RCCAlgorithm.merband12_ix.length; i++) {
-            sc.defineSample(i, "reflec_" + C2RCCAlgorithm.merband12_ix[i]);
+        for (int i = 0; i < C2rccMerisAlgorithm.merband12_ix.length; i++) {
+            sc.defineSample(i, "reflec_" + C2rccMerisAlgorithm.merband12_ix[i]);
         }
         sc.defineSample(CONC_APIG_IX, "conc_apig");
         sc.defineSample(CONC_ADET_IX, "conc_adet");
@@ -140,11 +155,11 @@ public class C2RCCOperator extends PixelOperator {
 
         Product targetProduct = productConfigurer.getTargetProduct();
 
-        ProductUtils.copyFlagBands(source, targetProduct, true);
+        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
 
-        for (int index : C2RCCAlgorithm.merband12_ix) {
+        for (int index : C2rccMerisAlgorithm.merband12_ix) {
             Band reflecBand = targetProduct.addBand("reflec_" + index, ProductData.TYPE_FLOAT32);
-            ProductUtils.copySpectralBandProperties(source.getBand("radiance_" + index), reflecBand);
+            ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + index), reflecBand);
             reflecBand.setUnit("1");
         }
 
@@ -173,12 +188,8 @@ public class C2RCCOperator extends PixelOperator {
         }
         assertSourceBand("l1_flags");
 
-        if (source.getGeoCoding() == null) {
-            throw new OperatorException("The source product must be geo-coded.");
-        }
-
         try {
-            algorithm = new C2RCCAlgorithm();
+            algorithm = new C2rccMerisAlgorithm();
         } catch (IOException e) {
             throw new OperatorException(e);
         }
@@ -188,7 +199,7 @@ public class C2RCCOperator extends PixelOperator {
         if (!useDefaultSolarFlux) {
             double[] solfluxFromL1b = new double[BAND_COUNT];
             for (int i = 0; i < BAND_COUNT; i++) {
-                solfluxFromL1b[i] = source.getBand("radiance_" + (i + 1)).getSolarFlux();
+                solfluxFromL1b[i] = sourceProduct.getBand("radiance_" + (i + 1)).getSolarFlux();
             }
             if (isSolfluxValid(solfluxFromL1b)) {
                 algorithm.setSolflux(solfluxFromL1b);
@@ -197,7 +208,7 @@ public class C2RCCOperator extends PixelOperator {
     }
 
     private void assertSourceBand(String name) {
-        if (source.getBand(name) == null) {
+        if (sourceProduct.getBand(name) == null) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
         }
     }
@@ -231,7 +242,7 @@ public class C2RCCOperator extends PixelOperator {
     public static class Spi extends OperatorSpi {
 
         public Spi() {
-            super(C2RCCOperator.class);
+            super(C2rccMerisOperator.class);
         }
     }
 }

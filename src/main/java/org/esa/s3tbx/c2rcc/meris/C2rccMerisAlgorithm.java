@@ -20,7 +20,7 @@ import static java.lang.Math.toRadians;
  * @author Roland Doerffer
  * @author Norman Fomferra
  */
-public class C2RCCAlgorithm {
+public class C2rccMerisAlgorithm {
 
     /**
      * Structure for returning the algorithm's result.
@@ -84,7 +84,6 @@ public class C2RCCAlgorithm {
     }
 
     public Result processPixel(int px, int py,
-                               double lat, double lon,
                                double[] toa_rad,
                                double sun_zeni,
                                double sun_azi,
@@ -236,7 +235,7 @@ public class C2RCCAlgorithm {
         return new Result(rw, iops_nn1);
     }
 
-    C2RCCAlgorithm() throws IOException {
+    C2rccMerisAlgorithm() throws IOException {
 
         // rtosa auto NN
         //NNffbpAlphaTabFast aa_rtosa_nn_bn7_9 = nnhs("richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net");
@@ -268,7 +267,7 @@ public class C2RCCAlgorithm {
 
     private ThreadLocal<NNffbpAlphaTabFast> nnhs(String path) throws IOException {
         String name = "/auxdata/nets/" + path;
-        InputStream stream = C2RCCAlgorithm.class.getResourceAsStream(name);
+        InputStream stream = C2rccMerisAlgorithm.class.getResourceAsStream(name);
         if (stream == null) {
             throw new IllegalStateException("resource not found: " + name);
         }

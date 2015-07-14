@@ -1,1 +1,2 @@
-org.esa.s3tbx.c2rcc.meris.C2RCCOperator$Spi
+org.esa.s3tbx.c2rcc.C2rccOperator.Spi
+org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator$Spi
