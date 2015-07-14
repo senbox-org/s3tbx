@@ -188,6 +188,7 @@ public class C2RCCAlgorithm {
             iops_nn1[i] = exp(log_iops_nn1[i]);
         }
 
+// todo (nf): migrate following code to Java
 /*
         // (9.14) compute combined IOPs and concentrations
         // split IOPs
