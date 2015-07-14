@@ -73,7 +73,7 @@ From the main menu select **Run / Edit Configurations**. In the dialog click the
 * **Name**: SNAP Desktop
 * **Path to JAR:** `${SNAP_HOME}/snap/snap/core/snap-main.jar`
 * **VM options:** `-Xmx4G -Dorg.netbeans.level=INFO -Dsun.java2d.noddraw=true -Dsun.awt.nopixfmt=true -Dsun.java2d.dpiaware=false` 
-* **Program arguments:** `--userdir ${C2RCC_HOME}/target/testdir --clusters ${C2RCC_HOME}/target/nbm/netbeans/s3tbx --patches ${C2RCC_HOME}/$/target/nbm/netbeans/s3tbx`
+* **Program arguments:** `--userdir ${C2RCC_HOME}/target/testdir --clusters ${C2RCC_HOME}/target/nbm/netbeans/s3tbx --patches ${C2RCC_HOME}/$/target/classes`
 * **Working directory:** `${SNAP_HOME}`
 
 where 
