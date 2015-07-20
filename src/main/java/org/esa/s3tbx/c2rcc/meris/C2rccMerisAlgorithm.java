@@ -1,16 +1,18 @@
 package org.esa.s3tbx.c2rcc.meris;
 
+import com.bc.ceres.core.Assert;
 import org.esa.snap.nn.NNffbpAlphaTabFast;
+import org.esa.snap.util.BitSetter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.stream.DoubleStream;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.acos;
 import static java.lang.Math.cos;
-import static java.lang.Math.exp;
 import static java.lang.Math.log;
 import static java.lang.Math.sin;
 import static java.lang.Math.toDegrees;
@@ -20,7 +22,8 @@ import static java.lang.Math.toRadians;
  * @author Roland Doerffer
  * @author Norman Fomferra
  */
-public class C2RCCAlgorithm {
+public class C2rccMerisAlgorithm {
+
 
     /**
      * Structure for returning the algorithm's result.
@@ -28,10 +31,16 @@ public class C2RCCAlgorithm {
     public static class Result {
         public final double[] rw;
         public final double[] iops;
+        public final double rtosa_ratio_min;
+        public final double rtosa_ratio_max;
+        public final int flags;
 
-        public Result(double[] rw, double[] iops) {
+        public Result(double[] rw, double[] iops, double rtosa_ratio_min, double rtosa_ratio_max, int flags) {
             this.rw = rw;
             this.iops = iops;
+            this.rtosa_ratio_min = rtosa_ratio_min;
+            this.rtosa_ratio_max = rtosa_ratio_max;
+            this.flags = flags;
         }
     }
 
@@ -47,7 +56,7 @@ public class C2RCCAlgorithm {
 
     static final int[] merband12_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13};
 
-    private double[] solflux = new double[]{
+    double[] solflux = new double[]{
             1724.724,
             1889.8026,
             1939.5339,
@@ -65,11 +74,17 @@ public class C2RCCAlgorithm {
             900.659,
     };
 
-    private double salinity = 35.0;
-    private double temperature = 15.0;
+    double salinity = 35.0;
+    double temperature = 15.0;
 
-    private ThreadLocal<NNffbpAlphaTabFast> inv_nn7;
-    private ThreadLocal<NNffbpAlphaTabFast> inv_ac_nn9;
+    // (5) thresholds for flags
+    double[] thresh_rtosaaaNNrat = {0.95, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
+    double[] thresh_rwslope = {0.95, 1.05};    // threshold for out of scope flag Rw has to be adjusted
+
+
+    final ThreadLocal<NNffbpAlphaTabFast> inv_nn7;
+    final ThreadLocal<NNffbpAlphaTabFast> inv_ac_nn9;
+    final ThreadLocal<NNffbpAlphaTabFast> aa_rtosa_nn_bn7_9;
 
     public void setTemperature(double temperature) {
         this.temperature = temperature;
@@ -132,8 +147,8 @@ public class C2RCCAlgorithm {
         double[] log_rtosa = new double[r_tosa_ur.length];
         for (int i = 0; i < r_tosa_ur.length; i++) {
 
-            double trans_ozoned12 = exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_sun);
-            double trans_ozoneu12 = exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_view);
+            double trans_ozoned12 = Math.exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_sun);
+            double trans_ozoneu12 = Math.exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_view);
             double trans_ozone12 = trans_ozoned12 * trans_ozoneu12;
 
             double r_tosa_oz = r_tosa_ur[i] / trans_ozone12;
@@ -148,7 +163,7 @@ public class C2RCCAlgorithm {
         // will be changed later to altitude of the lake surface
         double alti_press;
         if (dem_alt > 10.0) {
-            alti_press = atm_press * exp(-dem_alt / 8000.0);
+            alti_press = atm_press * Math.exp(-dem_alt / 8000.0);
         } else {
             alti_press = atm_press;
         }
@@ -166,10 +181,43 @@ public class C2RCCAlgorithm {
         System.arraycopy(log_rtosa, 0, nn_in, 7, log_rtosa.length);
 
         double[] log_rw = inv_ac_nn9.get().calc(nn_in);
-        double[] rw = new double[log_rw.length];
-        for (int i = 0; i < rw.length; i++) {
-            rw[i] = exp(log_rw[i]);
+        double[] rw = aexp(log_rw);
+
+        // (9.5) test out of scope spectra with autoassociative neural network
+        double[] log_rtosa_aann = aa_rtosa_nn_bn7_9.get().calc(nn_in);
+        double[] rtosa_aann = aexp(log_rtosa_aann);
+        double[] rtosa_aaNNrat = adiv(rtosa_aann, r_tosa);
+        //rtosa_aaNNrat= (rtosa_aann./r_tosa);
+        //rtosa_aaNNrat_a(ipix,:)=rtosa_aaNNrat;
+
+        int flags = 0;
+
+        // (9.6.1) set rho_toa out of scope flag
+        double rtosa_aaNNrat_min = amin(rtosa_aaNNrat);
+        double rtosa_aaNNrat_max = amax(rtosa_aaNNrat);
+        //double rtosa_aaNNrat_minmax_a = Math.max(rtosa_aaNNrat_max, 1.0 / rtosa_aaNNrat_min); // (ipix)
+
+        boolean flag_rtosa = false; // (ipix)
+        if (rtosa_aaNNrat_min < thresh_rtosaaaNNrat[0] | rtosa_aaNNrat_max > thresh_rtosaaaNNrat[1]) {
+            flag_rtosa = true; // set flag if difference of band 5 > threshold // (ipix)
         }
+        BitSetter.setFlag(flags, 0, flag_rtosa);
+
+        // (9.6.2) test if input tosa spectrum is out of range
+        // mima=aa_rtosa_nn_bn7_9(5); // minima and maxima of aaNN input
+        double[] mi = aa_rtosa_nn_bn7_9.get().getInmin();
+        double[] ma = aa_rtosa_nn_bn7_9.get().getInmax();
+        boolean tosa_oor_flag = false; // (ipix)
+        // for iv=1:19,// variables
+        for (int iv = 0; iv < nn_in.length; iv++) { // variables
+            boolean oor = nn_in[iv] < mi[iv] || nn_in[iv] > ma[iv];
+            if (oor) {
+                tosa_oor_flag = true; // (ipix)
+            }
+            BitSetter.setFlag(flags, 2 + iv, oor);
+        }
+
+        BitSetter.setFlag(flags, 1, tosa_oor_flag);
 
         // (9.10.1) NN compute IOPs from rw
 
@@ -183,10 +231,7 @@ public class C2RCCAlgorithm {
         nn_in_inv[4] = salinity;
         System.arraycopy(log_rw, 0, nn_in_inv, 5, 10);
         double[] log_iops_nn1 = inv_nn7.get().calc(nn_in_inv);
-        double[] iops_nn1 = new double[5];
-        for (int i = 0; i < iops_nn1.length; i++) {
-            iops_nn1[i] = exp(log_iops_nn1[i]);
-        }
+        double[] iops_nn1 = aexp(log_iops_nn1);
 
 // todo (nf): migrate following code to Java
 /*
@@ -233,42 +278,79 @@ public class C2RCCAlgorithm {
         double unc_abs_tsm = 1.73.*unc_abs_btot;
 */
 
-        return new Result(rw, iops_nn1);
+        return new Result(rw, iops_nn1, rtosa_aaNNrat_min, rtosa_aaNNrat_max, flags);
     }
 
-    C2RCCAlgorithm() throws IOException {
+    public static double[] aexp(double[] x) {
+        return DoubleStream.of(x).map(Math::exp).toArray();
+    }
+
+    public static double[] aind(double[] x, int[] ind) {
+        double[] y = new double[ind.length];
+        for (int i = 0; i < ind.length; i++) {
+            y[i] = x[ind[i]];
+        }
+        return y;
+    }
+
+    public static double amin(double[] x) {
+        double min = Double.POSITIVE_INFINITY;
+        for (double v : x) {
+            min = Math.min(min, v);
+        }
+        return min;
+    }
+
+    public static double amax(double[] x) {
+        double max = Double.NEGATIVE_INFINITY;
+        for (double v : x) {
+            max = Math.max(max, v);
+        }
+        return max;
+    }
+
+    public static double[] adiv(double[] x, double[] y) {
+        Assert.argument(x.length == y.length);
+        double[] z = new double[x.length];
+        for (int i = 0; i < x.length; i++) {
+            z[i] = x[i] / y[i];
+        }
+        return z;
+    }
+
+    C2rccMerisAlgorithm() throws IOException {
 
         // rtosa auto NN
-        //NNffbpAlphaTabFast aa_rtosa_nn_bn7_9 = nnhs("richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net");
+        aa_rtosa_nn_bn7_9 = nnhs("richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net");
 
         // rtosa-rw NN
         inv_ac_nn9 = nnhs("richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net");
 
         // rtosa - rpath NN
-        //NNffbpAlphaTabFast rpath_nn9 = nnhs("richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
+        //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
 
         // rtosa - trans NN
-        //NNffbpAlphaTabFast inv_trans_nn = nnhs("../nets/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
+        //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("../nets/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
 
         // rw-IOP inverse NN
         inv_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net");
 
         // IOP-rw forward NN
-        //NNffbpAlphaTabFast for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
+        //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
 
         // rw-kd NN, output are kdmin and kd449
-        //NNffbpAlphaTabFast kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
+        //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
 
         // uncertainty NN for IOPs after bias corretion
-        //NNffbpAlphaTabFast unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
+        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
 
         // uncertainty for atot, adg, btot and kd
-        //NNffbpAlphaTabFast unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
+        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
     }
 
     private ThreadLocal<NNffbpAlphaTabFast> nnhs(String path) throws IOException {
         String name = "/auxdata/nets/" + path;
-        InputStream stream = C2RCCAlgorithm.class.getResourceAsStream(name);
+        InputStream stream = C2rccMerisAlgorithm.class.getResourceAsStream(name);
         if (stream == null) {
             throw new IllegalStateException("resource not found: " + name);
         }

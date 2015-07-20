@@ -1,7 +1,9 @@
 package org.esa.s3tbx.c2rcc.meris;
 
 import org.esa.snap.framework.datamodel.Band;
+import org.esa.snap.framework.datamodel.FlagCoding;
 import org.esa.snap.framework.datamodel.GeoPos;
+import org.esa.snap.framework.datamodel.MetadataAttribute;
 import org.esa.snap.framework.datamodel.PixelPos;
 import org.esa.snap.framework.datamodel.Product;
 import org.esa.snap.framework.datamodel.ProductData;
@@ -19,6 +21,7 @@ import org.esa.snap.framework.gpf.pointop.WritableSample;
 import org.esa.snap.util.ProductUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
+import java.awt.Color;
 import java.io.IOException;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
@@ -38,15 +41,9 @@ import java.io.IOException;
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2015 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on MERIS L1b data products.")
-public class C2RCCOperator extends PixelOperator {
+public class C2rccMerisOperator extends PixelOperator {
 
-    // MERIS bands
-    public static final int CONC_APIG_IX = C2RCCAlgorithm.merband12_ix.length;
-    public static final int CONC_ADET_IX = C2RCCAlgorithm.merband12_ix.length + 1;
-    public static final int CONC_AGELB_IX = C2RCCAlgorithm.merband12_ix.length + 2;
-    public static final int CONC_BPART_IX = C2RCCAlgorithm.merband12_ix.length + 3;
-    public static final int CONC_BWIT_IX = C2RCCAlgorithm.merband12_ix.length + 4;
-
+    // MERIS sources
     public static final int BAND_COUNT = 15;
     public static final int DEM_ALT_IX = BAND_COUNT;
     public static final int SUN_ZEN_IX = BAND_COUNT + 1;
@@ -55,6 +52,16 @@ public class C2RCCOperator extends PixelOperator {
     public static final int VIEW_AZI_IX = BAND_COUNT + 4;
     public static final int ATM_PRESS_IX = BAND_COUNT + 5;
     public static final int OZONE_IX = BAND_COUNT + 6;
+
+    // MERIS targets
+    public static final int CONC_APIG_IX = C2rccMerisAlgorithm.merband12_ix.length;
+    public static final int CONC_ADET_IX = C2rccMerisAlgorithm.merband12_ix.length + 1;
+    public static final int CONC_AGELB_IX = C2rccMerisAlgorithm.merband12_ix.length + 2;
+    public static final int CONC_BPART_IX = C2rccMerisAlgorithm.merband12_ix.length + 3;
+    public static final int CONC_BWIT_IX = C2rccMerisAlgorithm.merband12_ix.length + 4;
+    public static final int RTOSA_RATIO_MIN_IX = C2rccMerisAlgorithm.merband12_ix.length + 5;
+    public static final int RTOSA_RATIO_MAX_IX = C2rccMerisAlgorithm.merband12_ix.length + 6;
+    public static final int L2_FLAGS_IX = C2rccMerisAlgorithm.merband12_ix.length + 7;
 
     @SourceProduct(label = "MERIS L1b product",
             description = "MERIS L1b source product.")
@@ -74,7 +81,7 @@ public class C2RCCOperator extends PixelOperator {
     @Parameter(defaultValue = "false")
     private boolean useDefaultSolarFlux;
 
-    private C2RCCAlgorithm algorithm;
+    private C2rccMerisAlgorithm algorithm;
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
@@ -85,15 +92,15 @@ public class C2RCCOperator extends PixelOperator {
         }
 
         GeoPos geoPos = source.getGeoCoding().getGeoPos(new PixelPos(x + 0.5f, y + 0.5f), null);
-        C2RCCAlgorithm.Result result = algorithm.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
-                                                              radiances,
-                                                              sourceSamples[SUN_ZEN_IX].getDouble(),
-                                                              sourceSamples[SUN_AZI_IX].getDouble(),
-                                                              sourceSamples[VIEW_ZEN_IX].getDouble(),
-                                                              sourceSamples[VIEW_AZI_IX].getDouble(),
-                                                              sourceSamples[DEM_ALT_IX].getDouble(),
-                                                              sourceSamples[ATM_PRESS_IX].getDouble(),
-                                                              sourceSamples[OZONE_IX].getDouble()
+        C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
+                                                                   radiances,
+                                                                   sourceSamples[SUN_ZEN_IX].getDouble(),
+                                                                   sourceSamples[SUN_AZI_IX].getDouble(),
+                                                                   sourceSamples[VIEW_ZEN_IX].getDouble(),
+                                                                   sourceSamples[VIEW_AZI_IX].getDouble(),
+                                                                   sourceSamples[DEM_ALT_IX].getDouble(),
+                                                                   sourceSamples[ATM_PRESS_IX].getDouble(),
+                                                                   sourceSamples[OZONE_IX].getDouble()
         );
 
         for (int i = 0; i < result.rw.length; i++) {
@@ -103,6 +110,10 @@ public class C2RCCOperator extends PixelOperator {
         for (int i = 0; i < result.iops.length; i++) {
             targetSamples[result.rw.length + i].set(result.iops[i]);
         }
+
+        targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
+        targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
+        targetSamples[L2_FLAGS_IX].set(result.flags);
     }
 
     @Override
@@ -122,14 +133,17 @@ public class C2RCCOperator extends PixelOperator {
 
     @Override
     protected void configureTargetSamples(TargetSampleConfigurer sc) throws OperatorException {
-        for (int i = 0; i < C2RCCAlgorithm.merband12_ix.length; i++) {
-            sc.defineSample(i, "reflec_" + C2RCCAlgorithm.merband12_ix[i]);
+        for (int i = 0; i < C2rccMerisAlgorithm.merband12_ix.length; i++) {
+            sc.defineSample(i, "reflec_" + C2rccMerisAlgorithm.merband12_ix[i]);
         }
         sc.defineSample(CONC_APIG_IX, "conc_apig");
         sc.defineSample(CONC_ADET_IX, "conc_adet");
         sc.defineSample(CONC_AGELB_IX, "conc_agelb");
         sc.defineSample(CONC_BPART_IX, "conc_bpart");
         sc.defineSample(CONC_BWIT_IX, "conc_bwit");
+        sc.defineSample(RTOSA_RATIO_MIN_IX, "rtosa_ratio_min");
+        sc.defineSample(RTOSA_RATIO_MAX_IX, "rtosa_ratio_max");
+        sc.defineSample(L2_FLAGS_IX, "l2_flags");
     }
 
 
@@ -142,7 +156,7 @@ public class C2RCCOperator extends PixelOperator {
 
         ProductUtils.copyFlagBands(source, targetProduct, true);
 
-        for (int index : C2RCCAlgorithm.merband12_ix) {
+        for (int index : C2rccMerisAlgorithm.merband12_ix) {
             Band reflecBand = targetProduct.addBand("reflec_" + index, ProductData.TYPE_FLOAT32);
             ProductUtils.copySpectralBandProperties(source.getBand("radiance_" + index), reflecBand);
             reflecBand.setUnit("1");
@@ -162,6 +176,28 @@ public class C2RCCOperator extends PixelOperator {
         addVirtualBand(targetProduct, "tsm", "(conc_bpart + conc_bwit) * 1.7", "g m^-3", "Total suspended matter dry weight concentration");
         addVirtualBand(targetProduct, "atot", "conc_apig + conc_adet + conc_agelb", "m^-1", "Total absorption coefficient of all water constituents");
         addVirtualBand(targetProduct, "chl", "pow(conc_apig, 1.04) * 20.0", "m^-1", "Chlorophyll concentration");
+
+        addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of Rtosa/Rtosa_ANN ratios");
+        addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of Rtosa/Rtosa_ANN ratios");
+        Band l2_flags = targetProduct.addBand("l2_flags", ProductData.TYPE_UINT32);
+        l2_flags.setDescription("Quality flags");
+
+        FlagCoding flagCoding = new FlagCoding("l2_flags");
+        flagCoding.addFlag("AC_INPUT_UNKNOWN", 0x01, "The input (spectrum) to atmospheric correction was unknown to the algorithm");
+        flagCoding.addFlag("AC_INPUT_OOR", 0x02, "One of the inputs to atmospheric correction was out of range");
+        for (int i = 0; i < 19; i++) {
+            flagCoding.addFlag("AC_INPUT_OOR_" + (i + 1), 1 << (2 + i), "Input #" + (i + 1) + " to atmospheric correction was out of range");
+        }
+        targetProduct.getFlagCodingGroup().add(flagCoding);
+        l2_flags.setSampleCoding(flagCoding);
+
+        Color[] maskColors = {Color.RED, Color.ORANGE, Color.YELLOW, Color.BLUE, Color.GREEN, Color.PINK, Color.MAGENTA, Color.CYAN};
+        String[] flagNames = flagCoding.getFlagNames();
+        for (int i = 0; i < flagNames.length; i++) {
+            String flagName = flagNames[i];
+            MetadataAttribute flag = flagCoding.getFlag(flagName);
+            targetProduct.addMask(flagName, "l2_flags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
+        }
     }
 
     @Override
@@ -178,7 +214,7 @@ public class C2RCCOperator extends PixelOperator {
         }
 
         try {
-            algorithm = new C2RCCAlgorithm();
+            algorithm = new C2rccMerisAlgorithm();
         } catch (IOException e) {
             throw new OperatorException(e);
         }
@@ -231,7 +267,7 @@ public class C2RCCOperator extends PixelOperator {
     public static class Spi extends OperatorSpi {
 
         public Spi() {
-            super(C2RCCOperator.class);
+            super(C2rccMerisOperator.class);
         }
     }
 }
