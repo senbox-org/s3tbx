@@ -1,6 +1,7 @@
 package org.esa.s3tbx.c2rcc;
 
 import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
+import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
 import org.esa.snap.framework.datamodel.Product;
 import org.esa.snap.framework.gpf.Operator;
 import org.esa.snap.framework.gpf.OperatorException;
@@ -55,9 +56,15 @@ public class C2rccOperator extends Operator {
             c2rccMerisOperator.setTemperature(temperature);
             c2rccMerisOperator.setSalinity(salinity);
             c2rccMerisOperator.setUseDefaultSolarFlux(useDefaultSolarFlux);
+            c2rccMerisOperator.setValidPixelExpression(validPixelExpression);
             targetProduct = c2rccMerisOperator.getTargetProduct();
-        } else if (sourceProduct.getName().endsWith(".L1B_LAC")) {
-            // todo - MODIS, and others
+        } else if (sourceProduct.getProductType().startsWith("Level 2")) {
+            final C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
+            c2rccModisOperator.setSourceProduct(sourceProduct);
+            c2rccModisOperator.setTemperature(temperature);
+            c2rccModisOperator.setSalinity(salinity);
+            c2rccModisOperator.setValidPixelExpression(validPixelExpression);
+            targetProduct = c2rccModisOperator.getTargetProduct();
         } else {
             throw new OperatorException("Illegal source product.");
         }

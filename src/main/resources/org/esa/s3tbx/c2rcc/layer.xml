@@ -8,7 +8,7 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2R/CC Processor"/>
-                <attr name="operatorName" stringvalue="C2RCC"/>
+                <attr name="operatorName" stringvalue="c2rcc"/>
                 <attr name="dialogTitle" stringvalue="C2R/CC Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
