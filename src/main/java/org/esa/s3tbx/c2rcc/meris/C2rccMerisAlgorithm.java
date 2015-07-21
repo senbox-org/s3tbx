@@ -31,13 +31,17 @@ public class C2rccMerisAlgorithm {
     public static class Result {
         public final double[] rw;
         public final double[] iops;
+        public final double[] rtosa_in;
+        public final double[] rtosa_out;
         public final double rtosa_ratio_min;
         public final double rtosa_ratio_max;
         public final int flags;
 
-        public Result(double[] rw, double[] iops, double rtosa_ratio_min, double rtosa_ratio_max, int flags) {
+        public Result(double[] rw, double[] iops, double[] rtosa_in, double[] rtosa_out, double rtosa_ratio_min, double rtosa_ratio_max, int flags) {
             this.rw = rw;
             this.iops = iops;
+            this.rtosa_in = rtosa_in;
+            this.rtosa_out = rtosa_out;
             this.rtosa_ratio_min = rtosa_ratio_min;
             this.rtosa_ratio_max = rtosa_ratio_max;
             this.flags = flags;
@@ -187,7 +191,6 @@ public class C2rccMerisAlgorithm {
         double[] log_rtosa_aann = aa_rtosa_nn_bn7_9.get().calc(nn_in);
         double[] rtosa_aann = aexp(log_rtosa_aann);
         double[] rtosa_aaNNrat = adiv(rtosa_aann, r_tosa);
-        //rtosa_aaNNrat= (rtosa_aann./r_tosa);
         //rtosa_aaNNrat_a(ipix,:)=rtosa_aaNNrat;
 
         int flags = 0;
@@ -198,10 +201,10 @@ public class C2rccMerisAlgorithm {
         //double rtosa_aaNNrat_minmax_a = Math.max(rtosa_aaNNrat_max, 1.0 / rtosa_aaNNrat_min); // (ipix)
 
         boolean flag_rtosa = false; // (ipix)
-        if (rtosa_aaNNrat_min < thresh_rtosaaaNNrat[0] | rtosa_aaNNrat_max > thresh_rtosaaaNNrat[1]) {
+        if (rtosa_aaNNrat_min < thresh_rtosaaaNNrat[0] || rtosa_aaNNrat_max > thresh_rtosaaaNNrat[1]) {
             flag_rtosa = true; // set flag if difference of band 5 > threshold // (ipix)
         }
-        BitSetter.setFlag(flags, 0, flag_rtosa);
+        flags = BitSetter.setFlag(flags, 0, flag_rtosa);
 
         // (9.6.2) test if input tosa spectrum is out of range
         // mima=aa_rtosa_nn_bn7_9(5); // minima and maxima of aaNN input
@@ -210,14 +213,11 @@ public class C2rccMerisAlgorithm {
         boolean tosa_oor_flag = false; // (ipix)
         // for iv=1:19,// variables
         for (int iv = 0; iv < nn_in.length; iv++) { // variables
-            boolean oor = nn_in[iv] < mi[iv] || nn_in[iv] > ma[iv];
-            if (oor) {
+            if (nn_in[iv] < mi[iv] || nn_in[iv] > ma[iv]) {
                 tosa_oor_flag = true; // (ipix)
             }
-            BitSetter.setFlag(flags, 2 + iv, oor);
         }
-
-        BitSetter.setFlag(flags, 1, tosa_oor_flag);
+        flags = BitSetter.setFlag(flags, 1, tosa_oor_flag);
 
         // (9.10.1) NN compute IOPs from rw
 
@@ -232,6 +232,19 @@ public class C2rccMerisAlgorithm {
         System.arraycopy(log_rw, 0, nn_in_inv, 5, 10);
         double[] log_iops_nn1 = inv_nn7.get().calc(nn_in_inv);
         double[] iops_nn1 = aexp(log_iops_nn1);
+
+        // (9.10.2) test if input tosa spectrum is out of range
+        //mima=inv_nn7(5); // minima and maxima of aaNN input
+        mi = inv_nn7.get().getInmin();
+        ma = inv_nn7.get().getInmax();
+        boolean rw_oor_flag = false; // (ipix)
+        //for iv=1:15,// variables
+        for (int iv = 0; iv < nn_in_inv.length; iv++) {
+            if (nn_in_inv[iv] < mi[iv] | nn_in_inv[iv] > ma[iv]) {
+                rw_oor_flag = true; // (ipix)
+            }
+        }
+        flags = BitSetter.setFlag(flags, 2, rw_oor_flag);
 
 // todo (nf): migrate following code to Java
 /*
@@ -278,7 +291,7 @@ public class C2rccMerisAlgorithm {
         double unc_abs_tsm = 1.73.*unc_abs_btot;
 */
 
-        return new Result(rw, iops_nn1, rtosa_aaNNrat_min, rtosa_aaNNrat_max, flags);
+        return new Result(rw, iops_nn1, r_tosa, rtosa_aann, rtosa_aaNNrat_min, rtosa_aaNNrat_max, flags);
     }
 
     public static double[] aexp(double[] x) {

@@ -24,6 +24,8 @@ import org.esa.snap.util.converters.BooleanExpressionConverter;
 import java.awt.Color;
 import java.io.IOException;
 
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
+
 // todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
@@ -54,14 +56,21 @@ public class C2rccMerisOperator extends PixelOperator {
     public static final int OZONE_IX = BAND_COUNT + 6;
 
     // MERIS targets
-    public static final int CONC_APIG_IX = C2rccMerisAlgorithm.merband12_ix.length;
-    public static final int CONC_ADET_IX = C2rccMerisAlgorithm.merband12_ix.length + 1;
-    public static final int CONC_AGELB_IX = C2rccMerisAlgorithm.merband12_ix.length + 2;
-    public static final int CONC_BPART_IX = C2rccMerisAlgorithm.merband12_ix.length + 3;
-    public static final int CONC_BWIT_IX = C2rccMerisAlgorithm.merband12_ix.length + 4;
-    public static final int RTOSA_RATIO_MIN_IX = C2rccMerisAlgorithm.merband12_ix.length + 5;
-    public static final int RTOSA_RATIO_MAX_IX = C2rccMerisAlgorithm.merband12_ix.length + 6;
-    public static final int L2_FLAGS_IX = C2rccMerisAlgorithm.merband12_ix.length + 7;
+    public static final int REFLEC_N = merband12_ix.length;
+
+    public static final int REFLEC_1_IX = 0;
+    public static final int CONC_APIG_IX = REFLEC_N;
+    public static final int CONC_ADET_IX = REFLEC_N + 1;
+    public static final int CONC_AGELB_IX = REFLEC_N + 2;
+    public static final int CONC_BPART_IX = REFLEC_N + 3;
+    public static final int CONC_BWIT_IX = REFLEC_N + 4;
+
+    public static final int RTOSA_RATIO_MIN_IX = REFLEC_N + 5;
+    public static final int RTOSA_RATIO_MAX_IX = REFLEC_N + 6;
+    public static final int L2_FLAGS_IX = REFLEC_N + 7;
+
+    public static final int RTOSA_IN_1_IX = REFLEC_N + 8;
+    public static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_N;
 
     @SourceProduct(label = "MERIS L1b product",
             description = "MERIS L1b source product.")
@@ -80,6 +89,9 @@ public class C2rccMerisOperator extends PixelOperator {
 
     @Parameter(defaultValue = "false")
     private boolean useDefaultSolarFlux;
+
+    @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
+    private boolean outputRtosa;
 
     private C2rccMerisAlgorithm algorithm;
 
@@ -100,8 +112,7 @@ public class C2rccMerisOperator extends PixelOperator {
                                                                    sourceSamples[VIEW_AZI_IX].getDouble(),
                                                                    sourceSamples[DEM_ALT_IX].getDouble(),
                                                                    sourceSamples[ATM_PRESS_IX].getDouble(),
-                                                                   sourceSamples[OZONE_IX].getDouble()
-        );
+                                                                   sourceSamples[OZONE_IX].getDouble());
 
         for (int i = 0; i < result.rw.length; i++) {
             targetSamples[i].set(result.rw[i]);
@@ -114,6 +125,15 @@ public class C2rccMerisOperator extends PixelOperator {
         targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
         targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
         targetSamples[L2_FLAGS_IX].set(result.flags);
+
+        if (outputRtosa) {
+            for (int i = 0; i < result.rtosa_in.length; i++) {
+                targetSamples[RTOSA_IN_1_IX + i].set(result.rtosa_in[i]);
+            }
+            for (int i = 0; i < result.rtosa_out.length; i++) {
+                targetSamples[RTOSA_OUT_1_IX + i].set(result.rtosa_out[i]);
+            }
+        }
     }
 
     @Override
@@ -133,9 +153,12 @@ public class C2rccMerisOperator extends PixelOperator {
 
     @Override
     protected void configureTargetSamples(TargetSampleConfigurer sc) throws OperatorException {
-        for (int i = 0; i < C2rccMerisAlgorithm.merband12_ix.length; i++) {
-            sc.defineSample(i, "reflec_" + C2rccMerisAlgorithm.merband12_ix[i]);
+
+        for (int i = 0; i < merband12_ix.length; i++) {
+            int bi = merband12_ix[i];
+            sc.defineSample(REFLEC_1_IX + i, "reflec_" + bi);
         }
+
         sc.defineSample(CONC_APIG_IX, "conc_apig");
         sc.defineSample(CONC_ADET_IX, "conc_adet");
         sc.defineSample(CONC_AGELB_IX, "conc_agelb");
@@ -144,8 +167,18 @@ public class C2rccMerisOperator extends PixelOperator {
         sc.defineSample(RTOSA_RATIO_MIN_IX, "rtosa_ratio_min");
         sc.defineSample(RTOSA_RATIO_MAX_IX, "rtosa_ratio_max");
         sc.defineSample(L2_FLAGS_IX, "l2_flags");
-    }
 
+        if (outputRtosa) {
+            for (int i = 0; i < merband12_ix.length; i++) {
+                int bi = merband12_ix[i];
+                sc.defineSample(RTOSA_IN_1_IX + i, "rtosa_in_" + bi);
+            }
+            for (int i = 0; i < merband12_ix.length; i++) {
+                int bi = merband12_ix[i];
+                sc.defineSample(RTOSA_OUT_1_IX + i, "rtosa_out_" + bi);
+            }
+        }
+    }
 
     @Override
     protected void configureTargetProduct(ProductConfigurer productConfigurer) {
@@ -156,7 +189,7 @@ public class C2rccMerisOperator extends PixelOperator {
 
         ProductUtils.copyFlagBands(source, targetProduct, true);
 
-        for (int index : C2rccMerisAlgorithm.merband12_ix) {
+        for (int index : merband12_ix) {
             Band reflecBand = targetProduct.addBand("reflec_" + index, ProductData.TYPE_FLOAT32);
             ProductUtils.copySpectralBandProperties(source.getBand("radiance_" + index), reflecBand);
             reflecBand.setUnit("1");
@@ -177,17 +210,15 @@ public class C2rccMerisOperator extends PixelOperator {
         addVirtualBand(targetProduct, "atot", "conc_apig + conc_adet + conc_agelb", "m^-1", "Total absorption coefficient of all water constituents");
         addVirtualBand(targetProduct, "chl", "pow(conc_apig, 1.04) * 20.0", "m^-1", "Chlorophyll concentration");
 
-        addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of Rtosa/Rtosa_ANN ratios");
-        addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of Rtosa/Rtosa_ANN ratios");
+        addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of rtosa_out:rtosa_in ratios");
+        addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of rtosa_out:rtosa_in ratios");
         Band l2_flags = targetProduct.addBand("l2_flags", ProductData.TYPE_UINT32);
         l2_flags.setDescription("Quality flags");
 
         FlagCoding flagCoding = new FlagCoding("l2_flags");
-        flagCoding.addFlag("AC_INPUT_UNKNOWN", 0x01, "The input (spectrum) to atmospheric correction was unknown to the algorithm");
-        flagCoding.addFlag("AC_INPUT_OOR", 0x02, "One of the inputs to atmospheric correction was out of range");
-        for (int i = 0; i < 19; i++) {
-            flagCoding.addFlag("AC_INPUT_OOR_" + (i + 1), 1 << (2 + i), "Input #" + (i + 1) + " to atmospheric correction was out of range");
-        }
+        flagCoding.addFlag("AC_NN_IN_ALIEN", 0x01, "The input spectrum to atmospheric correction neural net was unknown");
+        flagCoding.addFlag("AC_NN_IN_OOR", 0x02, "One of the inputs to the atmospheric correction neural net was out of range");
+        flagCoding.addFlag("IOP_NN_IN_OOR", 0x04, "One of the inputs to the IOP retrieval neural net was out of range");
         targetProduct.getFlagCodingGroup().add(flagCoding);
         l2_flags.setSampleCoding(flagCoding);
 
@@ -197,6 +228,20 @@ public class C2rccMerisOperator extends PixelOperator {
             String flagName = flagNames[i];
             MetadataAttribute flag = flagCoding.getFlag(flagName);
             targetProduct.addMask(flagName, "l2_flags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
+        }
+
+        if (outputRtosa) {
+            for (int bi : merband12_ix) {
+                Band rtosaInBand = addBand(targetProduct, "rtosa_in_" + bi, "1", "Top-of-standard-atmosphere reflectances, input to AC");
+                ProductUtils.copySpectralBandProperties(source.getBand("radiance_" + bi), rtosaInBand);
+            }
+            for (int bi : merband12_ix) {
+                Band rtosaOutBand = addBand(targetProduct, "rtosa_out_" + bi, "1", "Top-of-standard-atmosphere reflectances, output from ANN");
+                ProductUtils.copySpectralBandProperties(source.getBand("radiance_" + bi), rtosaOutBand);
+            }
+            targetProduct.setAutoGrouping("reflec:rtosa_in:rtosa_out");
+        } else {
+            targetProduct.setAutoGrouping("reflec");
         }
     }
 
@@ -238,12 +283,13 @@ public class C2rccMerisOperator extends PixelOperator {
         }
     }
 
-    private void addBand(Product targetProduct, String name, String unit, String description) {
+    private Band addBand(Product targetProduct, String name, String unit, String description) {
         Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
         targetBand.setUnit(unit);
         targetBand.setDescription(description);
         targetBand.setGeophysicalNoDataValue(Double.NaN);
         targetBand.setNoDataValueUsed(true);
+        return targetBand;
     }
 
     private void addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
