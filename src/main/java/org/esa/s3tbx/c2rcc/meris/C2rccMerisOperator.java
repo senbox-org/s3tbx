@@ -38,7 +38,7 @@ import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "C2RCC", version = "0.2",
+@OperatorMetadata(alias = "C2RCC", version = "0.5",
         authors = "Roland Doerffer, Norman Fomferra (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2015 by Brockmann Consult",
