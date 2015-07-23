@@ -103,7 +103,7 @@ public class C2rccMerisOperator extends PixelOperator {
             radiances[i] = sourceSamples[i].getDouble();
         }
 
-        GeoPos geoPos = source.getGeoCoding().getGeoPos(new PixelPos(x + 0.5f, y + 0.5f), null);
+        GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(new PixelPos(x + 0.5f, y + 0.5f), null);
         C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
                                                                    radiances,
                                                                    sourceSamples[SUN_ZEN_IX].getDouble(),
@@ -233,11 +233,11 @@ public class C2rccMerisOperator extends PixelOperator {
         if (outputRtosa) {
             for (int bi : merband12_ix) {
                 Band rtosaInBand = addBand(targetProduct, "rtosa_in_" + bi, "1", "Top-of-standard-atmosphere reflectances, input to AC");
-                ProductUtils.copySpectralBandProperties(source.getBand("radiance_" + bi), rtosaInBand);
+                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + bi), rtosaInBand);
             }
             for (int bi : merband12_ix) {
                 Band rtosaOutBand = addBand(targetProduct, "rtosa_out_" + bi, "1", "Top-of-standard-atmosphere reflectances, output from ANN");
-                ProductUtils.copySpectralBandProperties(source.getBand("radiance_" + bi), rtosaOutBand);
+                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + bi), rtosaOutBand);
             }
             targetProduct.setAutoGrouping("reflec:rtosa_in:rtosa_out");
         } else {
@@ -308,6 +308,22 @@ public class C2rccMerisOperator extends PixelOperator {
             }
         }
         return true;
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
+    public void setSalinity(double salinity) {
+        this.salinity = salinity;
+    }
+
+    public void setUseDefaultSolarFlux(boolean useDefaultSolarFlux) {
+        this.useDefaultSolarFlux = useDefaultSolarFlux;
+    }
+
+    public void setValidPixelExpression(String validPixelExpression) {
+        this.validPixelExpression = validPixelExpression;
     }
 
     public static class Spi extends OperatorSpi {
