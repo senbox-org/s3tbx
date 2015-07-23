@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-public class C2R_ccMerisAlgorithmTest {
+public class C2rccMerisAlgorithmTest {
     @Test
     public void testIt() throws Exception {
         C2rccMerisAlgorithm algo = new C2rccMerisAlgorithm();
