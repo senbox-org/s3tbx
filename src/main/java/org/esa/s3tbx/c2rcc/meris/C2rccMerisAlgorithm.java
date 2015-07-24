@@ -17,6 +17,7 @@ import static java.lang.Math.log;
 import static java.lang.Math.sin;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
+import static org.esa.s3tbx.c2rcc.util.ArrayMath.*;
 
 /**
  * @author Roland Doerffer
@@ -185,19 +186,19 @@ public class C2rccMerisAlgorithm {
         System.arraycopy(log_rtosa, 0, nn_in, 7, log_rtosa.length);
 
         double[] log_rw = inv_ac_nn9.get().calc(nn_in);
-        double[] rw = aexp(log_rw);
+        double[] rw = a_exp(log_rw);
 
         // (9.5) test out of scope spectra with autoassociative neural network
         double[] log_rtosa_aann = aa_rtosa_nn_bn7_9.get().calc(nn_in);
-        double[] rtosa_aann = aexp(log_rtosa_aann);
-        double[] rtosa_aaNNrat = adiv(rtosa_aann, r_tosa);
+        double[] rtosa_aann = a_exp(log_rtosa_aann);
+        double[] rtosa_aaNNrat = a_div(rtosa_aann, r_tosa);
         //rtosa_aaNNrat_a(ipix,:)=rtosa_aaNNrat;
 
         int flags = 0;
 
         // (9.6.1) set rho_toa out of scope flag
-        double rtosa_aaNNrat_min = amin(rtosa_aaNNrat);
-        double rtosa_aaNNrat_max = amax(rtosa_aaNNrat);
+        double rtosa_aaNNrat_min = a_min(rtosa_aaNNrat);
+        double rtosa_aaNNrat_max = a_max(rtosa_aaNNrat);
         //double rtosa_aaNNrat_minmax_a = Math.max(rtosa_aaNNrat_max, 1.0 / rtosa_aaNNrat_min); // (ipix)
 
         boolean flag_rtosa = false; // (ipix)
@@ -231,7 +232,7 @@ public class C2rccMerisAlgorithm {
         nn_in_inv[4] = salinity;
         System.arraycopy(log_rw, 0, nn_in_inv, 5, 10);
         double[] log_iops_nn1 = inv_nn7.get().calc(nn_in_inv);
-        double[] iops_nn1 = aexp(log_iops_nn1);
+        double[] iops_nn1 = a_exp(log_iops_nn1);
 
         // (9.10.2) test if input tosa spectrum is out of range
         //mima=inv_nn7(5); // minima and maxima of aaNN input
@@ -292,43 +293,6 @@ public class C2rccMerisAlgorithm {
 */
 
         return new Result(rw, iops_nn1, r_tosa, rtosa_aann, rtosa_aaNNrat_min, rtosa_aaNNrat_max, flags);
-    }
-
-    public static double[] aexp(double[] x) {
-        return DoubleStream.of(x).map(Math::exp).toArray();
-    }
-
-    public static double[] aind(double[] x, int[] ind) {
-        double[] y = new double[ind.length];
-        for (int i = 0; i < ind.length; i++) {
-            y[i] = x[ind[i]];
-        }
-        return y;
-    }
-
-    public static double amin(double[] x) {
-        double min = Double.POSITIVE_INFINITY;
-        for (double v : x) {
-            min = Math.min(min, v);
-        }
-        return min;
-    }
-
-    public static double amax(double[] x) {
-        double max = Double.NEGATIVE_INFINITY;
-        for (double v : x) {
-            max = Math.max(max, v);
-        }
-        return max;
-    }
-
-    public static double[] adiv(double[] x, double[] y) {
-        Assert.argument(x.length == y.length);
-        double[] z = new double[x.length];
-        for (int i = 0; i < x.length; i++) {
-            z[i] = x[i] / y[i];
-        }
-        return z;
     }
 
     C2rccMerisAlgorithm() throws IOException {
