@@ -35,7 +35,6 @@ public class C2rccOperator extends Operator {
     private Product targetProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
@@ -44,6 +43,9 @@ public class C2rccOperator extends Operator {
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
     private double temperature;
+
+    @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
+    private boolean outputRtosa;
 
     @Parameter(defaultValue = "false")
     private boolean useDefaultSolarFlux;
@@ -57,6 +59,7 @@ public class C2rccOperator extends Operator {
             c2rccMerisOperator.setSalinity(salinity);
             c2rccMerisOperator.setUseDefaultSolarFlux(useDefaultSolarFlux);
             c2rccMerisOperator.setValidPixelExpression(validPixelExpression);
+            c2rccMerisOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2rccMerisOperator.getTargetProduct();
         } else if (sourceProduct.getProductType().startsWith("Level 2")) {
             final C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
@@ -64,6 +67,7 @@ public class C2rccOperator extends Operator {
             c2rccModisOperator.setTemperature(temperature);
             c2rccModisOperator.setSalinity(salinity);
             c2rccModisOperator.setValidPixelExpression(validPixelExpression);
+            c2rccModisOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2rccModisOperator.getTargetProduct();
         } else {
             throw new OperatorException("Illegal source product.");
