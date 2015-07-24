@@ -6,8 +6,10 @@ import static java.lang.Math.log;
 import static java.lang.Math.sin;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
+import static org.esa.s3tbx.c2rcc.util.ArrayMath.*;
 
 import org.esa.snap.nn.NNffbpAlphaTabFast;
+import org.esa.snap.util.BitSetter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,6 +45,31 @@ public class C2rccModisAlgorithm {
                 869
     };
 
+    /**
+     * Structure for returning the algorithm's result.
+     */
+    public static class Result {
+
+        public final double[] rw;
+        public final double[] iops;
+        public final double[] rtosa_in;
+        public final double[] rtosa_out;
+        public final double rtosa_ratio_min;
+        public final double rtosa_ratio_max;
+        public final int flags;
+
+        public Result(double[] rw, double[] iops, double[] rtosa_in, double[] rtosa_out, double rtosa_ratio_min, double rtosa_ratio_max, int flags) {
+            this.rw = rw;
+            this.iops = iops;
+            this.rtosa_in = rtosa_in;
+            this.rtosa_out = rtosa_out;
+            this.rtosa_ratio_min = rtosa_ratio_min;
+            this.rtosa_ratio_max = rtosa_ratio_max;
+            this.flags = flags;
+        }
+    }
+
+    // ozon absorption constants for MODIS channels
     public final static double[] k_oz_per_wl = new double[]{
                 1.987E-03, // k_oz(1) =   Lambda(1) = 412
                 3.189E-03, // k_oz(2) =   Lambda(2) = 443
@@ -56,27 +83,16 @@ public class C2rccModisAlgorithm {
                 1.936E-03  // k_oz(9) =   Lambda(9) = 869
     };
 
-    /**
-     * Structure for returning the algorithm's result.
-     */
-    public static class Result {
-
-        public final double[] rw;
-        public final double[] iops;
-
-        public Result(double[] rw, double[] iops) {
-            this.rw = rw;
-            this.iops = iops;
-        }
-    }
-
-//    static final int[] modband12_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13};
-
     private double salinity = salinity_default;
     private double temperature = temperature_default;
 
+    // (5) thresholds for flags
+    double[] thresh_rtosaaaNNrat = {0.95, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
+    double[] thresh_rwslope = {0.95, 1.05};    // threshold for out of scope flag Rw has to be adjusted
+
     private ThreadLocal<NNffbpAlphaTabFast> rtoa_rw_nn3;
     private ThreadLocal<NNffbpAlphaTabFast> rw_IOP;
+    private ThreadLocal<NNffbpAlphaTabFast> rtoa_aaNN7;
 
     public void setTemperature(double temperature) {
         this.temperature = temperature;
@@ -89,6 +105,7 @@ public class C2rccModisAlgorithm {
     public C2rccModisAlgorithm() throws IOException {
         rtoa_rw_nn3 = nnhs("modis/rtoa_rw_modis_nn3/33x73x53x33_508087.3.net");
         rw_IOP = nnhs("modis/inv_modis_logrw_logiop_20131210_noise_1/97x77x37_5374.6.net");
+        rtoa_aaNN7 = nnhs("modis/rtoa_modis_aaNN7/31x7x31_250.8.net");
     }
 
     public Result processPixel(double[] toa_ref,
@@ -114,13 +131,14 @@ public class C2rccModisAlgorithm {
         double y = sin_sensor_zen * sin_azi_diff;
         double z = cos_sensor_zen;
 
-        double[] log_rtosa = new double[toa_ref.length];
+        double[] r_tosa = new double[toa_ref.length];
         for (int i = 0; i < toa_ref.length; i++) {
             double trans_ozoned12 = exp(-(k_oz_per_wl[i] * ozone / 1000.0) / cos_sun_zen);
             double trans_ozoneu12 = exp(-(k_oz_per_wl[i] * ozone / 1000.0) / cos_sensor_zen);
             double trans_ozone12 = trans_ozoned12 * trans_ozoneu12;
-            log_rtosa[i] = log(toa_ref[i] / trans_ozone12);
+            r_tosa[i] = toa_ref[i] / trans_ozone12;
         }
+        double[] log_rtosa = a_log(r_tosa);
 
         // set NN input
         double[] nn_in = new double[7 + log_rtosa.length];
@@ -134,10 +152,39 @@ public class C2rccModisAlgorithm {
         System.arraycopy(log_rtosa, 0, nn_in, 7, log_rtosa.length);
 
         double[] log_rw = rtoa_rw_nn3.get().calc(nn_in);
-        double[] rw = new double[log_rw.length];
-        for (int i = 0; i < rw.length; i++) {
-            rw[i] = exp(log_rw[i]);
+        double[] rw = a_exp(log_rw);
+
+         // (9.5) test out of scope spectra with autoassociative neural network
+        double[] log_rtosa_aann = rtoa_aaNN7.get().calc(nn_in);
+        double[] rtosa_aann = a_exp(log_rtosa_aann);
+        double[] rtosa_aaNNrat = a_div(rtosa_aann, r_tosa);
+        //rtosa_aaNNrat_a(ipix,:)=rtosa_aaNNrat;
+
+        int flags = 0;
+
+        // (9.6.1) set rho_toa out of scope flag
+        double rtosa_aaNNrat_min = a_min(rtosa_aaNNrat);
+        double rtosa_aaNNrat_max = a_max(rtosa_aaNNrat);
+        //double rtosa_aaNNrat_minmax_a = Math.max(rtosa_aaNNrat_max, 1.0 / rtosa_aaNNrat_min); // (ipix)
+
+        boolean flag_rtosa = false; // (ipix)
+        if (rtosa_aaNNrat_min < thresh_rtosaaaNNrat[0] || rtosa_aaNNrat_max > thresh_rtosaaaNNrat[1]) {
+            flag_rtosa = true; // set flag if difference of band 5 > threshold // (ipix)
         }
+        flags = BitSetter.setFlag(flags, 0, flag_rtosa);
+
+        // (9.6.2) test if input tosa spectrum is out of range
+        // mima=aa_rtosa_nn_bn7_9(5); // minima and maxima of aaNN input
+        double[] mi = rtoa_aaNN7.get().getInmin();
+        double[] ma = rtoa_aaNN7.get().getInmax();
+        boolean tosa_oor_flag = false; // (ipix)
+        // for iv=1:19,// variables
+        for (int iv = 0; iv < nn_in.length; iv++) { // variables
+            if (nn_in[iv] < mi[iv] || nn_in[iv] > ma[iv]) {
+                tosa_oor_flag = true; // (ipix)
+            }
+        }
+        flags = BitSetter.setFlag(flags, 1, tosa_oor_flag);
 
         // (9.10.1) NN compute IOPs from rw
 
@@ -151,10 +198,20 @@ public class C2rccModisAlgorithm {
         nn_in_inv[4] = salinity;
         System.arraycopy(log_rw, 0, nn_in_inv, 5, log_rw.length - 1);
         double[] log_iops_nn1 = rw_IOP.get().calc(nn_in_inv);
-        double[] iops_nn1 = new double[5];
-        for (int i = 0; i < iops_nn1.length; i++) {
-            iops_nn1[i] = exp(log_iops_nn1[i]);
+        double[] iops_nn1 = a_exp(log_iops_nn1);
+
+        // (9.10.2) test if input tosa spectrum is out of range
+        //mima=inv_nn7(5); // minima and maxima of aaNN input
+        mi = rw_IOP.get().getInmin();
+        ma = rw_IOP.get().getInmax();
+        boolean rw_oor_flag = false; // (ipix)
+        //for iv=1:15,// variables
+        for (int iv = 0; iv < mi.length; iv++) {
+            if (nn_in_inv[iv] < mi[iv] | nn_in_inv[iv] > ma[iv]) {
+                rw_oor_flag = true; // (ipix)
+            }
         }
+        flags = BitSetter.setFlag(flags, 2, rw_oor_flag);
 
 // todo (nf): migrate following code to Java
 /*
@@ -201,7 +258,7 @@ public class C2rccModisAlgorithm {
         double unc_abs_tsm = 1.73.*unc_abs_btot;
 */
 
-        return new Result(rw, iops_nn1);
+        return new Result(rw, iops_nn1, r_tosa, rtosa_aann, rtosa_aaNNrat_min, rtosa_aaNNrat_max, flags);
     }
 
     private ThreadLocal<NNffbpAlphaTabFast> nnhs(String path) throws IOException {

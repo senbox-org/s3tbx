@@ -326,6 +326,10 @@ public class C2rccMerisOperator extends PixelOperator {
         this.validPixelExpression = validPixelExpression;
     }
 
+    public void setOutputRtosa(boolean outputRtosa) {
+        this.outputRtosa = outputRtosa;
+    }
+
     public static class Spi extends OperatorSpi {
 
         public Spi() {
