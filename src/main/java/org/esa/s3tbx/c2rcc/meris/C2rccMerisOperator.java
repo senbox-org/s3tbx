@@ -208,7 +208,7 @@ public class C2rccMerisOperator extends PixelOperator {
 
         addVirtualBand(targetProduct, "tsm", "(conc_bpart + conc_bwit) * 1.7", "g m^-3", "Total suspended matter dry weight concentration");
         addVirtualBand(targetProduct, "atot", "conc_apig + conc_adet + conc_agelb", "m^-1", "Total absorption coefficient of all water constituents");
-        addVirtualBand(targetProduct, "chl", "pow(conc_apig, 1.04) * 20.0", "m^-1", "Chlorophyll concentration");
+        addVirtualBand(targetProduct, "chl", "pow(conc_apig, 1.04) * 20.0", "mg/m^3", "Chlorophyll concentration");
 
         addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of rtosa_out:rtosa_in ratios");
         addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of rtosa_out:rtosa_in ratios");
