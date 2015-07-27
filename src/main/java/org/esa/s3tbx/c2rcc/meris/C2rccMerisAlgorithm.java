@@ -298,31 +298,31 @@ public class C2rccMerisAlgorithm {
     C2rccMerisAlgorithm() throws IOException {
 
         // rtosa auto NN
-        aa_rtosa_nn_bn7_9 = nnhs("richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net");
+        aa_rtosa_nn_bn7_9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net");
 
         // rtosa-rw NN
-        inv_ac_nn9 = nnhs("richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net");
+        inv_ac_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net");
 
         // rtosa - rpath NN
-        //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
+        //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
 
         // rtosa - trans NN
-        //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("../nets/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
+        //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
 
         // rw-IOP inverse NN
-        inv_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net");
+        inv_nn7 = nnhs("meris/coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net");
 
         // IOP-rw forward NN
-        //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
+        //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("meris/coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
 
         // rw-kd NN, output are kdmin and kd449
-        //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
+        //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("meris/coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
 
         // uncertainty NN for IOPs after bias corretion
-        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
+        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("meris/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
 
         // uncertainty for atot, adg, btot and kd
-        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
+        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("meris/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
     }
 
     private ThreadLocal<NNffbpAlphaTabFast> nnhs(String path) throws IOException {

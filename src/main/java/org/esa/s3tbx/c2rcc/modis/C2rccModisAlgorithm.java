@@ -104,7 +104,7 @@ public class C2rccModisAlgorithm {
 
     public C2rccModisAlgorithm() throws IOException {
         rtoa_rw_nn3 = nnhs("modis/rtoa_rw_modis_nn3/33x73x53x33_508087.3.net");
-        rw_IOP = nnhs("modis/inv_modis_logrw_logiop_20131210_noise_1/97x77x37_5374.6.net");
+        rw_IOP = nnhs("modis/inv_modis_fl/97x77x37_13150.2.net");
         rtoa_aaNN7 = nnhs("modis/rtoa_modis_aaNN7/31x7x31_250.8.net");
     }
 
