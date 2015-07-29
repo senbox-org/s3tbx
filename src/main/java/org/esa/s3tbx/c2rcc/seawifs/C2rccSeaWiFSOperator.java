@@ -76,7 +76,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
     private Product sourceProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            defaultValue = "!(l2_flags.LAND || max(L_412,max(L_443,max(L_490,max(L_510,max(L_555,max(L_670,max(L_765,L_865)))))))>0.25)",
+            defaultValue = "",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 

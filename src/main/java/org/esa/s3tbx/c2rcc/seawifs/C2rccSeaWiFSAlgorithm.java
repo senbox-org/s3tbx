@@ -11,9 +11,8 @@ import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_div;
 import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_exp;
 import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_max;
 import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_min;
+import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_mul;
 
-import org.apache.commons.math3.util.MathArrays;
-import org.esa.s3tbx.c2rcc.util.ArrayMath;
 import org.esa.snap.nn.NNffbpAlphaTabFast;
 import org.esa.snap.util.BitSetter;
 
@@ -21,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 /**
  * @author Roland Doerffer
@@ -57,15 +57,23 @@ public class C2rccSeaWiFSAlgorithm {
         }
     }
 
-
-    // gas absorption constants for 12 MERIS channels
+    // gas absorption constants for Seawifs channels
+    // http://oceancolor.gsfc.nasa.gov/SeaWiFS/TECH_REPORTS/PreLPDF/PreLVol9.pdf
     static final double[] absorb_ozon = {
-            8.2e-04, 2.82e-03, 2.076e-02, 3.96e-02,
-            1.022e-01, 1.059e-01, 5.313e-02, 3.552e-02,
-            1.895e-02, 8.38e-03, 7.2e-04, 0.0};
+                0.0,      // 412nm
+                0.0027,   // 443nm
+                0.0205,   // 490nm
+                0.0382,   // 510nm
+                0.0898,   // 555nm
+                0.0463,   // 670nm
+                0.0083,   // 765nm
+                0.0       // 865nm
+    };
 
     static final int[] seawifsWavelengths = {412, 443, 490, 510, 555, 670, 765, 865};
 
+    // default nasa solar flux from waterradiance project
+    // derived from cahalan table from Kerstin tb 2013-11-22
     double[] solflux = new double[]{
                 1735.518167,   // 412nm
                 1858.404314,   // 443nm
@@ -97,10 +105,6 @@ public class C2rccSeaWiFSAlgorithm {
         this.salinity = salinity;
     }
 
-    public void setSolflux(double[] solflux) {
-        this.solflux = solflux;
-    }
-
     public Result processPixel(int px, int py,
                                double lat, double lon,
                                double[] toa_rad,
@@ -127,7 +131,7 @@ public class C2rccSeaWiFSAlgorithm {
         double y = sin_view * sin_azi_diff;
         double z = cos_view;
 
-        toa_rad = ArrayMath.a_mul(toa_rad, 10.0);
+        toa_rad = a_mul(toa_rad, 10.0);
         double[] ref_toa = new double[toa_rad.length];
         for (int i = 0; i < toa_rad.length; i++) {
             ref_toa[i] = PI * toa_rad[i] / solflux[i] / cos_sun;
@@ -211,14 +215,15 @@ public class C2rccSeaWiFSAlgorithm {
         // (9.10.1) NN compute IOPs from rw
 
         // define input to water NNs
-        //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:10)];
-        double[] nn_in_inv = new double[5 + 10];
+        //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(412 - 765)];
+        final double[] log_rw_412to765 = Arrays.copyOf(log_rw, log_rw.length - 1);
+        double[] nn_in_inv = new double[5 + log_rw_412to765.length];
         nn_in_inv[0] = sun_zeni;
         nn_in_inv[1] = view_zeni;
         nn_in_inv[2] = azi_diff_deg;
         nn_in_inv[3] = temperature;
         nn_in_inv[4] = salinity;
-        System.arraycopy(log_rw, 0, nn_in_inv, 5, 10);
+        System.arraycopy(log_rw, 0, nn_in_inv, 5, log_rw_412to765.length);
         double[] log_iops_nn1 = logrw_iop_NN.get().calc(nn_in_inv);
         double[] iops_nn1 = a_exp(log_iops_nn1);
 
