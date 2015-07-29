@@ -2,6 +2,8 @@ package org.esa.s3tbx.c2rcc;
 
 import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
 import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
+import org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSOperator;
+import org.esa.snap.dataio.envisat.EnvisatConstants;
 import org.esa.snap.framework.datamodel.Product;
 import org.esa.snap.framework.gpf.Operator;
 import org.esa.snap.framework.gpf.OperatorException;
@@ -52,7 +54,9 @@ public class C2rccOperator extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-        if (sourceProduct.getProductType().startsWith("MER_RR__1P")) {
+        final String productType = sourceProduct.getProductType();
+        final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
+        if (EnvisatConstants.ENVISAT_FORMAT_NAME.equals(formatName) && productType.startsWith("MER_RR__1P")) {
             C2rccMerisOperator c2rccMerisOperator = new C2rccMerisOperator();
             c2rccMerisOperator.setSourceProduct(sourceProduct);
             c2rccMerisOperator.setTemperature(temperature);
@@ -61,7 +65,7 @@ public class C2rccOperator extends Operator {
             c2rccMerisOperator.setValidPixelExpression(validPixelExpression);
             c2rccMerisOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2rccMerisOperator.getTargetProduct();
-        } else if (sourceProduct.getProductType().startsWith("Level 2")) {
+        } else if ("SeaDAS-L2".equals(formatName) && productType.startsWith("Level 2")) {
             final C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
             c2rccModisOperator.setSourceProduct(sourceProduct);
             c2rccModisOperator.setTemperature(temperature);
@@ -69,6 +73,15 @@ public class C2rccOperator extends Operator {
             c2rccModisOperator.setValidPixelExpression(validPixelExpression);
             c2rccModisOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2rccModisOperator.getTargetProduct();
+        } else if ("SeaDAS-L1".equals(formatName)&& productType.startsWith("Generic Level 1B")) {
+            final C2rccSeaWiFSOperator c2RccSeaWiFSOperator = new C2rccSeaWiFSOperator();
+            c2RccSeaWiFSOperator.setSourceProduct(sourceProduct);
+            c2RccSeaWiFSOperator.setTemperature(temperature);
+            c2RccSeaWiFSOperator.setSalinity(salinity);
+//            c2RccSeaWiFSOperator.setUseDefaultSolarFlux(useDefaultSolarFlux); // todo needed?
+            c2RccSeaWiFSOperator.setValidPixelExpression(validPixelExpression);
+            c2RccSeaWiFSOperator.setOutputRtosa(outputRtosa);
+            targetProduct = c2RccSeaWiFSOperator.getTargetProduct();
         } else {
             throw new OperatorException("Illegal source product.");
         }

@@ -84,4 +84,11 @@ public class ArrayMath {
     public static double[] a_log(double[] x) {
         return DoubleStream.of(x).map(Math::log).toArray();
     }
+
+    public static double[] a_mul(double[] v, double mul) {
+        for (int i = 0; i < v.length; i++) {
+            v[i] = v[i] * mul;
+        }
+        return v;
+    }
 }
