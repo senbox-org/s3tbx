@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc.util;
+package org.esa.s3tbx;
 
 import com.bc.ceres.core.Assert;
 

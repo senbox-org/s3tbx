@@ -2,13 +2,11 @@ package org.esa.s3tbx.c2rcc.seawifs;
 
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengths;
 
+import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.Band;
-import org.esa.snap.framework.datamodel.FlagCoding;
 import org.esa.snap.framework.datamodel.GeoPos;
-import org.esa.snap.framework.datamodel.MetadataAttribute;
 import org.esa.snap.framework.datamodel.PixelPos;
 import org.esa.snap.framework.datamodel.Product;
-import org.esa.snap.framework.datamodel.ProductData;
 import org.esa.snap.framework.gpf.OperatorException;
 import org.esa.snap.framework.gpf.OperatorSpi;
 import org.esa.snap.framework.gpf.annotations.OperatorMetadata;
@@ -20,10 +18,8 @@ import org.esa.snap.framework.gpf.pointop.Sample;
 import org.esa.snap.framework.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.WritableSample;
-import org.esa.snap.util.ProductUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
-import java.awt.Color;
 import java.io.IOException;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
@@ -186,65 +182,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
     protected void configureTargetProduct(ProductConfigurer productConfigurer) {
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
-
         Product targetProduct = productConfigurer.getTargetProduct();
-
-        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
-
-        for (int wavelength : seawifsWavelengths) {
-            Band reflecBand = targetProduct.addBand("reflec_" + wavelength, ProductData.TYPE_FLOAT32);
-            ProductUtils.copySpectralBandProperties(sourceProduct.getBand("L_" + wavelength), reflecBand);
-            reflecBand.setUnit("1");
-        }
-
-        //output  1 is log_conc_apig in [-13.170000,1.671000]
-        //output  2 is log_conc_adet in [-9.903000,1.782000]
-        //output  3 is log_conc_agelb in [-9.903000,0.000000]
-        //output  4 is log_conc_bpart in [-6.908000,4.081000]
-        //output  5 is log_conc_bwit in [-6.908000,4.076000]
-        addBand(targetProduct, "conc_apig", "m^-1", "Pigment absorption coefficient");
-        addBand(targetProduct, "conc_adet", "m^-1", "Pigment absorption");
-        addBand(targetProduct, "conc_agelb", "m^-1", "Yellow substance absorption coefficient");
-        addBand(targetProduct, "conc_bpart", "m^-1", "");
-        addBand(targetProduct, "conc_bwit", "m^-1", "Backscattering of suspended particulate matter");
-
-        addVirtualBand(targetProduct, "tsm", "(conc_bpart + conc_bwit) * 1.7", "g m^-3", "Total suspended matter dry weight concentration");
-        addVirtualBand(targetProduct, "atot", "conc_apig + conc_adet + conc_agelb", "m^-1", "Total absorption coefficient of all water constituents");
-        addVirtualBand(targetProduct, "chl", "pow(conc_apig, 1.04) * 20.0", "mg/m^3", "Chlorophyll concentration");
-
-        addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of rtosa_out:rtosa_in ratios");
-        addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of rtosa_out:rtosa_in ratios");
-        Band l2_qflags = targetProduct.addBand("l2_qflags", ProductData.TYPE_UINT32);
-        l2_qflags.setDescription("Quality flags");
-
-        FlagCoding qflagCoding = new FlagCoding("l2_qflags");
-        qflagCoding.addFlag("AC_NN_IN_ALIEN", 0x01, "The input spectrum to atmospheric correction neural net was unknown");
-        qflagCoding.addFlag("AC_NN_IN_OOR", 0x02, "One of the inputs to the atmospheric correction neural net was out of range");
-        qflagCoding.addFlag("IOP_NN_IN_OOR", 0x04, "One of the inputs to the IOP retrieval neural net was out of range");
-        targetProduct.getFlagCodingGroup().add(qflagCoding);
-        l2_qflags.setSampleCoding(qflagCoding);
-
-        Color[] maskColors = {Color.RED, Color.ORANGE, Color.YELLOW, Color.BLUE, Color.GREEN, Color.PINK, Color.MAGENTA, Color.CYAN};
-        String[] qflagNames = qflagCoding.getFlagNames();
-        for (int i = 0; i < qflagNames.length; i++) {
-            String qflagName = qflagNames[i];
-            MetadataAttribute qflag = qflagCoding.getFlag(qflagName);
-            targetProduct.addMask(qflagName, "l2_qflags." + qflagName, qflag.getDescription(), maskColors[i % maskColors.length], 0.5);
-        }
-
-        if (outputRtosa) {
-            for (int wavelength : seawifsWavelengths) {
-                Band rtosaInBand = addBand(targetProduct, "rtosa_in_" + wavelength, "1", "Top-of-standard-atmosphere reflectances, input to AC");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("L_" + wavelength), rtosaInBand);
-            }
-            for (int wavelength : seawifsWavelengths) {
-                Band rtosaOutBand = addBand(targetProduct, "rtosa_out_" + wavelength, "1", "Top-of-standard-atmosphere reflectances, output from ANN");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("L_" + wavelength), rtosaOutBand);
-            }
-            targetProduct.setAutoGrouping("reflec:conc:rtosa_in:rtosa_out");
-        } else {
-            targetProduct.setAutoGrouping("reflec:conc");
-        }
+        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, "L_",seawifsWavelengths, outputRtosa);
     }
 
     @Override
@@ -285,24 +224,6 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
         if (sourceProduct.getBand(name) == null) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
         }
-    }
-
-    private Band addBand(Product targetProduct, String name, String unit, String description) {
-        Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
-        targetBand.setUnit(unit);
-        targetBand.setDescription(description);
-        targetBand.setGeophysicalNoDataValue(Double.NaN);
-        targetBand.setNoDataValueUsed(true);
-        return targetBand;
-    }
-
-    private void addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
-        Band band = targetProduct.addBand(name, expression);
-        band.setUnit(unit);
-        band.setDescription(description);
-        band.getSourceImage(); // trigger source image creation
-        band.setGeophysicalNoDataValue(Double.NaN);
-        band.setNoDataValueUsed(true);
     }
 
     public void setTemperature(double temperature) {

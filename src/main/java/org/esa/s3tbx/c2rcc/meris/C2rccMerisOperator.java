@@ -1,12 +1,9 @@
 package org.esa.s3tbx.c2rcc.meris;
 
-import org.esa.snap.framework.datamodel.Band;
-import org.esa.snap.framework.datamodel.FlagCoding;
+import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.GeoPos;
-import org.esa.snap.framework.datamodel.MetadataAttribute;
 import org.esa.snap.framework.datamodel.PixelPos;
 import org.esa.snap.framework.datamodel.Product;
-import org.esa.snap.framework.datamodel.ProductData;
 import org.esa.snap.framework.gpf.OperatorException;
 import org.esa.snap.framework.gpf.OperatorSpi;
 import org.esa.snap.framework.gpf.annotations.OperatorMetadata;
@@ -18,10 +15,8 @@ import org.esa.snap.framework.gpf.pointop.Sample;
 import org.esa.snap.framework.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.WritableSample;
-import org.esa.snap.util.ProductUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
-import java.awt.Color;
 import java.io.IOException;
 
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
@@ -184,65 +179,8 @@ public class C2rccMerisOperator extends PixelOperator {
     protected void configureTargetProduct(ProductConfigurer productConfigurer) {
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
-
         Product targetProduct = productConfigurer.getTargetProduct();
-
-        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
-
-        for (int index : merband12_ix) {
-            Band reflecBand = targetProduct.addBand("reflec_" + index, ProductData.TYPE_FLOAT32);
-            ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + index), reflecBand);
-            reflecBand.setUnit("1");
-        }
-
-        //output  1 is log_conc_apig in [-13.170000,1.671000]
-        //output  2 is log_conc_adet in [-9.903000,1.782000]
-        //output  3 is log_conc_agelb in [-9.903000,0.000000]
-        //output  4 is log_conc_bpart in [-6.908000,4.081000]
-        //output  5 is log_conc_bwit in [-6.908000,4.076000]
-        addBand(targetProduct, "conc_apig", "m^-1", "Pigment absorption coefficient");
-        addBand(targetProduct, "conc_adet", "m^-1", "Pigment absorption");
-        addBand(targetProduct, "conc_agelb", "m^-1", "Yellow substance absorption coefficient");
-        addBand(targetProduct, "conc_bpart", "m^-1", "");
-        addBand(targetProduct, "conc_bwit", "m^-1", "Backscattering of suspended particulate matter");
-
-        addVirtualBand(targetProduct, "tsm", "(conc_bpart + conc_bwit) * 1.7", "g m^-3", "Total suspended matter dry weight concentration");
-        addVirtualBand(targetProduct, "atot", "conc_apig + conc_adet + conc_agelb", "m^-1", "Total absorption coefficient of all water constituents");
-        addVirtualBand(targetProduct, "chl", "pow(conc_apig, 1.04) * 20.0", "mg/m^3", "Chlorophyll concentration");
-
-        addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of rtosa_out:rtosa_in ratios");
-        addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of rtosa_out:rtosa_in ratios");
-        Band l2_flags = targetProduct.addBand("l2_flags", ProductData.TYPE_UINT32);
-        l2_flags.setDescription("Quality flags");
-
-        FlagCoding flagCoding = new FlagCoding("l2_flags");
-        flagCoding.addFlag("AC_NN_IN_ALIEN", 0x01, "The input spectrum to atmospheric correction neural net was unknown");
-        flagCoding.addFlag("AC_NN_IN_OOR", 0x02, "One of the inputs to the atmospheric correction neural net was out of range");
-        flagCoding.addFlag("IOP_NN_IN_OOR", 0x04, "One of the inputs to the IOP retrieval neural net was out of range");
-        targetProduct.getFlagCodingGroup().add(flagCoding);
-        l2_flags.setSampleCoding(flagCoding);
-
-        Color[] maskColors = {Color.RED, Color.ORANGE, Color.YELLOW, Color.BLUE, Color.GREEN, Color.PINK, Color.MAGENTA, Color.CYAN};
-        String[] flagNames = flagCoding.getFlagNames();
-        for (int i = 0; i < flagNames.length; i++) {
-            String flagName = flagNames[i];
-            MetadataAttribute flag = flagCoding.getFlag(flagName);
-            targetProduct.addMask(flagName, "l2_flags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
-        }
-
-        if (outputRtosa) {
-            for (int bi : merband12_ix) {
-                Band rtosaInBand = addBand(targetProduct, "rtosa_in_" + bi, "1", "Top-of-standard-atmosphere reflectances, input to AC");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + bi), rtosaInBand);
-            }
-            for (int bi : merband12_ix) {
-                Band rtosaOutBand = addBand(targetProduct, "rtosa_out_" + bi, "1", "Top-of-standard-atmosphere reflectances, output from ANN");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + bi), rtosaOutBand);
-            }
-            targetProduct.setAutoGrouping("reflec:rtosa_in:rtosa_out");
-        } else {
-            targetProduct.setAutoGrouping("reflec");
-        }
+        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, "radiance_", merband12_ix, outputRtosa);
     }
 
     @Override
@@ -281,24 +219,6 @@ public class C2rccMerisOperator extends PixelOperator {
         if (sourceProduct.getBand(name) == null) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
         }
-    }
-
-    private Band addBand(Product targetProduct, String name, String unit, String description) {
-        Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
-        targetBand.setUnit(unit);
-        targetBand.setDescription(description);
-        targetBand.setGeophysicalNoDataValue(Double.NaN);
-        targetBand.setNoDataValueUsed(true);
-        return targetBand;
-    }
-
-    private void addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
-        Band band = targetProduct.addBand(name, expression);
-        band.setUnit(unit);
-        band.setDescription(description);
-        band.getSourceImage(); // trigger source image creation
-        band.setGeophysicalNoDataValue(Double.NaN);
-        band.setNoDataValueUsed(true);
     }
 
     private static boolean isSolfluxValid(double[] solflux) {

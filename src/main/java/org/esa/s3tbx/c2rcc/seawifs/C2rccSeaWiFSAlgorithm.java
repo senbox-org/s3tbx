@@ -7,11 +7,11 @@ import static java.lang.Math.log;
 import static java.lang.Math.sin;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
-import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_div;
-import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_exp;
-import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_max;
-import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_min;
-import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_mul;
+import static org.esa.s3tbx.ArrayMath.a_div;
+import static org.esa.s3tbx.ArrayMath.a_exp;
+import static org.esa.s3tbx.ArrayMath.a_max;
+import static org.esa.s3tbx.ArrayMath.a_min;
+import static org.esa.s3tbx.ArrayMath.a_mul;
 
 import org.esa.snap.nn.NNffbpAlphaTabFast;
 import org.esa.snap.util.BitSetter;
