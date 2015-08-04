@@ -59,7 +59,7 @@ public class C2rccMerisAlgorithm {
 
     static final int[] merband12_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13};
 
-    double[] solflux = new double[]{
+    public static double[] DEFAULT_SOLAR_FLUX = new double[]{
             1724.724,
             1889.8026,
             1939.5339,
@@ -79,6 +79,7 @@ public class C2rccMerisAlgorithm {
 
     double salinity = 35.0;
     double temperature = 15.0;
+    double[] solflux;
 
     // (5) thresholds for flags
     double[] thresh_rtosaaaNNrat = {0.95, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted

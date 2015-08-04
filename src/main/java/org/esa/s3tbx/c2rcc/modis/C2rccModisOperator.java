@@ -50,11 +50,11 @@ public class C2rccModisOperator extends PixelOperator {
     public static final int REFLEC_BAND_COUNT = reflec_wavelengths.length;
 
     public static final int REFLEC_1_IX = 0;
-    public static final int CONC_APIG_IX = REFLEC_BAND_COUNT;
-    public static final int CONC_ADET_IX = REFLEC_BAND_COUNT + 1;
-    public static final int CONC_AGELB_IX = REFLEC_BAND_COUNT + 2;
-    public static final int CONC_BPART_IX = REFLEC_BAND_COUNT + 3;
-    public static final int CONC_BWIT_IX = REFLEC_BAND_COUNT + 4;
+    public static final int IOP_APIG_IX = REFLEC_BAND_COUNT;
+    public static final int IOP_ADET_IX = REFLEC_BAND_COUNT + 1;
+    public static final int IOP_AGELB_IX = REFLEC_BAND_COUNT + 2;
+    public static final int IOP_BPART_IX = REFLEC_BAND_COUNT + 3;
+    public static final int IOP_BWIT_IX = REFLEC_BAND_COUNT + 4;
 
     public static final int RTOSA_RATIO_MIN_IX = REFLEC_BAND_COUNT + 5;
     public static final int RTOSA_RATIO_MAX_IX = REFLEC_BAND_COUNT + 6;
@@ -158,11 +158,11 @@ public class C2rccModisOperator extends PixelOperator {
         for (int i = 0; i < reflec_wavelengths.length; i++) {
             sc.defineSample(i, "reflec_" + reflec_wavelengths[i]);
         }
-        sc.defineSample(CONC_APIG_IX, "conc_apig");
-        sc.defineSample(CONC_ADET_IX, "conc_adet");
-        sc.defineSample(CONC_AGELB_IX, "conc_agelb");
-        sc.defineSample(CONC_BPART_IX, "conc_bpart");
-        sc.defineSample(CONC_BWIT_IX, "conc_bwit");
+        sc.defineSample(IOP_APIG_IX, "iop_apig");
+        sc.defineSample(IOP_ADET_IX, "iop_adet");
+        sc.defineSample(IOP_AGELB_IX, "iop_agelb");
+        sc.defineSample(IOP_BPART_IX, "iop_bpart");
+        sc.defineSample(IOP_BWIT_IX, "iop_bwit");
 
         sc.defineSample(RTOSA_RATIO_MIN_IX, "rtosa_ratio_min");
         sc.defineSample(RTOSA_RATIO_MAX_IX, "rtosa_ratio_max");

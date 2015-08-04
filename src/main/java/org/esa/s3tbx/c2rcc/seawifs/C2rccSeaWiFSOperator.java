@@ -1,12 +1,14 @@
 package org.esa.s3tbx.c2rcc.seawifs;
 
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengths;
+import static org.esa.s3tbx.c2rcc.util.SolarFluxCorrectionFactorCalculator.computeFactorFor;
 
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.Band;
 import org.esa.snap.framework.datamodel.GeoPos;
 import org.esa.snap.framework.datamodel.PixelPos;
 import org.esa.snap.framework.datamodel.Product;
+import org.esa.snap.framework.datamodel.ProductData;
 import org.esa.snap.framework.gpf.OperatorException;
 import org.esa.snap.framework.gpf.OperatorSpi;
 import org.esa.snap.framework.gpf.annotations.OperatorMetadata;
@@ -54,11 +56,11 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
 
     // targets
     public static final int REFLEC_1_IX = 0;
-    public static final int CONC_APIG_IX = WL_BAND_COUNT;
-    public static final int CONC_ADET_IX = WL_BAND_COUNT + 1;
-    public static final int CONC_AGELB_IX = WL_BAND_COUNT + 2;
-    public static final int CONC_BPART_IX = WL_BAND_COUNT + 3;
-    public static final int CONC_BWIT_IX = WL_BAND_COUNT + 4;
+    public static final int IOP_APIG_IX = WL_BAND_COUNT;
+    public static final int IOP_ADET_IX = WL_BAND_COUNT + 1;
+    public static final int IOP_AGELB_IX = WL_BAND_COUNT + 2;
+    public static final int IOP_BPART_IX = WL_BAND_COUNT + 3;
+    public static final int IOP_BWIT_IX = WL_BAND_COUNT + 4;
 
     public static final int RTOSA_RATIO_MIN_IX = WL_BAND_COUNT + 5;
     public static final int RTOSA_RATIO_MAX_IX = WL_BAND_COUNT + 6;
@@ -72,7 +74,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
     private Product sourceProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            defaultValue = "",
+            defaultValue = "L_865 * 10 * PI / 957.6122143 / cos(rad(solz)) > 0.25",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
@@ -157,11 +159,11 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
             sc.defineSample(REFLEC_1_IX + i, "reflec_" + wl);
         }
 
-        sc.defineSample(CONC_APIG_IX, "conc_apig");
-        sc.defineSample(CONC_ADET_IX, "conc_adet");
-        sc.defineSample(CONC_AGELB_IX, "conc_agelb");
-        sc.defineSample(CONC_BPART_IX, "conc_bpart");
-        sc.defineSample(CONC_BWIT_IX, "conc_bwit");
+        sc.defineSample(IOP_APIG_IX, "iop_apig");
+        sc.defineSample(IOP_ADET_IX, "iop_adet");
+        sc.defineSample(IOP_AGELB_IX, "iop_agelb");
+        sc.defineSample(IOP_BPART_IX, "iop_bpart");
+        sc.defineSample(IOP_BWIT_IX, "iop_bwit");
         sc.defineSample(RTOSA_RATIO_MIN_IX, "rtosa_ratio_min");
         sc.defineSample(RTOSA_RATIO_MAX_IX, "rtosa_ratio_max");
         sc.defineSample(L2_QFLAGS_IX, "l2_qflags");
@@ -195,10 +197,10 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
             assertSourceBand("L_" + wavelength);
         }
         assertSourceBand("l2_flags");
-        assertBandAndRemoveValidExpression("solz");
-        assertBandAndRemoveValidExpression("sola");
-        assertBandAndRemoveValidExpression("senz");
-        assertBandAndRemoveValidExpression("sena");
+        assertSourceBandAndRemoveValidExpression("solz");
+        assertSourceBandAndRemoveValidExpression("sola");
+        assertSourceBandAndRemoveValidExpression("senz");
+        assertSourceBandAndRemoveValidExpression("sena");
 
         if (sourceProduct.getGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
@@ -212,9 +214,13 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
 
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
+
+        final ProductData.UTC startTime = sourceProduct.getStartTime();
+        final ProductData.UTC endTime = sourceProduct.getEndTime();
+        algorithm.setSolFluxDayCorrectionFactor(computeFactorFor(startTime, endTime));
     }
 
-    private void assertBandAndRemoveValidExpression(String bandname) {
+    private void assertSourceBandAndRemoveValidExpression(String bandname) {
         assertSourceBand(bandname);
         final Band band = sourceProduct.getBand(bandname);
         band.setValidPixelExpression("");

@@ -87,6 +87,7 @@ public class C2rccSeaWiFSAlgorithm {
 
     double salinity = salinity_default;
     double temperature = temperature_default;
+    double solFluxDayCorrectionFactor = 0;
 
     // (5) thresholds for flags
     double[] thresh_rtosaaaNNrat = {0.95, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
@@ -103,6 +104,10 @@ public class C2rccSeaWiFSAlgorithm {
 
     public void setSalinity(double salinity) {
         this.salinity = salinity;
+    }
+
+    public void setSolFluxDayCorrectionFactor(double solFluxDayCorrectionFactor) {
+        this.solFluxDayCorrectionFactor = solFluxDayCorrectionFactor;
     }
 
     public Result processPixel(int px, int py,
@@ -134,7 +139,8 @@ public class C2rccSeaWiFSAlgorithm {
         toa_rad = a_mul(toa_rad, 10.0);
         double[] ref_toa = new double[toa_rad.length];
         for (int i = 0; i < toa_rad.length; i++) {
-            ref_toa[i] = PI * toa_rad[i] / solflux[i] / cos_sun;
+            final double correctedSolFlux = solflux[i] * solFluxDayCorrectionFactor;
+            ref_toa[i] = PI * toa_rad[i] / correctedSolFlux / cos_sun;
         }
 
         //*** (9.3.1) ozone correction ***/

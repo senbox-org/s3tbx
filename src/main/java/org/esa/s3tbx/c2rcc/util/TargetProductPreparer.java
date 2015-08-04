@@ -33,10 +33,10 @@ public class TargetProductPreparer {
 
         addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of rtosa_out:rtosa_in ratios");
         addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of rtosa_out:rtosa_in ratios");
-        Band l2_flags = targetProduct.addBand("l2_flags", ProductData.TYPE_UINT32);
+        Band l2_flags = targetProduct.addBand("l2_qflags", ProductData.TYPE_UINT32);
         l2_flags.setDescription("Quality flags");
 
-        FlagCoding flagCoding = new FlagCoding("l2_flags");
+        FlagCoding flagCoding = new FlagCoding("l2_qflags");
         flagCoding.addFlag("AC_NN_IN_ALIEN", 0x01, "The input spectrum to atmospheric correction neural net was unknown");
         flagCoding.addFlag("AC_NN_IN_OOR", 0x02, "One of the inputs to the atmospheric correction neural net was out of range");
         flagCoding.addFlag("IOP_NN_IN_OOR", 0x04, "One of the inputs to the IOP retrieval neural net was out of range");
@@ -48,7 +48,7 @@ public class TargetProductPreparer {
         for (int i = 0; i < flagNames.length; i++) {
             String flagName = flagNames[i];
             MetadataAttribute flag = flagCoding.getFlag(flagName);
-            targetProduct.addMask(flagName, "l2_flags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
+            targetProduct.addMask(flagName, "l2_qflags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
         }
 
         if (outputRtosa) {
