@@ -49,23 +49,25 @@
                 <file name="org-esa-s3tbx-c2rcc-OpAction.shadow">
                     <attr name="originalFile"
                           stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-OpAction.instance"/>
-                    <attr name="position" intvalue="200"/>
+                    <attr name="position" intvalue="210"/>
                 </file>
-                <folder name="Specific C2R/CC Processors">
+                <folder name="Specific C2R-CC Processors">
+                    <attr name="displayName" stringvalue="Specific C2R/CC Processors"/>
+                    <attr name="position" intvalue="211"/>
                     <file name="org-esa-s3tbx-c2rcc-meris-OpAction.shadow">
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-meris-OpAction.instance"/>
-                        <attr name="position" intvalue="201"/>
+                        <attr name="position" intvalue="1"/>
                     </file>
                     <file name="org-esa-s3tbx-c2rcc-modis-OpAction.shadow">
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-modis-OpAction.instance"/>
-                        <attr name="position" intvalue="202"/>
+                        <attr name="position" intvalue="2"/>
                     </file>
                     <file name="org-esa-s3tbx-c2rcc-seawifs-OpAction.shadow">
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-seawifs-OpAction.instance"/>
-                        <attr name="position" intvalue="203"/>
+                        <attr name="position" intvalue="3"/>
                     </file>
                 </folder>
             </folder>
