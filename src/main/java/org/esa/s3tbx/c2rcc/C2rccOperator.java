@@ -16,7 +16,7 @@ import org.esa.snap.util.converters.BooleanExpressionConverter;
 
 /**
  * The Case 2 Regional / CoastColour Operator for MERIS, MODIS, SeaWiFS, and VIIRS.
- * <p>
+ * <p/>
  * Computes AC-reflectances and IOPs from MERIS, MODIS, SeaWiFS, and VIIRS L1b data products using
  * an neural-network approach.
  *
@@ -24,10 +24,10 @@ import org.esa.snap.util.converters.BooleanExpressionConverter;
  * @author Sabine Embacher
  */
 @OperatorMetadata(alias = "c2rcc", version = "0.2",
-        authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
-        copyright = "Copyright (C) 2015 by Brockmann Consult",
-        description = "Performs atmospheric correction and IOP retrieval on MERIS, MODIS, SeaWiFS, and VIIRS L1b data products.")
+            authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
+            category = "Optical Processing/Thematic Water Processing",
+            copyright = "Copyright (C) 2015 by Brockmann Consult",
+            description = "Performs atmospheric correction and IOP retrieval on MERIS, MODIS, SeaWiFS, and VIIRS L1b data products.")
 public class C2rccOperator extends Operator {
 
     @SourceProduct(description = "MERIS, MODIS, SeaWiFS, or VIIRS L1b product")
@@ -37,7 +37,7 @@ public class C2rccOperator extends Operator {
     private Product targetProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            converter = BooleanExpressionConverter.class)
+                converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
@@ -52,11 +52,15 @@ public class C2rccOperator extends Operator {
     @Parameter(defaultValue = "false")
     private boolean useDefaultSolarFlux;
 
+    @Parameter(valueSet = {"meris", "modis", "seawifs", "viirs", "olci"})
+    private String sensorName;
+
     @Override
     public void initialize() throws OperatorException {
         final String productType = sourceProduct.getProductType();
         final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
-        if (EnvisatConstants.ENVISAT_FORMAT_NAME.equals(formatName) && productType.startsWith("MER_RR__1P")) {
+        if (sensorName != null && "meris".equalsIgnoreCase(sensorName)
+            || EnvisatConstants.ENVISAT_FORMAT_NAME.equals(formatName) && productType.startsWith("MER_RR__1P")) {
             C2rccMerisOperator c2rccMerisOperator = new C2rccMerisOperator();
             c2rccMerisOperator.setSourceProduct(sourceProduct);
             c2rccMerisOperator.setTemperature(temperature);
@@ -65,7 +69,8 @@ public class C2rccOperator extends Operator {
             c2rccMerisOperator.setValidPixelExpression(validPixelExpression);
             c2rccMerisOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2rccMerisOperator.getTargetProduct();
-        } else if ("SeaDAS-L2".equals(formatName) && productType.startsWith("Level 2")) {
+        } else if (sensorName != null && "modis".equalsIgnoreCase(sensorName)
+                   || "SeaDAS-L2".equals(formatName) && productType.startsWith("Level 2")) {
             final C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
             c2rccModisOperator.setSourceProduct(sourceProduct);
             c2rccModisOperator.setTemperature(temperature);
@@ -73,7 +78,8 @@ public class C2rccOperator extends Operator {
             c2rccModisOperator.setValidPixelExpression(validPixelExpression);
             c2rccModisOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2rccModisOperator.getTargetProduct();
-        } else if ("SeaDAS-L1".equals(formatName)&& productType.startsWith("Generic Level 1B")) {
+        } else if (sensorName != null && "seawifs".equalsIgnoreCase(sensorName)
+                   || "SeaDAS-L1".equals(formatName) && productType.startsWith("Generic Level 1B")) {
             final C2rccSeaWiFSOperator c2RccSeaWiFSOperator = new C2rccSeaWiFSOperator();
             c2RccSeaWiFSOperator.setSourceProduct(sourceProduct);
             c2RccSeaWiFSOperator.setTemperature(temperature);
@@ -82,12 +88,17 @@ public class C2rccOperator extends Operator {
             c2RccSeaWiFSOperator.setValidPixelExpression(validPixelExpression);
             c2RccSeaWiFSOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2RccSeaWiFSOperator.getTargetProduct();
+        } else if (sensorName != null && "viirs".equalsIgnoreCase(sensorName)) {
+            throw new OperatorException("the VIIRS operator not implemented now.");
+        } else if (sensorName != null && "olci".equalsIgnoreCase(sensorName)) {
+            throw new OperatorException("the OLCI operator not implemented now.");
         } else {
             throw new OperatorException("Illegal source product.");
         }
     }
 
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(C2rccOperator.class);
         }
