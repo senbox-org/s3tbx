@@ -57,10 +57,7 @@ public class C2rccOperator extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-        final String productType = sourceProduct.getProductType();
-        final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
-        if (sensorName != null && "meris".equalsIgnoreCase(sensorName)
-            || EnvisatConstants.ENVISAT_FORMAT_NAME.equals(formatName) && productType.startsWith("MER_RR__1P")) {
+        if (sourceProductIsMeris()) {
             C2rccMerisOperator c2rccMerisOperator = new C2rccMerisOperator();
             c2rccMerisOperator.setSourceProduct(sourceProduct);
             c2rccMerisOperator.setTemperature(temperature);
@@ -69,8 +66,7 @@ public class C2rccOperator extends Operator {
             c2rccMerisOperator.setValidPixelExpression(validPixelExpression);
             c2rccMerisOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2rccMerisOperator.getTargetProduct();
-        } else if (sensorName != null && "modis".equalsIgnoreCase(sensorName)
-                   || "SeaDAS-L2".equals(formatName) && productType.startsWith("Level 2")) {
+        } else if (sourceProductIsModis()) {
             final C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
             c2rccModisOperator.setSourceProduct(sourceProduct);
             c2rccModisOperator.setTemperature(temperature);
@@ -78,8 +74,7 @@ public class C2rccOperator extends Operator {
             c2rccModisOperator.setValidPixelExpression(validPixelExpression);
             c2rccModisOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2rccModisOperator.getTargetProduct();
-        } else if (sensorName != null && "seawifs".equalsIgnoreCase(sensorName)
-                   || "SeaDAS-L1".equals(formatName) && productType.startsWith("Generic Level 1B")) {
+        } else if (sourceProductIsSeawifs()) {
             final C2rccSeaWiFSOperator c2RccSeaWiFSOperator = new C2rccSeaWiFSOperator();
             c2RccSeaWiFSOperator.setSourceProduct(sourceProduct);
             c2RccSeaWiFSOperator.setTemperature(temperature);
@@ -94,6 +89,35 @@ public class C2rccOperator extends Operator {
             throw new OperatorException("the OLCI operator not implemented now.");
         } else {
             throw new OperatorException("Illegal source product.");
+        }
+    }
+
+    private boolean sourceProductIsMeris() {
+        final String productType = sourceProduct.getProductType();
+        final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
+        if (sensorName != null) {
+            return "meris".equalsIgnoreCase(sensorName);
+        } else {
+            return EnvisatConstants.ENVISAT_FORMAT_NAME.equals(formatName) && productType.startsWith("MER_RR__1P");
+        }
+    }
+    private boolean sourceProductIsModis() {
+        final String productType = sourceProduct.getProductType();
+        final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
+        if (sensorName != null) {
+            return "modis".equalsIgnoreCase(sensorName);
+        } else {
+            return "SeaDAS-L2".equals(formatName) && productType.startsWith("Level 2");
+        }
+
+    }
+    private boolean sourceProductIsSeawifs() {
+        final String productType = sourceProduct.getProductType();
+        final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
+        if (sensorName != null) {
+            return "seawifs".equalsIgnoreCase(sensorName);
+        } else {
+            return "SeaDAS-L1".equals(formatName) && productType.startsWith("Generic Level 1B");
         }
     }
 
