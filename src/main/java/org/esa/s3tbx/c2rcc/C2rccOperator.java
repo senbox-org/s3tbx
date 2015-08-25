@@ -1,5 +1,7 @@
 package org.esa.s3tbx.c2rcc;
 
+import static org.esa.snap.util.StringUtils.isNotNullAndNotEmpty;
+
 import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
 import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
 import org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSOperator;
@@ -52,7 +54,7 @@ public class C2rccOperator extends Operator {
     @Parameter(defaultValue = "false")
     private boolean useDefaultSolarFlux;
 
-    @Parameter(valueSet = {"meris", "modis", "seawifs", "viirs", "olci"})
+    @Parameter(valueSet = {"", "meris", "modis", "seawifs", "viirs", "olci"})
     private String sensorName;
 
     @Override
@@ -83,9 +85,9 @@ public class C2rccOperator extends Operator {
             c2RccSeaWiFSOperator.setValidPixelExpression(validPixelExpression);
             c2RccSeaWiFSOperator.setOutputRtosa(outputRtosa);
             targetProduct = c2RccSeaWiFSOperator.getTargetProduct();
-        } else if (sensorName != null && "viirs".equalsIgnoreCase(sensorName)) {
+        } else if (isNotNullAndNotEmpty(sensorName) && "viirs".equalsIgnoreCase(sensorName)) {
             throw new OperatorException("the VIIRS operator not implemented now.");
-        } else if (sensorName != null && "olci".equalsIgnoreCase(sensorName)) {
+        } else if (isNotNullAndNotEmpty(sensorName) && "olci".equalsIgnoreCase(sensorName)) {
             throw new OperatorException("the OLCI operator not implemented now.");
         } else {
             throw new OperatorException("Illegal source product.");
@@ -95,7 +97,7 @@ public class C2rccOperator extends Operator {
     private boolean sourceProductIsMeris() {
         final String productType = sourceProduct.getProductType();
         final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
-        if (sensorName != null) {
+        if (isNotNullAndNotEmpty(sensorName)) {
             return "meris".equalsIgnoreCase(sensorName);
         } else {
             return EnvisatConstants.ENVISAT_FORMAT_NAME.equals(formatName) && productType.startsWith("MER_RR__1P");
@@ -104,7 +106,7 @@ public class C2rccOperator extends Operator {
     private boolean sourceProductIsModis() {
         final String productType = sourceProduct.getProductType();
         final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
-        if (sensorName != null) {
+        if (isNotNullAndNotEmpty(sensorName)) {
             return "modis".equalsIgnoreCase(sensorName);
         } else {
             return "SeaDAS-L2".equals(formatName) && productType.startsWith("Level 2");
@@ -114,7 +116,7 @@ public class C2rccOperator extends Operator {
     private boolean sourceProductIsSeawifs() {
         final String productType = sourceProduct.getProductType();
         final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
-        if (sensorName != null) {
+        if (isNotNullAndNotEmpty(sensorName)) {
             return "seawifs".equalsIgnoreCase(sensorName);
         } else {
             return "SeaDAS-L1".equals(formatName) && productType.startsWith("Generic Level 1B");

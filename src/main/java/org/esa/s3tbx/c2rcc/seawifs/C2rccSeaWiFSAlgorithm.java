@@ -74,7 +74,7 @@ public class C2rccSeaWiFSAlgorithm {
 
     // default nasa solar flux from waterradiance project
     // derived from cahalan table from Kerstin tb 2013-11-22
-    double[] solflux = new double[]{
+    private final static double[] DEFAULT_SOLAR_FLUX = new double[]{
                 1735.518167,   // 412nm
                 1858.404314,   // 443nm
                 1981.076667,   // 490nm
@@ -85,9 +85,13 @@ public class C2rccSeaWiFSAlgorithm {
                 957.6122143    // 865nm
     };
 
+    public static double[] getDefaultSolarFlux() {
+        return Arrays.copyOf(DEFAULT_SOLAR_FLUX, DEFAULT_SOLAR_FLUX.length);
+    }
+
     double salinity = salinity_default;
     double temperature = temperature_default;
-    double solFluxDayCorrectionFactor = 0;
+    double[] correctedSolarFlux;
 
     // (5) thresholds for flags
     double[] thresh_rtosaaaNNrat = {0.95, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
@@ -106,8 +110,8 @@ public class C2rccSeaWiFSAlgorithm {
         this.salinity = salinity;
     }
 
-    public void setSolFluxDayCorrectionFactor(double solFluxDayCorrectionFactor) {
-        this.solFluxDayCorrectionFactor = solFluxDayCorrectionFactor;
+    public void setCorrectedSolarFlux(double[] correctedSolarFlux) {
+        this.correctedSolarFlux = correctedSolarFlux;
     }
 
     public Result processPixel(int px, int py,
@@ -139,8 +143,7 @@ public class C2rccSeaWiFSAlgorithm {
         toa_rad = a_mul(toa_rad, 10.0);
         double[] ref_toa = new double[toa_rad.length];
         for (int i = 0; i < toa_rad.length; i++) {
-            final double correctedSolFlux = solflux[i] * solFluxDayCorrectionFactor;
-            ref_toa[i] = PI * toa_rad[i] / correctedSolFlux / cos_sun;
+            ref_toa[i] = PI * toa_rad[i] / correctedSolarFlux[i] / cos_sun;
         }
 
         //*** (9.3.1) ozone correction ***/

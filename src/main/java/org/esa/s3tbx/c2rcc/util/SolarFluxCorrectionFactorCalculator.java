@@ -24,13 +24,17 @@ public class SolarFluxCorrectionFactorCalculator {
 
     public static double computeFactorFor(ProductData.UTC startTime, ProductData.UTC endTime) {
         final ProductData.UTC centerUTC = getCenterUTC(startTime, endTime);
-        final Calendar calendar = centerUTC.getAsCalendar();
-        final int doy = calendar.get(Calendar.DAY_OF_YEAR);
-        final int year = calendar.get(Calendar.YEAR);
-        return getDayCorrectionFactroFor(doy, year);
+        return computeFactorFor(centerUTC);
     }
 
-    static ProductData.UTC getCenterUTC(ProductData.UTC start, ProductData.UTC end) {
+    public static double computeFactorFor(ProductData.UTC time) {
+        final Calendar calendar = time.getAsCalendar();
+        final int doy = calendar.get(Calendar.DAY_OF_YEAR);
+        final int year = calendar.get(Calendar.YEAR);
+        return getDayCorrectionFactorFor(doy, year);
+    }
+
+    public static ProductData.UTC getCenterUTC(ProductData.UTC start, ProductData.UTC end) {
         final long startMillis = start.getAsDate().getTime();
         final long endMillis = end.getAsDate().getTime();
         final long diff = endMillis - startMillis;
@@ -38,7 +42,7 @@ public class SolarFluxCorrectionFactorCalculator {
         return ProductData.UTC.create(centerDate, 0);
     }
 
-    static double getDayCorrectionFactroFor(int day, int year) {
+    static double getDayCorrectionFactorFor(int day, int year) {
         // see """"""""""""""""""""""""""""""""""""""""
         //     "  An introduction to solar radiation  "
         //     "            Muhammad Iqbal            "
@@ -53,7 +57,7 @@ public class SolarFluxCorrectionFactorCalculator {
                + 0.000077 * sin(2 * gamma);
     }
 
-    static synchronized int getNumDaysInTheYear(int year) {
+    public static synchronized int getNumDaysInTheYear(int year) {
         cal.set(GregorianCalendar.YEAR, year);
         return cal.get(Calendar.DAY_OF_YEAR);
     }

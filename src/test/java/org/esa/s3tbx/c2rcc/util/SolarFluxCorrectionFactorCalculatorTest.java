@@ -71,31 +71,31 @@ public class SolarFluxCorrectionFactorCalculatorTest {
     @Test
     public void testGetSolarFluxDayCorrectionFactorForADay() {
         final int nonLeapYear = 2007;
-        assertEquals(1.0350, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1, nonLeapYear), 1e-4);
-        assertEquals(1.0306, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endJan, nonLeapYear), 1e-4);
-        assertEquals(1.0190, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endFeb, nonLeapYear), 1e-4);
-        assertEquals(1.0014, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endMar, nonLeapYear), 1e-4);
-        assertEquals(0.9845, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endApr, nonLeapYear), 1e-4);
-        assertEquals(0.9717, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endMay, nonLeapYear), 1e-4);
-        assertEquals(0.9666, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endJun, nonLeapYear), 1e-4);
-        assertEquals(0.9700, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endJul, nonLeapYear), 1e-4);
-        assertEquals(0.9814, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endAug, nonLeapYear), 1e-4);
-        assertEquals(0.9976, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endSep, nonLeapYear), 1e-4);
-        assertEquals(1.0155, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endOct, nonLeapYear), 1e-4);
-        assertEquals(1.0292, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(1 + endNov, nonLeapYear), 1e-4);
+        assertEquals(1.0350, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1, nonLeapYear), 1e-4);
+        assertEquals(1.0306, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endJan, nonLeapYear), 1e-4);
+        assertEquals(1.0190, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endFeb, nonLeapYear), 1e-4);
+        assertEquals(1.0014, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endMar, nonLeapYear), 1e-4);
+        assertEquals(0.9845, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endApr, nonLeapYear), 1e-4);
+        assertEquals(0.9717, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endMay, nonLeapYear), 1e-4);
+        assertEquals(0.9666, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endJun, nonLeapYear), 1e-4);
+        assertEquals(0.9700, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endJul, nonLeapYear), 1e-4);
+        assertEquals(0.9814, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endAug, nonLeapYear), 1e-4);
+        assertEquals(0.9976, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endSep, nonLeapYear), 1e-4);
+        assertEquals(1.0155, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endOct, nonLeapYear), 1e-4);
+        assertEquals(1.0292, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(1 + endNov, nonLeapYear), 1e-4);
 
-        assertEquals(1.0309, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endJan, nonLeapYear), 1e-4);
-        assertEquals(1.0195, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endFeb, nonLeapYear), 1e-4);
-        assertEquals(1.0020, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endMar, nonLeapYear), 1e-4);
-        assertEquals(0.9851, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endApr, nonLeapYear), 1e-4);
-        assertEquals(0.9720, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endMay, nonLeapYear), 1e-4);
-        assertEquals(0.9667, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endJun, nonLeapYear), 1e-4);
-        assertEquals(0.9698, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endJul, nonLeapYear), 1e-4);
-        assertEquals(0.9809, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endAug, nonLeapYear), 1e-4);
-        assertEquals(0.9970, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endSep, nonLeapYear), 1e-4);
-        assertEquals(1.0150, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endOct, nonLeapYear), 1e-4);
-        assertEquals(1.0288, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(endNov, nonLeapYear), 1e-4);
-        assertEquals(1.0350, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactroFor(31 + endNov, nonLeapYear), 1e-4);
+        assertEquals(1.0309, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endJan, nonLeapYear), 1e-4);
+        assertEquals(1.0195, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endFeb, nonLeapYear), 1e-4);
+        assertEquals(1.0020, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endMar, nonLeapYear), 1e-4);
+        assertEquals(0.9851, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endApr, nonLeapYear), 1e-4);
+        assertEquals(0.9720, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endMay, nonLeapYear), 1e-4);
+        assertEquals(0.9667, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endJun, nonLeapYear), 1e-4);
+        assertEquals(0.9698, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endJul, nonLeapYear), 1e-4);
+        assertEquals(0.9809, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endAug, nonLeapYear), 1e-4);
+        assertEquals(0.9970, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endSep, nonLeapYear), 1e-4);
+        assertEquals(1.0150, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endOct, nonLeapYear), 1e-4);
+        assertEquals(1.0288, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(endNov, nonLeapYear), 1e-4);
+        assertEquals(1.0350, SolarFluxCorrectionFactorCalculator.getDayCorrectionFactorFor(31 + endNov, nonLeapYear), 1e-4);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class SolarFluxCorrectionFactorCalculatorTest {
         assertEquals(endOct + 1, getDayOfYearFor("01-NOV-2011 12:00:00.000"));
         assertEquals(endNov + 1, getDayOfYearFor("01-DEC-2011 12:00:00.000"));
 
-
+        // !!! leap year 2012 !!!
         int leapYearOffset = 1;
         int o = leapYearOffset;
         assertEquals(1, getDayOfYearFor("01-JAN-2012 12:00:00.000"));

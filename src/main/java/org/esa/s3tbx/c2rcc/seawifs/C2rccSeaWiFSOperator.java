@@ -3,6 +3,7 @@ package org.esa.s3tbx.c2rcc.seawifs;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengths;
 import static org.esa.s3tbx.c2rcc.util.SolarFluxCorrectionFactorCalculator.computeFactorFor;
 
+import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.Band;
 import org.esa.snap.framework.datamodel.GeoPos;
@@ -23,6 +24,7 @@ import org.esa.snap.framework.gpf.pointop.WritableSample;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
@@ -88,6 +90,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
     private boolean outputRtosa;
 
     private C2rccSeaWiFSAlgorithm algorithm;
+    private SolarFluxLazyLookup lazySolFluxLookup;
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
@@ -97,7 +100,9 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
             radiances[i] = sourceSamples[i].getDouble();
         }
 
-        GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(new PixelPos(x + 0.5f, y + 0.5f), null);
+        final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
+        GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(pixelPos, null);
+        setDistanceCorrectedSolarFluxToAlgorithm(pixelPos);
         C2rccSeaWiFSAlgorithm.Result result = algorithm.processPixel(
                     x, y, geoPos.getLat(), geoPos.getLon(),
                     radiances,
@@ -133,6 +138,14 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
                 targetSamples[RTOSA_OUT_1_IX + i].set(result.rtosa_out[i]);
             }
         }
+    }
+
+    private void setDistanceCorrectedSolarFluxToAlgorithm(PixelPos pixelPos) {
+        final double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
+        final Calendar calendar = new ProductData.UTC(mjd).getAsCalendar();
+        final int doy = calendar.get(Calendar.DAY_OF_YEAR);
+        final int year = calendar.get(Calendar.YEAR);
+        algorithm.setCorrectedSolarFlux(lazySolFluxLookup.getCorrectedFluxFor(doy, year));
     }
 
     @Override
@@ -217,7 +230,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
 
         final ProductData.UTC startTime = sourceProduct.getStartTime();
         final ProductData.UTC endTime = sourceProduct.getEndTime();
-        algorithm.setSolFluxDayCorrectionFactor(computeFactorFor(startTime, endTime));
+        lazySolFluxLookup = new SolarFluxLazyLookup(algorithm.getDefaultSolarFlux());
     }
 
     private void assertSourceBandAndRemoveValidExpression(String bandname) {

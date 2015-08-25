@@ -2,8 +2,8 @@ package org.esa.s3tbx.c2rcc.meris;
 
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
-import static org.esa.s3tbx.c2rcc.util.SolarFluxCorrectionFactorCalculator.computeFactorFor;
 
+import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.GeoPos;
 import org.esa.snap.framework.datamodel.PixelPos;
@@ -23,6 +23,7 @@ import org.esa.snap.framework.gpf.pointop.WritableSample;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
@@ -92,6 +93,7 @@ public class C2rccMerisOperator extends PixelOperator {
     private boolean outputRtosa;
 
     private C2rccMerisAlgorithm algorithm;
+    private SolarFluxLazyLookup solarFluxLazyLookup;
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
@@ -101,7 +103,20 @@ public class C2rccMerisOperator extends PixelOperator {
             radiances[i] = sourceSamples[i].getDouble();
         }
 
-        GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(new PixelPos(x + 0.5f, y + 0.5f), null);
+        PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
+        if (useDefaultSolarFlux) {
+            double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
+            ProductData.UTC utc = new ProductData.UTC(mjd);
+            Calendar calendar = utc.getAsCalendar();
+            final int doy = calendar.get(Calendar.DAY_OF_YEAR);
+            final int year = calendar.get(Calendar.YEAR);
+            double[] correctedSolFlux = solarFluxLazyLookup.getCorrectedFluxFor(doy, year);
+            algorithm.setSolflux(correctedSolFlux);
+        }
+
+        // use real geocoding if needed
+        GeoPos geoPos = new GeoPos(0, 0);
+//        GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(pixelPos, null);
         C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
                                                                    radiances,
                                                                    sourceSamples[SUN_ZEN_IX].getDouble(),
@@ -195,9 +210,10 @@ public class C2rccMerisOperator extends PixelOperator {
         }
         assertSourceBand("l1_flags");
 
-        if (sourceProduct.getGeoCoding() == null) {
-            throw new OperatorException("The source product must be geo-coded.");
-        }
+        // todo must be reactivated later
+//        if (sourceProduct.getGeoCoding() == null) {
+//            throw new OperatorException("The source product must be geo-coded.");
+//        }
 
         try {
             algorithm = new C2rccMerisAlgorithm();
@@ -207,17 +223,7 @@ public class C2rccMerisOperator extends PixelOperator {
 
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
-        if (useDefaultSolarFlux) {
-            final ProductData.UTC startTime = sourceProduct.getStartTime();
-            final ProductData.UTC endTime = sourceProduct.getEndTime();
-            final double solFluxDailyCorrectionFactor = computeFactorFor(startTime, endTime);
-            final double[] correctedSolFlux = new double[DEFAULT_SOLAR_FLUX.length];
-            for (int i = 0; i < DEFAULT_SOLAR_FLUX.length; i++) {
-                double dsf = DEFAULT_SOLAR_FLUX[i];
-                correctedSolFlux[i] = dsf * solFluxDailyCorrectionFactor;
-            }
-            algorithm.setSolflux(correctedSolFlux);
-        } else {
+        if (!useDefaultSolarFlux) {
             double[] solfluxFromL1b = new double[BAND_COUNT];
             for (int i = 0; i < BAND_COUNT; i++) {
                 solfluxFromL1b[i] = sourceProduct.getBand("radiance_" + (i + 1)).getSolarFlux();
@@ -227,6 +233,8 @@ public class C2rccMerisOperator extends PixelOperator {
             } else {
                 throw new OperatorException("Invalid solar flux in source product!");
             }
+        } else {
+            solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
         }
     }
 
