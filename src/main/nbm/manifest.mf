@@ -4,3 +4,5 @@ AutoUpdate-Essential-Module: false
 OpenIDE-Module-Java-Dependencies: Java > 1.8
 OpenIDE-Module-Display-Category: Sentinel-3 Toolbox
 OpenIDE-Module-Layer: org/esa/s3tbx/c2rcc/layer.xml
+OpenIDE-Module-Specification-Version: 2.0.0.0
+
