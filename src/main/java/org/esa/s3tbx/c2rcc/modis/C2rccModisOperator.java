@@ -82,6 +82,30 @@ public class C2rccModisOperator extends PixelOperator {
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
     private boolean outputRtosa;
 
+    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
+                             "tomsomiEndProduct, ncepStartProduct, and ncepEndProduct to use ozone auxiliary data.")
+    private String atmosphericAuxDataPath;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiEndProduct," +
+                                 "ncepStartProduct, and ncepEndProduct or atmosphericAuxdataPath to use ozone auxiliary data.",
+                optional = true)
+    private Product tomsomiStartProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and " +
+                                 "tomsomiStartProduct, ncepStartProduct, and ncepEndProduct or atmosphericAuxdataPath to use ozone auxiliary data.",
+                optional = true)
+    private Product tomsomiEndProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiStartProduct, " +
+                                 "tomsomiEndProduct, and ncepEndProduct or atmosphericAuxdataPath to use ozone auxiliary data.",
+                optional = true)
+    private Product ncepStartProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiStartProduct, " +
+                                 "tomsomiEndProduct, and ncepStartProduct or atmosphericAuxdataPath to use ozone auxiliary data.",
+                optional = true)
+    private Product ncepEndProduct;
+
     private C2rccModisAlgorithm algorithm;
 
     public void setSalinity(double salinity) {
@@ -94,6 +118,26 @@ public class C2rccModisOperator extends PixelOperator {
 
     public void setValidPixelExpression(String validPixelExpression) {
         this.validPixelExpression = validPixelExpression;
+    }
+
+    public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
+        this.atmosphericAuxDataPath = atmosphericAuxDataPath;
+    }
+
+    public void setTomsomiStartProduct(Product tomsomiStartProduct) {
+        this.tomsomiStartProduct = tomsomiStartProduct;
+    }
+
+    public void setTomsomiEndProduct(Product tomsomiEndProduct) {
+        this.tomsomiEndProduct = tomsomiEndProduct;
+    }
+
+    public void setNcepStartProduct(Product ncepStartProduct) {
+        this.ncepStartProduct = ncepStartProduct;
+    }
+
+    public void setNcepEndProduct(Product ncepEndProduct) {
+        this.ncepEndProduct = ncepEndProduct;
     }
 
     @Override

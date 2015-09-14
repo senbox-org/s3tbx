@@ -1,11 +1,23 @@
 package org.esa.s3tbx.c2rcc.seawifs;
 
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.salinity_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengths;
-import static org.esa.s3tbx.c2rcc.util.SolarFluxCorrectionFactorCalculator.computeFactorFor;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.temperature_default;
 
+import org.esa.s3tbx.c2rcc.anc.AncDataFormat;
+import org.esa.s3tbx.c2rcc.anc.AncDownloader;
+import org.esa.s3tbx.c2rcc.anc.AncRepository;
+import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdata;
+import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataDynamic;
+import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataStatic;
+import org.esa.s3tbx.c2rcc.anc.InterpolationBorderComputer24H;
+import org.esa.s3tbx.c2rcc.anc.InterpolationBorderComputer6H;
 import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.Band;
+import org.esa.snap.framework.datamodel.CenterTimeCoding;
 import org.esa.snap.framework.datamodel.GeoPos;
 import org.esa.snap.framework.datamodel.PixelPos;
 import org.esa.snap.framework.datamodel.Product;
@@ -21,8 +33,10 @@ import org.esa.snap.framework.gpf.pointop.Sample;
 import org.esa.snap.framework.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.WritableSample;
+import org.esa.snap.util.StringUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -32,17 +46,17 @@ import java.util.Calendar;
 
 /**
  * The Case 2 Regional / CoastColour Operator for SeaWiFS.
- * <p>
+ * <p/>
  * Computes AC-reflectances and IOPs from SeaWiFS L1b data products using
  * an neural-network approach.
  *
  * @author Norman Fomferra
  */
 @OperatorMetadata(alias = "seawifs.c2rcc", version = "0.5",
-        authors = "Roland Doerffer, Norman Fomferra (Brockmann Consult), Sabine Embacher (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
-        copyright = "Copyright (C) 2015 by Brockmann Consult",
-        description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1b data products.")
+            authors = "Roland Doerffer, Norman Fomferra (Brockmann Consult), Sabine Embacher (Brockmann Consult)",
+            category = "Optical Processing/Thematic Water Processing",
+            copyright = "Copyright (C) 2015 by Brockmann Consult",
+            description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1b data products.")
 public class C2rccSeaWiFSOperator extends PixelOperator {
 
     public static final int WL_BAND_COUNT = seawifsWavelengths.length;
@@ -72,25 +86,79 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
     public static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + WL_BAND_COUNT;
 
     @SourceProduct(label = "SeaWiFS L1b product",
-            description = "SeaWiFS L1b source product.")
+                description = "SeaWiFS L1b source product.")
     private Product sourceProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            defaultValue = "L_865 * 10 * PI / 957.6122143 / cos(rad(solz)) > 0.25",
-            converter = BooleanExpressionConverter.class)
+                defaultValue = "L_865 * 10 * PI / 957.6122143 / cos(rad(solz)) > 0.25",
+                converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
+    @Parameter(defaultValue = "" + salinity_default, unit = "DU", interval = "(0, 100)")
     private double salinity;
 
-    @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
+    @Parameter(defaultValue = "" + temperature_default, unit = "C", interval = "(-50, 50)")
     private double temperature;
+
+    @Parameter(defaultValue = "" + ozone_default, unit = "DU", interval = "(0, 1000)")
+    private double ozone;
+
+    @Parameter(defaultValue = "" + pressure_default, unit = "hPa", interval = "(0, 2000)")
+    private double press;
 
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
     private boolean outputRtosa;
 
+    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
+                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data.")
+    private String atmosphericAuxDataPath;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiEndProduct, " +
+                                 "ncepStartProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+                optional = true)
+    private Product tomsomiStartProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiStartProduct, " +
+                                 "ncepStartProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+                optional = true)
+    private Product tomsomiEndProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of air pressure values. Use either this and tomsomiStartProduct, " +
+                                 "tomsomiEndProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+                optional = true)
+    private Product ncepStartProduct;
+
+    // todo !!!!!!!!!!!!!!!! make the documentation understandable for humans
+    @SourceProduct(description = "The second product providing the air pressure values. Use either this and tomsomiStartProduct, " +
+                                 "tomsomiEndProduct, and ncepStartProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+                optional = true)
+    private Product ncepEndProduct;
+
+
     private C2rccSeaWiFSAlgorithm algorithm;
     private SolarFluxLazyLookup lazySolFluxLookup;
+    private AtmosphericAuxdata atmosphericAuxdata;
+
+    public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
+        this.atmosphericAuxDataPath = atmosphericAuxDataPath;
+    }
+
+    public void setTomsomiStartProduct(Product tomsomiStartProduct) {
+        this.tomsomiStartProduct = tomsomiStartProduct;
+    }
+
+    public void setTomsomiEndProduct(Product tomsomiEndProduct) {
+        this.tomsomiEndProduct = tomsomiEndProduct;
+    }
+
+    public void setNcepStartProduct(Product ncepStartProduct) {
+        this.ncepStartProduct = ncepStartProduct;
+    }
+
+    public void setNcepEndProduct(Product ncepEndProduct) {
+        this.ncepEndProduct = ncepEndProduct;
+    }
+
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
@@ -102,20 +170,25 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
         GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(pixelPos, null);
+        final double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
         setDistanceCorrectedSolarFluxToAlgorithm(pixelPos);
+        final double lat = geoPos.getLat();
+        final double lon = geoPos.getLon();
+
+        final double sun_zeni = sourceSamples[SUN_ZEN_IX].getDouble();
+        final double sun_azi = sourceSamples[SUN_AZI_IX].getDouble();
+        final double view_zeni = sourceSamples[VIEW_ZEN_IX].getDouble();
+        final double view_azi = sourceSamples[VIEW_AZI_IX].getDouble();
+        final double dem_alt = 0.0;
+        final double atm_press = fetchSurfacePressure(mjd, lat, lon);
+        final double ozone = fetchOzone(mjd, lat, lon);
+
         C2rccSeaWiFSAlgorithm.Result result = algorithm.processPixel(
-                    x, y, geoPos.getLat(), geoPos.getLon(),
-                    radiances,
-                    sourceSamples[SUN_ZEN_IX].getDouble(),
-                    sourceSamples[SUN_AZI_IX].getDouble(),
-                    sourceSamples[VIEW_ZEN_IX].getDouble(),
-                    sourceSamples[VIEW_AZI_IX].getDouble(),
-                    0.0, // dem_alt   todo to be replaced by a real value
-                    //                    sourceSamples[DEM_ALT_IX].getDouble(),
-                    C2rccSeaWiFSAlgorithm.pressure_default,  // todo to be replaced by a real value
-                    //                    sourceSamples[ATM_PRESS_IX].getDouble(),
-                    C2rccSeaWiFSAlgorithm.ozone_default      // todo to be replaced by a real value
-                    //                    sourceSamples[OZONE_IX].getDouble()
+                    x, y, lat, lon, radiances,
+                    sun_zeni, sun_azi,
+                    view_zeni, view_azi,
+                    dem_alt, // todo to be replaced by a real value
+                    atm_press, ozone
         );
 
         for (int i = 0; i < result.rw.length; i++) {
@@ -140,6 +213,22 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
         }
     }
 
+    private double fetchOzone(double timeMJD, double lat, double lon) {
+        try {
+            return atmosphericAuxdata.getOzone(timeMJD, lat, lon);
+        } catch (Exception e) {
+            throw new OperatorException("Unable to fetch ozone value from auxdata.", e);
+        }
+    }
+
+    private double fetchSurfacePressure(double timeMJD, double lat, double lon) {
+        try {
+            return atmosphericAuxdata.getSurfacePressure(timeMJD, lat, lon);
+        } catch (Exception e) {
+            throw new OperatorException("Unable to fetch surface pressure value from auxdata.", e);
+        }
+    }
+
     private void setDistanceCorrectedSolarFluxToAlgorithm(PixelPos pixelPos) {
         final double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
         final Calendar calendar = new ProductData.UTC(mjd).getAsCalendar();
@@ -155,13 +244,13 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
             final int wavelength = seawifsWavelengths[i];
             sc.defineSample(i, "L_" + wavelength);
         }
-//        sc.defineSample(DEM_ALT_IX, "dem_alt");
+//        sc.defineSample(DEM_ALT_IX, "dem_alt"); // todo
         sc.defineSample(SUN_ZEN_IX, "solz");
         sc.defineSample(SUN_AZI_IX, "sola");
         sc.defineSample(VIEW_ZEN_IX, "senz");
         sc.defineSample(VIEW_AZI_IX, "sena");
-//        sc.defineSample(ATM_PRESS_IX, "atm_press");
-//        sc.defineSample(OZONE_IX, "ozone");
+//        sc.defineSample(ATM_PRESS_IX, "atm_press"); // todo
+//        sc.defineSample(OZONE_IX, "ozone");         // todo
     }
 
     @Override
@@ -198,13 +287,11 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
-        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, "L_",seawifsWavelengths, outputRtosa);
+        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, "L_", seawifsWavelengths, outputRtosa);
     }
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        super.prepareInputs();
-
         for (int i = 0; i < WL_BAND_COUNT; i++) {
             final int wavelength = seawifsWavelengths[i];
             assertSourceBand("L_" + wavelength);
@@ -228,9 +315,57 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
 
-        final ProductData.UTC startTime = sourceProduct.getStartTime();
-        final ProductData.UTC endTime = sourceProduct.getEndTime();
+        if (sourceProduct.getTimeCoding() == null) {
+            final ProductData.UTC startTime = sourceProduct.getStartTime();
+            final ProductData.UTC endTime = sourceProduct.getEndTime();
+            sourceProduct.setTimeCoding(new CenterTimeCoding(startTime.getMJD(), endTime.getMJD()));
+        }
+
+        initAtmosphericAuxdata();
+
         lazySolFluxLookup = new SolarFluxLazyLookup(algorithm.getDefaultSolarFlux());
+    }
+
+    private void initAtmosphericAuxdata() {
+        if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
+            try {
+                atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
+                                                                  ncepStartProduct, ncepEndProduct, "press", press);
+            } catch (IOException e) {
+                getLogger().severe("Unable to create provider for atmospheric ancillary data.");
+                getLogger().severe(e.getMessage());
+            }
+        } else {
+            final AncDownloader ancDownloader = new AncDownloader("http://oceandata.sci.gsfc.nasa.gov/cgi/getfile/");
+            final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
+            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, createOzoneFormat(), createPressureFormat());
+        }
+    }
+
+    private AncDataFormat createPressureFormat() {
+        return new AncDataFormat(
+                    new String[]{
+                                "_MET_NCEPR2_6h.hdf",
+                                "_MET_NCEPR2_6h.hdf.bz2",
+                                "_MET_NCEPN_6h.hdf",
+                                "_MET_NCEPN_6h.hdf.bz2",
+                    },
+                    "press", pressure_default, new InterpolationBorderComputer6H());
+    }
+
+    private AncDataFormat createOzoneFormat() {
+        return new AncDataFormat(
+                    new String[]{
+                                "_O3_TOMSOMI_24h.hdf",
+                                "_O3_TOMSOMI_24h.hdf.bz2",
+                                "_O3_N7TOMS_24h.hdf",
+                                "_O3_N7TOMS_24h.hdf.bz2",
+                                "_O3_EPTOMS_24h.hdf",
+                                "_O3_EPTOMS_24h.hdf.bz2",
+                                "_O3_AURAOMI_24h.hdf",
+                                "_O3_AURAOMI_24h.hdf.bz2",
+                    },
+                    "ozone", ozone_default, new InterpolationBorderComputer24H());
     }
 
     private void assertSourceBandAndRemoveValidExpression(String bandname) {
@@ -259,6 +394,15 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
 
     public void setOutputRtosa(boolean outputRtosa) {
         this.outputRtosa = outputRtosa;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (atmosphericAuxdata != null) {
+            atmosphericAuxdata.dispose();
+        }
+        atmosphericAuxdata = null;
     }
 
     public static class Spi extends OperatorSpi {

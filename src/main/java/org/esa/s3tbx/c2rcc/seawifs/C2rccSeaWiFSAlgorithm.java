@@ -13,6 +13,7 @@ import static org.esa.s3tbx.ArrayMath.a_max;
 import static org.esa.s3tbx.ArrayMath.a_min;
 import static org.esa.s3tbx.ArrayMath.a_mul;
 
+import org.esa.snap.framework.gpf.OperatorException;
 import org.esa.snap.nn.NNffbpAlphaTabFast;
 import org.esa.snap.util.BitSetter;
 
@@ -33,11 +34,13 @@ public class C2rccSeaWiFSAlgorithm {
     public final static double temperature_default = 15.0;
     public final static double pressure_default = 1000.0;
     public final static double ozone_default = 330.0;
+    private Thread thread;
 
     /**
      * Structure for returning the algorithm's result.
      */
     public static class Result {
+
         public final double[] rw;
         public final double[] iops;
         public final double[] rtosa_in;
@@ -125,6 +128,39 @@ public class C2rccSeaWiFSAlgorithm {
                                double atm_press,
                                double ozone) {
 
+        final Thread thread = Thread.currentThread();
+        if (this.thread == null) {
+            this.thread = thread;
+        }
+        if (this.thread != thread) {
+            throw new OperatorException("Kotz!!!!");
+        }
+
+
+//        if (px ==170 && py == 366) {
+//            System.out.println("***********************************************************************");
+//            System.out.println("px = " + px);
+//            System.out.println("py = " + py);
+//            System.out.println("lat = " + lat);
+//            System.out.println("lon = " + lon);
+//            for (int i = 0; i < toa_rad.length; i++) {
+//                System.out.println("toa_rad[" + i + "] = " + toa_rad[i]);
+//            }
+//            System.out.println("sun_zeni = " + sun_zeni);
+//            System.out.println("sun_azi = " + sun_azi);
+//            System.out.println("view_zeni = " + view_zeni);
+//            System.out.println("view_azi = " + view_azi);
+//            System.out.println("dem_alt = " + dem_alt);
+//            System.out.println("atm_press = " + atm_press);
+//            System.out.println("ozone = " + ozone);
+//            System.out.println("salinity = " + salinity);
+//            System.out.println("temperature = " + temperature);
+//            for (int i = 0; i < correctedSolarFlux.length; i++) {
+//                double v = correctedSolarFlux[i];
+//                System.out.println("correctedSolarFlux[" + i + "] = " + correctedSolarFlux[i]);
+//            }
+//            System.out.println("***********************************************************************");
+//        }
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
         double cos_view = cos(toRadians(view_zeni));

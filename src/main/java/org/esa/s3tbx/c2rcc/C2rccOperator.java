@@ -57,6 +57,30 @@ public class C2rccOperator extends Operator {
     @Parameter(valueSet = {"", "meris", "modis", "seawifs", "viirs", "olci"})
     private String sensorName;
 
+    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
+                             "tomsomiEndProduct, ncepStartProduct, and ncepEndProduct to use ozone auxiliary data.")
+    private String atmosphericAuxDataPath;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiEndProduct," +
+                                 "ncepStartProduct, and ncepEndProduct or atmosphericAuxdataPath to use ozone auxiliary data.",
+                optional = true)
+    private Product tomsomiStartProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and " +
+                                 "tomsomiStartProduct, ncepStartProduct, and ncepEndProduct or atmosphericAuxdataPath to use ozone auxiliary data.",
+                optional = true)
+    private Product tomsomiEndProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiStartProduct, " +
+                                 "tomsomiEndProduct, and ncepEndProduct or atmosphericAuxdataPath to use ozone auxiliary data.",
+                optional = true)
+    private Product ncepStartProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiStartProduct, " +
+                                 "tomsomiEndProduct, and ncepStartProduct or atmosphericAuxdataPath to use ozone auxiliary data.",
+                optional = true)
+    private Product ncepEndProduct;
+
     @Override
     public void initialize() throws OperatorException {
         if (sourceProductIsMeris()) {
@@ -67,6 +91,7 @@ public class C2rccOperator extends Operator {
             c2rccMerisOperator.setUseDefaultSolarFlux(useDefaultSolarFlux);
             c2rccMerisOperator.setValidPixelExpression(validPixelExpression);
             c2rccMerisOperator.setOutputRtosa(outputRtosa);
+            getLogger().info("Ozone and air pressure ancillary data not needed when computing meris data.");
             targetProduct = c2rccMerisOperator.getTargetProduct();
         } else if (sourceProductIsModis()) {
             final C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
@@ -75,6 +100,13 @@ public class C2rccOperator extends Operator {
             c2rccModisOperator.setSalinity(salinity);
             c2rccModisOperator.setValidPixelExpression(validPixelExpression);
             c2rccModisOperator.setOutputRtosa(outputRtosa);
+
+            c2rccModisOperator.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
+            c2rccModisOperator.setTomsomiStartProduct(tomsomiStartProduct);
+            c2rccModisOperator.setTomsomiEndProduct(tomsomiEndProduct);
+            c2rccModisOperator.setNcepStartProduct(ncepStartProduct);
+            c2rccModisOperator.setNcepEndProduct(ncepEndProduct);
+
             targetProduct = c2rccModisOperator.getTargetProduct();
         } else if (sourceProductIsSeawifs()) {
             final C2rccSeaWiFSOperator c2RccSeaWiFSOperator = new C2rccSeaWiFSOperator();
@@ -84,6 +116,13 @@ public class C2rccOperator extends Operator {
 //            c2RccSeaWiFSOperator.setUseDefaultSolarFlux(useDefaultSolarFlux); // todo needed?
             c2RccSeaWiFSOperator.setValidPixelExpression(validPixelExpression);
             c2RccSeaWiFSOperator.setOutputRtosa(outputRtosa);
+
+            c2RccSeaWiFSOperator.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
+            c2RccSeaWiFSOperator.setTomsomiStartProduct(tomsomiStartProduct);
+            c2RccSeaWiFSOperator.setTomsomiEndProduct(tomsomiEndProduct);
+            c2RccSeaWiFSOperator.setNcepStartProduct(ncepStartProduct);
+            c2RccSeaWiFSOperator.setNcepEndProduct(ncepEndProduct);
+
             targetProduct = c2RccSeaWiFSOperator.getTargetProduct();
         } else if (isNotNullAndNotEmpty(sensorName) && "viirs".equalsIgnoreCase(sensorName)) {
             throw new OperatorException("the VIIRS operator not implemented now.");
@@ -103,6 +142,7 @@ public class C2rccOperator extends Operator {
             return EnvisatConstants.ENVISAT_FORMAT_NAME.equals(formatName) && productType.startsWith("MER_RR__1P");
         }
     }
+
     private boolean sourceProductIsModis() {
         final String productType = sourceProduct.getProductType();
         final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
@@ -113,6 +153,7 @@ public class C2rccOperator extends Operator {
         }
 
     }
+
     private boolean sourceProductIsSeawifs() {
         final String productType = sourceProduct.getProductType();
         final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
