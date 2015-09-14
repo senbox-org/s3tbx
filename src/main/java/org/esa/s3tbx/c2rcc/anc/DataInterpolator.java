@@ -16,28 +16,33 @@ import java.io.IOException;
 
 public abstract class DataInterpolator {
 
-    abstract double getValue(double timeMJD, double latitude, double longitude) throws IOException;
+    abstract double getValue(double timeMJD, double lat, double lon) throws IOException;
 
     abstract void dispose();
 
-    protected static Band ensureInterpolation(final String startOrEnd, Product product, String bandName, double defaultValue) throws IOException {
+    protected static Band ensureInterpolation(final String startOrEnd, Product product, final String bandName, final double defaultValue) {
         final Band band = product != null ? product.getBand(bandName) : null;
-        if (band == null) {
-            SystemUtils.LOG.info("Fallback interpolation " + startOrEnd + " for " + bandName + " --> default value = " + defaultValue);
-            return new Band(bandName, ProductData.TYPE_FLOAT64, 1, 1) {
-                @Override
-                public double getPixelDouble(int x, int y) {
-                    return defaultValue;
-                }
-            };
+        if (band != null) {
+            if (band.hasRasterData()) {
+                return band;
+            }
+            try {
+                band.readRasterDataFully();
+                return band;
+            } catch (IOException e) {
+                SystemUtils.LOG.warning("Unable to read raster data of " + bandName + startOrEnd + "band.");
+            }
         }
-        if (!band.hasRasterData()) {
-            band.readRasterDataFully();
-        }
-        return band;
+        SystemUtils.LOG.warning("Fallback interpolation " + startOrEnd + " for " + bandName + " --> default value = " + defaultValue);
+        return new Band(bandName, ProductData.TYPE_FLOAT64, 1, 1) {
+            @Override
+            public double getPixelDouble(int x, int y) {
+                return defaultValue;
+            }
+        };
     }
 
-    protected static double getValue(Band band, GeoCoding geoCoding, double latitude, double longitude) throws IOException {
+    protected static double getValue(Band band, GeoCoding geoCoding, double latitude, double longitude) {
         final PixelPos pp = geoCoding.getPixelPos(new GeoPos(latitude, longitude), null);
         return band.getPixelDouble((int) pp.x, (int) pp.y);
     }

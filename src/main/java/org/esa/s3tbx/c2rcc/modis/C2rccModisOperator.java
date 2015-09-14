@@ -1,7 +1,18 @@
 package org.esa.s3tbx.c2rcc.modis;
 
+import static org.esa.s3tbx.c2rcc.C2rccConstants.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.createPressureFormat;
 import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.reflec_wavelengths;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 
+import org.esa.s3tbx.c2rcc.anc.AncDataFormat;
+import org.esa.s3tbx.c2rcc.anc.AncDownloader;
+import org.esa.s3tbx.c2rcc.anc.AncRepository;
+import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdata;
+import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataDynamic;
+import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.Product;
 import org.esa.snap.framework.gpf.OperatorException;
@@ -15,8 +26,10 @@ import org.esa.snap.framework.gpf.pointop.Sample;
 import org.esa.snap.framework.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.WritableSample;
+import org.esa.snap.util.StringUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
+import java.io.File;
 import java.io.IOException;
 
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
@@ -106,7 +119,14 @@ public class C2rccModisOperator extends PixelOperator {
                 optional = true)
     private Product ncepEndProduct;
 
+    @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
+    private double ozone;
+
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)")
+    private double press;
+
     private C2rccModisAlgorithm algorithm;
+    private AtmosphericAuxdata atmosphericAuxdata;
 
     public void setSalinity(double salinity) {
         this.salinity = salinity;
@@ -253,6 +273,26 @@ public class C2rccModisOperator extends PixelOperator {
 
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
+
+        initAtmosphericAuxdata();
+    }
+
+    private void initAtmosphericAuxdata() {
+        if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
+            try {
+                atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
+                                                                  ncepStartProduct, ncepEndProduct, "press", press);
+            } catch (IOException e) {
+                getLogger().severe("Unable to create provider for atmospheric ancillary data.");
+                getLogger().severe(e.getMessage());
+            }
+        } else {
+            final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
+            final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
+            AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
+            AncDataFormat pressureFormat = createPressureFormat(pressure_default);
+            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
+        }
     }
 
     private void assertSourceBand(String name) {

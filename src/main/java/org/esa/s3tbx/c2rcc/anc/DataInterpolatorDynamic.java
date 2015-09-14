@@ -23,11 +23,11 @@ public class DataInterpolatorDynamic extends DataInterpolator {
     }
 
     @Override
-    synchronized double getValue(double timeMJD, double latitude, double longitude) throws IOException {
+    synchronized double getValue(double timeMJD, double lat, double lon) throws IOException {
         ibc.setInterpolationTimeMJD(timeMJD);
         final double startBorderTimeMDJ = ibc.getStartBorderTimeMDJ();
         if (currentBorderTime == startBorderTimeMDJ) {
-            return currentDataInterpolator.getValue(timeMJD, latitude, longitude);
+            return currentDataInterpolator.getValue(timeMJD, lat, lon);
         }
         if (interpolatorMap.containsKey(startBorderTimeMDJ)) {
             currentDataInterpolator = interpolatorMap.get(startBorderTimeMDJ);
@@ -35,7 +35,7 @@ public class DataInterpolatorDynamic extends DataInterpolator {
                 interpolatorMap.remove(startBorderTimeMDJ);
             } else {
                 currentBorderTime = startBorderTimeMDJ;
-                return currentDataInterpolator.getValue(timeMJD, latitude, longitude);
+                return currentDataInterpolator.getValue(timeMJD, lat, lon);
             }
         }
         final String[] startFilenames = ancDataFormat.getFilenames(ibc.getStartAncFilePrefix());
@@ -50,7 +50,7 @@ public class DataInterpolatorDynamic extends DataInterpolator {
                     );
         interpolatorMap.put(startBorderTimeMDJ, currentDataInterpolator);
         currentBorderTime = startBorderTimeMDJ;
-        return currentDataInterpolator.getValue(timeMJD, latitude, longitude);
+        return currentDataInterpolator.getValue(timeMJD, lat, lon);
     }
 
     @Override

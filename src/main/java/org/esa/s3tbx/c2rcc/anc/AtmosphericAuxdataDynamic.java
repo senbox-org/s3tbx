@@ -1,5 +1,7 @@
 package org.esa.s3tbx.c2rcc.anc;
 
+import java.io.IOException;
+
 public class AtmosphericAuxdataDynamic implements AtmosphericAuxdata {
 
     private final DataInterpolatorDynamic ozoneInterpolator;
@@ -11,12 +13,12 @@ public class AtmosphericAuxdataDynamic implements AtmosphericAuxdata {
     }
 
     @Override
-    public double getOzone(double timeMJD, double lat, double lon) throws Exception {
+    public double getOzone(double timeMJD, double lat, double lon) throws IOException {
         return ozoneInterpolator.getValue(timeMJD, lat, lon);
     }
 
     @Override
-    public double getSurfacePressure(double timeMJD, double lat, double lon) throws Exception {
+    public double getSurfacePressure(double timeMJD, double lat, double lon) throws IOException {
         return pressInterpolator.getValue(timeMJD, lat, lon);
     }
 

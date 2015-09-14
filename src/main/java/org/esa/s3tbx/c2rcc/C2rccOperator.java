@@ -91,7 +91,13 @@ public class C2rccOperator extends Operator {
             c2rccMerisOperator.setUseDefaultSolarFlux(useDefaultSolarFlux);
             c2rccMerisOperator.setValidPixelExpression(validPixelExpression);
             c2rccMerisOperator.setOutputRtosa(outputRtosa);
-            getLogger().info("Ozone and air pressure ancillary data not needed when computing meris data.");
+
+            c2rccMerisOperator.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
+            c2rccMerisOperator.setTomsomiStartProduct(tomsomiStartProduct);
+            c2rccMerisOperator.setTomsomiEndProduct(tomsomiEndProduct);
+            c2rccMerisOperator.setNcepStartProduct(ncepStartProduct);
+            c2rccMerisOperator.setNcepEndProduct(ncepEndProduct);
+
             targetProduct = c2rccMerisOperator.getTargetProduct();
         } else if (sourceProductIsModis()) {
             final C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();

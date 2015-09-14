@@ -1,8 +1,21 @@
 package org.esa.s3tbx.c2rcc.meris;
 
+import static org.esa.s3tbx.c2rcc.C2rccConstants.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchOzone;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 
+import org.esa.s3tbx.c2rcc.anc.AncDataFormat;
+import org.esa.s3tbx.c2rcc.anc.AncDownloader;
+import org.esa.s3tbx.c2rcc.anc.AncRepository;
+import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdata;
+import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataDynamic;
+import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.GeoPos;
@@ -20,8 +33,10 @@ import org.esa.snap.framework.gpf.pointop.Sample;
 import org.esa.snap.framework.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.framework.gpf.pointop.WritableSample;
+import org.esa.snap.util.StringUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -75,6 +90,32 @@ public class C2rccMerisOperator extends PixelOperator {
                 description = "MERIS L1b source product.")
     private Product sourceProduct;
 
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiEndProduct, " +
+                                 "ncepStartProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+                optional = true)
+    private Product tomsomiStartProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiStartProduct, " +
+                                 "ncepStartProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+                optional = true)
+    private Product tomsomiEndProduct;
+
+    @SourceProduct(description = "A product which is used for derivation of air pressure values. Use either this and tomsomiStartProduct, " +
+                                 "tomsomiEndProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+                optional = true)
+    private Product ncepStartProduct;
+
+    // todo !!!!!!!!!!!!!!!! make the documentation understandable for humans
+    @SourceProduct(description = "The second product providing the air pressure values. Use either this and tomsomiStartProduct, " +
+                                 "tomsomiEndProduct, and ncepStartProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+                optional = true)
+    private Product ncepEndProduct;
+
+
+    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
+                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data.")
+    private String atmosphericAuxDataPath;
+
     @Parameter(label = "Valid-pixel expression",
                 defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
                 converter = BooleanExpressionConverter.class)
@@ -86,14 +127,45 @@ public class C2rccMerisOperator extends PixelOperator {
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
     private double temperature;
 
+    @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
+    private double ozone;
+
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)")
+    private double press;
+
     @Parameter(defaultValue = "false")
     private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
     private boolean outputRtosa;
 
+    @Parameter(defaultValue = "false", description =
+                "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used")
+    private boolean useEcmwfAuxData;
+
     private C2rccMerisAlgorithm algorithm;
     private SolarFluxLazyLookup solarFluxLazyLookup;
+    private AtmosphericAuxdata atmosphericAuxdata;
+
+    public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
+        this.atmosphericAuxDataPath = atmosphericAuxDataPath;
+    }
+
+    public void setTomsomiStartProduct(Product tomsomiStartProduct) {
+        this.tomsomiStartProduct = tomsomiStartProduct;
+    }
+
+    public void setTomsomiEndProduct(Product tomsomiEndProduct) {
+        this.tomsomiEndProduct = tomsomiEndProduct;
+    }
+
+    public void setNcepStartProduct(Product ncepStartProduct) {
+        this.ncepStartProduct = ncepStartProduct;
+    }
+
+    public void setNcepEndProduct(Product ncepEndProduct) {
+        this.ncepEndProduct = ncepEndProduct;
+    }
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
@@ -103,9 +175,9 @@ public class C2rccMerisOperator extends PixelOperator {
             radiances[i] = sourceSamples[i].getDouble();
         }
 
-        PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
+        final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
+        final double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
         if (useDefaultSolarFlux) {
-            double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
             ProductData.UTC utc = new ProductData.UTC(mjd);
             Calendar calendar = utc.getAsCalendar();
             final int doy = calendar.get(Calendar.DAY_OF_YEAR);
@@ -115,17 +187,28 @@ public class C2rccMerisOperator extends PixelOperator {
         }
 
         // use real geocoding if needed
-        GeoPos geoPos = new GeoPos(0, 0);
-//        GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(pixelPos, null);
-        C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y, geoPos.getLat(), geoPos.getLon(),
+//        GeoPos geoPos = new GeoPos(0, 0);
+        GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(pixelPos, null);
+        double lat = geoPos.getLat();
+        double lon = geoPos.getLon();
+        double atmPress;
+        double ozone;
+        if (useEcmwfAuxData) {
+            atmPress = sourceSamples[ATM_PRESS_IX].getDouble();
+            ozone = sourceSamples[OZONE_IX].getDouble();
+        } else {
+            ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
+            atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
+        }
+        C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y, lat, lon,
                                                                    radiances,
                                                                    sourceSamples[SUN_ZEN_IX].getDouble(),
                                                                    sourceSamples[SUN_AZI_IX].getDouble(),
                                                                    sourceSamples[VIEW_ZEN_IX].getDouble(),
                                                                    sourceSamples[VIEW_AZI_IX].getDouble(),
                                                                    sourceSamples[DEM_ALT_IX].getDouble(),
-                                                                   sourceSamples[ATM_PRESS_IX].getDouble(),
-                                                                   sourceSamples[OZONE_IX].getDouble());
+                                                                   atmPress,
+                                                                   ozone);
 
         for (int i = 0; i < result.rw.length; i++) {
             targetSamples[i].set(result.rw[i]);
@@ -235,6 +318,27 @@ public class C2rccMerisOperator extends PixelOperator {
             }
         } else {
             solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
+        }
+        if (!useEcmwfAuxData) {
+            initAtmosphericAuxdata();
+        }
+    }
+
+    private void initAtmosphericAuxdata() {
+        if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
+            try {
+                atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
+                                                                  ncepStartProduct, ncepEndProduct, "press", press);
+            } catch (IOException e) {
+                getLogger().severe("Unable to create provider for atmospheric ancillary data.");
+                getLogger().severe(e.getMessage());
+            }
+        } else {
+            final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
+            final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
+            AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
+            AncDataFormat pressureFormat = createPressureFormat(pressure_default);
+            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
         }
     }
 

@@ -1,5 +1,10 @@
 package org.esa.s3tbx.c2rcc.seawifs;
 
+import static org.esa.s3tbx.c2rcc.C2rccConstants.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchOzone;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.salinity_default;
@@ -12,8 +17,6 @@ import org.esa.s3tbx.c2rcc.anc.AncRepository;
 import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataStatic;
-import org.esa.s3tbx.c2rcc.anc.InterpolationBorderComputer24H;
-import org.esa.s3tbx.c2rcc.anc.InterpolationBorderComputer6H;
 import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.Band;
@@ -180,8 +183,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
         final double view_zeni = sourceSamples[VIEW_ZEN_IX].getDouble();
         final double view_azi = sourceSamples[VIEW_AZI_IX].getDouble();
         final double dem_alt = 0.0;
-        final double atm_press = fetchSurfacePressure(mjd, lat, lon);
-        final double ozone = fetchOzone(mjd, lat, lon);
+        final double atm_press = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
+        final double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
 
         C2rccSeaWiFSAlgorithm.Result result = algorithm.processPixel(
                     x, y, lat, lon, radiances,
@@ -210,22 +213,6 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
             for (int i = 0; i < result.rtosa_out.length; i++) {
                 targetSamples[RTOSA_OUT_1_IX + i].set(result.rtosa_out[i]);
             }
-        }
-    }
-
-    private double fetchOzone(double timeMJD, double lat, double lon) {
-        try {
-            return atmosphericAuxdata.getOzone(timeMJD, lat, lon);
-        } catch (Exception e) {
-            throw new OperatorException("Unable to fetch ozone value from auxdata.", e);
-        }
-    }
-
-    private double fetchSurfacePressure(double timeMJD, double lat, double lon) {
-        try {
-            return atmosphericAuxdata.getSurfacePressure(timeMJD, lat, lon);
-        } catch (Exception e) {
-            throw new OperatorException("Unable to fetch surface pressure value from auxdata.", e);
         }
     }
 
@@ -336,36 +323,12 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
                 getLogger().severe(e.getMessage());
             }
         } else {
-            final AncDownloader ancDownloader = new AncDownloader("http://oceandata.sci.gsfc.nasa.gov/cgi/getfile/");
+            final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
             final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
-            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, createOzoneFormat(), createPressureFormat());
+            AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
+            AncDataFormat pressureFormat = createPressureFormat(pressure_default);
+            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
         }
-    }
-
-    private AncDataFormat createPressureFormat() {
-        return new AncDataFormat(
-                    new String[]{
-                                "_MET_NCEPR2_6h.hdf",
-                                "_MET_NCEPR2_6h.hdf.bz2",
-                                "_MET_NCEPN_6h.hdf",
-                                "_MET_NCEPN_6h.hdf.bz2",
-                    },
-                    "press", pressure_default, new InterpolationBorderComputer6H());
-    }
-
-    private AncDataFormat createOzoneFormat() {
-        return new AncDataFormat(
-                    new String[]{
-                                "_O3_TOMSOMI_24h.hdf",
-                                "_O3_TOMSOMI_24h.hdf.bz2",
-                                "_O3_N7TOMS_24h.hdf",
-                                "_O3_N7TOMS_24h.hdf.bz2",
-                                "_O3_EPTOMS_24h.hdf",
-                                "_O3_EPTOMS_24h.hdf.bz2",
-                                "_O3_AURAOMI_24h.hdf",
-                                "_O3_AURAOMI_24h.hdf.bz2",
-                    },
-                    "ozone", ozone_default, new InterpolationBorderComputer24H());
     }
 
     private void assertSourceBandAndRemoveValidExpression(String bandname) {

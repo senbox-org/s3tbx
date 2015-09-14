@@ -4,8 +4,6 @@ import org.esa.snap.framework.datamodel.Band;
 import org.esa.snap.framework.datamodel.GeoCoding;
 import org.esa.snap.framework.datamodel.Product;
 
-import java.io.IOException;
-
 public class DataInterpolatorStatic extends DataInterpolator {
 
     private final double startTimeMJD;
@@ -15,7 +13,7 @@ public class DataInterpolatorStatic extends DataInterpolator {
     private final GeoCoding startGC;
     private final GeoCoding endGC;
 
-    public DataInterpolatorStatic(double startTimeMJD, double endTimeMJD, Product startProduct, Product endProduct, final String bandName, double defaultValue) throws IOException {
+    public DataInterpolatorStatic(double startTimeMJD, double endTimeMJD, Product startProduct, Product endProduct, final String bandName, double defaultValue) {
         this.startTimeMJD = startTimeMJD;
         this.endTimeMJD = endTimeMJD;
         this.startBand = ensureInterpolation("start", startProduct, bandName, defaultValue);
@@ -25,9 +23,9 @@ public class DataInterpolatorStatic extends DataInterpolator {
     }
 
     @Override
-    public double getValue(double timeMJD, double latitude, double longitude) throws IOException {
-        final double startValue = getStartValue(latitude, longitude);
-        final double endValue = getEndValue(latitude, longitude);
+    public double getValue(double timeMJD, double lat, double lon) {
+        final double startValue = getStartValue(lat, lon);
+        final double endValue = getEndValue(lat, lon);
         return startValue + (timeMJD - startTimeMJD) / (endTimeMJD - startTimeMJD) * (endValue - startValue);
     }
 
@@ -37,11 +35,11 @@ public class DataInterpolatorStatic extends DataInterpolator {
         endGC.dispose();
     }
 
-    protected double getStartValue(double latitude, double longitude) throws IOException {
+    protected double getStartValue(double latitude, double longitude) {
         return getValue(startBand, startGC, latitude, longitude);
     }
 
-    protected double getEndValue(double latitude, double longitude) throws IOException {
+    protected double getEndValue(double latitude, double longitude) {
         return getValue(endBand, endGC, latitude, longitude);
     }
 }
