@@ -3,6 +3,8 @@ package org.esa.s3tbx.c2rcc.modis;
 import static org.esa.s3tbx.c2rcc.C2rccConstants.ANC_DATA_URI;
 import static org.esa.s3tbx.c2rcc.C2rccConstants.createOzoneFormat;
 import static org.esa.s3tbx.c2rcc.C2rccConstants.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchOzone;
+import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.reflec_wavelengths;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
@@ -14,6 +16,9 @@ import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
+import org.esa.snap.framework.datamodel.GeoCoding;
+import org.esa.snap.framework.datamodel.GeoPos;
+import org.esa.snap.framework.datamodel.PixelPos;
 import org.esa.snap.framework.datamodel.Product;
 import org.esa.snap.framework.gpf.OperatorException;
 import org.esa.snap.framework.gpf.OperatorSpi;
@@ -168,16 +173,21 @@ public class C2rccModisOperator extends PixelOperator {
             toa_ref[i] = sourceSamples[i].getDouble();
         }
 
+        GeoCoding geoCoding = sourceProduct.getGeoCoding();
+        PixelPos pixelPos = new PixelPos(x + 0.5, y + 0.5);
+        double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
+        GeoPos geoPos = geoCoding.getGeoPos(pixelPos, new GeoPos());
+
+        double ozone = fetchOzone(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
+        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
         C2rccModisAlgorithm.Result result = algorithm.processPixel(
                     toa_ref,
                     sourceSamples[SUN_ZEN_IX].getDouble(),
                     sourceSamples[SUN_AZI_IX].getDouble(),
                     sourceSamples[VIEW_ZEN_IX].getDouble(),
                     sourceSamples[VIEW_AZI_IX].getDouble(),
-                    C2rccModisAlgorithm.pressure_default,  // todo to be replaced by a real value
-//                    sourceSamples[ATM_PRESS_IX].getDouble(),
-                    C2rccModisAlgorithm.ozone_default      // todo to be replaced by a real value
-//                    sourceSamples[OZONE_IX].getDouble()
+                    atmPress,
+                    ozone
         );
 
         for (int i = 0; i < result.rw.length; i++) {
@@ -254,8 +264,6 @@ public class C2rccModisOperator extends PixelOperator {
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        super.prepareInputs();
-
         for (int wl : reflec_wavelengths) {
             assertSourceBand("rhot_" + wl);
         }
@@ -310,5 +318,11 @@ public class C2rccModisOperator extends PixelOperator {
         public Spi() {
             super(C2rccModisOperator.class);
         }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        atmosphericAuxdata.dispose();
     }
 }
