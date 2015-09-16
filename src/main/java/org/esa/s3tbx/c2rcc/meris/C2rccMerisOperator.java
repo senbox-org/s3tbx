@@ -111,11 +111,6 @@ public class C2rccMerisOperator extends PixelOperator {
                 optional = true)
     private Product ncepEndProduct;
 
-
-    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data.")
-    private String atmosphericAuxDataPath;
-
     @Parameter(label = "Valid-pixel expression",
                 defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
                 converter = BooleanExpressionConverter.class)
@@ -133,11 +128,15 @@ public class C2rccMerisOperator extends PixelOperator {
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)")
     private double press;
 
-    @Parameter(defaultValue = "false")
-    private boolean useDefaultSolarFlux;
+    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
+                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data.")
+    private String atmosphericAuxDataPath;
 
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
     private boolean outputRtosa;
+
+    @Parameter(defaultValue = "false")
+    private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "false", description =
                 "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used")
@@ -165,6 +164,38 @@ public class C2rccMerisOperator extends PixelOperator {
 
     public void setNcepEndProduct(Product ncepEndProduct) {
         this.ncepEndProduct = ncepEndProduct;
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
+    public void setSalinity(double salinity) {
+        this.salinity = salinity;
+    }
+
+    public void setOzone(double ozone) {
+        this.ozone = ozone;
+    }
+
+    public void setPress(double press) {
+        this.press = press;
+    }
+
+    public void setUseDefaultSolarFlux(boolean useDefaultSolarFlux) {
+        this.useDefaultSolarFlux = useDefaultSolarFlux;
+    }
+
+    public void setUseEcmwfAuxData(boolean useEcmwfAuxData) {
+        this.useEcmwfAuxData = useEcmwfAuxData;
+    }
+
+    public void setValidPixelExpression(String validPixelExpression) {
+        this.validPixelExpression = validPixelExpression;
+    }
+
+    public void setOutputRtosa(boolean outputRtosa) {
+        this.outputRtosa = outputRtosa;
     }
 
     @Override
@@ -286,8 +317,6 @@ public class C2rccMerisOperator extends PixelOperator {
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        super.prepareInputs();
-
         for (int i = 0; i < BAND_COUNT; i++) {
             assertSourceBand("radiance_" + (i + 1));
         }
@@ -330,8 +359,7 @@ public class C2rccMerisOperator extends PixelOperator {
                 atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
                                                                   ncepStartProduct, ncepEndProduct, "press", press);
             } catch (IOException e) {
-                getLogger().severe("Unable to create provider for atmospheric ancillary data.");
-                getLogger().severe(e.getMessage());
+                throw new OperatorException("Unable to create provider for atmospheric ancillary data.", e);
             }
         } else {
             final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
@@ -355,26 +383,6 @@ public class C2rccMerisOperator extends PixelOperator {
             }
         }
         return true;
-    }
-
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-    }
-
-    public void setSalinity(double salinity) {
-        this.salinity = salinity;
-    }
-
-    public void setUseDefaultSolarFlux(boolean useDefaultSolarFlux) {
-        this.useDefaultSolarFlux = useDefaultSolarFlux;
-    }
-
-    public void setValidPixelExpression(String validPixelExpression) {
-        this.validPixelExpression = validPixelExpression;
-    }
-
-    public void setOutputRtosa(boolean outputRtosa) {
-        this.outputRtosa = outputRtosa;
     }
 
     public static class Spi extends OperatorSpi {

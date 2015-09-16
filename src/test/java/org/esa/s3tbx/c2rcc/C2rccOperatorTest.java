@@ -60,6 +60,7 @@ public class C2rccOperatorTest {
         C2rccOperator operator = new C2rccOperator();
         operator.setSourceProduct(source);
         operator.setParameter("useDefaultSolarFlux", Boolean.TRUE);
+        operator.setParameter("useEcmwfAuxData", Boolean.TRUE);
         Product target = operator.getTargetProduct();
 
         assertNotNull(target);

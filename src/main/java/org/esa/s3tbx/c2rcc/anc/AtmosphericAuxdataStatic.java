@@ -35,29 +35,29 @@ public class AtmosphericAuxdataStatic implements AtmosphericAuxdata {
     }
 
     private static DataInterpolator getOzoneInterpolator(Product startOzone, Product endOzone, String ozoneBandName, double ozoneDefault) throws IOException {
-        DataInterpolator ozon;
-        if (isValidProduct(startOzone) && isValidProduct(endOzone)) {
-            final double halfDayOffset = 0.5;
-            final double ozoneTimeStart = getTime(startOzone) + halfDayOffset;
-            final double ozoneTimeEnd = getTime(endOzone) + halfDayOffset;
-            ozon = new DataInterpolatorStatic(ozoneTimeStart, ozoneTimeEnd, startOzone, endOzone, ozoneBandName, ozoneDefault);
-        } else {
-            throw new IOException("At least one aux product is not valid");
+        if (!isValidProduct(startOzone)) {
+            throw new IOException("Ozone interpolation start product is invalid.");
         }
-        return ozon;
+        if (!isValidProduct(endOzone)) {
+            throw new IOException("Ozone interpolation end product is invalid.");
+        }
+        final double halfDayOffset = 0.5;
+        final double ozoneTimeStart = getTime(startOzone) + halfDayOffset;
+        final double ozoneTimeEnd = getTime(endOzone) + halfDayOffset;
+        return new DataInterpolatorStatic(ozoneTimeStart, ozoneTimeEnd, startOzone, endOzone, ozoneBandName, ozoneDefault);
     }
 
     private static DataInterpolator getPressureInterpolator(Product startPressure, Product endPressure, String pressureBandName, double pressureDefault) throws IOException {
-        DataInterpolator press;
-        if (isValidProduct(startPressure) && isValidProduct(endPressure)) {
-            final double threeHoursOffset = 0.125;
-            final double pressureTimeStart = getTime(startPressure) + threeHoursOffset;
-            final double pressureTimeEnd = getTime(endPressure) + threeHoursOffset;
-            press = new DataInterpolatorStatic(pressureTimeStart, pressureTimeEnd, startPressure, endPressure, pressureBandName, pressureDefault);
-        } else {
-            throw new IOException("At least one aux product is not valid");
+        if (!isValidProduct(startPressure)) {
+            throw new IOException("Air pressure interpolation start product is invalid.");
         }
-        return press;
+        if (!isValidProduct(endPressure)) {
+            throw new IOException("Air pressure interpolation end product is invalid.");
+        }
+        final double threeHoursOffset = 0.125;
+        final double pressureTimeStart = getTime(startPressure) + threeHoursOffset;
+        final double pressureTimeEnd = getTime(endPressure) + threeHoursOffset;
+        return new DataInterpolatorStatic(pressureTimeStart, pressureTimeEnd, startPressure, endPressure, pressureBandName, pressureDefault);
     }
 
     @Override

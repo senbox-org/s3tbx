@@ -92,30 +92,6 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
                 description = "SeaWiFS L1b source product.")
     private Product sourceProduct;
 
-    @Parameter(label = "Valid-pixel expression",
-                defaultValue = "L_865 * 10 * PI / 957.6122143 / cos(rad(solz)) > 0.25",
-                converter = BooleanExpressionConverter.class)
-    private String validPixelExpression;
-
-    @Parameter(defaultValue = "" + salinity_default, unit = "DU", interval = "(0, 100)")
-    private double salinity;
-
-    @Parameter(defaultValue = "" + temperature_default, unit = "C", interval = "(-50, 50)")
-    private double temperature;
-
-    @Parameter(defaultValue = "" + ozone_default, unit = "DU", interval = "(0, 1000)")
-    private double ozone;
-
-    @Parameter(defaultValue = "" + pressure_default, unit = "hPa", interval = "(0, 2000)")
-    private double press;
-
-    @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
-    private boolean outputRtosa;
-
-    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data.")
-    private String atmosphericAuxDataPath;
-
     @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiEndProduct, " +
                                  "ncepStartProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
                 optional = true)
@@ -137,6 +113,29 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
                 optional = true)
     private Product ncepEndProduct;
 
+    @Parameter(label = "Valid-pixel expression",
+                defaultValue = "L_865 * 10 * PI / 957.6122143 / cos(rad(solz)) > 0.25",
+                converter = BooleanExpressionConverter.class)
+    private String validPixelExpression;
+
+    @Parameter(defaultValue = "" + salinity_default, unit = "DU", interval = "(0, 100)")
+    private double salinity;
+
+    @Parameter(defaultValue = "" + temperature_default, unit = "C", interval = "(-50, 50)")
+    private double temperature;
+
+    @Parameter(defaultValue = "" + ozone_default, unit = "DU", interval = "(0, 1000)")
+    private double ozone;
+
+    @Parameter(defaultValue = "" + pressure_default, unit = "hPa", interval = "(0, 2000)")
+    private double press;
+
+    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
+                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data.")
+    private String atmosphericAuxDataPath;
+
+    @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
+    private boolean outputRtosa;
 
     private C2rccSeaWiFSAlgorithm algorithm;
     private SolarFluxLazyLookup lazySolFluxLookup;
@@ -162,6 +161,13 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
         this.ncepEndProduct = ncepEndProduct;
     }
 
+    public void setOzone(double ozone) {
+        this.ozone = ozone;
+    }
+
+    public void setPress(double press) {
+        this.press = press;
+    }
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {

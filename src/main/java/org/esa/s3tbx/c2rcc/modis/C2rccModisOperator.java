@@ -86,23 +86,6 @@ public class C2rccModisOperator extends PixelOperator {
                 description = "MODIS L1C source product.")
     private Product sourceProduct;
 
-    @Parameter(label = "Valid-pixel expression",
-                defaultValue = "!(l2_flags.LAND ||  max(rhot_412,max(rhot_443,max(rhot_488,max(rhot_531,max(rhot_547,max(rhot_555,max(rhot_667,max(rhot_678,max(rhot_748,rhot_869)))))))))>0.25)",
-                converter = BooleanExpressionConverter.class)
-    private String validPixelExpression;
-
-    @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
-    private double salinity;
-
-    @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
-    private double temperature;
-
-    @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
-    private boolean outputRtosa;
-
-    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct, and ncepEndProduct to use ozone auxiliary data.")
-    private String atmosphericAuxDataPath;
 
     @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiEndProduct," +
                                  "ncepStartProduct, and ncepEndProduct or atmosphericAuxdataPath to use ozone auxiliary data.",
@@ -124,11 +107,29 @@ public class C2rccModisOperator extends PixelOperator {
                 optional = true)
     private Product ncepEndProduct;
 
+    @Parameter(label = "Valid-pixel expression",
+                defaultValue = "!(l2_flags.LAND ||  max(rhot_412,max(rhot_443,max(rhot_488,max(rhot_531,max(rhot_547,max(rhot_555,max(rhot_667,max(rhot_678,max(rhot_748,rhot_869)))))))))>0.25)",
+                converter = BooleanExpressionConverter.class)
+    private String validPixelExpression;
+
+    @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
+    private double salinity;
+
+    @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
+    private double temperature;
+
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
     private double ozone;
 
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)")
     private double press;
+
+    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
+                             "tomsomiEndProduct, ncepStartProduct, and ncepEndProduct to use ozone auxiliary data.")
+    private String atmosphericAuxDataPath;
+
+    @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
+    private boolean outputRtosa;
 
     private C2rccModisAlgorithm algorithm;
     private AtmosphericAuxdata atmosphericAuxdata;
@@ -139,6 +140,14 @@ public class C2rccModisOperator extends PixelOperator {
 
     public void setTemperature(double temperature) {
         this.temperature = temperature;
+    }
+
+    public void setOzone(double ozone) {
+        this.ozone = ozone;
+    }
+
+    public void setPress(double press) {
+        this.press = press;
     }
 
     public void setValidPixelExpression(String validPixelExpression) {
