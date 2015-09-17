@@ -1,10 +1,10 @@
 package org.esa.s3tbx.c2rcc.meris;
 
-import static org.esa.s3tbx.c2rcc.C2rccConstants.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.C2rccConstants.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.C2rccConstants.createPressureFormat;
-import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchOzone;
-import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;

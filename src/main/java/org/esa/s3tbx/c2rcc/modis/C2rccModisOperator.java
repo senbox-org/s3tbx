@@ -1,10 +1,10 @@
 package org.esa.s3tbx.c2rcc.modis;
 
-import static org.esa.s3tbx.c2rcc.C2rccConstants.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.C2rccConstants.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.C2rccConstants.createPressureFormat;
-import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchOzone;
-import static org.esa.s3tbx.c2rcc.C2rccConstants.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.reflec_wavelengths;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;

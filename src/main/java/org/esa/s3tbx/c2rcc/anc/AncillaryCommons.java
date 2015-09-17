@@ -1,16 +1,12 @@
-package org.esa.s3tbx.c2rcc;
+package org.esa.s3tbx.c2rcc.anc;
 
-import org.esa.s3tbx.c2rcc.anc.AncDataFormat;
-import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdata;
-import org.esa.s3tbx.c2rcc.anc.InterpolationBorderComputer24H;
-import org.esa.s3tbx.c2rcc.anc.InterpolationBorderComputer6H;
 import org.esa.snap.framework.gpf.OperatorException;
 
-public interface C2rccConstants {
+public class AncillaryCommons {
 
-    String ANC_DATA_URI = "http://oceandata.sci.gsfc.nasa.gov/cgi/getfile/";
+    public static final String ANC_DATA_URI = "http://oceandata.sci.gsfc.nasa.gov/cgi/getfile/";
 
-    static AncDataFormat createPressureFormat(final double pressure_default) {
+    public static AncDataFormat createPressureFormat(final double pressure_default) {
         return new AncDataFormat(
                     new String[]{
                                 "_MET_NCEPR2_6h.hdf",
@@ -21,7 +17,7 @@ public interface C2rccConstants {
                     "press", pressure_default, new InterpolationBorderComputer6H());
     }
 
-    static AncDataFormat createOzoneFormat(final double ozone_default) {
+    public static AncDataFormat createOzoneFormat(final double ozone_default) {
         return new AncDataFormat(
                     new String[]{
                                 "_O3_TOMSOMI_24h.hdf",
@@ -36,7 +32,7 @@ public interface C2rccConstants {
                     "ozone", ozone_default, new InterpolationBorderComputer24H());
     }
 
-    static double fetchSurfacePressure(AtmosphericAuxdata atmosphericAuxdata, double timeMJD, double lat, double lon) {
+    public static double fetchSurfacePressure(AtmosphericAuxdata atmosphericAuxdata, double timeMJD, double lat, double lon) {
         try {
             return atmosphericAuxdata.getSurfacePressure(timeMJD, lat, lon);
         } catch (Exception e) {
@@ -44,7 +40,7 @@ public interface C2rccConstants {
         }
     }
 
-    static double fetchOzone(final AtmosphericAuxdata atmosphericAuxdata, double timeMJD, double lat, double lon) {
+    public static double fetchOzone(final AtmosphericAuxdata atmosphericAuxdata, double timeMJD, double lat, double lon) {
         try {
             return atmosphericAuxdata.getOzone(timeMJD, lat, lon);
         } catch (Exception e) {
