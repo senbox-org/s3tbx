@@ -92,24 +92,31 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
                 description = "SeaWiFS L1b source product.")
     private Product sourceProduct;
 
-    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiEndProduct, " +
-                                 "ncepStartProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+    @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
+                                 "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
+                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+                                 "aux data for calculations.",
                 optional = true)
     private Product tomsomiStartProduct;
 
-    @SourceProduct(description = "A product which is used for derivation of ozone values. Use either this and tomsomiStartProduct, " +
-                                 "ncepStartProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+    @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
+                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+                                 "aux data for calculations.",
                 optional = true)
     private Product tomsomiEndProduct;
 
-    @SourceProduct(description = "A product which is used for derivation of air pressure values. Use either this and tomsomiStartProduct, " +
-                                 "tomsomiEndProduct and ncepEndProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+    @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
+                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+                                 "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+                                 "aux data for calculations.",
                 optional = true)
     private Product ncepStartProduct;
 
-    // todo !!!!!!!!!!!!!!!! make the documentation understandable for humans
-    @SourceProduct(description = "The second product providing the air pressure values. Use either this and tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, and ncepStartProduct or atmosphericAuxdataPath to use ozone and air pressure aux data.",
+    @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
+                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+                                 "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+                                 "aux data for calculations.",
                 optional = true)
     private Product ncepEndProduct;
 
@@ -130,8 +137,10 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
     @Parameter(defaultValue = "" + pressure_default, unit = "hPa", interval = "(0, 2000)")
     private double press;
 
-    @Parameter(description = "Path to the atmospheric auxiliary data directory.Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data.")
+    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
+                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
+                             "for calculations. If the auxiliary data needed for interpolation not available in this " +
+                             "path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
