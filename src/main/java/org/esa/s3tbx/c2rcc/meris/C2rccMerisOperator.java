@@ -1,21 +1,17 @@
 package org.esa.s3tbx.c2rcc.meris;
 
-import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.createPressureFormat;
-import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.anc.AncillaryCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 
-import org.esa.s3tbx.c2rcc.anc.AncDataFormat;
-import org.esa.s3tbx.c2rcc.anc.AncDownloader;
-import org.esa.s3tbx.c2rcc.anc.AncRepository;
-import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdata;
-import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataDynamic;
-import org.esa.s3tbx.c2rcc.anc.AtmosphericAuxdataStatic;
+import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
+import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
+import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
+import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
+import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
+import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.GeoPos;

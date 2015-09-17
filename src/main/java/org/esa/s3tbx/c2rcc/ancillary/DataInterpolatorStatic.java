@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc.anc;
+package org.esa.s3tbx.c2rcc.ancillary;
 
 import org.esa.snap.framework.datamodel.Band;
 import org.esa.snap.framework.datamodel.GeoCoding;

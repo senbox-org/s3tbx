@@ -1,7 +1,5 @@
 package org.esa.s3tbx.c2rcc;
 
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 import static org.esa.snap.util.StringUtils.isNotNullAndNotEmpty;
 
 import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
@@ -81,10 +79,10 @@ public class C2rccOperator extends Operator {
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
     private double temperature;
 
-    @Parameter(defaultValue = "" + ozone_default, unit = "DU", interval = "(0, 1000)")
+    @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
     private double ozone;
 
-    @Parameter(defaultValue = "" + pressure_default, unit = "hPa", interval = "(0, 2000)")
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)")
     private double press;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +

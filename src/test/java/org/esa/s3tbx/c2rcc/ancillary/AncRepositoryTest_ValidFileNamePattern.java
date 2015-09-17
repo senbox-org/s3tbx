@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc.anc;
+package org.esa.s3tbx.c2rcc.ancillary;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;

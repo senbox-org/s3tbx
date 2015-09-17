@@ -1,6 +1,9 @@
-package org.esa.s3tbx.c2rcc.anc;
+package org.esa.s3tbx.c2rcc.ancillary;
 
+import org.esa.snap.framework.datamodel.ProductData;
 import org.esa.snap.framework.gpf.OperatorException;
+
+import java.util.Calendar;
 
 public class AncillaryCommons {
 
@@ -46,5 +49,14 @@ public class AncillaryCommons {
         } catch (Exception e) {
             throw new OperatorException("Unable to fetch ozone value from auxdata.", e);
         }
+    }
+
+    public static String convertToFileNamePräfix(double borderFileTimeMJD) {
+        final ProductData.UTC utc = new ProductData.UTC(borderFileTimeMJD);
+        final Calendar calendar = utc.getAsCalendar();
+        final int year = calendar.get(Calendar.YEAR);
+        final int doy = calendar.get(Calendar.DAY_OF_YEAR);
+        final int h = calendar.get(Calendar.HOUR_OF_DAY);
+        return String.format("N%4d%03d%02d", year, doy, h);
     }
 }

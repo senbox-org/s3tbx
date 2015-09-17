@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc.anc;
+package org.esa.s3tbx.c2rcc.ancillary;
 
 import static junit.framework.Assert.*;
 
@@ -9,7 +9,7 @@ import org.junit.*;
 /**
  * Created by Sabine on 03.09.2015.
  */
-public class DataInterpolatorStaticTest {
+public class DataInterpolatorTest_ancilaryGap {
 
     private final double endTimeMJD = 25.5;
     private DataInterpolator di;
@@ -21,21 +21,15 @@ public class DataInterpolatorStaticTest {
     public void setUp() throws Exception {
         p1 = new Product("p1", "t1", 2, 2);
         p1.addBand("ozone", ProductData.TYPE_FLOAT64).setDataElems(new double[]{3, 4, 5, 6});
-        p2 = new Product("p2", "t1", 2, 2);
-        p2.addBand("ozone", ProductData.TYPE_FLOAT64).setDataElems(new double[]{8, 11.2, 2.7, 12.25});
+        p2 = null; // Ancilarry gap
         startTimeMJD = 24.5;
-        di = new DataInterpolatorStatic(startTimeMJD, endTimeMJD, p1, p2, "ozone", 123);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
+        final double defaultValue = 15.0;
+        di = new DataInterpolatorStatic(startTimeMJD, endTimeMJD, p1, p2, "ozone", defaultValue);
     }
 
     @Test
     public void testInitializing() {
         assertNull(p1.getGeoCoding());
-        assertNull(p2.getGeoCoding());
     }
 
     @Test
@@ -48,18 +42,18 @@ public class DataInterpolatorStaticTest {
 
     @Test
     public void testGetEndTimeValue() throws Exception {
-        assertEquals(8.0, di.getValue(endTimeMJD, 45, -90));
-        assertEquals(11.2, di.getValue(endTimeMJD, 45, 90));
-        assertEquals(2.7, di.getValue(endTimeMJD, -45, -90));
-        assertEquals(12.25, di.getValue(endTimeMJD, -45, 90));
+        assertEquals(15.0, di.getValue(endTimeMJD, 45, -90));
+        assertEquals(15.0, di.getValue(endTimeMJD, 45, 90));
+        assertEquals(15.0, di.getValue(endTimeMJD, -45, -90));
+        assertEquals(15.0, di.getValue(endTimeMJD, -45, 90));
     }
 
     @Test
     public void testGetCenterTimeValue() throws Exception {
         final double centerTimeMJD = (endTimeMJD - startTimeMJD) / 2 + startTimeMJD;
-        assertEquals(5.5, di.getValue(centerTimeMJD, 45, -90));
-        assertEquals(7.6, di.getValue(centerTimeMJD, 45, 90));
-        assertEquals(3.85, di.getValue(centerTimeMJD, -45, -90));
-        assertEquals(9.125, di.getValue(centerTimeMJD, -45, 90));
+        assertEquals(9.0, di.getValue(centerTimeMJD, 45, -90));
+        assertEquals(9.5, di.getValue(centerTimeMJD, 45, 90));
+        assertEquals(10.0, di.getValue(centerTimeMJD, -45, -90));
+        assertEquals(10.5, di.getValue(centerTimeMJD, -45, 90));
     }
 }

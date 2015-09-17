@@ -1,6 +1,6 @@
-package org.esa.s3tbx.c2rcc.anc;
+package org.esa.s3tbx.c2rcc.ancillary;
 
-import static org.esa.s3tbx.c2rcc.anc.InterpolationBorderComputer.convertToFileNamePräfix;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.convertToFileNamePräfix;
 
 public class InterpolationBorderComputer24H implements InterpolationBorderComputer {
 
