@@ -39,28 +39,32 @@ public class C2rccOperator extends Operator {
                                  "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
                                  "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-                optional = true)
+                optional = true,
+                label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-                optional = true)
+                optional = true,
+                label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-                optional = true)
+                optional = true,
+                label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-                optional = true)
+                optional = true,
+                label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
 
     @TargetProduct
@@ -82,7 +86,7 @@ public class C2rccOperator extends Operator {
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
     private double ozone;
 
-    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)")
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)", label = "Air Pressure")
     private double press;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
@@ -99,7 +103,7 @@ public class C2rccOperator extends Operator {
 
     @Parameter(defaultValue = "false", description =
                 "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used",
-                label = "Use ecmwf aux data of source product (in case of MERIS sensor)")
+                label = "Use ECMWF aux data of source product (in case of MERIS sensor)")
     private boolean useEcmwfAuxData;
 
     @Override

@@ -1,6 +1,10 @@
 package org.esa.s3tbx.c2rcc.meris;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
@@ -90,28 +94,32 @@ public class C2rccMerisOperator extends PixelOperator {
                                  "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
                                  "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-                optional = true)
+                optional = true,
+                label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-                optional = true)
+                optional = true,
+                label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-                optional = true)
+                optional = true,
+                label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-                optional = true)
+                optional = true,
+                label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
@@ -128,7 +136,7 @@ public class C2rccMerisOperator extends PixelOperator {
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
     private double ozone;
 
-    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)")
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)", label = "Air Pressure")
     private double press;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
@@ -144,7 +152,8 @@ public class C2rccMerisOperator extends PixelOperator {
     private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "false", description =
-                "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used")
+                "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used",
+                                label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
 
     private C2rccMerisAlgorithm algorithm;
