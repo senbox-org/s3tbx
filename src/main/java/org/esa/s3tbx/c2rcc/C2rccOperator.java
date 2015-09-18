@@ -108,24 +108,24 @@ public class C2rccOperator extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-        if (sourceProductIsMeris()) {
+        if (isMeris(sourceProduct)) {
             C2rccMerisOperator c2rccMerisOperator = new C2rccMerisOperator();
             c2rccMerisOperator.setUseDefaultSolarFlux(useDefaultSolarFlux);
             c2rccMerisOperator.setUseEcmwfAuxData(useEcmwfAuxData);
             configure(c2rccMerisOperator);
             targetProduct = setSourceAndGetTarget(c2rccMerisOperator);
-        } else if (sourceProductIsModis()) {
+        } else if (isModis(sourceProduct)) {
             C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
             configure(c2rccModisOperator);
             targetProduct = setSourceAndGetTarget(c2rccModisOperator);
-        } else if (sourceProductIsSeawifs()) {
+        } else if (isSeawifs(sourceProduct)) {
             C2rccSeaWiFSOperator c2rccSeaWiFSOperator = new C2rccSeaWiFSOperator();
             configure(c2rccSeaWiFSOperator);
             targetProduct = setSourceAndGetTarget(c2rccSeaWiFSOperator);
         } else if (isNotNullAndNotEmpty(sensorName) && "viirs".equalsIgnoreCase(sensorName)) {
-            throw new OperatorException("the VIIRS operator not implemented now.");
+            throw new OperatorException("The VIIRS operator is currently not implemented.");
         } else if (isNotNullAndNotEmpty(sensorName) && "olci".equalsIgnoreCase(sensorName)) {
-            throw new OperatorException("the OLCI operator not implemented now.");
+            throw new OperatorException("The OLCI operator is currently not implemented.");
         } else {
             throw new OperatorException("Illegal source product.");
         }
@@ -152,9 +152,9 @@ public class C2rccOperator extends Operator {
     }
 
 
-    private boolean sourceProductIsMeris() {
-        final String productType = sourceProduct.getProductType();
-        final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
+    private boolean isMeris(Product product) {
+        final String productType = product.getProductType();
+        final String formatName = product.getProductReader().getReaderPlugIn().getFormatNames()[0];
         if (isNotNullAndNotEmpty(sensorName)) {
             return "meris".equalsIgnoreCase(sensorName);
         } else {
@@ -162,9 +162,9 @@ public class C2rccOperator extends Operator {
         }
     }
 
-    private boolean sourceProductIsModis() {
-        final String productType = sourceProduct.getProductType();
-        final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
+    private boolean isModis(Product product) {
+        final String productType = product.getProductType();
+        final String formatName = product.getProductReader().getReaderPlugIn().getFormatNames()[0];
         if (isNotNullAndNotEmpty(sensorName)) {
             return "modis".equalsIgnoreCase(sensorName);
         } else {
@@ -173,9 +173,9 @@ public class C2rccOperator extends Operator {
 
     }
 
-    private boolean sourceProductIsSeawifs() {
-        final String productType = sourceProduct.getProductType();
-        final String formatName = sourceProduct.getProductReader().getReaderPlugIn().getFormatNames()[0];
+    private boolean isSeawifs(Product product) {
+        final String productType = product.getProductType();
+        final String formatName = product.getProductReader().getReaderPlugIn().getFormatNames()[0];
         if (isNotNullAndNotEmpty(sensorName)) {
             return "seawifs".equalsIgnoreCase(sensorName);
         } else {

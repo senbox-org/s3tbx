@@ -243,8 +243,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             algorithm.setSolflux(correctedSolFlux);
         }
 
-        // use real geocoding if needed
-//        GeoPos geoPos = new GeoPos(0, 0);
         GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
@@ -348,10 +346,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         }
         assertSourceBand("l1_flags");
 
-        // todo must be reactivated later
-//        if (sourceProduct.getGeoCoding() == null) {
-//            throw new OperatorException("The source product must be geo-coded.");
-//        }
+        if (sourceProduct.getGeoCoding() == null) {
+            throw new OperatorException("The source product must be geo-coded.");
+        }
 
         try {
             algorithm = new C2rccMerisAlgorithm();
@@ -361,7 +358,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
-        if (!useDefaultSolarFlux) {
+        if (useDefaultSolarFlux) {  // not the sol flux values from the input product
+            solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
+        } else {
             double[] solfluxFromL1b = new double[BAND_COUNT];
             for (int i = 0; i < BAND_COUNT; i++) {
                 solfluxFromL1b[i] = sourceProduct.getBand("radiance_" + (i + 1)).getSolarFlux();
@@ -371,8 +370,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             } else {
                 throw new OperatorException("Invalid solar flux in source product!");
             }
-        } else {
-            solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
         }
         if (!useEcmwfAuxData) {
             initAtmosphericAuxdata();

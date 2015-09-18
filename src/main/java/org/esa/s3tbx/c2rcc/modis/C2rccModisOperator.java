@@ -294,9 +294,9 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         }
         assertSourceBand("l2_flags");
 
-//        if (source.getGeoCoding() == null) {
-//            throw new OperatorException("The source product must be geo-coded.");
-//        }
+        if (sourceProduct.getGeoCoding() == null) {
+            throw new OperatorException("The source product must be geo-coded.");
+        }
 
         try {
             algorithm = new C2rccModisAlgorithm();

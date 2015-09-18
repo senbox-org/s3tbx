@@ -202,7 +202,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         final double sun_azi = sourceSamples[SUN_AZI_IX].getDouble();
         final double view_zeni = sourceSamples[VIEW_ZEN_IX].getDouble();
         final double view_azi = sourceSamples[VIEW_AZI_IX].getDouble();
-        final double dem_alt = 0.0;
+        final double dem_alt = 0.0;  // todo to be replaced by a real value
         final double atm_press = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
         final double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
 
@@ -210,7 +210,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
                     x, y, lat, lon, radiances,
                     sun_zeni, sun_azi,
                     view_zeni, view_azi,
-                    dem_alt, // todo to be replaced by a real value
+                    dem_alt,
                     atm_press, ozone
         );
 

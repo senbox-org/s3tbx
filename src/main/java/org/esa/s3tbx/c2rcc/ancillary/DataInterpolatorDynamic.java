@@ -45,8 +45,8 @@ public class DataInterpolatorDynamic extends DataInterpolator {
                                 startBorderTimeMDJ, ibc.getEndBorderTimeMJD(),
                                 ancRepository.getProduct(startFilenames),
                                 ancRepository.getProduct(endFilenames),
-                                ancDataFormat.getBandname(),
-                                ancDataFormat.getDefaultvalue()
+                                ancDataFormat.getBandName(),
+                                ancDataFormat.getDefaultValue()
                     );
         interpolatorMap.put(startBorderTimeMDJ, currentDataInterpolator);
         currentBorderTime = startBorderTimeMDJ;

@@ -8,8 +8,8 @@ public class DataInterpolatorStatic extends DataInterpolator {
 
     private final double startTimeMJD;
     private final double endTimeMJD;
-    private final Band startBand;
-    private final Band endBand;
+    private Band startBand;
+    private Band endBand;
     private final GeoCoding startGC;
     private final GeoCoding endGC;
 
@@ -33,6 +33,8 @@ public class DataInterpolatorStatic extends DataInterpolator {
     public void dispose() {
         startGC.dispose();
         endGC.dispose();
+        endBand = null;
+        startBand = null;
     }
 
     protected double getStartValue(double latitude, double longitude) {

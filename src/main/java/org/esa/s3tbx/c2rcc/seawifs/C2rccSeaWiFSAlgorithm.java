@@ -136,31 +136,6 @@ public class C2rccSeaWiFSAlgorithm {
             throw new OperatorException("Kotz!!!!");
         }
 
-
-//        if (px ==170 && py == 366) {
-//            System.out.println("***********************************************************************");
-//            System.out.println("px = " + px);
-//            System.out.println("py = " + py);
-//            System.out.println("lat = " + lat);
-//            System.out.println("lon = " + lon);
-//            for (int i = 0; i < toa_rad.length; i++) {
-//                System.out.println("toa_rad[" + i + "] = " + toa_rad[i]);
-//            }
-//            System.out.println("sun_zeni = " + sun_zeni);
-//            System.out.println("sun_azi = " + sun_azi);
-//            System.out.println("view_zeni = " + view_zeni);
-//            System.out.println("view_azi = " + view_azi);
-//            System.out.println("dem_alt = " + dem_alt);
-//            System.out.println("atm_press = " + atm_press);
-//            System.out.println("ozone = " + ozone);
-//            System.out.println("salinity = " + salinity);
-//            System.out.println("temperature = " + temperature);
-//            for (int i = 0; i < correctedSolarFlux.length; i++) {
-//                double v = correctedSolarFlux[i];
-//                System.out.println("correctedSolarFlux[" + i + "] = " + correctedSolarFlux[i]);
-//            }
-//            System.out.println("***********************************************************************");
-//        }
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
         double cos_view = cos(toRadians(view_zeni));

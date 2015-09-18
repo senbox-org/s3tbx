@@ -3,14 +3,14 @@ package org.esa.s3tbx.c2rcc.ancillary;
 public class AncDataFormat {
 
     private final String[] filenameSuffix;
-    private final String bandname;
-    private final double defaultvalue;
+    private final String bandName;
+    private final double defaultValue;
     private final InterpolationBorderComputer borderComputer;
 
-    public AncDataFormat(String[] filenameSuffix, String bandname, double defaultvalue, InterpolationBorderComputer borderComputer) {
+    public AncDataFormat(String[] filenameSuffix, String bandName, double defaultValue, InterpolationBorderComputer borderComputer) {
         this.filenameSuffix = filenameSuffix;
-        this.bandname = bandname;
-        this.defaultvalue = defaultvalue;
+        this.bandName = bandName;
+        this.defaultValue = defaultValue;
         this.borderComputer = borderComputer;
     }
 
@@ -22,12 +22,12 @@ public class AncDataFormat {
         return names;
     }
 
-    public String getBandname() {
-        return bandname;
+    public String getBandName() {
+        return bandName;
     }
 
-    public double getDefaultvalue() {
-        return defaultvalue;
+    public double getDefaultValue() {
+        return defaultValue;
     }
 
     public InterpolationBorderComputer getInterpolationBorderComputer() {
