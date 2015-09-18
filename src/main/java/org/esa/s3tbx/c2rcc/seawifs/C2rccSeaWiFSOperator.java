@@ -12,6 +12,7 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.salinity_default
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengths;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.temperature_default;
 
+import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
 import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
 import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
@@ -60,7 +61,7 @@ import java.util.Calendar;
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1b data products.")
-public class C2rccSeaWiFSOperator extends PixelOperator {
+public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigurable {
 
     public static final int WL_BAND_COUNT = seawifsWavelengths.length;
 

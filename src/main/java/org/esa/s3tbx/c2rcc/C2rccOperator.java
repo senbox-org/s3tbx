@@ -110,61 +110,18 @@ public class C2rccOperator extends Operator {
     public void initialize() throws OperatorException {
         if (sourceProductIsMeris()) {
             C2rccMerisOperator c2rccMerisOperator = new C2rccMerisOperator();
-
-            c2rccMerisOperator.setSourceProduct(sourceProduct);
-            c2rccMerisOperator.setTomsomiStartProduct(tomsomiStartProduct);
-            c2rccMerisOperator.setTomsomiEndProduct(tomsomiEndProduct);
-            c2rccMerisOperator.setNcepStartProduct(ncepStartProduct);
-            c2rccMerisOperator.setNcepEndProduct(ncepEndProduct);
-
-            c2rccMerisOperator.setValidPixelExpression(validPixelExpression);
-            c2rccMerisOperator.setSalinity(salinity);
-            c2rccMerisOperator.setTemperature(temperature);
-            c2rccMerisOperator.setOzone(ozone);
-            c2rccMerisOperator.setPress(press);
-            c2rccMerisOperator.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
-            c2rccMerisOperator.setOutputRtosa(outputRtosa);
-
             c2rccMerisOperator.setUseDefaultSolarFlux(useDefaultSolarFlux);
             c2rccMerisOperator.setUseEcmwfAuxData(useEcmwfAuxData);
-
-            targetProduct = c2rccMerisOperator.getTargetProduct();
+            configure(c2rccMerisOperator);
+            targetProduct = setSourceAndGetTarget(c2rccMerisOperator);
         } else if (sourceProductIsModis()) {
-            final C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
-
-            c2rccModisOperator.setSourceProduct(sourceProduct);
-            c2rccModisOperator.setTomsomiStartProduct(tomsomiStartProduct);
-            c2rccModisOperator.setTomsomiEndProduct(tomsomiEndProduct);
-            c2rccModisOperator.setNcepStartProduct(ncepStartProduct);
-            c2rccModisOperator.setNcepEndProduct(ncepEndProduct);
-
-            c2rccModisOperator.setValidPixelExpression(validPixelExpression);
-            c2rccModisOperator.setSalinity(salinity);
-            c2rccModisOperator.setTemperature(temperature);
-            c2rccModisOperator.setOzone(ozone);
-            c2rccModisOperator.setPress(press);
-            c2rccModisOperator.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
-            c2rccModisOperator.setOutputRtosa(outputRtosa);
-
-            targetProduct = c2rccModisOperator.getTargetProduct();
+            C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
+            configure(c2rccModisOperator);
+            targetProduct = setSourceAndGetTarget(c2rccModisOperator);
         } else if (sourceProductIsSeawifs()) {
-            final C2rccSeaWiFSOperator c2RccSeaWiFSOperator = new C2rccSeaWiFSOperator();
-
-            c2RccSeaWiFSOperator.setSourceProduct(sourceProduct);
-            c2RccSeaWiFSOperator.setTomsomiStartProduct(tomsomiStartProduct);
-            c2RccSeaWiFSOperator.setTomsomiEndProduct(tomsomiEndProduct);
-            c2RccSeaWiFSOperator.setNcepStartProduct(ncepStartProduct);
-            c2RccSeaWiFSOperator.setNcepEndProduct(ncepEndProduct);
-
-            c2RccSeaWiFSOperator.setValidPixelExpression(validPixelExpression);
-            c2RccSeaWiFSOperator.setSalinity(salinity);
-            c2RccSeaWiFSOperator.setTemperature(temperature);
-            c2RccSeaWiFSOperator.setOzone(ozone);
-            c2RccSeaWiFSOperator.setPress(press);
-            c2RccSeaWiFSOperator.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
-            c2RccSeaWiFSOperator.setOutputRtosa(outputRtosa);
-
-            targetProduct = c2RccSeaWiFSOperator.getTargetProduct();
+            C2rccSeaWiFSOperator c2rccSeaWiFSOperator = new C2rccSeaWiFSOperator();
+            configure(c2rccSeaWiFSOperator);
+            targetProduct = setSourceAndGetTarget(c2rccSeaWiFSOperator);
         } else if (isNotNullAndNotEmpty(sensorName) && "viirs".equalsIgnoreCase(sensorName)) {
             throw new OperatorException("the VIIRS operator not implemented now.");
         } else if (isNotNullAndNotEmpty(sensorName) && "olci".equalsIgnoreCase(sensorName)) {
@@ -172,7 +129,28 @@ public class C2rccOperator extends Operator {
         } else {
             throw new OperatorException("Illegal source product.");
         }
+
     }
+
+    private Product setSourceAndGetTarget(Operator operator) {
+        operator.setSourceProduct(sourceProduct);
+        return operator.getTargetProduct();
+    }
+
+    private void configure(C2rccConfigurable c2rConfigOp) {
+        c2rConfigOp.setTomsomiStartProduct(tomsomiStartProduct);
+        c2rConfigOp.setTomsomiEndProduct(tomsomiEndProduct);
+        c2rConfigOp.setNcepStartProduct(ncepStartProduct);
+        c2rConfigOp.setNcepEndProduct(ncepEndProduct);
+        c2rConfigOp.setValidPixelExpression(validPixelExpression);
+        c2rConfigOp.setSalinity(salinity);
+        c2rConfigOp.setTemperature(temperature);
+        c2rConfigOp.setOzone(ozone);
+        c2rConfigOp.setPress(press);
+        c2rConfigOp.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
+        c2rConfigOp.setOutputRtosa(outputRtosa);
+    }
+
 
     private boolean sourceProductIsMeris() {
         final String productType = sourceProduct.getProductType();

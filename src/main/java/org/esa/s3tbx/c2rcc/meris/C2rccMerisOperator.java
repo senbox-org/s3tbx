@@ -10,6 +10,7 @@ import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 
+import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
 import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
 import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
@@ -57,7 +58,7 @@ import java.util.Calendar;
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval on MERIS L1b data products.")
-public class C2rccMerisOperator extends PixelOperator {
+public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurable {
 
     // MERIS sources
     public static final int BAND_COUNT = 15;
@@ -160,38 +161,47 @@ public class C2rccMerisOperator extends PixelOperator {
     private SolarFluxLazyLookup solarFluxLazyLookup;
     private AtmosphericAuxdata atmosphericAuxdata;
 
+    @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
         this.atmosphericAuxDataPath = atmosphericAuxDataPath;
     }
 
+    @Override
     public void setTomsomiStartProduct(Product tomsomiStartProduct) {
         this.tomsomiStartProduct = tomsomiStartProduct;
     }
 
+    @Override
     public void setTomsomiEndProduct(Product tomsomiEndProduct) {
         this.tomsomiEndProduct = tomsomiEndProduct;
     }
 
+    @Override
     public void setNcepStartProduct(Product ncepStartProduct) {
         this.ncepStartProduct = ncepStartProduct;
     }
 
+    @Override
     public void setNcepEndProduct(Product ncepEndProduct) {
         this.ncepEndProduct = ncepEndProduct;
     }
 
+    @Override
     public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
 
+    @Override
     public void setSalinity(double salinity) {
         this.salinity = salinity;
     }
 
+    @Override
     public void setOzone(double ozone) {
         this.ozone = ozone;
     }
 
+    @Override
     public void setPress(double press) {
         this.press = press;
     }
@@ -204,10 +214,12 @@ public class C2rccMerisOperator extends PixelOperator {
         this.useEcmwfAuxData = useEcmwfAuxData;
     }
 
+    @Override
     public void setValidPixelExpression(String validPixelExpression) {
         this.validPixelExpression = validPixelExpression;
     }
 
+    @Override
     public void setOutputRtosa(boolean outputRtosa) {
         this.outputRtosa = outputRtosa;
     }

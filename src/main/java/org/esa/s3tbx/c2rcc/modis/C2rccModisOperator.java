@@ -10,6 +10,7 @@ import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.pressure_default;
 import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.reflec_wavelengths;
 
+import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
 import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
 import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
@@ -54,7 +55,7 @@ import java.io.IOException;
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
-public class C2rccModisOperator extends PixelOperator {
+public class C2rccModisOperator extends PixelOperator implements C2rccConfigurable{
 
     // Modis bands
     public static final int SOURCE_BAND_COUNT = reflec_wavelengths.length;
