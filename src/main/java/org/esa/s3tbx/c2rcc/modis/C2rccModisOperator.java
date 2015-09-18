@@ -1,9 +1,14 @@
 package org.esa.s3tbx.c2rcc.modis;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.ensureTimeCoding_Fallback;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.ozone_default;
+import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.pressure_default;
 import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.reflec_wavelengths;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
 import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
@@ -297,6 +302,7 @@ public class C2rccModisOperator extends PixelOperator {
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
 
+        ensureTimeCoding_Fallback(sourceProduct);
         initAtmosphericAuxdata();
     }
 

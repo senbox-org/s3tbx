@@ -1,6 +1,11 @@
 package org.esa.s3tbx.c2rcc.seawifs;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.ensureTimeCoding_Fallback;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.salinity_default;
@@ -16,7 +21,6 @@ import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.framework.datamodel.Band;
-import org.esa.snap.framework.datamodel.CenterTimeCoding;
 import org.esa.snap.framework.datamodel.GeoPos;
 import org.esa.snap.framework.datamodel.PixelPos;
 import org.esa.snap.framework.datamodel.Product;
@@ -313,12 +317,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator {
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
 
-        if (sourceProduct.getTimeCoding() == null) {
-            final ProductData.UTC startTime = sourceProduct.getStartTime();
-            final ProductData.UTC endTime = sourceProduct.getEndTime();
-            sourceProduct.setTimeCoding(new CenterTimeCoding(startTime.getMJD(), endTime.getMJD()));
-        }
-
+        ensureTimeCoding_Fallback(sourceProduct);
         initAtmosphericAuxdata();
 
         lazySolFluxLookup = new SolarFluxLazyLookup(algorithm.getDefaultSolarFlux());
