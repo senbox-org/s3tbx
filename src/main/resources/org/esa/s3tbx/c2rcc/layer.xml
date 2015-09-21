@@ -46,6 +46,7 @@
     <folder name="Menu">
         <folder name="Optical">
             <folder name="Thematic Water Processing">
+                <attr name="position" intvalue="400"/>
                 <file name="org-esa-s3tbx-c2rcc-OpAction.shadow">
                     <attr name="originalFile"
                           stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-OpAction.instance"/>
