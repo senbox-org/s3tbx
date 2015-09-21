@@ -1,15 +1,5 @@
 package org.esa.s3tbx.c2rcc.meris;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
-
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
 import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
@@ -40,6 +30,11 @@ import org.esa.snap.util.converters.BooleanExpressionConverter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
+
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.*;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.*;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
@@ -153,7 +148,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "false", description =
-                "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used",
+                "If selected, the ECMWF auxiliary data (ozon, air pressure) of the source product is used",
                                 label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
 
