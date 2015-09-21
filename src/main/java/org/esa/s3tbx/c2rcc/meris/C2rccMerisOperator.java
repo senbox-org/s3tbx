@@ -89,7 +89,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
                                  "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
+                                 "auxiliary data for calculations.",
                 optional = true,
                 label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
@@ -97,7 +97,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
+                                 "auxiliary data for calculations.",
                 optional = true,
                 label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
@@ -105,7 +105,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
+                                 "auxiliary data for calculations.",
                 optional = true,
                 label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
@@ -113,7 +113,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
+                                 "auxiliary data for calculations.",
                 optional = true,
                 label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
