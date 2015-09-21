@@ -14,7 +14,7 @@ public class C2rccMerisAlgorithmTest {
     public void testIt() throws Exception {
         C2rccMerisAlgorithm algo = new C2rccMerisAlgorithm();
 
-
+        algo.setSolflux(algo.DEFAULT_SOLAR_FLUX);
         C2rccMerisAlgorithm.Result result1 = algo.processPixel(
                 250, 575, 7.9456024, 54.150196,
                 new double[]{55.086716, 49.46522, 38.112446, 33.45525, 23.108776, 14.337405, 11.306171, 10.365329, 8.529731, 6.4291587, 2.262602, 5.485246, 3.394396, 3.1312065, 2.291696},

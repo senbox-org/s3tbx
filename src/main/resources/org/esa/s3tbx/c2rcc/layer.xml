@@ -8,8 +8,35 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2R/CC Processor"/>
-                <attr name="operatorName" stringvalue="C2RCC"/>
+                <attr name="operatorName" stringvalue="c2rcc"/>
                 <attr name="dialogTitle" stringvalue="C2R/CC Processor"/>
+                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
+                <attr name="helpId" stringvalue="c2rccScientificTool"/>
+            </file>
+            <file name="org-esa-s3tbx-c2rcc-meris-OpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="C2R/CC MERIS Processor"/>
+                <attr name="operatorName" stringvalue="meris.c2rcc"/>
+                <attr name="dialogTitle" stringvalue="C2R/CC MERIS Processor"/>
+                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
+                <attr name="helpId" stringvalue="c2rccScientificTool"/>
+            </file>
+            <file name="org-esa-s3tbx-c2rcc-modis-OpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="C2R/CC MODIS Processor"/>
+                <attr name="operatorName" stringvalue="modis.c2rcc"/>
+                <attr name="dialogTitle" stringvalue="C2R/CC MODIS Processor"/>
+                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
+                <attr name="helpId" stringvalue="c2rccScientificTool"/>
+            </file>
+            <file name="org-esa-s3tbx-c2rcc-seawifs-OpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="C2R/CC SeaWiFS Processor"/>
+                <attr name="operatorName" stringvalue="seawifs.c2rcc"/>
+                <attr name="dialogTitle" stringvalue="C2R/CC SeaWiFS Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
             </file>
@@ -19,11 +46,31 @@
     <folder name="Menu">
         <folder name="Optical">
             <folder name="Thematic Water Processing">
+                <attr name="position" intvalue="400"/>
                 <file name="org-esa-s3tbx-c2rcc-OpAction.shadow">
                     <attr name="originalFile"
                           stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-OpAction.instance"/>
-                    <attr name="position" intvalue="200"/>
+                    <attr name="position" intvalue="210"/>
                 </file>
+                <folder name="Specific C2R-CC Processors">
+                    <attr name="displayName" stringvalue="Specific C2R/CC Processors"/>
+                    <attr name="position" intvalue="211"/>
+                    <file name="org-esa-s3tbx-c2rcc-meris-OpAction.shadow">
+                        <attr name="originalFile"
+                              stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-meris-OpAction.instance"/>
+                        <attr name="position" intvalue="1"/>
+                    </file>
+                    <file name="org-esa-s3tbx-c2rcc-modis-OpAction.shadow">
+                        <attr name="originalFile"
+                              stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-modis-OpAction.instance"/>
+                        <attr name="position" intvalue="2"/>
+                    </file>
+                    <file name="org-esa-s3tbx-c2rcc-seawifs-OpAction.shadow">
+                        <attr name="originalFile"
+                              stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-seawifs-OpAction.instance"/>
+                        <attr name="position" intvalue="3"/>
+                    </file>
+                </folder>
             </folder>
         </folder>
     </folder>
