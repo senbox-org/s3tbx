@@ -25,7 +25,7 @@ import org.esa.snap.util.converters.BooleanExpressionConverter;
  * @author Norman Fomferra
  * @author Sabine Embacher
  */
-@OperatorMetadata(alias = "c2rcc", version = "0.2",
+@OperatorMetadata(alias = "c2rcc", version = "0.5",
             authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",

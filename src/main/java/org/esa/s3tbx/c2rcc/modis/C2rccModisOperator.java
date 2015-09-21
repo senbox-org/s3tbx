@@ -50,7 +50,7 @@ import java.io.IOException;
  *
  * @author Norman Fomferra, Sabine Embacher
  */
-@OperatorMetadata(alias = "modis.c2rcc", version = "0.2",
+@OperatorMetadata(alias = "modis.c2rcc", version = "0.5",
             authors = "Wolfgang Schoenfeld, Norman Fomferra (Brockmann Consult), Sabine Embacher (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
