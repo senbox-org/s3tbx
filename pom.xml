@@ -94,6 +94,26 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assembly/calvalus-bundle.xml</descriptor>
+                    </descriptors>
+                    <finalName>calvalus-bundle</finalName>
+                    <attach>false</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>calvalus-bundle-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

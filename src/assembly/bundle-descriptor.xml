@@ -1,0 +1,72 @@
+<bundleDescriptor>
+    <bundleName>c2rcc</bundleName>
+    <bundleVersion>0.5</bundleVersion>
+
+    <processorDescriptors>
+        <processorDescriptor>
+            <executableName>c2rcc-ncep</executableName>
+            <processorName>Case 2R/CoastColour Processor</processorName>
+            <processorVersion>0.5</processorVersion>
+            <descriptionHtml>
+                <![CDATA[<p>Performs atmospheric correction and IOP retrieval on MERIS, MODIS L1C, SeaWiFS L1C data products using
+                 an neural-network approach.</p>]]>
+            </descriptionHtml>
+            <defaultParameters></defaultParameters>
+            <outputFormats>BEAM-DIMAP</outputFormats>
+            <inputProductTypes>MERIS_L1B,MODIS_L1C,SEAWIFS_L1C</inputProductTypes>
+
+            <!--  TODO the graph need to pass these parameters through
+            <parameterDescriptors>
+                <parameterDescriptor>
+                    <name>validPixelExpression</name>
+                    <type>string</type>
+                    <description>Valid-pixel expression</description>
+                    <defaultValue></defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>salinity</name>
+                    <type>string</type>
+                    <description>DU (0, 100)</description>
+                    <defaultValue>35.0</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>temperature</name>
+                    <type>string</type>
+                    <description>Celsius (-50, 50)</description>
+                    <defaultValue>15.0</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>ozone</name>
+                    <type>string</type>
+                    <description>DU (0, 1000)</description>
+                    <defaultValue>330</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>press</name>
+                    <type>string</type>
+                    <description>Air Pressure hPa (0, 2000)</description>
+                    <defaultValue>1000</defaultValue>
+                </parameterDescriptor>
+            </parameterDescriptors>
+            -->
+            <jobConfig>
+                <jobParameter>
+                    <name>calvalus.calvalus.bundle</name>
+                    <value>calvalus-boe</value>
+                </jobParameter>
+                <jobParameter>
+                    <name>calvalus.beam.bundle</name>
+                    <value>snap-2.0-beta-0.8</value>
+                </jobParameter>
+                <jobParameter>
+                    <name>calvalus.system.snap.dataio.reader.tileHeight</name>
+                    <value>64</value>
+                </jobParameter>
+                <jobParameter>
+                    <name>calvalus.system.snap.dataio.reader.tileWidth</name>
+                    <value>*</value>
+                </jobParameter>
+            </jobConfig>
+        </processorDescriptor>
+    </processorDescriptors>
+</bundleDescriptor>

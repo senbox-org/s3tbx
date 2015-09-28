@@ -1,0 +1,94 @@
+#set( $productName = $inputPath.name )
+#if ( $productName.startsWith("MER_") )
+  #set( $productDate = $GlobalFunctions.parseDate("yyyyMMdd_HHmmss", $productName.substring(14, 29)) )
+#elseif( $productName.startsWith("A") || $productName.startsWith("S") )
+  #set( $productDate = $GlobalFunctions.parseDate("yyyyDDDHHmmss", $productName.substring(1, 14)) )
+#else
+  CALVALUS_SKIP_PROCESSING yes
+  #stop
+#end
+
+#set( $productCalendar = $GlobalFunctions.getCalendar() )
+$productCalendar.setTime($productDate)
+
+#set( $meteo0Calendar = $GlobalFunctions.getCalendar() )
+$meteo0Calendar.clear()
+$meteo0Calendar.set(1, $productCalendar.get(1))
+$meteo0Calendar.set(2, $productCalendar.get(2))
+$meteo0Calendar.set(5, $productCalendar.get(5))
+#set( $hours = ($productCalendar.get(11) / 6) * 6 )
+$meteo0Calendar.set(11, $hours)
+
+#set( $meteo1Calendar = $GlobalFunctions.getCalendar() )
+$meteo1Calendar.setTimeInMillis($meteo0Calendar.timeInMillis)
+$meteo1Calendar.add(11, 6)
+
+#macro(getNcepAuxdata $time $templates)
+#set( $debug = '')
+#set( $pathString = "" )
+#foreach ($template in $templates)
+#set( $pathString = $GlobalFunctions.formatDate($template, $time) )
+#set( $debug = $debug + ' ' + $pathString )
+#set( $path =  $GlobalFunctions.createPath($pathString) )
+#set( $fs = $path.getFileSystem($configuration) )
+#set( $pathExist = $fs.exists($path) )
+#if ( $pathExist )
+$pathString#break
+#end
+#end
+#if ( $pathString == "" )
+$debug
+CALVALUS_SKIP_PROCESSING yes
+#stop
+#end
+#end
+
+
+#set( $meteoA = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/N'yyyyDDDHH'_MET_NCEPR2_6h.hdf'" )
+#set( $meteoB = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/N'yyyyDDDHH'_MET_NCEPN_6h.hdf'" )
+#set( $meteoC = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDDHH'_NCEP.MET'" )
+#set( $meteoTemplates = [$meteoA, $meteoB, $meteoC] )
+
+#set( $ozone0Calendar = $GlobalFunctions.getCalendar() )
+$ozone0Calendar.clear()
+$ozone0Calendar.set(1, $productCalendar.get(1))
+$ozone0Calendar.set(2, $productCalendar.get(2))
+$ozone0Calendar.set(5, $productCalendar.get(5))
+
+#set( $ozone1Calendar = $GlobalFunctions.getCalendar() )
+$ozone1Calendar.setTimeInMillis($ozone0Calendar.timeInMillis)
+$ozone1Calendar.add(5, 1)
+
+#set( $ozoneA = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/N'yyyyDDD'00_O3_TOMSOMI_24h.hdf'" )
+#set( $ozoneB = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDD'00'DDD'23_TOVS.OZONE'" )
+#set( $ozoneC = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDD'00_O3_AURAOMI_24h.hdf'" )
+#set( $ozoneD = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDD'00'DDD'23_TOAST.OZONE'" )
+#set( $ozoneTemplates = [$ozoneA, $ozoneB, $ozoneC, $ozoneD] )
+
+<graph id="c2rcc">
+    <version>1.0</version>
+
+    <header>
+      <target refid="c2rcc" />
+      <source name="input" description="Meris, MODIS, SeaWIFS">${inputPath}</source>
+
+      <source name="ozone1">#getNcepAuxdata($ozone0Calendar.time $ozoneTemplates)</source>
+      <source name="ozone2">#getNcepAuxdata($ozone1Calendar.time $ozoneTemplates)</source>
+
+      <source name="ncep1">#getNcepAuxdata($meteo0Calendar.time $meteoTemplates)</source>
+      <source name="ncep2">#getNcepAuxdata($meteo1Calendar.time $meteoTemplates)</source>
+    </header>
+
+    <node id="c2rcc">
+        <operator>c2rcc</operator>
+        <sources>
+            <sourceProduct>input</sourceProduct>
+
+            <tomsomiStartProduct>ozone1</tomsomiStartProduct>
+            <tomsomiEndProduct>ozone2</tomsomiEndProduct>
+
+            <ncepStartProduct>ncep1</ncepStartProduct>
+            <ncepEndProduct>ncep2</ncepEndProduct>
+        </sources>
+    </node>
+</graph>
