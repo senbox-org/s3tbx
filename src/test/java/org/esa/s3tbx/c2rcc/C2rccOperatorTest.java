@@ -3,6 +3,8 @@ package org.esa.s3tbx.c2rcc;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
 import org.esa.snap.framework.dataio.ProductReader;
 import org.esa.snap.framework.dataio.ProductReaderPlugIn;
+import org.esa.snap.framework.datamodel.Band;
+import org.esa.snap.framework.datamodel.FlagCoding;
 import org.esa.snap.framework.datamodel.GeoCoding;
 import org.esa.snap.framework.datamodel.GeoPos;
 import org.esa.snap.framework.datamodel.PixelPos;
@@ -55,7 +57,12 @@ public class C2rccOperatorTest {
         source.addBand("atm_press", "20.0");
         source.addBand("dem_alt", "20.0");
         source.addBand("ozone", "20.0");
-        source.addBand("l1_flags", "-1", ProductData.TYPE_UINT8);
+        Band flagBand = source.addBand("l1_flags", "-1", ProductData.TYPE_UINT8);
+        FlagCoding l1FlagCoding = new FlagCoding("l1_flags");
+        l1FlagCoding.addFlag("INVALID", 1, "INVALID");
+        l1FlagCoding.addFlag("LAND_OCEAN", 2, "LAND or OCEAN");
+        source.getFlagCodingGroup().add(l1FlagCoding);
+        flagBand.setSampleCoding(l1FlagCoding);
 
         C2rccOperator operator = new C2rccOperator();
         operator.setSourceProduct(source);
