@@ -14,9 +14,6 @@
         <file>
             <source>src/assembly/c2rcc-ncep-graph.xml.vm</source>
         </file>
-        <!--<file>-->
-            <!--<source>src/assembly/ocnnrd-erainterim-graph.xml.vm</source>-->
-        <!--</file>-->
     </files>
 
     <dependencySets>

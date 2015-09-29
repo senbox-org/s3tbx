@@ -153,33 +153,26 @@ public class C2rccOperator extends Operator {
 
 
     private boolean isMeris(Product product) {
-        final String productType = product.getProductType();
-        final String formatName = product.getProductReader().getReaderPlugIn().getFormatNames()[0];
         if (isNotNullAndNotEmpty(sensorName)) {
             return "meris".equalsIgnoreCase(sensorName);
         } else {
-            return EnvisatConstants.ENVISAT_FORMAT_NAME.equals(formatName) && productType.startsWith("MER_RR__1P");
+            return C2rccMerisOperator.isValidInput(product);
         }
     }
 
     private boolean isModis(Product product) {
-        final String productType = product.getProductType();
-        final String formatName = product.getProductReader().getReaderPlugIn().getFormatNames()[0];
         if (isNotNullAndNotEmpty(sensorName)) {
             return "modis".equalsIgnoreCase(sensorName);
         } else {
-            return "SeaDAS-L2".equals(formatName) && productType.startsWith("Level 2");
+            return C2rccModisOperator.isValidInput(product);
         }
-
     }
 
     private boolean isSeawifs(Product product) {
-        final String productType = product.getProductType();
-        final String formatName = product.getProductReader().getReaderPlugIn().getFormatNames()[0];
         if (isNotNullAndNotEmpty(sensorName)) {
             return "seawifs".equalsIgnoreCase(sensorName);
         } else {
-            return "SeaDAS-L1".equals(formatName) && productType.startsWith("Generic Level 1B");
+            return C2rccSeaWiFSOperator.isValidInput(product);
         }
     }
 

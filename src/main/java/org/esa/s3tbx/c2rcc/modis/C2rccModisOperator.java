@@ -311,6 +311,30 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         initAtmosphericAuxdata();
     }
 
+    public static boolean isValidInput(Product product) {
+        for (int wl : reflec_wavelengths) {
+            if (!product.containsBand("rhot_" + wl)) {
+                return false;
+            }
+        }
+        if (!product.containsBand("l2_flags")) {
+            return false;
+        }
+        if (!product.containsBand("solz")) {
+            return false;
+        }
+        if (!product.containsBand("sola")) {
+            return false;
+        }
+        if (!product.containsBand("senz")) {
+            return false;
+        }
+        if (!product.containsBand("sena")) {
+            return false;
+        }
+        return true;
+    }
+
     private void initAtmosphericAuxdata() {
         if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
             try {

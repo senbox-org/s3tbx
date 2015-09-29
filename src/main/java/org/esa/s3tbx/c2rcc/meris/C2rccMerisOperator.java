@@ -371,6 +371,39 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         }
     }
 
+    public static boolean isValidInput(Product product) {
+        for (int i = 0; i < BAND_COUNT; i++) {
+            if (!product.containsBand("radiance_" + (i + 1))) {
+                return false;
+            }
+        }
+        if (!product.containsBand("l1_flags")) {
+            return false;
+        }
+        if (!product.containsRasterDataNode("dem_alt")) {
+            return false;
+        }
+        if (!product.containsRasterDataNode("sun_zenith")) {
+            return false;
+        }
+        if (!product.containsRasterDataNode("sun_azimuth")) {
+            return false;
+        }
+        if (!product.containsRasterDataNode("view_zenith")) {
+            return false;
+        }
+        if (!product.containsRasterDataNode("view_azimuth")) {
+            return false;
+        }
+        if (!product.containsRasterDataNode("atm_press")) {
+            return false;
+        }
+        if (!product.containsRasterDataNode("ozone")) {
+            return false;
+        }
+        return true;
+    }
+
     private void initAtmosphericAuxdata() {
         if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
             try {

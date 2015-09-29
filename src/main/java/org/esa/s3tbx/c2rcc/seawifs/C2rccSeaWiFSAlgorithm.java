@@ -1,6 +1,5 @@
 package org.esa.s3tbx.c2rcc.seawifs;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.acos;
 import static java.lang.Math.cos;
 import static java.lang.Math.log;
@@ -11,7 +10,6 @@ import static org.esa.s3tbx.ArrayMath.a_div;
 import static org.esa.s3tbx.ArrayMath.a_exp;
 import static org.esa.s3tbx.ArrayMath.a_max;
 import static org.esa.s3tbx.ArrayMath.a_min;
-import static org.esa.s3tbx.ArrayMath.a_mul;
 
 import org.esa.snap.framework.gpf.OperatorException;
 import org.esa.snap.nn.NNffbpAlphaTabFast;
@@ -117,9 +115,7 @@ public class C2rccSeaWiFSAlgorithm {
         this.correctedSolarFlux = correctedSolarFlux;
     }
 
-    public Result processPixel(int px, int py,
-                               double lat, double lon,
-                               double[] toa_rad,
+    public Result processPixel(double[] toa_ref,
                                double sun_zeni,
                                double sun_azi,
                                double view_zeni,
@@ -151,24 +147,18 @@ public class C2rccSeaWiFSAlgorithm {
         double y = sin_view * sin_azi_diff;
         double z = cos_view;
 
-        toa_rad = a_mul(toa_rad, 10.0);
-        double[] ref_toa = new double[toa_rad.length];
-        for (int i = 0; i < toa_rad.length; i++) {
-            ref_toa[i] = PI * toa_rad[i] / correctedSolarFlux[i] / cos_sun;
-        }
-
         //*** (9.3.1) ozone correction ***/
         double model_ozone = 0;
 
-        double[] r_tosa = new double[ref_toa.length];
-        double[] log_rtosa = new double[ref_toa.length];
-        for (int i = 0; i < ref_toa.length; i++) {
+        double[] r_tosa = new double[toa_ref.length];
+        double[] log_rtosa = new double[toa_ref.length];
+        for (int i = 0; i < toa_ref.length; i++) {
 
             double trans_ozoned12 = Math.exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_sun);
             double trans_ozoneu12 = Math.exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_view);
             double trans_ozone12 = trans_ozoned12 * trans_ozoneu12;
 
-            double r_tosa_oz = ref_toa[i] / trans_ozone12;
+            double r_tosa_oz = toa_ref[i] / trans_ozone12;
 
             r_tosa[i] = r_tosa_oz;
             log_rtosa[i] = log(r_tosa[i]);

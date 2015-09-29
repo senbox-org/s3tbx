@@ -126,7 +126,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-                defaultValue = "L_865 * 10 * PI / 957.6122143 / cos(rad(solz)) > 0.25",
+                defaultValue = "rhot__865 > 0.25",
                 converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
@@ -186,9 +186,9 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
 
-        double[] radiances = new double[WL_BAND_COUNT];
+        double[] toa_ref = new double[WL_BAND_COUNT];
         for (int i = 0; i < WL_BAND_COUNT; i++) {
-            radiances[i] = sourceSamples[i].getDouble();
+            toa_ref[i] = sourceSamples[i].getDouble();
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
@@ -207,7 +207,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         final double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
 
         C2rccSeaWiFSAlgorithm.Result result = algorithm.processPixel(
-                    x, y, lat, lon, radiances,
+                    toa_ref,
                     sun_zeni, sun_azi,
                     view_zeni, view_azi,
                     dem_alt,
@@ -249,7 +249,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         sc.setValidPixelMask(validPixelExpression);
         for (int i = 0; i < WL_BAND_COUNT; i++) {
             final int wavelength = seawifsWavelengths[i];
-            sc.defineSample(i, "L_" + wavelength);
+            sc.defineSample(i, "rhot_" + wavelength);
         }
 //        sc.defineSample(DEM_ALT_IX, "dem_alt"); // todo
         sc.defineSample(SUN_ZEN_IX, "solz");
@@ -294,14 +294,14 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
-        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, "L_", seawifsWavelengths, outputRtosa);
+        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, "rhot_", seawifsWavelengths, outputRtosa);
     }
 
     @Override
     protected void prepareInputs() throws OperatorException {
         for (int i = 0; i < WL_BAND_COUNT; i++) {
             final int wavelength = seawifsWavelengths[i];
-            assertSourceBand("L_" + wavelength);
+            assertSourceBand("rhot_" + wavelength);
         }
         assertSourceBand("l2_flags");
         assertSourceBandAndRemoveValidExpression("solz");
@@ -326,6 +326,31 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         initAtmosphericAuxdata();
 
         lazySolFluxLookup = new SolarFluxLazyLookup(algorithm.getDefaultSolarFlux());
+    }
+
+    public static boolean isValidInput(Product product) {
+        for (int i = 0; i < WL_BAND_COUNT; i++) {
+            final int wl = seawifsWavelengths[i];
+            if (!product.containsBand("rhot_" + wl)) {
+                return false;
+            }
+        }
+        if (!product.containsBand("l2_flags")) {
+            return false;
+        }
+        if (!product.containsBand("solz")) {
+            return false;
+        }
+        if (!product.containsBand("sola")) {
+            return false;
+        }
+        if (!product.containsBand("senz")) {
+            return false;
+        }
+        if (!product.containsBand("sena")) {
+            return false;
+        }
+        return true;
     }
 
     private void initAtmosphericAuxdata() {
