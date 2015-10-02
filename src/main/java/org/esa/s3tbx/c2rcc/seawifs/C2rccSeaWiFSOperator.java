@@ -126,7 +126,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-                defaultValue = "rhot_865 > 0.25",
+                defaultValue = "!(l2_flags.LAND || rhot_865 > 0.25)",
                 converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
