@@ -6,7 +6,7 @@
         <folder name="Operators">
             <file name="org-esa-s3tbx-c2rcc-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.DefaultOperatorAction.create"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2R/CC Processor"/>
                 <attr name="operatorName" stringvalue="c2rcc"/>
                 <attr name="dialogTitle" stringvalue="C2R/CC Processor"/>
@@ -15,7 +15,7 @@
             </file>
             <file name="org-esa-s3tbx-c2rcc-meris-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.DefaultOperatorAction.create"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2R/CC MERIS Processor"/>
                 <attr name="operatorName" stringvalue="meris.c2rcc"/>
                 <attr name="dialogTitle" stringvalue="C2R/CC MERIS Processor"/>
@@ -24,7 +24,7 @@
             </file>
             <file name="org-esa-s3tbx-c2rcc-modis-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.DefaultOperatorAction.create"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2R/CC MODIS Processor"/>
                 <attr name="operatorName" stringvalue="modis.c2rcc"/>
                 <attr name="dialogTitle" stringvalue="C2R/CC MODIS Processor"/>
@@ -33,7 +33,7 @@
             </file>
             <file name="org-esa-s3tbx-c2rcc-seawifs-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.DefaultOperatorAction.create"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2R/CC SeaWiFS Processor"/>
                 <attr name="operatorName" stringvalue="seawifs.c2rcc"/>
                 <attr name="dialogTitle" stringvalue="C2R/CC SeaWiFS Processor"/>
