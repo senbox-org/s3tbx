@@ -3,6 +3,7 @@ package org.esa.s3tbx.c2rcc;
 import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
 import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
 import org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSOperator;
+import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -10,7 +11,6 @@ import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
-import org.esa.snap.framework.datamodel.Product;
 import org.esa.snap.util.StringUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 

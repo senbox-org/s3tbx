@@ -1,12 +1,16 @@
 package org.esa.s3tbx.c2rcc.util;
 
-import static org.junit.Assert.*;
-
-import org.esa.snap.framework.datamodel.ProductData;
-import org.junit.*;
+import org.esa.snap.core.datamodel.ProductData;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.text.ParseException;
 import java.util.Calendar;
+
+import static org.junit.Assert.*;
 
 public class SolarFluxCorrectionFactorCalculatorTest {
 

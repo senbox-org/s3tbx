@@ -1,16 +1,14 @@
 package org.esa.s3tbx.c2rcc.util;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
-import org.esa.snap.framework.datamodel.ProductData;
+import org.esa.snap.core.datamodel.ProductData;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import static java.lang.Math.*;
 
 public class SolarFluxCorrectionFactorCalculator {
 

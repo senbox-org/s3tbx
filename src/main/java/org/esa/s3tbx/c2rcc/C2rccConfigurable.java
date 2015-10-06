@@ -1,6 +1,6 @@
 package org.esa.s3tbx.c2rcc;
 
-import org.esa.snap.framework.datamodel.Product;
+import org.esa.snap.core.datamodel.Product;
 
 public interface C2rccConfigurable {
 

@@ -1,7 +1,7 @@
 package org.esa.s3tbx.c2rcc.ancillary;
 
-import org.esa.snap.framework.datamodel.Product;
-import org.esa.snap.framework.datamodel.ProductData;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 
 import java.io.File;
 import java.io.IOException;

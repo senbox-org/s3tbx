@@ -1,10 +1,12 @@
 package org.esa.s3tbx.c2rcc.ancillary;
 
-import static junit.framework.Assert.*;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.esa.snap.framework.datamodel.GeoPos;
-import org.esa.snap.framework.datamodel.PixelPos;
-import org.junit.*;
+import static junit.framework.Assert.*;
 
 /**
  * Created by Sabine on 03.09.2015.

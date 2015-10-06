@@ -1,15 +1,15 @@
 package org.esa.s3tbx.c2rcc.ancillary;
 
-import org.esa.snap.framework.dataio.ProductSubsetDef;
-import org.esa.snap.framework.datamodel.AbstractGeoCoding;
-import org.esa.snap.framework.datamodel.Band;
-import org.esa.snap.framework.datamodel.GeoCoding;
-import org.esa.snap.framework.datamodel.GeoPos;
-import org.esa.snap.framework.datamodel.PixelPos;
-import org.esa.snap.framework.datamodel.Product;
-import org.esa.snap.framework.datamodel.ProductData;
-import org.esa.snap.framework.datamodel.Scene;
-import org.esa.snap.framework.dataop.maptransf.Datum;
+import org.esa.snap.core.dataio.ProductSubsetDef;
+import org.esa.snap.core.datamodel.AbstractGeoCoding;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.Scene;
+import org.esa.snap.core.dataop.maptransf.Datum;
 import org.esa.snap.util.SystemUtils;
 
 import java.io.IOException;

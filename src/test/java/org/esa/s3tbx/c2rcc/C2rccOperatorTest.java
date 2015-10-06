@@ -1,21 +1,21 @@
 package org.esa.s3tbx.c2rcc;
 
+import org.esa.snap.core.dataio.ProductReader;
+import org.esa.snap.core.dataio.ProductReaderPlugIn;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.FlagCoding;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.dataop.maptransf.Datum;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
-import org.esa.snap.framework.dataio.ProductReader;
-import org.esa.snap.framework.dataio.ProductReaderPlugIn;
-import org.esa.snap.framework.datamodel.Band;
-import org.esa.snap.framework.datamodel.FlagCoding;
-import org.esa.snap.framework.datamodel.GeoCoding;
-import org.esa.snap.framework.datamodel.GeoPos;
-import org.esa.snap.framework.datamodel.PixelPos;
-import org.esa.snap.framework.datamodel.Product;
-import org.esa.snap.framework.datamodel.ProductData;
-import org.esa.snap.framework.dataop.maptransf.Datum;
 import org.junit.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**

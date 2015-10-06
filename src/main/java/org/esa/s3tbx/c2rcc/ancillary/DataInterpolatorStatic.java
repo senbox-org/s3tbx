@@ -1,8 +1,8 @@
 package org.esa.s3tbx.c2rcc.ancillary;
 
-import org.esa.snap.framework.datamodel.Band;
-import org.esa.snap.framework.datamodel.GeoCoding;
-import org.esa.snap.framework.datamodel.Product;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.Product;
 
 public class DataInterpolatorStatic extends DataInterpolator {
 

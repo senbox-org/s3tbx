@@ -1,8 +1,8 @@
 package org.esa.s3tbx.c2rcc;
 
-import org.esa.snap.framework.datamodel.ConstantTimeCoding;
-import org.esa.snap.framework.datamodel.Product;
-import org.esa.snap.framework.datamodel.ProductData;
+import org.esa.snap.core.datamodel.ConstantTimeCoding;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 
 public class C2rccCommons {
 

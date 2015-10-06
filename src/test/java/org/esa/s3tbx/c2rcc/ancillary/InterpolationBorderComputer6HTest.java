@@ -1,9 +1,10 @@
 package org.esa.s3tbx.c2rcc.ancillary;
 
-import static junit.framework.Assert.assertEquals;
+import org.esa.snap.core.datamodel.ProductData;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.esa.snap.framework.datamodel.ProductData;
-import org.junit.*;
+import static junit.framework.Assert.*;
 
 /**
  * Created by Sabine on 07.09.2015.
