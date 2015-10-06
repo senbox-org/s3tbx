@@ -11,10 +11,10 @@ import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
-import org.esa.snap.util.StringUtils;
-import org.esa.snap.util.converters.BooleanExpressionConverter;
+import org.esa.snap.core.util.StringUtils;
+import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
-import static org.esa.snap.util.StringUtils.*;
+import static org.esa.snap.core.util.StringUtils.*;
 
 /**
  * The Case 2 Regional / CoastColour Operator for MERIS, MODIS, SeaWiFS, and VIIRS.

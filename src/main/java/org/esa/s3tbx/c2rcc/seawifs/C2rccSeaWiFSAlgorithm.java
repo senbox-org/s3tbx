@@ -1,8 +1,8 @@
 package org.esa.s3tbx.c2rcc.seawifs;
 
 import org.esa.snap.core.gpf.OperatorException;
+import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.nn.NNffbpAlphaTabFast;
-import org.esa.snap.util.BitSetter;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -23,8 +23,8 @@ import org.esa.snap.core.gpf.pointop.Sample;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
-import org.esa.snap.util.StringUtils;
-import org.esa.snap.util.converters.BooleanExpressionConverter;
+import org.esa.snap.core.util.StringUtils;
+import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.io.File;
 import java.io.IOException;

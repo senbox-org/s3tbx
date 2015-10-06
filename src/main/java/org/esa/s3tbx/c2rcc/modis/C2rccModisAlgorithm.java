@@ -1,19 +1,15 @@
 package org.esa.s3tbx.c2rcc.modis;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.exp;
-import static java.lang.Math.sin;
-import static java.lang.Math.toDegrees;
-import static java.lang.Math.toRadians;
-import static org.esa.s3tbx.ArrayMath.*;
-
+import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.nn.NNffbpAlphaTabFast;
-import org.esa.snap.util.BitSetter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import static java.lang.Math.*;
+import static org.esa.s3tbx.ArrayMath.*;
 
 /**
  * @author Wolfgang Schoenfeld
