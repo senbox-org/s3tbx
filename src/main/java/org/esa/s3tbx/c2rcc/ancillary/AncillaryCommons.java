@@ -1,7 +1,7 @@
 package org.esa.s3tbx.c2rcc.ancillary;
 
+import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.framework.datamodel.ProductData;
-import org.esa.snap.framework.gpf.OperatorException;
 
 import java.util.Calendar;
 

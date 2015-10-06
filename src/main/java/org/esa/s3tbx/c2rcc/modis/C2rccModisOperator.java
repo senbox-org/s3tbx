@@ -1,15 +1,5 @@
 package org.esa.s3tbx.c2rcc.modis;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.ensureTimeCoding_Fallback;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.ozone_default;
-import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.pressure_default;
-import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.reflec_wavelengths;
-
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
 import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
@@ -18,26 +8,30 @@ import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
+import org.esa.snap.core.gpf.OperatorException;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.annotations.OperatorMetadata;
+import org.esa.snap.core.gpf.annotations.Parameter;
+import org.esa.snap.core.gpf.annotations.SourceProduct;
+import org.esa.snap.core.gpf.pointop.PixelOperator;
+import org.esa.snap.core.gpf.pointop.ProductConfigurer;
+import org.esa.snap.core.gpf.pointop.Sample;
+import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
+import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
+import org.esa.snap.core.gpf.pointop.WritableSample;
 import org.esa.snap.framework.datamodel.GeoCoding;
 import org.esa.snap.framework.datamodel.GeoPos;
 import org.esa.snap.framework.datamodel.PixelPos;
 import org.esa.snap.framework.datamodel.Product;
-import org.esa.snap.framework.gpf.OperatorException;
-import org.esa.snap.framework.gpf.OperatorSpi;
-import org.esa.snap.framework.gpf.annotations.OperatorMetadata;
-import org.esa.snap.framework.gpf.annotations.Parameter;
-import org.esa.snap.framework.gpf.annotations.SourceProduct;
-import org.esa.snap.framework.gpf.pointop.PixelOperator;
-import org.esa.snap.framework.gpf.pointop.ProductConfigurer;
-import org.esa.snap.framework.gpf.pointop.Sample;
-import org.esa.snap.framework.gpf.pointop.SourceSampleConfigurer;
-import org.esa.snap.framework.gpf.pointop.TargetSampleConfigurer;
-import org.esa.snap.framework.gpf.pointop.WritableSample;
 import org.esa.snap.util.StringUtils;
 import org.esa.snap.util.converters.BooleanExpressionConverter;
 
 import java.io.File;
 import java.io.IOException;
+
+import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
+import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.*;
 
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
