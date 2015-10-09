@@ -1,7 +1,7 @@
 package org.esa.s3tbx.c2rcc.modis;
 
+import org.esa.snap.core.nn.NNffbpAlphaTabFast;
 import org.esa.snap.core.util.BitSetter;
-import org.esa.snap.nn.NNffbpAlphaTabFast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
