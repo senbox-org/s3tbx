@@ -192,9 +192,9 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
             toa_ref[i] = sourceSamples[i].getDouble();
         }
 
-        GeoCoding geoCoding = sourceProduct.getGeoCoding();
+        GeoCoding geoCoding = sourceProduct.getSceneGeoCoding();
         PixelPos pixelPos = new PixelPos(x + 0.5, y + 0.5);
-        double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
+        double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
         GeoPos geoPos = geoCoding.getGeoPos(pixelPos, new GeoPos());
 
         double ozone = fetchOzone(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
@@ -288,7 +288,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         }
         assertSourceBand("l2_flags");
 
-        if (sourceProduct.getGeoCoding() == null) {
+        if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
 

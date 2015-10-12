@@ -7,13 +7,13 @@ import org.esa.snap.core.datamodel.ProductData;
 public class C2rccCommons {
 
     public static void ensureTimeCoding_Fallback(Product product) {
-        if (product.getTimeCoding() == null) {
+        if (product.getSceneTimeCoding() == null) {
             final ProductData.UTC startTime = product.getStartTime();
             final ProductData.UTC endTime = product.getEndTime();
             if (startTime != null && endTime != null) {
                 double startTimeMJD = startTime.getMJD();
                 double constantTime = (endTime.getMJD() - startTimeMJD) / 2.0 + startTimeMJD;
-                product.setTimeCoding(new ConstantTimeCoding(constantTime));
+                product.setSceneTimeCoding(new ConstantTimeCoding(constantTime));
             }
         }
     }

@@ -30,7 +30,7 @@ public class DataInterpolatorTest_ancilaryGap {
 
     @Test
     public void testInitializing() {
-        assertNull(p1.getGeoCoding());
+        assertNull(p1.getSceneGeoCoding());
     }
 
     @Test

@@ -32,7 +32,7 @@ public class C2rccOperatorTest {
 
         Product source = new Product("test", "MER_RR__1P", 10, 10);
         source.setProductReader(readerMock);
-        source.setGeoCoding(getDummyGeoCoding());
+        source.setSceneGeoCoding(getDummyGeoCoding());
         source.setStartTime(ProductData.UTC.parse("23-MAY-2010 09:59:12.278508"));
         source.setEndTime(ProductData.UTC.parse("23-MAY-2010 10:02:32.200875"));
         source.addBand("radiance_1", "20.0");

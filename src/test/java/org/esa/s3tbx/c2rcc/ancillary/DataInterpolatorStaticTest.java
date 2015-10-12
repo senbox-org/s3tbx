@@ -36,8 +36,8 @@ public class DataInterpolatorStaticTest {
 
     @Test
     public void testInitializing() {
-        assertNull(p1.getGeoCoding());
-        assertNull(p2.getGeoCoding());
+        assertNull(p1.getSceneGeoCoding());
+        assertNull(p2.getSceneGeoCoding());
     }
 
     @Test

@@ -51,7 +51,7 @@ public abstract class DataInterpolator {
         final int width;
         final int height;
         if (product != null) {
-            final GeoCoding geoCoding = product.getGeoCoding();
+            final GeoCoding geoCoding = product.getSceneGeoCoding();
             if (geoCoding != null) {
                 return geoCoding;
             }

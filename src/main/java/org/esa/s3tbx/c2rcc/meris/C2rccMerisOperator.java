@@ -228,7 +228,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
-        final double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
+        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
         if (useDefaultSolarFlux) {
             ProductData.UTC utc = new ProductData.UTC(mjd);
             Calendar calendar = utc.getAsCalendar();
@@ -238,7 +238,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             algorithm.setSolflux(correctedSolFlux);
         }
 
-        GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(pixelPos, null);
+        GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
         double atmPress;
@@ -341,7 +341,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         }
         assertSourceBand("l1_flags");
 
-        if (sourceProduct.getGeoCoding() == null) {
+        if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
 

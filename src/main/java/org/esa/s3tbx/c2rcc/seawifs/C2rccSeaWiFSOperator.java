@@ -184,8 +184,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
-        GeoPos geoPos = sourceProduct.getGeoCoding().getGeoPos(pixelPos, null);
-        final double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
+        GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
+        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
         setDistanceCorrectedSolarFluxToAlgorithm(pixelPos);
         final double lat = geoPos.getLat();
         final double lon = geoPos.getLon();
@@ -229,7 +229,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     }
 
     private void setDistanceCorrectedSolarFluxToAlgorithm(PixelPos pixelPos) {
-        final double mjd = sourceProduct.getTimeCoding().getMJD(pixelPos);
+        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
         final Calendar calendar = new ProductData.UTC(mjd).getAsCalendar();
         final int doy = calendar.get(Calendar.DAY_OF_YEAR);
         final int year = calendar.get(Calendar.YEAR);
@@ -301,7 +301,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         assertSourceBandAndRemoveValidExpression("senz");
         assertSourceBandAndRemoveValidExpression("sena");
 
-        if (sourceProduct.getGeoCoding() == null) {
+        if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
 
