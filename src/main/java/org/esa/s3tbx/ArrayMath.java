@@ -1,5 +1,7 @@
 package org.esa.s3tbx;
 
+import static java.lang.Math.abs;
+
 import com.bc.ceres.core.Assert;
 
 import java.util.stream.DoubleStream;
@@ -91,4 +93,14 @@ public class ArrayMath {
         }
         return v;
     }
+
+    public static double[] a_abs(double[] x, double[] y) {
+        Assert.argument(x.length == y.length);
+        double[] z = new double[x.length];
+        for (int i = 0; i < x.length; i++) {
+            z[i] = abs(x[i] - y[i]);
+        }
+        return z;
+    }
+
 }
