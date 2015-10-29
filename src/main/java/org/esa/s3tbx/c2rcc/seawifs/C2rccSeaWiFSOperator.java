@@ -7,13 +7,11 @@ import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
-import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -30,7 +28,6 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 
 import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
@@ -59,7 +56,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
     // sources
 //    public static final int DEM_ALT_IX = WL_BAND_COUNT + 0;
-    public static final int SUN_ZEN_IX = WL_BAND_COUNT + 0;
+    public static final int SUN_ZEN_IX = WL_BAND_COUNT;
     public static final int SUN_AZI_IX = WL_BAND_COUNT + 1;
     public static final int VIEW_ZEN_IX = WL_BAND_COUNT + 2;
     public static final int VIEW_AZI_IX = WL_BAND_COUNT + 3;
@@ -144,7 +141,6 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     private boolean outputRtosa;
 
     private C2rccSeaWiFSAlgorithm algorithm;
-    private SolarFluxLazyLookup lazySolFluxLookup;
     private AtmosphericAuxdata atmosphericAuxdata;
 
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
@@ -186,7 +182,6 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
-        setDistanceCorrectedSolarFluxToAlgorithm(pixelPos);
         final double lat = geoPos.getLat();
         final double lon = geoPos.getLon();
 
@@ -226,14 +221,6 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
                 targetSamples[RTOSA_OUT_1_IX + i].set(result.rtosa_out[i]);
             }
         }
-    }
-
-    private void setDistanceCorrectedSolarFluxToAlgorithm(PixelPos pixelPos) {
-        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
-        final Calendar calendar = new ProductData.UTC(mjd).getAsCalendar();
-        final int doy = calendar.get(Calendar.DAY_OF_YEAR);
-        final int year = calendar.get(Calendar.YEAR);
-        algorithm.setCorrectedSolarFlux(lazySolFluxLookup.getCorrectedFluxFor(doy, year));
     }
 
     @Override
@@ -317,7 +304,6 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         ensureTimeCoding_Fallback(sourceProduct);
         initAtmosphericAuxdata();
 
-        lazySolFluxLookup = new SolarFluxLazyLookup(algorithm.getDefaultSolarFlux());
     }
 
     public static boolean isValidInput(Product product) {

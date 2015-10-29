@@ -65,26 +65,8 @@ public class C2rccSeaWiFSAlgorithm {
 
     static final int[] seawifsWavelengths = {412, 443, 490, 510, 555, 670, 765, 865};
 
-    // default nasa solar flux from waterradiance project
-    // derived from cahalan table from Kerstin tb 2013-11-22
-    private final static double[] DEFAULT_SOLAR_FLUX = new double[]{
-                1735.518167,   // 412nm
-                1858.404314,   // 443nm
-                1981.076667,   // 490nm
-                1881.566829,   // 510nm
-                1874.005,      // 555nm
-                1537.254783,   // 670nm
-                1230.04,       // 765nm
-                957.6122143    // 865nm
-    };
-
-    public static double[] getDefaultSolarFlux() {
-        return Arrays.copyOf(DEFAULT_SOLAR_FLUX, DEFAULT_SOLAR_FLUX.length);
-    }
-
     double salinity = salinity_default;
     double temperature = temperature_default;
-    double[] correctedSolarFlux;
 
     // (5) thresholds for flags
     double[] thresh_rtosaaaNNrat = {0.95, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
@@ -101,10 +83,6 @@ public class C2rccSeaWiFSAlgorithm {
 
     public void setSalinity(double salinity) {
         this.salinity = salinity;
-    }
-
-    public void setCorrectedSolarFlux(double[] correctedSolarFlux) {
-        this.correctedSolarFlux = correctedSolarFlux;
     }
 
     public Result processPixel(double[] toa_ref,

@@ -22,6 +22,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -29,6 +34,20 @@ import java.util.Arrays;
  * @author Norman Fomferra
  */
 public class C2rccMerisAlgorithm {
+
+    public final int IDX_aa_rtosa_nn_bn7_9 = 0;
+    public final int IDX_inv_ac_nn9 = 1;
+    public final int IDX_inv_nn7 = 2;
+    public final int IDX_for_nn9b = 3;
+    public final int IDX_kd2_nn7 = 4;
+    public final int IDX_unc_biasc_nn1 = 5;
+    public final int IDX_unc_biasc_atotkd_nn = 6;
+    public final int IDX_rw_norm_nn = 7;
+    public final int IDX_inv_trans_nn = 8;
+    public final int IDX_rpath_nn9 = 9;
+
+    private final ArrayList<String> nnNames;
+
 
     // todo RD20151007 warnings durchsehen
 
@@ -125,7 +144,6 @@ public class C2rccMerisAlgorithm {
 
     double salinity = 35.0;
     double temperature = 15.0;
-    double[] solflux;
 
     private boolean outputRtoaGcAann;
     private boolean outputRpath;
@@ -143,8 +161,8 @@ public class C2rccMerisAlgorithm {
 
     // (5) thresholds for flags
     double log_threshfak_oor = 0.02; // == ~1.02, for log variables
-    double thresh_absd_log_rtosa = 0.02; // threshold for rtosa_oos (max abs log difference)
-    double thresh_rwlogslope = 0.05;
+    double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
+    double thresh_rwlogslope;  // threshold for rwa_oos
 
     final ThreadLocal<NNffbpAlphaTabFast> inv_nn7; // NN Rw -< IOPs input 10 bands, 5 IOPs
     final ThreadLocal<NNffbpAlphaTabFast> inv_ac_nn9; // NN Rtosa -> Rw 12 bands
@@ -158,6 +176,13 @@ public class C2rccMerisAlgorithm {
     final ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn; // IOPs (5) -> unc_adg, unc_atot, unc_btot, unc_kd489, unc_kdmin
     final ThreadLocal<NNffbpAlphaTabFast> rw_norm_nn; // Rw (10) -> Rwn (10)
 
+    public void setThresh_absd_log_rtosa(double thresh_absd_log_rtosa) {
+        this.thresh_absd_log_rtosa = thresh_absd_log_rtosa;
+    }
+
+    public void setThresh_rwlogslope(double thresh_rwlogslope) {
+        this.thresh_rwlogslope = thresh_rwlogslope;
+    }
 
     public void setOutputRtoaGcAann(boolean outputRtoaGcAann) {
         this.outputRtoaGcAann = outputRtoaGcAann;
@@ -203,13 +228,10 @@ public class C2rccMerisAlgorithm {
         this.salinity = salinity;
     }
 
-    public void setSolflux(double[] solflux) {
-        this.solflux = solflux;
-    }
-
     public Result processPixel(int px, int py,
                                double lat, double lon,
                                double[] toa_rad,
+                               double[] solflux,
                                double sun_zeni,
                                double sun_azi,
                                double view_zeni,
@@ -568,13 +590,32 @@ public class C2rccMerisAlgorithm {
                           unc_abs_chl, unc_abs_tsm, unc_abs_kd489, unc_abs_kdmin, flags);
     }
 
-    C2rccMerisAlgorithm() throws IOException {
+    C2rccMerisAlgorithm(final String[] nnFilePaths) throws IOException {
+        nnNames = new ArrayList<>();
+
+        final String[] paths;
+        final boolean isDefault = nnFilePaths == null;
+        if (isDefault) {
+            paths = new String[10];
+            paths[IDX_aa_rtosa_nn_bn7_9] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
+            paths[IDX_inv_ac_nn9] = "meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net";
+            paths[IDX_inv_nn7] = "meris/coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net";
+            paths[IDX_for_nn9b] = "meris/coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net";
+            paths[IDX_kd2_nn7] = "meris/coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net";
+            paths[IDX_unc_biasc_nn1] = "meris/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net";
+            paths[IDX_unc_biasc_atotkd_nn] = "meris/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net";
+            paths[IDX_rw_norm_nn] = "meris/coastcolour_wat_20140318/norma_net_20150307/37x57x17_76.8.net";
+            paths[IDX_inv_trans_nn] = "meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net";
+            paths[IDX_rpath_nn9] = "meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net";
+        } else {
+            paths = nnFilePaths;
+        }
 
         // rtosa auto NN
-        aa_rtosa_nn_bn7_9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net");
+        aa_rtosa_nn_bn7_9 = nnhs(paths[IDX_aa_rtosa_nn_bn7_9], isDefault);
 
         // rtosa-rw NN
-        inv_ac_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net");
+        inv_ac_nn9 = nnhs(paths[IDX_inv_ac_nn9], isDefault);
 
         // rtosa - rpath NN
         //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
@@ -583,34 +624,52 @@ public class C2rccMerisAlgorithm {
         //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
 
         // rw-IOP inverse NN
-        inv_nn7 = nnhs("meris/coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net");
+        inv_nn7 = nnhs(paths[IDX_inv_nn7], isDefault);
 
         // IOP-rw forward NN
         //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
-        for_nn9b = nnhs("meris/coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
+        for_nn9b = nnhs(paths[IDX_for_nn9b], isDefault); //only 10 MERIS bands
 
         // rw-kd NN, output are kdmin and kd449
         //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
-        kd2_nn7 = nnhs("meris/coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
+        kd2_nn7 = nnhs(paths[IDX_kd2_nn7], isDefault);
 
         // uncertainty NN for IOPs after bias corretion
         //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
-        unc_biasc_nn1 = nnhs("meris/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
+        unc_biasc_nn1 = nnhs(paths[IDX_unc_biasc_nn1]   , isDefault);
         // uncertainty for atot, adg, btot and kd
         //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
-        unc_biasc_atotkd_nn = nnhs("meris/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
+        unc_biasc_atotkd_nn = nnhs(paths[IDX_unc_biasc_atotkd_nn]  , isDefault);
 
         // todo RD20151007
-        rw_norm_nn = nnhs("meris/coastcolour_wat_20140318/norma_net_20150307/37x57x17_76.8.net");
-        inv_trans_nn = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
-        rpath_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
+        rw_norm_nn = nnhs(paths[IDX_rw_norm_nn] , isDefault);
+        inv_trans_nn = nnhs(paths[IDX_inv_trans_nn], isDefault);
+        rpath_nn9 = nnhs(paths[IDX_rpath_nn9], isDefault);
     }
 
-    private ThreadLocal<NNffbpAlphaTabFast> nnhs(String path) throws IOException {
-        String name = "/auxdata/nets/" + path;
-        InputStream stream = C2rccMerisAlgorithm.class.getResourceAsStream(name);
-        if (stream == null) {
-            throw new IllegalStateException("resource not found: " + name);
+    public String[] getUsedNeuronalNetNames() {
+        return nnNames.toArray(new String[nnNames.size()]);
+    }
+
+    private ThreadLocal<NNffbpAlphaTabFast> nnhs(String sourcePath, boolean resource) throws IOException {
+
+//        Files.
+
+        final InputStream stream;
+        if (resource) {
+            String name = "/auxdata/nets/" + sourcePath;
+            stream = C2rccMerisAlgorithm.class.getResourceAsStream(name);
+            if (stream == null) {
+                throw new IllegalStateException("resource not found: " + name);
+            }
+            nnNames.add(name);
+        } else {
+            final Path path = Paths.get(sourcePath);
+            stream = Files.newInputStream(path, StandardOpenOption.READ);
+            if (stream == null) {
+                throw new IllegalStateException("file not found: " + path.toString());
+            }
+            nnNames.add(path.toString());
         }
         final String nnCode = readFully(stream);
         return new ThreadLocal<NNffbpAlphaTabFast>() {
