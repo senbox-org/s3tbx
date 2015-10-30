@@ -229,11 +229,10 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
     @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets with the nets" +
                              "available in the given directory. The directory must strictly be organized in the following way to be a valid set" +
-                             "of neuronal nets. The path must contain the subdirectories 'logrw_logiop', 'inv_kd', 'inv_logrw_logiop', 'norma_net', " +
-                             "'uncertain_log_abs_biasc_iop', 'uncertain_log_abs_tot_kd', 'rtoa_aaNN7', 'rtoa_rpath_nn2', 'rtoa_rw_nn3', " +
-                             "'rtoa_trans_nn2' and inside the subdirectories only one *.net file.",
-                label = "Alternative NN Path"
-    )
+                             "of neuronal nets. The path must contain the subdirectories 'rtoa_aaNN7', 'rtoa_rw_nn3', 'inv_logrw_logiop', " +
+                             "'logrw_logiop', 'inv_kd', 'uncertain_log_abs_biasc_iop', 'uncertain_log_abs_tot_kd', 'norma_net', 'rtoa_trans_nn2', " +
+                             "'rtoa_rpath_nn2' and inside the subdirectories only one *.net file.",
+                label = "Alternative NN Path")
     private String alternativeNNPath;
 
     @Parameter(defaultValue = "false")
