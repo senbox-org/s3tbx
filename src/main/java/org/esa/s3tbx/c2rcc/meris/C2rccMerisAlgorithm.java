@@ -35,16 +35,16 @@ import java.util.Arrays;
  */
 public class C2rccMerisAlgorithm {
 
-    public final int IDX_aa_rtosa_nn_bn7_9 = 0;
-    public final int IDX_inv_ac_nn9 = 1;
-    public final int IDX_inv_nn7 = 2;
-    public final int IDX_for_nn9b = 3;
-    public final int IDX_kd2_nn7 = 4;
-    public final int IDX_unc_biasc_nn1 = 5;
-    public final int IDX_unc_biasc_atotkd_nn = 6;
-    public final int IDX_rw_norm_nn = 7;
-    public final int IDX_inv_trans_nn = 8;
-    public final int IDX_rpath_nn9 = 9;
+    public final int IDX_rtosa_aann = 0;
+    public final int IDX_rtosa_rw = 1;
+    public final int IDX_rw_iop = 2;
+    public final int IDX_iop_rw = 3;
+    public final int IDX_rw_kd = 4;
+    public final int IDX_iop_unciop = 5;
+    public final int IDX_iop_uncsumiop_unckd = 6;
+    public final int IDX_rw_rwnorm = 7;
+    public final int IDX_rtosa_trans = 8;
+    public final int IDX_rtosa_rpath = 9;
 
     private final ArrayList<String> nnNames;
 
@@ -164,17 +164,17 @@ public class C2rccMerisAlgorithm {
     double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
     double thresh_rwlogslope;  // threshold for rwa_oos
 
-    final ThreadLocal<NNffbpAlphaTabFast> inv_nn7; // NN Rw -< IOPs input 10 bands, 5 IOPs
-    final ThreadLocal<NNffbpAlphaTabFast> inv_ac_nn9; // NN Rtosa -> Rw 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> aa_rtosa_nn_bn7_9; // Rtosa -> Rtosa' 12 bands
+    final ThreadLocal<NNffbpAlphaTabFast> rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
+    final ThreadLocal<NNffbpAlphaTabFast> rtosa_rw; // NN Rtosa -> Rw 12 bands
+    final ThreadLocal<NNffbpAlphaTabFast> rtosa_aann; // Rtosa -> Rtosa' 12 bands
 
-    final ThreadLocal<NNffbpAlphaTabFast> rpath_nn9; //Rtosa -> Rpath 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn; // Rtosa -> transd, transu 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> for_nn9b; // IOPs(5) -> Rw' (10 bands)
-    final ThreadLocal<NNffbpAlphaTabFast> kd2_nn7; // Rw (10 bands) -> kd489, kdmin
-    final ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1; // IOPs (5) -> uncertainties of IOPs (5)
-    final ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn; // IOPs (5) -> unc_adg, unc_atot, unc_btot, unc_kd489, unc_kdmin
-    final ThreadLocal<NNffbpAlphaTabFast> rw_norm_nn; // Rw (10) -> Rwn (10)
+    final ThreadLocal<NNffbpAlphaTabFast> rtosa_rpath; //Rtosa -> Rpath 12 bands
+    final ThreadLocal<NNffbpAlphaTabFast> rtosa_trans; // Rtosa -> transd, transu 12 bands
+    final ThreadLocal<NNffbpAlphaTabFast> iop_rw; // IOPs(5) -> Rw' (10 bands)
+    final ThreadLocal<NNffbpAlphaTabFast> rw_kd; // Rw (10 bands) -> kd489, kdmin
+    final ThreadLocal<NNffbpAlphaTabFast> iop_unciop; // IOPs (5) -> uncertainties of IOPs (5)
+    final ThreadLocal<NNffbpAlphaTabFast> iop_uncsumiop_unckd; // IOPs (5) -> unc_adg, unc_atot, unc_btot, unc_kd489, unc_kdmin
+    final ThreadLocal<NNffbpAlphaTabFast> rw_rwnorm; // Rw (10) -> Rwn (10)
 
     public void setThresh_absd_log_rtosa(double thresh_absd_log_rtosa) {
         this.thresh_absd_log_rtosa = thresh_absd_log_rtosa;
@@ -315,8 +315,8 @@ public class C2rccMerisAlgorithm {
 
         // (9.4.1) test if input tosa spectrum is out of range
         // mima=aa_rtosa_nn_bn7_9(5); // minima and maxima of aaNN input
-        double[] mi = aa_rtosa_nn_bn7_9.get().getInmin();
-        double[] ma = aa_rtosa_nn_bn7_9.get().getInmax();
+        double[] mi = rtosa_aann.get().getInmin();
+        double[] ma = rtosa_aann.get().getInmax();
         boolean rtosa_oor_flag = false; // (ipix)
         // for iv=1:19,// variables
         for (int iv = 0; iv < nn_in.length; iv++) { // variables
@@ -331,7 +331,7 @@ public class C2rccMerisAlgorithm {
         double[] rtosa_aann = new double[0];
         double[] log_rtosa_aann = new double[0];
         if (outputRtoaGcAann || outputOos) {
-            log_rtosa_aann = aa_rtosa_nn_bn7_9.get().calc(nn_in);
+            log_rtosa_aann = this.rtosa_aann.get().calc(nn_in);
             rtosa_aann = a_exp(log_rtosa_aann);
         }
         //double[] rtosa_aaNNrat = adiv(rtosa_aann, r_tosa);
@@ -364,7 +364,7 @@ public class C2rccMerisAlgorithm {
         // (9.4.4) NN compute rpath from rtosa
         double[] rpath_nn = new double[0];
         if (outputRpath) {
-            double[] log_rpath_nn = rpath_nn9.get().calc(nn_in);
+            double[] log_rpath_nn = rtosa_rpath.get().calc(nn_in);
             rpath_nn = a_exp(log_rpath_nn);
         }
 
@@ -372,17 +372,17 @@ public class C2rccMerisAlgorithm {
         double[] transd_nn = new double[0];
         double[] transu_nn = new double[0];
         if (outputTdown || outputTup) {
-            double[] trans_nn = inv_trans_nn.get().calc(nn_in);
+            double[] trans_nn = rtosa_trans.get().calc(nn_in);
             if (outputTdown) {
-                transd_nn = Arrays.copyOfRange(trans_nn, 0, 11);
+                transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
             }
             if (outputTup) {
-                transu_nn = Arrays.copyOfRange(trans_nn, 12, 23);
+                transu_nn = Arrays.copyOfRange(trans_nn, 12, 24);
             }
         }
 
         // (9.4.6)
-        double[] log_rw = inv_ac_nn9.get().calc(nn_in);
+        double[] log_rw = rtosa_rw.get().calc(nn_in);
         double[] rwa = new double[0];
         if (outputRwa) {
             rwa = a_exp(log_rw);
@@ -401,8 +401,8 @@ public class C2rccMerisAlgorithm {
         System.arraycopy(log_rw, 0, nn_in_inv, 5, 10);
 
         // (9.5.1)check input to rw -> IOP NN out of range
-        mi = inv_nn7.get().getInmin();
-        ma = inv_nn7.get().getInmax();
+        mi = rw_iop.get().getInmin();
+        ma = rw_iop.get().getInmax();
         boolean rwa_oor_flag = false;
         for (int iv = 0; iv < nn_in_inv.length; iv++) {
             if (nn_in_inv[iv] < mi[iv] | nn_in_inv[iv] > ma[iv]) {
@@ -414,12 +414,12 @@ public class C2rccMerisAlgorithm {
         // (9.x.x.) NN compute Rwn from Rw
         double[] rwn = new double[0];
         if (outputRwn) {
-            double[] log_rwn = rw_norm_nn.get().calc(nn_in_inv);
+            double[] log_rwn = rw_rwnorm.get().calc(nn_in_inv);
             rwn = a_exp(log_rwn);
         }
 
         // (9.10.1) NN compute IOPs from rw
-        double[] log_iops_nn1 = inv_nn7.get().calc(nn_in_inv);
+        double[] log_iops_nn1 = rw_iop.get().calc(nn_in_inv);
         double[] iops_nn = a_exp(log_iops_nn1);
 
         // (9.14) compute combined IOPs and concentrations
@@ -447,8 +447,8 @@ public class C2rccMerisAlgorithm {
 //        double tsm_nn1 = btot_nn1 * 1.73;
 
         // (9.5.4) check if log_IOPs out of range
-        mi = inv_nn7.get().getOutmin();
-        ma = inv_nn7.get().getOutmax();
+        mi = rw_iop.get().getOutmin();
+        ma = rw_iop.get().getOutmax();
         boolean iop_oor_flag = false;
         for (int iv = 0; iv < log_iops_nn1.length; iv++) {
             if (log_iops_nn1[iv] < mi[iv] | log_iops_nn1[iv] > ma[iv]) {
@@ -491,7 +491,7 @@ public class C2rccMerisAlgorithm {
 
         double rwa_oos = 0;
         if (outputOos) {
-            double[] log_rw_nn2 = for_nn9b.get().calc(nn_in_for);
+            double[] log_rw_nn2 = iop_rw.get().calc(nn_in_for);
 
             // (9.5.7) test out of scope of rho_w by combining inverse and forward NN
             //  compute the test and set rw is out of scope flag
@@ -513,14 +513,14 @@ public class C2rccMerisAlgorithm {
         double kdmin_nn = 0;
         double kd489_nn = 0;
         if (outputKd || outputUncertainties) {
-            double[] log_kd2_nn = kd2_nn7.get().calc(nn_in_inv);
+            double[] log_kd2_nn = rw_kd.get().calc(nn_in_inv);
             kdmin_nn = exp(log_kd2_nn[0]);
             kd489_nn = exp(log_kd2_nn[1]);
 //            double z90max = 1.0 / kdmin_nn;
 
             // (9.5.9) test if kd is at nn limits
-            mi = kd2_nn7.get().getOutmin();
-            ma = kd2_nn7.get().getOutmax();
+            mi = rw_kd.get().getOutmin();
+            ma = rw_kd.get().getOutmax();
             boolean kdmin_oor_flag = false;
             if (log_kd2_nn[0] < mi[0] | log_kd2_nn[0] > ma[0]) {
                 kdmin_oor_flag = true;
@@ -556,7 +556,7 @@ public class C2rccMerisAlgorithm {
         double unc_abs_kdmin = 0;
         double unc_abs_tsm = 0;
         if (outputUncertainties) {
-            double[] diff_log_abs_iop = unc_biasc_nn1.get().calc(log_iops_nn1);
+            double[] diff_log_abs_iop = iop_unciop.get().calc(log_iops_nn1);
 
 
             double unc_iop_rel[] = new double[diff_log_abs_iop.length];
@@ -569,7 +569,7 @@ public class C2rccMerisAlgorithm {
             unc_abs_chl = 21.0 * pow(unc_iop_abs[1], 1.04);
 
             // (9.16) NN compute uncertainties for combined IOPs and kd
-            double[] diff_log_abs_combi_kd = unc_biasc_atotkd_nn.get().calc(log_iops_nn1);
+            double[] diff_log_abs_combi_kd = iop_uncsumiop_unckd.get().calc(log_iops_nn1);
             double diff_log_abs_adg = diff_log_abs_combi_kd[0];
             double diff_log_abs_atot = diff_log_abs_combi_kd[1];
             double diff_log_abs_btot = diff_log_abs_combi_kd[2];
@@ -597,25 +597,25 @@ public class C2rccMerisAlgorithm {
         final boolean isDefault = nnFilePaths == null;
         if (isDefault) {
             paths = new String[10];
-            paths[IDX_aa_rtosa_nn_bn7_9] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
-            paths[IDX_inv_ac_nn9] = "meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net";
-            paths[IDX_inv_nn7] = "meris/coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net";
-            paths[IDX_for_nn9b] = "meris/coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net";
-            paths[IDX_kd2_nn7] = "meris/coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net";
-            paths[IDX_unc_biasc_nn1] = "meris/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net";
-            paths[IDX_unc_biasc_atotkd_nn] = "meris/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net";
-            paths[IDX_rw_norm_nn] = "meris/coastcolour_wat_20140318/norma_net_20150307/37x57x17_76.8.net";
-            paths[IDX_inv_trans_nn] = "meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net";
-            paths[IDX_rpath_nn9] = "meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net";
+            paths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
+            paths[IDX_rtosa_rw] = "meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net";
+            paths[IDX_rw_iop] = "meris/coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net";
+            paths[IDX_iop_rw] = "meris/coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net";
+            paths[IDX_rw_kd] = "meris/coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net";
+            paths[IDX_iop_unciop] = "meris/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net";
+            paths[IDX_iop_uncsumiop_unckd] = "meris/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net";
+            paths[IDX_rw_rwnorm] = "meris/coastcolour_wat_20140318/norma_net_20150307/37x57x17_76.8.net";
+            paths[IDX_rtosa_trans] = "meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net";
+            paths[IDX_rtosa_rpath] = "meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net";
         } else {
             paths = nnFilePaths;
         }
 
         // rtosa auto NN
-        aa_rtosa_nn_bn7_9 = nnhs(paths[IDX_aa_rtosa_nn_bn7_9], isDefault);
+        rtosa_aann = nnhs(paths[IDX_rtosa_aann], isDefault);
 
         // rtosa-rw NN
-        inv_ac_nn9 = nnhs(paths[IDX_inv_ac_nn9], isDefault);
+        rtosa_rw = nnhs(paths[IDX_rtosa_rw], isDefault);
 
         // rtosa - rpath NN
         //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
@@ -624,27 +624,27 @@ public class C2rccMerisAlgorithm {
         //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
 
         // rw-IOP inverse NN
-        inv_nn7 = nnhs(paths[IDX_inv_nn7], isDefault);
+        rw_iop = nnhs(paths[IDX_rw_iop], isDefault);
 
         // IOP-rw forward NN
         //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
-        for_nn9b = nnhs(paths[IDX_for_nn9b], isDefault); //only 10 MERIS bands
+        iop_rw = nnhs(paths[IDX_iop_rw], isDefault); //only 10 MERIS bands
 
         // rw-kd NN, output are kdmin and kd449
         //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
-        kd2_nn7 = nnhs(paths[IDX_kd2_nn7], isDefault);
+        rw_kd = nnhs(paths[IDX_rw_kd], isDefault);
 
         // uncertainty NN for IOPs after bias corretion
         //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
-        unc_biasc_nn1 = nnhs(paths[IDX_unc_biasc_nn1]   , isDefault);
+        iop_unciop = nnhs(paths[IDX_iop_unciop]   , isDefault);
         // uncertainty for atot, adg, btot and kd
         //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
-        unc_biasc_atotkd_nn = nnhs(paths[IDX_unc_biasc_atotkd_nn]  , isDefault);
+        iop_uncsumiop_unckd = nnhs(paths[IDX_iop_uncsumiop_unckd]  , isDefault);
 
         // todo RD20151007
-        rw_norm_nn = nnhs(paths[IDX_rw_norm_nn] , isDefault);
-        inv_trans_nn = nnhs(paths[IDX_inv_trans_nn], isDefault);
-        rpath_nn9 = nnhs(paths[IDX_rpath_nn9], isDefault);
+        rw_rwnorm = nnhs(paths[IDX_rw_rwnorm] , isDefault);
+        rtosa_trans = nnhs(paths[IDX_rtosa_trans], isDefault);
+        rtosa_rpath = nnhs(paths[IDX_rtosa_rpath], isDefault);
     }
 
     public String[] getUsedNeuronalNetNames() {

@@ -138,16 +138,16 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
 
     public static final String[] alternativeNetDirNames = new String[]{
-                "rtoa_aaNN7",
-                "rtoa_rw_nn3",
-                "inv_logrw_logiop",
-                "logrw_logiop",
-                "inv_kd",
-                "uncertain_log_abs_biasc_iop",
-                "uncertain_log_abs_tot_kd",
-                "norma_net",
-                "rtoa_trans_nn2",
-                "rtoa_rpath_nn2"
+                "rtosa_aann",
+                "rtosa_rw",
+                "rw_iop",
+                "iop_rw",
+                "rw_kd",
+                "iop_unciop",
+                "iop_uncsumiop_unckd",
+                "rw_rwnorm",
+                "rtosa_trans",
+                "rtosa_rpath"
     };
 
 
@@ -204,20 +204,23 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)", label = "Air Pressure")
     private double press;
 
-    @Parameter(defaultValue = "1.7", description = "Conversion factor btot -> TSM")
-    private double TSMfak;
+    @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)")
+    private double TSMfakBpart;
+
+    @Parameter(defaultValue = "6.2", description = "Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)")
+    private double TSMfakBwit;
 
     @Parameter(defaultValue = "1.04", description = "Chlorophyl exponent ( CHL = iop-apig^CHLexp * CHLfak ) ")
     private double CHLexp;
 
-    @Parameter(defaultValue = "20.0", description = "Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak ) ")
+    @Parameter(defaultValue = "21.0", description = "Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak ) ")
     private double CHLfak;
 
-    @Parameter(defaultValue = "0.02", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
+    @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
                 label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
-    @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for water leaving reflectances",
+    @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for water leaving reflectances",
                 label = "Threshold rwa OOS")
     private double thresholdRwaOos;
 
@@ -227,11 +230,11 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                              "path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
-    @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets with the nets" +
-                             "available in the given directory. The directory must strictly be organized in the following way to be a valid set" +
-                             "of neuronal nets. The path must contain the subdirectories 'rtoa_aaNN7', 'rtoa_rw_nn3', 'inv_logrw_logiop', " +
-                             "'logrw_logiop', 'inv_kd', 'uncertain_log_abs_biasc_iop', 'uncertain_log_abs_tot_kd', 'norma_net', 'rtoa_trans_nn2', " +
-                             "'rtoa_rpath_nn2' and inside the subdirectories only one *.net file.",
+    @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets with the nets " +
+                             "available in the given directory. The directory must strictly be organized in the following way to be a valid set " +
+                             "of neuronal nets. The path must contain the subdirectories 'rtosa_aann', 'rtosa_rw', 'rw_iop', 'iop_rw', 'rw_kd', " +
+                             "'iop_unciop', 'iop_uncsumiop_unckd', 'rw_rwnorm', 'rtosa_trans', 'rtosa_rpath' and inside the subdirectories " +
+                             "only one *.net file.",
                 label = "Alternative NN Path")
     private String alternativeNNPath;
 
@@ -646,41 +649,63 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             autoGrouping.append(":oos_");
         }
 
-        addBand(targetProduct, "iop_apig", "m^-1", "Absorption coefficient of phytoplankton pigments at 443 nm");
-        addBand(targetProduct, "iop_adet", "m^-1", "Absorption coefficient of detritus at 443 nm");
-        addBand(targetProduct, "iop_agelb", "m^-1", "Absorption coefficient of gelbstoff at 443 nm");
-        addBand(targetProduct, "iop_bpart", "m^-1", "Scattering coefficient of marine paticles at 443 nm");
-        addBand(targetProduct, "iop_bwit", "m^-1", "Scattering coefficient of white particles at 443 nm");
-        addVirtualBand(targetProduct, "iop_adg", "iop_adet + iop_agelb", "m^-1", "Detritus + gelbstoff absorption at 443 nm");
-        addVirtualBand(targetProduct, "iop_atot", "iop_apig + iop_adet + iop_agelb", "m^-1", "phytoplankton + detritus + gelbstoff absorption at 443 nm");
-        addVirtualBand(targetProduct, "iop_btot", "iop_bpart + iop_bwit", "m^-1", "total particle scattering at 443 nm");
+        Band iop_apig = addBand(targetProduct, "iop_apig", "m^-1", "Absorption coefficient of phytoplankton pigments at 443 nm");
+        Band iop_adet = addBand(targetProduct, "iop_adet", "m^-1", "Absorption coefficient of detritus at 443 nm");
+        Band iop_agelb = addBand(targetProduct, "iop_agelb", "m^-1", "Absorption coefficient of gelbstoff at 443 nm");
+        Band iop_bpart = addBand(targetProduct, "iop_bpart", "m^-1", "Scattering coefficient of marine paticles at 443 nm");
+        Band iop_bwit = addBand(targetProduct, "iop_bwit", "m^-1", "Scattering coefficient of white particles at 443 nm");
+        Band iop_adg = addVirtualBand(targetProduct, "iop_adg", "iop_adet + iop_agelb", "m^-1", "Detritus + gelbstoff absorption at 443 nm");
+        Band iop_atot = addVirtualBand(targetProduct, "iop_atot", "iop_apig + iop_adet + iop_agelb", "m^-1", "phytoplankton + detritus + gelbstoff absorption at 443 nm");
+        Band iop_btot = addVirtualBand(targetProduct, "iop_btot", "iop_bpart + iop_bwit", "m^-1", "total particle scattering at 443 nm");
 
+        Band kd489 = null;
+        Band kdmin = null;
+        Band kd_z90max = null;
         if (outputKd) {
-            addBand(targetProduct, "kd489", "m^-1", "Irradiance attenuation coefficient at 489 nm");
-            addBand(targetProduct, "kdmin", "m^-1", "Mean irradiance attenuation coefficient at the three bands with minimum kd");
-            addVirtualBand(targetProduct, "kd_z90max", "1 / kdmin", "m", "Depth of the water column from which 90% of the water leaving irradiance comes from");
+            kd489 = addBand(targetProduct, "kd489", "m^-1", "Irradiance attenuation coefficient at 489 nm");
+            kdmin = addBand(targetProduct, "kdmin", "m^-1", "Mean irradiance attenuation coefficient at the three bands with minimum kd");
+            kd_z90max = addVirtualBand(targetProduct, "kd_z90max", "1 / kdmin", "m", "Depth of the water column from which 90% of the water leaving irradiance comes from");
             autoGrouping.append(":kd");
         }
 
-        addVirtualBand(targetProduct, "conc_tsm", "(iop_bpart + iop_bwit) * " + TSMfak, "g m^-3", "Total suspended matter dry weight concentration");
-        addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
+        Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
+        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
 
         if (outputUncertainties) {
-            addBand(targetProduct, "unc_apig", "m^-1", "uncertainty of pigment absorption coefficient");
-            addBand(targetProduct, "unc_adet", "m^-1", "uncertainty of detritus absorption coefficient");
-            addBand(targetProduct, "unc_agelb", "m^-1", "uncertainty of dissolved gelbstoff absorption coefficient");
-            addBand(targetProduct, "unc_bpart", "m^-1", "uncertainty of particle scattering coefficient");
-            addBand(targetProduct, "unc_bwit", "m^-1", "uncertainty of white particle scattering coefficient");
-            addBand(targetProduct, "unc_adg", "m^-1", "uncertainty of total gelbstoff absorption coefficient");
-            addBand(targetProduct, "unc_atot", "m^-1", "uncertainty of total water constituent absorption coefficient");
-            addBand(targetProduct, "unc_btot", "m^-1", "uncertainty of total water constituent scattering coefficient");
-            addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfak, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
-            addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophyll concentration");
+            Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "uncertainty of pigment absorption coefficient");
+            Band unc_adet = addBand(targetProduct, "unc_adet", "m^-1", "uncertainty of detritus absorption coefficient");
+            Band unc_agelb = addBand(targetProduct, "unc_agelb", "m^-1", "uncertainty of dissolved gelbstoff absorption coefficient");
+            Band unc_bpart = addBand(targetProduct, "unc_bpart", "m^-1", "uncertainty of particle scattering coefficient");
+            Band unc_bwit = addBand(targetProduct, "unc_bwit", "m^-1", "uncertainty of white particle scattering coefficient");
+            Band unc_adg = addBand(targetProduct, "unc_adg", "m^-1", "uncertainty of total gelbstoff absorption coefficient");
+            Band unc_atot = addBand(targetProduct, "unc_atot", "m^-1", "uncertainty of total water constituent absorption coefficient");
+            Band unc_btot = addBand(targetProduct, "unc_btot", "m^-1", "uncertainty of total water constituent scattering coefficient");
+
+            iop_apig.addAncillaryVariable(unc_apig, "uncertainty");
+            iop_adet.addAncillaryVariable(unc_adet, "uncertainty");
+            iop_agelb.addAncillaryVariable(unc_agelb, "uncertainty");
+            iop_bpart.addAncillaryVariable(unc_bpart, "uncertainty");
+            iop_bwit.addAncillaryVariable(unc_bwit, "uncertainty");
+            iop_adg.addAncillaryVariable(unc_adg, "uncertainty");
+            iop_atot.addAncillaryVariable(unc_atot, "uncertainty");
+            iop_btot.addAncillaryVariable(unc_btot, "uncertainty");
+
+            Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
+            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophyll concentration");
+
+            conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
+            conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
+
             if (outputKd) {
-                addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
-                addBand(targetProduct, "unc_kdmin", "m^-1", "uncertainty of mean irradiance attenuation coefficient");
-                addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
+                Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
+                Band unc_kdmin = addBand(targetProduct, "unc_kdmin", "m^-1", "uncertainty of mean irradiance attenuation coefficient");
+                Band unc_kd_z90max = addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
+
+                kd489.addAncillaryVariable(unc_kd489, "uncertainty");
+                kdmin.addAncillaryVariable(unc_kdmin, "uncertainty");
+                kd_z90max.addAncillaryVariable(unc_kd_z90max, "uncertainty");
             }
+
             autoGrouping.append(":unc");
         }
 
@@ -938,13 +963,14 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         return targetBand;
     }
 
-    private void addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
+    private Band addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
         Band band = targetProduct.addBand(name, expression);
         band.setUnit(unit);
         band.setDescription(description);
         band.getSourceImage(); // trigger source image creation
         band.setGeophysicalNoDataValue(Double.NaN);
         band.setNoDataValueUsed(true);
+        return band;
     }
 
     private static boolean isSolfluxValid(double[] solflux) {
