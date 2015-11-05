@@ -267,7 +267,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "true", label = "Output angular dependent water leaving reflectances")
     private boolean outputRwa;
 
-    @Parameter(defaultValue = "false", label = "Output normalized water leaving reflectances")
+    @Parameter(defaultValue = "true", label = "Output normalized water leaving reflectances")
     private boolean outputRwn;
 
     @Parameter(defaultValue = "false", label = "Output of out of scope values")

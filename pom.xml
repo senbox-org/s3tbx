@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>s3tbx-c2rcc</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.6.0</version>
     <name>Case 2 Regional / CoastColour Processor Operator</name>
     <packaging>nbm</packaging>
     <description>

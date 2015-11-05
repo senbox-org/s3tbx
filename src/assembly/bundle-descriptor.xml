@@ -1,12 +1,12 @@
 <bundleDescriptor>
     <bundleName>c2rcc</bundleName>
-    <bundleVersion>0.5</bundleVersion>
+    <bundleVersion>0.6</bundleVersion>
 
     <processorDescriptors>
         <processorDescriptor>
             <executableName>c2rcc-ncep</executableName>
             <processorName>Case 2R/CoastColour Processor</processorName>
-            <processorVersion>0.5</processorVersion>
+            <processorVersion>0.6</processorVersion>
             <descriptionHtml>
                 <![CDATA[<p>Performs atmospheric correction and IOP retrieval on MERIS, MODIS L1C, SeaWiFS L1C data products using
                  an neural-network approach.</p>]]>
