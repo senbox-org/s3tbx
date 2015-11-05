@@ -52,7 +52,7 @@
             <jobConfig>
                 <jobParameter>
                     <name>calvalus.calvalus.bundle</name>
-                    <value>calvalus-boe</value>
+                    <value>calvalus4snap-2.0-beta-0.8</value>
                 </jobParameter>
                 <jobParameter>
                     <name>calvalus.beam.bundle</name>
