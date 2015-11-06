@@ -59,11 +59,12 @@ $ozone0Calendar.set(5, $productCalendar.get(5))
 $ozone1Calendar.setTimeInMillis($ozone0Calendar.timeInMillis)
 $ozone1Calendar.add(5, 1)
 
-#set( $ozoneA = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/N'yyyyDDD'00_O3_TOMSOMI_24h.hdf'" )
-#set( $ozoneB = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDD'00'DDD'23_TOVS.OZONE'" )
-#set( $ozoneC = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDD'00_O3_AURAOMI_24h.hdf'" )
-#set( $ozoneD = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDD'00'DDD'23_TOAST.OZONE'" )
-#set( $ozoneTemplates = [$ozoneA, $ozoneB, $ozoneC, $ozoneD] )
+#set( $ozoneA  = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/N'yyyyDDD'00_O3_TOMSOMI_24h.hdf'" )
+#set( $ozoneBn = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/N'yyyyDDD'00'DDD'23_TOVS.OZONE'" )
+#set( $ozoneBs = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDD'00'DDD'23_TOVS.OZONE'" )
+#set( $ozoneC  = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDD'00_O3_AURAOMI_24h.hdf'" )
+#set( $ozoneD  = "'hdfs://calvalus/calvalus/auxiliary/seadas/anc/'yyyy'/'DDD'/S'yyyyDDD'00'DDD'23_TOAST.OZONE'" )
+#set( $ozoneTemplates = [$ozoneA, $ozoneBb, $ozoneBs, $ozoneC, $ozoneD] )
 
 <graph id="c2rcc">
     <version>1.0</version>
