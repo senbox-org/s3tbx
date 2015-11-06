@@ -60,11 +60,11 @@ $ozone1Calendar.setTimeInMillis($ozone0Calendar.timeInMillis)
 $ozone1Calendar.add(5, 1)
 
 #set( $ozoneA  = "'file:///data/datasets/Sensor/modis/ancillary/metoz/'yyyy'/'DDD'/N'yyyyDDD'00_O3_TOMSOMI_24h.hdf'" )
-#set( $ozoneBn = "'file:///data/datasets/Sensor/modis/ancillary/metoz/'yyyy'/'DDD'/N'yyyyDDD'00'DDD'23_TOVS.OZONE'" )
-#set( $ozoneBs = "'file:///data/datasets/Sensor/modis/ancillary/metoz/'yyyy'/'DDD'/S'yyyyDDD'00'DDD'23_TOVS.OZONE'" )
-#set( $ozoneC  = "'file:///data/datasets/Sensor/modis/ancillary/metoz/'yyyy'/'DDD'/S'yyyyDDD'00_O3_AURAOMI_24h.hdf'" )
+#set( $ozoneB  = "'file:///data/datasets/Sensor/modis/ancillary/metoz/'yyyy'/'DDD'/S'yyyyDDD'00'DDD'23_TOVS.OZONE'" )
+#set( $ozoneCn = "'file:///data/datasets/Sensor/modis/ancillary/metoz/'yyyy'/'DDD'/N'yyyyDDD'00_O3_AURAOMI_24h.hdf'" )
+#set( $ozoneCs = "'file:///data/datasets/Sensor/modis/ancillary/metoz/'yyyy'/'DDD'/S'yyyyDDD'00_O3_AURAOMI_24h.hdf'" )
 #set( $ozoneD  = "'file:///data/datasets/Sensor/modis/ancillary/metoz/'yyyy'/'DDD'/S'yyyyDDD'00'DDD'23_TOAST.OZONE'" )
-#set( $ozoneTemplates = [$ozoneA, $ozoneBb, $ozoneBs, $ozoneC, $ozoneD] )
+#set( $ozoneTemplates = [$ozoneA, $ozoneB, $ozoneCn, $ozoneCs, $ozoneD] )
 
 <graph id="c2rcc">
     <version>1.0</version>
