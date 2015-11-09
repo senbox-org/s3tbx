@@ -17,7 +17,7 @@
 package org.esa.s3tbx.dataio.avhrr;
 
 import junit.framework.TestCase;
-import org.esa.snap.core.util.BeamConstants;
+import org.esa.snap.core.util.SnapConstants;
 
 public class AvhrrConstantsTest extends TestCase {
 
@@ -50,7 +50,7 @@ public class AvhrrConstantsTest extends TestCase {
 
     // Important for tie-point geocoding creation
     public void testThatNamesAreSetOk() {
-        assertEquals(BeamConstants.LAT_DS_NAME, AvhrrConstants.LAT_DS_NAME);
-        assertEquals(BeamConstants.LON_DS_NAME, AvhrrConstants.LON_DS_NAME);
+        assertEquals(SnapConstants.LAT_DS_NAME, AvhrrConstants.LAT_DS_NAME);
+        assertEquals(SnapConstants.LON_DS_NAME, AvhrrConstants.LON_DS_NAME);
     }
 }
