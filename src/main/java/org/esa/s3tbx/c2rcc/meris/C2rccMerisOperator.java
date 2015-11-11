@@ -804,6 +804,10 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @Override
     public void dispose() {
         super.dispose();
+        if (atmosphericAuxdata != null) {
+            atmosphericAuxdata.dispose();
+            atmosphericAuxdata = null;
+        }
     }
 
     @Override

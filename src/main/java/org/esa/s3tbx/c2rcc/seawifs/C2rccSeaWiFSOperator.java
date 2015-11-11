@@ -382,8 +382,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         super.dispose();
         if (atmosphericAuxdata != null) {
             atmosphericAuxdata.dispose();
+            atmosphericAuxdata = null;
         }
-        atmosphericAuxdata = null;
     }
 
     public static class Spi extends OperatorSpi {

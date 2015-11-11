@@ -367,6 +367,9 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Override
     public void dispose() {
         super.dispose();
-        atmosphericAuxdata.dispose();
+        if (atmosphericAuxdata != null) {
+            atmosphericAuxdata.dispose();
+            atmosphericAuxdata = null;
+        }
     }
 }
