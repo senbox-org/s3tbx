@@ -337,8 +337,10 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
                 atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
                                                                   ncepStartProduct, ncepEndProduct, "press", press);
             } catch (IOException e) {
-                getLogger().severe("Unable to create provider for atmospheric ancillary data.");
+                final String message = "Unable to create provider for atmospheric ancillary data.";
+                getLogger().severe(message);
                 getLogger().severe(e.getMessage());
+                throw new OperatorException(message, e);
             }
         } else {
             final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
