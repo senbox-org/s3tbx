@@ -24,6 +24,7 @@ import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.SceneRasterTransform;
 import org.esa.snap.core.datamodel.TiePointGeoCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
@@ -82,8 +83,8 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
                 final DefaultMultiLevelSource targetMultiLevelSource =
                         new DefaultMultiLevelSource(sourceRenderedImage, targetModel);
                 targetBand.setSourceImage(new DefaultMultiLevelImage(targetMultiLevelSource));
+                targetBand.setSceneRasterTransform(SceneRasterTransform.IDENTITY);
                 return targetBand;
-
             }
         }
         return sourceBand;
