@@ -22,6 +22,7 @@ import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.DefaultSceneRasterTransform;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.SceneRasterTransform;
@@ -30,6 +31,7 @@ import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.SourceImageScaler;
 import org.esa.snap.core.util.ProductUtils;
+import org.geotools.referencing.operation.transform.AffineTransform2D;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.ImageLayout;
@@ -37,6 +39,7 @@ import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +86,16 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
                 final DefaultMultiLevelSource targetMultiLevelSource =
                         new DefaultMultiLevelSource(sourceRenderedImage, targetModel);
                 targetBand.setSourceImage(new DefaultMultiLevelImage(targetMultiLevelSource));
-                targetBand.setSceneRasterTransform(SceneRasterTransform.IDENTITY);
+                AffineTransform2D modelToImageTransform;
+                SceneRasterTransform sceneRasterTransform;
+                try {
+                     modelToImageTransform = new AffineTransform2D(imageToModelTransform.createInverse());
+                } catch (NoninvertibleTransformException e) {
+                    modelToImageTransform = null;
+                }
+                sceneRasterTransform = new DefaultSceneRasterTransform(new AffineTransform2D(imageToModelTransform),
+                                                                       modelToImageTransform);
+                targetBand.setSceneRasterTransform(sceneRasterTransform);
                 return targetBand;
             }
         }

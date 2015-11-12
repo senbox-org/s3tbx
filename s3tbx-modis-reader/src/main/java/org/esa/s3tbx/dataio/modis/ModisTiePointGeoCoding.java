@@ -251,9 +251,9 @@ public class ModisTiePointGeoCoding extends AbstractGeoCoding {
         final float[] lonFloats = (float[]) lonGrid.getDataElems();
 
         final int stripeW = lonGrid.getGridWidth();
-        final int gcStripeSceneWidth = lonGrid.getSceneRasterWidth();
+        final int gcStripeSceneWidth = lonGrid.getRasterWidth();
         final int tpRasterHeight = lonGrid.getGridHeight();
-        final int sceneHeight = lonGrid.getSceneRasterHeight();
+        final int sceneHeight = lonGrid.getRasterHeight();
         final int stripeH;
         if (isHighResolution(sceneHeight, tpRasterHeight)) {
             stripeH = 10;
@@ -278,7 +278,7 @@ public class ModisTiePointGeoCoding extends AbstractGeoCoding {
                 final ModisTiePointGrid latTPG = new ModisTiePointGrid("lat" + y, stripeW, stripeH, osX, osY, ssX, ssY, lats);
                 final ModisTiePointGrid lonTPG = new ModisTiePointGrid("lon" + y, stripeW, stripeH, osX, osY, ssX, ssY, lons, true);
 
-                final TiePointGeoCoding geoCoding = new TiePointGeoCoding(latTPG, lonTPG, datum);
+                final TiePointGeoCoding geoCoding = new TiePointGeoCoding(latTPG, lonTPG, getGeoCRS());
                 cross180 = cross180 || geoCoding.isCrossingMeridianAt180();
                 gcList.add(geoCoding);
                 centerLineList.add(createCenterPolyLine(geoCoding, gcStripeSceneWidth, gcStripeSceneHeight));
