@@ -17,7 +17,7 @@ public class C2rccMerisAlgorithmTest {
                     250, 575, 7.9456024, 54.150196,
                     new double[]{55.086716, 49.46522, 38.112446, 33.45525, 23.108776, 14.337405, 11.306171, 10.365329, 8.529731, 6.4291587, 2.262602, 5.485246, 3.394396, 3.1312065, 2.291696},
                     C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX,
-                    64.19979, 158.32169, 24.818445, 102.8721, -34.242188, 1019.4312, 277.9019
+                    64.19979, 158.32169, 24.818445, 102.8721, -34.242188, true, 1019.4312, 277.9019
         );
 
         assertNotNull(result1);
@@ -36,7 +36,7 @@ public class C2rccMerisAlgorithmTest {
         System.arraycopy(y1, 59, iopsExpected1, 0, iopsExpected1.length);
         assertArrayEquals(iopsExpected1, result1.iops_nn, 1e-2);
 
-        assertEquals(0, result1.flags);
+        assertEquals(524288, result1.flags);
 
         C2rccMerisAlgorithm.Result result32 = algo.processPixel(
                     278, 583, 8.346703, 54.009,
@@ -47,6 +47,7 @@ public class C2rccMerisAlgorithmTest {
                     22.776539, // view_zenith
                     103.210495, // view_azimuth
                     -24.90625, // dem_alt
+                    true,
                     1019.6313, // atm_press
                     278.57166  // ozone
         );
@@ -62,7 +63,7 @@ public class C2rccMerisAlgorithmTest {
         System.arraycopy(y32, 59, iopsExpected32, 0, iopsExpected32.length);
         assertArrayEquals(iopsExpected32, result32.iops_nn, 1e-1);
 
-        assertEquals(0, result32.flags);
+        assertEquals(524288, result32.flags);
 
         System.out.println("iopsExpected32 = " + Arrays.toString(iopsExpected32));
         System.out.println("result32 = " + Arrays.toString(result32.iops_nn));

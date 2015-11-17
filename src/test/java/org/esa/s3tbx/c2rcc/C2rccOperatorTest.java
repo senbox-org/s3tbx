@@ -1,22 +1,17 @@
 package org.esa.s3tbx.c2rcc;
 
+import static org.esa.snap.core.util.DummyProductFactory.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoPos;
-import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.dataop.maptransf.Datum;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
-import org.junit.Test;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.junit.*;
 
 /**
  * Created by Norman on 14.07.2015.
@@ -30,9 +25,11 @@ public class C2rccOperatorTest {
         final ProductReader readerMock = mock(ProductReader.class);
         when(readerMock.getReaderPlugIn()).thenReturn(readerPlugInMock);
 
-        Product source = new Product("test", "MER_RR__1P", 10, 10);
+        final Type type = new Type(Size.S, Occurrence.S, GC.MAP, Occurrence.S, GP.AMER);
+        Product source = createProduct(type);
+        source.setName("test");
+        source.setProductType("MER_RR__1P");
         source.setProductReader(readerMock);
-        source.setSceneGeoCoding(getDummyGeoCoding());
         source.setStartTime(ProductData.UTC.parse("23-MAY-2010 09:59:12.278508"));
         source.setEndTime(ProductData.UTC.parse("23-MAY-2010 10:02:32.200875"));
         source.addBand("radiance_1", "20.0");
@@ -107,64 +104,5 @@ public class C2rccOperatorTest {
 //        Product target = operator.getTargetProduct();
 //
 //        assertNotNull(target);
-    }
-
-    private GeoCoding getDummyGeoCoding() {
-        return new GeoCoding() {
-            @Override
-            public boolean isCrossingMeridianAt180() {
-                return false;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public boolean canGetPixelPos() {
-                return false;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public boolean canGetGeoPos() {
-                return false;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public PixelPos getPixelPos(GeoPos geoPos, PixelPos pixelPos) {
-                return null;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public GeoPos getGeoPos(PixelPos pixelPos, GeoPos geoPos) {
-                return null;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public Datum getDatum() {
-                return null;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public void dispose() {
-                //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public CoordinateReferenceSystem getImageCRS() {
-                return null;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public CoordinateReferenceSystem getMapCRS() {
-                return null;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public CoordinateReferenceSystem getGeoCRS() {
-                return null;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-
-            @Override
-            public MathTransform getImageToMapTransform() {
-                return null;  //Todo change body of created method. Use File | Settings | File Templates to change
-            }
-        };
     }
 }
