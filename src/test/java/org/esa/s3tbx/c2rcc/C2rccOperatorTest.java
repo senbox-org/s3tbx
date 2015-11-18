@@ -1,6 +1,5 @@
 package org.esa.s3tbx.c2rcc;
 
-import static org.esa.snap.core.util.DummyProductFactory.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -10,6 +9,7 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.util.DummyProductBuilder;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
 import org.junit.*;
 
@@ -25,8 +25,13 @@ public class C2rccOperatorTest {
         final ProductReader readerMock = mock(ProductReader.class);
         when(readerMock.getReaderPlugIn()).thenReturn(readerPlugInMock);
 
-        final Type type = new Type(Size.S, Occurrence.S, GC.MAP, Occurrence.S, GP.AMER);
-        Product source = createProduct(type);
+        final Product source = new DummyProductBuilder()
+                    .size(DummyProductBuilder.Size.SMALL)
+                    .gc(DummyProductBuilder.GC.MAP)
+                    .gp(DummyProductBuilder.GP.ANTI_MERIDIAN)
+                    .gcOcc(DummyProductBuilder.Occurrence.SINGLE)
+                    .sizeOcc(DummyProductBuilder.Occurrence.SINGLE)
+                    .create();
         source.setName("test");
         source.setProductType("MER_RR__1P");
         source.setProductReader(readerMock);
