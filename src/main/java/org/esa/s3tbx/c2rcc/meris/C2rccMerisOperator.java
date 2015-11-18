@@ -156,6 +156,13 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 description = "MERIS L1b source product.")
     private Product sourceProduct;
 
+    @SourceProduct(description = "A second source product which is congruent to the L1b source product but contains cloud flags. " +
+                                 "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
+                                 "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN! && !$cloudProduct.l2_flags.CLOUD' ",
+                optional = true,
+                label = "Product with cloud flag")
+    private Product cloudProduct;
+
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
                                  "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
