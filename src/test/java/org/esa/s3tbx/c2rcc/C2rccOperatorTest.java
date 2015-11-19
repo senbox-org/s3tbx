@@ -29,8 +29,8 @@ public class C2rccOperatorTest {
                     .size(DummyProductBuilder.Size.SMALL)
                     .gc(DummyProductBuilder.GC.MAP)
                     .gp(DummyProductBuilder.GP.ANTI_MERIDIAN)
-                    .gcOcc(DummyProductBuilder.Occurrence.SINGLE)
-                    .sizeOcc(DummyProductBuilder.Occurrence.SINGLE)
+                    .sizeOcc(DummyProductBuilder.SizeOcc.SINGLE)
+                    .gcOcc(DummyProductBuilder.GCOcc.UNIQUE)
                     .create();
         source.setName("test");
         source.setProductType("MER_RR__1P");
