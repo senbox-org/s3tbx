@@ -35,16 +35,16 @@ import java.util.Arrays;
  */
 public class C2rccMerisAlgorithm {
 
-    public final int IDX_rtosa_aann = 0;
-    public final int IDX_rtosa_rw = 1;
-    public final int IDX_rw_iop = 2;
-    public final int IDX_iop_rw = 3;
-    public final int IDX_rw_kd = 4;
-    public final int IDX_iop_unciop = 5;
-    public final int IDX_iop_uncsumiop_unckd = 6;
-    public final int IDX_rw_rwnorm = 7;
-    public final int IDX_rtosa_trans = 8;
-    public final int IDX_rtosa_rpath = 9;
+    public static final int IDX_rtosa_aann = 0;
+    public static final int IDX_rtosa_rw = 1;
+    public static final int IDX_rw_iop = 2;
+    public static final int IDX_iop_rw = 3;
+    public static final int IDX_rw_kd = 4;
+    public static final int IDX_iop_unciop = 5;
+    public static final int IDX_iop_uncsumiop_unckd = 6;
+    public static final int IDX_rw_rwnorm = 7;
+    public static final int IDX_rtosa_trans = 8;
+    public static final int IDX_rtosa_rpath = 9;
 
     private final ArrayList<String> nnNames;
 
@@ -125,22 +125,22 @@ public class C2rccMerisAlgorithm {
     static final int[] merband15_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
     public static double[] DEFAULT_SOLAR_FLUX = new double[]{
-            1724.724,
-            1889.8026,
-            1939.5339,
-            1940.1365,
-            1813.5457,
-            1660.3589,
-            1540.5198,
-            1480.7161,
-            1416.1177,
-            1273.394,
-            1261.8658,
-            1184.0952,
-            963.94995,
-            935.23706,
-            900.659,
-    };
+                1724.724,
+                1889.8026,
+                1939.5339,
+                1940.1365,
+                1813.5457,
+                1660.3589,
+                1540.5198,
+                1480.7161,
+                1416.1177,
+                1273.394,
+                1261.8658,
+                1184.0952,
+                963.94995,
+                935.23706,
+                900.659,
+                };
 
     double salinity = 35.0;
     double temperature = 15.0;
@@ -540,7 +540,7 @@ public class C2rccMerisAlgorithm {
                 double[] log_kd2_nn = nn_rw_kd.get().calc(nn_in_inv);
                 kdmin_nn = exp(log_kd2_nn[0]);
                 kd489_nn = exp(log_kd2_nn[1]);
-    //            double z90max = 1.0 / kdmin_nn;
+                //            double z90max = 1.0 / kdmin_nn;
 
                 // (9.5.9) test if kd is at nn limits
                 mi = nn_rw_kd.get().getOutmin();
@@ -604,7 +604,7 @@ public class C2rccMerisAlgorithm {
                 unc_abs_btot = (1.0 - exp(-diff_log_abs_btot)) * btot_nn1;
                 unc_abs_kd489 = (1.0 - exp(-diff_log_abs_kd489)) * kd489_nn;
                 unc_abs_kdmin = (1.0 - exp(-diff_log_abs_kd489)) * kdmin_nn;
-    //        double unc_z90max = abs(z90max - 1.0 / abs(kdmin_nn - unc_abs_kdmin));
+                //        double unc_z90max = abs(z90max - 1.0 / abs(kdmin_nn - unc_abs_kdmin));
                 unc_abs_tsm = 1.73 * unc_abs_btot;
             }
         }
@@ -616,32 +616,14 @@ public class C2rccMerisAlgorithm {
                           unc_abs_chl, unc_abs_tsm, unc_abs_kd489, unc_abs_kdmin, flags);
     }
 
-    C2rccMerisAlgorithm(final String[] nnFilePaths) throws IOException {
+    C2rccMerisAlgorithm(final String[] nnFilePaths, final boolean loadFromResources) throws IOException {
         nnNames = new ArrayList<>();
 
-        final String[] paths;
-        final boolean isDefault = nnFilePaths == null;
-        if (isDefault) {
-            paths = new String[10];
-            paths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
-            paths[IDX_rtosa_rw] = "meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net";
-            paths[IDX_rw_iop] = "meris/coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net";
-            paths[IDX_iop_rw] = "meris/coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net";
-            paths[IDX_rw_kd] = "meris/coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net";
-            paths[IDX_iop_unciop] = "meris/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net";
-            paths[IDX_iop_uncsumiop_unckd] = "meris/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net";
-            paths[IDX_rw_rwnorm] = "meris/coastcolour_wat_20140318/norma_net_20150307/37x57x17_76.8.net";
-            paths[IDX_rtosa_trans] = "meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net";
-            paths[IDX_rtosa_rpath] = "meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net";
-        } else {
-            paths = nnFilePaths;
-        }
-
         // rtosa auto NN
-        nn_rtosa_aann = nnhs(paths[IDX_rtosa_aann], isDefault);
+        nn_rtosa_aann = nnhs(nnFilePaths[IDX_rtosa_aann], loadFromResources);
 
         // rtosa-rw NN
-        nn_rtosa_rw = nnhs(paths[IDX_rtosa_rw], isDefault);
+        nn_rtosa_rw = nnhs(nnFilePaths[IDX_rtosa_rw], loadFromResources);
 
         // rtosa - rpath NN
         //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
@@ -650,39 +632,39 @@ public class C2rccMerisAlgorithm {
         //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
 
         // rw-IOP inverse NN
-        nn_rw_iop = nnhs(paths[IDX_rw_iop], isDefault);
+        nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources);
 
         // IOP-rw forward NN
         //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
-        nn_iop_rw = nnhs(paths[IDX_iop_rw], isDefault); //only 10 MERIS bands
+        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources); //only 10 MERIS bands
 
         // rw-kd NN, output are kdmin and kd449
         //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
-        nn_rw_kd = nnhs(paths[IDX_rw_kd], isDefault);
+        nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources);
 
         // uncertainty NN for IOPs after bias corretion
         //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
-        nn_iop_unciop = nnhs(paths[IDX_iop_unciop]   , isDefault);
+        nn_iop_unciop = nnhs(nnFilePaths[IDX_iop_unciop], loadFromResources);
         // uncertainty for atot, adg, btot and kd
         //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
-        nn_iop_uncsumiop_unckd = nnhs(paths[IDX_iop_uncsumiop_unckd]  , isDefault);
+        nn_iop_uncsumiop_unckd = nnhs(nnFilePaths[IDX_iop_uncsumiop_unckd], loadFromResources);
 
         // todo RD20151007
-        nn_rw_rwnorm = nnhs(paths[IDX_rw_rwnorm] , isDefault);
-        nn_rtosa_trans = nnhs(paths[IDX_rtosa_trans], isDefault);
-        nn_rtosa_rpath = nnhs(paths[IDX_rtosa_rpath], isDefault);
+        nn_rw_rwnorm = nnhs(nnFilePaths[IDX_rw_rwnorm], loadFromResources);
+        nn_rtosa_trans = nnhs(nnFilePaths[IDX_rtosa_trans], loadFromResources);
+        nn_rtosa_rpath = nnhs(nnFilePaths[IDX_rtosa_rpath], loadFromResources);
     }
 
     public String[] getUsedNeuronalNetNames() {
         return nnNames.toArray(new String[nnNames.size()]);
     }
 
-    private ThreadLocal<NNffbpAlphaTabFast> nnhs(String sourcePath, boolean resource) throws IOException {
+    private ThreadLocal<NNffbpAlphaTabFast> nnhs(String sourcePath, boolean loadFromResource) throws IOException {
 
 //        Files.
 
         final InputStream stream;
-        if (resource) {
+        if (loadFromResource) {
             String name = "/auxdata/nets/" + sourcePath;
             stream = C2rccMerisAlgorithm.class.getResourceAsStream(name);
             if (stream == null) {

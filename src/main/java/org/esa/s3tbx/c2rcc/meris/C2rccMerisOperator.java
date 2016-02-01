@@ -5,9 +5,7 @@ import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband15_ix;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.*;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 
@@ -151,6 +149,36 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 "rtosa_rpath"
     };
 
+    public static final String[] c2rccNNResourcePaths = new String[10];
+
+    static {
+        c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
+        c2rccNNResourcePaths[IDX_rtosa_rw] = "meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net";
+        c2rccNNResourcePaths[IDX_rw_iop] = "meris/coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net";
+        c2rccNNResourcePaths[IDX_iop_rw] = "meris/coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net";
+        c2rccNNResourcePaths[IDX_rw_kd] = "meris/coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net";
+        c2rccNNResourcePaths[IDX_iop_unciop] = "meris/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net";
+        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "meris/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net";
+        c2rccNNResourcePaths[IDX_rw_rwnorm] = "meris/coastcolour_wat_20140318/norma_net_20150307/37x57x17_76.8.net";
+        c2rccNNResourcePaths[IDX_rtosa_trans] = "meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net";
+        c2rccNNResourcePaths[IDX_rtosa_rpath] = "meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net";
+    }
+
+    private static final String[] c2xNNResourcePaths = new String[10];
+
+    static {
+        c2xNNResourcePaths[IDX_rtosa_aann] = "meris/c2x/nn4snap_meris_hitsm_20151128/rtosa_aann/31x7x31_1244.3.net";
+        c2xNNResourcePaths[IDX_rtosa_rw] = "meris/c2x/nn4snap_meris_hitsm_20151128/rtosa_rw/17x27x27x17_677356.6.net";
+        c2xNNResourcePaths[IDX_rw_iop] = "meris/c2x/nn4snap_meris_hitsm_20151128/rw_iop/27x97x77x37_14746.2.net";
+        c2xNNResourcePaths[IDX_iop_rw] = "meris/c2x/nn4snap_meris_hitsm_20151128/iop_rw/17x37x97x47_500.0.net";
+        c2xNNResourcePaths[IDX_rw_kd] = "meris/c2x/nn4snap_meris_hitsm_20151128/rw_kd/97x77x7_232.4.net";
+        c2xNNResourcePaths[IDX_iop_unciop] = "meris/c2x/nn4snap_meris_hitsm_20151128/iop_unciop/17x77x37_11486.7.net";
+        c2xNNResourcePaths[IDX_iop_uncsumiop_unckd] = "meris/c2x/nn4snap_meris_hitsm_20151128/iop_uncsumiop_unckd/17x77x37_9113.1.net";
+        c2xNNResourcePaths[IDX_rw_rwnorm] = "meris/c2x/nn4snap_meris_hitsm_20151128/rw_rwnorm/37x57x17_76.8.net";
+        c2xNNResourcePaths[IDX_rtosa_trans] = "meris/c2x/nn4snap_meris_hitsm_20151128/rtosa_trans/31x77x57x37_45461.2.net";
+        c2xNNResourcePaths[IDX_rtosa_rpath] = "meris/c2x/nn4snap_meris_hitsm_20151128/rtosa_rpath/31x77x57x37_4701.4.net";
+    }
+
 
     @SourceProduct(label = "MERIS L1b product",
                 description = "MERIS L1b source product.")
@@ -245,6 +273,13 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                              "only one *.net file.",
                 label = "Alternative NN Path")
     private String alternativeNNPath;
+
+    private final String[] availableNetSets = new String[]{"C2RCC-Nets", "C2X-Nets"};
+    @Parameter(valueSet = {"C2RCC-Nets", "C2X-Nets"},
+            description = "Set of neuronal nets for algorithm.",
+            defaultValue = "C2RCC-Nets",
+            label = "Set of neuronal nets")
+    private String netSet = "C2RCC-Nets";
 
     @Parameter(defaultValue = "false")
     private boolean useDefaultSolarFlux;
@@ -877,12 +912,18 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         }
 
         try {
-            if (alternativeNNPath == null || alternativeNNPath.trim().length() == 0) {
-                algorithm = new C2rccMerisAlgorithm(null);
+            final String[] nnFilePaths;
+            final boolean loadFromResources = alternativeNNPath == null || alternativeNNPath.trim().length() == 0;
+            if (loadFromResources) {
+                if (availableNetSets[0].equalsIgnoreCase(netSet)) {
+                    nnFilePaths = c2rccNNResourcePaths;
+                } else {
+                    nnFilePaths = c2xNNResourcePaths;
+                }
             } else {
-                final String[] nnFilePaths = getNNFilePaths(Paths.get(alternativeNNPath));
-                algorithm = new C2rccMerisAlgorithm(nnFilePaths);
+                nnFilePaths = getNNFilePaths(Paths.get(alternativeNNPath));
             }
+            algorithm = new C2rccMerisAlgorithm(nnFilePaths, loadFromResources);
         } catch (IOException e) {
             throw new OperatorException(e);
         }

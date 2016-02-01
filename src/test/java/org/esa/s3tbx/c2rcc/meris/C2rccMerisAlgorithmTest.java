@@ -10,7 +10,8 @@ import java.util.Arrays;
 public class C2rccMerisAlgorithmTest {
     @Test
     public void testIt() throws Exception {
-        C2rccMerisAlgorithm algo = new C2rccMerisAlgorithm(null);
+        final String[] paths = C2rccMerisOperator.c2rccNNResourcePaths;
+        C2rccMerisAlgorithm algo = new C2rccMerisAlgorithm(paths, true);
 
         algo.setOutputRwa(true);
         C2rccMerisAlgorithm.Result result1 = algo.processPixel(
