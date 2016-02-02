@@ -1,11 +1,11 @@
 <bundleDescriptor>
     <bundleName>c2rcc</bundleName>
-    <bundleVersion>0.6</bundleVersion>
+    <bundleVersion>0.8-SNAPSHOT</bundleVersion>
 
     <processorDescriptors>
         <processorDescriptor>
             <executableName>c2rcc-ncep</executableName>
-            <processorName>Case 2R/CoastColour Processor</processorName>
+            <processorName>Case 2R/CoastColour Processor with NCEP</processorName>
             <processorVersion>0.6</processorVersion>
             <descriptionHtml>
                 <![CDATA[<p>Performs atmospheric correction and IOP retrieval on MERIS, MODIS L1C, SeaWiFS L1C data products using
@@ -68,5 +68,81 @@
                 </jobParameter>
             </jobConfig>
         </processorDescriptor>
+
+        <processorDescriptor>
+            <executableName>meris.c2rcc</executableName>
+            <processorName>Case 2R/CoastColour Processor for MERIS</processorName>
+            <processorVersion>0.6</processorVersion>
+            <descriptionHtml>
+                <![CDATA[<p>Performs atmospheric correction and IOP retrieval on MERIS products using
+                 an neural-network approach.</p>]]>
+            </descriptionHtml>
+            <defaultParameters></defaultParameters>
+            <outputFormats>BEAM-DIMAP</outputFormats>
+            <inputProductTypes>MERIS_L1B</inputProductTypes>
+
+
+            <parameterDescriptors>
+                <parameterDescriptor>
+                    <name>validPixelExpression</name>
+                    <type>string</type>
+                    <description>Valid-pixel expression</description>
+                    <defaultValue>!l1_flags.INVALID AND !l1_flags.LAND_OCEAN</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>netSet</name>
+                    <type>string</type>
+                    <description>Set of neuronal nets for algorithm.</description>
+                    <defaultValue>C2RCC-Nets</defaultValue>
+                    <valueSet>C2RCC-Nets,C2X-Nets</valueSet>
+                </parameterDescriptor>
+            <!--  TODO the graph need to pass these parameters through
+                <parameterDescriptor>
+                    <name>salinity</name>
+                    <type>string</type>
+                    <description>DU (0, 100)</description>
+                    <defaultValue>35.0</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>temperature</name>
+                    <type>string</type>
+                    <description>Celsius (-50, 50)</description>
+                    <defaultValue>15.0</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>ozone</name>
+                    <type>string</type>
+                    <description>DU (0, 1000)</description>
+                    <defaultValue>330</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>press</name>
+                    <type>string</type>
+                    <description>Air Pressure hPa (0, 2000)</description>
+                    <defaultValue>1000</defaultValue>
+                </parameterDescriptor>
+                -->
+            </parameterDescriptors>
+
+            <jobConfig>
+                <jobParameter>
+                    <name>calvalus.calvalus.bundle</name>
+                    <value>calvalus4snap-2.0-beta-0.8</value>
+                </jobParameter>
+                <jobParameter>
+                    <name>calvalus.beam.bundle</name>
+                    <value>snap-2.0-beta-0.8</value>
+                </jobParameter>
+                <jobParameter>
+                    <name>calvalus.system.snap.dataio.reader.tileHeight</name>
+                    <value>64</value>
+                </jobParameter>
+                <jobParameter>
+                    <name>calvalus.system.snap.dataio.reader.tileWidth</name>
+                    <value>*</value>
+                </jobParameter>
+            </jobConfig>
+        </processorDescriptor>
+
     </processorDescriptors>
 </bundleDescriptor>
