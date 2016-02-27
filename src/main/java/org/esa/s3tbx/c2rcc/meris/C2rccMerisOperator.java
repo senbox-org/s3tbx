@@ -74,6 +74,10 @@ import java.util.HashSet;
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products.")
 public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurable {
+    /*
+        c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
+        see https://senbox.atlassian.net/browse/SNAP-395
+    */
 
     // MERIS sources
     public static final int BAND_COUNT = 15;

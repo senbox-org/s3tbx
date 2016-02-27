@@ -89,4 +89,27 @@
         </folder>
     </folder>
 
+    <!-- Removes c2rcc ops from Graph Builder
+        see https://senbox.atlassian.net/browse/SNAP-395
+    -->
+    <folder name="OperatorUIs">
+        <file name="org.esa.s3tbx.c2rcc">
+            <attr name="operatorName" stringvalue="c2rcc"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+        <file name="org.esa.s3tbx.c2rcc.meris">
+            <attr name="operatorName" stringvalue="meris.c2rcc"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+        <file name="org.esa.s3tbx.c2rcc.modis">
+            <attr name="operatorName" stringvalue="modis.c2rcc"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+        <file name="org.esa.s3tbx.c2rcc.seawifs">
+            <attr name="operatorName" stringvalue="seawifs.c2rcc"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+    </folder>
+
+
 </filesystem>

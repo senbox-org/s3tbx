@@ -51,6 +51,10 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.*;
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1b data products.")
 public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigurable {
+    /*
+        c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
+        see https://senbox.atlassian.net/browse/SNAP-395
+    */
 
     public static final int WL_BAND_COUNT = seawifsWavelengths.length;
 

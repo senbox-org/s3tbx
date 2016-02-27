@@ -50,6 +50,10 @@ import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.*;
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
 public class C2rccModisOperator extends PixelOperator implements C2rccConfigurable{
+    /*
+        c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
+        see https://senbox.atlassian.net/browse/SNAP-395
+    */
 
     // Modis bands
     public static final int SOURCE_BAND_COUNT = reflec_wavelengths.length;

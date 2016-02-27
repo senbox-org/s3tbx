@@ -31,6 +31,11 @@ import static org.esa.snap.core.util.StringUtils.*;
         copyright = "Copyright (C) 2015 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on MERIS, MODIS, SeaWiFS, and VIIRS L1b data products.")
 public class C2rccOperator extends Operator {
+    /*
+        c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
+        see https://senbox.atlassian.net/browse/SNAP-395
+    */
+
 
     @SourceProduct(description = "MERIS, MODIS, SeaWiFS, or VIIRS L1b product")
     private Product sourceProduct;
