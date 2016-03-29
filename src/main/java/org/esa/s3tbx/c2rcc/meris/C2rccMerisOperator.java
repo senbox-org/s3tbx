@@ -638,7 +638,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (outputRtoa) {
             for (int i : merband15_ix) {
                 final Band band = addBand(targetProduct, "rtoa_" + i, "1", "Top-of-atmosphere reflectance");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + i), band);
+                ensureSpectralProperties(band, i);
             }
             autoGrouping.append(":rtoa");
         }
@@ -646,7 +646,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (outputRtoaGc) {
             for (int bi : merband12_ix) {
                 Band band = addBand(targetProduct, "rtosa_gc_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, input to AC");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + bi), band);
+                ensureSpectralProperties(band, bi);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rtosa_gc");
@@ -654,7 +654,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (outputRtoaGc_aann) {
             for (int bi : merband12_ix) {
                 Band band = addBand(targetProduct, "rtosagc_aann_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + bi), band);
+                ensureSpectralProperties(band, bi);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rtosagc_aann");
@@ -663,7 +663,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (outputRpath) {
             for (int bi : merband12_ix) {
                 Band band = addBand(targetProduct, "rpath_" + bi, "1", "Path-radiance reflectances");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + bi), band);
+                ensureSpectralProperties(band, bi);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rpath");
@@ -672,7 +672,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (outputTdown) {
             for (int bi : merband12_ix) {
                 Band band = addBand(targetProduct, "tdown_" + bi, "1", "Transmittance of downweling irradiance");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + bi), band);
+                ensureSpectralProperties(band, bi);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":tdown");
@@ -681,7 +681,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (outputTup) {
             for (int bi : merband12_ix) {
                 Band band = addBand(targetProduct, "tup_" + bi, "1", "Transmittance of upweling irradiance");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + bi), band);
+                ensureSpectralProperties(band, bi);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":tup");
@@ -690,7 +690,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (outputRwa) {
             for (int index : merband12_ix) {
                 final Band band = addBand(targetProduct, "rwa_" + index, "1", "Angular dependent water leaving reflectances");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + index), band);
+                ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rwa_");
@@ -699,7 +699,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (outputRwn) {
             for (int index : merband12_ix) {
                 final Band band = addBand(targetProduct, "rwn_" + index, "1", "Normalized water leaving reflectances");
-                ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + index), band);
+                ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rwn_");
@@ -862,6 +862,15 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         targetProduct.setAutoGrouping(autoGrouping.toString());
 
         targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
+    }
+
+    private void ensureSpectralProperties(Band band, int i) {
+        ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + i), band);
+        if(band.getSpectralWavelength() == 0) {
+            band.setSpectralWavelength(DEFAULT_MERIS_WAVELENGTH[i - 1]);
+            band.setSpectralBandIndex(i);
+        }
+
     }
 
     private ProductNodeListener getNnNamesMetadataAppender() {
