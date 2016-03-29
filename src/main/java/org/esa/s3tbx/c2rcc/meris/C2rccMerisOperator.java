@@ -530,7 +530,12 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         sc.defineSample(VIEW_AZI_IX, "view_azimuth");
         sc.defineSample(ATM_PRESS_IX, "atm_press");
         sc.defineSample(OZONE_IX, "ozone");
-        sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
+        if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
+        } else {
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true");
+        }
+
     }
 
     @Override
