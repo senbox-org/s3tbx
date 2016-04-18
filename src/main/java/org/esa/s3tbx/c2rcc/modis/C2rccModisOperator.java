@@ -7,7 +7,7 @@ import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
-import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
+import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
@@ -32,6 +32,7 @@ import java.io.IOException;
 import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
 import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.*;
+import static org.esa.s3tbx.c2rcc.util.TargetProductPreparer.*;
 
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
@@ -49,7 +50,7 @@ import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.*;
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
-public class C2rccModisOperator extends PixelOperator implements C2rccConfigurable{
+public class C2rccModisOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
         see https://senbox.atlassian.net/browse/SNAP-395
@@ -81,6 +82,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     public static final int RTOSA_IN_1_IX = REFLEC_BAND_COUNT + 8;
     public static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
 
+    private static final String[] angleNames = {"solz", "sola", "senz", "sena"};
 
     @SourceProduct(label = "MODIS L1C product",
                 description = "MODIS L1C source product.")
@@ -145,8 +147,35 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
     private boolean outputRtosa;
 
+    @Parameter(defaultValue = "false", label = "Output the input angle bands sena, senz, sola and solz")
+    private boolean outputAngles;
+
     private C2rccModisAlgorithm algorithm;
     private AtmosphericAuxdata atmosphericAuxdata;
+
+    public static boolean isValidInput(Product product) {
+        for (int wl : reflec_wavelengths) {
+            if (!product.containsBand("rhot_" + wl)) {
+                return false;
+            }
+        }
+        if (!product.containsBand("l2_flags")) {
+            return false;
+        }
+        if (!product.containsBand("solz")) {
+            return false;
+        }
+        if (!product.containsBand("sola")) {
+            return false;
+        }
+        if (!product.containsBand("senz")) {
+            return false;
+        }
+        if (!product.containsBand("sena")) {
+            return false;
+        }
+        return true;
+    }
 
     public void setSalinity(double salinity) {
         this.salinity = salinity;
@@ -188,6 +217,19 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         this.ncepEndProduct = ncepEndProduct;
     }
 
+    public void setOutputRtosa(boolean outputRtosa) {
+        this.outputRtosa = outputRtosa;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (atmosphericAuxdata != null) {
+            atmosphericAuxdata.dispose();
+            atmosphericAuxdata = null;
+        }
+    }
+
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
 
@@ -225,12 +267,20 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
         targetSamples[L2_FLAGS_IX].set(result.flags);
 
+        if (outputAngles) {
+            final int targetStartIdx = L2_FLAGS_IX + 1;
+            for (int i = 0; i < angleNames.length; i++) {
+                targetSamples[targetStartIdx + i].set(sourceSamples[SUN_ZEN_IX + i].getFloat());
+            }
+        }
+
         if (outputRtosa) {
+            final int offset = outputAngles ? angleNames.length : 0;
             for (int i = 0; i < result.rtosa_in.length; i++) {
-                targetSamples[RTOSA_IN_1_IX + i].set(result.rtosa_in[i]);
+                targetSamples[RTOSA_IN_1_IX + offset + i].set(result.rtosa_in[i]);
             }
             for (int i = 0; i < result.rtosa_out.length; i++) {
-                targetSamples[RTOSA_OUT_1_IX + i].set(result.rtosa_out[i]);
+                targetSamples[RTOSA_OUT_1_IX + offset + i].set(result.rtosa_out[i]);
             }
         }
     }
@@ -265,14 +315,23 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         sc.defineSample(RTOSA_RATIO_MAX_IX, "rtosa_ratio_max");
         sc.defineSample(L2_FLAGS_IX, "l2_qflags");
 
+        if (outputAngles) {
+            final int startIndex = L2_FLAGS_IX + 1;
+            for (int i = 0; i < angleNames.length; i++) {
+                String angleName = angleNames[i];
+                sc.defineSample(startIndex + i, angleName);
+            }
+        }
+
         if (outputRtosa) {
+            final int angleOffset = outputAngles ? angleNames.length : 0;
             for (int i = 0; i < reflec_wavelengths.length; i++) {
                 int wl = reflec_wavelengths[i];
-                sc.defineSample(RTOSA_IN_1_IX + i, "rtosa_in_" + wl);
+                sc.defineSample(RTOSA_IN_1_IX + angleOffset + i, "rtosa_in_" + wl);
             }
             for (int i = 0; i < reflec_wavelengths.length; i++) {
                 int wl = reflec_wavelengths[i];
-                sc.defineSample(RTOSA_OUT_1_IX + i, "rtosa_out_" + wl);
+                sc.defineSample(RTOSA_OUT_1_IX + angleOffset + i, "rtosa_out_" + wl);
             }
         }
     }
@@ -282,7 +341,14 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
-        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, "rhot_", reflec_wavelengths, outputRtosa);
+        prepareTargetProduct(targetProduct, sourceProduct, "rhot_", reflec_wavelengths, outputRtosa);
+
+        if (outputAngles) {
+            for (String angleName : angleNames) {
+                final Band band = sourceProduct.getBand(angleName);
+                addBand(targetProduct, angleName, band.getUnit(), band.getDescription());
+            }
+        }
     }
 
     @Override
@@ -307,30 +373,6 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
         ensureTimeCoding_Fallback(sourceProduct);
         initAtmosphericAuxdata();
-    }
-
-    public static boolean isValidInput(Product product) {
-        for (int wl : reflec_wavelengths) {
-            if (!product.containsBand("rhot_" + wl)) {
-                return false;
-            }
-        }
-        if (!product.containsBand("l2_flags")) {
-            return false;
-        }
-        if (!product.containsBand("solz")) {
-            return false;
-        }
-        if (!product.containsBand("sola")) {
-            return false;
-        }
-        if (!product.containsBand("senz")) {
-            return false;
-        }
-        if (!product.containsBand("sena")) {
-            return false;
-        }
-        return true;
     }
 
     private void initAtmosphericAuxdata() {
@@ -359,23 +401,10 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         }
     }
 
-    public void setOutputRtosa(boolean outputRtosa) {
-        this.outputRtosa = outputRtosa;
-    }
-
     public static class Spi extends OperatorSpi {
 
         public Spi() {
             super(C2rccModisOperator.class);
-        }
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        if (atmosphericAuxdata != null) {
-            atmosphericAuxdata.dispose();
-            atmosphericAuxdata = null;
         }
     }
 }

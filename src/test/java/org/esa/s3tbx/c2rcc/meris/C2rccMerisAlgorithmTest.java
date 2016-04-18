@@ -20,7 +20,6 @@ public class C2rccMerisAlgorithmTest {
                     C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX,
                     64.19979, 158.32169, 24.818445, 102.8721, -34.242188, true, 1019.4312, 277.9019
         );
-
         assertNotNull(result1);
         assertEquals(12, result1.rwa.length);
         assertEquals(5, result1.iops_nn.length);

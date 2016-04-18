@@ -66,7 +66,7 @@ public class TargetProductPreparer {
         }
     }
 
-    private static Band addBand(Product targetProduct, String name, String unit, String description) {
+    public static Band addBand(Product targetProduct, String name, String unit, String description) {
         Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
         targetBand.setUnit(unit);
         targetBand.setDescription(description);
