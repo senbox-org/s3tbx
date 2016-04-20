@@ -40,6 +40,15 @@
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
             </file>
+            <file name="org-esa-s3tbx-c2rcc-olci-OpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="C2R/CC OLCI Processor"/>
+                <attr name="operatorName" stringvalue="olci.c2rcc"/>
+                <attr name="dialogTitle" stringvalue="C2R/CC OLCI Processor"/>
+                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
+                <attr name="helpId" stringvalue="c2rccScientificTool"/>
+            </file>
         </folder>
     </folder>
 
@@ -69,6 +78,11 @@
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-seawifs-OpAction.instance"/>
                         <attr name="position" intvalue="3"/>
+                    </file>
+                    <file name="org-esa-s3tbx-c2rcc-olci-OpAction.shadow">
+                        <attr name="originalFile"
+                              stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-olci-OpAction.instance"/>
+                        <attr name="position" intvalue="4"/>
                     </file>
                 </folder>
             </folder>
@@ -107,6 +121,10 @@
         </file>
         <file name="org.esa.s3tbx.c2rcc.seawifs">
             <attr name="operatorName" stringvalue="seawifs.c2rcc"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+        <file name="org.esa.s3tbx.c2rcc.olci">
+            <attr name="operatorName" stringvalue="olci.c2rcc"/>
             <attr name="disableFromGraphBuilder" stringvalue="true"/>
         </file>
     </folder>
