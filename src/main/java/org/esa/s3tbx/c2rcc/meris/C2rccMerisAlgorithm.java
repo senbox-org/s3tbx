@@ -45,112 +45,76 @@ public class C2rccMerisAlgorithm {
     public static final int IDX_rw_rwnorm = 7;
     public static final int IDX_rtosa_trans = 8;
     public static final int IDX_rtosa_rpath = 9;
-
-    private final ArrayList<String> nnNames;
+    // gas absorption constants for 12 MERIS channels
+    static final double[] absorb_ozon = {
+                8.2e-04, 2.82e-03, 2.076e-02, 3.96e-02,
+                1.022e-01, 1.059e-01, 5.313e-02, 3.552e-02,
+                1.895e-02, 8.38e-03, 7.2e-04, 0.0
+    };
 
 
     // todo RD20151007 warnings durchsehen
-
-    /**
-     * Structure for returning the algorithm's result.
-     */
-    public static class Result {
-
-        public final double[] r_toa;
-        public final double[] r_tosa;
-        public final double[] rtosa_aann;
-        public final double rtosa_oos;
-        public final double[] rpath_nn;
-        public final double[] transd_nn;
-        public final double[] transu_nn;
-        public final double[] rwa;
-        public final double rwa_oos;
-        public final double[] rwn;
-        public final double[] iops_nn;
-        public final double kd489_nn;
-        public final double kdmin_nn;
-        public final double[] unc_iop_abs;
-        public final double unc_abs_adg;
-        public final double unc_abs_atot;
-        public final double unc_abs_btot;
-        public final double unc_abs_chl;
-        public final double unc_abs_tsm;
-        public final double unc_abs_kd489;
-        public final double unc_abs_kdmin;
-        public final int flags;
-
-        public Result(double[] r_toa, double[] r_tosa, double[] rtosa_aann, double[] rpath_nn, double[] transd_nn, double[] transu_nn, double[] rwa,
-                      double[] rwn, double rtosa_oos, double rwa_oos, double[] iops_nn,
-                      double kd489_nn, double kdmin_nn, double[] unc_iop_abs,
-                      double unc_abs_adg, double unc_abs_atot, double unc_abs_btot, double unc_abs_chl,
-                      double unc_abs_tsm, double unc_abs_kd489, double unc_abs_kdmin, int flags) {
-
-            this.r_toa = r_toa;
-            this.r_tosa = r_tosa;
-            this.rtosa_aann = rtosa_aann;
-            this.rtosa_oos = rtosa_oos;
-            this.rpath_nn = rpath_nn;
-            this.transd_nn = transd_nn;
-            this.transu_nn = transu_nn;
-            this.rwa = rwa;
-            this.rwa_oos = rwa_oos;
-            this.rwn = rwn;
-            this.iops_nn = iops_nn;
-            this.kd489_nn = kd489_nn;
-            this.kdmin_nn = kdmin_nn;
-            this.unc_iop_abs = unc_iop_abs;
-            this.unc_abs_adg = unc_abs_adg;
-            this.unc_abs_atot = unc_abs_atot;
-            this.unc_abs_btot = unc_abs_btot;
-            this.unc_abs_chl = unc_abs_chl;
-            this.unc_abs_tsm = unc_abs_tsm;
-            this.unc_abs_kdmin = unc_abs_kdmin;
-            this.unc_abs_kd489 = unc_abs_kd489;
-            this.flags = flags;
-        }
-    }
-
-
-    // gas absorption constants for 12 MERIS channels
-    static final double[] absorb_ozon = {
-            8.2e-04, 2.82e-03, 2.076e-02, 3.96e-02,
-            1.022e-01, 1.059e-01, 5.313e-02, 3.552e-02,
-            1.895e-02, 8.38e-03, 7.2e-04, 0.0
-    };
-
     // polynom coefficients for band708 H2O correction
     static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
-
     static final int[] merband12_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13};
     static final int[] merband15_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-
     public static double[] DEFAULT_SOLAR_FLUX = new double[]{
-            1724.724,
-            1889.8026,
-            1939.5339,
-            1940.1365,
-            1813.5457,
-            1660.3589,
-            1540.5198,
-            1480.7161,
-            1416.1177,
-            1273.394,
-            1261.8658,
-            1184.0952,
-            963.94995,
-            935.23706,
-            900.659,
-    };
-
+                1724.724,
+                1889.8026,
+                1939.5339,
+                1940.1365,
+                1813.5457,
+                1660.3589,
+                1540.5198,
+                1480.7161,
+                1416.1177,
+                1273.394,
+                1261.8658,
+                1184.0952,
+                963.94995,
+                935.23706,
+                900.659,
+                };
     public static float[] DEFAULT_MERIS_WAVELENGTH = new float[]{
-            412.691f, 442.55902f, 489.88202f, 509.81903f, 559.69403f, 619.601f, 664.57306f,
-            680.82104f, 708.32904f, 753.37103f, 761.50806f, 778.40906f, 864.87604f, 884.94403f,
-            900.00006f
+       /*  1 */     412.691f,
+       /*  2 */     442.55902f,
+       /*  3 */     489.88202f,
+       /*  4 */     509.81903f,
+       /*  5 */     559.69403f,
+       /*  6 */     619.601f,
+       /*  7 */     664.57306f,
+       /*  8 */     680.82104f,
+       /*  9 */     708.32904f,
+       /* 10 */     753.37103f,
+       /* 11 */     761.50806f,
+       /* 12 */     778.40906f,
+       /* 13 */     864.87604f,
+       /* 14 */     884.94403f,
+       /* 15 */     900.00006f
     };
-
+    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
+    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands
+    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_aann; // Rtosa -> Rtosa' 12 bands
+    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rpath; //Rtosa -> Rpath 12 bands
+    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_trans; // Rtosa -> transd, transu 12 bands
+    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_rw; // IOPs(5) -> Rw' (10 bands)
+    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_kd; // Rw (10 bands) -> kd489, kdmin
+    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_unciop; // IOPs (5) -> uncertainties of IOPs (5)
+    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_uncsumiop_unckd; // IOPs (5) -> unc_adg, unc_atot, unc_btot, unc_kd489, unc_kdmin
+    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_rwnorm; // Rw (10) -> Rwn (10)
+    private final ArrayList<String> nnNames;
     double salinity = 35.0;
     double temperature = 15.0;
 
+    // @todo discuss with Carsten and Roland
+    // (5) thresholds for flags
+//    double[] thresh_rtosaaaNNrat = {0.98, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
+//    double[] thresh_rwslope = {0.95, 1.05};    // threshold for out of scope flag Rw has to be adjusted
+
+    // (5) thresholds for flags
+    double log_threshfak_oor = 0.02; // == ~1.02, for log variables
+    double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
+    double thresh_rwlogslope;  // threshold for rwa_oos
     private boolean outputRtoaGcAann;
     private boolean outputRpath;
     private boolean outputTdown;
@@ -160,27 +124,44 @@ public class C2rccMerisAlgorithm {
     private boolean outputOos;
     private boolean outputKd;
     private boolean outputUncertainties;
+    C2rccMerisAlgorithm(final String[] nnFilePaths, final boolean loadFromResources) throws IOException {
+        nnNames = new ArrayList<>();
 
-    // (5) thresholds for flags
-    double[] thresh_rtosaaaNNrat = {0.98, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
-    double[] thresh_rwslope = {0.95, 1.05};    // threshold for out of scope flag Rw has to be adjusted
+        // rtosa auto NN
+        nn_rtosa_aann = nnhs(nnFilePaths[IDX_rtosa_aann], loadFromResources);
 
-    // (5) thresholds for flags
-    double log_threshfak_oor = 0.02; // == ~1.02, for log variables
-    double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
-    double thresh_rwlogslope;  // threshold for rwa_oos
+        // rtosa-rw NN
+        nn_rtosa_rw = nnhs(nnFilePaths[IDX_rtosa_rw], loadFromResources);
 
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_aann; // Rtosa -> Rtosa' 12 bands
+        // rtosa - rpath NN
+        //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
 
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rpath; //Rtosa -> Rpath 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_trans; // Rtosa -> transd, transu 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_rw; // IOPs(5) -> Rw' (10 bands)
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_kd; // Rw (10 bands) -> kd489, kdmin
-    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_unciop; // IOPs (5) -> uncertainties of IOPs (5)
-    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_uncsumiop_unckd; // IOPs (5) -> unc_adg, unc_atot, unc_btot, unc_kd489, unc_kdmin
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_rwnorm; // Rw (10) -> Rwn (10)
+        // rtosa - trans NN
+        //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
+
+        // rw-IOP inverse NN
+        nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources);
+
+        // IOP-rw forward NN
+        //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
+        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources); //only 10 MERIS bands
+
+        // rw-kd NN, output are kdmin and kd449
+        //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
+        nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources);
+
+        // uncertainty NN for IOPs after bias corretion
+        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
+        nn_iop_unciop = nnhs(nnFilePaths[IDX_iop_unciop], loadFromResources);
+        // uncertainty for atot, adg, btot and kd
+        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
+        nn_iop_uncsumiop_unckd = nnhs(nnFilePaths[IDX_iop_uncsumiop_unckd], loadFromResources);
+
+        // todo RD20151007
+        nn_rw_rwnorm = nnhs(nnFilePaths[IDX_rw_rwnorm], loadFromResources);
+        nn_rtosa_trans = nnhs(nnFilePaths[IDX_rtosa_trans], loadFromResources);
+        nn_rtosa_rpath = nnhs(nnFilePaths[IDX_rtosa_rpath], loadFromResources);
+    }
 
     public void setThresh_absd_log_rtosa(double thresh_absd_log_rtosa) {
         this.thresh_absd_log_rtosa = thresh_absd_log_rtosa;
@@ -250,7 +231,7 @@ public class C2rccMerisAlgorithm {
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
         double cos_view = cos(toRadians(view_zeni));
-        double sin_sun = sin(toRadians(sun_zeni));
+//        double sin_sun = sin(toRadians(sun_zeni));
         double sin_view = sin(toRadians(view_zeni));
 
         double cos_azi_diff = cos(toRadians(view_azi - sun_azi));
@@ -488,22 +469,14 @@ public class C2rccMerisAlgorithm {
             flags = BitSetter.setFlag(flags, 3, iop_oor_flag);
 
             // (9.5.5)check if log_IOPs at limit
-            boolean[] iop_at_max_flag = new boolean[log_iops_nn1.length];
             for (int iv = 0; iv < log_iops_nn1.length; iv++) {
-                iop_at_max_flag[iv] = false;
-                if (log_iops_nn1[iv] > (ma[iv] - log_threshfak_oor)) {
-                    iop_at_max_flag[iv] = true;
-                }
-                flags = BitSetter.setFlag(flags, iv + 4, iop_at_max_flag[iv]);
+                final boolean iopAtMax = log_iops_nn1[iv] > (ma[iv] - log_threshfak_oor);
+                flags = BitSetter.setFlag(flags, iv + 4, iopAtMax);
             }
 
-            boolean[] iop_at_min_flag = new boolean[log_iops_nn1.length];
             for (int iv = 0; iv < log_iops_nn1.length; iv++) {
-                iop_at_min_flag[iv] = false;
-                if (log_iops_nn1[iv] < (mi[iv] + log_threshfak_oor)) {
-                    iop_at_min_flag[iv] = true;
-                }
-                flags = BitSetter.setFlag(flags, iv + 9, iop_at_min_flag[iv]);
+                final boolean iopAtMin = log_iops_nn1[iv] < (mi[iv] + log_threshfak_oor);
+                flags = BitSetter.setFlag(flags, iv + 9, iopAtMin);
             }
 
             // (9.5.6) compute Rw out of scope
@@ -588,11 +561,8 @@ public class C2rccMerisAlgorithm {
             if (outputUncertainties) {
                 double[] diff_log_abs_iop = nn_iop_unciop.get().calc(log_iops_nn1);
 
-
-                double unc_iop_rel[] = new double[diff_log_abs_iop.length];
                 unc_iop_abs = new double[diff_log_abs_iop.length];
                 for (int iv = 0; iv < diff_log_abs_iop.length; iv++) {
-                    unc_iop_rel[iv] = (exp(diff_log_abs_iop[iv]) - 1) * 100;
                     unc_iop_abs[iv] = iops_nn[iv] * (1.0 - exp(-diff_log_abs_iop[iv]));
                 }
 
@@ -604,7 +574,7 @@ public class C2rccMerisAlgorithm {
                 double diff_log_abs_atot = diff_log_abs_combi_kd[1];
                 double diff_log_abs_btot = diff_log_abs_combi_kd[2];
                 double diff_log_abs_kd489 = diff_log_abs_combi_kd[3];
-                double diff_log_abs_kdmin = diff_log_abs_combi_kd[4];
+//                double diff_log_abs_kdmin = diff_log_abs_combi_kd[4];
                 unc_abs_adg = (1.0 - exp(-diff_log_abs_adg)) * adg_nn1;
                 unc_abs_atot = (1.0 - exp(-diff_log_abs_atot)) * atot_nn1;
                 unc_abs_btot = (1.0 - exp(-diff_log_abs_btot)) * btot_nn1;
@@ -620,45 +590,6 @@ public class C2rccMerisAlgorithm {
         return new Result(r_toa, r_tosa, rtosa_aann, rpath_nn, transd_nn, transu_nn, rwa, rwn, rtosa_oos, rwa_oos,
                           iops_nn, kd489_nn, kdmin_nn, unc_iop_abs, unc_abs_adg, unc_abs_atot, unc_abs_btot,
                           unc_abs_chl, unc_abs_tsm, unc_abs_kd489, unc_abs_kdmin, flags);
-    }
-
-    C2rccMerisAlgorithm(final String[] nnFilePaths, final boolean loadFromResources) throws IOException {
-        nnNames = new ArrayList<>();
-
-        // rtosa auto NN
-        nn_rtosa_aann = nnhs(nnFilePaths[IDX_rtosa_aann], loadFromResources);
-
-        // rtosa-rw NN
-        nn_rtosa_rw = nnhs(nnFilePaths[IDX_rtosa_rw], loadFromResources);
-
-        // rtosa - rpath NN
-        //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
-
-        // rtosa - trans NN
-        //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
-
-        // rw-IOP inverse NN
-        nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources);
-
-        // IOP-rw forward NN
-        //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
-        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources); //only 10 MERIS bands
-
-        // rw-kd NN, output are kdmin and kd449
-        //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
-        nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources);
-
-        // uncertainty NN for IOPs after bias corretion
-        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
-        nn_iop_unciop = nnhs(nnFilePaths[IDX_iop_unciop], loadFromResources);
-        // uncertainty for atot, adg, btot and kd
-        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
-        nn_iop_uncsumiop_unckd = nnhs(nnFilePaths[IDX_iop_uncsumiop_unckd], loadFromResources);
-
-        // todo RD20151007
-        nn_rw_rwnorm = nnhs(nnFilePaths[IDX_rw_rwnorm], loadFromResources);
-        nn_rtosa_trans = nnhs(nnFilePaths[IDX_rtosa_trans], loadFromResources);
-        nn_rtosa_rpath = nnhs(nnFilePaths[IDX_rtosa_rpath], loadFromResources);
     }
 
     public String[] getUsedNeuronalNetNames() {
@@ -711,6 +642,65 @@ public class C2rccMerisAlgorithm {
             }
         }
         return text;
+    }
+
+    /**
+     * Structure for returning the algorithm's result.
+     */
+    public static class Result {
+
+        public final double[] r_toa;
+        public final double[] r_tosa;
+        public final double[] rtosa_aann;
+        public final double rtosa_oos;
+        public final double[] rpath_nn;
+        public final double[] transd_nn;
+        public final double[] transu_nn;
+        public final double[] rwa;
+        public final double rwa_oos;
+        public final double[] rwn;
+        public final double[] iops_nn;
+        public final double kd489_nn;
+        public final double kdmin_nn;
+        public final double[] unc_iop_abs;
+        public final double unc_abs_adg;
+        public final double unc_abs_atot;
+        public final double unc_abs_btot;
+        public final double unc_abs_chl;
+        public final double unc_abs_tsm;
+        public final double unc_abs_kd489;
+        public final double unc_abs_kdmin;
+        public final int flags;
+
+        public Result(double[] r_toa, double[] r_tosa, double[] rtosa_aann, double[] rpath_nn, double[] transd_nn, double[] transu_nn, double[] rwa,
+                      double[] rwn, double rtosa_oos, double rwa_oos, double[] iops_nn,
+                      double kd489_nn, double kdmin_nn, double[] unc_iop_abs,
+                      double unc_abs_adg, double unc_abs_atot, double unc_abs_btot, double unc_abs_chl,
+                      double unc_abs_tsm, double unc_abs_kd489, double unc_abs_kdmin, int flags) {
+
+            this.r_toa = r_toa;
+            this.r_tosa = r_tosa;
+            this.rtosa_aann = rtosa_aann;
+            this.rtosa_oos = rtosa_oos;
+            this.rpath_nn = rpath_nn;
+            this.transd_nn = transd_nn;
+            this.transu_nn = transu_nn;
+            this.rwa = rwa;
+            this.rwa_oos = rwa_oos;
+            this.rwn = rwn;
+            this.iops_nn = iops_nn;
+            this.kd489_nn = kd489_nn;
+            this.kdmin_nn = kdmin_nn;
+            this.unc_iop_abs = unc_iop_abs;
+            this.unc_abs_adg = unc_abs_adg;
+            this.unc_abs_atot = unc_abs_atot;
+            this.unc_abs_btot = unc_abs_btot;
+            this.unc_abs_chl = unc_abs_chl;
+            this.unc_abs_tsm = unc_abs_tsm;
+            this.unc_abs_kdmin = unc_abs_kdmin;
+            this.unc_abs_kd489 = unc_abs_kd489;
+            this.flags = flags;
+        }
     }
 
 }

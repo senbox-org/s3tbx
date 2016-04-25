@@ -45,11 +45,22 @@ public class C2rccOlciAlgorithm {
     public static final int IDX_rw_rwnorm = 7;
     public static final int IDX_rtosa_trans = 8;
     public static final int IDX_rtosa_rpath = 9;
+
+
+    // @todo discuss with Carsten and Roland
     // gas absorption constants for 12 MERIS channels
+//    static final double[] absorb_ozon = {
+//                8.2e-04, 2.82e-03, 2.076e-02,
+//                3.96e-02, 1.022e-01, 1.059e-01,
+//                5.313e-02, 3.552e-02, 1.895e-02,
+//                8.38e-03, 7.2e-04, 0.0
+//    };
+    // gas absorption constants for 16 OLCI channels
     static final double[] absorb_ozon = {
-                8.2e-04, 2.82e-03, 2.076e-02, 3.96e-02,
-                1.022e-01, 1.059e-01, 5.313e-02, 3.552e-02,
-                1.895e-02, 8.38e-03, 7.2e-04, 0.0
+                0.0, 0.0002174, 0.0034448, 0.0205669,
+                0.0400134, 0.105446, 0.1081787, 0.0501634,
+                0.0410249, 0.0349671, 0.0187495, 0.0086322,
+                0.0084989, 0.0018944, 0.0012369, 0.0000488
     };
 
 
@@ -119,9 +130,11 @@ public class C2rccOlciAlgorithm {
     private final ArrayList<String> nnNames;
     double salinity = 35.0;
     double temperature = 15.0;
+
+    // @todo discuss with Carsten and Roland
     // (5) thresholds for flags
-    double[] thresh_rtosaaaNNrat = {0.98, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
-    double[] thresh_rwslope = {0.95, 1.05};    // threshold for out of scope flag Rw has to be adjusted
+//    double[] thresh_rtosaaaNNrat = {0.98, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
+//    double[] thresh_rwslope = {0.95, 1.05};    // threshold for out of scope flag Rw has to be adjusted
 
     // (5) thresholds for flags
     double log_threshfak_oor = 0.02; // == ~1.02, for log variables
@@ -244,7 +257,7 @@ public class C2rccOlciAlgorithm {
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
         double cos_view = cos(toRadians(view_zeni));
-        double sin_sun = sin(toRadians(sun_zeni));
+//        double sin_sun = sin(toRadians(sun_zeni));
         double sin_view = sin(toRadians(view_zeni));
 
         double cos_azi_diff = cos(toRadians(view_azi - sun_azi));
@@ -292,9 +305,9 @@ public class C2rccOlciAlgorithm {
             // @todo discuss with Carsten and Roland
             // (9.3.0) +++ water vapour correction for band 9 +++++ */
             //X2=rho_900/rho_885;
-            double X2 = r_toa[14] / r_toa[13];
+            double X2 = r_toa[18] / r_toa[17];
             double trans708 = h2o_cor_poly[0] + (h2o_cor_poly[1] + (h2o_cor_poly[2] + h2o_cor_poly[3] * X2) * X2) * X2;
-            r_tosa_ur[8] /= trans708;
+            r_tosa_ur[10] /= trans708;
 
             //*** (9.3.1) ozone correction ***/
             double model_ozone = 0;
@@ -417,13 +430,13 @@ public class C2rccOlciAlgorithm {
 
             // define input to water NNs
             //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:10)];
-            double[] nn_in_inv = new double[5 + 10];
+            double[] nn_in_inv = new double[5 + 12];
             nn_in_inv[0] = sun_zeni;
             nn_in_inv[1] = view_zeni;
             nn_in_inv[2] = azi_diff_deg;
             nn_in_inv[3] = temperature;
             nn_in_inv[4] = salinity;
-            System.arraycopy(log_rw, 0, nn_in_inv, 5, 10);
+            System.arraycopy(log_rw, 0, nn_in_inv, 5, 12);
 
             // (9.5.1)check input to rw -> IOP NN out of range
             mi = nn_rw_iop.get().getInmin();
@@ -483,22 +496,14 @@ public class C2rccOlciAlgorithm {
             flags = BitSetter.setFlag(flags, 3, iop_oor_flag);
 
             // (9.5.5)check if log_IOPs at limit
-            boolean[] iop_at_max_flag = new boolean[log_iops_nn1.length];
-            for (int iv = 0; iv < log_iops_nn1.length; iv++) {
-                iop_at_max_flag[iv] = false;
-                if (log_iops_nn1[iv] > (ma[iv] - log_threshfak_oor)) {
-                    iop_at_max_flag[iv] = true;
-                }
-                flags = BitSetter.setFlag(flags, iv + 4, iop_at_max_flag[iv]);
+            for (int i = 0; i < log_iops_nn1.length; i++) {
+                final boolean iopAtMax = log_iops_nn1[i] > (ma[i] - log_threshfak_oor);
+                flags = BitSetter.setFlag(flags, i + 4, iopAtMax);
             }
 
-            boolean[] iop_at_min_flag = new boolean[log_iops_nn1.length];
-            for (int iv = 0; iv < log_iops_nn1.length; iv++) {
-                iop_at_min_flag[iv] = false;
-                if (log_iops_nn1[iv] < (mi[iv] + log_threshfak_oor)) {
-                    iop_at_min_flag[iv] = true;
-                }
-                flags = BitSetter.setFlag(flags, iv + 9, iop_at_min_flag[iv]);
+            for (int i = 0; i < log_iops_nn1.length; i++) {
+                final boolean iopAtMin = log_iops_nn1[i] < (mi[i] + log_threshfak_oor);
+                flags = BitSetter.setFlag(flags, i + 9, iopAtMin);
             }
 
             // (9.5.6) compute Rw out of scope
@@ -583,11 +588,8 @@ public class C2rccOlciAlgorithm {
             if (outputUncertainties) {
                 double[] diff_log_abs_iop = nn_iop_unciop.get().calc(log_iops_nn1);
 
-
-                double unc_iop_rel[] = new double[diff_log_abs_iop.length];
                 unc_iop_abs = new double[diff_log_abs_iop.length];
                 for (int iv = 0; iv < diff_log_abs_iop.length; iv++) {
-                    unc_iop_rel[iv] = (exp(diff_log_abs_iop[iv]) - 1) * 100;
                     unc_iop_abs[iv] = iops_nn[iv] * (1.0 - exp(-diff_log_abs_iop[iv]));
                 }
 
@@ -599,7 +601,7 @@ public class C2rccOlciAlgorithm {
                 double diff_log_abs_atot = diff_log_abs_combi_kd[1];
                 double diff_log_abs_btot = diff_log_abs_combi_kd[2];
                 double diff_log_abs_kd489 = diff_log_abs_combi_kd[3];
-                double diff_log_abs_kdmin = diff_log_abs_combi_kd[4];
+//                double diff_log_abs_kdmin = diff_log_abs_combi_kd[4];
                 unc_abs_adg = (1.0 - exp(-diff_log_abs_adg)) * adg_nn1;
                 unc_abs_atot = (1.0 - exp(-diff_log_abs_atot)) * atot_nn1;
                 unc_abs_btot = (1.0 - exp(-diff_log_abs_btot)) * btot_nn1;

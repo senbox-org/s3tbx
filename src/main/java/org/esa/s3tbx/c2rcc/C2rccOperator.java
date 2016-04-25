@@ -2,6 +2,7 @@ package org.esa.s3tbx.c2rcc;
 
 import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
 import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
+import org.esa.s3tbx.c2rcc.olci.C2rccOlciOperator;
 import org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSOperator;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.Operator;
@@ -18,7 +19,7 @@ import static org.esa.snap.core.util.StringUtils.*;
 
 /**
  * The Case 2 Regional / CoastColour Operator for MERIS, MODIS, SeaWiFS, and VIIRS.
- * <p>
+ * <p/>
  * Computes AC-reflectances and IOPs from MERIS, MODIS, SeaWiFS, and VIIRS L1b data products using
  * an neural-network approach.
  *
@@ -26,10 +27,10 @@ import static org.esa.snap.core.util.StringUtils.*;
  * @author Sabine Embacher
  */
 @OperatorMetadata(alias = "c2rcc", version = "0.6",
-        authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
-        copyright = "Copyright (C) 2015 by Brockmann Consult",
-        description = "Performs atmospheric correction and IOP retrieval on MERIS, MODIS, SeaWiFS, and VIIRS L1b data products.")
+            authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
+            category = "Optical Processing/Thematic Water Processing",
+            copyright = "Copyright (C) 2015 by Brockmann Consult",
+            description = "Performs atmospheric correction and IOP retrieval on MERIS, MODIS, SeaWiFS, and VIIRS L1b data products.")
 public class C2rccOperator extends Operator {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
@@ -44,32 +45,32 @@ public class C2rccOperator extends Operator {
                                  "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
                                  "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-            optional = true,
-            label = "Ozone interpolation start product (TOMSOMI)")
+                optional = true,
+                label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-            optional = true,
-            label = "Ozone interpolation end product (TOMSOMI)")
+                optional = true,
+                label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-            optional = true,
-            label = "Air pressure interpolation start product (NCEP)")
+                optional = true,
+                label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
                                  "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
                                  "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
                                  "aux data for calculations.",
-            optional = true,
-            label = "Air pressure interpolation end product (NCEP)")
+                optional = true,
+                label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
 
     @TargetProduct
@@ -79,7 +80,7 @@ public class C2rccOperator extends Operator {
     private String sensorName;
 
     @Parameter(label = "Valid-pixel expression", converter = BooleanExpressionConverter.class,
-            description = "If not specified a sensor specific default expression will be used.")
+                description = "If not specified a sensor specific default expression will be used.")
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
@@ -107,8 +108,8 @@ public class C2rccOperator extends Operator {
     private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "false", description =
-            "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used",
-            label = "Use ECMWF aux data of source product (in case of MERIS sensor)")
+                "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used",
+                label = "Use ECMWF aux data of source product (in case of MERIS sensor)")
     private boolean useEcmwfAuxData;
 
     @Override
@@ -132,8 +133,12 @@ public class C2rccOperator extends Operator {
             targetProduct = setSourceAndGetTarget(c2rccSeaWiFSOperator);
         } else if (isNotNullAndNotEmpty(sensorName) && "viirs".equalsIgnoreCase(sensorName)) {
             throw new OperatorException("The VIIRS operator is currently not implemented.");
-        } else if (isNotNullAndNotEmpty(sensorName) && "olci".equalsIgnoreCase(sensorName)) {
-            throw new OperatorException("The OLCI operator is currently not implemented.");
+        } else if (isOlci(sourceProduct)) {
+            C2rccOlciOperator c2rccOlciOperator = new C2rccOlciOperator();
+            c2rccOlciOperator.setParameterDefaultValues();
+            c2rccOlciOperator.setUseEcmwfAuxData(useEcmwfAuxData);
+            configure(c2rccOlciOperator);
+            targetProduct = setSourceAndGetTarget(c2rccOlciOperator);
         } else {
             throw new OperatorException("Illegal source product.");
         }
@@ -183,6 +188,14 @@ public class C2rccOperator extends Operator {
             return "seawifs".equalsIgnoreCase(sensorName);
         } else {
             return C2rccSeaWiFSOperator.isValidInput(product);
+        }
+    }
+
+    private boolean isOlci(Product product) {
+        if (isNotNullAndNotEmpty(sensorName)) {
+            return "olci".equalsIgnoreCase(sensorName);
+        } else {
+            return C2rccOlciOperator.isValidInput(product);
         }
     }
 

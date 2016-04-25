@@ -6,9 +6,12 @@ import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureForma
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband16_ix;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 
+import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
 import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
@@ -17,7 +20,6 @@ import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.Result;
-import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -30,6 +32,9 @@ import org.esa.snap.core.datamodel.ProductNode;
 import org.esa.snap.core.datamodel.ProductNodeEvent;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
+import org.esa.snap.core.dataop.dem.ElevationModel;
+import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
+import org.esa.snap.core.dataop.resamp.Resampling;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -151,6 +156,14 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     };
 
     public static final String[] c2rccNNResourcePaths = new String[10];
+    public static final String BAND_NAME_QUALITY_FLAGS = "quality_flags";
+    public static final String RASTER_NAME_SEA_LEVEL_PRESSURE = "sea_level_pressure";
+    public static final String RASTER_NAME_TOTAL_OZONE = "total_ozone";
+    public static final String RASTER_NAME_SUN_ZENITH_ANGLE = "SZA";
+    public static final String RASTER_NAME_SUN_AZIMUTH_ANGLE = "SAA";
+    public static final String RASTER_NAME_VIEWING_ZENITH_ANGLE = "OZA";
+    public static final String RASTER_NAME_VIEWING_AZIMUTH_ANGLE = "OAA";
+    public static final String BAND_NAME_ALTITUDE = "altitude";
 
     static {
         c2rccNNResourcePaths[IDX_rtosa_aann] = "olci/olci_20160418/rtosa_aann/31x7x31_1097.6.net";
@@ -271,7 +284,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 //    private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "false", description =
-                "If selected, the ECMWF auxiliary data (ozon, air pressure) of the source product is used",
+                "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
                 label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
 
@@ -313,6 +326,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 //    private SolarFluxLazyLookup solarFluxLazyLookup;
 //    private double[] constantSolarFlux;
     private AtmosphericAuxdata atmosphericAuxdata;
+    private boolean useSnapDem;
+    private ElevationModel elevationModel;
 
     public static String[] getNNFilePaths(Path nnRootPath) throws IOException {
         final ArrayList<String> pathsList = new ArrayList<>();
@@ -353,35 +368,17 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     public static boolean isValidInput(Product product) {
         for (int i = 0; i < BAND_COUNT; i++) {
-            if (!product.containsBand("radiance_" + (i + 1))) {
+            if (!product.containsBand(getRadianceBandName(i))
+                || !product.containsBand(getSolarFluxBandname(i))) {
                 return false;
             }
         }
-        if (!product.containsBand("l1_flags")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("dem_alt")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("sun_zenith")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("sun_azimuth")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("view_zenith")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("view_azimuth")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("atm_press")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("ozone")) {
-            return false;
-        }
-        return true;
+
+        return product.containsBand(BAND_NAME_QUALITY_FLAGS)
+               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
+               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
+               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
+               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE);
     }
 
     @Override
@@ -494,6 +491,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
             atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
         }
+        final double altitude;
+        if (useSnapDem) {
+            try {
+                altitude = elevationModel.getElevation(geoPos);
+            } catch (Exception e) {
+                throw new OperatorException("Unable to compute altitude.", e);
+            }
+        } else {
+            altitude = sourceSamples[DEM_ALT_IX].getDouble();
+        }
         Result result = algorithm.processPixel(x, y, lat, lon,
                                                radiances,
                                                solflux,
@@ -501,7 +508,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                                                sourceSamples[SUN_AZI_IX].getDouble(),
                                                sourceSamples[VIEW_ZEN_IX].getDouble(),
                                                sourceSamples[VIEW_AZI_IX].getDouble(),
-                                               sourceSamples[DEM_ALT_IX].getDouble(),
+                                               altitude,
                                                sourceSamples[VALID_PIXEL_IX].getBoolean(),
                                                atmPress,
                                                ozone);
@@ -588,16 +595,20 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
 //        sc.setValidPixelMask(validPixelExpression);
         for (int i = 0; i < BAND_COUNT; i++) {
-            sc.defineSample(i + RADIANCE_START_IX, String.format("Oa%02d_radiance", i + 1));
-            sc.defineSample(i + SOLAR_FLUX_START_IX, String.format("solar_flux_band_%d", i + 1));
+            sc.defineSample(i + RADIANCE_START_IX, getRadianceBandName(i));
+            sc.defineSample(i + SOLAR_FLUX_START_IX, getSolarFluxBandname(i));
         }
-        sc.defineSample(DEM_ALT_IX, "dem_alt");
-        sc.defineSample(SUN_ZEN_IX, "sun_zenith");
-        sc.defineSample(SUN_AZI_IX, "sun_azimuth");
-        sc.defineSample(VIEW_ZEN_IX, "view_zenith");
-        sc.defineSample(VIEW_AZI_IX, "view_azimuth");
-        sc.defineSample(ATM_PRESS_IX, "atm_press");
-        sc.defineSample(OZONE_IX, "ozone");
+        if (!useSnapDem) {
+            sc.defineSample(DEM_ALT_IX, BAND_NAME_ALTITUDE);
+        }
+        sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH_ANGLE);
+        sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH_ANGLE);
+        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH_ANGLE);
+        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
+        if (useEcmwfAuxData) {
+            sc.defineSample(ATM_PRESS_IX, RASTER_NAME_SEA_LEVEL_PRESSURE);
+            sc.defineSample(OZONE_IX, RASTER_NAME_TOTAL_OZONE);
+        }
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
@@ -698,6 +709,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         productConfigurer.copyMetadata();
 
         final Product targetProduct = productConfigurer.getTargetProduct();
+
+        targetProduct.setPreferredTileSize(128, 128);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
 
         final StringBuilder autoGrouping = new StringBuilder("iop");
@@ -935,12 +948,27 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @Override
     protected void prepareInputs() throws OperatorException {
         for (int i = 0; i < BAND_COUNT; i++) {
-            assertSourceBand("radiance_" + (i + 1));
+            assertSourceBand(getRadianceBandName(i));
+            assertSourceBand(getSolarFluxBandname(i));
         }
-        assertSourceBand("l1_flags");
+        useSnapDem = !sourceProduct.containsRasterDataNode(BAND_NAME_ALTITUDE);
+        if (useSnapDem) {
+            elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
+        }
+
+        assertFlagCoding(BAND_NAME_QUALITY_FLAGS);
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
+        }
+
+        assertSourceRaster(RASTER_NAME_SUN_ZENITH_ANGLE);
+        assertSourceRaster(RASTER_NAME_SUN_AZIMUTH_ANGLE);
+        assertSourceRaster(RASTER_NAME_VIEWING_ZENITH_ANGLE);
+        assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
+        if (useEcmwfAuxData) {
+            assertSourceRaster(RASTER_NAME_SEA_LEVEL_PRESSURE);
+            assertSourceRaster(RASTER_NAME_TOTAL_OZONE);
         }
 
         try {
@@ -990,19 +1018,28 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 //            }
 //        }
 
+        C2rccCommons.ensureTimeCoding_Fallback(sourceProduct);
         if (!useEcmwfAuxData) {
             initAtmosphericAuxdata();
         }
     }
 
-    private static boolean isSolfluxValid(double[] solflux) {
-        for (double v : solflux) {
-            if (v <= 0.0) {
-                return false;
-            }
-        }
-        return true;
+    private static String getRadianceBandName(int i) {
+        return String.format("Oa%02d_radiance", i + 1);
     }
+
+    private static String getSolarFluxBandname(int i) {
+        return String.format("solar_flux_band_%d", i + 1);
+    }
+
+//    private static boolean isSolfluxValid(double[] solflux) {
+//        for (double v : solflux) {
+//            if (v <= 0.0) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     private void ensureSpectralProperties(Band band, int i) {
         ProductUtils.copySpectralBandProperties(sourceProduct.getBand(String.format("Oa%02d_radiance", i)), band);
@@ -1069,9 +1106,22 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         }
     }
 
+    private void assertSourceRaster(String name) {
+        if (!sourceProduct.containsRasterDataNode(name)) {
+            throw new OperatorException("Invalid source product, raster '" + name + "' required");
+        }
+    }
+
     private void assertSourceBand(String name) {
-        if (sourceProduct.getBand(name) == null) {
+        if (!sourceProduct.containsBand(name)) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
+        }
+    }
+
+    private void assertFlagCoding(String name) {
+        assertSourceBand(name);
+        if (sourceProduct.getBand(name).getFlagCoding() == null) {
+            throw new OperatorException("Invalid source product, flag coding '" + name + "' required");
         }
     }
 
