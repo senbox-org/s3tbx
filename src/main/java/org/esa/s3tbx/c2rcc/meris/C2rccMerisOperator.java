@@ -9,6 +9,7 @@ import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.*;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 
+import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
 import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
@@ -974,6 +975,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 throw new OperatorException("Invalid solar flux in source product!");
             }
         }
+        C2rccCommons.ensureTimeCoding_Fallback(sourceProduct);
         if (!useEcmwfAuxData) {
             initAtmosphericAuxdata();
         }
