@@ -1,14 +1,5 @@
 package org.esa.s3tbx.c2rcc.olci;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
-import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband16_ix;
-import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
-
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
@@ -56,6 +47,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.DEFAULT_OLCI_WAVELENGTH;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_iop_rw;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_iop_unciop;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_iop_uncsumiop_unckd;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rtosa_aann;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rtosa_rpath;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rtosa_rw;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rtosa_trans;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rw_iop;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rw_kd;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rw_rwnorm;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband16_ix;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.ozone_default;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.pressure_default;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 

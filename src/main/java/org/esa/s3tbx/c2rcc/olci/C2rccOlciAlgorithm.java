@@ -1,5 +1,19 @@
 package org.esa.s3tbx.c2rcc.olci;
 
+import org.esa.snap.core.nn.NNffbpAlphaTabFast;
+import org.esa.snap.core.util.BitSetter;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.acos;
@@ -14,20 +28,6 @@ import static java.lang.Math.toRadians;
 import static org.esa.s3tbx.ArrayMath.a_abs;
 import static org.esa.s3tbx.ArrayMath.a_exp;
 import static org.esa.s3tbx.ArrayMath.a_max;
-
-import org.esa.snap.core.nn.NNffbpAlphaTabFast;
-import org.esa.snap.core.util.BitSetter;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @author Roland Doerffer
