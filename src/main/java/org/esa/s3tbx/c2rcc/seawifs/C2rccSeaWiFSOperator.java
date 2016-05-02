@@ -29,9 +29,17 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import java.io.File;
 import java.io.IOException;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.*;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.ensureTimeCoding_Fallback;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.salinity_default;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengths;
+import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.temperature_default;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
