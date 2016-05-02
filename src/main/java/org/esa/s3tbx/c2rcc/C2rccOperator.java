@@ -30,7 +30,7 @@ import static org.esa.snap.core.util.StringUtils.*;
             authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
-            description = "Performs atmospheric correction and IOP retrieval on MERIS, MODIS, SeaWiFS, and VIIRS L1b data products.")
+            description = "Performs atmospheric correction and IOP retrieval on OLCI, MSI, MERIS, MODIS or SeaWiFS L1 product.")
 public class C2rccOperator extends Operator {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
@@ -38,7 +38,7 @@ public class C2rccOperator extends Operator {
     */
 
 
-    @SourceProduct(description = "MERIS, MODIS, SeaWiFS, or VIIRS L1b product")
+    @SourceProduct(description = "OLCI, MSI, MERIS, MODIS or SeaWiFS L1 product")
     private Product sourceProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
