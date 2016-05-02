@@ -35,6 +35,9 @@ import java.util.Arrays;
  */
 public class C2rccOlciAlgorithm {
 
+    public final static double pressure_default = 1000.0;
+    public final static double ozone_default = 330.0;
+
     public static final int IDX_rtosa_aann = 0;
     public static final int IDX_rtosa_rw = 1;
     public static final int IDX_rw_iop = 2;

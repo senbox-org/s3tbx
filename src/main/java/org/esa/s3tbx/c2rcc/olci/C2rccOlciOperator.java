@@ -8,8 +8,6 @@ import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressur
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband16_ix;
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
 
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
