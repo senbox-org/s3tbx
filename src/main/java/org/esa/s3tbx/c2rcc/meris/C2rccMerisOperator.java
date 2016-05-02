@@ -1,14 +1,5 @@
 package org.esa.s3tbx.c2rcc.meris;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.*;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
-import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.pressure_default;
-
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
@@ -55,6 +46,28 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_MERIS_WAVELENGTH;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_iop_rw;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_iop_unciop;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_iop_uncsumiop_unckd;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_aann;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_rpath;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_rw;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_trans;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_iop;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_kd;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_rwnorm;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband15_ix;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.ozone_default;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.pressure_default;
+
 // todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
@@ -70,10 +83,10 @@ import java.util.HashSet;
  * @author Norman Fomferra
  */
 @OperatorMetadata(alias = "meris.c2rcc", version = "0.9",
-            authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
-            category = "Optical Processing/Thematic Water Processing",
-            copyright = "Copyright (C) 2015 by Brockmann Consult",
-            description = "Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products.")
+        authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
+        category = "Optical Processing/Thematic Water Processing",
+        copyright = "Copyright (C) 2015 by Brockmann Consult",
+        description = "Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products.")
 public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
@@ -142,16 +155,16 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
 
     public static final String[] alternativeNetDirNames = new String[]{
-                "rtosa_aann",
-                "rtosa_rw",
-                "rw_iop",
-                "iop_rw",
-                "rw_kd",
-                "iop_unciop",
-                "iop_uncsumiop_unckd",
-                "rw_rwnorm",
-                "rtosa_trans",
-                "rtosa_rpath"
+            "rtosa_aann",
+            "rtosa_rw",
+            "rw_iop",
+            "iop_rw",
+            "rw_kd",
+            "iop_unciop",
+            "iop_uncsumiop_unckd",
+            "rw_rwnorm",
+            "rtosa_trans",
+            "rtosa_rpath"
     };
 
     public static final String[] c2rccNNResourcePaths = new String[10];
@@ -186,51 +199,51 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
 
     @SourceProduct(label = "MERIS L1b product",
-                description = "MERIS L1b source product.")
+            description = "MERIS L1b source product.")
     private Product sourceProduct;
 
     @SourceProduct(description = "A second source product which is congruent to the L1b source product but contains cloud flags. " +
-                                 "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
-                                 "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN! && !$cloudProduct.l2_flags.CLOUD' ",
-                optional = true,
-                label = "Product with cloud flag")
+            "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
+            "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN! && !$cloudProduct.l2_flags.CLOUD' ",
+            optional = true,
+            label = "Product with cloud flag")
     private Product cloudProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Ozone interpolation start product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Ozone interpolation end product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation start product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation end product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-                defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
-                converter = BooleanExpressionConverter.class)
+            defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
+            converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
@@ -258,25 +271,25 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private double CHLfak;
 
     @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
-                label = "Threshold rtosa OOS")
+            label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
     @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for water leaving reflectances",
-                label = "Threshold rwa OOS")
+            label = "Threshold rwa OOS")
     private double thresholdRwaOos;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
-                             "for calculations. If the auxiliary data needed for interpolation not available in this " +
-                             "path, the data will automatically downloaded.")
+            "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
+            "for calculations. If the auxiliary data needed for interpolation not available in this " +
+            "path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets with the nets " +
-                             "available in the given directory. The directory must strictly be organized in the following way to be a valid set " +
-                             "of neuronal nets. The path must contain the subdirectories 'rtosa_aann', 'rtosa_rw', 'rw_iop', 'iop_rw', 'rw_kd', " +
-                             "'iop_unciop', 'iop_uncsumiop_unckd', 'rw_rwnorm', 'rtosa_trans', 'rtosa_rpath' and inside the subdirectories " +
-                             "only one *.net file.",
-                label = "Alternative NN Path")
+            "available in the given directory. The directory must strictly be organized in the following way to be a valid set " +
+            "of neuronal nets. The path must contain the subdirectories 'rtosa_aann', 'rtosa_rw', 'rw_iop', 'iop_rw', 'rw_kd', " +
+            "'iop_unciop', 'iop_uncsumiop_unckd', 'rw_rwnorm', 'rtosa_trans', 'rtosa_rpath' and inside the subdirectories " +
+            "only one *.net file.",
+            label = "Alternative NN Path")
     private String alternativeNNPath;
 
     private final String[] availableNetSets = new String[]{"C2RCC-Nets", "C2X-Nets"};
@@ -290,8 +303,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "false", description =
-                "If selected, the ECMWF auxiliary data (ozon, air pressure) of the source product is used",
-                label = "Use ECMWF aux data of source product")
+            "If selected, the ECMWF auxiliary data (ozon, air pressure) of the source product is used",
+            label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
 
     @Parameter(defaultValue = "false", label = "Output top-of-atmosphere (TOA) reflectances")
@@ -867,7 +880,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
     private void ensureSpectralProperties(Band band, int i) {
         ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + i), band);
-        if(band.getSpectralWavelength() == 0) {
+        if (band.getSpectralWavelength() == 0) {
             band.setSpectralWavelength(DEFAULT_MERIS_WAVELENGTH[i - 1]);
             band.setSpectralBandIndex(i);
         }
@@ -891,8 +904,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 final MetadataAttribute ma = (MetadataAttribute) sourceNode;
                 final MetadataElement pe = ma.getParentElement();
                 if ("operator".equals(ma.getName())
-                    && pe.getName().startsWith("node")
-                    && processingGraphName.equals(pe.getParentElement().getName())) {
+                        && pe.getName().startsWith("node")
+                        && processingGraphName.equals(pe.getParentElement().getName())) {
                     if (operatorNode == null) {
                         if (alias.equals(ma.getData().getElemString())) {
                             operatorNode = pe;
@@ -1003,7 +1016,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             final Path nnDirPath = nnRootPath.resolve(alternativeNetDirName);
             Files.newDirectoryStream(nnDirPath).forEach(path -> {
                 if (path.getFileName().toString().toLowerCase().endsWith(".net")
-                    && Files.isRegularFile(path)) {
+                        && Files.isRegularFile(path)) {
                     dotNetFilesCount[0]++;
                     pathsList.add(path.toString());
 //                    pathsList.add(path.toAbsolutePath().toString());
