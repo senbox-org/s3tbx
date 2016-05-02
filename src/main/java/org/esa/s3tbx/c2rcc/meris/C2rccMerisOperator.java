@@ -69,8 +69,8 @@ import java.util.HashSet;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "meris.c2rcc", version = "0.6",
-            authors = "Roland Doerffer, Norman Fomferra (Brockmann Consult)",
+@OperatorMetadata(alias = "meris.c2rcc", version = "0.9",
+            authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products.")

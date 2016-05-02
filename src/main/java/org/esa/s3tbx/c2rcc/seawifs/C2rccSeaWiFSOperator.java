@@ -45,8 +45,8 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.*;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "seawifs.c2rcc", version = "0.5",
-            authors = "Roland Doerffer, Norman Fomferra (Brockmann Consult), Sabine Embacher (Brockmann Consult)",
+@OperatorMetadata(alias = "seawifs.c2rcc", version = "0.9",
+            authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1b data products.")

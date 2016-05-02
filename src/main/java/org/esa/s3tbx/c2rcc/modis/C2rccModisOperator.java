@@ -45,8 +45,8 @@ import static org.esa.s3tbx.c2rcc.util.TargetProductPreparer.*;
  *
  * @author Norman Fomferra, Sabine Embacher
  */
-@OperatorMetadata(alias = "modis.c2rcc", version = "0.5",
-            authors = "Wolfgang Schoenfeld, Norman Fomferra (Brockmann Consult), Sabine Embacher (Brockmann Consult)",
+@OperatorMetadata(alias = "modis.c2rcc", version = "0.9",
+            authors = "Wolfgang Schoenfeld (HZG), Sabine Embacher, Norman Fomferra (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")

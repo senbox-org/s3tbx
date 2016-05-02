@@ -69,8 +69,8 @@ import java.util.HashSet;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "olci.c2rcc", version = "0.1",
-            authors = "Roland Doerffer, Norman Fomferra (Brockmann Consult)",
+@OperatorMetadata(alias = "olci.c2rcc", version = "0.9",
+            authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
             description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
