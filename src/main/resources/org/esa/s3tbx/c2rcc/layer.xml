@@ -127,6 +127,10 @@
             <attr name="operatorName" stringvalue="olci.c2rcc"/>
             <attr name="disableFromGraphBuilder" stringvalue="true"/>
         </file>
+        <file name="org.esa.s3tbx.c2rcc.msi">
+            <attr name="operatorName" stringvalue="msi.c2rcc"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
     </folder>
 
 
