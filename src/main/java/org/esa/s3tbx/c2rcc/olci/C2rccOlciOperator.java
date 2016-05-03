@@ -9,6 +9,7 @@ import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.Result;
+import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -42,11 +43,7 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
 
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
@@ -176,16 +173,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     public static final String BAND_NAME_ALTITUDE = "altitude";
 
     static {
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "olci/olci_20160418/rtosa_aann/31x7x31_1097.6.net";
-        c2rccNNResourcePaths[IDX_rtosa_rw] = "olci/olci_20160418/rtosa_rw/33x73x53x33_764257.3.net";
-        c2rccNNResourcePaths[IDX_rw_iop] = "olci/olci_20160418/rw_iop/97x77x37_20196.0.net";
-        c2rccNNResourcePaths[IDX_iop_rw] = "olci/olci_20160418/iop_rw/17x97x47_464.3.net";
-        c2rccNNResourcePaths[IDX_rw_kd] = "olci/olci_20160418/rw_kd/97x77x7_399.9.net";
-        c2rccNNResourcePaths[IDX_iop_unciop] = "olci/olci_20160418/iop_unciop/17x77x37_11486.7.net";
-        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "olci/olci_20160418/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        c2rccNNResourcePaths[IDX_rw_rwnorm] = "olci/olci_20160418/rw_rwnorm/37x57x17_73.5.net";
-        c2rccNNResourcePaths[IDX_rtosa_trans] = "olci/olci_20160418/rtosa_trans/31x77x57x37_61400.9.net";
-        c2rccNNResourcePaths[IDX_rtosa_rpath] = "olci/olci_20160418/rtosa_rpath/31x77x57x37_5161.2.net";
+        c2rccNNResourcePaths[IDX_rtosa_aann] = "olci/rtosa_aann/31x7x31_1097.6.net";
+        c2rccNNResourcePaths[IDX_rtosa_rw] = "olci/rtosa_rw/33x73x53x33_764257.3.net";
+        c2rccNNResourcePaths[IDX_rw_iop] = "olci/rw_iop/97x77x37_20196.0.net";
+        c2rccNNResourcePaths[IDX_iop_rw] = "olci/iop_rw/17x97x47_464.3.net";
+        c2rccNNResourcePaths[IDX_rw_kd] = "olci/rw_kd/97x77x7_399.9.net";
+        c2rccNNResourcePaths[IDX_iop_unciop] = "olci/iop_unciop/17x77x37_11486.7.net";
+        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "olci/iop_uncsumiop_unckd/17x77x37_9113.1.net";
+        c2rccNNResourcePaths[IDX_rw_rwnorm] = "olci/rw_rwnorm/37x57x17_73.5.net";
+        c2rccNNResourcePaths[IDX_rtosa_trans] = "olci/rtosa_trans/31x77x57x37_61400.9.net";
+        c2rccNNResourcePaths[IDX_rtosa_rpath] = "olci/rtosa_rpath/31x77x57x37_5161.2.net";
     }
 
     @SourceProduct(label = "OLCI L1b product",
@@ -338,43 +335,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private AtmosphericAuxdata atmosphericAuxdata;
     private boolean useSnapDem;
     private ElevationModel elevationModel;
-
-    public static String[] getNNFilePaths(Path nnRootPath) throws IOException {
-        final ArrayList<String> pathsList = new ArrayList<>();
-        final String Präfix = "The path '" + nnRootPath.toString() + "' ";
-
-        if (!Files.isDirectory(nnRootPath)) {
-            throw new OperatorException(Präfix + "for alternative neuronal nets is not a valid path");
-        }
-
-        final HashSet<String> dirNames = new HashSet<>();
-        Files.newDirectoryStream(nnRootPath).forEach(path -> {
-            if (Files.isDirectory(path)) {
-                dirNames.add(path.getFileName().toString());
-            }
-        });
-        for (String alternativeNetDirName : alternativeNetDirNames) {
-            if (!dirNames.contains(alternativeNetDirName)) {
-                throw new OperatorException(Präfix + "does not contain the expected sub directory '" + alternativeNetDirName + "'");
-            }
-            final int[] dotNetFilesCount = {0};
-            final Path nnDirPath = nnRootPath.resolve(alternativeNetDirName);
-            Files.newDirectoryStream(nnDirPath).forEach(path -> {
-                if (path.getFileName().toString().toLowerCase().endsWith(".net")
-                    && Files.isRegularFile(path)) {
-                    dotNetFilesCount[0]++;
-                    pathsList.add(path.toString());
-//                    pathsList.add(path.toAbsolutePath().toString());
-                }
-            });
-            int count = dotNetFilesCount[0];
-            if (count != 1) {
-                throw new OperatorException("The path '" + nnDirPath + " must contain exact 1 file whith file ending '*.net' but contains " + count);
-            }
-        }
-
-        return pathsList.toArray(new String[pathsList.size()]);
-    }
 
     public static boolean isValidInput(Product product) {
         for (int i = 0; i < BAND_COUNT; i++) {
@@ -784,7 +744,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
-            autoGrouping.append(":rwa_");
+            autoGrouping.append(":rwa");
         }
 
         if (outputRwn) {
@@ -793,7 +753,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
-            autoGrouping.append(":rwn_");
+            autoGrouping.append(":rwn");
         }
 
         if (outputOos) {
@@ -802,7 +762,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             oos_rtosa.setValidPixelExpression(validPixelExpression);
             oos_rwa.setValidPixelExpression(validPixelExpression);
 
-            autoGrouping.append(":oos_");
+            autoGrouping.append(":oos");
         }
 
         Band iop_apig = addBand(targetProduct, "iop_apig", "m^-1", "Absorption coefficient of phytoplankton pigments at 443 nm");
@@ -985,13 +945,9 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             final String[] nnFilePaths;
             final boolean loadFromResources = alternativeNNPath == null || alternativeNNPath.trim().length() == 0;
             if (loadFromResources) {
-//                if (availableNetSets[0].equalsIgnoreCase(netSet)) {
                 nnFilePaths = c2rccNNResourcePaths;
-//                } else {
-//                    nnFilePaths = c2xNNResourcePaths;
-//                }
             } else {
-                nnFilePaths = getNNFilePaths(Paths.get(alternativeNNPath));
+                nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
             }
             algorithm = new C2rccOlciAlgorithm(nnFilePaths, loadFromResources);
         } catch (IOException e) {
