@@ -50,75 +50,24 @@ public class C2rccMsiAlgorithm {
     public static final int IDX_rtosa_rpath = 9;
 
 
-    // @todo discuss with Carsten and Roland
-    // gas absorption constants for 12 MERIS channels
-//    static final double[] absorb_ozon = {
-//                8.2e-04, 2.82e-03, 2.076e-02,
-//                3.96e-02, 1.022e-01, 1.059e-01,
-//                5.313e-02, 3.552e-02, 1.895e-02,
-//                8.38e-03, 7.2e-04, 0.0
-//    };
-    // gas absorption constants for 16 OLCI channels
-    static final double[] absorb_ozon = {
-                0.0, 0.0002174, 0.0034448, 0.0205669,
-                0.0400134, 0.105446, 0.1081787, 0.0501634,
-                0.0410249, 0.0349671, 0.0187495, 0.0086322,
-                0.0084989, 0.0018944, 0.0012369, 0.0000488
-    };
+    // gas absorption constants for 13 MSI channels
+    static final double[] absorb_ozon = {0.0035560, 0.0205669, 0.105446, 0.0501634, 0.0198157, 0.0107319, 0.0075270, 0.0018944};
 
 
-    // @todo discuss with Carsten and Roland
-    // todo RD20151007 warnings durchsehen
     // polynom coefficients for band708 H2O correction
+    // todo (mp/20160502)- not needed for MSI?
     static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
 
-    static final int[] olciband16_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 21};
-    static final int[] olciband21_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
-
-    // @todo discuss with Carsten and Roland
-//    public static double[] DEFAULT_SOLAR_FLUX = new double[]{
-//                1724.724,
-//                1889.8026,
-//                1939.5339,
-//                1940.1365,
-//                1813.5457,
-//                1660.3589,
-//                1540.5198,
-//                1480.7161,
-//                1416.1177,
-//                1273.394,
-//                1261.8658,
-//                1184.0952,
-//                963.94995,
-//                935.23706,
-//                900.659,
-//                };
-
-    // @todo discuss with Carsten and Roland
-    // values from: https://odnature.naturalsciences.be/downloads/publications/129ruddick_esa_sp734_withheader.pdf
-    public static float[] DEFAULT_OLCI_WAVELENGTH = new float[]{
-      /*  1 */   400f,  //new
-      /*  2 */   412.5f,
-      /*  3 */   442.5f,
-      /*  4 */   490f,
-      /*  5 */   510f,
-      /*  6 */   560f,
-      /*  7 */   620f,
-      /*  8 */   665f,
-      /*  9 */   673.75f, //new
-      /* 10 */   681.25f,
-      /* 11 */   708.75f,
-      /* 12 */   753.75f,
-      /* 13 */   761.25f,
-      /* 14 */   764.375f,
-      /* 15 */   767.5f,
-      /* 16 */   778.75f,
-      /* 17 */   865f,
-      /* 18 */   885f,
-      /* 19 */   900f,
-      /* 20 */   940f,
-      /* 21 */   1020f // new
-    };
+    // MSI sources
+    static String[] SOURCE_BAND_REFL_NAMES = new String[]{"B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9", "B10", "B11", "B12",};
+    static String[] NN_SOURCE_BAND_REFL_NAMES = new String[]{"B1", "B2", "B3", "B4", "B5", "B6", "B7","B8A",};
+    static final int SUN_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 1;
+    static final int SUN_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 2;
+    static final int VIEW_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 3;
+    static final int VIEW_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 4;
+    static final int ATM_PRESS_IX = SOURCE_BAND_REFL_NAMES.length + 5;
+    static final int OZONE_IX = SOURCE_BAND_REFL_NAMES.length + 6;
+    static final int VALID_PIXEL_IX = SOURCE_BAND_REFL_NAMES.length + 7;
 
     final ThreadLocal<NNffbpAlphaTabFast> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
     final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands
@@ -162,28 +111,18 @@ public class C2rccMsiAlgorithm {
         // rtosa-rw NN
         nn_rtosa_rw = nnhs(nnFilePaths[IDX_rtosa_rw], loadFromResources);
 
-        // rtosa - rpath NN
-        //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
-
-        // rtosa - trans NN
-        //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
-
         // rw-IOP inverse NN
         nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources);
 
         // IOP-rw forward NN
-        //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
         nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources); //only 10 MERIS bands
 
         // rw-kd NN, output are kdmin and kd449
-        //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
         nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources);
 
         // uncertainty NN for IOPs after bias corretion
-        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
         nn_iop_unciop = nnhs(nnFilePaths[IDX_iop_unciop], loadFromResources);
         // uncertainty for atot, adg, btot and kd
-        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
         nn_iop_uncsumiop_unckd = nnhs(nnFilePaths[IDX_iop_uncsumiop_unckd], loadFromResources);
 
         // todo RD20151007
@@ -300,21 +239,21 @@ public class C2rccMsiAlgorithm {
         double unc_abs_tsm = 0;
 
         if (validPixel) {
-            double[] r_tosa_ur = new double[olciband16_ix.length];
-            for (int i = 0; i < olciband16_ix.length; i++) {
-                r_tosa_ur[i] = r_toa[olciband16_ix[i] - 1]; // -1 because counts in Scilab start at 1 not 0
-            }
+            double[] r_tosa_ur = Arrays.copyOf(r_toa, NN_SOURCE_BAND_REFL_NAMES.length);
 
-            // @todo discuss with Carsten and Roland
+            // todo (mp/20160502)- not needed for MSI?
             // (9.3.0) +++ water vapour correction for band 9 +++++ */
             //X2=rho_900/rho_885;
-            double X2 = r_toa[18] / r_toa[17];
-            double trans708 = h2o_cor_poly[0] + (h2o_cor_poly[1] + (h2o_cor_poly[2] + h2o_cor_poly[3] * X2) * X2) * X2;
-            r_tosa_ur[10] /= trans708;
+//            double X2 = r_toa[18] / r_toa[17];
+//            double trans708 = h2o_cor_poly[0] + (h2o_cor_poly[1] + (h2o_cor_poly[2] + h2o_cor_poly[3] * X2) * X2) * X2;
+//            r_tosa_ur[10] /= trans708;
 
             //*** (9.3.1) ozone correction ***/
             double model_ozone = 0;
 
+            if(px == 300 && py == 50) {
+                System.out.println("Hello!");
+            }
             r_tosa = new double[r_tosa_ur.length];
             double[] log_rtosa = new double[r_tosa_ur.length];
             for (int i = 0; i < r_tosa_ur.length; i++) {
@@ -342,7 +281,8 @@ public class C2rccMsiAlgorithm {
 
             // (9.4) )set input to all atmosphere NNs
             //nn_in=[sun_zeni,x,y,z,temperature, salinity, alti_press, log_rtosa];
-            double[] nn_in = new double[7 + log_rtosa.length];
+            int ancNnInputCount = 7;
+            double[] nn_in = new double[ancNnInputCount + log_rtosa.length];
             nn_in[0] = sun_zeni;
             nn_in[1] = x;
             nn_in[2] = y;
@@ -350,7 +290,7 @@ public class C2rccMsiAlgorithm {
             nn_in[4] = temperature;
             nn_in[5] = salinity;
             nn_in[6] = alti_press;
-            System.arraycopy(log_rtosa, 0, nn_in, 7, log_rtosa.length);
+            System.arraycopy(log_rtosa, 0, nn_in, ancNnInputCount, log_rtosa.length);
 
             flags = 0;
 
@@ -415,10 +355,10 @@ public class C2rccMsiAlgorithm {
             if (outputTdown || outputTup) {
                 double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
                 if (outputTdown) {
-                    transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
+                    transd_nn = Arrays.copyOfRange(trans_nn, 0, r_tosa_ur.length);
                 }
                 if (outputTup) {
-                    transu_nn = Arrays.copyOfRange(trans_nn, 12, 24);
+                    transu_nn = Arrays.copyOfRange(trans_nn, r_tosa_ur.length, trans_nn.length);
                 }
             }
 
@@ -433,13 +373,15 @@ public class C2rccMsiAlgorithm {
 
             // define input to water NNs
             //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:10)];
-            double[] nn_in_inv = new double[5 + 12];
+            int ancNnInvInputCount = 5;
+            int logRwNNInvInputCount = log_rw.length - 2;
+            double[] nn_in_inv = new double[ancNnInvInputCount + logRwNNInvInputCount];
             nn_in_inv[0] = sun_zeni;
             nn_in_inv[1] = view_zeni;
             nn_in_inv[2] = azi_diff_deg;
             nn_in_inv[3] = temperature;
             nn_in_inv[4] = salinity;
-            System.arraycopy(log_rw, 0, nn_in_inv, 5, 12);
+            System.arraycopy(log_rw, 0, nn_in_inv, ancNnInvInputCount, logRwNNInvInputCount);
 
             // (9.5.1)check input to rw -> IOP NN out of range
             mi = nn_rw_iop.get().getInmin();
@@ -511,14 +453,14 @@ public class C2rccMsiAlgorithm {
 
             // (9.5.6) compute Rw out of scope
             //nn_in_for=[sun_zeni view_zeni azi_diff_deg temperature salinity log_iops_nn1];// input to forward water NN
-
-            double[] nn_in_for = new double[5 + 5];
+            int ancNnForInputCount = 5;
+            double[] nn_in_for = new double[ancNnForInputCount + log_iops_nn1.length];
             nn_in_for[0] = sun_zeni;
             nn_in_for[1] = view_zeni;
             nn_in_for[2] = azi_diff_deg;
             nn_in_for[3] = temperature;
             nn_in_for[4] = salinity;
-            System.arraycopy(log_iops_nn1, 0, nn_in_for, 5, 5);
+            System.arraycopy(log_iops_nn1, 0, nn_in_for, ancNnForInputCount, log_iops_nn1.length);
 
             //log_rw_nn2 = nnhs_ff(for_nn9b,nn_in_for); // compute rho_w from IOPs
 

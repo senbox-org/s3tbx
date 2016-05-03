@@ -8,6 +8,7 @@ import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
+import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
@@ -39,12 +40,8 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
@@ -707,7 +704,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
-            autoGrouping.append(":rwa_");
+            autoGrouping.append(":rwa");
         }
 
         if (outputRwn) {
@@ -716,7 +713,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
-            autoGrouping.append(":rwn_");
+            autoGrouping.append(":rwn");
         }
 
         if (outputOos) {
@@ -725,7 +722,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             oos_rtosa.setValidPixelExpression(validPixelExpression);
             oos_rwa.setValidPixelExpression(validPixelExpression);
 
-            autoGrouping.append(":oos_");
+            autoGrouping.append(":oos");
         }
 
         Band iop_apig = addBand(targetProduct, "iop_apig", "m^-1", "Absorption coefficient of phytoplankton pigments at 443 nm");
@@ -953,7 +950,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                     nnFilePaths = c2xNNResourcePaths;
                 }
             } else {
-                nnFilePaths = getNNFilePaths(Paths.get(alternativeNNPath));
+                nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
             }
             algorithm = new C2rccMerisAlgorithm(nnFilePaths, loadFromResources);
         } catch (IOException e) {
@@ -992,43 +989,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (!useEcmwfAuxData) {
             initAtmosphericAuxdata();
         }
-    }
-
-    public static String[] getNNFilePaths(Path nnRootPath) throws IOException {
-        final ArrayList<String> pathsList = new ArrayList<>();
-        final String Präfix = "The path '" + nnRootPath.toString() + "' ";
-
-        if (!Files.isDirectory(nnRootPath)) {
-            throw new OperatorException(Präfix + "for alternative neuronal nets is not a valid path");
-        }
-
-        final HashSet<String> dirNames = new HashSet<>();
-        Files.newDirectoryStream(nnRootPath).forEach(path -> {
-            if (Files.isDirectory(path)) {
-                dirNames.add(path.getFileName().toString());
-            }
-        });
-        for (String alternativeNetDirName : alternativeNetDirNames) {
-            if (!dirNames.contains(alternativeNetDirName)) {
-                throw new OperatorException(Präfix + "does not contain the expected sub directory '" + alternativeNetDirName + "'");
-            }
-            final int[] dotNetFilesCount = {0};
-            final Path nnDirPath = nnRootPath.resolve(alternativeNetDirName);
-            Files.newDirectoryStream(nnDirPath).forEach(path -> {
-                if (path.getFileName().toString().toLowerCase().endsWith(".net")
-                        && Files.isRegularFile(path)) {
-                    dotNetFilesCount[0]++;
-                    pathsList.add(path.toString());
-//                    pathsList.add(path.toAbsolutePath().toString());
-                }
-            });
-            int count = dotNetFilesCount[0];
-            if (count != 1) {
-                throw new OperatorException("The path '" + nnDirPath + " must contain exact 1 file whith file ending '*.net' but contains " + count);
-            }
-        }
-
-        return pathsList.toArray(new String[pathsList.size()]);
     }
 
     public static boolean isValidInput(Product product) {

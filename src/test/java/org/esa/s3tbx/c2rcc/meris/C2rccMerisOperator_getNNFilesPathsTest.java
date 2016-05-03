@@ -4,15 +4,13 @@ import static org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator.alternativeNetDirName
 import static org.junit.Assert.*;
 
 import com.google.common.jimfs.Jimfs;
+import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.junit.*;
 
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/**
- * Created by Sabine on 29.10.2015.
- */
 public class C2rccMerisOperator_getNNFilesPathsTest {
 
     private Path testDir;
@@ -41,7 +39,7 @@ public class C2rccMerisOperator_getNNFilesPathsTest {
             Files.createFile(nnfile);
         }
 
-        final String[] nnFilePaths = C2rccMerisOperator.getNNFilePaths(testDir);
+        final String[] nnFilePaths = NNUtils.getNNFilePaths(testDir, alternativeNetDirNames);
         assertNotNull(nnFilePaths);
         assertEquals(10, nnFilePaths.length);
         for (int i = 0; i < alternativeNetDirNames.length; i++) {

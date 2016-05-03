@@ -2,6 +2,7 @@ package org.esa.s3tbx.c2rcc;
 
 import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
 import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
+import org.esa.s3tbx.c2rcc.msi.C2rccMsiOperator;
 import org.esa.s3tbx.c2rcc.olci.C2rccOlciOperator;
 import org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSOperator;
 import org.esa.snap.core.datamodel.Product;
@@ -76,7 +77,7 @@ public class C2rccOperator extends Operator {
     @TargetProduct
     private Product targetProduct;
 
-    @Parameter(valueSet = {"", "meris", "modis", "seawifs", "viirs", "olci"})
+    @Parameter(valueSet = {"", "olci", "msi", "meris", "modis", "seawifs"})
     private String sensorName;
 
     @Parameter(label = "Valid-pixel expression", converter = BooleanExpressionConverter.class,
@@ -139,6 +140,12 @@ public class C2rccOperator extends Operator {
             c2rccOlciOperator.setUseEcmwfAuxData(useEcmwfAuxData);
             configure(c2rccOlciOperator);
             targetProduct = setSourceAndGetTarget(c2rccOlciOperator);
+        } else if (isMsi(sourceProduct)) {
+            C2rccMsiOperator c2rccMsiOperator = new C2rccMsiOperator();
+            c2rccMsiOperator.setParameterDefaultValues();
+            c2rccMsiOperator.setUseEcmwfAuxData(useEcmwfAuxData);
+            configure(c2rccMsiOperator);
+            targetProduct = setSourceAndGetTarget(c2rccMsiOperator);
         } else {
             throw new OperatorException("Illegal source product.");
         }
@@ -196,6 +203,14 @@ public class C2rccOperator extends Operator {
             return "olci".equalsIgnoreCase(sensorName);
         } else {
             return C2rccOlciOperator.isValidInput(product);
+        }
+    }
+
+    private boolean isMsi(Product product) {
+        if (isNotNullAndNotEmpty(sensorName)) {
+            return "msi".equalsIgnoreCase(sensorName);
+        } else {
+            return C2rccMsiOperator.isValidInput(product);
         }
     }
 

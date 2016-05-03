@@ -49,6 +49,15 @@
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
             </file>
+            <file name="org-esa-s3tbx-c2rcc-msi-OpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="C2R/CC MSI Processor"/>
+                <attr name="operatorName" stringvalue="msi.c2rcc"/>
+                <attr name="dialogTitle" stringvalue="C2R/CC MSI Processor"/>
+                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
+                <attr name="helpId" stringvalue="c2rccScientificTool"/>
+            </file>
         </folder>
     </folder>
 
@@ -83,6 +92,11 @@
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-olci-OpAction.instance"/>
                         <attr name="position" intvalue="4"/>
+                    </file>
+                    <file name="org-esa-s3tbx-c2rcc-msi-OpAction.shadow">
+                        <attr name="originalFile"
+                              stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-msi-OpAction.instance"/>
+                        <attr name="position" intvalue="5"/>
                     </file>
                 </folder>
             </folder>

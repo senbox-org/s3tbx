@@ -1,12 +1,5 @@
 package org.esa.s3tbx.c2rcc.msi;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.*;
-
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
@@ -15,6 +8,7 @@ import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
+import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -48,11 +42,30 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
+
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.ATM_PRESS_IX;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_rw;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_unciop;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_uncsumiop_unckd;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_aann;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_rpath;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_rw;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_trans;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_iop;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_kd;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_rwnorm;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.OZONE_IX;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.Result;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.ozone_default;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.pressure_default;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 
@@ -65,60 +78,41 @@ import java.util.HashSet;
  * @author Norman Fomferra
  */
 @OperatorMetadata(alias = "msi.c2rcc", version = "0.9",
-            authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
-            category = "Optical Processing/Thematic Water Processing",
-            copyright = "Copyright (C) 2015 by Brockmann Consult",
-            description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
+        authors = "Roland Doerffer, Marco Peters, Sabine Embacher (Brockmann Consult)",
+        category = "Optical Processing/Thematic Water Processing",
+        copyright = "Copyright (C) 2015 by Brockmann Consult",
+        description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
 public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
         see https://senbox.atlassian.net/browse/SNAP-395
     */
 
-    // MSI sources
-    private static final int BAND_COUNT = 21;
-    private static final int RADIANCE_START_IX = 0;
-    private static final int SOLAR_FLUX_START_IX = BAND_COUNT;
-    private static final int DEM_ALT_IX = BAND_COUNT * 2;
-    private static final int SUN_ZEN_IX = DEM_ALT_IX + 1;
-    private static final int SUN_AZI_IX = DEM_ALT_IX + 2;
-    private static final int VIEW_ZEN_IX = DEM_ALT_IX + 3;
-    private static final int VIEW_AZI_IX = DEM_ALT_IX + 4;
-    private static final int ATM_PRESS_IX = DEM_ALT_IX + 5;
-    private static final int OZONE_IX = DEM_ALT_IX + 6;
-    private static final int VALID_PIXEL_IX = DEM_ALT_IX + 7;
-
     // MSI targets
-    private static final int BC_16 = olciband16_ix.length; // Band count 16
-    private static final int BC_21 = olciband21_ix.length; // Band count 21
-    private static final int SINGLE_IX = BC_21 + 7 * BC_16;
+    private static final int NN_SPECTRUM_COUNT = NN_SOURCE_BAND_REFL_NAMES.length;
+    private static final int FULL_SPECTRUM_COUNT = SOURCE_BAND_REFL_NAMES.length;
+    private static final int SINGLE_IX = FULL_SPECTRUM_COUNT + 7 * NN_SPECTRUM_COUNT;
 
     private static final int RTOA_IX = 0;
-    private static final int RTOSA_IX = BC_21;
-    private static final int RTOSA_AANN_IX = BC_21 + BC_16;
-    private static final int RPATH_IX = BC_21 + 2 * BC_16;
-    private static final int TDOWN_IX = BC_21 + 3 * BC_16;
-    private static final int TUP_IX = BC_21 + 4 * BC_16;
-    private static final int RWA_IX = BC_21 + 5 * BC_16;
-    private static final int RWN_IX = BC_21 + 6 * BC_16;
+    private static final int RTOSA_IX = FULL_SPECTRUM_COUNT;
+    private static final int RTOSA_AANN_IX = FULL_SPECTRUM_COUNT + NN_SPECTRUM_COUNT;
+    private static final int RPATH_IX = FULL_SPECTRUM_COUNT + 2 * NN_SPECTRUM_COUNT;
+    private static final int TDOWN_IX = FULL_SPECTRUM_COUNT + 3 * NN_SPECTRUM_COUNT;
+    private static final int TUP_IX = FULL_SPECTRUM_COUNT + 4 * NN_SPECTRUM_COUNT;
+    private static final int RWA_IX = FULL_SPECTRUM_COUNT + 5 * NN_SPECTRUM_COUNT;
+    private static final int RWN_IX = FULL_SPECTRUM_COUNT + 6 * NN_SPECTRUM_COUNT;
 
     private static final int OOS_RTOSA_IX = SINGLE_IX;
     private static final int OOS_RWA_IX = SINGLE_IX + 1;
 
-   private static final int IOP_APIG_IX = SINGLE_IX + 2;
-   private static final int IOP_ADET_IX = SINGLE_IX + 3;
-   private static final int IOP_AGELB_IX = SINGLE_IX + 4;
-   private static final int IOP_BPART_IX = SINGLE_IX + 5;
-   private static final int IOP_BWIT_IX = SINGLE_IX + 6;
+    private static final int IOP_APIG_IX = SINGLE_IX + 2;
+    private static final int IOP_ADET_IX = SINGLE_IX + 3;
+    private static final int IOP_AGELB_IX = SINGLE_IX + 4;
+    private static final int IOP_BPART_IX = SINGLE_IX + 5;
+    private static final int IOP_BWIT_IX = SINGLE_IX + 6;
 
-    //    public static final int IOP_ADG_IX = SINGLE_IX + 7;  // virtual band
-//    public static final int IOP_ATOT_IX = SINGLE_IX + 8;  // virtual band
-//    public static final int IOP_BTOT_IX = SINGLE_IX + 9;  // virtual band
     private static final int KD489_IX = SINGLE_IX + 7;
     private static final int KDMIN_IX = SINGLE_IX + 8;
-//    public static final int KD_Z90MAX_IX = SINGLE_IX + 12;  // virtual band
-//    public static final int CONC_CHL_IX = SINGLE_IX + 13;  // virtual band
-//    public static final int CONC_TSM_IX = SINGLE_IX + 14;  // virtual band
 
     private static final int UNC_APIG_IX = SINGLE_IX + 9;
     private static final int UNC_ADET_IX = SINGLE_IX + 10;
@@ -128,96 +122,91 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final int UNC_ADG_IX = SINGLE_IX + 14;
     private static final int UNC_ATOT_IX = SINGLE_IX + 15;
     private static final int UNC_BTOT_IX = SINGLE_IX + 16;
-    //    public static final int UNC_TSM_IX = SINGLE_IX + 24;  // virtual band
-//    public static final int UNC_CHL_IX = SINGLE_IX + 23;  // virtual band
     private static final int UNC_KD489_IX = SINGLE_IX + 17;
     private static final int UNC_KDMIN_IX = SINGLE_IX + 18;
-//    public static final int UNC_Z90MAX_IX = SINGLE_IX + 27;  // virtual band
 
     private static final int L2_FLAGS_IX = SINGLE_IX + 19;
 
 
     private static final String[] alternativeNetDirNames = new String[]{
-                "rtosa_aaNN7",
-                "rtosa_rw",
-                "rw_iop",
-                "iop_rw",
-                "rw_kd",
-                "iop_unciop",
-                "iop_uncsumiop_unckd",
-                "rw_rwnorm",
-                "rtosa_trans",
-                "rtosa_rpath"
+            "rtosa_aann",
+            "rtosa_rw",
+            "rw_iop",
+            "iop_rw",
+            "rw_kd",
+            "iop_unciop",
+            "iop_uncsumiop_unckd",
+            "rw_rwnorm",
+            "rtosa_trans",
+            "rtosa_rpath"
     };
 
     private static final String[] c2rccNNResourcePaths = new String[10];
-    private static final String BAND_NAME_QUALITY_FLAGS = "quality_flags";
+    private static final String RASTER_NAME_SUN_ZENITH_ANGLE = "sun_zenith";
+    private static final String RASTER_NAME_SUN_AZIMUTH_ANGLE = "sun_azimuth";
+    private static final String RASTER_NAME_VIEWING_ZENITH_ANGLE = "view_zenith";
+    private static final String RASTER_NAME_VIEWING_AZIMUTH_ANGLE = "view_azimuth";
     private static final String RASTER_NAME_SEA_LEVEL_PRESSURE = "sea_level_pressure";
     private static final String RASTER_NAME_TOTAL_OZONE = "total_ozone";
-    private static final String RASTER_NAME_SUN_ZENITH_ANGLE = "SZA";
-    private static final String RASTER_NAME_SUN_AZIMUTH_ANGLE = "SAA";
-    private static final String RASTER_NAME_VIEWING_ZENITH_ANGLE = "OZA";
-    private static final String RASTER_NAME_VIEWING_AZIMUTH_ANGLE = "OAA";
-    private static final String BAND_NAME_ALTITUDE = "altitude";
 
     static {
         c2rccNNResourcePaths[IDX_iop_rw] = "msi/iop_rw/17x97x47_125.5.net";
         c2rccNNResourcePaths[IDX_iop_unciop] = "msi/iop_unciop/17x77x37_11486.7.net";
         c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "msi/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "msi/rtosa_aaNN7/31x7x31_78.0.net";
+        c2rccNNResourcePaths[IDX_rtosa_aann] = "msi/rtosa_aann/31x7x31_78.0.net";
         c2rccNNResourcePaths[IDX_rtosa_rpath] = "msi/rtosa_rpath/31x77x57x37_1564.4.net";
         c2rccNNResourcePaths[IDX_rtosa_rw] = "msi/rtosa_rw/33x73x53x33_291140.4.net";
         c2rccNNResourcePaths[IDX_rtosa_trans] = "msi/rtosa_trans/31x77x57x37_37537.6.net";
         c2rccNNResourcePaths[IDX_rw_iop] = "msi/rw_iop/97x77x37_17515.9.net";
-        c2rccNNResourcePaths[IDX_rw_kd] = "msi/rw_kd/97x77x7_306.8.9.net";
-        c2rccNNResourcePaths[IDX_rw_rwnorm] = "msi/rw_rwnorm/27x57x27_28.0.net";
+        c2rccNNResourcePaths[IDX_rw_kd] = "msi/rw_kd/97x77x7_306.8.net";
+        c2rccNNResourcePaths[IDX_rw_rwnorm] = "msi/rw_rwnorm/27x7x27_28.0.net";
     }
 
     @SourceProduct(label = "MSI L1C product", description = "MSI L1C source product.")
     private Product sourceProduct;
 
     @SourceProduct(description = "A second source product which is congruent to the L1b source product but contains cloud flags. " +
-                                 "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
-                                 "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN! && !$cloudProduct.l2_flags.CLOUD' ",
-                optional = true,
-                label = "Product with cloud flag")
+            "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
+            "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN! && !$cloudProduct.l2_flags.CLOUD' ",
+            optional = true,
+            label = "Product with cloud flag")
     private Product cloudProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Ozone interpolation start product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Ozone interpolation end product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation start product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation end product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-                defaultValue = "!quality_flags.invalid && !quality_flags.land",
-                converter = BooleanExpressionConverter.class)
+            defaultValue = "",
+            converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
@@ -245,41 +234,33 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private double CHLfak;
 
     @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
-                label = "Threshold rtosa OOS")
+            label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
     @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for water leaving reflectances",
-                label = "Threshold rwa OOS")
+            label = "Threshold rwa OOS")
     private double thresholdRwaOos;
 
+    @Parameter(defaultValue = "true", description = "Using the given default values for ozone and pressure.")
+    private boolean useDefaultValuesForAtmosphere;
+
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
-                             "for calculations. If the auxiliary data needed for interpolation not available in this " +
-                             "path, the data will automatically downloaded.")
+            "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
+            "for calculations. If the auxiliary data needed for interpolation not available in this " +
+            "path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets with the nets " +
-                             "available in the given directory. The directory must strictly be organized in the following way to be a valid set " +
-                             "of neuronal nets. The path must contain the subdirectories 'rtosa_aann', 'rtosa_rw', 'rw_iop', 'iop_rw', 'rw_kd', " +
-                             "'iop_unciop', 'iop_uncsumiop_unckd', 'rw_rwnorm', 'rtosa_trans', 'rtosa_rpath' and inside the subdirectories " +
-                             "only one *.net file.",
-                label = "Alternative NN Path")
+            "available in the given directory. The directory must strictly be organized in the following way to be a valid set " +
+            "of neuronal nets. The path must contain the subdirectories 'rtosa_aann', 'rtosa_rw', 'rw_iop', 'iop_rw', 'rw_kd', " +
+            "'iop_unciop', 'iop_uncsumiop_unckd', 'rw_rwnorm', 'rtosa_trans', 'rtosa_rpath' and inside the subdirectories " +
+            "only one *.net file.",
+            label = "Alternative NN Path")
     private String alternativeNNPath;
 
-//    private final String[] availableNetSets = new String[]{"C2RCC-Nets", "C2X-Nets"};
-//    @Parameter(valueSet = {"C2RCC-Nets", "C2X-Nets"},
-//            description = "Set of neuronal nets for algorithm.",
-//            defaultValue = "C2RCC-Nets",
-//            label = "Set of neuronal nets")
-//    private String netSet = "C2RCC-Nets";
-
-    // @todo discuss with Carsten and Roland
-//    @Parameter(defaultValue = "false")
-//    private boolean useDefaultSolarFlux;
-
     @Parameter(defaultValue = "false", description =
-                "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
-                label = "Use ECMWF aux data of source product")
+            "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
+            label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
 
     @Parameter(defaultValue = "false", label = "Output top-of-atmosphere (TOA) reflectances")
@@ -316,68 +297,19 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private boolean outputUncertainties;
 
     private C2rccMsiAlgorithm algorithm;
-    // @todo discuss with Carsten and Roland
-//    private SolarFluxLazyLookup solarFluxLazyLookup;
-//    private double[] constantSolarFlux;
     private AtmosphericAuxdata atmosphericAuxdata;
-    private boolean useSnapDem;
     private ElevationModel elevationModel;
+    private double[] solflux;
+    private double quantificationValue;
 
-    public static String[] getNNFilePaths(Path nnRootPath) throws IOException {
-        final ArrayList<String> pathsList = new ArrayList<>();
-        final String Präfix = "The path '" + nnRootPath.toString() + "' ";
-
-        if (!Files.isDirectory(nnRootPath)) {
-            throw new OperatorException(Präfix + "for alternative neuronal nets is not a valid path");
-        }
-
-        final HashSet<String> dirNames = new HashSet<>();
-        Files.newDirectoryStream(nnRootPath).forEach(path -> {
-            if (Files.isDirectory(path)) {
-                dirNames.add(path.getFileName().toString());
-            }
-        });
-        for (String alternativeNetDirName : alternativeNetDirNames) {
-            if (!dirNames.contains(alternativeNetDirName)) {
-                throw new OperatorException(Präfix + "does not contain the expected sub directory '" + alternativeNetDirName + "'");
-            }
-            final int[] dotNetFilesCount = {0};
-            final Path nnDirPath = nnRootPath.resolve(alternativeNetDirName);
-            Files.newDirectoryStream(nnDirPath).forEach(path -> {
-                if (path.getFileName().toString().toLowerCase().endsWith(".net")
-                    && Files.isRegularFile(path)) {
-                    dotNetFilesCount[0]++;
-                    pathsList.add(path.toString());
-//                    pathsList.add(path.toAbsolutePath().toString());
-                }
-            });
-            int count = dotNetFilesCount[0];
-            if (count != 1) {
-                throw new OperatorException("The path '" + nnDirPath + " must contain exact 1 file whith file ending '*.net' but contains " + count);
-            }
-        }
-
-        return pathsList.toArray(new String[pathsList.size()]);
-    }
-
-    public static boolean isValidInput(Product product) {
-        for (int i = 0; i < BAND_COUNT; i++) {
-            if (!product.containsBand(getRadianceBandName(i))
-                || !product.containsBand(getSolarFluxBandname(i))) {
-                return false;
-            }
-        }
-
-        return product.containsBand(BAND_NAME_QUALITY_FLAGS)
-               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
-               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
-               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
-               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE);
-    }
 
     @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
         this.atmosphericAuxDataPath = atmosphericAuxDataPath;
+    }
+
+    public void setUseEcmwfAuxData(boolean useEcmwfAuxData) {
+        this.useEcmwfAuxData = useEcmwfAuxData;
     }
 
     @Override
@@ -410,11 +342,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         this.salinity = salinity;
     }
 
-    // @todo discuss with Carsten and Roland
-//    public void setUseDefaultSolarFlux(boolean useDefaultSolarFlux) {
-//        this.useDefaultSolarFlux = useDefaultSolarFlux;
-//    }
-
     @Override
     public void setOzone(double ozone) {
         this.ozone = ozone;
@@ -425,9 +352,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         this.press = press;
     }
 
-    public void setUseEcmwfAuxData(boolean useEcmwfAuxData) {
-        this.useEcmwfAuxData = useEcmwfAuxData;
-    }
 
     @Override
     public void setValidPixelExpression(String validPixelExpression) {
@@ -448,62 +372,71 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
     }
 
+    public static boolean isValidInput(Product product) {
+        for (String SOURCE_BAND_REFL_NAME : SOURCE_BAND_REFL_NAMES) {
+            if (!product.containsBand(SOURCE_BAND_REFL_NAME)) {
+                return false;
+            }
+        }
+
+        return product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE);
+    }
+
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
 
-        final double[] radiances = new double[BAND_COUNT];
-        // @todo discuss with Carsten and Roland
-        final double[] solflux = new double[BAND_COUNT];
-        for (int i = 0; i < BAND_COUNT; i++) {
-            radiances[i] = sourceSamples[i].getDouble();
-            solflux[i] = sourceSamples[i + SOLAR_FLUX_START_IX].getDouble();
+        final double[] reflectances = new double[C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES.length];
+        for (int i = 0; i < reflectances.length; i++) {
+            reflectances[i] = sourceSamples[i].getDouble() / quantificationValue;
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
-        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
-
-        // @todo discuss with Carsten and Roland
-//        if (useDefaultSolarFlux) {
-//            ProductData.UTC utc = new ProductData.UTC(mjd);
-//            Calendar calendar = utc.getAsCalendar();
-//            final int doy = calendar.get(Calendar.DAY_OF_YEAR);
-//            final int year = calendar.get(Calendar.YEAR);
-//            solflux = solarFluxLazyLookup.getCorrectedFluxFor(doy, year);
-//        } else {
-//        solflux = constantSolarFlux;
-//        }
 
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
         double atmPress;
         double ozone;
-        if (useEcmwfAuxData) {
+        if (useDefaultValuesForAtmosphere) {
+            atmPress = press;
+            ozone = this.ozone;
+        } else if (useEcmwfAuxData) {
             atmPress = sourceSamples[ATM_PRESS_IX].getDouble();
             ozone = sourceSamples[OZONE_IX].getDouble();
         } else {
+            // todo MSI has no time information
+            final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
             ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
             atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
         }
+
         final double altitude;
-        if (useSnapDem) {
-            try {
-                altitude = elevationModel.getElevation(geoPos);
-            } catch (Exception e) {
-                throw new OperatorException("Unable to compute altitude.", e);
-            }
-        } else {
-            altitude = sourceSamples[DEM_ALT_IX].getDouble();
+        try {
+            altitude = elevationModel.getElevation(geoPos);
+        } catch (Exception e) {
+            throw new OperatorException("Unable to compute altitude.", e);
         }
+        boolean validPixel = sourceSamples[C2rccMsiAlgorithm.VALID_PIXEL_IX].getBoolean();
+        boolean samplesValid = true;
+        for (Sample sourceSample : sourceSamples) {
+            if (!sourceSample.getNode().isPixelValid(x, y)) {
+                samplesValid = false;
+                break;
+            }
+        }
+
         Result result = algorithm.processPixel(x, y, lat, lon,
-                                               radiances,
+                                               reflectances,
                                                solflux,
-                                               sourceSamples[SUN_ZEN_IX].getDouble(),
-                                               sourceSamples[SUN_AZI_IX].getDouble(),
-                                               sourceSamples[VIEW_ZEN_IX].getDouble(),
-                                               sourceSamples[VIEW_AZI_IX].getDouble(),
+                                               sourceSamples[C2rccMsiAlgorithm.SUN_ZEN_IX].getDouble(),
+                                               sourceSamples[C2rccMsiAlgorithm.SUN_AZI_IX].getDouble(),
+                                               sourceSamples[C2rccMsiAlgorithm.VIEW_ZEN_IX].getDouble(),
+                                               sourceSamples[C2rccMsiAlgorithm.VIEW_AZI_IX].getDouble(),
                                                altitude,
-                                               sourceSamples[VALID_PIXEL_IX].getBoolean(),
+                                               validPixel && samplesValid,
                                                atmPress,
                                                ozone);
 
@@ -585,28 +518,47 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         targetSamples[L2_FLAGS_IX].set(result.flags);
     }
 
+    private double getQuantificationValue() {
+        MetadataElement pic = getProductImageCharacteristics();
+        return Integer.parseInt(pic.getAttributeString("QUANTIFICATION_VALUE"));
+    }
+
+    private double[] getSolarFluxValues() {
+        MetadataElement pic = getProductImageCharacteristics();
+        MetadataElement reflCon = pic.getElement("Reflectance_Conversion");
+        MetadataElement solIrrList = reflCon.getElement("Solar_Irradiance_List");
+        MetadataAttribute[] attributes = solIrrList.getAttributes();
+        final double[] solflux = new double[attributes.length];
+        for (int i = 0; i < attributes.length; i++) {
+            MetadataAttribute attribute = attributes[i];
+            solflux[i] = Float.parseFloat(attribute.getData().getElemString());
+        }
+        return solflux;
+    }
+
+    private MetadataElement getProductImageCharacteristics() {
+        MetadataElement l1cUserProduct = sourceProduct.getMetadataRoot().getElement("Level-1C_User_Product");
+        MetadataElement generalInfo = l1cUserProduct.getElement("General_Info");
+        return generalInfo.getElement("Product_Image_Characteristics");
+    }
+
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
-//        sc.setValidPixelMask(validPixelExpression);
-        for (int i = 0; i < BAND_COUNT; i++) {
-            sc.defineSample(i + RADIANCE_START_IX, getRadianceBandName(i));
-            sc.defineSample(i + SOLAR_FLUX_START_IX, getSolarFluxBandname(i));
+        for (int i = 0; i < C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES.length; i++) {
+            sc.defineSample(i, C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES[i]);
         }
-        if (!useSnapDem) {
-            sc.defineSample(DEM_ALT_IX, BAND_NAME_ALTITUDE);
-        }
-        sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH_ANGLE);
-        sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH_ANGLE);
-        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH_ANGLE);
-        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
+        sc.defineSample(C2rccMsiAlgorithm.SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH_ANGLE);
+        sc.defineSample(C2rccMsiAlgorithm.SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH_ANGLE);
+        sc.defineSample(C2rccMsiAlgorithm.VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH_ANGLE);
+        sc.defineSample(C2rccMsiAlgorithm.VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
         if (useEcmwfAuxData) {
             sc.defineSample(ATM_PRESS_IX, RASTER_NAME_SEA_LEVEL_PRESSURE);
             sc.defineSample(OZONE_IX, RASTER_NAME_TOTAL_OZONE);
         }
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
-            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
+            sc.defineComputedSample(C2rccMsiAlgorithm.VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
-            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true");
+            sc.defineComputedSample(C2rccMsiAlgorithm.VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true");
         }
 
     }
@@ -615,50 +567,50 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     protected void configureTargetSamples(TargetSampleConfigurer tsc) throws OperatorException {
 
         if (outputRtoa) {
-            for (int i = 0; i < olciband21_ix.length; i++) {
-                tsc.defineSample(RTOA_IX + i, "rtoa_" + olciband21_ix[i]);
+            for (int i = 0; i < FULL_SPECTRUM_COUNT; i++) {
+                tsc.defineSample(RTOA_IX + i, "rtoa_" + C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES[i]);
             }
         }
 
         if (outputRtoaGc) {
-            for (int i = 0; i < olciband16_ix.length; i++) {
-                tsc.defineSample(RTOSA_IX + i, "rtosa_gc_" + olciband16_ix[i]);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                tsc.defineSample(RTOSA_IX + i, "rtosa_gc_" + C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i]);
             }
         }
 
         if (outputRtoaGc_aann) {
-            for (int i = 0; i < olciband16_ix.length; i++) {
-                tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + olciband16_ix[i]);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i]);
             }
         }
 
         if (outputRpath) {
-            for (int i = 0; i < olciband16_ix.length; i++) {
-                tsc.defineSample(RPATH_IX + i, "rpath_" + olciband16_ix[i]);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                tsc.defineSample(RPATH_IX + i, "rpath_" + C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i]);
             }
         }
 
         if (outputTdown) {
-            for (int i = 0; i < olciband16_ix.length; i++) {
-                tsc.defineSample(TDOWN_IX + i, "tdown_" + olciband16_ix[i]);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                tsc.defineSample(TDOWN_IX + i, "tdown_" + C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i]);
             }
         }
 
         if (outputTup) {
-            for (int i = 0; i < olciband16_ix.length; i++) {
-                tsc.defineSample(TUP_IX + i, "tup_" + olciband16_ix[i]);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                tsc.defineSample(TUP_IX + i, "tup_" + C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i]);
             }
         }
 
         if (outputRwa) {
-            for (int i = 0; i < olciband16_ix.length; i++) {
-                tsc.defineSample(RWA_IX + i, "rwa_" + olciband16_ix[i]);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                tsc.defineSample(RWA_IX + i, "rwa_" + C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i]);
             }
         }
 
         if (outputRwn) {
-            for (int i = 0; i < olciband16_ix.length; i++) {
-                tsc.defineSample(RWN_IX + i, "rwn_" + olciband16_ix[i]);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                tsc.defineSample(RWN_IX + i, "rwn_" + C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i]);
             }
         }
 
@@ -711,73 +663,81 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         autoGrouping.append(":conc");
 
         if (outputRtoa) {
-            for (int i : olciband21_ix) {
-                final Band band = addBand(targetProduct, "rtoa_" + i, "1", "Top-of-atmosphere reflectance");
-                ensureSpectralProperties(band, i);
+            for (int i = 0; i < FULL_SPECTRUM_COUNT; i++) {
+                String sourceBandName = C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES[i];
+                final Band band = addBand(targetProduct, "rtoa_" + sourceBandName, "1", "Top-of-atmosphere reflectance");
+                ensureSpectralProperties(band, sourceBandName);
             }
             autoGrouping.append(":rtoa");
         }
         final String validPixelExpression = "l2_flags.Valid_PE";
         if (outputRtoaGc) {
-            for (int bi : olciband16_ix) {
-                Band band = addBand(targetProduct, "rtosa_gc_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, input to AC");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                String sourceBandName = C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i];
+                Band band = addBand(targetProduct, "rtosa_gc_" + sourceBandName, "1", "Gas corrected top-of-atmosphere reflectance, input to AC");
+                ensureSpectralProperties(band, sourceBandName);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rtosa_gc");
         }
         if (outputRtoaGc_aann) {
-            for (int bi : olciband16_ix) {
-                Band band = addBand(targetProduct, "rtosagc_aann_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                String sourceBandName = C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i];
+                Band band = addBand(targetProduct, "rtosagc_aann_" + sourceBandName, "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
+                ensureSpectralProperties(band, sourceBandName);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rtosagc_aann");
         }
 
         if (outputRpath) {
-            for (int bi : olciband16_ix) {
-                Band band = addBand(targetProduct, "rpath_" + bi, "1", "Path-radiance reflectances");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                String sourceBandName = C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i];
+                Band band = addBand(targetProduct, "rpath_" + sourceBandName, "1", "Path-radiance reflectances");
+                ensureSpectralProperties(band, sourceBandName);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rpath");
         }
 
         if (outputTdown) {
-            for (int bi : olciband16_ix) {
-                Band band = addBand(targetProduct, "tdown_" + bi, "1", "Transmittance of downweling irradiance");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                String sourceBandName = C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i];
+                Band band = addBand(targetProduct, "tdown_" + sourceBandName, "1", "Transmittance of downweling irradiance");
+                ensureSpectralProperties(band, sourceBandName);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":tdown");
         }
 
         if (outputTup) {
-            for (int bi : olciband16_ix) {
-                Band band = addBand(targetProduct, "tup_" + bi, "1", "Transmittance of upweling irradiance");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                String sourceBandName = C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i];
+                Band band = addBand(targetProduct, "tup_" + sourceBandName, "1", "Transmittance of upweling irradiance");
+                ensureSpectralProperties(band, sourceBandName);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":tup");
         }
 
         if (outputRwa) {
-            for (int index : olciband16_ix) {
-                final Band band = addBand(targetProduct, "rwa_" + index, "1", "Angular dependent water leaving reflectances");
-                ensureSpectralProperties(band, index);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                String sourceBandName = C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i];
+                final Band band = addBand(targetProduct, "rwa_" + sourceBandName, "1", "Angular dependent water leaving reflectances");
+                ensureSpectralProperties(band, sourceBandName);
                 band.setValidPixelExpression(validPixelExpression);
             }
-            autoGrouping.append(":rwa_");
+            autoGrouping.append(":rwa");
         }
 
         if (outputRwn) {
-            for (int index : olciband16_ix) {
-                final Band band = addBand(targetProduct, "rwn_" + index, "1", "Normalized water leaving reflectances");
-                ensureSpectralProperties(band, index);
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                String sourceBandName = C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i];
+                final Band band = addBand(targetProduct, "rwn_" + sourceBandName, "1", "Normalized water leaving reflectances");
+                ensureSpectralProperties(band, sourceBandName);
                 band.setValidPixelExpression(validPixelExpression);
             }
-            autoGrouping.append(":rwn_");
+            autoGrouping.append(":rwn");
         }
 
         if (outputOos) {
@@ -786,7 +746,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             oos_rtosa.setValidPixelExpression(validPixelExpression);
             oos_rwa.setValidPixelExpression(validPixelExpression);
 
-            autoGrouping.append(":oos_");
+            autoGrouping.append(":oos");
         }
 
         Band iop_apig = addBand(targetProduct, "iop_apig", "m^-1", "Absorption coefficient of phytoplankton pigments at 443 nm");
@@ -941,16 +901,13 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        for (int i = 0; i < BAND_COUNT; i++) {
-            assertSourceBand(getRadianceBandName(i));
-            assertSourceBand(getSolarFluxBandname(i));
-        }
-        useSnapDem = !sourceProduct.containsRasterDataNode(BAND_NAME_ALTITUDE);
-        if (useSnapDem) {
-            elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
+        for (String sourceBandName : C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES) {
+            assertSourceBand(sourceBandName);
         }
 
-        assertFlagCoding(BAND_NAME_QUALITY_FLAGS);
+        elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
+        solflux = getSolarFluxValues();
+        quantificationValue = getQuantificationValue();
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
@@ -960,22 +917,17 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         assertSourceRaster(RASTER_NAME_SUN_AZIMUTH_ANGLE);
         assertSourceRaster(RASTER_NAME_VIEWING_ZENITH_ANGLE);
         assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
-        if (useEcmwfAuxData) {
-            assertSourceRaster(RASTER_NAME_SEA_LEVEL_PRESSURE);
-            assertSourceRaster(RASTER_NAME_TOTAL_OZONE);
-        }
+        assertSourceRaster(RASTER_NAME_VIEWING_ZENITH_ANGLE);
+        assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
+
 
         try {
             final String[] nnFilePaths;
             final boolean loadFromResources = alternativeNNPath == null || alternativeNNPath.trim().length() == 0;
             if (loadFromResources) {
-//                if (availableNetSets[0].equalsIgnoreCase(netSet)) {
                 nnFilePaths = c2rccNNResourcePaths;
-//                } else {
-//                    nnFilePaths = c2xNNResourcePaths;
-//                }
             } else {
-                nnFilePaths = getNNFilePaths(Paths.get(alternativeNNPath));
+                nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
             }
             algorithm = new C2rccMsiAlgorithm(nnFilePaths, loadFromResources);
         } catch (IOException e) {
@@ -997,49 +949,16 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
 
-        // @todo discuss with Carsten and Roland
-//        if (useDefaultSolarFlux) {  // not the sol flux values from the input product
-//            solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
-//        } else {
-//            double[] solfluxFromL1b = new double[BAND_COUNT];
-//            for (int i = 0; i < BAND_COUNT; i++) {
-//                solfluxFromL1b[i] = sourceProduct.getBand("radiance_" + (i + 1)).getSolarFlux();
-//            }
-//            if (isSolfluxValid(solfluxFromL1b)) {
-//                constantSolarFlux = solfluxFromL1b;
-//            } else {
-//                throw new OperatorException("Invalid solar flux in source product!");
-//            }
-//        }
-
         C2rccCommons.ensureTimeCoding_Fallback(sourceProduct);
-        if (!useEcmwfAuxData) {
-            initAtmosphericAuxdata();
-        }
+        initAtmosphericAuxdata();
     }
 
-    private static String getRadianceBandName(int i) {
-        return String.format("Oa%02d_radiance", i + 1);
-    }
-
-    private static String getSolarFluxBandname(int i) {
-        return String.format("solar_flux_band_%d", i + 1);
-    }
-
-//    private static boolean isSolfluxValid(double[] solflux) {
-//        for (double v : solflux) {
-//            if (v <= 0.0) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-
-    private void ensureSpectralProperties(Band band, int i) {
-        ProductUtils.copySpectralBandProperties(sourceProduct.getBand(String.format("Oa%02d_radiance", i)), band);
+    private void ensureSpectralProperties(Band band, String sourceBandName) {
+        Band sourceBand = sourceProduct.getBand(sourceBandName);
+        ProductUtils.copySpectralBandProperties(sourceBand, band);
         if (band.getSpectralWavelength() == 0) {
-            band.setSpectralWavelength(DEFAULT_OLCI_WAVELENGTH[i - 1]);
-            band.setSpectralBandIndex(i);
+            band.setSpectralWavelength(sourceBand.getSpectralWavelength());
+            band.setSpectralBandIndex(sourceBand.getSpectralBandIndex());
         }
 
     }
@@ -1061,8 +980,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
                 final MetadataAttribute ma = (MetadataAttribute) sourceNode;
                 final MetadataElement pe = ma.getParentElement();
                 if ("operator".equals(ma.getName())
-                    && pe.getName().startsWith("node")
-                    && processingGraphName.equals(pe.getParentElement().getName())) {
+                        && pe.getName().startsWith("node")
+                        && processingGraphName.equals(pe.getParentElement().getName())) {
                     if (operatorNode == null) {
                         if (alias.equals(ma.getData().getElemString())) {
                             operatorNode = pe;
@@ -1081,22 +1000,24 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     }
 
     private void initAtmosphericAuxdata() {
-        if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
-            try {
-                atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
-                                                                  ncepStartProduct, ncepEndProduct, "press", press);
-            } catch (IOException e) {
-                final String message = "Unable to create provider for atmospheric ancillary data.";
-                getLogger().severe(message);
-                getLogger().severe(e.getMessage());
-                throw new OperatorException(message, e);
+        if (!useDefaultValuesForAtmosphere) {
+            if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
+                try {
+                    atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
+                                                                      ncepStartProduct, ncepEndProduct, "press", press);
+                } catch (IOException e) {
+                    final String message = "Unable to create provider for atmospheric ancillary data.";
+                    getLogger().severe(message);
+                    getLogger().severe(e.getMessage());
+                    throw new OperatorException(message, e);
+                }
+            } else {
+                final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
+                final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
+                AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
+                AncDataFormat pressureFormat = createPressureFormat(pressure_default);
+                atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
             }
-        } else {
-            final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
-            final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
-            AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
-            AncDataFormat pressureFormat = createPressureFormat(pressure_default);
-            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
         }
     }
 
@@ -1109,13 +1030,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private void assertSourceBand(String name) {
         if (!sourceProduct.containsBand(name)) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
-        }
-    }
-
-    private void assertFlagCoding(String name) {
-        assertSourceBand(name);
-        if (sourceProduct.getBand(name).getFlagCoding() == null) {
-            throw new OperatorException("Invalid source product, flag coding '" + name + "' required");
         }
     }
 
