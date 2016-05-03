@@ -60,7 +60,7 @@ Or in batch mode using SNAP's `gpt` command-line tool found in `${SNAP_HOME}/bin
 Modifying, running and debugging the processor code
 ---------------------------------------------------
 
-This section explains how to run and debug the O2R-CC processor code from a Java IDE without having to install the plugin into SNAP.
+This section explains how to run and debug the C2R-CC processor code from a Java IDE without having to install the plugin into SNAP.
 
 You will need to install
 * SNAP with the Sentinel-3 Toolbox (S3TBX) from http://step.esa.int/main/download/
