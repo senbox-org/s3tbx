@@ -823,14 +823,14 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             iop_atot.addAncillaryVariable(unc_atot, "uncertainty");
             iop_btot.addAncillaryVariable(unc_btot, "uncertainty");
 
-            iop_apig.setValidPixelExpression(validPixelExpression);
-            iop_adet.setValidPixelExpression(validPixelExpression);
-            iop_agelb.setValidPixelExpression(validPixelExpression);
-            iop_bpart.setValidPixelExpression(validPixelExpression);
-            iop_bwit.setValidPixelExpression(validPixelExpression);
-            iop_adg.setValidPixelExpression(validPixelExpression);
-            iop_atot.setValidPixelExpression(validPixelExpression);
-            iop_btot.setValidPixelExpression(validPixelExpression);
+            unc_apig.setValidPixelExpression(validPixelExpression);
+            unc_adet.setValidPixelExpression(validPixelExpression);
+            unc_agelb.setValidPixelExpression(validPixelExpression);
+            unc_bpart.setValidPixelExpression(validPixelExpression);
+            unc_bwit.setValidPixelExpression(validPixelExpression);
+            unc_adg.setValidPixelExpression(validPixelExpression);
+            unc_atot.setValidPixelExpression(validPixelExpression);
+            unc_btot.setValidPixelExpression(validPixelExpression);
 
             Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
             Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophyll concentration");
@@ -838,8 +838,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
 
-            conc_tsm.setValidPixelExpression(validPixelExpression);
-            conc_chl.setValidPixelExpression(validPixelExpression);
+            unc_tsm.setValidPixelExpression(validPixelExpression);
+            unc_chl.setValidPixelExpression(validPixelExpression);
 
             if (outputKd) {
                 Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
@@ -850,9 +850,9 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                 kdmin.addAncillaryVariable(unc_kdmin, "uncertainty");
                 kd_z90max.addAncillaryVariable(unc_kd_z90max, "uncertainty");
 
-                kd489.setValidPixelExpression(validPixelExpression);
-                kdmin.setValidPixelExpression(validPixelExpression);
-                kd_z90max.setValidPixelExpression(validPixelExpression);
+                unc_kd489.setValidPixelExpression(validPixelExpression);
+                unc_kdmin.setValidPixelExpression(validPixelExpression);
+                unc_kd_z90max.setValidPixelExpression(validPixelExpression);
             }
 
             autoGrouping.append(":unc");
