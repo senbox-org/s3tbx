@@ -27,7 +27,7 @@ import static org.esa.snap.core.util.StringUtils.*;
  * @author Norman Fomferra
  * @author Sabine Embacher
  */
-@OperatorMetadata(alias = "c2rcc", version = "0.9.1",
+@OperatorMetadata(alias = "c2rcc", version = "0.9.3",
             authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",

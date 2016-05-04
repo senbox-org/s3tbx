@@ -53,7 +53,7 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.temperature_defa
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "seawifs.c2rcc", version = "0.9.1",
+@OperatorMetadata(alias = "seawifs.c2rcc", version = "0.9.3",
             authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",

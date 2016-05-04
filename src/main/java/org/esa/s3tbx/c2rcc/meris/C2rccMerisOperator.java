@@ -79,7 +79,7 @@ import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.pressure_default;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "meris.c2rcc", version = "0.9.1",
+@OperatorMetadata(alias = "meris.c2rcc", version = "0.9.3",
         authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2015 by Brockmann Consult",
