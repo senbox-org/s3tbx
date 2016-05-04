@@ -807,14 +807,14 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             iop_atot.addAncillaryVariable(unc_atot, "uncertainty");
             iop_btot.addAncillaryVariable(unc_btot, "uncertainty");
 
-            iop_apig.setValidPixelExpression(validPixelExpression);
-            iop_adet.setValidPixelExpression(validPixelExpression);
-            iop_agelb.setValidPixelExpression(validPixelExpression);
-            iop_bpart.setValidPixelExpression(validPixelExpression);
-            iop_bwit.setValidPixelExpression(validPixelExpression);
-            iop_adg.setValidPixelExpression(validPixelExpression);
-            iop_atot.setValidPixelExpression(validPixelExpression);
-            iop_btot.setValidPixelExpression(validPixelExpression);
+            unc_apig.setValidPixelExpression(validPixelExpression);
+            unc_adet.setValidPixelExpression(validPixelExpression);
+            unc_agelb.setValidPixelExpression(validPixelExpression);
+            unc_bpart.setValidPixelExpression(validPixelExpression);
+            unc_bwit.setValidPixelExpression(validPixelExpression);
+            unc_adg.setValidPixelExpression(validPixelExpression);
+            unc_atot.setValidPixelExpression(validPixelExpression);
+            unc_btot.setValidPixelExpression(validPixelExpression);
 
             Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
             Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophyll concentration");
