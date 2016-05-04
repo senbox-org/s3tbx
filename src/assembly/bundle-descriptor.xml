@@ -92,7 +92,7 @@
                 <parameterDescriptor>
                     <name>press</name>
                     <type>float</type>
-                    <description>Air Pressure , unit: hPa , interval: 0 ... 2000</description>
+                    <description>Air Pressure , interval: 0 ... 2000 , unit: hPa</description>
                     <defaultValue>1000</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
@@ -144,14 +144,6 @@
                     <description>If 'false', use solar flux from source product</description>
                     <defaultValue>false</defaultValue>
                 </parameterDescriptor>
-<!--
-                <parameterDescriptor>
-                    <name>useEcmwfAuxData</name>
-                    <type>boolean</type>
-                    <description>If selected, the ECMWF auxiliary data (ozon, air pressure) of the source product is used.</description>
-                    <defaultValue>true</defaultValue>
-                </parameterDescriptor>
--->
                 <parameterDescriptor>
                     <name>outputRtoa</name>
                     <type>boolean</type>
