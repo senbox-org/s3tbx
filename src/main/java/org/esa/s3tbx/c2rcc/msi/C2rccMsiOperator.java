@@ -212,7 +212,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            defaultValue = "",
+            defaultValue = "B8 < 100",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
