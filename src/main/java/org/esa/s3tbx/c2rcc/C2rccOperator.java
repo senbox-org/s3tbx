@@ -108,7 +108,7 @@ public class C2rccOperator extends Operator {
     @Parameter(defaultValue = "false", label = "Use default solar flux (in case of MERIS sensor)")
     private boolean useDefaultSolarFlux;
 
-    @Parameter(defaultValue = "false", description =
+    @Parameter(defaultValue = "true", description =
                 "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used",
                 label = "Use ECMWF aux data of source product (in case of MERIS sensor)")
     private boolean useEcmwfAuxData;

@@ -290,7 +290,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 //    @Parameter(defaultValue = "false")
 //    private boolean useDefaultSolarFlux;
 
-    @Parameter(defaultValue = "false", description =
+    @Parameter(defaultValue = "true", description =
                 "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
                 label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;

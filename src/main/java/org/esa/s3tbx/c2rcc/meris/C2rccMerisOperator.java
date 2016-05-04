@@ -296,10 +296,11 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             label = "Set of neuronal nets")
     private String netSet = "C2RCC-Nets";
 
-    @Parameter(defaultValue = "false")
+    @Parameter(defaultValue = "false",
+            description = "If 'false', use solar flux from source product")
     private boolean useDefaultSolarFlux;
 
-    @Parameter(defaultValue = "false", description =
+    @Parameter(defaultValue = "true", description =
             "If selected, the ECMWF auxiliary data (ozon, air pressure) of the source product is used",
             label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
