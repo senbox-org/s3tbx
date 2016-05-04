@@ -822,8 +822,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
 
-            conc_tsm.setValidPixelExpression(validPixelExpression);
-            conc_chl.setValidPixelExpression(validPixelExpression);
+            unc_tsm.setValidPixelExpression(validPixelExpression);
+            unc_chl.setValidPixelExpression(validPixelExpression);
 
             if (outputKd) {
                 Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
@@ -834,9 +834,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
                 kdmin.addAncillaryVariable(unc_kdmin, "uncertainty");
                 kd_z90max.addAncillaryVariable(unc_kd_z90max, "uncertainty");
 
-                kd489.setValidPixelExpression(validPixelExpression);
-                kdmin.setValidPixelExpression(validPixelExpression);
-                kd_z90max.setValidPixelExpression(validPixelExpression);
+                unc_kd489.setValidPixelExpression(validPixelExpression);
+                unc_kdmin.setValidPixelExpression(validPixelExpression);
+                unc_kd_z90max.setValidPixelExpression(validPixelExpression);
             }
 
             autoGrouping.append(":unc");
