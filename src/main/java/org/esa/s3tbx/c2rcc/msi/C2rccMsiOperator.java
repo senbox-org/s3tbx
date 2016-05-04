@@ -21,6 +21,7 @@ import org.esa.snap.core.datamodel.ProductNode;
 import org.esa.snap.core.datamodel.ProductNodeEvent;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
 import org.esa.snap.core.dataop.resamp.Resampling;
@@ -43,6 +44,9 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.logging.Level;
 
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
@@ -161,6 +165,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         c2rccNNResourcePaths[IDX_rw_kd] = "msi/rw_kd/97x77x7_306.8.net";
         c2rccNNResourcePaths[IDX_rw_rwnorm] = "msi/rw_rwnorm/27x7x27_28.0.net";
     }
+
+    private static final DateFormat PRODUCT_DATE_FORMAT = ProductData.UTC.createDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
 
     @SourceProduct(label = "MSI L1C product", description = "MSI L1C source product.")
     private Product sourceProduct;
@@ -422,9 +429,13 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         boolean validPixel = sourceSamples[C2rccMsiAlgorithm.VALID_PIXEL_IX].getBoolean();
         boolean samplesValid = true;
         for (Sample sourceSample : sourceSamples) {
-            if (!sourceSample.getNode().isPixelValid(x, y)) {
-                samplesValid = false;
-                break;
+            // can be null because samples for ozone and atm_pressure might be missing
+            RasterDataNode node = sourceSample.getNode();
+            if (node != null) {
+                if (!node.isPixelValid(x, y)) {
+                    samplesValid = false;
+                    break;
+                }
             }
         }
 
@@ -516,30 +527,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
 
         targetSamples[L2_FLAGS_IX].set(result.flags);
-    }
-
-    private double getQuantificationValue() {
-        MetadataElement pic = getProductImageCharacteristics();
-        return Integer.parseInt(pic.getAttributeString("QUANTIFICATION_VALUE"));
-    }
-
-    private double[] getSolarFluxValues() {
-        MetadataElement pic = getProductImageCharacteristics();
-        MetadataElement reflCon = pic.getElement("Reflectance_Conversion");
-        MetadataElement solIrrList = reflCon.getElement("Solar_Irradiance_List");
-        MetadataAttribute[] attributes = solIrrList.getAttributes();
-        final double[] solflux = new double[attributes.length];
-        for (int i = 0; i < attributes.length; i++) {
-            MetadataAttribute attribute = attributes[i];
-            solflux[i] = Float.parseFloat(attribute.getData().getElemString());
-        }
-        return solflux;
-    }
-
-    private MetadataElement getProductImageCharacteristics() {
-        MetadataElement l1cUserProduct = sourceProduct.getMetadataRoot().getElement("Level-1C_User_Product");
-        MetadataElement generalInfo = l1cUserProduct.getElement("General_Info");
-        return generalInfo.getElement("Product_Image_Characteristics");
     }
 
     @Override
@@ -948,9 +935,60 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         algorithm.setOutputOos(outputOos);
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
-
-        C2rccCommons.ensureTimeCoding_Fallback(sourceProduct);
+        // todo (mp/20160504) - we should not alter the input product
+        // instead we can have the time coding ad a field and set it only to the target product.
+        C2rccCommons.setTimeCoding(sourceProduct, getStartTime(), getEndTime());
         initAtmosphericAuxdata();
+    }
+
+    private double getQuantificationValue() {
+        MetadataElement pic = getProductImageCharacteristics();
+        return Integer.parseInt(pic.getAttributeString("QUANTIFICATION_VALUE"));
+    }
+
+    private ProductData.UTC getStartTime() {
+        MetadataElement gi = getGeneralInfo();
+        MetadataElement productInfo = gi.getElement("Product_Info");
+        String startTimeAttrName = "PRODUCT_START_TIME";
+        return getTime(productInfo, PRODUCT_DATE_FORMAT, startTimeAttrName);
+    }
+
+    private ProductData.UTC getEndTime() {
+        MetadataElement gi = getGeneralInfo();
+        MetadataElement productInfo = gi.getElement("Product_Info");
+        String startTimeAttrName = "PRODUCT_STOP_TIME";
+        return getTime(productInfo, PRODUCT_DATE_FORMAT, startTimeAttrName);
+    }
+
+    private ProductData.UTC getTime(MetadataElement productInfo, DateFormat dateFormat, String startTimeAttrName) {
+        try {
+            return ProductData.UTC.parse(productInfo.getAttributeString(startTimeAttrName), dateFormat);
+        } catch (ParseException e) {
+            getLogger().log(Level.WARNING, "Could not retrieve " + startTimeAttrName + " from metadata");
+            return null;
+        }
+    }
+
+    private double[] getSolarFluxValues() {
+        MetadataElement pic = getProductImageCharacteristics();
+        MetadataElement reflCon = pic.getElement("Reflectance_Conversion");
+        MetadataElement solIrrList = reflCon.getElement("Solar_Irradiance_List");
+        MetadataAttribute[] attributes = solIrrList.getAttributes();
+        final double[] solflux = new double[attributes.length];
+        for (int i = 0; i < attributes.length; i++) {
+            MetadataAttribute attribute = attributes[i];
+            solflux[i] = Float.parseFloat(attribute.getData().getElemString());
+        }
+        return solflux;
+    }
+
+    private MetadataElement getProductImageCharacteristics() {
+        return getGeneralInfo().getElement("Product_Image_Characteristics");
+    }
+
+    private MetadataElement getGeneralInfo() {
+        MetadataElement l1cUserProduct = sourceProduct.getMetadataRoot().getElement("Level-1C_User_Product");
+        return l1cUserProduct.getElement("General_Info");
     }
 
     private void ensureSpectralProperties(Band band, String sourceBandName) {

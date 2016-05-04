@@ -61,13 +61,13 @@ public class C2rccMsiAlgorithm {
     // MSI sources
     static String[] SOURCE_BAND_REFL_NAMES = new String[]{"B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9", "B10", "B11", "B12",};
     static String[] NN_SOURCE_BAND_REFL_NAMES = new String[]{"B1", "B2", "B3", "B4", "B5", "B6", "B7","B8A",};
-    static final int SUN_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 1;
-    static final int SUN_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 2;
-    static final int VIEW_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 3;
-    static final int VIEW_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 4;
-    static final int ATM_PRESS_IX = SOURCE_BAND_REFL_NAMES.length + 5;
-    static final int OZONE_IX = SOURCE_BAND_REFL_NAMES.length + 6;
-    static final int VALID_PIXEL_IX = SOURCE_BAND_REFL_NAMES.length + 7;
+    static final int SUN_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 0;
+    static final int SUN_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 1;
+    static final int VIEW_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 2;
+    static final int VIEW_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 3;
+    static final int ATM_PRESS_IX = SOURCE_BAND_REFL_NAMES.length + 4;
+    static final int OZONE_IX = SOURCE_BAND_REFL_NAMES.length + 5;
+    static final int VALID_PIXEL_IX = SOURCE_BAND_REFL_NAMES.length + 6;
 
     final ThreadLocal<NNffbpAlphaTabFast> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
     final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands

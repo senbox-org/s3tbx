@@ -10,11 +10,17 @@ public class C2rccCommons {
         if (product.getSceneTimeCoding() == null) {
             final ProductData.UTC startTime = product.getStartTime();
             final ProductData.UTC endTime = product.getEndTime();
-            if (startTime != null && endTime != null) {
-                double startTimeMJD = startTime.getMJD();
-                double constantTime = (endTime.getMJD() - startTimeMJD) / 2.0 + startTimeMJD;
-                product.setSceneTimeCoding(new ConstantTimeCoding(constantTime));
-            }
+            setTimeCoding(product, startTime, endTime);
+        }
+    }
+
+    public static void setTimeCoding(Product product, ProductData.UTC startTime, ProductData.UTC endTime) {
+        if (startTime != null && endTime != null) {
+            product.setStartTime(startTime);
+            product.setEndTime(startTime);
+            double startTimeMJD = startTime.getMJD();
+            double constantTime = (endTime.getMJD() - startTimeMJD) / 2.0 + startTimeMJD;
+            product.setSceneTimeCoding(new ConstantTimeCoding(constantTime));
         }
     }
 }
