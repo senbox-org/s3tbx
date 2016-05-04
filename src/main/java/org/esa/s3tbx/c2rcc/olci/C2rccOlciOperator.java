@@ -302,7 +302,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private boolean outputRtoaGc;
 
     @Parameter(defaultValue = "false", label = "Output of auto nn, reflectances")
-    private boolean outputRtoaGc_aann;
+    private boolean outputRtoaGcAann;
 
     @Parameter(defaultValue = "false", label = "Output path radiance reflectances")
     private boolean outputRpath;
@@ -495,7 +495,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             }
         }
 
-        if (outputRtoaGc_aann) {
+        if (outputRtoaGcAann) {
             for (int i = 0; i < result.rtosa_aann.length; i++) {
                 targetSamples[RTOSA_AANN_IX + i].set(result.rtosa_aann[i]);
             }
@@ -602,7 +602,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             }
         }
 
-        if (outputRtoaGc_aann) {
+        if (outputRtoaGcAann) {
             for (int i = 0; i < olciband16_ix.length; i++) {
                 tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + olciband16_ix[i]);
             }
@@ -702,7 +702,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             }
             autoGrouping.append(":rtosa_gc");
         }
-        if (outputRtoaGc_aann) {
+        if (outputRtoaGcAann) {
             for (int bi : olciband16_ix) {
                 Band band = addBand(targetProduct, "rtosagc_aann_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
                 ensureSpectralProperties(band, bi);
@@ -959,7 +959,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
         algorithm.setThresh_rwlogslope(thresholdRwaOos);
 
-        algorithm.setOutputRtoaGcAann(outputRtoaGc_aann);
+        algorithm.setOutputRtoaGcAann(outputRtoaGcAann);
         algorithm.setOutputRpath(outputRpath);
         algorithm.setOutputTdown(outputTdown);
         algorithm.setOutputTup(outputTup);

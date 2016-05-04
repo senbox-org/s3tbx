@@ -277,7 +277,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private boolean outputRtoaGc;
 
     @Parameter(defaultValue = "false", label = "Output of auto nn, reflectances")
-    private boolean outputRtoaGc_aann;
+    private boolean outputRtoaGcAann;
 
     @Parameter(defaultValue = "false", label = "Output path radiance reflectances")
     private boolean outputRpath;
@@ -463,7 +463,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
         }
 
-        if (outputRtoaGc_aann) {
+        if (outputRtoaGcAann) {
             for (int i = 0; i < result.rtosa_aann.length; i++) {
                 targetSamples[RTOSA_AANN_IX + i].set(result.rtosa_aann[i]);
             }
@@ -565,7 +565,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
         }
 
-        if (outputRtoaGc_aann) {
+        if (outputRtoaGcAann) {
             for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
                 tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i]);
             }
@@ -667,7 +667,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
             autoGrouping.append(":rtosa_gc");
         }
-        if (outputRtoaGc_aann) {
+        if (outputRtoaGcAann) {
             for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
                 String sourceBandName = C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i];
                 Band band = addBand(targetProduct, "rtosagc_aann_" + sourceBandName, "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
@@ -926,7 +926,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
         algorithm.setThresh_rwlogslope(thresholdRwaOos);
 
-        algorithm.setOutputRtoaGcAann(outputRtoaGc_aann);
+        algorithm.setOutputRtoaGcAann(outputRtoaGcAann);
         algorithm.setOutputRpath(outputRpath);
         algorithm.setOutputTdown(outputTdown);
         algorithm.setOutputTup(outputTup);

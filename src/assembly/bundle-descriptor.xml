@@ -157,7 +157,7 @@
                     <defaultValue>false</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
-                    <name>outputRtoaGc_aann</name>
+                    <name>outputRtoaGcAann</name>
                     <type>boolean</type>
                     <description>Output of auto nn, reflectances.</description>
                     <defaultValue>false</defaultValue>
