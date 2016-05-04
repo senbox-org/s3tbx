@@ -185,7 +185,7 @@ public class C2rccMsiAlgorithm {
 
     public Result processPixel(int px, int py,
                                double lat, double lon,
-                               double[] toa_rad,
+                               double[] toa_refl,
                                double[] solflux,
                                double sun_zeni,
                                double sun_azi,
@@ -211,10 +211,9 @@ public class C2rccMsiAlgorithm {
         double y = sin_view * sin_azi_diff;
         double z = cos_view;
 
-        double[] r_toa = new double[toa_rad.length];
-        for (int i = 0; i < toa_rad.length; i++) {
-            r_toa[i] = PI * toa_rad[i] / solflux[i] / cos_sun;
-        }
+        // for naming consistency with OLCI and MERIS
+        //noinspection UnnecessaryLocalVariable
+        double[] r_toa = Arrays.copyOf(toa_refl, toa_refl.length);
 
         double[] r_tosa = new double[0];
         int flags = 0;
