@@ -893,7 +893,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
 
         elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
-        solflux = getSolarFluxValues();
+        // (mp/20160504) - SolarFlux is not used so we set it to 0
+        solflux = new double[SOURCE_BAND_REFL_NAMES.length]; //getSolarFluxValues();
         quantificationValue = getQuantificationValue();
 
         if (sourceProduct.getSceneGeoCoding() == null) {
@@ -967,6 +968,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
     }
 
+    // (mp/20160504) - SolarFlux is not used so we set it to 0
     private double[] getSolarFluxValues() {
         MetadataElement pic = getProductImageCharacteristics();
         MetadataElement reflCon = getSubElementSafe(pic, "Reflectance_Conversion");
