@@ -66,7 +66,7 @@ You will need to install
 * SNAP with the Sentinel-3 Toolbox (S3TBX) from http://step.esa.int/main/download/
 * IntelliJ IDEA (Community Edition) IDE from https://www.jetbrains.com/idea/download/
 
-Start IDEA and select **File / New / Project from Existing Sources**. Select the `pom.xml` (Maven project file) in the source directory. Leve all default settings as they are and click **Next** until IDEA asks for the JDK. Select the installed JDK from above and finish the dialog.
+Start IDEA and select **File / New / Project from Existing Sources**. Select the `pom.xml` (Maven project file) in the source directory. Leave all default settings as they are and click **Next** until IDEA asks for the JDK. Select the installed JDK from above and finish the dialog.
 
 From the main menu select **Run / Edit Configurations**. In the dialog click the **+** (add) button and select **JAR Application**. Then the settings are as follows:
 
