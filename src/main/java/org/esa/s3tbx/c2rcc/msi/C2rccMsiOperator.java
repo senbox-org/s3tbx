@@ -943,36 +943,34 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     private double getQuantificationValue() {
         MetadataElement pic = getProductImageCharacteristics();
-        return Integer.parseInt(pic.getAttributeString("QUANTIFICATION_VALUE"));
+        return Integer.parseInt(getAttributeStringSafe(pic, "QUANTIFICATION_VALUE"));
     }
 
     private ProductData.UTC getStartTime() {
         MetadataElement gi = getGeneralInfo();
-        MetadataElement productInfo = gi.getElement("Product_Info");
-        String startTimeAttrName = "PRODUCT_START_TIME";
-        return getTime(productInfo, PRODUCT_DATE_FORMAT, startTimeAttrName);
+        MetadataElement productInfo = getSubElementSafe(gi, "Product_Info");
+        return getTime(productInfo, PRODUCT_DATE_FORMAT, "PRODUCT_START_TIME");
     }
 
     private ProductData.UTC getEndTime() {
         MetadataElement gi = getGeneralInfo();
-        MetadataElement productInfo = gi.getElement("Product_Info");
-        String startTimeAttrName = "PRODUCT_STOP_TIME";
-        return getTime(productInfo, PRODUCT_DATE_FORMAT, startTimeAttrName);
+        MetadataElement productInfo = getSubElementSafe(gi, "Product_Info");
+        return getTime(productInfo, PRODUCT_DATE_FORMAT, "PRODUCT_STOP_TIME");
     }
 
-    private ProductData.UTC getTime(MetadataElement productInfo, DateFormat dateFormat, String startTimeAttrName) {
+    private ProductData.UTC getTime(MetadataElement productInfo, DateFormat dateFormat, String timeAttrName) {
         try {
-            return ProductData.UTC.parse(productInfo.getAttributeString(startTimeAttrName), dateFormat);
+            return ProductData.UTC.parse(getAttributeStringSafe(productInfo, timeAttrName), dateFormat);
         } catch (ParseException e) {
-            getLogger().log(Level.WARNING, "Could not retrieve " + startTimeAttrName + " from metadata");
+            getLogger().log(Level.WARNING, "Could not retrieve " + timeAttrName + " from metadata");
             return null;
         }
     }
 
     private double[] getSolarFluxValues() {
         MetadataElement pic = getProductImageCharacteristics();
-        MetadataElement reflCon = pic.getElement("Reflectance_Conversion");
-        MetadataElement solIrrList = reflCon.getElement("Solar_Irradiance_List");
+        MetadataElement reflCon = getSubElementSafe(pic, "Reflectance_Conversion");
+        MetadataElement solIrrList = getSubElementSafe(reflCon, "Solar_Irradiance_List");
         MetadataAttribute[] attributes = solIrrList.getAttributes();
         final double[] solflux = new double[attributes.length];
         for (int i = 0; i < attributes.length; i++) {
@@ -983,12 +981,33 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     }
 
     private MetadataElement getProductImageCharacteristics() {
-        return getGeneralInfo().getElement("Product_Image_Characteristics");
+        return getSubElementSafe(getGeneralInfo(), "Product_Image_Characteristics");
+    }
+
+    private MetadataElement getSubElementSafe(MetadataElement element, String subElementName) {
+        if(element.containsElement(subElementName)) {
+            return element.getElement(subElementName);
+        }else {
+            String formatStr = "Metadata not found: The element '%s' does not contain a sub-element with the name '%s'";
+            String msg = String.format(formatStr, element.getName(), subElementName);
+            throw new IllegalStateException(msg);
+        }
+    }
+
+    private String getAttributeStringSafe(MetadataElement element, String attrName) {
+        if(element.containsAttribute(attrName)) {
+            return element.getAttributeString(attrName);
+        } else {
+            String elementName = element.getName();
+            String formatStr = "Metadata not found: The element '%s' does not contain an attribute with the name '%s'";
+            String msg = String.format(formatStr, elementName, attrName);
+            throw new IllegalStateException(msg);
+        }
     }
 
     private MetadataElement getGeneralInfo() {
-        MetadataElement l1cUserProduct = sourceProduct.getMetadataRoot().getElement("Level-1C_User_Product");
-        return l1cUserProduct.getElement("General_Info");
+        MetadataElement l1cUserProduct = getSubElementSafe(sourceProduct.getMetadataRoot(), "Level-1C_User_Product");
+        return getSubElementSafe(l1cUserProduct, "General_Info");
     }
 
     private void ensureSpectralProperties(Band band, String sourceBandName) {
