@@ -457,6 +457,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         if (useEcmwfAuxData) {
             atmPress = sourceSamples[ATM_PRESS_IX].getDouble();
             ozone = sourceSamples[OZONE_IX].getDouble();
+            // convert from kg/m^2 to Dobson Units
+            ozone *= 46698;
         } else {
             ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
             atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
