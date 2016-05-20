@@ -173,16 +173,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     public static final String BAND_NAME_ALTITUDE = "altitude";
 
     static {
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "olci/rtosa_aann/31x7x31_1097.6.net";
-        c2rccNNResourcePaths[IDX_rtosa_rw] = "olci/rtosa_rw/33x73x53x33_764257.3.net";
-        c2rccNNResourcePaths[IDX_rw_iop] = "olci/rw_iop/97x77x37_20196.0.net";
         c2rccNNResourcePaths[IDX_iop_rw] = "olci/iop_rw/17x97x47_464.3.net";
-        c2rccNNResourcePaths[IDX_rw_kd] = "olci/rw_kd/97x77x7_399.9.net";
         c2rccNNResourcePaths[IDX_iop_unciop] = "olci/iop_unciop/17x77x37_11486.7.net";
         c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "olci/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        c2rccNNResourcePaths[IDX_rw_rwnorm] = "olci/rw_rwnorm/37x57x17_73.5.net";
-        c2rccNNResourcePaths[IDX_rtosa_trans] = "olci/rtosa_trans/31x77x57x37_61400.9.net";
-        c2rccNNResourcePaths[IDX_rtosa_rpath] = "olci/rtosa_rpath/31x77x57x37_5161.2.net";
+        c2rccNNResourcePaths[IDX_rtosa_aann] = "olci/rtosa_aann/31x7x31_1078.2.net";
+        c2rccNNResourcePaths[IDX_rtosa_rpath] = "olci/rtosa_rpath/31x77x57x37_2430.4.net";
+        c2rccNNResourcePaths[IDX_rtosa_rw] = "olci/rtosa_rw/33x73x53x33_930865.5.net";
+        c2rccNNResourcePaths[IDX_rtosa_trans] = "olci/rtosa_trans/31x77x57x37_30152.6.net";
+        c2rccNNResourcePaths[IDX_rw_iop] = "olci/rw_iop/97x77x37_20196.0.net";
+        c2rccNNResourcePaths[IDX_rw_kd] = "olci/rw_kd/97x77x7_389.5.net";
+        c2rccNNResourcePaths[IDX_rw_rwnorm] = "olci/rw_rwnorm/37x57x17_69.1.net";
     }
 
     @SourceProduct(label = "OLCI L1b product",
