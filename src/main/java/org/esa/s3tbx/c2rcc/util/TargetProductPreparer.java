@@ -25,8 +25,8 @@ public class TargetProductPreparer {
         addBand(targetProduct, "iop_agelb", "m^-1", "Yellow substance absorption coefficient");
         addBand(targetProduct, "iop_bpart", "m^-1", "");
         addBand(targetProduct, "iop_bwit", "m^-1", "Backscattering of suspended particulate matter");
-        addVirtualBand(targetProduct, "iop_atot", "iop_apig + iop_adet + iop_agelb", "m^-1", "Total absorption coefficient of all water constituents");
         addVirtualBand(targetProduct, "iop_adg", "iop_adet + iop_agelb", "m^-1", "absorption of detritus and yellow substance");
+        addVirtualBand(targetProduct, "iop_atot", "iop_apig + iop_adet + iop_agelb", "m^-1", "Total absorption coefficient of all water constituents");
 
         addVirtualBand(targetProduct, "conc_tsm", "(iop_bpart + iop_bwit) * 1.7", "g m^-3", "Total suspended matter dry weight concentration");
         addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, 1.04) * 20.0", "mg/m^3", "Chlorophyll concentration");
