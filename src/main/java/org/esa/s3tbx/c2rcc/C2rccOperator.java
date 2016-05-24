@@ -113,6 +113,11 @@ public class C2rccOperator extends Operator {
                 label = "Use ECMWF aux data of source product (in case of MERIS sensor)")
     private boolean useEcmwfAuxData;
 
+    @Parameter(defaultValue = "false", description =
+                "If set to true remote sensing reflectances (radiance reflectance), otherwise water leaving reflectances (irradiance reflectance) are written",
+                label = "Output reflectances as remote sensing reflectance")
+    private boolean outputAsRrs;
+
     @Override
     public void initialize() throws OperatorException {
         if (isMeris(sourceProduct)) {
@@ -171,6 +176,7 @@ public class C2rccOperator extends Operator {
         c2rConfigOp.setPress(press);
         c2rConfigOp.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
         c2rConfigOp.setOutputRtosa(outputRtosa);
+        c2rConfigOp.outputAsRrs(true);
     }
 
 

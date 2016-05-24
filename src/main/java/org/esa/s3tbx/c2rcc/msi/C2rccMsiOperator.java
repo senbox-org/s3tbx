@@ -303,6 +303,12 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     @Parameter(defaultValue = "false", label = "Output uncertainties")
     private boolean outputUncertainties;
 
+    @Parameter(defaultValue = "true", description =
+            "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
+            label = "Output reflectances as radiance reflectance")
+    private boolean outputAsRadianceReflectances;
+
+
     private C2rccMsiAlgorithm algorithm;
     private AtmosphericAuxdata atmosphericAuxdata;
     private ElevationModel elevationModel;
@@ -368,6 +374,11 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     @Override
     public void setOutputRtosa(boolean outputRtosa) {
         this.outputRtoa = outputRtosa;
+    }
+
+    @Override
+    public void outputAsRrs(boolean asRadianceRefl) {
+        outputAsRadianceReflectances = asRadianceRefl;
     }
 
     @Override

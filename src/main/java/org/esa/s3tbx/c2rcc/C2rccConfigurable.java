@@ -25,4 +25,6 @@ public interface C2rccConfigurable {
     void setValidPixelExpression(String validPixelExpression);
 
     void setOutputRtosa(boolean outputRtosa);
+
+    void outputAsRrs(boolean asRadianceRefl);
 }

@@ -147,6 +147,11 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
     private boolean outputRtosa;
 
+    @Parameter(defaultValue = "true", description =
+            "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
+            label = "Output reflectances as radiance reflectance")
+    private boolean outputAsRadianceReflectances;
+
     @Parameter(defaultValue = "false", label = "Output the input angle bands sena, senz, sola and solz")
     private boolean outputAngles;
 
@@ -219,6 +224,11 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     public void setOutputRtosa(boolean outputRtosa) {
         this.outputRtosa = outputRtosa;
+    }
+
+    @Override
+    public void outputAsRrs(boolean asRadianceRefl) {
+        outputAsRadianceReflectances = asRadianceRefl;
     }
 
     @Override

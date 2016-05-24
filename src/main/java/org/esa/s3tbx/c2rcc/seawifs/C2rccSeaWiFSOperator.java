@@ -152,6 +152,12 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
     private boolean outputRtosa;
 
+    @Parameter(defaultValue = "true", description =
+            "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
+            label = "Output reflectances as radiance reflectance")
+    private boolean outputAsRadianceReflectances;
+
+
     private C2rccSeaWiFSAlgorithm algorithm;
     private AtmosphericAuxdata atmosphericAuxdata;
 
@@ -159,29 +165,41 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         this.atmosphericAuxDataPath = atmosphericAuxDataPath;
     }
 
+    @Override
     public void setTomsomiStartProduct(Product tomsomiStartProduct) {
         this.tomsomiStartProduct = tomsomiStartProduct;
     }
 
+    @Override
     public void setTomsomiEndProduct(Product tomsomiEndProduct) {
         this.tomsomiEndProduct = tomsomiEndProduct;
     }
 
+    @Override
     public void setNcepStartProduct(Product ncepStartProduct) {
         this.ncepStartProduct = ncepStartProduct;
     }
 
+    @Override
     public void setNcepEndProduct(Product ncepEndProduct) {
         this.ncepEndProduct = ncepEndProduct;
     }
 
+    @Override
     public void setOzone(double ozone) {
         this.ozone = ozone;
     }
 
+    @Override
     public void setPress(double press) {
         this.press = press;
     }
+
+    @Override
+    public void outputAsRrs(boolean asRadianceRefl) {
+        outputAsRadianceReflectances = asRadianceRefl;
+    }
+
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {

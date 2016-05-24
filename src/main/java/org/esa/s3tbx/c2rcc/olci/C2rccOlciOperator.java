@@ -279,6 +279,12 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                 label = "Alternative NN Path")
     private String alternativeNNPath;
 
+    @Parameter(defaultValue = "true", description =
+            "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
+            label = "Output reflectances as radiance reflectance")
+    private boolean outputAsRrs;
+
+
 //    private final String[] availableNetSets = new String[]{"C2RCC-Nets", "C2X-Nets"};
 //    @Parameter(valueSet = {"C2RCC-Nets", "C2X-Nets"},
 //            description = "Set of neuronal nets for algorithm.",
@@ -413,6 +419,11 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @Override
     public void setOutputRtosa(boolean outputRtosa) {
         this.outputRtoa = outputRtosa;
+    }
+
+    @Override
+    public void outputAsRrs(boolean asRrs) {
+        outputAsRrs = asRrs;
     }
 
     @Override

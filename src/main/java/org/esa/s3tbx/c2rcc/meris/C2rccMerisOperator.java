@@ -338,6 +338,12 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "false", label = "Output uncertainties")
     private boolean outputUncertainties;
 
+    @Parameter(defaultValue = "true", description =
+            "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
+            label = "Output reflectances as radiance reflectance")
+    private boolean outputAsRadianceReflectances;
+
+
     private C2rccMerisAlgorithm algorithm;
     private SolarFluxLazyLookup solarFluxLazyLookup;
     private double[] constantSolarFlux;
@@ -405,6 +411,12 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     public void setOutputRtosa(boolean outputRtosa) {
         this.outputRtoa = outputRtosa;
     }
+
+    @Override
+    public void outputAsRrs(boolean asRadianceRefl) {
+        outputAsRadianceReflectances = asRadianceRefl;
+    }
+
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
@@ -719,7 +731,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
         if (outputOos) {
             final Band oos_rtosa = addBand(targetProduct, "oos_rtosa", "1", "Gas corrected top-of-atmosphere reflectances are out of scope of nn training dataset");
-            final Band oos_rwa = addBand(targetProduct, "oos_rwa", "1", "Water leavin reflectances are out of scope of nn training dataset");
+            final Band oos_rwa = addBand(targetProduct, "oos_rwa", "1", "Water leaving reflectances are out of scope of nn training dataset");
             oos_rtosa.setValidPixelExpression(validPixelExpression);
             oos_rwa.setValidPixelExpression(validPixelExpression);
 
