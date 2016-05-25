@@ -28,7 +28,7 @@ public class C2rccModisAlgorithm {
     // 489 replaced by 488
     // 551 replaced by 547
     // 665 replaced by 667
-    public final static int[] reflec_wavelengths = new int[]{
+    public final static int[] REFLEC_WAVELENGTHS = new int[]{
                 412,
                 443,
                 488,

@@ -57,7 +57,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     */
 
     // Modis bands
-    public static final int SOURCE_BAND_COUNT = reflec_wavelengths.length;
+    public static final int SOURCE_BAND_COUNT = REFLEC_WAVELENGTHS.length;
     public static final int SUN_ZEN_IX = SOURCE_BAND_COUNT;
     public static final int SUN_AZI_IX = SOURCE_BAND_COUNT + 1;
     public static final int VIEW_ZEN_IX = SOURCE_BAND_COUNT + 2;
@@ -66,7 +66,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     public static final int OZONE_IX = SOURCE_BAND_COUNT + 5;
 
     // Modis Targets
-    public static final int REFLEC_BAND_COUNT = reflec_wavelengths.length;
+    public static final int REFLEC_BAND_COUNT = REFLEC_WAVELENGTHS.length;
 
     public static final int REFLEC_1_IX = 0;
     public static final int IOP_APIG_IX = REFLEC_BAND_COUNT;
@@ -82,7 +82,9 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     public static final int RTOSA_IN_1_IX = REFLEC_BAND_COUNT + 8;
     public static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
 
-    private static final String[] angleNames = {"solz", "sola", "senz", "sena"};
+    public static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
+    public static final String[] GEOMETRY_ANGLE_NAMES = {"solz", "sola", "senz", "sena"};
+    public static final String FLAG_BAND_NAME = "l2_flags";
 
     @SourceProduct(label = "MODIS L1C product",
                 description = "MODIS L1C source product.")
@@ -159,7 +161,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     private AtmosphericAuxdata atmosphericAuxdata;
 
     public static boolean isValidInput(Product product) {
-        for (int wl : reflec_wavelengths) {
+        for (int wl : REFLEC_WAVELENGTHS) {
             if (!product.containsBand("rhot_" + wl)) {
                 return false;
             }
@@ -279,13 +281,13 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
         if (outputAngles) {
             final int targetStartIdx = L2_FLAGS_IX + 1;
-            for (int i = 0; i < angleNames.length; i++) {
+            for (int i = 0; i < GEOMETRY_ANGLE_NAMES.length; i++) {
                 targetSamples[targetStartIdx + i].set(sourceSamples[SUN_ZEN_IX + i].getFloat());
             }
         }
 
         if (outputRtosa) {
-            final int offset = outputAngles ? angleNames.length : 0;
+            final int offset = outputAngles ? GEOMETRY_ANGLE_NAMES.length : 0;
             for (int i = 0; i < result.rtosa_in.length; i++) {
                 targetSamples[RTOSA_IN_1_IX + offset + i].set(result.rtosa_in[i]);
             }
@@ -298,8 +300,8 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
         sc.setValidPixelMask(validPixelExpression);
-        for (int i = 0; i < reflec_wavelengths.length; i++) {
-            int wl = reflec_wavelengths[i];
+        for (int i = 0; i < REFLEC_WAVELENGTHS.length; i++) {
+            int wl = REFLEC_WAVELENGTHS[i];
             sc.defineSample(i, "rhot_" + wl);
         }
         sc.defineSample(SUN_ZEN_IX, "solz");
@@ -312,8 +314,8 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     @Override
     protected void configureTargetSamples(TargetSampleConfigurer sc) throws OperatorException {
-        for (int i = 0; i < reflec_wavelengths.length; i++) {
-            sc.defineSample(i, "reflec_" + reflec_wavelengths[i]);
+        for (int i = 0; i < REFLEC_WAVELENGTHS.length; i++) {
+            sc.defineSample(i, "reflec_" + REFLEC_WAVELENGTHS[i]);
         }
         sc.defineSample(IOP_APIG_IX, "iop_apig");
         sc.defineSample(IOP_ADET_IX, "iop_adet");
@@ -327,20 +329,20 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
         if (outputAngles) {
             final int startIndex = L2_FLAGS_IX + 1;
-            for (int i = 0; i < angleNames.length; i++) {
-                String angleName = angleNames[i];
+            for (int i = 0; i < GEOMETRY_ANGLE_NAMES.length; i++) {
+                String angleName = GEOMETRY_ANGLE_NAMES[i];
                 sc.defineSample(startIndex + i, angleName);
             }
         }
 
         if (outputRtosa) {
-            final int angleOffset = outputAngles ? angleNames.length : 0;
-            for (int i = 0; i < reflec_wavelengths.length; i++) {
-                int wl = reflec_wavelengths[i];
+            final int angleOffset = outputAngles ? GEOMETRY_ANGLE_NAMES.length : 0;
+            for (int i = 0; i < REFLEC_WAVELENGTHS.length; i++) {
+                int wl = REFLEC_WAVELENGTHS[i];
                 sc.defineSample(RTOSA_IN_1_IX + angleOffset + i, "rtosa_in_" + wl);
             }
-            for (int i = 0; i < reflec_wavelengths.length; i++) {
-                int wl = reflec_wavelengths[i];
+            for (int i = 0; i < REFLEC_WAVELENGTHS.length; i++) {
+                int wl = REFLEC_WAVELENGTHS[i];
                 sc.defineSample(RTOSA_OUT_1_IX + angleOffset + i, "rtosa_out_" + wl);
             }
         }
@@ -351,10 +353,10 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
-        prepareTargetProduct(targetProduct, sourceProduct, "rhot_", reflec_wavelengths, outputRtosa);
+        prepareTargetProduct(targetProduct, sourceProduct, "rhot_", REFLEC_WAVELENGTHS, outputRtosa);
 
         if (outputAngles) {
-            for (String angleName : angleNames) {
+            for (String angleName : GEOMETRY_ANGLE_NAMES) {
                 final Band band = sourceProduct.getBand(angleName);
                 addBand(targetProduct, angleName, band.getUnit(), band.getDescription());
             }
@@ -363,10 +365,10 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        for (int wl : reflec_wavelengths) {
-            assertSourceBand("rhot_" + wl);
+        for (int wl : REFLEC_WAVELENGTHS) {
+            assertSourceBand(SOURCE_RADIANCE_NAME_PREFIX + wl);
         }
-        assertSourceBand("l2_flags");
+        assertSourceBand(FLAG_BAND_NAME);
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
