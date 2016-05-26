@@ -14,7 +14,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.acos;
 import static java.lang.Math.cos;
@@ -50,7 +49,7 @@ public class C2rccMsiAlgorithm {
     public static final int IDX_rtosa_rpath = 9;
 
 
-    // gas absorption constants for 13 MSI channels
+    // gas absorption constants for 8 MSI channels
     static final double[] absorb_ozon = {0.0035560, 0.0205669, 0.105446, 0.0501634, 0.0198157, 0.0107319, 0.0075270, 0.0018944};
 
 
@@ -60,7 +59,7 @@ public class C2rccMsiAlgorithm {
 
     // MSI sources
     static String[] SOURCE_BAND_REFL_NAMES = new String[]{"B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9", "B10", "B11", "B12",};
-    static String[] NN_SOURCE_BAND_REFL_NAMES = new String[]{"B1", "B2", "B3", "B4", "B5", "B6", "B7","B8A",};
+    static String[] NN_SOURCE_BAND_REFL_NAMES = new String[]{"B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8A",};
     static final int SUN_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 0;
     static final int SUN_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 1;
     static final int VIEW_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 2;
@@ -115,7 +114,7 @@ public class C2rccMsiAlgorithm {
         nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources);
 
         // IOP-rw forward NN
-        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources); //only 10 MERIS bands
+        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources);
 
         // rw-kd NN, output are kdmin and kd449
         nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources);
@@ -238,7 +237,11 @@ public class C2rccMsiAlgorithm {
         double unc_abs_tsm = 0;
 
         if (validPixel) {
-            double[] r_tosa_ur = Arrays.copyOf(r_toa, NN_SOURCE_BAND_REFL_NAMES.length);
+            double[] r_tosa_ur = new double[NN_SOURCE_BAND_REFL_NAMES.length];
+            System.arraycopy(r_toa, 0, r_tosa_ur, 0, r_tosa_ur.length - 1);
+            // skipping B8 and use B8A
+            r_tosa_ur[NN_SOURCE_BAND_REFL_NAMES.length-1] = r_toa[NN_SOURCE_BAND_REFL_NAMES.length];
+
 
             // todo (mp/20160502)- not needed for MSI?
             // (9.3.0) +++ water vapour correction for band 9 +++++ */
@@ -250,9 +253,6 @@ public class C2rccMsiAlgorithm {
             //*** (9.3.1) ozone correction ***/
             double model_ozone = 0;
 
-            if(px == 300 && py == 50) {
-                System.out.println("Hello!");
-            }
             r_tosa = new double[r_tosa_ur.length];
             double[] log_rtosa = new double[r_tosa_ur.length];
             for (int i = 0; i < r_tosa_ur.length; i++) {
