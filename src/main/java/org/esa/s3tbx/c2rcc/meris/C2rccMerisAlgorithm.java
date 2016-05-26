@@ -118,7 +118,7 @@ public class C2rccMerisAlgorithm {
     double log_threshfak_oor = 0.02; // == ~1.02, for log variables
     double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
     double thresh_rwlogslope;  // threshold for rwa_oos
-    private boolean outputRtoaGcAann;
+    private boolean outputRtosaGcAann;
     private boolean outputRpath;
     private boolean outputTdown;
     private boolean outputTup;
@@ -174,8 +174,8 @@ public class C2rccMerisAlgorithm {
         this.thresh_rwlogslope = thresh_rwlogslope;
     }
 
-    public void setOutputRtoaGcAann(boolean outputRtoaGcAann) {
-        this.outputRtoaGcAann = outputRtoaGcAann;
+    public void setOutputRtosaGcAann(boolean outputRtosaGcAann) {
+        this.outputRtosaGcAann = outputRtosaGcAann;
     }
 
     public void setOutputRpath(boolean outputRpath) {
@@ -344,7 +344,7 @@ public class C2rccMerisAlgorithm {
             // (9.4.2) test out of scope spectra with autoassociative neural network
             rtosa_aann = new double[0];
             double[] log_rtosa_aann = new double[0];
-            if (outputRtoaGcAann || outputOos) {
+            if (outputRtosaGcAann || outputOos) {
                 log_rtosa_aann = this.nn_rtosa_aann.get().calc(nn_in);
                 rtosa_aann = a_exp(log_rtosa_aann);
             }

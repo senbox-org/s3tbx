@@ -307,10 +307,10 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private boolean outputRtoa;
 
     @Parameter(defaultValue = "false", label = "Output gas corrected top-of-atmosphere (TOSA) reflectances")
-    private boolean outputRtoaGc;
+    private boolean outputRtosaGc;
 
     @Parameter(defaultValue = "false", label = "Output of auto nn, reflectances")
-    private boolean outputRtoaGcAann;
+    private boolean outputRtosaGcAann;
 
     @Parameter(defaultValue = "false", label = "Output path radiance reflectances")
     private boolean outputRpath;
@@ -407,7 +407,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
     @Override
     public void setOutputRtosa(boolean outputRtosa) {
-        this.outputRtoa = outputRtosa;
+        this.outputRtosaGc = outputRtosa;
     }
 
     @Override
@@ -415,6 +415,46 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         outputAsRadianceReflectances = asRadianceRefl;
     }
 
+    public void setOutputKd(boolean outputKd) {
+        this.outputKd = outputKd;
+    }
+
+    public void setOutputOos(boolean outputOos) {
+        this.outputOos = outputOos;
+    }
+
+    public void setOutputRpath(boolean outputRpath) {
+        this.outputRpath = outputRpath;
+    }
+
+    public void setOutputRtoa(boolean outputRtoa) {
+        this.outputRtoa = outputRtoa;
+    }
+
+
+    public void setOutputRtoaGcAann(boolean outputRtoaGcAann) {
+        this.outputRtosaGcAann = outputRtoaGcAann;
+    }
+
+    public void setOutputRwa(boolean outputRwa) {
+        this.outputRwa = outputRwa;
+    }
+
+    public void setOutputRwn(boolean outputRwn) {
+        this.outputRwn = outputRwn;
+    }
+
+    public void setOutputTdown(boolean outputTdown) {
+        this.outputTdown = outputTdown;
+    }
+
+    public void setOutputTup(boolean outputTup) {
+        this.outputTup = outputTup;
+    }
+
+    public void setOutputUncertainties(boolean outputUncertainties) {
+        this.outputUncertainties = outputUncertainties;
+    }
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
@@ -462,13 +502,13 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             }
         }
 
-        if (outputRtoaGc) {
+        if (outputRtosaGc) {
             for (int i = 0; i < result.r_tosa.length; i++) {
                 targetSamples[RTOSA_IX + i].set(result.r_tosa[i]);
             }
         }
 
-        if (outputRtoaGcAann) {
+        if (outputRtosaGcAann) {
             for (int i = 0; i < result.rtosa_aann.length; i++) {
                 targetSamples[RTOSA_AANN_IX + i].set(result.rtosa_aann[i]);
             }
@@ -561,13 +601,13 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             }
         }
 
-        if (outputRtoaGc) {
+        if (outputRtosaGc) {
             for (int i = 0; i < merband12_ix.length; i++) {
                 tsc.defineSample(RTOSA_IX + i, "rtosa_gc_" + merband12_ix[i]);
             }
         }
 
-        if (outputRtoaGcAann) {
+        if (outputRtosaGcAann) {
             for (int i = 0; i < merband12_ix.length; i++) {
                 tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + merband12_ix[i]);
             }
@@ -657,7 +697,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             autoGrouping.append(":rtoa");
         }
         final String validPixelExpression = "l2_flags.Valid_PE";
-        if (outputRtoaGc) {
+        if (outputRtosaGc) {
             for (int bi : merband12_ix) {
                 Band band = addBand(targetProduct, "rtosa_gc_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, input to AC");
                 ensureSpectralProperties(band, bi);
@@ -665,7 +705,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             }
             autoGrouping.append(":rtosa_gc");
         }
-        if (outputRtoaGcAann) {
+        if (outputRtosaGcAann) {
             for (int bi : merband12_ix) {
                 Band band = addBand(targetProduct, "rtosagc_aann_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
                 ensureSpectralProperties(band, bi);
@@ -965,7 +1005,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
         algorithm.setThresh_rwlogslope(thresholdRwaOos);
 
-        algorithm.setOutputRtoaGcAann(outputRtoaGcAann);
+        algorithm.setOutputRtosaGcAann(outputRtosaGcAann);
         algorithm.setOutputRpath(outputRpath);
         algorithm.setOutputTdown(outputTdown);
         algorithm.setOutputTup(outputTup);
