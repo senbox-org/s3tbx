@@ -197,7 +197,7 @@ public class OlciProductSignatureTest {
     }
 
     private Product createOlciTestProduct() throws FactoryException, TransformException {
-        Product product = new Product("test-meris", "t", 1, 1);
+        Product product = new Product("test-olci", "t", 1, 1);
         for (int i = 1; i <= C2rccOlciOperator.BAND_COUNT; i++) {
             String expression = String.valueOf(i);
             product.addBand(String.format("Oa%02d_radiance", i), expression);
