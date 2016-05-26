@@ -2,12 +2,8 @@ package org.esa.s3tbx.c2rcc.olci;
 
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
-import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
-import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
-import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
+import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
 import org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.Result;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.esa.snap.core.datamodel.Band;
@@ -22,6 +18,7 @@ import org.esa.snap.core.datamodel.ProductNode;
 import org.esa.snap.core.datamodel.ProductNodeEvent;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
+import org.esa.snap.core.datamodel.VirtualBand;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
 import org.esa.snap.core.dataop.resamp.Resampling;
@@ -41,13 +38,9 @@ import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.DEFAULT_OLCI_WAVELENGTH;
@@ -63,8 +56,6 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rw_kd;
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rw_rwnorm;
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband16_ix;
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
-import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.ozone_default;
-import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.pressure_default;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 
@@ -77,10 +68,10 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.pressure_default;
  * @author Norman Fomferra
  */
 @OperatorMetadata(alias = "olci.c2rcc", version = "0.9.5",
-            authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
-            category = "Optical Processing/Thematic Water Processing",
-            copyright = "Copyright (C) 2015 by Brockmann Consult",
-            description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
+        authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
+        category = "Optical Processing/Thematic Water Processing",
+        copyright = "Copyright (C) 2015 by Brockmann Consult",
+        description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
 public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
@@ -96,9 +87,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     public static final int SUN_AZI_IX = DEM_ALT_IX + 2;
     public static final int VIEW_ZEN_IX = DEM_ALT_IX + 3;
     public static final int VIEW_AZI_IX = DEM_ALT_IX + 4;
-    public static final int ATM_PRESS_IX = DEM_ALT_IX + 5;
-    public static final int OZONE_IX = DEM_ALT_IX + 6;
-    public static final int VALID_PIXEL_IX = DEM_ALT_IX + 7;
+    public static final int VALID_PIXEL_IX = DEM_ALT_IX + 5;
 
     // OLCI targets
     public static final int BC_16 = olciband16_ix.length; // Band count 16
@@ -150,16 +139,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
 
     public static final String[] alternativeNetDirNames = new String[]{
-                "rtosa_aann",
-                "rtosa_rw",
-                "rw_iop",
-                "iop_rw",
-                "rw_kd",
-                "iop_unciop",
-                "iop_uncsumiop_unckd",
-                "rw_rwnorm",
-                "rtosa_trans",
-                "rtosa_rpath"
+            "rtosa_aann",
+            "rtosa_rw",
+            "rw_iop",
+            "iop_rw",
+            "rw_kd",
+            "iop_unciop",
+            "iop_uncsumiop_unckd",
+            "rw_rwnorm",
+            "rtosa_trans",
+            "rtosa_rpath"
     };
 
     public static final String[] c2rccNNResourcePaths = new String[10];
@@ -186,54 +175,54 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     }
 
     @SourceProduct(label = "OLCI L1b product",
-                description = "OLCI L1b source product.")
+            description = "OLCI L1b source product.")
     private Product sourceProduct;
 
     @SourceProduct(description = "A second source product which is congruent to the L1b source product but contains cloud flags. " +
-                                 "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
-                                 "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN! && !$cloudProduct.l2_flags.CLOUD' ",
-                optional = true,
-                label = "Product with cloud flag")
+            "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
+            "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN! && !$cloudProduct.l2_flags.CLOUD' ",
+            optional = true,
+            label = "Product with cloud flag")
     private Product cloudProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Ozone interpolation start product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Ozone interpolation end product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation start product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "auxiliary data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation end product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "auxiliary data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-                defaultValue = "!quality_flags.invalid && !quality_flags.land",
-                converter = BooleanExpressionConverter.class)
+            defaultValue = "!quality_flags.invalid && !quality_flags.land",
+            converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0, 100)")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
@@ -258,25 +247,25 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private double CHLfak;
 
     @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
-                label = "Threshold rtosa OOS")
+            label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
     @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for water leaving reflectances",
-                label = "Threshold rwa OOS")
+            label = "Threshold rwa OOS")
     private double thresholdRwaOos;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
-                             "for calculations. If the auxiliary data needed for interpolation not available in this " +
-                             "path, the data will automatically downloaded.")
+            "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
+            "for calculations. If the auxiliary data needed for interpolation not available in this " +
+            "path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets with the nets " +
-                             "available in the given directory. The directory must strictly be organized in the following way to be a valid set " +
-                             "of neuronal nets. The path must contain the subdirectories 'rtosa_aann', 'rtosa_rw', 'rw_iop', 'iop_rw', 'rw_kd', " +
-                             "'iop_unciop', 'iop_uncsumiop_unckd', 'rw_rwnorm', 'rtosa_trans', 'rtosa_rpath' and inside the subdirectories " +
-                             "only one *.net file.",
-                label = "Alternative NN Path")
+            "available in the given directory. The directory must strictly be organized in the following way to be a valid set " +
+            "of neuronal nets. The path must contain the subdirectories 'rtosa_aann', 'rtosa_rw', 'rw_iop', 'iop_rw', 'rw_kd', " +
+            "'iop_unciop', 'iop_uncsumiop_unckd', 'rw_rwnorm', 'rtosa_trans', 'rtosa_rpath' and inside the subdirectories " +
+            "only one *.net file.",
+            label = "Alternative NN Path")
     private String alternativeNNPath;
 
     @Parameter(defaultValue = "true", description =
@@ -297,8 +286,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 //    private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "true", description =
-                "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
-                label = "Use ECMWF aux data of source product")
+            "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
+            label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
 
     @Parameter(defaultValue = "false", label = "Output top-of-atmosphere (TOA) reflectances")
@@ -345,16 +334,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     public static boolean isValidInput(Product product) {
         for (int i = 0; i < BAND_COUNT; i++) {
             if (!product.containsBand(getRadianceBandName(i))
-                || !product.containsBand(getSolarFluxBandname(i))) {
+                    || !product.containsBand(getSolarFluxBandname(i))) {
                 return false;
             }
         }
 
         return product.containsBand(BAND_NAME_QUALITY_FLAGS)
-               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
-               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
-               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
-               && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE);
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE);
     }
 
     @Override
@@ -463,17 +452,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
-        double atmPress;
-        double ozone;
-        if (useEcmwfAuxData) {
-            atmPress = sourceSamples[ATM_PRESS_IX].getDouble();
-            ozone = sourceSamples[OZONE_IX].getDouble();
-            // convert from kg/m^2 to Dobson Units
-            ozone *= 46698;
-        } else {
-            ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
-            atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
-        }
+        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
+        double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
         final double altitude;
         if (useSnapDem) {
             try {
@@ -588,10 +568,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH_ANGLE);
         sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH_ANGLE);
         sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
-        if (useEcmwfAuxData) {
-            sc.defineSample(ATM_PRESS_IX, RASTER_NAME_SEA_LEVEL_PRESSURE);
-            sc.defineSample(OZONE_IX, RASTER_NAME_TOTAL_OZONE);
-        }
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
@@ -949,10 +925,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         assertSourceRaster(RASTER_NAME_SUN_AZIMUTH_ANGLE);
         assertSourceRaster(RASTER_NAME_VIEWING_ZENITH_ANGLE);
         assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
-        if (useEcmwfAuxData) {
-            assertSourceRaster(RASTER_NAME_SEA_LEVEL_PRESSURE);
-            assertSourceRaster(RASTER_NAME_TOTAL_OZONE);
-        }
 
         try {
             final String[] nnFilePaths;
@@ -998,9 +970,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 //        }
 
         C2rccCommons.ensureTimeCoding_Fallback(sourceProduct);
-        if (!useEcmwfAuxData) {
-            initAtmosphericAuxdata();
-        }
+        initAtmosphericAuxdata();
     }
 
     private static String getRadianceBandName(int i) {
@@ -1046,8 +1016,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                 final MetadataAttribute ma = (MetadataAttribute) sourceNode;
                 final MetadataElement pe = ma.getParentElement();
                 if ("operator".equals(ma.getName())
-                    && pe.getName().startsWith("node")
-                    && processingGraphName.equals(pe.getParentElement().getName())) {
+                        && pe.getName().startsWith("node")
+                        && processingGraphName.equals(pe.getParentElement().getName())) {
                     if (operatorNode == null) {
                         if (alias.equals(ma.getData().getElemString())) {
                             operatorNode = pe;
@@ -1066,22 +1036,26 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     }
 
     private void initAtmosphericAuxdata() {
-        if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
-            try {
-                atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
-                                                                  ncepStartProduct, ncepEndProduct, "press", press);
-            } catch (IOException e) {
-                final String message = "Unable to create provider for atmospheric ancillary data.";
-                getLogger().severe(message);
-                getLogger().severe(e.getMessage());
-                throw new OperatorException(message, e);
-            }
-        } else {
-            final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
-            final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
-            AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
-            AncDataFormat pressureFormat = createPressureFormat(pressure_default);
-            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
+        AtmosphericAuxdataBuilder auxdataBuilder = new AtmosphericAuxdataBuilder();
+        auxdataBuilder.setOzone(ozone);
+        auxdataBuilder.setSurfacePressure(press);
+        auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
+        auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
+        auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
+        if(useEcmwfAuxData) {
+            VirtualBand ozoneInDu = new VirtualBand("__ozone_in_du_",
+                                                      ProductData.TYPE_FLOAT32,
+                                                      getSourceProduct().getSceneRasterWidth(),
+                                                      getSourceProduct().getSceneRasterHeight(),
+                                                      RASTER_NAME_TOTAL_OZONE + " * 46698");
+            auxdataBuilder.useAtmosphericRaster(ozoneInDu,
+                                                sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
+        }
+
+        try {
+            atmosphericAuxdata = auxdataBuilder.create();
+        } catch (Exception e) {
+            throw new OperatorException("Could not create provider for atmospheric auxdata");
         }
     }
 

@@ -5,6 +5,7 @@ import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
 import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
 import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
+import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
@@ -131,7 +132,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
                 converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "" + salinity_default, unit = "DU", interval = "(0, 100)")
+    @Parameter(defaultValue = "" + salinity_default, unit = "PSU", interval = "(0, 100)")
     private double salinity;
 
     @Parameter(defaultValue = "" + temperature_default, unit = "C", interval = "(-50, 50)")
@@ -161,6 +162,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     private C2rccSeaWiFSAlgorithm algorithm;
     private AtmosphericAuxdata atmosphericAuxdata;
 
+    @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
         this.atmosphericAuxDataPath = atmosphericAuxDataPath;
     }
@@ -362,22 +364,16 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     }
 
     private void initAtmosphericAuxdata() {
-        if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
-            try {
-                atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
-                                                                  ncepStartProduct, ncepEndProduct, "press", press);
-            } catch (IOException e) {
-                final String message = "Unable to create provider for atmospheric ancillary data.";
-                getLogger().severe(message);
-                getLogger().severe(e.getMessage());
-                throw new OperatorException(message, e);
-            }
-        } else {
-            final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
-            final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
-            AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
-            AncDataFormat pressureFormat = createPressureFormat(pressure_default);
-            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
+        AtmosphericAuxdataBuilder auxdataBuilder = new AtmosphericAuxdataBuilder();
+        auxdataBuilder.setOzone(ozone);
+        auxdataBuilder.setSurfacePressure(press);
+        auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
+        auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
+        auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
+        try {
+            atmosphericAuxdata = auxdataBuilder.create();
+        } catch (Exception e) {
+            throw new OperatorException("Could not create provider for atmospheric auxdata");
         }
     }
 

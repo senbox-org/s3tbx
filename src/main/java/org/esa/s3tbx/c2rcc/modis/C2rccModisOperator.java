@@ -1,12 +1,9 @@
 package org.esa.s3tbx.c2rcc.modis;
 
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
-import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
-import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
-import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
+import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
+import org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -23,10 +20,8 @@ import org.esa.snap.core.gpf.pointop.Sample;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
-import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
@@ -46,10 +41,10 @@ import static org.esa.s3tbx.c2rcc.util.TargetProductPreparer.*;
  * @author Norman Fomferra, Sabine Embacher
  */
 @OperatorMetadata(alias = "modis.c2rcc", version = "0.9.5",
-            authors = "Wolfgang Schoenfeld (HZG), Sabine Embacher, Norman Fomferra (Brockmann Consult)",
-            category = "Optical Processing/Thematic Water Processing",
-            copyright = "Copyright (C) 2015 by Brockmann Consult",
-            description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
+        authors = "Wolfgang Schoenfeld (HZG), Sabine Embacher, Norman Fomferra (Brockmann Consult)",
+        category = "Optical Processing/Thematic Water Processing",
+        copyright = "Copyright (C) 2015 by Brockmann Consult",
+        description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
 public class C2rccModisOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
@@ -57,16 +52,14 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     */
 
     // Modis bands
-    public static final int SOURCE_BAND_COUNT = REFLEC_WAVELENGTHS.length;
+    public static final int SOURCE_BAND_COUNT = NN_INPUT_REFLEC_WAVELENGTHS.length;
     public static final int SUN_ZEN_IX = SOURCE_BAND_COUNT;
     public static final int SUN_AZI_IX = SOURCE_BAND_COUNT + 1;
     public static final int VIEW_ZEN_IX = SOURCE_BAND_COUNT + 2;
     public static final int VIEW_AZI_IX = SOURCE_BAND_COUNT + 3;
-    public static final int ATM_PRESS_IX = SOURCE_BAND_COUNT + 4;
-    public static final int OZONE_IX = SOURCE_BAND_COUNT + 5;
 
     // Modis Targets
-    public static final int REFLEC_BAND_COUNT = REFLEC_WAVELENGTHS.length;
+    public static final int REFLEC_BAND_COUNT = NN_INPUT_REFLEC_WAVELENGTHS.length;
 
     public static final int REFLEC_1_IX = 0;
     public static final int IOP_APIG_IX = REFLEC_BAND_COUNT;
@@ -83,67 +76,72 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     public static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
 
     public static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
-    public static final String[] GEOMETRY_ANGLE_NAMES = {"solz", "sola", "senz", "sena"};
-    public static final String FLAG_BAND_NAME = "l2_flags";
+    static final String RASTER_NAME_SOLAR_ZENITH = "solz";
+    static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";
+    static final String RASTER_NAME_VIEW_AZIMUTH = "sena";
+    static final String RASTER_NAME_VIEW_ZENITH = "senz";
+    static final String[] GEOMETRY_ANGLE_NAMES = {RASTER_NAME_SOLAR_ZENITH, RASTER_NAME_SOLAR_AZIMUTH,
+            RASTER_NAME_VIEW_ZENITH, RASTER_NAME_VIEW_AZIMUTH};
+    static final String FLAG_BAND_NAME = "l2_flags";
 
     @SourceProduct(label = "MODIS L1C product",
-                description = "MODIS L1C source product.")
+            description = "MODIS L1C source product.")
     private Product sourceProduct;
 
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Ozone interpolation start product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Ozone interpolation end product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation start product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation end product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-                defaultValue = "!(l2_flags.LAND ||  max(rhot_412,max(rhot_443,max(rhot_488,max(rhot_531,max(rhot_547,max(rhot_555,max(rhot_667,max(rhot_678,max(rhot_748,rhot_869)))))))))>0.25)",
-                converter = BooleanExpressionConverter.class)
+            defaultValue = "!(l2_flags.LAND ||  max(rhot_412,max(rhot_443,max(rhot_488,max(rhot_531,max(rhot_547,max(rhot_555,max(rhot_667,max(rhot_678,max(rhot_748,rhot_869)))))))))>0.25)",
+            converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0, 100)")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
     private double temperature;
 
-    @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
+    @Parameter(defaultValue = "" + C2rccMerisAlgorithm.ozone_default, unit = "DU", interval = "(0, 1000)")
     private double ozone;
 
-    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)", label = "Air Pressure")
+    @Parameter(defaultValue = "" + C2rccMerisAlgorithm.pressure_default, unit = "hPa", interval = "(0, 2000)", label = "Air Pressure")
     private double press;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
-                             "for calculations. If the auxiliary data needed for interpolation not available in this " +
-                             "path, the data will automatically downloaded.")
+            "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
+            "for calculations. If the auxiliary data needed for interpolation not available in this " +
+            "path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
@@ -152,7 +150,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "true", description =
             "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
             label = "Output reflectances as radiance reflectance")
-    private boolean outputAsRadianceReflectances;
+    private boolean outputAsRrs;
 
     @Parameter(defaultValue = "false", label = "Output the input angle bands sena, senz, sola and solz")
     private boolean outputAngles;
@@ -161,7 +159,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     private AtmosphericAuxdata atmosphericAuxdata;
 
     public static boolean isValidInput(Product product) {
-        for (int wl : REFLEC_WAVELENGTHS) {
+        for (int wl : NN_INPUT_REFLEC_WAVELENGTHS) {
             if (!product.containsBand("rhot_" + wl)) {
                 return false;
             }
@@ -169,68 +167,83 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         if (!product.containsBand("l2_flags")) {
             return false;
         }
-        if (!product.containsBand("solz")) {
+        if (!product.containsBand(RASTER_NAME_SOLAR_ZENITH)) {
             return false;
         }
-        if (!product.containsBand("sola")) {
+        if (!product.containsBand(RASTER_NAME_SOLAR_AZIMUTH)) {
             return false;
         }
         if (!product.containsBand("senz")) {
             return false;
         }
-        if (!product.containsBand("sena")) {
+        if (!product.containsBand(RASTER_NAME_VIEW_AZIMUTH)) {
             return false;
         }
         return true;
     }
 
+    @Override
     public void setSalinity(double salinity) {
         this.salinity = salinity;
     }
 
+    @Override
     public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
 
+    @Override
     public void setOzone(double ozone) {
         this.ozone = ozone;
     }
 
+    @Override
     public void setPress(double press) {
         this.press = press;
     }
 
+    @Override
     public void setValidPixelExpression(String validPixelExpression) {
         this.validPixelExpression = validPixelExpression;
     }
 
+    @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
         this.atmosphericAuxDataPath = atmosphericAuxDataPath;
     }
 
+    @Override
     public void setTomsomiStartProduct(Product tomsomiStartProduct) {
         this.tomsomiStartProduct = tomsomiStartProduct;
     }
 
+    @Override
     public void setTomsomiEndProduct(Product tomsomiEndProduct) {
         this.tomsomiEndProduct = tomsomiEndProduct;
     }
 
+    @Override
     public void setNcepStartProduct(Product ncepStartProduct) {
         this.ncepStartProduct = ncepStartProduct;
     }
 
+    @Override
     public void setNcepEndProduct(Product ncepEndProduct) {
         this.ncepEndProduct = ncepEndProduct;
     }
 
+    @Override
     public void setOutputRtosa(boolean outputRtosa) {
         this.outputRtosa = outputRtosa;
     }
 
     @Override
-    public void outputAsRrs(boolean asRadianceRefl) {
-        outputAsRadianceReflectances = asRadianceRefl;
+    public void outputAsRrs(boolean asRrs) {
+        outputAsRrs = asRrs;
+    }
+
+    public void setOutputAngles(boolean outputAngles) {
+        this.outputAngles = outputAngles;
     }
 
     @Override
@@ -258,13 +271,13 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         double ozone = fetchOzone(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
         double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
         C2rccModisAlgorithm.Result result = algorithm.processPixel(
-                    toa_ref,
-                    sourceSamples[SUN_ZEN_IX].getDouble(),
-                    sourceSamples[SUN_AZI_IX].getDouble(),
-                    sourceSamples[VIEW_ZEN_IX].getDouble(),
-                    sourceSamples[VIEW_AZI_IX].getDouble(),
-                    atmPress,
-                    ozone
+                toa_ref,
+                sourceSamples[SUN_ZEN_IX].getDouble(),
+                sourceSamples[SUN_AZI_IX].getDouble(),
+                sourceSamples[VIEW_ZEN_IX].getDouble(),
+                sourceSamples[VIEW_AZI_IX].getDouble(),
+                atmPress,
+                ozone
         );
 
         for (int i = 0; i < result.rw.length; i++) {
@@ -300,22 +313,20 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
         sc.setValidPixelMask(validPixelExpression);
-        for (int i = 0; i < REFLEC_WAVELENGTHS.length; i++) {
-            int wl = REFLEC_WAVELENGTHS[i];
+        for (int i = 0; i < NN_INPUT_REFLEC_WAVELENGTHS.length; i++) {
+            int wl = NN_INPUT_REFLEC_WAVELENGTHS[i];
             sc.defineSample(i, "rhot_" + wl);
         }
-        sc.defineSample(SUN_ZEN_IX, "solz");
-        sc.defineSample(SUN_AZI_IX, "sola");
-        sc.defineSample(VIEW_ZEN_IX, "senz");
-        sc.defineSample(VIEW_AZI_IX, "sena");
-//        sc.defineSample(ATM_PRESS_IX, "atm_press");
-//        sc.defineSample(OZONE_IX, "ozone");
+        sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SOLAR_ZENITH);
+        sc.defineSample(SUN_AZI_IX, RASTER_NAME_SOLAR_AZIMUTH);
+        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEW_ZENITH);
+        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEW_AZIMUTH);
     }
 
     @Override
     protected void configureTargetSamples(TargetSampleConfigurer sc) throws OperatorException {
-        for (int i = 0; i < REFLEC_WAVELENGTHS.length; i++) {
-            sc.defineSample(i, "reflec_" + REFLEC_WAVELENGTHS[i]);
+        for (int i = 0; i < NN_INPUT_REFLEC_WAVELENGTHS.length; i++) {
+            sc.defineSample(i, "reflec_" + NN_INPUT_REFLEC_WAVELENGTHS[i]);
         }
         sc.defineSample(IOP_APIG_IX, "iop_apig");
         sc.defineSample(IOP_ADET_IX, "iop_adet");
@@ -337,12 +348,12 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
         if (outputRtosa) {
             final int angleOffset = outputAngles ? GEOMETRY_ANGLE_NAMES.length : 0;
-            for (int i = 0; i < REFLEC_WAVELENGTHS.length; i++) {
-                int wl = REFLEC_WAVELENGTHS[i];
+            for (int i = 0; i < NN_INPUT_REFLEC_WAVELENGTHS.length; i++) {
+                int wl = NN_INPUT_REFLEC_WAVELENGTHS[i];
                 sc.defineSample(RTOSA_IN_1_IX + angleOffset + i, "rtosa_in_" + wl);
             }
-            for (int i = 0; i < REFLEC_WAVELENGTHS.length; i++) {
-                int wl = REFLEC_WAVELENGTHS[i];
+            for (int i = 0; i < NN_INPUT_REFLEC_WAVELENGTHS.length; i++) {
+                int wl = NN_INPUT_REFLEC_WAVELENGTHS[i];
                 sc.defineSample(RTOSA_OUT_1_IX + angleOffset + i, "rtosa_out_" + wl);
             }
         }
@@ -353,7 +364,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
-        prepareTargetProduct(targetProduct, sourceProduct, "rhot_", REFLEC_WAVELENGTHS, outputRtosa);
+        prepareTargetProduct(targetProduct, sourceProduct, "rhot_", NN_INPUT_REFLEC_WAVELENGTHS, outputRtosa);
 
         if (outputAngles) {
             for (String angleName : GEOMETRY_ANGLE_NAMES) {
@@ -365,7 +376,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        for (int wl : REFLEC_WAVELENGTHS) {
+        for (int wl : NN_INPUT_REFLEC_WAVELENGTHS) {
             assertSourceBand(SOURCE_RADIANCE_NAME_PREFIX + wl);
         }
         assertSourceBand(FLAG_BAND_NAME);
@@ -388,22 +399,16 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     }
 
     private void initAtmosphericAuxdata() {
-        if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
-            try {
-                atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
-                                                                  ncepStartProduct, ncepEndProduct, "press", press);
-            } catch (IOException e) {
-                final String message = "Unable to create provider for atmospheric ancillary data.";
-                getLogger().severe(message);
-                getLogger().severe(e.getMessage());
-                throw new OperatorException(message, e);
-            }
-        } else {
-            final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
-            final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
-            AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
-            AncDataFormat pressureFormat = createPressureFormat(pressure_default);
-            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
+        AtmosphericAuxdataBuilder auxdataBuilder = new AtmosphericAuxdataBuilder();
+        auxdataBuilder.setOzone(ozone);
+        auxdataBuilder.setSurfacePressure(press);
+        auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
+        auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
+        auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
+        try {
+            atmosphericAuxdata = auxdataBuilder.create();
+        } catch (Exception e) {
+            throw new OperatorException("Could not create provider for atmospheric auxdata");
         }
     }
 

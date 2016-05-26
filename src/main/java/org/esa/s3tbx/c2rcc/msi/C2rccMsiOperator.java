@@ -2,12 +2,8 @@ package org.esa.s3tbx.c2rcc.msi;
 
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
-import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
-import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
-import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
+import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
@@ -39,21 +35,22 @@ import org.esa.snap.core.gpf.pointop.WritableSample;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
+import sun.util.calendar.BaseCalendar;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.logging.Level;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.ATM_PRESS_IX;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_rw;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_unciop;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_uncsumiop_unckd;
@@ -65,11 +62,8 @@ import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_iop;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_kd;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_rwnorm;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.OZONE_IX;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.Result;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.ozone_default;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.pressure_default;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 
@@ -87,6 +81,11 @@ import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.pressure_default;
         copyright = "Copyright (C) 2015 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
 public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable {
+    private static final int SUN_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 0;
+    private static final int SUN_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 1;
+    private static final int VIEW_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 2;
+    private static final int VIEW_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 3;
+    private static final int VALID_PIXEL_IX = SOURCE_BAND_REFL_NAMES.length + 4;
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
         see https://senbox.atlassian.net/browse/SNAP-395
@@ -216,7 +215,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0, 100)")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
@@ -247,9 +246,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for water leaving reflectances",
             label = "Threshold rwa OOS")
     private double thresholdRwaOos;
-
-    @Parameter(defaultValue = "true", description = "Using the given default values for ozone and pressure.")
-    private boolean useDefaultValuesForAtmosphere;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
@@ -416,20 +412,11 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
-        double atmPress;
-        double ozone;
-        if (useDefaultValuesForAtmosphere) {
-            atmPress = press;
-            ozone = this.ozone;
-        } else if (useEcmwfAuxData) {
-            atmPress = sourceSamples[ATM_PRESS_IX].getDouble();
-            ozone = sourceSamples[OZONE_IX].getDouble();
-        } else {
-            // todo MSI has no time information
-            final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
-            ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
-            atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
-        }
+
+        // todo MSI has no time information
+        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
+        double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
+        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
 
         final double altitude;
         try {
@@ -437,7 +424,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         } catch (Exception e) {
             throw new OperatorException("Unable to compute altitude.", e);
         }
-        boolean validPixel = sourceSamples[C2rccMsiAlgorithm.VALID_PIXEL_IX].getBoolean();
+        boolean validPixel = sourceSamples[VALID_PIXEL_IX].getBoolean();
         boolean samplesValid = true;
         for (Sample sourceSample : sourceSamples) {
             // can be null because samples for ozone and atm_pressure might be missing
@@ -453,10 +440,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         Result result = algorithm.processPixel(x, y, lat, lon,
                                                reflectances,
                                                solflux,
-                                               sourceSamples[C2rccMsiAlgorithm.SUN_ZEN_IX].getDouble(),
-                                               sourceSamples[C2rccMsiAlgorithm.SUN_AZI_IX].getDouble(),
-                                               sourceSamples[C2rccMsiAlgorithm.VIEW_ZEN_IX].getDouble(),
-                                               sourceSamples[C2rccMsiAlgorithm.VIEW_AZI_IX].getDouble(),
+                                               sourceSamples[SUN_ZEN_IX].getDouble(),
+                                               sourceSamples[SUN_AZI_IX].getDouble(),
+                                               sourceSamples[VIEW_ZEN_IX].getDouble(),
+                                               sourceSamples[VIEW_AZI_IX].getDouble(),
                                                altitude,
                                                validPixel && samplesValid,
                                                atmPress,
@@ -545,18 +532,14 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         for (int i = 0; i < C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES.length; i++) {
             sc.defineSample(i, C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES[i]);
         }
-        sc.defineSample(C2rccMsiAlgorithm.SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH_ANGLE);
-        sc.defineSample(C2rccMsiAlgorithm.SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH_ANGLE);
-        sc.defineSample(C2rccMsiAlgorithm.VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH_ANGLE);
-        sc.defineSample(C2rccMsiAlgorithm.VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
-        if (useEcmwfAuxData) {
-            sc.defineSample(ATM_PRESS_IX, RASTER_NAME_SEA_LEVEL_PRESSURE);
-            sc.defineSample(OZONE_IX, RASTER_NAME_TOTAL_OZONE);
-        }
+        sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH_ANGLE);
+        sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH_ANGLE);
+        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH_ANGLE);
+        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
-            sc.defineComputedSample(C2rccMsiAlgorithm.VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
-            sc.defineComputedSample(C2rccMsiAlgorithm.VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true");
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true");
         }
 
     }
@@ -972,7 +955,12 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     private ProductData.UTC getTime(MetadataElement productInfo, DateFormat dateFormat, String timeAttrName) {
         try {
-            return ProductData.UTC.parse(getAttributeStringSafe(productInfo, timeAttrName), dateFormat);
+            Date date = dateFormat.parse(getAttributeStringSafe(productInfo, timeAttrName));
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
+            calendar.setTime(date);
+            int millis = calendar.get(Calendar.MILLISECOND);
+            calendar.set(Calendar.MILLISECOND,0);
+            return ProductData.UTC.create(calendar.getTime(), millis * 1000);
         } catch (ParseException e) {
             getLogger().log(Level.WARNING, "Could not retrieve " + timeAttrName + " from metadata");
             return null;
@@ -1070,24 +1058,20 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     }
 
     private void initAtmosphericAuxdata() {
-        if (!useDefaultValuesForAtmosphere) {
-            if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
-                try {
-                    atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
-                                                                      ncepStartProduct, ncepEndProduct, "press", press);
-                } catch (IOException e) {
-                    final String message = "Unable to create provider for atmospheric ancillary data.";
-                    getLogger().severe(message);
-                    getLogger().severe(e.getMessage());
-                    throw new OperatorException(message, e);
-                }
-            } else {
-                final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
-                final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
-                AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
-                AncDataFormat pressureFormat = createPressureFormat(pressure_default);
-                atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
-            }
+        AtmosphericAuxdataBuilder auxdataBuilder = new AtmosphericAuxdataBuilder();
+        auxdataBuilder.setOzone(ozone);
+        auxdataBuilder.setSurfacePressure(press);
+        auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
+        auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
+        auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
+        if(useEcmwfAuxData) {
+            auxdataBuilder.useAtmosphericRaster(sourceProduct.getRasterDataNode(RASTER_NAME_TOTAL_OZONE),
+                                                sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
+        }
+        try {
+            atmosphericAuxdata = auxdataBuilder.create();
+        } catch (Exception e) {
+            throw new OperatorException("Could not create provider for atmospheric auxdata");
         }
     }
 

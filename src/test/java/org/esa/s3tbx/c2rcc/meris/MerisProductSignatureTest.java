@@ -1,11 +1,14 @@
-package org.esa.s3tbx.c2rcc.modis;
+package org.esa.s3tbx.c2rcc.meris;
 
+import org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm;
+import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -16,7 +19,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Marco Peters
  */
-public class ModisProductSignatureTest {
+@Ignore("not yet ready")
+public class MerisProductSignatureTest {
     private static final String[] EXPECTED_REFLEC_BANDS = {
             "reflec_" + 412, "reflec_" + 443, "reflec_" + 488, "reflec_" + 531, "reflec_" + 547,
             "reflec_" + 667, "reflec_" + 678, "reflec_" + 748, "reflec_" + 869};
@@ -51,28 +55,6 @@ public class ModisProductSignatureTest {
         assertDefaultBands(targetProduct);
     }
 
-    @Test
-    public void testProductSignature_WithRtosa() throws FactoryException, TransformException {
-        C2rccModisOperator operator = createDefaultOperator();
-        operator.setOutputRtosa(true);
-
-        Product targetProduct = operator.getTargetProduct();
-
-        assertDefaultBands(targetProduct);
-        assertBands(targetProduct, EXPECTED_RTOSA_IN_BANDS);
-        assertBands(targetProduct, EXPECTED_RTOSA_OUT_BANDS);
-    }
-
-    @Test
-    public void testProductSignature_WithAngles() throws FactoryException, TransformException {
-        C2rccModisOperator operator = createDefaultOperator();
-        operator.setOutputAngles(true);
-
-        Product targetProduct = operator.getTargetProduct();
-
-        assertDefaultBands(targetProduct);
-        assertBands(targetProduct, EXPECTED_GEOMETRY_ANGLES);
-    }
 
     private void assertDefaultBands(Product targetProduct) {
         assertBands(targetProduct, EXPECTED_REFLEC_BANDS);
@@ -104,23 +86,21 @@ public class ModisProductSignatureTest {
     }
 
     private Product createModisTestProduct() throws FactoryException, TransformException {
-        Product product = new Product("test-modis", "t", 1, 1);
-        int[] reflecWavelengths = C2rccModisAlgorithm.ALL_REFLEC_WAVELENGTHS;
-        for (int i = 0; i < reflecWavelengths.length; i++) {
-            int reflec_wavelength = reflecWavelengths[i];
+        Product product = new Product("test-meris", "t", 1, 1);
+        for (int i = 1; i <= C2rccMerisOperator.BAND_COUNT; i++) {
             String expression = String.valueOf(i);
-            product.addBand(C2rccModisOperator.SOURCE_RADIANCE_NAME_PREFIX + reflec_wavelength, expression);
+            product.addBand(C2rccMerisOperator.SOURCE_RADIANCE_NAME_PREFIX + i, expression);
         }
 
-        for (String angleName : C2rccModisOperator.GEOMETRY_ANGLE_NAMES) {
-            product.addBand(angleName, "42");
-        }
-
-        Band flagBand = product.addBand(C2rccModisOperator.FLAG_BAND_NAME, ProductData.TYPE_INT8);
-        FlagCoding l2FlagsCoding = new FlagCoding(C2rccModisOperator.FLAG_BAND_NAME);
-        l2FlagsCoding.addFlag("LAND", 0x01, "");
-        product.getFlagCodingGroup().add(l2FlagsCoding);
-        flagBand.setSampleCoding(l2FlagsCoding);
+////        for (String angleName : C2rccModisOperator.GEOMETRY_ANGLE_NAMES) {
+////            product.addBand(angleName, "42");
+////        }
+////
+////        Band flagBand = product.addBand(C2rccModisOperator.FLAG_BAND_NAME, ProductData.TYPE_INT8);
+////        FlagCoding l2FlagsCoding = new FlagCoding(C2rccModisOperator.FLAG_BAND_NAME);
+//        l2FlagsCoding.addFlag("LAND", 0x01, "");
+//        product.getFlagCodingGroup().add(l2FlagsCoding);
+//        flagBand.setSampleCoding(l2FlagsCoding);
 
         product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84, 1, 1, 10, 50, 1, 1));
 

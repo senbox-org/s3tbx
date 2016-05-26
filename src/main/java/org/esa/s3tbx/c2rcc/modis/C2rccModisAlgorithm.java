@@ -23,12 +23,7 @@ public class C2rccModisAlgorithm {
     public final static double ozone_default = 330.0;
 
     // input for rtoa_rw_modis_nn3/33x73x53x33_508087.3.net
-    // private static final int[] reflec_wavelengths = new int[]{412, 443, 489, 531, 551, 665, 678, 748, 869}
-    // corrected ...
-    // 489 replaced by 488
-    // 551 replaced by 547
-    // 665 replaced by 667
-    public final static int[] REFLEC_WAVELENGTHS = new int[]{
+    public final static int[] NN_INPUT_REFLEC_WAVELENGTHS = new int[]{
                 412,
                 443,
                 488,
@@ -38,6 +33,25 @@ public class C2rccModisAlgorithm {
                 678,
                 748,
                 869
+    };
+
+    public final static int[] ALL_REFLEC_WAVELENGTHS = new int[]{
+                412,
+                443,
+                469,
+                488,
+                531,
+                547,
+                555,
+                645,
+                667,
+                678,
+                748,
+                859,
+                869,
+                1240,
+                1640,
+                2130
     };
 
     /**

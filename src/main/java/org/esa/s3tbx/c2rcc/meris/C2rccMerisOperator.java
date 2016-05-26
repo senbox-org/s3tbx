@@ -2,12 +2,8 @@ package org.esa.s3tbx.c2rcc.meris;
 
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
-import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
-import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
-import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
+import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.snap.core.datamodel.Band;
@@ -38,14 +34,10 @@ import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Calendar;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_MERIS_WAVELENGTH;
@@ -62,8 +54,6 @@ import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_kd;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_rwnorm;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband15_ix;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.ozone_default;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.pressure_default;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2R-CC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
@@ -97,9 +87,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     public static final int SUN_AZI_IX = BAND_COUNT + 2;
     public static final int VIEW_ZEN_IX = BAND_COUNT + 3;
     public static final int VIEW_AZI_IX = BAND_COUNT + 4;
-    public static final int ATM_PRESS_IX = BAND_COUNT + 5;
-    public static final int OZONE_IX = BAND_COUNT + 6;
-    public static final int VALID_PIXEL_IX = BAND_COUNT + 7;
+    public static final int VALID_PIXEL_IX = BAND_COUNT + 5;
+    public static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
+
 
     // MERIS targets
 
@@ -165,6 +155,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     };
 
     public static final String[] c2rccNNResourcePaths = new String[10];
+    private static final String RASTER_NAME_OZONE = "ozone";
+    private static final String RASTER_NAME_ATM_PRESS = "atm_press";
 
     static {
         c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
@@ -243,7 +235,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0, 100)")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
@@ -442,15 +434,10 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
-        double atmPress;
-        double ozone;
-        if (useEcmwfAuxData) {
-            atmPress = sourceSamples[ATM_PRESS_IX].getDouble();
-            ozone = sourceSamples[OZONE_IX].getDouble();
-        } else {
-            ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
-            atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
-        }
+        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
+        double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
+        ;
+
         C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y, lat, lon,
                                                                    radiances,
                                                                    solflux,
@@ -552,8 +539,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         sc.defineSample(SUN_AZI_IX, "sun_azimuth");
         sc.defineSample(VIEW_ZEN_IX, "view_zenith");
         sc.defineSample(VIEW_AZI_IX, "view_azimuth");
-        sc.defineSample(ATM_PRESS_IX, "atm_press");
-        sc.defineSample(OZONE_IX, "ozone");
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
@@ -999,9 +984,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             }
         }
         C2rccCommons.ensureTimeCoding_Fallback(sourceProduct);
-        if (!useEcmwfAuxData) {
-            initAtmosphericAuxdata();
-        }
+        initAtmosphericAuxdata();
     }
 
     public static boolean isValidInput(Product product) {
@@ -1028,32 +1011,31 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (!product.containsRasterDataNode("view_azimuth")) {
             return false;
         }
-        if (!product.containsRasterDataNode("atm_press")) {
+        if (!product.containsRasterDataNode(RASTER_NAME_ATM_PRESS)) {
             return false;
         }
-        if (!product.containsRasterDataNode("ozone")) {
+        if (!product.containsRasterDataNode(RASTER_NAME_OZONE)) {
             return false;
         }
         return true;
     }
 
+    // todo (mp/20160526) - move to common base class
     private void initAtmosphericAuxdata() {
-        if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
-            try {
-                atmosphericAuxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
-                                                                  ncepStartProduct, ncepEndProduct, "press", press);
-            } catch (IOException e) {
-                final String message = "Unable to create provider for atmospheric ancillary data.";
-                getLogger().severe(message);
-                getLogger().severe(e.getMessage());
-                throw new OperatorException(message, e);
-            }
-        } else {
-            final AncDownloader ancDownloader = new AncDownloader(ANC_DATA_URI);
-            final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
-            AncDataFormat ozoneFormat = createOzoneFormat(ozone_default);
-            AncDataFormat pressureFormat = createPressureFormat(pressure_default);
-            atmosphericAuxdata = new AtmosphericAuxdataDynamic(ancRepository, ozoneFormat, pressureFormat);
+        AtmosphericAuxdataBuilder auxdataBuilder = new AtmosphericAuxdataBuilder();
+        auxdataBuilder.setOzone(ozone);
+        auxdataBuilder.setSurfacePressure(press);
+        auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
+        auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
+        auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
+        if (useEcmwfAuxData) {
+            auxdataBuilder.useAtmosphericRaster(sourceProduct.getRasterDataNode(RASTER_NAME_OZONE),
+                                                sourceProduct.getRasterDataNode(RASTER_NAME_ATM_PRESS));
+        }
+        try {
+            atmosphericAuxdata = auxdataBuilder.create();
+        } catch (Exception e) {
+            throw new OperatorException("Could not create provider for atmospheric auxdata");
         }
     }
 
