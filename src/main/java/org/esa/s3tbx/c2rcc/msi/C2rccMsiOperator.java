@@ -1071,7 +1071,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         try {
             atmosphericAuxdata = auxdataBuilder.create();
         } catch (Exception e) {
-            throw new OperatorException("Could not create provider for atmospheric auxdata");
+            throw new OperatorException("Could not create provider for atmospheric auxdata", e);
         }
     }
 

@@ -152,14 +152,14 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     };
 
     public static final String[] c2rccNNResourcePaths = new String[10];
-    public static final String BAND_NAME_QUALITY_FLAGS = "quality_flags";
+    public static final String RASTER_NAME_QUALITY_FLAGS = "quality_flags";
     public static final String RASTER_NAME_SEA_LEVEL_PRESSURE = "sea_level_pressure";
     public static final String RASTER_NAME_TOTAL_OZONE = "total_ozone";
-    public static final String RASTER_NAME_SUN_ZENITH_ANGLE = "SZA";
-    public static final String RASTER_NAME_SUN_AZIMUTH_ANGLE = "SAA";
-    public static final String RASTER_NAME_VIEWING_ZENITH_ANGLE = "OZA";
-    public static final String RASTER_NAME_VIEWING_AZIMUTH_ANGLE = "OAA";
-    public static final String BAND_NAME_ALTITUDE = "altitude";
+    public static final String RASTER_NAME_SUN_ZENITH = "SZA";
+    public static final String RASTER_NAME_SUN_AZIMUTH = "SAA";
+    public static final String RASTER_NAME_VIEWING_ZENITH = "OZA";
+    public static final String RASTER_NAME_VIEWING_AZIMUTH = "OAA";
+    public static final String RASTER_NAME_ALTITUDE = "altitude";
 
     static {
         c2rccNNResourcePaths[IDX_iop_rw] = "olci/iop_rw/17x97x47_464.3.net";
@@ -294,10 +294,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private boolean outputRtoa;
 
     @Parameter(defaultValue = "false", label = "Output gas corrected top-of-atmosphere (TOSA) reflectances")
-    private boolean outputRtoaGc;
+    private boolean outputRtosaGc;
 
     @Parameter(defaultValue = "false", label = "Output of auto nn, reflectances")
-    private boolean outputRtoaGcAann;
+    private boolean outputRtosaGcAann;
 
     @Parameter(defaultValue = "false", label = "Output path radiance reflectances")
     private boolean outputRpath;
@@ -339,11 +339,11 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             }
         }
 
-        return product.containsBand(BAND_NAME_QUALITY_FLAGS)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH_ANGLE);
+        return product.containsBand(RASTER_NAME_QUALITY_FLAGS)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH);
     }
 
     @Override
@@ -407,12 +407,52 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     @Override
     public void setOutputRtosa(boolean outputRtosa) {
-        this.outputRtoa = outputRtosa;
+        this.outputRtosaGc = outputRtosa;
     }
 
     @Override
     public void outputAsRrs(boolean asRrs) {
         outputAsRrs = asRrs;
+    }
+
+    public void setOutputKd(boolean outputKd) {
+        this.outputKd = outputKd;
+    }
+
+    public void setOutputOos(boolean outputOos) {
+        this.outputOos = outputOos;
+    }
+
+    public void setOutputRpath(boolean outputRpath) {
+        this.outputRpath = outputRpath;
+    }
+
+    public void setOutputRtoa(boolean outputRtoa) {
+        this.outputRtoa = outputRtoa;
+    }
+
+    public void setOutputRtosaGcAann(boolean outputRtosaGcAann) {
+        this.outputRtosaGcAann = outputRtosaGcAann;
+    }
+
+    public void setOutputRwa(boolean outputRwa) {
+        this.outputRwa = outputRwa;
+    }
+
+    public void setOutputRwn(boolean outputRwn) {
+        this.outputRwn = outputRwn;
+    }
+
+    public void setOutputTdown(boolean outputTdown) {
+        this.outputTdown = outputTdown;
+    }
+
+    public void setOutputTup(boolean outputTup) {
+        this.outputTup = outputTup;
+    }
+
+    public void setOutputUncertainties(boolean outputUncertainties) {
+        this.outputUncertainties = outputUncertainties;
     }
 
     @Override
@@ -482,13 +522,13 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             }
         }
 
-        if (outputRtoaGc) {
+        if (outputRtosaGc) {
             for (int i = 0; i < result.r_tosa.length; i++) {
                 targetSamples[RTOSA_IX + i].set(result.r_tosa[i]);
             }
         }
 
-        if (outputRtoaGcAann) {
+        if (outputRtosaGcAann) {
             for (int i = 0; i < result.rtosa_aann.length; i++) {
                 targetSamples[RTOSA_AANN_IX + i].set(result.rtosa_aann[i]);
             }
@@ -562,12 +602,12 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             sc.defineSample(i + SOLAR_FLUX_START_IX, getSolarFluxBandname(i));
         }
         if (!useSnapDem) {
-            sc.defineSample(DEM_ALT_IX, BAND_NAME_ALTITUDE);
+            sc.defineSample(DEM_ALT_IX, RASTER_NAME_ALTITUDE);
         }
-        sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH_ANGLE);
-        sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH_ANGLE);
-        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH_ANGLE);
-        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
+        sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH);
+        sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH);
+        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH);
+        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH);
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
@@ -585,13 +625,13 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             }
         }
 
-        if (outputRtoaGc) {
+        if (outputRtosaGc) {
             for (int i = 0; i < olciband16_ix.length; i++) {
                 tsc.defineSample(RTOSA_IX + i, "rtosa_gc_" + olciband16_ix[i]);
             }
         }
 
-        if (outputRtoaGcAann) {
+        if (outputRtosaGcAann) {
             for (int i = 0; i < olciband16_ix.length; i++) {
                 tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + olciband16_ix[i]);
             }
@@ -683,7 +723,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             autoGrouping.append(":rtoa");
         }
         final String validPixelExpression = "l2_flags.Valid_PE";
-        if (outputRtoaGc) {
+        if (outputRtosaGc) {
             for (int bi : olciband16_ix) {
                 Band band = addBand(targetProduct, "rtosa_gc_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, input to AC");
                 ensureSpectralProperties(band, bi);
@@ -691,7 +731,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             }
             autoGrouping.append(":rtosa_gc");
         }
-        if (outputRtoaGcAann) {
+        if (outputRtosaGcAann) {
             for (int bi : olciband16_ix) {
                 Band band = addBand(targetProduct, "rtosagc_aann_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
                 ensureSpectralProperties(band, bi);
@@ -910,7 +950,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             assertSourceBand(getRadianceBandName(i));
             assertSourceBand(getSolarFluxBandname(i));
         }
-        useSnapDem = !sourceProduct.containsRasterDataNode(BAND_NAME_ALTITUDE);
+        useSnapDem = !sourceProduct.containsRasterDataNode(RASTER_NAME_ALTITUDE);
         if (useSnapDem) {
             elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
         }
@@ -921,10 +961,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             throw new OperatorException("The source product must be geo-coded.");
         }
 
-        assertSourceRaster(RASTER_NAME_SUN_ZENITH_ANGLE);
-        assertSourceRaster(RASTER_NAME_SUN_AZIMUTH_ANGLE);
-        assertSourceRaster(RASTER_NAME_VIEWING_ZENITH_ANGLE);
-        assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH_ANGLE);
+        assertSourceRaster(RASTER_NAME_SUN_ZENITH);
+        assertSourceRaster(RASTER_NAME_SUN_AZIMUTH);
+        assertSourceRaster(RASTER_NAME_VIEWING_ZENITH);
+        assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH);
 
         try {
             final String[] nnFilePaths;
@@ -944,7 +984,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
         algorithm.setThresh_rwlogslope(thresholdRwaOos);
 
-        algorithm.setOutputRtoaGcAann(outputRtoaGcAann);
+        algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
         algorithm.setOutputRpath(outputRpath);
         algorithm.setOutputTdown(outputTdown);
         algorithm.setOutputTup(outputTup);
@@ -1048,6 +1088,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                                                       getSourceProduct().getSceneRasterWidth(),
                                                       getSourceProduct().getSceneRasterHeight(),
                                                       RASTER_NAME_TOTAL_OZONE + " * 46698");
+            ozoneInDu.setOwner(sourceProduct);
             auxdataBuilder.useAtmosphericRaster(ozoneInDu,
                                                 sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
         }
@@ -1055,7 +1096,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         try {
             atmosphericAuxdata = auxdataBuilder.create();
         } catch (Exception e) {
-            throw new OperatorException("Could not create provider for atmospheric auxdata");
+            throw new OperatorException("Could not create provider for atmospheric auxdata", e);
         }
     }
 
