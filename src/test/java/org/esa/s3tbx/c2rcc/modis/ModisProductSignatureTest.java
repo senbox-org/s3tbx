@@ -106,9 +106,8 @@ public class ModisProductSignatureTest {
     private Product createModisTestProduct() throws FactoryException, TransformException {
         Product product = new Product("test-modis", "t", 1, 1);
         int[] reflecWavelengths = C2rccModisAlgorithm.ALL_REFLEC_WAVELENGTHS;
-        for (int i = 0; i < reflecWavelengths.length; i++) {
-            int reflec_wavelength = reflecWavelengths[i];
-            String expression = String.valueOf(i);
+        for (int reflec_wavelength : reflecWavelengths) {
+            String expression = String.valueOf(reflec_wavelength);
             product.addBand(C2rccModisOperator.SOURCE_RADIANCE_NAME_PREFIX + reflec_wavelength, expression);
         }
 
