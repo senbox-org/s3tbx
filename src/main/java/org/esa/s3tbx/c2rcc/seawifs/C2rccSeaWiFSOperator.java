@@ -66,6 +66,14 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     */
 
     public static final int WL_BAND_COUNT = seawifsWavelengths.length;
+    public static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
+    static final String RASTER_NAME_SOLAR_ZENITH = "solz";
+    static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";
+    static final String RASTER_NAME_VIEW_AZIMUTH = "sena";
+    static final String RASTER_NAME_VIEW_ZENITH = "senz";
+    static final String[] GEOMETRY_ANGLE_NAMES = {RASTER_NAME_SOLAR_ZENITH, RASTER_NAME_SOLAR_AZIMUTH,
+            RASTER_NAME_VIEW_ZENITH, RASTER_NAME_VIEW_AZIMUTH};
+    static final String FLAG_BAND_NAME = "l2_flags";
 
     // sources
 //    public static final int DEM_ALT_IX = WL_BAND_COUNT + 0;
@@ -260,13 +268,13 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         sc.setValidPixelMask(validPixelExpression);
         for (int i = 0; i < WL_BAND_COUNT; i++) {
             final int wavelength = seawifsWavelengths[i];
-            sc.defineSample(i, "rhot_" + wavelength);
+            sc.defineSample(i, SOURCE_RADIANCE_NAME_PREFIX + wavelength);
         }
 //        sc.defineSample(DEM_ALT_IX, "dem_alt"); // todo
-        sc.defineSample(SUN_ZEN_IX, "solz");
-        sc.defineSample(SUN_AZI_IX, "sola");
-        sc.defineSample(VIEW_ZEN_IX, "senz");
-        sc.defineSample(VIEW_AZI_IX, "sena");
+        sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SOLAR_ZENITH);
+        sc.defineSample(SUN_AZI_IX, RASTER_NAME_SOLAR_AZIMUTH);
+        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEW_ZENITH);
+        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEW_AZIMUTH);
 //        sc.defineSample(ATM_PRESS_IX, "atm_press"); // todo
 //        sc.defineSample(OZONE_IX, "ozone");         // todo
     }
