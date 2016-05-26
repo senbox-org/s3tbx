@@ -1,14 +1,11 @@
 package org.esa.s3tbx.c2rcc.meris;
 
-import org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm;
-import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -19,11 +16,10 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Marco Peters
  */
-@Ignore("not yet ready")
 public class MerisProductSignatureTest {
     private static final String[] EXPECTED_REFLEC_BANDS = {
-            "reflec_" + 412, "reflec_" + 443, "reflec_" + 488, "reflec_" + 531, "reflec_" + 547,
-            "reflec_" + 667, "reflec_" + 678, "reflec_" + 748, "reflec_" + 869};
+            "rwa_" + 412, "rwa_" + 443, "rwa_" + 488, "rwa_" + 531, "rwa_" + 547,
+            "rwa_" + 667, "rwa_" + 678, "rwa_" + 748, "rwa_" + 869};
     private static final String EXPECTED_RTOSA_RATION_MIN = "rtosa_ratio_min";
     private static final String EXPECTED_RTOSA_RATION_MAX = "rtosa_ratio_max";
     private static final String EXPECTED_IOP_APIG = "iop_apig";
@@ -48,7 +44,7 @@ public class MerisProductSignatureTest {
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
 
-        C2rccModisOperator operator = createDefaultOperator();
+        C2rccMerisOperator operator = createDefaultOperator();
 
         Product targetProduct = operator.getTargetProduct();
 
@@ -78,29 +74,31 @@ public class MerisProductSignatureTest {
         }
     }
 
-    private C2rccModisOperator createDefaultOperator() throws FactoryException, TransformException {
-        C2rccModisOperator operator = new C2rccModisOperator();
+    private C2rccMerisOperator createDefaultOperator() throws FactoryException, TransformException {
+        C2rccMerisOperator operator = new C2rccMerisOperator();
         operator.setParameterDefaultValues();
-        operator.setSourceProduct(createModisTestProduct());
+        operator.setSourceProduct(createMerisTestProduct());
         return operator;
     }
 
-    private Product createModisTestProduct() throws FactoryException, TransformException {
+    private Product createMerisTestProduct() throws FactoryException, TransformException {
         Product product = new Product("test-meris", "t", 1, 1);
         for (int i = 1; i <= C2rccMerisOperator.BAND_COUNT; i++) {
             String expression = String.valueOf(i);
-            product.addBand(C2rccMerisOperator.SOURCE_RADIANCE_NAME_PREFIX + i, expression);
+            Band radiance = product.addBand(C2rccMerisOperator.SOURCE_RADIANCE_NAME_PREFIX + i, expression);
+            radiance.setSolarFlux((float) C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX[i-1]);
         }
 
 ////        for (String angleName : C2rccModisOperator.GEOMETRY_ANGLE_NAMES) {
 ////            product.addBand(angleName, "42");
 ////        }
 ////
-////        Band flagBand = product.addBand(C2rccModisOperator.FLAG_BAND_NAME, ProductData.TYPE_INT8);
-////        FlagCoding l2FlagsCoding = new FlagCoding(C2rccModisOperator.FLAG_BAND_NAME);
-//        l2FlagsCoding.addFlag("LAND", 0x01, "");
-//        product.getFlagCodingGroup().add(l2FlagsCoding);
-//        flagBand.setSampleCoding(l2FlagsCoding);
+        product.addBand(C2rccMerisOperator.RASTER_NAME_DEM_ALT, ProductData.TYPE_INT8);
+        Band flagBand = product.addBand(C2rccMerisOperator.RASTER_NAME_L1_FLAGS, ProductData.TYPE_INT8);
+        FlagCoding l1FlagsCoding = new FlagCoding(C2rccMerisOperator.RASTER_NAME_L1_FLAGS);
+//        l1FlagsCoding.addFlag("LAND", 0x01, "");
+        product.getFlagCodingGroup().add(l1FlagsCoding);
+        flagBand.setSampleCoding(l1FlagsCoding);
 
         product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84, 1, 1, 10, 50, 1, 1));
 

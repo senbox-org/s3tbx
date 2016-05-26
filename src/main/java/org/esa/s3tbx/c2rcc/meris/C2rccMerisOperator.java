@@ -157,6 +157,12 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     public static final String[] c2rccNNResourcePaths = new String[10];
     private static final String RASTER_NAME_OZONE = "ozone";
     private static final String RASTER_NAME_ATM_PRESS = "atm_press";
+    public static final String RASTER_NAME_L1_FLAGS = "l1_flags";
+    public static final String RASTER_NAME_DEM_ALT = "dem_alt";
+    public static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
+    public static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
+    public static final String RASTER_NAME_VIEW_ZENITH = "view_zenith";
+    public static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth";
 
     static {
         c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
@@ -530,15 +536,14 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
-//        sc.setValidPixelMask(validPixelExpression);
         for (int i = 0; i < BAND_COUNT; i++) {
-            sc.defineSample(i, "radiance_" + (i + 1));
+            sc.defineSample(i, SOURCE_RADIANCE_NAME_PREFIX + (i + 1));
         }
-        sc.defineSample(DEM_ALT_IX, "dem_alt");
-        sc.defineSample(SUN_ZEN_IX, "sun_zenith");
-        sc.defineSample(SUN_AZI_IX, "sun_azimuth");
-        sc.defineSample(VIEW_ZEN_IX, "view_zenith");
-        sc.defineSample(VIEW_AZI_IX, "view_azimuth");
+        sc.defineSample(DEM_ALT_IX, RASTER_NAME_DEM_ALT);
+        sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH);
+        sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH);
+        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEW_ZENITH);
+        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEW_AZIMUTH);
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
@@ -929,10 +934,10 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        for (int i = 0; i < BAND_COUNT; i++) {
-            assertSourceBand("radiance_" + (i + 1));
+        for (int i = 1; i <= BAND_COUNT; i++) {
+            assertSourceBand(SOURCE_RADIANCE_NAME_PREFIX + i);
         }
-        assertSourceBand("l1_flags");
+        assertSourceBand(RASTER_NAME_L1_FLAGS);
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
