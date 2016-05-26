@@ -40,11 +40,11 @@ import static org.esa.s3tbx.c2rcc.util.TargetProductPreparer.*;
  *
  * @author Norman Fomferra, Sabine Embacher
  */
-@OperatorMetadata(alias = "modis.c2rcc", version = "0.9.5",
-        authors = "Wolfgang Schoenfeld (HZG), Sabine Embacher, Norman Fomferra (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
-        copyright = "Copyright (C) 2015 by Brockmann Consult",
-        description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
+@OperatorMetadata(alias = "modis.c2rcc", version = "0.9.6",
+            authors = "Wolfgang Schoenfeld (HZG), Sabine Embacher, Norman Fomferra (Brockmann Consult)",
+            category = "Optical Processing/Thematic Water Processing",
+            copyright = "Copyright (C) 2015 by Brockmann Consult",
+            description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
 public class C2rccModisOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled

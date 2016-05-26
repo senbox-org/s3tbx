@@ -67,11 +67,11 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "olci.c2rcc", version = "0.9.5",
-        authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
-        copyright = "Copyright (C) 2015 by Brockmann Consult",
-        description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
+@OperatorMetadata(alias = "olci.c2rcc", version = "0.9.6",
+            authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
+            category = "Optical Processing/Thematic Water Processing",
+            copyright = "Copyright (C) 2015 by Brockmann Consult",
+            description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
 public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
