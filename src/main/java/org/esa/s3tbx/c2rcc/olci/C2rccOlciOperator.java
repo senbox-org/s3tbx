@@ -915,7 +915,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
         }
 
-        assertFlagCoding(BAND_NAME_QUALITY_FLAGS);
+        sourceProduct.isCompatibleBandArithmeticExpression(validPixelExpression);
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
