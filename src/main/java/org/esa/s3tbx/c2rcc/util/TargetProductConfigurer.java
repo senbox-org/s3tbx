@@ -154,7 +154,7 @@ public class TargetProductConfigurer {
                     Band reflecBand = addBand(targetProduct, targetBandName, "1", "Angular dependent water leaving reflectances");
                     ProductUtils.copySpectralBandProperties(sourceProduct.getBand(sourceBandName), reflecBand);
                     if (reflecBand.getSpectralWavelength() == 0) {
-                        reflecBand.setSpectralWavelength(SOURCE_WAVELENGTH_MAP.get(sourceBandName));
+                        reflecBand.setSpectralWavelength(fallBackSpectralWavelength);
                         reflecBand.setSpectralBandIndex(i);
                     }
                     reflecBand.setValidPixelExpression(validPixelExpression);
