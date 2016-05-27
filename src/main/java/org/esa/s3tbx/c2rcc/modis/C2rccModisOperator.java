@@ -74,13 +74,13 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     private static final int RTOSA_IN_1_IX = REFLEC_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
 
-    private static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
     private static final String RASTER_NAME_SOLAR_ZENITH = "solz";
     private static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";
     private static final String RASTER_NAME_VIEW_AZIMUTH = "sena";
     private static final String RASTER_NAME_VIEW_ZENITH = "senz";
     static final String[] GEOMETRY_ANGLE_NAMES = {RASTER_NAME_SOLAR_ZENITH, RASTER_NAME_SOLAR_AZIMUTH,
             RASTER_NAME_VIEW_ZENITH, RASTER_NAME_VIEW_AZIMUTH};
+    static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
     static final String RASTER_NAME_L2_FLAGS = "l2_flags";
 
     @SourceProduct(label = "MODIS L1C product",
