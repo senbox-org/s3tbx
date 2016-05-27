@@ -313,7 +313,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
-        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, "rhot_", seawifsWavelengths, outputRtosa);
+        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, seawifsWavelengths, outputRtosa);
     }
 
     @Override
