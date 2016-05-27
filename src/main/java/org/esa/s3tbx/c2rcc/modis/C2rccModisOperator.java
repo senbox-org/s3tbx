@@ -364,7 +364,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
-        prepareTargetProduct(targetProduct, sourceProduct, "rhot_", NN_INPUT_REFLEC_WAVELENGTHS, outputRtosa);
+        prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, NN_INPUT_REFLEC_WAVELENGTHS, outputRtosa);
 
         if (outputAngles) {
             for (String angleName : GEOMETRY_ANGLE_NAMES) {
