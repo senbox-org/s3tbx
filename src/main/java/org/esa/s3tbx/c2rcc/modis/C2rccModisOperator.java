@@ -52,34 +52,33 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     */
 
     // Modis bands
-    public static final int SOURCE_BAND_COUNT = NN_INPUT_REFLEC_WAVELENGTHS.length;
-    public static final int SUN_ZEN_IX = SOURCE_BAND_COUNT;
-    public static final int SUN_AZI_IX = SOURCE_BAND_COUNT + 1;
-    public static final int VIEW_ZEN_IX = SOURCE_BAND_COUNT + 2;
-    public static final int VIEW_AZI_IX = SOURCE_BAND_COUNT + 3;
+    private static final int SOURCE_BAND_COUNT = NN_INPUT_REFLEC_WAVELENGTHS.length;
+    private static final int SUN_ZEN_IX = SOURCE_BAND_COUNT;
+    private static final int SUN_AZI_IX = SOURCE_BAND_COUNT + 1;
+    private static final int VIEW_ZEN_IX = SOURCE_BAND_COUNT + 2;
+    private static final int VIEW_AZI_IX = SOURCE_BAND_COUNT + 3;
 
     // Modis Targets
-    public static final int REFLEC_BAND_COUNT = NN_INPUT_REFLEC_WAVELENGTHS.length;
+    private static final int REFLEC_BAND_COUNT = NN_INPUT_REFLEC_WAVELENGTHS.length;
 
-    public static final int REFLEC_1_IX = 0;
-    public static final int IOP_APIG_IX = REFLEC_BAND_COUNT;
-    public static final int IOP_ADET_IX = REFLEC_BAND_COUNT + 1;
-    public static final int IOP_AGELB_IX = REFLEC_BAND_COUNT + 2;
-    public static final int IOP_BPART_IX = REFLEC_BAND_COUNT + 3;
-    public static final int IOP_BWIT_IX = REFLEC_BAND_COUNT + 4;
+    private static final int IOP_APIG_IX = REFLEC_BAND_COUNT;
+    private static final int IOP_ADET_IX = REFLEC_BAND_COUNT + 1;
+    private static final int IOP_AGELB_IX = REFLEC_BAND_COUNT + 2;
+    private static final int IOP_BPART_IX = REFLEC_BAND_COUNT + 3;
+    private static final int IOP_BWIT_IX = REFLEC_BAND_COUNT + 4;
 
-    public static final int RTOSA_RATIO_MIN_IX = REFLEC_BAND_COUNT + 5;
-    public static final int RTOSA_RATIO_MAX_IX = REFLEC_BAND_COUNT + 6;
-    public static final int L2_FLAGS_IX = REFLEC_BAND_COUNT + 7;
+    private static final int RTOSA_RATIO_MIN_IX = REFLEC_BAND_COUNT + 5;
+    private static final int RTOSA_RATIO_MAX_IX = REFLEC_BAND_COUNT + 6;
+    private static final int L2_FLAGS_IX = REFLEC_BAND_COUNT + 7;
 
-    public static final int RTOSA_IN_1_IX = REFLEC_BAND_COUNT + 8;
-    public static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
+    private static final int RTOSA_IN_1_IX = REFLEC_BAND_COUNT + 8;
+    private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
 
-    public static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
-    static final String RASTER_NAME_SOLAR_ZENITH = "solz";
-    static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";
-    static final String RASTER_NAME_VIEW_AZIMUTH = "sena";
-    static final String RASTER_NAME_VIEW_ZENITH = "senz";
+    private static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
+    private static final String RASTER_NAME_SOLAR_ZENITH = "solz";
+    private static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";
+    private static final String RASTER_NAME_VIEW_AZIMUTH = "sena";
+    private static final String RASTER_NAME_VIEW_ZENITH = "senz";
     static final String[] GEOMETRY_ANGLE_NAMES = {RASTER_NAME_SOLAR_ZENITH, RASTER_NAME_SOLAR_AZIMUTH,
             RASTER_NAME_VIEW_ZENITH, RASTER_NAME_VIEW_AZIMUTH};
     static final String FLAG_BAND_NAME = "l2_flags";
@@ -173,7 +172,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         if (!product.containsBand(RASTER_NAME_SOLAR_AZIMUTH)) {
             return false;
         }
-        if (!product.containsBand("senz")) {
+        if (!product.containsBand(RASTER_NAME_VIEW_ZENITH)) {
             return false;
         }
         if (!product.containsBand(RASTER_NAME_VIEW_AZIMUTH)) {
