@@ -115,8 +115,8 @@ public class ModisProductSignatureTest {
             product.addBand(angleName, "42");
         }
 
-        Band flagBand = product.addBand(C2rccModisOperator.FLAG_BAND_NAME, ProductData.TYPE_INT8);
-        FlagCoding l2FlagsCoding = new FlagCoding(C2rccModisOperator.FLAG_BAND_NAME);
+        Band flagBand = product.addBand(C2rccModisOperator.RASTER_NAME_L2_FLAGS, ProductData.TYPE_INT8);
+        FlagCoding l2FlagsCoding = new FlagCoding(C2rccModisOperator.RASTER_NAME_L2_FLAGS);
         l2FlagsCoding.addFlag("LAND", 0x01, "");
         product.getFlagCodingGroup().add(l2FlagsCoding);
         flagBand.setSampleCoding(l2FlagsCoding);

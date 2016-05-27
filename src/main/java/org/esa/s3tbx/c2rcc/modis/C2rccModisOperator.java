@@ -81,7 +81,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     private static final String RASTER_NAME_VIEW_ZENITH = "senz";
     static final String[] GEOMETRY_ANGLE_NAMES = {RASTER_NAME_SOLAR_ZENITH, RASTER_NAME_SOLAR_AZIMUTH,
             RASTER_NAME_VIEW_ZENITH, RASTER_NAME_VIEW_AZIMUTH};
-    static final String FLAG_BAND_NAME = "l2_flags";
+    static final String RASTER_NAME_L2_FLAGS = "l2_flags";
 
     @SourceProduct(label = "MODIS L1C product",
             description = "MODIS L1C source product.")
@@ -159,11 +159,11 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     public static boolean isValidInput(Product product) {
         for (int wl : NN_INPUT_REFLEC_WAVELENGTHS) {
-            if (!product.containsBand("rhot_" + wl)) {
+            if (!product.containsBand(SOURCE_RADIANCE_NAME_PREFIX + wl)) {
                 return false;
             }
         }
-        if (!product.containsBand("l2_flags")) {
+        if (!product.containsBand(RASTER_NAME_L2_FLAGS)) {
             return false;
         }
         if (!product.containsBand(RASTER_NAME_SOLAR_ZENITH)) {
@@ -378,7 +378,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         for (int wl : NN_INPUT_REFLEC_WAVELENGTHS) {
             assertSourceBand(SOURCE_RADIANCE_NAME_PREFIX + wl);
         }
-        assertSourceBand(FLAG_BAND_NAME);
+        assertSourceBand(RASTER_NAME_L2_FLAGS);
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
