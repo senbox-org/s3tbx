@@ -751,9 +751,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             for (int index : merband12_ix) {
                 final Band band;
                 if (outputAsRrs) {
-                    band = addBand(targetProduct, "rrs_" + index, "sr^-1", "Angular dependent remote sensing reflectances");
+                    band = addBand(targetProduct, "rrs_" + index, "sr^-1", "Atmospherically corrected Angular dependent remote sensing reflectances");
                 } else {
-                    band = addBand(targetProduct, "rhow_" + index, "1", "Angular dependent water leaving reflectances");
+                    band = addBand(targetProduct, "rhow_" + index, "1", "Atmospherically corrected Angular dependent water leaving reflectances");
                 }
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
