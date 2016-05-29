@@ -81,14 +81,13 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     */
 
     // MERIS sources
-    private static final int BAND_COUNT = 15;
+    static final int BAND_COUNT = 15;
     private static final int DEM_ALT_IX = BAND_COUNT;
     private static final int SUN_ZEN_IX = BAND_COUNT + 1;
     private static final int SUN_AZI_IX = BAND_COUNT + 2;
     private static final int VIEW_ZEN_IX = BAND_COUNT + 3;
     private static final int VIEW_AZI_IX = BAND_COUNT + 4;
     private static final int VALID_PIXEL_IX = BAND_COUNT + 5;
-    private static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
 
 
     // MERIS targets
@@ -154,14 +153,15 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     };
 
     private static final String[] c2rccNNResourcePaths = new String[10];
-    private static final String RASTER_NAME_OZONE = "ozone";
-    private static final String RASTER_NAME_ATM_PRESS = "atm_press";
-    private static final String RASTER_NAME_L1_FLAGS = "l1_flags";
-    private static final String RASTER_NAME_DEM_ALT = "dem_alt";
-    private static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
-    private static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
-    private static final String RASTER_NAME_VIEW_ZENITH = "view_zenith";
-    private static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth";
+    static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
+    static final String RASTER_NAME_OZONE = "ozone";
+    static final String RASTER_NAME_ATM_PRESS = "atm_press";
+    static final String RASTER_NAME_L1_FLAGS = "l1_flags";
+    static final String RASTER_NAME_DEM_ALT = "dem_alt";
+    static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
+    static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
+    static final String RASTER_NAME_VIEW_ZENITH = "view_zenith";
+    static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth";
 
     static {
         c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
@@ -338,7 +338,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "true", description =
             "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
             label = "Output reflectances as radiance reflectance")
-    private boolean outputAsRadianceReflectances;
+    private boolean outputAsRrs;
 
 
     private C2rccMerisAlgorithm algorithm;
@@ -410,8 +410,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     }
 
     @Override
-    public void outputAsRrs(boolean asRadianceRefl) {
-        outputAsRadianceReflectances = asRadianceRefl;
+    public void outputAsRrs(boolean asRrs) {
+        outputAsRrs = asRrs;
     }
 
     public void setOutputKd(boolean outputKd) {
