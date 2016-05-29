@@ -70,9 +70,11 @@ public class SeawifsProductSignatureTest {
 
     private void assertMandatoryElements(Product targetProduct) {
         assertBands(targetProduct, EXPECTED_RHOW_BANDS);
+        assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_RHOW_BANDS[3]).getValidPixelExpression());
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MIN);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MAX);
         assertBands(targetProduct, EXPECTED_IOP_APIG);
+        assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_IOP_APIG).getValidPixelExpression());
         assertBands(targetProduct, EXPECTED_IOP_ADET);
         assertBands(targetProduct, EXPECTED_IOP_AGELB);
         assertBands(targetProduct, EXPECTED_IOP_BPART);
@@ -80,6 +82,7 @@ public class SeawifsProductSignatureTest {
         assertBands(targetProduct, EXPECTED_IOP_ADG);
         assertBands(targetProduct, EXPECTED_IOP_ATOT);
         assertBands(targetProduct, EXPECTED_IOP_BTOT);
+        assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_IOP_BTOT).getValidPixelExpression());
         assertBands(targetProduct, EXPECTED_CONC_CHL);
         assertBands(targetProduct, EXPECTED_CONC_TSM);
         assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);

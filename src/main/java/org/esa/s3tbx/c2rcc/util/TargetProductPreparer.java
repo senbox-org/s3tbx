@@ -11,6 +11,8 @@ import java.awt.Color;
 
 public class TargetProductPreparer {
 
+    private static final String C2RCC_FLAGS_VALID_PE = "c2rcc_flags.Valid_PE";
+
     public static void prepareTargetProduct(Product targetProduct, Product sourceProduct, final String prefixSourceBandName, final int[] bandIndexOrWavelengths, boolean outputRtosa) {
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
 
@@ -18,6 +20,7 @@ public class TargetProductPreparer {
             Band reflecBand = targetProduct.addBand("rhow_" + idx_wl, ProductData.TYPE_FLOAT32);
             ProductUtils.copySpectralBandProperties(sourceProduct.getBand(prefixSourceBandName + idx_wl), reflecBand);
             reflecBand.setUnit("1");
+            reflecBand.setValidPixelExpression(C2RCC_FLAGS_VALID_PE);
         }
 
         addBand(targetProduct, "iop_apig", "m^-1", "Pigment absorption coefficient");
@@ -57,10 +60,12 @@ public class TargetProductPreparer {
             for (int idx_wl : bandIndexOrWavelengths) {
                 Band rtosaInBand = addBand(targetProduct, "rtosa_in_" + idx_wl, "1", "Top-of-standard-atmosphere reflectances, input to AC");
                 ProductUtils.copySpectralBandProperties(sourceProduct.getBand(prefixSourceBandName + idx_wl), rtosaInBand);
+                rtosaInBand.setValidPixelExpression(C2RCC_FLAGS_VALID_PE);
             }
             for (int idx_wl : bandIndexOrWavelengths) {
                 Band rtosaOutBand = addBand(targetProduct, "rtosa_out_" + idx_wl, "1", "Top-of-standard-atmosphere reflectances, output from ANN");
                 ProductUtils.copySpectralBandProperties(sourceProduct.getBand(prefixSourceBandName + idx_wl), rtosaOutBand);
+                rtosaOutBand.setValidPixelExpression(C2RCC_FLAGS_VALID_PE);
             }
             targetProduct.setAutoGrouping("rhow:iop:conc:rtosa_in:rtosa_out");
         } else {
@@ -74,6 +79,7 @@ public class TargetProductPreparer {
         targetBand.setDescription(description);
         targetBand.setGeophysicalNoDataValue(Double.NaN);
         targetBand.setNoDataValueUsed(true);
+        targetBand.setValidPixelExpression(C2RCC_FLAGS_VALID_PE);
         return targetBand;
     }
 
@@ -84,5 +90,6 @@ public class TargetProductPreparer {
         band.getSourceImage(); // trigger source image creation
         band.setGeophysicalNoDataValue(Double.NaN);
         band.setNoDataValueUsed(true);
+        band.setValidPixelExpression(C2RCC_FLAGS_VALID_PE);
     }
 }

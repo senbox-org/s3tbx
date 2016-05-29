@@ -84,14 +84,17 @@ public class ModisProductSignatureTest {
 
     private void assertMandatoryElements(Product targetProduct) {
         assertBands(targetProduct, EXPECTED_RHOW_BANDS);
+        assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_RHOW_BANDS[3]).getValidPixelExpression());
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MIN);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MAX);
         assertBands(targetProduct, EXPECTED_IOP_APIG);
+        assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_IOP_APIG).getValidPixelExpression());
         assertBands(targetProduct, EXPECTED_IOP_ADET);
         assertBands(targetProduct, EXPECTED_IOP_AGELB);
         assertBands(targetProduct, EXPECTED_IOP_BPART);
         assertBands(targetProduct, EXPECTED_IOP_BWIT);
         assertBands(targetProduct, EXPECTED_IOP_ADG);
+        assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_IOP_ADG).getValidPixelExpression());
         assertBands(targetProduct, EXPECTED_IOP_ATOT);
         assertBands(targetProduct, EXPECTED_IOP_BTOT);
         assertBands(targetProduct, EXPECTED_CONC_CHL);
