@@ -84,7 +84,7 @@ public class C2rccOperator extends Operator {
                 description = "If not specified a sensor specific default expression will be used.")
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "DU", interval = "(0, 100)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0, 100)")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
@@ -114,8 +114,8 @@ public class C2rccOperator extends Operator {
     private boolean useEcmwfAuxData;
 
     @Parameter(defaultValue = "false", description =
-                "If set to true remote sensing reflectances (radiance reflectance), otherwise water leaving reflectances (irradiance reflectance) are written",
-                label = "Output reflectances as remote sensing reflectance")
+            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+            label = "Output AC reflectances as remote sensing or water leaving reflectances")
     private boolean outputAsRrs;
 
     @Override
@@ -176,7 +176,7 @@ public class C2rccOperator extends Operator {
         c2rConfigOp.setPress(press);
         c2rConfigOp.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
         c2rConfigOp.setOutputRtosa(outputRtosa);
-        c2rConfigOp.setOutputAsRrs(true);
+        c2rConfigOp.setOutputAsRrs(outputAsRrs);
     }
 
 

@@ -55,39 +55,39 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         see https://senbox.atlassian.net/browse/SNAP-395
     */
 
-    public static final int WL_BAND_COUNT = seawifsWavelengths.length;
-    public static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
-    static final String RASTER_NAME_SOLAR_ZENITH = "solz";
-    static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";
-    static final String RASTER_NAME_VIEW_AZIMUTH = "sena";
-    static final String RASTER_NAME_VIEW_ZENITH = "senz";
+    private static final int WL_BAND_COUNT = seawifsWavelengths.length;
+    private static final String RASTER_NAME_SOLAR_ZENITH = "solz";
+    private static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";
+    private static final String RASTER_NAME_VIEW_AZIMUTH = "sena";
+    private static final String RASTER_NAME_VIEW_ZENITH = "senz";
+    static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
     static final String[] GEOMETRY_ANGLE_NAMES = {RASTER_NAME_SOLAR_ZENITH, RASTER_NAME_SOLAR_AZIMUTH,
             RASTER_NAME_VIEW_ZENITH, RASTER_NAME_VIEW_AZIMUTH};
     static final String RASTER_NAME_L2_FLAGS = "l2_flags";
 
     // sources
 //    public static final int DEM_ALT_IX = WL_BAND_COUNT + 0;
-    public static final int SUN_ZEN_IX = WL_BAND_COUNT;
-    public static final int SUN_AZI_IX = WL_BAND_COUNT + 1;
-    public static final int VIEW_ZEN_IX = WL_BAND_COUNT + 2;
-    public static final int VIEW_AZI_IX = WL_BAND_COUNT + 3;
+    private static final int SUN_ZEN_IX = WL_BAND_COUNT;
+    private static final int SUN_AZI_IX = WL_BAND_COUNT + 1;
+    private static final int VIEW_ZEN_IX = WL_BAND_COUNT + 2;
+    private static final int VIEW_AZI_IX = WL_BAND_COUNT + 3;
 //    public static final int ATM_PRESS_IX = WL_BAND_COUNT + 5;
 //    public static final int OZONE_IX = WL_BAND_COUNT + 6;
 
     // targets
-    public static final int REFLEC_1_IX = 0;
-    public static final int IOP_APIG_IX = WL_BAND_COUNT;
-    public static final int IOP_ADET_IX = WL_BAND_COUNT + 1;
-    public static final int IOP_AGELB_IX = WL_BAND_COUNT + 2;
-    public static final int IOP_BPART_IX = WL_BAND_COUNT + 3;
-    public static final int IOP_BWIT_IX = WL_BAND_COUNT + 4;
+    private static final int REFLEC_1_IX = 0;
+    private static final int IOP_APIG_IX = WL_BAND_COUNT;
+    private static final int IOP_ADET_IX = WL_BAND_COUNT + 1;
+    private static final int IOP_AGELB_IX = WL_BAND_COUNT + 2;
+    private static final int IOP_BPART_IX = WL_BAND_COUNT + 3;
+    private static final int IOP_BWIT_IX = WL_BAND_COUNT + 4;
 
-    public static final int RTOSA_RATIO_MIN_IX = WL_BAND_COUNT + 5;
-    public static final int RTOSA_RATIO_MAX_IX = WL_BAND_COUNT + 6;
-    public static final int C2RCC_FLAGS_IX = WL_BAND_COUNT + 7;
+    private static final int RTOSA_RATIO_MIN_IX = WL_BAND_COUNT + 5;
+    private static final int RTOSA_RATIO_MAX_IX = WL_BAND_COUNT + 6;
+    private static final int C2RCC_FLAGS_IX = WL_BAND_COUNT + 7;
 
-    public static final int RTOSA_IN_1_IX = WL_BAND_COUNT + 8;
-    public static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + WL_BAND_COUNT;
+    private static final int RTOSA_IN_1_IX = WL_BAND_COUNT + 8;
+    private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + WL_BAND_COUNT;
 
     @SourceProduct(label = "SeaWiFS L1b product",
                 description = "SeaWiFS L1b source product.")
@@ -151,10 +151,10 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
     private boolean outputRtosa;
 
-    @Parameter(defaultValue = "true", description =
-            "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
-            label = "Output reflectances as radiance reflectance")
-    private boolean outputAsRadianceReflectances;
+    @Parameter(defaultValue = "false", description =
+            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+            label = "Output AC reflectances as remote sensing or water leaving reflectances")
+    private boolean outputAsRrs;
 
 
     private C2rccSeaWiFSAlgorithm algorithm;
@@ -197,7 +197,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
     @Override
     public void setOutputAsRrs(boolean asRadianceRefl) {
-        outputAsRadianceReflectances = asRadianceRefl;
+        outputAsRrs = asRadianceRefl;
     }
 
 
@@ -232,7 +232,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         );
 
         for (int i = 0; i < result.rw.length; i++) {
-            targetSamples[i].set(result.rw[i]);
+            targetSamples[i].set(outputAsRrs ? result.rw[i] * Math.PI : result.rw[i]);
         }
 
         for (int i = 0; i < result.iops.length; i++) {
@@ -274,7 +274,11 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
         for (int i = 0; i < seawifsWavelengths.length; i++) {
             int wl = seawifsWavelengths[i];
-            sc.defineSample(REFLEC_1_IX + i, "rhow_" + wl);
+            if (outputAsRrs) {
+                sc.defineSample(REFLEC_1_IX + i, "rrs_" + wl);
+            }else {
+                sc.defineSample(REFLEC_1_IX + i, "rhow_" + wl);
+            }
         }
 
         sc.defineSample(IOP_APIG_IX, "iop_apig");
@@ -303,7 +307,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
-        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, seawifsWavelengths, outputRtosa);
+        TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, seawifsWavelengths,
+                                                   outputRtosa, outputAsRrs);
     }
 
     @Override

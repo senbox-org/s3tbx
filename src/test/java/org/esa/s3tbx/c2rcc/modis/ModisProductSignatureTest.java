@@ -3,7 +3,6 @@ package org.esa.s3tbx.c2rcc.modis;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -23,6 +22,9 @@ public class ModisProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_" + 412, "rhow_" + 443, "rhow_" + 488, "rhow_" + 531, "rhow_" + 547,
             "rhow_" + 667, "rhow_" + 678, "rhow_" + 748, "rhow_" + 869};
+    private static final String[] EXPECTED_RRS_BANDS = {
+            "rrs_" + 412, "rrs_" + 443, "rrs_" + 488, "rrs_" + 531, "rrs_" + 547,
+            "rrs_" + 667, "rrs_" + 678, "rrs_" + 748, "rrs_" + 869};
     private static final String EXPECTED_RTOSA_RATION_MIN = "rtosa_ratio_min";
     private static final String EXPECTED_RTOSA_RATION_MAX = "rtosa_ratio_max";
     private static final String EXPECTED_IOP_APIG = "iop_apig";
@@ -56,7 +58,17 @@ public class ModisProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertMandatoryElements(targetProduct);
+        assertMandatoryElements(targetProduct, false);
+    }
+
+    @Test
+    public void testProductSignature_Default_AsRrs() throws FactoryException, TransformException {
+
+        C2rccModisOperator operator = createDefaultOperator();
+        operator.setOutputAsRrs(true);
+        Product targetProduct = operator.getTargetProduct();
+
+        assertMandatoryElements(targetProduct, true);
     }
 
     @Test
@@ -66,7 +78,7 @@ public class ModisProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertMandatoryElements(targetProduct);
+        assertMandatoryElements(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RTOSA_IN_BANDS);
         assertBands(targetProduct, EXPECTED_RTOSA_OUT_BANDS);
     }
@@ -78,13 +90,18 @@ public class ModisProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertMandatoryElements(targetProduct);
+        assertMandatoryElements(targetProduct, false);
         assertBands(targetProduct, EXPECTED_GEOMETRY_ANGLES);
     }
 
-    private void assertMandatoryElements(Product targetProduct) {
-        assertBands(targetProduct, EXPECTED_RHOW_BANDS);
-        assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_RHOW_BANDS[3]).getValidPixelExpression());
+    private void assertMandatoryElements(Product targetProduct, boolean asRrs) {
+        if (asRrs) {
+            assertBands(targetProduct, EXPECTED_RRS_BANDS);
+            assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_RRS_BANDS[3]).getValidPixelExpression());
+        } else {
+            assertBands(targetProduct, EXPECTED_RHOW_BANDS);
+            assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_RHOW_BANDS[3]).getValidPixelExpression());
+        }
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MIN);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MAX);
         assertBands(targetProduct, EXPECTED_IOP_APIG);

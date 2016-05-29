@@ -22,6 +22,9 @@ public class SeawifsProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_" + 412, "rhow_" + 443, "rhow_" + 490, "rhow_" + 510, "rhow_" + 555,
             "rhow_" + 670, "rhow_" + 765, "rhow_" + 865};
+    private static final String[] EXPECTED_RRS_BANDS = {
+            "rrs_" + 412, "rrs_" + 443, "rrs_" + 490, "rrs_" + 510, "rrs_" + 555,
+            "rrs_" + 670, "rrs_" + 765, "rrs_" + 865};
     private static final String EXPECTED_RTOSA_RATION_MIN = "rtosa_ratio_min";
     private static final String EXPECTED_RTOSA_RATION_MAX = "rtosa_ratio_max";
     private static final String EXPECTED_IOP_APIG = "iop_apig";
@@ -53,7 +56,17 @@ public class SeawifsProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertMandatoryElements(targetProduct);
+        assertMandatoryElements(targetProduct, false);
+    }
+
+    @Test
+    public void testProductSignature_Default_AsRrs() throws FactoryException, TransformException {
+
+        C2rccSeaWiFSOperator operator = createDefaultOperator();
+        operator.setOutputAsRrs(true);
+        Product targetProduct = operator.getTargetProduct();
+
+        assertMandatoryElements(targetProduct, true);
     }
 
     @Test
@@ -63,14 +76,19 @@ public class SeawifsProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertMandatoryElements(targetProduct);
+        assertMandatoryElements(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RTOSA_IN_BANDS);
         assertBands(targetProduct, EXPECTED_RTOSA_OUT_BANDS);
     }
 
-    private void assertMandatoryElements(Product targetProduct) {
-        assertBands(targetProduct, EXPECTED_RHOW_BANDS);
-        assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_RHOW_BANDS[3]).getValidPixelExpression());
+    private void assertMandatoryElements(Product targetProduct, boolean asRrs) {
+        if (asRrs) {
+            assertBands(targetProduct, EXPECTED_RRS_BANDS);
+            assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_RRS_BANDS[3]).getValidPixelExpression());
+        } else {
+            assertBands(targetProduct, EXPECTED_RHOW_BANDS);
+            assertEquals("c2rcc_flags.Valid_PE", targetProduct.getBand(EXPECTED_RHOW_BANDS[3]).getValidPixelExpression());
+        }
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MIN);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MAX);
         assertBands(targetProduct, EXPECTED_IOP_APIG);

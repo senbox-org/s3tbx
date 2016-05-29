@@ -27,7 +27,7 @@ public class C2rccOperatorTest {
         Product target = operator.getTargetProduct();
 
         assertNotNull(target);
-        assertEquals(412.691f, target.getBand("rwa_1").getSpectralWavelength(), 1.0e-6f);
+        assertEquals(412.691f, target.getBand("rhow_1").getSpectralWavelength(), 1.0e-6f);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class C2rccOperatorTest {
         Product target = operator.getTargetProduct();
 
         assertNotNull(target);
-        assertEquals(412.691f, target.getBand("rwa_1").getSpectralWavelength(), 1.0e-6f);
+        assertEquals(412.691f, target.getBand("rhow_1").getSpectralWavelength(), 1.0e-6f);
 
     }
 

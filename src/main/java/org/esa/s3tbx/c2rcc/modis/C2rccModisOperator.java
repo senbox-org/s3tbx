@@ -146,9 +146,9 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
     private boolean outputRtosa;
 
-    @Parameter(defaultValue = "true", description =
-            "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
-            label = "Output reflectances as radiance reflectance")
+    @Parameter(defaultValue = "false", description =
+            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+            label = "Output AC reflectances as remote sensing or water leaving reflectances")
     private boolean outputAsRrs;
 
     @Parameter(defaultValue = "false", label = "Output the input angle bands sena, senz, sola and solz")
@@ -280,7 +280,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         );
 
         for (int i = 0; i < result.rw.length; i++) {
-            targetSamples[i].set(result.rw[i]);
+            targetSamples[i].set(outputAsRrs ? result.rw[i] * Math.PI : result.rw[i]);
         }
 
         for (int i = 0; i < result.iops.length; i++) {
@@ -325,8 +325,13 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Override
     protected void configureTargetSamples(TargetSampleConfigurer sc) throws OperatorException {
         for (int i = 0; i < NN_INPUT_REFLEC_WAVELENGTHS.length; i++) {
-            sc.defineSample(i, "rhow_" + NN_INPUT_REFLEC_WAVELENGTHS[i]);
+            if (outputAsRrs) {
+                sc.defineSample(i, "rrs_" + NN_INPUT_REFLEC_WAVELENGTHS[i]);
+            }else {
+                sc.defineSample(i, "rhow_" + NN_INPUT_REFLEC_WAVELENGTHS[i]);
+            }
         }
+
         sc.defineSample(IOP_APIG_IX, "iop_apig");
         sc.defineSample(IOP_ADET_IX, "iop_adet");
         sc.defineSample(IOP_AGELB_IX, "iop_agelb");
@@ -363,7 +368,8 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
-        prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, NN_INPUT_REFLEC_WAVELENGTHS, outputRtosa);
+        prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, NN_INPUT_REFLEC_WAVELENGTHS,
+                             outputRtosa, outputAsRrs);
 
         if (outputAngles) {
             for (String angleName : GEOMETRY_ANGLE_NAMES) {

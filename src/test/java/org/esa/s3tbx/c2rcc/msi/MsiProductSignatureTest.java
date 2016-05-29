@@ -18,9 +18,12 @@ import static org.junit.Assert.assertTrue;
  * @author Marco Peters
  */
 public class MsiProductSignatureTest {
-    private static final String[] EXPECTED_REFLEC_BANDS = {
+    private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_B" + 1, "rhow_B" + 2, "rhow_B" + 3, "rhow_B" + 4, "rhow_B" + 5,
             "rhow_B" + 6, "rhow_B" + 7, "rhow_B" + 8 + "A"};
+    private static final String[] EXPECTED_RRS_BANDS = {
+            "rrs_B" + 1, "rrs_B" + 2, "rrs_B" + 3, "rrs_B" + 4, "rrs_B" + 5,
+            "rrs_B" + 6, "rrs_B" + 7, "rrs_B" + 8 + "A"};
     private static final String[] EXPECTED_NORM_REFLEC_BANDS = {
             "rhown_B" + 1, "rhown_B" + 2, "rhown_B" + 3, "rhown_B" + 4, "rhown_B" + 5,
             "rhown_B" + 6, "rhown_B" + 7, "rhown_B" + 8 + "A"};
@@ -35,7 +38,9 @@ public class MsiProductSignatureTest {
     private static final String EXPECTED_CONC_CHL = "conc_chl";
     private static final String EXPECTED_CONC_TSM = "conc_tsm";
     private static final String[] EXPECTED_KD_BANDS = {"kd489", "kdmin", "kd_z90max"};
-    private static final String[] EXPECTED_OOS_BANDS = {"oos_rtosa", "oos_rhow"};
+    private static final String EXPECTED_OOS_RTOSA = "oos_rtosa";
+    private static final String EXPECTED_OOS_RHOW ="oos_rhow";
+    private static final String EXPECTED_OOS_RRS = "oos_rrs";
     private static final String[] EXPECTED_IOP_UNC_BANDS = {
             "unc_apig", "unc_adet", "unc_agelb", "unc_bpart",
             "unc_bwit", "unc_adg", "unc_atot", "unc_btot"};
@@ -69,14 +74,28 @@ public class MsiProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct);
+        assertDefaultBands(targetProduct, false);
+    }
+
+    @Test
+    public void testProductSignature_Default_AsRrs() throws FactoryException, TransformException {
+
+        C2rccMsiOperator operator = createDefaultOperator();
+        operator.setOutputAsRrs(true);
+        operator.setOutputOos(true);
+        Product targetProduct = operator.getTargetProduct();
+
+        assertDefaultBands(targetProduct, true);
+        assertBands(targetProduct, EXPECTED_OOS_RTOSA);
+        assertBands(targetProduct, EXPECTED_OOS_RRS);
+
     }
 
     @Test
     public void testProductSignature_OnlyMandatory() throws FactoryException, TransformException {
 
         C2rccMsiOperator operator = createDefaultOperator();
-        operator.setOutputRhow(false);
+        operator.setOutputAcReflectance(false);
         operator.setOutputRhown(false);
         operator.setOutputKd(false);
         Product targetProduct = operator.getTargetProduct();
@@ -93,7 +112,7 @@ public class MsiProductSignatureTest {
         operator.setOutputRtosaGcAann(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct);
+        assertDefaultBands(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RTOSA_GC_BANDS);
         assertBands(targetProduct, EXPECTED_RTOSA_GCAANN_BANDS);
     }
@@ -105,7 +124,7 @@ public class MsiProductSignatureTest {
         operator.setOutputRtoa(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct);
+        assertDefaultBands(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RTOA_BANDS);
     }
 
@@ -119,11 +138,12 @@ public class MsiProductSignatureTest {
         operator.setOutputOos(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct);
+        assertDefaultBands(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RPATH_BANDS);
         assertBands(targetProduct, EXPECTED_TDOWN_BANDS);
         assertBands(targetProduct, EXPECTED_TUP_BANDS);
-        assertBands(targetProduct, EXPECTED_OOS_BANDS);
+        assertBands(targetProduct, EXPECTED_OOS_RTOSA);
+        assertBands(targetProduct, EXPECTED_OOS_RHOW);
     }
 
     @Test
@@ -133,7 +153,7 @@ public class MsiProductSignatureTest {
         operator.setOutputUncertainties(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct);
+        assertDefaultBands(targetProduct, false);
         assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
     }
 
@@ -145,15 +165,19 @@ public class MsiProductSignatureTest {
         operator.setOutputKd(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct);
+        assertDefaultBands(targetProduct, false);
         assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_UNC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_BANDS);
     }
 
-    private void assertDefaultBands(Product targetProduct) {
+    private void assertDefaultBands(Product targetProduct, boolean asRrs) {
         assertMandatoryBands(targetProduct);
-        assertBands(targetProduct, EXPECTED_REFLEC_BANDS);
+        if(asRrs) {
+            assertBands(targetProduct, EXPECTED_RRS_BANDS);
+        }else {
+            assertBands(targetProduct, EXPECTED_RHOW_BANDS);
+        }
         assertBands(targetProduct, EXPECTED_NORM_REFLEC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_BANDS);
     }

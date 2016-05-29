@@ -13,13 +13,24 @@ public class TargetProductPreparer {
 
     private static final String C2RCC_FLAGS_VALID_PE = "c2rcc_flags.Valid_PE";
 
-    public static void prepareTargetProduct(Product targetProduct, Product sourceProduct, final String prefixSourceBandName, final int[] bandIndexOrWavelengths, boolean outputRtosa) {
+    public static void prepareTargetProduct(Product targetProduct, Product sourceProduct,
+                                            String prefixSourceBandName, int[] bandIndexOrWavelengths, boolean outputRtosa, boolean asRrs) {
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
+        String acReflecPrefix;
+        if (asRrs) {
+            acReflecPrefix = "rrs";
+        } else {
+            acReflecPrefix = "rhow";
+        }
 
         for (int idx_wl : bandIndexOrWavelengths) {
-            Band reflecBand = targetProduct.addBand("rhow_" + idx_wl, ProductData.TYPE_FLOAT32);
+            Band reflecBand;
+            if (asRrs) {
+                reflecBand = addBand(targetProduct, acReflecPrefix + "_" + idx_wl, "sr^-1", "Atmospherically corrected Angular dependent remote sensing reflectances");
+            } else {
+                reflecBand = addBand(targetProduct, acReflecPrefix + "_" + idx_wl, "1", "Atmospherically corrected Angular dependent water leaving reflectances");
+            }
             ProductUtils.copySpectralBandProperties(sourceProduct.getBand(prefixSourceBandName + idx_wl), reflecBand);
-            reflecBand.setUnit("1");
             reflecBand.setValidPixelExpression(C2RCC_FLAGS_VALID_PE);
         }
 
@@ -67,9 +78,9 @@ public class TargetProductPreparer {
                 ProductUtils.copySpectralBandProperties(sourceProduct.getBand(prefixSourceBandName + idx_wl), rtosaOutBand);
                 rtosaOutBand.setValidPixelExpression(C2RCC_FLAGS_VALID_PE);
             }
-            targetProduct.setAutoGrouping("rhow:iop:conc:rtosa_in:rtosa_out");
+            targetProduct.setAutoGrouping(acReflecPrefix + ":iop:conc:rtosa_in:rtosa_out");
         } else {
-            targetProduct.setAutoGrouping("rhow:iop:conc");
+            targetProduct.setAutoGrouping(acReflecPrefix + ":iop:conc");
         }
     }
 

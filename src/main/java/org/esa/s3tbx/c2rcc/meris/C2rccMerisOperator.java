@@ -268,9 +268,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
-    @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for water leaving reflectances",
-            label = "Threshold rhow OOS")
-    private double thresholdRhowOos;
+    @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances",
+            label = "Threshold AC reflecteances OOS")
+    private double thresholdAcReflecOos;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
@@ -320,7 +320,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "false", label = "Output upward transmittance")
     private boolean outputTup;
 
-    @Parameter(defaultValue = "true", label = "Output angular dependent water leaving reflectances")
+    @Parameter(defaultValue = "true", label = "Output atmospherically corrected angular dependent reflectances")
     private boolean outputAcReflectance;
 
     @Parameter(defaultValue = "true", label = "Output normalized water leaving reflectances")
@@ -758,7 +758,11 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
-            autoGrouping.append(":rhow");
+            if (outputAsRrs) {
+                autoGrouping.append(":rrs");
+            }else {
+                autoGrouping.append(":rhow");
+            }
         }
 
         if (outputRhown) {
@@ -1019,7 +1023,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
-        algorithm.setThresh_rwlogslope(thresholdRhowOos);
+        algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
 
         algorithm.setOutputRtosaGcAann(outputRtosaGcAann);
         algorithm.setOutputRpath(outputRpath);
