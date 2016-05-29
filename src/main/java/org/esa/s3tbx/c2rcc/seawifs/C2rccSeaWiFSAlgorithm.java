@@ -28,10 +28,6 @@ import static org.esa.s3tbx.ArrayMath.a_min;
  */
 public class C2rccSeaWiFSAlgorithm {
 
-    public final static double salinity_default = 35.0;
-    public final static double temperature_default = 15.0;
-    public final static double pressure_default = 1000.0;
-    public final static double ozone_default = 330.0;
     private Thread thread;
 
     /**
@@ -60,7 +56,7 @@ public class C2rccSeaWiFSAlgorithm {
 
     // gas absorption constants for Seawifs channels
     // http://oceancolor.gsfc.nasa.gov/SeaWiFS/TECH_REPORTS/PreLPDF/PreLVol9.pdf
-    static final double[] absorb_ozon = {
+    private static final double[] absorb_ozon = {
                 0.0,      // 412nm
                 0.0027,   // 443nm
                 0.0205,   // 490nm
@@ -73,8 +69,8 @@ public class C2rccSeaWiFSAlgorithm {
 
     static final int[] seawifsWavelengths = {412, 443, 490, 510, 555, 670, 765, 865};
 
-    double salinity = salinity_default;
-    double temperature = temperature_default;
+    private double salinity = 35.0;
+    private double temperature = 15.0;
 
     // (5) thresholds for flags
     double[] thresh_rtosaaaNNrat = {0.95, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
