@@ -84,16 +84,16 @@ public class C2rccOperator extends Operator {
                 description = "If not specified a sensor specific default expression will be used.")
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0, 100)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.1, 43)")
     private double salinity;
 
-    @Parameter(defaultValue = "15.0", unit = "C", interval = "(-50, 50)")
+    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.1, 36)")
     private double temperature;
 
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
     private double ozone;
 
-    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(0, 2000)", label = "Air Pressure")
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure")
     private double press;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
