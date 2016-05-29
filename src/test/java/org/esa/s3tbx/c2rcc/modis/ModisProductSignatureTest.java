@@ -29,6 +29,7 @@ public class ModisProductSignatureTest {
     private static final String EXPECTED_IOP_BWIT = "iop_bwit";
     private static final String EXPECTED_IOP_ADG = "iop_adg";
     private static final String EXPECTED_IOP_ATOT = "iop_atot";
+    private static final String EXPECTED_IOP_BTOT = "iop_btot";
     private static final String EXPECTED_CONC_CHL = "conc_chl";
     private static final String EXPECTED_CONC_TSM = "conc_tsm";
     private static final String[] EXPECTED_RTOSA_IN_BANDS = {
@@ -86,6 +87,7 @@ public class ModisProductSignatureTest {
         assertBands(targetProduct, EXPECTED_IOP_BWIT);
         assertBands(targetProduct, EXPECTED_IOP_ADG);
         assertBands(targetProduct, EXPECTED_IOP_ATOT);
+        assertBands(targetProduct, EXPECTED_IOP_BTOT);
         assertBands(targetProduct, EXPECTED_CONC_CHL);
         assertBands(targetProduct, EXPECTED_CONC_TSM);
         assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);
