@@ -81,67 +81,66 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     */
 
     // MERIS sources
-    public static final int BAND_COUNT = 15;
-    public static final int DEM_ALT_IX = BAND_COUNT;
-    public static final int SUN_ZEN_IX = BAND_COUNT + 1;
-    public static final int SUN_AZI_IX = BAND_COUNT + 2;
-    public static final int VIEW_ZEN_IX = BAND_COUNT + 3;
-    public static final int VIEW_AZI_IX = BAND_COUNT + 4;
-    public static final int VALID_PIXEL_IX = BAND_COUNT + 5;
-    public static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
+    private static final int BAND_COUNT = 15;
+    private static final int DEM_ALT_IX = BAND_COUNT;
+    private static final int SUN_ZEN_IX = BAND_COUNT + 1;
+    private static final int SUN_AZI_IX = BAND_COUNT + 2;
+    private static final int VIEW_ZEN_IX = BAND_COUNT + 3;
+    private static final int VIEW_AZI_IX = BAND_COUNT + 4;
+    private static final int VALID_PIXEL_IX = BAND_COUNT + 5;
+    private static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
 
 
     // MERIS targets
 
-    public static final int BC_12 = merband12_ix.length; // Band count 12
-    public static final int BC_15 = merband15_ix.length; // Band count 15
-    public static final int SINGLE_IX = BC_15 + 7 * BC_12;
+    private static final int BC_12 = merband12_ix.length; // Band count 12
+    private static final int BC_15 = merband15_ix.length; // Band count 15
+    private static final int SINGLE_IX = BC_15 + 7 * BC_12;
 
-    public static final int RTOA_IX = 0;
-    public static final int RTOSA_IX = BC_15;
-    public static final int RTOSA_AANN_IX = BC_15 + BC_12;
-    public static final int RPATH_IX = BC_15 + 2 * BC_12;
-    public static final int TDOWN_IX = BC_15 + 3 * BC_12;
-    public static final int TUP_IX = BC_15 + 4 * BC_12;
-    public static final int RHOW_IX = BC_15 + 5 * BC_12;
-    public static final int RHOWN_IX = BC_15 + 6 * BC_12;
+    private static final int RTOA_IX = 0;
+    private static final int RTOSA_IX = BC_15;
+    private static final int RTOSA_AANN_IX = BC_15 + BC_12;
+    private static final int RPATH_IX = BC_15 + 2 * BC_12;
+    private static final int TDOWN_IX = BC_15 + 3 * BC_12;
+    private static final int TUP_IX = BC_15 + 4 * BC_12;
+    private static final int RHOW_IX = BC_15 + 5 * BC_12;
+    private static final int RHOWN_IX = BC_15 + 6 * BC_12;
 
-    public static final int OOS_RTOSA_IX = SINGLE_IX;
-    public static final int OOS_RHOW_IX = SINGLE_IX + 1;
+    private static final int OOS_RTOSA_IX = SINGLE_IX;
+    private static final int OOS_RHOW_IX = SINGLE_IX + 1;
 
-    public static final int IOP_APIG_IX = SINGLE_IX + 2;
-    public static final int IOP_ADET_IX = SINGLE_IX + 3;
-    public static final int IOP_AGELB_IX = SINGLE_IX + 4;
-    public static final int IOP_BPART_IX = SINGLE_IX + 5;
-    public static final int IOP_BWIT_IX = SINGLE_IX + 6;
+    private static final int IOP_APIG_IX = SINGLE_IX + 2;
+    private static final int IOP_ADET_IX = SINGLE_IX + 3;
+    private static final int IOP_AGELB_IX = SINGLE_IX + 4;
+    private static final int IOP_BPART_IX = SINGLE_IX + 5;
+    private static final int IOP_BWIT_IX = SINGLE_IX + 6;
 
     //    public static final int IOP_ADG_IX = SINGLE_IX + 7;  // virtual band
 //    public static final int IOP_ATOT_IX = SINGLE_IX + 8;  // virtual band
 //    public static final int IOP_BTOT_IX = SINGLE_IX + 9;  // virtual band
-    public static final int KD489_IX = SINGLE_IX + 7;
-    public static final int KDMIN_IX = SINGLE_IX + 8;
+    private static final int KD489_IX = SINGLE_IX + 7;
+    private static final int KDMIN_IX = SINGLE_IX + 8;
 //    public static final int KD_Z90MAX_IX = SINGLE_IX + 12;  // virtual band
 //    public static final int CONC_CHL_IX = SINGLE_IX + 13;  // virtual band
 //    public static final int CONC_TSM_IX = SINGLE_IX + 14;  // virtual band
 
-    public static final int UNC_APIG_IX = SINGLE_IX + 9;
-    public static final int UNC_ADET_IX = SINGLE_IX + 10;
-    public static final int UNC_AGELB_IX = SINGLE_IX + 11;
-    public static final int UNC_BPART_IX = SINGLE_IX + 12;
-    public static final int UNC_BWIT_IX = SINGLE_IX + 13;
-    public static final int UNC_ADG_IX = SINGLE_IX + 14;
-    public static final int UNC_ATOT_IX = SINGLE_IX + 15;
-    public static final int UNC_BTOT_IX = SINGLE_IX + 16;
+    private static final int UNC_APIG_IX = SINGLE_IX + 9;
+    private static final int UNC_ADET_IX = SINGLE_IX + 10;
+    private static final int UNC_AGELB_IX = SINGLE_IX + 11;
+    private static final int UNC_BPART_IX = SINGLE_IX + 12;
+    private static final int UNC_BWIT_IX = SINGLE_IX + 13;
+    private static final int UNC_ADG_IX = SINGLE_IX + 14;
+    private static final int UNC_ATOT_IX = SINGLE_IX + 15;
+    private static final int UNC_BTOT_IX = SINGLE_IX + 16;
     //    public static final int UNC_TSM_IX = SINGLE_IX + 24;  // virtual band
 //    public static final int UNC_CHL_IX = SINGLE_IX + 23;  // virtual band
-    public static final int UNC_KD489_IX = SINGLE_IX + 17;
-    public static final int UNC_KDMIN_IX = SINGLE_IX + 18;
+    private static final int UNC_KD489_IX = SINGLE_IX + 17;
+    private static final int UNC_KDMIN_IX = SINGLE_IX + 18;
 //    public static final int UNC_Z90MAX_IX = SINGLE_IX + 27;  // virtual band
 
-    public static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
+    private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
-
-    public static final String[] alternativeNetDirNames = new String[]{
+    private static final String[] alternativeNetDirNames = new String[]{
             "rtosa_aann",
             "rtosa_rw",
             "rw_iop",
@@ -154,15 +153,15 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             "rtosa_rpath"
     };
 
-    public static final String[] c2rccNNResourcePaths = new String[10];
+    private static final String[] c2rccNNResourcePaths = new String[10];
     private static final String RASTER_NAME_OZONE = "ozone";
     private static final String RASTER_NAME_ATM_PRESS = "atm_press";
-    public static final String RASTER_NAME_L1_FLAGS = "l1_flags";
-    public static final String RASTER_NAME_DEM_ALT = "dem_alt";
-    public static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
-    public static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
-    public static final String RASTER_NAME_VIEW_ZENITH = "view_zenith";
-    public static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth";
+    private static final String RASTER_NAME_L1_FLAGS = "l1_flags";
+    private static final String RASTER_NAME_DEM_ALT = "dem_alt";
+    private static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
+    private static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
+    private static final String RASTER_NAME_VIEW_ZENITH = "view_zenith";
+    private static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth";
 
     static {
         c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
