@@ -17,11 +17,6 @@ import static org.esa.s3tbx.ArrayMath.*;
  */
 public class C2rccModisAlgorithm {
 
-    public final static double salinity_default = 35.0;
-    public final static double temperature_default = 15.0;
-    public final static double pressure_default = 1000.0;
-    public final static double ozone_default = 330.0;
-
     // input for rtoa_rw_modis_nn3/33x73x53x33_508087.3.net
     public final static int[] NN_INPUT_REFLEC_WAVELENGTHS = new int[]{
                 412,
@@ -92,8 +87,8 @@ public class C2rccModisAlgorithm {
                 1.936E-03  // k_oz(9) =   Lambda(9) = 869
     };
 
-    private double salinity = salinity_default;
-    private double temperature = temperature_default;
+    private double salinity = 35.0;
+    private double temperature = 15.0;
 
     // (5) thresholds for flags
     double[] thresh_rtosaaaNNrat = {0.95, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
