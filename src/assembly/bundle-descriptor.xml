@@ -1,12 +1,12 @@
 <bundleDescriptor>
     <bundleName>c2rcc</bundleName>
-    <bundleVersion>0.9.1</bundleVersion>
+    <bundleVersion>0.9.6</bundleVersion>
 
     <processorDescriptors>
         <processorDescriptor>
             <executableName>c2rcc-ncep</executableName>
             <processorName>Case 2R/CoastColour Processor with NCEP</processorName>
-            <processorVersion>0.9.1</processorVersion>
+            <processorVersion>0.9.6</processorVersion>
             <descriptionHtml>
                 <![CDATA[<p>Performs atmospheric correction and IOP retrieval on MERIS, MODIS L1C, SeaWiFS L1C data products using
                  an neural-network approach.</p>]]>
@@ -26,7 +26,7 @@
                 <parameterDescriptor>
                     <name>salinity</name>
                     <type>string</type>
-                    <description>DU (0, 100)</description>
+                    <description>PSU (0, 100)</description>
                     <defaultValue>35.0</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
@@ -54,7 +54,7 @@
         <processorDescriptor>
             <executableName>meris.c2rcc</executableName>
             <processorName>Case 2R/CoastColour Processor for MERIS</processorName>
-            <processorVersion>0.9.1</processorVersion>
+            <processorVersion>0.9.6</processorVersion>
             <descriptionHtml>
                 <![CDATA[<p>Performs atmospheric correction and IOP retrieval on MERIS products using
                  an neural-network approach.</p>]]>
@@ -74,7 +74,7 @@
                 <parameterDescriptor>
                     <name>salinity</name>
                     <type>float</type>
-                    <description>interval: 0 ... 100  ,  unit: DU</description>
+                    <description>interval: 0 ... 100  ,  unit: PSU</description>
                     <defaultValue>35.0</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
@@ -126,9 +126,9 @@
                     <defaultValue>0.05</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
-                    <name>thresholdRwaOos</name>
+                    <name>thresholdAcReflecOos</name>
                     <type>float</type>
-                    <description>Threshold rwa OOS. Threshold for out of scope of nn training dataset flag for water leaving reflectances.</description>
+                    <description>TThreshold for out of scope of nn training dataset flag for atmospherically corrected reflectances.</description>
                     <defaultValue>0.1</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
@@ -151,7 +151,7 @@
                     <defaultValue>false</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
-                    <name>outputRtoaGc</name>
+                    <name>outputRtosaGc</name>
                     <type>boolean</type>
                     <description>Output gas corrected top-of-atmosphere (TOSA) reflectances.</description>
                     <defaultValue>false</defaultValue>
@@ -208,6 +208,12 @@
                     <name>outputUncertainties</name>
                     <type>boolean</type>
                     <description>Output uncertainties.</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputAsRrs</name>
+                    <type>boolean</type>
+                    <description>Output AC reflectances as remote sensing or water leaving reflectances</description>
                     <defaultValue>false</defaultValue>
                 </parameterDescriptor>
             </parameterDescriptors>
