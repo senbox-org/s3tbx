@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -40,6 +42,8 @@ public class SeawifsProductSignatureTest {
             "rtosa_out_" + 670, "rtosa_out_" + 765, "rtosa_out_" + 865};
 
     private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
+    private static final String EXPECTED_VALID_PE_FLAG = "Valid_PE";
+    private static final int EXPECTED_VPE_MASK = 0x080000;
     private static final String EXPECTED_L2_FLAGS = "l2_flags";
 
     @Test
@@ -49,7 +53,7 @@ public class SeawifsProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct);
+        assertMandatoryElements(targetProduct);
     }
 
     @Test
@@ -59,12 +63,12 @@ public class SeawifsProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct);
+        assertMandatoryElements(targetProduct);
         assertBands(targetProduct, EXPECTED_RTOSA_IN_BANDS);
         assertBands(targetProduct, EXPECTED_RTOSA_OUT_BANDS);
     }
 
-    private void assertDefaultBands(Product targetProduct) {
+    private void assertMandatoryElements(Product targetProduct) {
         assertBands(targetProduct, EXPECTED_RHOW_BANDS);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MIN);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MAX);
@@ -80,6 +84,9 @@ public class SeawifsProductSignatureTest {
         assertBands(targetProduct, EXPECTED_CONC_TSM);
         assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);
         assertBands(targetProduct, EXPECTED_L2_FLAGS);
+        FlagCoding flagCoding = targetProduct.getFlagCodingGroup().get(EXPECTED_C2RCC_FLAGS);
+        assertNotNull(flagCoding.getFlag(EXPECTED_VALID_PE_FLAG));
+        assertEquals(EXPECTED_VPE_MASK, flagCoding.getFlagMask(EXPECTED_VALID_PE_FLAG));
     }
 
     private void assertBands(Product targetProduct, String... expectedBands) {
