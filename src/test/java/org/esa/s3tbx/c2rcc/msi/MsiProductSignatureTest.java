@@ -60,7 +60,7 @@ public class MsiProductSignatureTest {
             "tup_B" + 1, "tup_B" + 2, "tup_B" + 3, "tup_B" + 4, "tup_B" + 5,
             "tup_B" + 6, "tup_B" + 7, "tup_B" + 8 + "A"};
 
-    private static final String EXPECTED_L2_FLAGS = "l2_flags";
+    private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
 
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
@@ -169,7 +169,7 @@ public class MsiProductSignatureTest {
         assertBands(targetProduct, EXPECTED_IOP_BTOT);
         assertBands(targetProduct, EXPECTED_CONC_CHL);
         assertBands(targetProduct, EXPECTED_CONC_TSM);
-        assertBands(targetProduct, EXPECTED_L2_FLAGS);
+        assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);
     }
 
     private void assertBands(Product targetProduct, String... expectedBands) {

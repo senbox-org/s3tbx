@@ -69,7 +69,7 @@ public class OlciProductSignatureTest {
             "tup_" + 12, "tup_" + 16, "tup_" + 17, "tup_" + 18, "tup_" + 21};
 
     private static final String EXPECTED_QUALITY_FLAGS = "quality_flags";
-    private static final String EXPECTED_L2_FLAGS = "l2_flags";
+    private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
 
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
@@ -179,7 +179,7 @@ public class OlciProductSignatureTest {
         assertBands(targetProduct, EXPECTED_CONC_CHL);
         assertBands(targetProduct, EXPECTED_CONC_TSM);
         assertBands(targetProduct, EXPECTED_QUALITY_FLAGS);
-        assertBands(targetProduct, EXPECTED_L2_FLAGS);
+        assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);
     }
 
     private void assertBands(Product targetProduct, String... expectedBands) {

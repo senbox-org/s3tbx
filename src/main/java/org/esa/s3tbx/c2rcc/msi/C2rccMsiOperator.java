@@ -127,7 +127,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final int UNC_KD489_IX = SINGLE_IX + 17;
     private static final int UNC_KDMIN_IX = SINGLE_IX + 18;
 
-    private static final int L2_FLAGS_IX = SINGLE_IX + 19;
+    private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
 
     private static final String[] alternativeNetDirNames = new String[]{
@@ -571,7 +571,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
         }
 
-        targetSamples[L2_FLAGS_IX].set(result.flags);
+        targetSamples[C2RCC_FLAGS_IX].set(result.flags);
     }
 
     @Override
@@ -674,7 +674,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
         }
 
-        tsc.defineSample(L2_FLAGS_IX, "l2_flags");
+        tsc.defineSample(C2RCC_FLAGS_IX, "c2rcc_flags");
     }
 
     @Override
@@ -698,7 +698,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
             autoGrouping.append(":rtoa");
         }
-        final String validPixelExpression = "l2_flags.Valid_PE";
+        final String validPixelExpression = "c2rcc_flags.Valid_PE";
         if (outputRtosaGc) {
             for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
                 String sourceBandName = C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES[i];
@@ -883,10 +883,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 // flags = BitSetter.setFlag(flags, 17, kd489_at_max_flag);
 // flags = BitSetter.setFlag(flags, 18, kdmin_at_max_flag);
 
-        Band l2_flags = targetProduct.addBand("l2_flags", ProductData.TYPE_UINT32);
-        l2_flags.setDescription("Quality flags");
+        Band c2rcc_flags = targetProduct.addBand("c2rcc_flags", ProductData.TYPE_UINT32);
+        c2rcc_flags.setDescription("Quality flags");
 
-        FlagCoding flagCoding = new FlagCoding("l2_flags");
+        FlagCoding flagCoding = new FlagCoding("c2rcc_flags");
         //0
         flagCoding.addFlag("Rtosa_OOR", 0x01, "The input spectrum to atmospheric correction neural net out of training range");
         flagCoding.addFlag("Rtosa_OOS", 0x02, "The input spectrum to atmospheric correction neural net was unknown");
@@ -913,14 +913,14 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         flagCoding.addFlag("Valid_PE", 0x080000, "The operators valid pixel expression has resolved to true");
 
         targetProduct.getFlagCodingGroup().add(flagCoding);
-        l2_flags.setSampleCoding(flagCoding);
+        c2rcc_flags.setSampleCoding(flagCoding);
 
         Color[] maskColors = {Color.RED, Color.ORANGE, Color.YELLOW, Color.BLUE, Color.GREEN, Color.PINK, Color.MAGENTA, Color.CYAN, Color.GRAY};
         String[] flagNames = flagCoding.getFlagNames();
         for (int i = 0; i < flagNames.length; i++) {
             String flagName = flagNames[i];
             MetadataAttribute flag = flagCoding.getFlag(flagName);
-            targetProduct.addMask(flagName, "l2_flags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
+            targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
 

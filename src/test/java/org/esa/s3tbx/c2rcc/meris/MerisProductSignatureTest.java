@@ -68,8 +68,7 @@ public class MerisProductSignatureTest {
             "tup_" + 12, "tup_" + 13};
 
     private static final String EXPECTED_L1_FLAGS = "l1_flags";
-    private static final String EXPECTED_L2_FLAGS = "l2_flags";
-    private static final String[] EXPECTED_GEOMETRY_ANGLES = new String[]{"solz", "sola", "senz", "sena"};
+    private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
 
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
@@ -179,7 +178,7 @@ public class MerisProductSignatureTest {
         assertBands(targetProduct, EXPECTED_CONC_CHL);
         assertBands(targetProduct, EXPECTED_CONC_TSM);
         assertBands(targetProduct, EXPECTED_L1_FLAGS);
-        assertBands(targetProduct, EXPECTED_L2_FLAGS);
+        assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);
     }
 
     private void assertBands(Product targetProduct, String... expectedBands) {
