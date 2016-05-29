@@ -325,7 +325,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Override
     protected void configureTargetSamples(TargetSampleConfigurer sc) throws OperatorException {
         for (int i = 0; i < NN_INPUT_REFLEC_WAVELENGTHS.length; i++) {
-            sc.defineSample(i, "reflec_" + NN_INPUT_REFLEC_WAVELENGTHS[i]);
+            sc.defineSample(i, "rhow_" + NN_INPUT_REFLEC_WAVELENGTHS[i]);
         }
         sc.defineSample(IOP_APIG_IX, "iop_apig");
         sc.defineSample(IOP_ADET_IX, "iop_adet");

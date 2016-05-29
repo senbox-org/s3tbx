@@ -15,7 +15,7 @@ public class TargetProductPreparer {
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
 
         for (int idx_wl : bandIndexOrWavelengths) {
-            Band reflecBand = targetProduct.addBand("reflec_" + idx_wl, ProductData.TYPE_FLOAT32);
+            Band reflecBand = targetProduct.addBand("rhow_" + idx_wl, ProductData.TYPE_FLOAT32);
             ProductUtils.copySpectralBandProperties(sourceProduct.getBand(prefixSourceBandName + idx_wl), reflecBand);
             reflecBand.setUnit("1");
         }
@@ -60,9 +60,9 @@ public class TargetProductPreparer {
                 Band rtosaOutBand = addBand(targetProduct, "rtosa_out_" + idx_wl, "1", "Top-of-standard-atmosphere reflectances, output from ANN");
                 ProductUtils.copySpectralBandProperties(sourceProduct.getBand(prefixSourceBandName + idx_wl), rtosaOutBand);
             }
-            targetProduct.setAutoGrouping("reflec:iop:conc:rtosa_in:rtosa_out");
+            targetProduct.setAutoGrouping("rhow:iop:conc:rtosa_in:rtosa_out");
         } else {
-            targetProduct.setAutoGrouping("reflec:iop:conc");
+            targetProduct.setAutoGrouping("rhow:iop:conc");
         }
     }
 

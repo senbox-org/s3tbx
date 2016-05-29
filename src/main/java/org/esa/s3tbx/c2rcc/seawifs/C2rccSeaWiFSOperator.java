@@ -284,7 +284,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
         for (int i = 0; i < seawifsWavelengths.length; i++) {
             int wl = seawifsWavelengths[i];
-            sc.defineSample(REFLEC_1_IX + i, "reflec_" + wl);
+            sc.defineSample(REFLEC_1_IX + i, "rhow_" + wl);
         }
 
         sc.defineSample(IOP_APIG_IX, "iop_apig");

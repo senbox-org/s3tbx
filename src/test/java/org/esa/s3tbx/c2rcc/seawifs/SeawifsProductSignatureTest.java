@@ -17,9 +17,9 @@ import static org.junit.Assert.assertTrue;
  * @author Marco Peters
  */
 public class SeawifsProductSignatureTest {
-    private static final String[] EXPECTED_REFLEC_BANDS = {
-            "reflec_" + 412, "reflec_" + 443, "reflec_" + 490, "reflec_" + 510, "reflec_" + 555,
-            "reflec_" + 670, "reflec_" + 765, "reflec_" + 865};
+    private static final String[] EXPECTED_RHOW_BANDS = {
+            "rhow_" + 412, "rhow_" + 443, "rhow_" + 490, "rhow_" + 510, "rhow_" + 555,
+            "rhow_" + 670, "rhow_" + 765, "rhow_" + 865};
     private static final String EXPECTED_RTOSA_RATION_MIN = "rtosa_ratio_min";
     private static final String EXPECTED_RTOSA_RATION_MAX = "rtosa_ratio_max";
     private static final String EXPECTED_IOP_APIG = "iop_apig";
@@ -63,7 +63,7 @@ public class SeawifsProductSignatureTest {
     }
 
     private void assertDefaultBands(Product targetProduct) {
-        assertBands(targetProduct, EXPECTED_REFLEC_BANDS);
+        assertBands(targetProduct, EXPECTED_RHOW_BANDS);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MIN);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MAX);
         assertBands(targetProduct, EXPECTED_IOP_APIG);

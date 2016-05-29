@@ -17,9 +17,9 @@ import static org.junit.Assert.assertTrue;
  * @author Marco Peters
  */
 public class ModisProductSignatureTest {
-    private static final String[] EXPECTED_REFLEC_BANDS = {
-            "reflec_" + 412, "reflec_" + 443, "reflec_" + 488, "reflec_" + 531, "reflec_" + 547,
-            "reflec_" + 667, "reflec_" + 678, "reflec_" + 748, "reflec_" + 869};
+    private static final String[] EXPECTED_RHOW_BANDS = {
+            "rhow_" + 412, "rhow_" + 443, "rhow_" + 488, "rhow_" + 531, "rhow_" + 547,
+            "rhow_" + 667, "rhow_" + 678, "rhow_" + 748, "rhow_" + 869};
     private static final String EXPECTED_RTOSA_RATION_MIN = "rtosa_ratio_min";
     private static final String EXPECTED_RTOSA_RATION_MAX = "rtosa_ratio_max";
     private static final String EXPECTED_IOP_APIG = "iop_apig";
@@ -75,7 +75,7 @@ public class ModisProductSignatureTest {
     }
 
     private void assertDefaultBands(Product targetProduct) {
-        assertBands(targetProduct, EXPECTED_REFLEC_BANDS);
+        assertBands(targetProduct, EXPECTED_RHOW_BANDS);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MIN);
         assertBands(targetProduct, EXPECTED_RTOSA_RATION_MAX);
         assertBands(targetProduct, EXPECTED_IOP_APIG);
