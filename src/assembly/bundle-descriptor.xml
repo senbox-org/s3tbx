@@ -181,13 +181,13 @@
                     <defaultValue>false</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
-                    <name>outputRwa</name>
+                    <name>outputRhow</name>
                     <type>boolean</type>
                     <description>Output angular dependent water leaving reflectances.</description>
                     <defaultValue>true</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
-                    <name>outputRwn</name>
+                    <name>outputRhown</name>
                     <type>boolean</type>
                     <description>Output normalized water leaving reflectances.</description>
                     <defaultValue>true</defaultValue>

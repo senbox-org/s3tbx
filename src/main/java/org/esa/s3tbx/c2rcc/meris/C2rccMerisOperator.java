@@ -103,11 +103,11 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     public static final int RPATH_IX = BC_15 + 2 * BC_12;
     public static final int TDOWN_IX = BC_15 + 3 * BC_12;
     public static final int TUP_IX = BC_15 + 4 * BC_12;
-    public static final int RWA_IX = BC_15 + 5 * BC_12;
-    public static final int RWN_IX = BC_15 + 6 * BC_12;
+    public static final int RHOW_IX = BC_15 + 5 * BC_12;
+    public static final int RHOWN_IX = BC_15 + 6 * BC_12;
 
     public static final int OOS_RTOSA_IX = SINGLE_IX;
-    public static final int OOS_RWA_IX = SINGLE_IX + 1;
+    public static final int OOS_RHOW_IX = SINGLE_IX + 1;
 
     public static final int IOP_APIG_IX = SINGLE_IX + 2;
     public static final int IOP_ADET_IX = SINGLE_IX + 3;
@@ -270,8 +270,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private double thresholdRtosaOOS;
 
     @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for water leaving reflectances",
-            label = "Threshold rwa OOS")
-    private double thresholdRwaOos;
+            label = "Threshold rhow OOS")
+    private double thresholdRhowOos;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
@@ -322,10 +322,10 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private boolean outputTup;
 
     @Parameter(defaultValue = "true", label = "Output angular dependent water leaving reflectances")
-    private boolean outputRwa;
+    private boolean outputRhow;
 
     @Parameter(defaultValue = "true", label = "Output normalized water leaving reflectances")
-    private boolean outputRwn;
+    private boolean outputRhown;
 
     @Parameter(defaultValue = "false", label = "Output of out of scope values")
     private boolean outputOos;
@@ -436,12 +436,12 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         this.outputRtosaGcAann = outputRtoaGcAann;
     }
 
-    public void setOutputRwa(boolean outputRwa) {
-        this.outputRwa = outputRwa;
+    public void setOutputRhow(boolean outputRhow) {
+        this.outputRhow = outputRhow;
     }
 
-    public void setOutputRwn(boolean outputRwn) {
-        this.outputRwn = outputRwn;
+    public void setOutputRhown(boolean outputRhown) {
+        this.outputRhown = outputRhown;
     }
 
     public void setOutputTdown(boolean outputTdown) {
@@ -532,21 +532,21 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             }
         }
 
-        if (outputRwa) {
+        if (outputRhow) {
             for (int i = 0; i < result.rwa.length; i++) {
-                targetSamples[RWA_IX + i].set(result.rwa[i]);
+                targetSamples[RHOW_IX + i].set(result.rwa[i]);
             }
         }
 
-        if (outputRwn) {
+        if (outputRhown) {
             for (int i = 0; i < result.rwn.length; i++) {
-                targetSamples[RWN_IX + i].set(result.rwn[i]);
+                targetSamples[RHOWN_IX + i].set(result.rwn[i]);
             }
         }
 
         if (outputOos) {
             targetSamples[OOS_RTOSA_IX].set(result.rtosa_oos);
-            targetSamples[OOS_RWA_IX].set(result.rwa_oos);
+            targetSamples[OOS_RHOW_IX].set(result.rwa_oos);
         }
 
         for (int i = 0; i < result.iops_nn.length; i++) {
@@ -631,21 +631,21 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             }
         }
 
-        if (outputRwa) {
+        if (outputRhow) {
             for (int i = 0; i < merband12_ix.length; i++) {
-                tsc.defineSample(RWA_IX + i, "rwa_" + merband12_ix[i]);
+                tsc.defineSample(RHOW_IX + i, "rhow_" + merband12_ix[i]);
             }
         }
 
-        if (outputRwn) {
+        if (outputRhown) {
             for (int i = 0; i < merband12_ix.length; i++) {
-                tsc.defineSample(RWN_IX + i, "rwn_" + merband12_ix[i]);
+                tsc.defineSample(RHOWN_IX + i, "rhown_" + merband12_ix[i]);
             }
         }
 
         if (outputOos) {
             tsc.defineSample(OOS_RTOSA_IX, "oos_rtosa");
-            tsc.defineSample(OOS_RWA_IX, "oos_rwa");
+            tsc.defineSample(OOS_RHOW_IX, "oos_rhow");
         }
 
         tsc.defineSample(IOP_APIG_IX, "iop_apig");
@@ -741,29 +741,29 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             autoGrouping.append(":tup");
         }
 
-        if (outputRwa) {
+        if (outputRhow) {
             for (int index : merband12_ix) {
-                final Band band = addBand(targetProduct, "rwa_" + index, "1", "Angular dependent water leaving reflectances");
+                final Band band = addBand(targetProduct, "rhow_" + index, "1", "Angular dependent water leaving reflectances");
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
-            autoGrouping.append(":rwa");
+            autoGrouping.append(":rhow");
         }
 
-        if (outputRwn) {
+        if (outputRhown) {
             for (int index : merband12_ix) {
-                final Band band = addBand(targetProduct, "rwn_" + index, "1", "Normalized water leaving reflectances");
+                final Band band = addBand(targetProduct, "rhown_" + index, "1", "Normalized water leaving reflectances");
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
-            autoGrouping.append(":rwn");
+            autoGrouping.append(":rhown");
         }
 
         if (outputOos) {
             final Band oos_rtosa = addBand(targetProduct, "oos_rtosa", "1", "Gas corrected top-of-atmosphere reflectances are out of scope of nn training dataset");
-            final Band oos_rwa = addBand(targetProduct, "oos_rwa", "1", "Water leaving reflectances are out of scope of nn training dataset");
+            final Band oos_rhow = addBand(targetProduct, "oos_rhow", "1", "Water leaving reflectances are out of scope of nn training dataset");
             oos_rtosa.setValidPixelExpression(validPixelExpression);
-            oos_rwa.setValidPixelExpression(validPixelExpression);
+            oos_rhow.setValidPixelExpression(validPixelExpression);
 
             autoGrouping.append(":oos");
         }
@@ -881,7 +881,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         //0
         flagCoding.addFlag("Rtosa_OOR", 0x01, "The input spectrum to atmospheric correction neural net out of training range");
         flagCoding.addFlag("Rtosa_OOS", 0x02, "The input spectrum to atmospheric correction neural net was unknown");
-        flagCoding.addFlag("Rwa_OOR", 0x04, "One of the inputs to the IOP retrieval neural net is out of training range");
+        flagCoding.addFlag("Rhow_OOR", 0x04, "One of the inputs to the IOP retrieval neural net is out of training range");
         flagCoding.addFlag("Iop_OOR", 0x08, "One of the IOPs is out of range");
         flagCoding.addFlag("Apig_at_max", 0x010, "Apig output of the IOP retrieval neural net is at its maximum");
         //5
@@ -895,7 +895,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         flagCoding.addFlag("Agelb_at_min", 0x0800, "Agelb output of the IOP retrieval neural net is at its maximum");
         flagCoding.addFlag("Bpart_at_min", 0x01000, "Bpart output of the IOP retrieval neural net is at its maximum");
         flagCoding.addFlag("Bwit_at_min", 0x02000, "Bwit output of the IOP retrieval neural net is at its maximum");
-        flagCoding.addFlag("Rwa_OOS", 0x04000, "The Rwa input spectrum to IOP neural net is unknown");
+        flagCoding.addFlag("Rhow_OOS", 0x04000, "The Rhow input spectrum to IOP neural net is unknown");
         //15
         flagCoding.addFlag("Kd489_OOR", 0x08000, "kd489 is out of range");
         flagCoding.addFlag("Kdmin_OOR", 0x010000, "kdmin is out of range");
@@ -1003,14 +1003,14 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
-        algorithm.setThresh_rwlogslope(thresholdRwaOos);
+        algorithm.setThresh_rwlogslope(thresholdRhowOos);
 
         algorithm.setOutputRtosaGcAann(outputRtosaGcAann);
         algorithm.setOutputRpath(outputRpath);
         algorithm.setOutputTdown(outputTdown);
         algorithm.setOutputTup(outputTup);
-        algorithm.setOutputRwa(outputRwa);
-        algorithm.setOutputRwn(outputRwn);
+        algorithm.setOutputRhow(outputRhow);
+        algorithm.setOutputRhown(outputRhown);
         algorithm.setOutputOos(outputOos);
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
