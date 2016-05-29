@@ -6,7 +6,6 @@ import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -20,13 +19,13 @@ import static org.junit.Assert.assertTrue;
  */
 public class OlciProductSignatureTest {
     private static final String[] EXPECTED_REFLEC_BANDS = {
-            "rwa_" + 1, "rwa_" + 2, "rwa_" + 3, "rwa_" + 4, "rwa_" + 5,
-            "rwa_" + 6, "rwa_" + 7, "rwa_" + 8, "rwa_" + 9, "rwa_" + 10,
-            "rwa_" + 12, "rwa_" + 16, "rwa_" + 17, "rwa_" + 18, "rwa_" + 21};
+            "rhow_" + 1, "rhow_" + 2, "rhow_" + 3, "rhow_" + 4, "rhow_" + 5,
+            "rhow_" + 6, "rhow_" + 7, "rhow_" + 8, "rhow_" + 9, "rhow_" + 10,
+            "rhow_" + 12, "rhow_" + 16, "rhow_" + 17, "rhow_" + 18, "rhow_" + 21};
     private static final String[] EXPECTED_NORM_REFLEC_BANDS = {
-            "rwn_" + 1, "rwn_" + 2, "rwn_" + 3, "rwn_" + 4, "rwn_" + 5,
-            "rwn_" + 6, "rwn_" + 7, "rwn_" + 8, "rwn_" + 9, "rwn_" + 10,
-            "rwn_" + 12, "rwn_" + 16, "rwn_" + 17, "rwn_" + 18, "rwn_" + 21};
+            "rhown_" + 1, "rhown_" + 2, "rhown_" + 3, "rhown_" + 4, "rhown_" + 5,
+            "rhown_" + 6, "rhown_" + 7, "rhown_" + 8, "rhown_" + 9, "rhown_" + 10,
+            "rhown_" + 12, "rhown_" + 16, "rhown_" + 17, "rhown_" + 18, "rhown_" + 21};
     private static final String EXPECTED_IOP_APIG = "iop_apig";
     private static final String EXPECTED_IOP_ADET = "iop_adet";
     private static final String EXPECTED_IOP_AGELB = "iop_agelb";
@@ -38,7 +37,7 @@ public class OlciProductSignatureTest {
     private static final String EXPECTED_CONC_CHL = "conc_chl";
     private static final String EXPECTED_CONC_TSM = "conc_tsm";
     private static final String[] EXPECTED_KD_BANDS = {"kd489", "kdmin", "kd_z90max"};
-    private static final String[] EXPECTED_OOS_BANDS = {"oos_rtosa", "oos_rwa"};
+    private static final String[] EXPECTED_OOS_BANDS = {"oos_rtosa", "oos_rhow"};
     private static final String[] EXPECTED_IOP_UNC_BANDS = {
             "unc_apig", "unc_adet", "unc_agelb", "unc_bpart",
             "unc_bwit", "unc_adg", "unc_atot", "unc_btot"};
@@ -86,8 +85,8 @@ public class OlciProductSignatureTest {
     public void testProductSignature_OnlyMandatory() throws FactoryException, TransformException {
 
         C2rccOlciOperator operator = createDefaultOperator();
-        operator.setOutputRwa(false);
-        operator.setOutputRwn(false);
+        operator.setOutputRhow(false);
+        operator.setOutputRhown(false);
         operator.setOutputKd(false);
         Product targetProduct = operator.getTargetProduct();
 
