@@ -176,7 +176,7 @@ public class C2rccOperator extends Operator {
         c2rConfigOp.setPress(press);
         c2rConfigOp.setAtmosphericAuxDataPath(atmosphericAuxDataPath);
         c2rConfigOp.setOutputRtosa(outputRtosa);
-        c2rConfigOp.outputAsRrs(true);
+        c2rConfigOp.setOutputAsRrs(true);
     }
 
 

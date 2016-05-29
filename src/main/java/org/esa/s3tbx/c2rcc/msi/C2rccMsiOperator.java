@@ -375,7 +375,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     }
 
     @Override
-    public void outputAsRrs(boolean asRadianceRefl) {
+    public void setOutputAsRrs(boolean asRadianceRefl) {
         outputAsRadianceReflectances = asRadianceRefl;
     }
 

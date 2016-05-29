@@ -181,7 +181,7 @@
                     <defaultValue>false</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
-                    <name>outputRhow</name>
+                    <name>outputAcReflectance</name>
                     <type>boolean</type>
                     <description>Output angular dependent water leaving reflectances.</description>
                     <defaultValue>true</defaultValue>

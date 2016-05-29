@@ -411,7 +411,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     }
 
     @Override
-    public void outputAsRrs(boolean asRrs) {
+    public void setOutputAsRrs(boolean asRrs) {
         outputAsRrs = asRrs;
     }
 

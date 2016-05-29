@@ -196,7 +196,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     }
 
     @Override
-    public void outputAsRrs(boolean asRadianceRefl) {
+    public void setOutputAsRrs(boolean asRadianceRefl) {
         outputAsRadianceReflectances = asRadianceRefl;
     }
 

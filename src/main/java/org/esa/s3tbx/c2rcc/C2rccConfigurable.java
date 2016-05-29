@@ -26,5 +26,5 @@ public interface C2rccConfigurable {
 
     void setOutputRtosa(boolean outputRtosa);
 
-    void outputAsRrs(boolean asRadianceRefl);
+    void setOutputAsRrs(boolean asRadianceRefl);
 }

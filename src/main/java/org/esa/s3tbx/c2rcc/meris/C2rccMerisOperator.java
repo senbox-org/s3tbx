@@ -102,11 +102,11 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private static final int RPATH_IX = BC_15 + 2 * BC_12;
     private static final int TDOWN_IX = BC_15 + 3 * BC_12;
     private static final int TUP_IX = BC_15 + 4 * BC_12;
-    private static final int RHOW_IX = BC_15 + 5 * BC_12;
+    private static final int AC_REFLEC_IX = BC_15 + 5 * BC_12;
     private static final int RHOWN_IX = BC_15 + 6 * BC_12;
 
     private static final int OOS_RTOSA_IX = SINGLE_IX;
-    private static final int OOS_RHOW_IX = SINGLE_IX + 1;
+    private static final int OOS_AC_REFLEC_IX = SINGLE_IX + 1;
 
     private static final int IOP_APIG_IX = SINGLE_IX + 2;
     private static final int IOP_ADET_IX = SINGLE_IX + 3;
@@ -139,7 +139,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
     private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
-    private static final String[] alternativeNetDirNames = new String[]{
+    static final String[] alternativeNetDirNames = new String[]{
             "rtosa_aann",
             "rtosa_rw",
             "rw_iop",
@@ -152,7 +152,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             "rtosa_rpath"
     };
 
-    private static final String[] c2rccNNResourcePaths = new String[10];
+    static final String[] c2rccNNResourcePaths = new String[10];
     static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
     static final String RASTER_NAME_OZONE = "ozone";
     static final String RASTER_NAME_ATM_PRESS = "atm_press";
@@ -321,7 +321,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private boolean outputTup;
 
     @Parameter(defaultValue = "true", label = "Output angular dependent water leaving reflectances")
-    private boolean outputRhow;
+    private boolean outputAcReflectance;
 
     @Parameter(defaultValue = "true", label = "Output normalized water leaving reflectances")
     private boolean outputRhown;
@@ -335,9 +335,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "false", label = "Output uncertainties")
     private boolean outputUncertainties;
 
-    @Parameter(defaultValue = "true", description =
-            "Reflectance values in the target product shall be radiance reflectances, otherwise irradiance reflectances are written",
-            label = "Output reflectances as radiance reflectance")
+    @Parameter(defaultValue = "false", description =
+            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+            label = "Output AC reflectances as remote sensing or water leaving reflectances")
     private boolean outputAsRrs;
 
 
@@ -410,7 +410,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     }
 
     @Override
-    public void outputAsRrs(boolean asRrs) {
+    public void setOutputAsRrs(boolean asRrs) {
         outputAsRrs = asRrs;
     }
 
@@ -430,13 +430,12 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         this.outputRtoa = outputRtoa;
     }
 
-
     public void setOutputRtoaGcAann(boolean outputRtoaGcAann) {
         this.outputRtosaGcAann = outputRtoaGcAann;
     }
 
-    public void setOutputRhow(boolean outputRhow) {
-        this.outputRhow = outputRhow;
+    public void setOutputAcReflectance(boolean outputAcReflectance) {
+        this.outputAcReflectance = outputAcReflectance;
     }
 
     public void setOutputRhown(boolean outputRhown) {
@@ -531,9 +530,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             }
         }
 
-        if (outputRhow) {
+        if (outputAcReflectance) {
             for (int i = 0; i < result.rwa.length; i++) {
-                targetSamples[RHOW_IX + i].set(result.rwa[i]);
+                targetSamples[AC_REFLEC_IX + i].set(result.rwa[i]);
             }
         }
 
@@ -545,7 +544,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
         if (outputOos) {
             targetSamples[OOS_RTOSA_IX].set(result.rtosa_oos);
-            targetSamples[OOS_RHOW_IX].set(result.rwa_oos);
+            targetSamples[OOS_AC_REFLEC_IX].set(result.rwa_oos);
         }
 
         for (int i = 0; i < result.iops_nn.length; i++) {
@@ -630,9 +629,13 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             }
         }
 
-        if (outputRhow) {
+        if (outputAcReflectance) {
             for (int i = 0; i < merband12_ix.length; i++) {
-                tsc.defineSample(RHOW_IX + i, "rhow_" + merband12_ix[i]);
+                if (outputAsRrs) {
+                    tsc.defineSample(AC_REFLEC_IX + i, "rrs_" + merband12_ix[i]);
+                } else {
+                    tsc.defineSample(AC_REFLEC_IX + i, "rhow_" + merband12_ix[i]);
+                }
             }
         }
 
@@ -644,7 +647,11 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
         if (outputOos) {
             tsc.defineSample(OOS_RTOSA_IX, "oos_rtosa");
-            tsc.defineSample(OOS_RHOW_IX, "oos_rhow");
+            if (outputAsRrs) {
+                tsc.defineSample(OOS_AC_REFLEC_IX, "oos_rrs");
+            } else {
+                tsc.defineSample(OOS_AC_REFLEC_IX, "oos_rhow");
+            }
         }
 
         tsc.defineSample(IOP_APIG_IX, "iop_apig");
@@ -740,9 +747,14 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             autoGrouping.append(":tup");
         }
 
-        if (outputRhow) {
+        if (outputAcReflectance) {
             for (int index : merband12_ix) {
-                final Band band = addBand(targetProduct, "rhow_" + index, "1", "Angular dependent water leaving reflectances");
+                final Band band;
+                if (outputAsRrs) {
+                    band = addBand(targetProduct, "rrs_" + index, "sr^-1", "Angular dependent remote sensing reflectances");
+                } else {
+                    band = addBand(targetProduct, "rhow_" + index, "1", "Angular dependent water leaving reflectances");
+                }
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
             }
@@ -760,9 +772,14 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
         if (outputOos) {
             final Band oos_rtosa = addBand(targetProduct, "oos_rtosa", "1", "Gas corrected top-of-atmosphere reflectances are out of scope of nn training dataset");
-            final Band oos_rhow = addBand(targetProduct, "oos_rhow", "1", "Water leaving reflectances are out of scope of nn training dataset");
             oos_rtosa.setValidPixelExpression(validPixelExpression);
-            oos_rhow.setValidPixelExpression(validPixelExpression);
+            if (outputAsRrs) {
+                final Band oos_rrs = addBand(targetProduct, "oos_rrs", "1", "Remote sensing reflectance are out of scope of nn training dataset");
+                oos_rrs.setValidPixelExpression(validPixelExpression);
+            } else {
+                final Band oos_rhow = addBand(targetProduct, "oos_rhow", "1", "Water leaving reflectances are out of scope of nn training dataset");
+                oos_rhow.setValidPixelExpression(validPixelExpression);
+            }
 
             autoGrouping.append(":oos");
         }
@@ -1008,7 +1025,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         algorithm.setOutputRpath(outputRpath);
         algorithm.setOutputTdown(outputTdown);
         algorithm.setOutputTup(outputTup);
-        algorithm.setOutputRhow(outputRhow);
+        algorithm.setOutputRhow(outputAcReflectance);
         algorithm.setOutputRhown(outputRhown);
         algorithm.setOutputOos(outputOos);
         algorithm.setOutputKd(outputKd);
