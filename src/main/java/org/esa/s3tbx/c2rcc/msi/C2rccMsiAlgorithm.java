@@ -148,11 +148,11 @@ public class C2rccMsiAlgorithm {
         this.outputTup = outputTup;
     }
 
-    public void setOutputRwa(boolean outputRwa) {
+    public void setOutputRhow(boolean outputRwa) {
         this.outputRwa = outputRwa;
     }
 
-    public void setOutputRwn(boolean outputRwn) {
+    public void setOutputRhown(boolean outputRwn) {
         this.outputRwn = outputRwn;
     }
 

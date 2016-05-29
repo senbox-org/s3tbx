@@ -1,15 +1,11 @@
 package org.esa.s3tbx.c2rcc.msi;
 
-import org.esa.s3tbx.c2rcc.msi.C2rccMsiOperator;
-import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
-import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -23,11 +19,11 @@ import static org.junit.Assert.assertTrue;
  */
 public class MsiProductSignatureTest {
     private static final String[] EXPECTED_REFLEC_BANDS = {
-            "rwa_B" + 1, "rwa_B" + 2, "rwa_B" + 3, "rwa_B" + 4, "rwa_B" + 5,
-            "rwa_B" + 6, "rwa_B" + 7, "rwa_B" + 8 + "A"};
+            "rhow_B" + 1, "rhow_B" + 2, "rhow_B" + 3, "rhow_B" + 4, "rhow_B" + 5,
+            "rhow_B" + 6, "rhow_B" + 7, "rhow_B" + 8 + "A"};
     private static final String[] EXPECTED_NORM_REFLEC_BANDS = {
-            "rwn_B" + 1, "rwn_B" + 2, "rwn_B" + 3, "rwn_B" + 4, "rwn_B" + 5,
-            "rwn_B" + 6, "rwn_B" + 7, "rwn_B" + 8 + "A"};
+            "rhown_B" + 1, "rhown_B" + 2, "rhown_B" + 3, "rhown_B" + 4, "rhown_B" + 5,
+            "rhown_B" + 6, "rhown_B" + 7, "rhown_B" + 8 + "A"};
     private static final String EXPECTED_IOP_APIG = "iop_apig";
     private static final String EXPECTED_IOP_ADET = "iop_adet";
     private static final String EXPECTED_IOP_AGELB = "iop_agelb";
@@ -39,7 +35,7 @@ public class MsiProductSignatureTest {
     private static final String EXPECTED_CONC_CHL = "conc_chl";
     private static final String EXPECTED_CONC_TSM = "conc_tsm";
     private static final String[] EXPECTED_KD_BANDS = {"kd489", "kdmin", "kd_z90max"};
-    private static final String[] EXPECTED_OOS_BANDS = {"oos_rtosa", "oos_rwa"};
+    private static final String[] EXPECTED_OOS_BANDS = {"oos_rtosa", "oos_rhow"};
     private static final String[] EXPECTED_IOP_UNC_BANDS = {
             "unc_apig", "unc_adet", "unc_agelb", "unc_bpart",
             "unc_bwit", "unc_adg", "unc_atot", "unc_btot"};
@@ -80,8 +76,8 @@ public class MsiProductSignatureTest {
     public void testProductSignature_OnlyMandatory() throws FactoryException, TransformException {
 
         C2rccMsiOperator operator = createDefaultOperator();
-        operator.setOutputRwa(false);
-        operator.setOutputRwn(false);
+        operator.setOutputRhow(false);
+        operator.setOutputRhown(false);
         operator.setOutputKd(false);
         Product targetProduct = operator.getTargetProduct();
 
