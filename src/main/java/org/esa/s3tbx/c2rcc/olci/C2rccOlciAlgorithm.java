@@ -263,7 +263,9 @@ public class C2rccOlciAlgorithm {
 //        double sin_sun = sin(toRadians(sun_zeni));
         double sin_view = sin(toRadians(view_zeni));
 
-        double cos_azi_diff = cos(toRadians(view_azi - sun_azi));
+        // corrected issue #9: https://github.com/bcdev/s3tbx-c2rcc/issues/9
+//        double cos_azi_diff = cos(toRadians(view_azi - sun_azi));
+        double cos_azi_diff = cos(toRadians(sun_azi - view_azi));
         double azi_diff_rad = acos(cos_azi_diff);
         double sin_azi_diff = sin(azi_diff_rad);
         double azi_diff_deg = toDegrees(azi_diff_rad);
