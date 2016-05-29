@@ -33,22 +33,22 @@ public class TargetProductPreparer {
 
         addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of rtosa_out:rtosa_in ratios");
         addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of rtosa_out:rtosa_in ratios");
-        Band l2_flags = targetProduct.addBand("l2_qflags", ProductData.TYPE_UINT32);
-        l2_flags.setDescription("Quality flags");
+        Band c2rcc_flags = targetProduct.addBand("c2rcc_flags", ProductData.TYPE_UINT32);
+        c2rcc_flags.setDescription("C2RCC Quality flags");
 
-        FlagCoding flagCoding = new FlagCoding("l2_qflags");
+        FlagCoding flagCoding = new FlagCoding("c2rcc_flags");
         flagCoding.addFlag("AC_NN_IN_ALIEN", 0x01, "The input spectrum to atmospheric correction neural net was unknown");
         flagCoding.addFlag("AC_NN_IN_OOR", 0x02, "One of the inputs to the atmospheric correction neural net was out of range");
         flagCoding.addFlag("IOP_NN_IN_OOR", 0x04, "One of the inputs to the IOP retrieval neural net was out of range");
         targetProduct.getFlagCodingGroup().add(flagCoding);
-        l2_flags.setSampleCoding(flagCoding);
+        c2rcc_flags.setSampleCoding(flagCoding);
 
         Color[] maskColors = {Color.RED, Color.ORANGE, Color.YELLOW, Color.BLUE, Color.GREEN, Color.PINK, Color.MAGENTA, Color.CYAN};
         String[] flagNames = flagCoding.getFlagNames();
         for (int i = 0; i < flagNames.length; i++) {
             String flagName = flagNames[i];
             MetadataAttribute flag = flagCoding.getFlag(flagName);
-            targetProduct.addMask(flagName, "l2_qflags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
+            targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
         }
 
         if (outputRtosa) {

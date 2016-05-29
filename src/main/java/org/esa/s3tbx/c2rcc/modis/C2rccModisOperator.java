@@ -69,7 +69,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     private static final int RTOSA_RATIO_MIN_IX = REFLEC_BAND_COUNT + 5;
     private static final int RTOSA_RATIO_MAX_IX = REFLEC_BAND_COUNT + 6;
-    private static final int L2_FLAGS_IX = REFLEC_BAND_COUNT + 7;
+    private static final int C2RCC_FLAGS_IX = REFLEC_BAND_COUNT + 7;
 
     private static final int RTOSA_IN_1_IX = REFLEC_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
@@ -289,10 +289,10 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
         targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
         targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
-        targetSamples[L2_FLAGS_IX].set(result.flags);
+        targetSamples[C2RCC_FLAGS_IX].set(result.flags);
 
         if (outputAngles) {
-            final int targetStartIdx = L2_FLAGS_IX + 1;
+            final int targetStartIdx = C2RCC_FLAGS_IX + 1;
             for (int i = 0; i < GEOMETRY_ANGLE_NAMES.length; i++) {
                 targetSamples[targetStartIdx + i].set(sourceSamples[SUN_ZEN_IX + i].getFloat());
             }
@@ -335,10 +335,10 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
         sc.defineSample(RTOSA_RATIO_MIN_IX, "rtosa_ratio_min");
         sc.defineSample(RTOSA_RATIO_MAX_IX, "rtosa_ratio_max");
-        sc.defineSample(L2_FLAGS_IX, "l2_qflags");
+        sc.defineSample(C2RCC_FLAGS_IX, "c2rcc_flags");
 
         if (outputAngles) {
-            final int startIndex = L2_FLAGS_IX + 1;
+            final int startIndex = C2RCC_FLAGS_IX + 1;
             for (int i = 0; i < GEOMETRY_ANGLE_NAMES.length; i++) {
                 String angleName = GEOMETRY_ANGLE_NAMES[i];
                 sc.defineSample(startIndex + i, angleName);

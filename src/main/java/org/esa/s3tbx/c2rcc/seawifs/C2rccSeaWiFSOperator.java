@@ -1,13 +1,8 @@
 package org.esa.s3tbx.c2rcc.seawifs;
 
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
-import org.esa.s3tbx.c2rcc.ancillary.AncDataFormat;
-import org.esa.s3tbx.c2rcc.ancillary.AncDownloader;
-import org.esa.s3tbx.c2rcc.ancillary.AncRepository;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataDynamic;
-import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataStatic;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -24,16 +19,11 @@ import org.esa.snap.core.gpf.pointop.Sample;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
-import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.esa.s3tbx.c2rcc.C2rccCommons.ensureTimeCoding_Fallback;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.ANC_DATA_URI;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createOzoneFormat;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.createPressureFormat;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.ozone_default;
@@ -73,7 +63,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     static final String RASTER_NAME_VIEW_ZENITH = "senz";
     static final String[] GEOMETRY_ANGLE_NAMES = {RASTER_NAME_SOLAR_ZENITH, RASTER_NAME_SOLAR_AZIMUTH,
             RASTER_NAME_VIEW_ZENITH, RASTER_NAME_VIEW_AZIMUTH};
-    static final String FLAG_BAND_NAME = "l2_flags";
+    static final String RASTER_NAME_L2_FLAGS = "l2_flags";
 
     // sources
 //    public static final int DEM_ALT_IX = WL_BAND_COUNT + 0;
@@ -94,7 +84,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
     public static final int RTOSA_RATIO_MIN_IX = WL_BAND_COUNT + 5;
     public static final int RTOSA_RATIO_MAX_IX = WL_BAND_COUNT + 6;
-    public static final int L2_QFLAGS_IX = WL_BAND_COUNT + 7;
+    public static final int C2RCC_FLAGS_IX = WL_BAND_COUNT + 7;
 
     public static final int RTOSA_IN_1_IX = WL_BAND_COUNT + 8;
     public static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + WL_BAND_COUNT;
@@ -251,7 +241,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
         targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
         targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
-        targetSamples[L2_QFLAGS_IX].set(result.flags);
+        targetSamples[C2RCC_FLAGS_IX].set(result.flags);
 
         if (outputRtosa) {
             for (int i = 0; i < result.rtosa_in.length; i++) {
@@ -294,7 +284,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         sc.defineSample(IOP_BWIT_IX, "iop_bwit");
         sc.defineSample(RTOSA_RATIO_MIN_IX, "rtosa_ratio_min");
         sc.defineSample(RTOSA_RATIO_MAX_IX, "rtosa_ratio_max");
-        sc.defineSample(L2_QFLAGS_IX, "l2_qflags");
+        sc.defineSample(C2RCC_FLAGS_IX, "c2rcc_flags");
 
         if (outputRtosa) {
             for (int i = 0; i < seawifsWavelengths.length; i++) {
@@ -320,13 +310,13 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     protected void prepareInputs() throws OperatorException {
         for (int i = 0; i < WL_BAND_COUNT; i++) {
             final int wavelength = seawifsWavelengths[i];
-            assertSourceBand("rhot_" + wavelength);
+            assertSourceBand(SOURCE_RADIANCE_NAME_PREFIX + wavelength);
         }
-        assertSourceBand("l2_flags");
-        assertSourceBandAndRemoveValidExpression("solz");
-        assertSourceBandAndRemoveValidExpression("sola");
-        assertSourceBandAndRemoveValidExpression("senz");
-        assertSourceBandAndRemoveValidExpression("sena");
+        assertSourceBand(RASTER_NAME_L2_FLAGS);
+        assertSourceBandAndRemoveValidExpression(RASTER_NAME_SOLAR_ZENITH);
+        assertSourceBandAndRemoveValidExpression(RASTER_NAME_SOLAR_AZIMUTH);
+        assertSourceBandAndRemoveValidExpression(RASTER_NAME_VIEW_ZENITH);
+        assertSourceBandAndRemoveValidExpression(RASTER_NAME_VIEW_AZIMUTH);
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");

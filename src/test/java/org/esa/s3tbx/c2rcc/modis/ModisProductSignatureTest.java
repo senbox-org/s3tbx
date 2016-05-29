@@ -38,7 +38,8 @@ public class ModisProductSignatureTest {
             "rtosa_out_" + 412, "rtosa_out_" + 443, "rtosa_out_" + 488, "rtosa_out_" + 531, "rtosa_out_" + 547,
             "rtosa_out_" + 667, "rtosa_out_" + 678, "rtosa_out_" + 748, "rtosa_out_" + 869};
 
-    private static final String EXPECTED_L2_QFLAGS = "l2_qflags";
+    private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
+    private static final String EXPECTED_L2_FLAGS = "l2_flags";
     private static final String[] EXPECTED_GEOMETRY_ANGLES = new String[]{"solz", "sola", "senz", "sena"};
 
     @Test
@@ -87,7 +88,8 @@ public class ModisProductSignatureTest {
         assertBands(targetProduct, EXPECTED_IOP_ATOT);
         assertBands(targetProduct, EXPECTED_CONC_CHL);
         assertBands(targetProduct, EXPECTED_CONC_TSM);
-        assertBands(targetProduct, EXPECTED_L2_QFLAGS);
+        assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);
+        assertBands(targetProduct, EXPECTED_L2_FLAGS);
     }
 
     private void assertBands(Product targetProduct, String... expectedBands) {

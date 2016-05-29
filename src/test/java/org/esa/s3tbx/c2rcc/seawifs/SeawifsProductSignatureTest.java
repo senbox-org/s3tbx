@@ -38,7 +38,8 @@ public class SeawifsProductSignatureTest {
             "rtosa_out_" + 412, "rtosa_out_" + 443, "rtosa_out_" + 490, "rtosa_out_" + 510, "rtosa_out_" + 555,
             "rtosa_out_" + 670, "rtosa_out_" + 765, "rtosa_out_" + 865};
 
-    private static final String EXPECTED_L2_QFLAGS = "l2_qflags";
+    private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
+    private static final String EXPECTED_L2_FLAGS = "l2_flags";
 
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
@@ -75,7 +76,8 @@ public class SeawifsProductSignatureTest {
         assertBands(targetProduct, EXPECTED_IOP_ATOT);
         assertBands(targetProduct, EXPECTED_CONC_CHL);
         assertBands(targetProduct, EXPECTED_CONC_TSM);
-        assertBands(targetProduct, EXPECTED_L2_QFLAGS);
+        assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);
+        assertBands(targetProduct, EXPECTED_L2_FLAGS);
     }
 
     private void assertBands(Product targetProduct, String... expectedBands) {
@@ -103,8 +105,8 @@ public class SeawifsProductSignatureTest {
             product.addBand(angleName, "42");
         }
 
-        Band flagBand = product.addBand(C2rccSeaWiFSOperator.FLAG_BAND_NAME, ProductData.TYPE_INT8);
-        FlagCoding l2FlagsCoding = new FlagCoding(C2rccSeaWiFSOperator.FLAG_BAND_NAME);
+        Band flagBand = product.addBand(C2rccSeaWiFSOperator.RASTER_NAME_L2_FLAGS, ProductData.TYPE_INT8);
+        FlagCoding l2FlagsCoding = new FlagCoding(C2rccSeaWiFSOperator.RASTER_NAME_L2_FLAGS);
         l2FlagsCoding.addFlag("LAND", 0x01, "");
         product.getFlagCodingGroup().add(l2FlagsCoding);
         flagBand.setSampleCoding(l2FlagsCoding);
