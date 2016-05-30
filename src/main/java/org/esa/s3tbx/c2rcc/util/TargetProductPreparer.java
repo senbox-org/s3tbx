@@ -49,7 +49,7 @@ public class TargetProductPreparer {
         addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of rtosa_out:rtosa_in ratios");
         addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of rtosa_out:rtosa_in ratios");
         Band c2rcc_flags = targetProduct.addBand("c2rcc_flags", ProductData.TYPE_UINT32);
-        c2rcc_flags.setDescription("C2RCC Quality flags");
+        c2rcc_flags.setDescription("C2RCC quality flags");
 
         FlagCoding flagCoding = new FlagCoding("c2rcc_flags");
         flagCoding.addFlag("AC_NN_IN_ALIEN", 0x01, "The input spectrum to atmospheric correction neural net was unknown");

@@ -892,21 +892,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             autoGrouping.append(":unc");
         }
 
-        // flag settings
-// flags = BitSetter.setFlag(flags, 0, rtosa_oor_flag);
-// flags = BitSetter.setFlag(flags, 1, rtosa_oos_flag);
-// flags = BitSetter.setFlag(flags, 2, rw_oor_flag);
-// flags = BitSetter.setFlag(flags, 3, iop_oor_flag);
-// flags = BitSetter.setFlag(flags, iv + 4, iop_at_max_flag[iv]); 5 flags for 5 IOPs
-// flags = BitSetter.setFlag(flags, iv + 9, iop_at_min_flag[iv]); 5 flags for 5 IOPs
-// flags = BitSetter.setFlag(flags, 14, rw_oos_flag);
-// flags = BitSetter.setFlag(flags, 15, kd489_oor_flag);
-// flags = BitSetter.setFlag(flags, 16, kdmin_oor_flag);
-// flags = BitSetter.setFlag(flags, 17, kd489_at_max_flag);
-// flags = BitSetter.setFlag(flags, 18, kdmin_at_max_flag);
-
         Band c2rcc_flags = targetProduct.addBand("c2rcc_flags", ProductData.TYPE_UINT32);
-        c2rcc_flags.setDescription("Quality flags");
+        c2rcc_flags.setDescription("C2RCC quality flags");
 
         FlagCoding flagCoding = new FlagCoding("c2rcc_flags");
         //0
