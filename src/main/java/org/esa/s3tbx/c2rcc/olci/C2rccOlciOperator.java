@@ -913,10 +913,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
         FlagCoding flagCoding = new FlagCoding("c2rcc_flags");
         //0
-        flagCoding.addFlag("Rtosa_OOR", 0x01, "The input spectrum to atmospheric correction neural net out of training range");
-        flagCoding.addFlag("Rtosa_OOS", 0x02, "The input spectrum to atmospheric correction neural net was unknown");
-        flagCoding.addFlag("Rhow_OOR", 0x04, "One of the inputs to the IOP retrieval neural net is out of training range");
-        flagCoding.addFlag("Iop_OOR", 0x08, "One of the IOPs is out of range");
+        flagCoding.addFlag("Rtosa_OOS", 0x01, "The input spectrum to atmospheric correction neural net was unknown");
+        flagCoding.addFlag("Rtosa_OOR", 0x02, "The input spectrum to atmospheric correction neural net out of training range");
+        flagCoding.addFlag("Iop_OOR", 0x04, "One of the IOPs is out of range");
+        flagCoding.addFlag("Rhow_OOR", 0x08, "One of the inputs to the IOP retrieval neural net is out of training range");
         flagCoding.addFlag("Apig_at_max", 0x010, "Apig output of the IOP retrieval neural net is at its maximum");
         //5
         flagCoding.addFlag("Adet_at_max", 0x020, "Adet output of the IOP retrieval neural net is at its maximum");
