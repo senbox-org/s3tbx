@@ -228,7 +228,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         );
 
         for (int i = 0; i < result.rw.length; i++) {
-            targetSamples[i].set(outputAsRrs ? result.rw[i] * Math.PI : result.rw[i]);
+            targetSamples[i].set(outputAsRrs ? result.rw[i] / Math.PI : result.rw[i]);
         }
 
         for (int i = 0; i < result.iops.length; i++) {

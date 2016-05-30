@@ -532,7 +532,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
         if (outputAcReflectance) {
             for (int i = 0; i < result.rwa.length; i++) {
-                targetSamples[AC_REFLEC_IX + i].set(outputAsRrs ? result.rwa[i] * Math.PI : result.rwa[i]);
+                targetSamples[AC_REFLEC_IX + i].set(outputAsRrs ? result.rwa[i] / Math.PI : result.rwa[i]);
             }
         }
 

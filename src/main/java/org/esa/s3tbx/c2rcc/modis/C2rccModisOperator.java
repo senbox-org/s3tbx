@@ -280,7 +280,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         );
 
         for (int i = 0; i < result.rw.length; i++) {
-            targetSamples[i].set(outputAsRrs ? result.rw[i] * Math.PI : result.rw[i]);
+            targetSamples[i].set(outputAsRrs ? result.rw[i] / Math.PI : result.rw[i]);
         }
 
         for (int i = 0; i < result.iops.length; i++) {
