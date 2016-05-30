@@ -302,13 +302,13 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
 
-    @Parameter(defaultValue = "false", label = "Output top-of-atmosphere (TOA) reflectances")
+    @Parameter(defaultValue = "false", label = "Output TOA reflectances")
     private boolean outputRtoa;
 
-    @Parameter(defaultValue = "false", label = "Output gas corrected top-of-atmosphere (TOSA) reflectances")
+    @Parameter(defaultValue = "false", label = "Output gas corrected TOSA reflectances")
     private boolean outputRtosaGc;
 
-    @Parameter(defaultValue = "false", label = "Output of auto nn, reflectances")
+    @Parameter(defaultValue = "false", label = "Output gas corrected TOSA reflectances of auto nn")
     private boolean outputRtosaGcAann;
 
     @Parameter(defaultValue = "false", label = "Output path radiance reflectances")

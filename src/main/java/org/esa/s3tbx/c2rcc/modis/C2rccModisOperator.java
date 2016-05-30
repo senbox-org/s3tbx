@@ -143,7 +143,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
             "path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
-    @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
+    @Parameter(defaultValue = "false", label = "Output TOSA reflectances")
     private boolean outputRtosa;
 
     @Parameter(defaultValue = "false", description =
