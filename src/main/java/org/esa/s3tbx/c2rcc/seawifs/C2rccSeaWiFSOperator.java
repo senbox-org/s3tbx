@@ -8,6 +8,7 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -19,6 +20,8 @@ import org.esa.snap.core.gpf.pointop.Sample;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
+import org.esa.snap.core.util.BitSetter;
+import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
@@ -62,13 +65,11 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     static final String RASTER_NAME_L2_FLAGS = "l2_flags";
 
     // sources
-//    public static final int DEM_ALT_IX = WL_BAND_COUNT + 0;
     private static final int SUN_ZEN_IX = WL_BAND_COUNT;
     private static final int SUN_AZI_IX = WL_BAND_COUNT + 1;
     private static final int VIEW_ZEN_IX = WL_BAND_COUNT + 2;
     private static final int VIEW_AZI_IX = WL_BAND_COUNT + 3;
-//    public static final int ATM_PRESS_IX = WL_BAND_COUNT + 5;
-//    public static final int OZONE_IX = WL_BAND_COUNT + 6;
+    private static final int VALID_PIXEL_IX = WL_BAND_COUNT + 4;
 
     // targets
     private static final int REFLEC_1_IX = 0;
@@ -84,6 +85,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
     private static final int RTOSA_IN_1_IX = WL_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + WL_BAND_COUNT;
+
+    private static final int VALID_PE_BIT_INDEX = 19;
 
     @SourceProduct(label = "SeaWiFS L1b product",
                 description = "SeaWiFS L1b source product.")
@@ -200,69 +203,78 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
 
-        double[] toa_ref = new double[WL_BAND_COUNT];
-        for (int i = 0; i < WL_BAND_COUNT; i++) {
-            toa_ref[i] = sourceSamples[i].getDouble();
-        }
+        if (sourceSamples[VALID_PIXEL_IX].getBoolean()) {
+            double[] toa_ref = new double[WL_BAND_COUNT];
+            for (int i = 0; i < WL_BAND_COUNT; i++) {
+                toa_ref[i] = sourceSamples[i].getDouble();
+            }
 
-        final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
-        GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
-        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
-        final double lat = geoPos.getLat();
-        final double lon = geoPos.getLon();
+            final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
+            GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
+            final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
+            final double lat = geoPos.getLat();
+            final double lon = geoPos.getLon();
 
-        final double sun_zeni = sourceSamples[SUN_ZEN_IX].getDouble();
-        final double sun_azi = sourceSamples[SUN_AZI_IX].getDouble();
-        final double view_zeni = sourceSamples[VIEW_ZEN_IX].getDouble();
-        final double view_azi = sourceSamples[VIEW_AZI_IX].getDouble();
-        final double dem_alt = 0.0;  // todo to be replaced by a real value
-        final double atm_press = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
-        final double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
+            final double sun_zeni = sourceSamples[SUN_ZEN_IX].getDouble();
+            final double sun_azi = sourceSamples[SUN_AZI_IX].getDouble();
+            final double view_zeni = sourceSamples[VIEW_ZEN_IX].getDouble();
+            final double view_azi = sourceSamples[VIEW_AZI_IX].getDouble();
+            final double dem_alt = 0.0;  // todo to be replaced by a real value
+            final double atm_press = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
+            final double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
 
-        C2rccSeaWiFSAlgorithm.Result result = algorithm.processPixel(
+            C2rccSeaWiFSAlgorithm.Result result = algorithm.processPixel(
                     toa_ref,
                     sun_zeni, sun_azi,
                     view_zeni, view_azi,
                     dem_alt,
                     atm_press, ozone
-        );
+            );
 
-        for (int i = 0; i < result.rw.length; i++) {
-            targetSamples[i].set(outputAsRrs ? result.rw[i] / Math.PI : result.rw[i]);
-        }
-
-        for (int i = 0; i < result.iops.length; i++) {
-            targetSamples[result.rw.length + i].set(result.iops[i]);
-        }
-
-        targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
-        targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
-        targetSamples[C2RCC_FLAGS_IX].set(result.flags);
-
-        if (outputRtosa) {
-            for (int i = 0; i < result.rtosa_in.length; i++) {
-                targetSamples[RTOSA_IN_1_IX + i].set(result.rtosa_in[i]);
+            for (int i = 0; i < result.rw.length; i++) {
+                targetSamples[i].set(outputAsRrs ? result.rw[i] / Math.PI : result.rw[i]);
             }
-            for (int i = 0; i < result.rtosa_out.length; i++) {
-                targetSamples[RTOSA_OUT_1_IX + i].set(result.rtosa_out[i]);
+
+            for (int i = 0; i < result.iops.length; i++) {
+                targetSamples[result.rw.length + i].set(result.iops[i]);
             }
+
+            targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
+            targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
+
+            int flags = BitSetter.setFlag(result.flags, VALID_PE_BIT_INDEX, true);
+            targetSamples[C2RCC_FLAGS_IX].set(flags);
+
+            if (outputRtosa) {
+                for (int i = 0; i < result.rtosa_in.length; i++) {
+                    targetSamples[RTOSA_IN_1_IX + i].set(result.rtosa_in[i]);
+                }
+                for (int i = 0; i < result.rtosa_out.length; i++) {
+                    targetSamples[RTOSA_OUT_1_IX + i].set(result.rtosa_out[i]);
+                }
+            }
+        }else {
+            setInvalid(targetSamples);
+            int flags = BitSetter.setFlag(0, VALID_PE_BIT_INDEX, false);
+            targetSamples[C2RCC_FLAGS_IX].set(flags);
         }
     }
 
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
-        sc.setValidPixelMask(validPixelExpression);
         for (int i = 0; i < WL_BAND_COUNT; i++) {
             final int wavelength = seawifsWavelengths[i];
             sc.defineSample(i, SOURCE_RADIANCE_NAME_PREFIX + wavelength);
         }
-//        sc.defineSample(DEM_ALT_IX, "dem_alt"); // todo
         sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SOLAR_ZENITH);
         sc.defineSample(SUN_AZI_IX, RASTER_NAME_SOLAR_AZIMUTH);
         sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEW_ZENITH);
         sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEW_AZIMUTH);
-//        sc.defineSample(ATM_PRESS_IX, "atm_press"); // todo
-//        sc.defineSample(OZONE_IX, "ozone");         // todo
+        if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
+        } else {
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true");
+        }
     }
 
     @Override
@@ -388,18 +400,22 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         }
     }
 
+    @Override
     public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
 
+    @Override
     public void setSalinity(double salinity) {
         this.salinity = salinity;
     }
 
+    @Override
     public void setValidPixelExpression(String validPixelExpression) {
         this.validPixelExpression = validPixelExpression;
     }
 
+    @Override
     public void setOutputRtosa(boolean outputRtosa) {
         this.outputRtosa = outputRtosa;
     }

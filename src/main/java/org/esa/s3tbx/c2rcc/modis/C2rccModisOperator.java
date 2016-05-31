@@ -3,12 +3,12 @@ package org.esa.s3tbx.c2rcc.modis;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
-import org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -20,6 +20,8 @@ import org.esa.snap.core.gpf.pointop.Sample;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
+import org.esa.snap.core.util.BitSetter;
+import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
@@ -41,10 +43,10 @@ import static org.esa.s3tbx.c2rcc.util.TargetProductPreparer.*;
  * @author Norman Fomferra, Sabine Embacher
  */
 @OperatorMetadata(alias = "modis.c2rcc", version = "0.9.6",
-            authors = "Wolfgang Schoenfeld (HZG), Sabine Embacher, Norman Fomferra (Brockmann Consult)",
-            category = "Optical Processing/Thematic Water Processing",
-            copyright = "Copyright (C) 2015 by Brockmann Consult",
-            description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
+        authors = "Wolfgang Schoenfeld (HZG), Sabine Embacher, Norman Fomferra (Brockmann Consult)",
+        category = "Optical Processing/Thematic Water Processing",
+        copyright = "Copyright (C) 2015 by Brockmann Consult",
+        description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
 public class C2rccModisOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
@@ -57,6 +59,8 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     private static final int SUN_AZI_IX = SOURCE_BAND_COUNT + 1;
     private static final int VIEW_ZEN_IX = SOURCE_BAND_COUNT + 2;
     private static final int VIEW_AZI_IX = SOURCE_BAND_COUNT + 3;
+    private static final int VALID_PIXEL_IX = SOURCE_BAND_COUNT + 4;
+
 
     // Modis Targets
     private static final int REFLEC_BAND_COUNT = NN_INPUT_REFLEC_WAVELENGTHS.length;
@@ -73,6 +77,8 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     private static final int RTOSA_IN_1_IX = REFLEC_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
+
+    private static final int VALID_PE_BIT_INDEX = 19;
 
     private static final String RASTER_NAME_SOLAR_ZENITH = "solz";
     private static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";
@@ -241,7 +247,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         outputAsRrs = asRrs;
     }
 
-    public void setOutputAngles(boolean outputAngles) {
+    void setOutputAngles(boolean outputAngles) {
         this.outputAngles = outputAngles;
     }
 
@@ -257,61 +263,67 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
 
-        double[] toa_ref = new double[SOURCE_BAND_COUNT];
-        for (int i = 0; i < SOURCE_BAND_COUNT; i++) {
-            toa_ref[i] = sourceSamples[i].getDouble();
-        }
-
-        GeoCoding geoCoding = sourceProduct.getSceneGeoCoding();
-        PixelPos pixelPos = new PixelPos(x + 0.5, y + 0.5);
-        double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
-        GeoPos geoPos = geoCoding.getGeoPos(pixelPos, new GeoPos());
-
-        double ozone = fetchOzone(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
-        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
-        C2rccModisAlgorithm.Result result = algorithm.processPixel(
-                toa_ref,
-                sourceSamples[SUN_ZEN_IX].getDouble(),
-                sourceSamples[SUN_AZI_IX].getDouble(),
-                sourceSamples[VIEW_ZEN_IX].getDouble(),
-                sourceSamples[VIEW_AZI_IX].getDouble(),
-                atmPress,
-                ozone
-        );
-
-        for (int i = 0; i < result.rw.length; i++) {
-            targetSamples[i].set(outputAsRrs ? result.rw[i] / Math.PI : result.rw[i]);
-        }
-
-        for (int i = 0; i < result.iops.length; i++) {
-            targetSamples[result.rw.length + i].set(result.iops[i]);
-        }
-
-        targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
-        targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
-        targetSamples[C2RCC_FLAGS_IX].set(result.flags);
-
-        if (outputAngles) {
-            final int targetStartIdx = C2RCC_FLAGS_IX + 1;
-            for (int i = 0; i < GEOMETRY_ANGLE_NAMES.length; i++) {
-                targetSamples[targetStartIdx + i].set(sourceSamples[SUN_ZEN_IX + i].getFloat());
+        if (sourceSamples[VALID_PIXEL_IX].getBoolean()) {
+            double[] toa_ref = new double[SOURCE_BAND_COUNT];
+            for (int i = 0; i < SOURCE_BAND_COUNT; i++) {
+                toa_ref[i] = sourceSamples[i].getDouble();
             }
-        }
+            GeoCoding geoCoding = sourceProduct.getSceneGeoCoding();
+            PixelPos pixelPos = new PixelPos(x + 0.5, y + 0.5);
+            double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
+            GeoPos geoPos = geoCoding.getGeoPos(pixelPos, new GeoPos());
 
-        if (outputRtosa) {
-            final int offset = outputAngles ? GEOMETRY_ANGLE_NAMES.length : 0;
-            for (int i = 0; i < result.rtosa_in.length; i++) {
-                targetSamples[RTOSA_IN_1_IX + offset + i].set(result.rtosa_in[i]);
+            double ozone = fetchOzone(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
+            double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
+            Result result = algorithm.processPixel(
+                    toa_ref,
+                    sourceSamples[SUN_ZEN_IX].getDouble(),
+                    sourceSamples[SUN_AZI_IX].getDouble(),
+                    sourceSamples[VIEW_ZEN_IX].getDouble(),
+                    sourceSamples[VIEW_AZI_IX].getDouble(),
+                    atmPress,
+                    ozone
+            );
+
+            for (int i = 0; i < result.rw.length; i++) {
+                targetSamples[i].set(outputAsRrs ? result.rw[i] / Math.PI : result.rw[i]);
             }
-            for (int i = 0; i < result.rtosa_out.length; i++) {
-                targetSamples[RTOSA_OUT_1_IX + offset + i].set(result.rtosa_out[i]);
+
+            for (int i = 0; i < result.iops.length; i++) {
+                targetSamples[result.rw.length + i].set(result.iops[i]);
             }
+
+            targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
+            targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
+
+            int flags = BitSetter.setFlag(result.flags, VALID_PE_BIT_INDEX, true);
+            targetSamples[C2RCC_FLAGS_IX].set(flags);
+
+            if (outputAngles) {
+                final int targetStartIdx = C2RCC_FLAGS_IX + 1;
+                for (int i = 0; i < GEOMETRY_ANGLE_NAMES.length; i++) {
+                    targetSamples[targetStartIdx + i].set(sourceSamples[SUN_ZEN_IX + i].getFloat());
+                }
+            }
+
+            if (outputRtosa) {
+                final int offset = outputAngles ? GEOMETRY_ANGLE_NAMES.length : 0;
+                for (int i = 0; i < result.rtosa_in.length; i++) {
+                    targetSamples[RTOSA_IN_1_IX + offset + i].set(result.rtosa_in[i]);
+                }
+                for (int i = 0; i < result.rtosa_out.length; i++) {
+                    targetSamples[RTOSA_OUT_1_IX + offset + i].set(result.rtosa_out[i]);
+                }
+            }
+        } else {
+            setInvalid(targetSamples);
+            int flags = BitSetter.setFlag(0, VALID_PE_BIT_INDEX, false);
+            targetSamples[C2RCC_FLAGS_IX].set(flags);
         }
     }
 
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
-        sc.setValidPixelMask(validPixelExpression);
         for (int i = 0; i < NN_INPUT_REFLEC_WAVELENGTHS.length; i++) {
             int wl = NN_INPUT_REFLEC_WAVELENGTHS[i];
             sc.defineSample(i, "rhot_" + wl);
@@ -320,6 +332,11 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         sc.defineSample(SUN_AZI_IX, RASTER_NAME_SOLAR_AZIMUTH);
         sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEW_ZENITH);
         sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEW_AZIMUTH);
+        if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
+        } else {
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true");
+        }
     }
 
     @Override
@@ -327,7 +344,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         for (int i = 0; i < NN_INPUT_REFLEC_WAVELENGTHS.length; i++) {
             if (outputAsRrs) {
                 sc.defineSample(i, "rrs_" + NN_INPUT_REFLEC_WAVELENGTHS[i]);
-            }else {
+            } else {
                 sc.defineSample(i, "rhow_" + NN_INPUT_REFLEC_WAVELENGTHS[i]);
             }
         }
