@@ -67,7 +67,7 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "olci.c2rcc", version = "0.9.6",
+@OperatorMetadata(alias = "olci.c2rcc", version = "0.9.7",
             authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
