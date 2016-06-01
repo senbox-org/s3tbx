@@ -129,10 +129,10 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
                 converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.1, 43)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)")
     private double salinity;
 
-    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.1, 36)")
+    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)")
     private double temperature;
 
     @Parameter(defaultValue = "330.0", unit = "DU", interval = "(0, 1000)")

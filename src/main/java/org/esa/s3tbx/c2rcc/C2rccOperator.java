@@ -84,10 +84,10 @@ public class C2rccOperator extends Operator {
                 description = "If not specified a sensor specific default expression will be used.")
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.1, 43)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)")
     private double salinity;
 
-    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.1, 36)")
+    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)")
     private double temperature;
 
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
