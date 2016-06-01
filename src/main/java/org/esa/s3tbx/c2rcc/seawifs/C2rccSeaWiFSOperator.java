@@ -38,7 +38,7 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengt
 /**
  * The Case 2 Regional / CoastColour Operator for SeaWiFS.
  * <p/>
- * Computes AC-reflectances and IOPs from SeaWiFS L1b data products using
+ * Computes AC-reflectances and IOPs from SeaWiFS L1C data products using
  * an neural-network approach.
  *
  * @author Norman Fomferra
@@ -47,7 +47,7 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengt
             authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
             category = "Optical Processing/Thematic Water Processing",
             copyright = "Copyright (C) 2015 by Brockmann Consult",
-            description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1b data products.")
+            description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1C data products.")
 public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
@@ -88,8 +88,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
     private static final int VALID_PE_BIT_INDEX = 19;
 
-    @SourceProduct(label = "SeaWiFS L1b product",
-                description = "SeaWiFS L1b source product.")
+    @SourceProduct(label = "SeaWiFS L1C product",
+                description = "SeaWiFS L1C source product.")
     private Product sourceProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
