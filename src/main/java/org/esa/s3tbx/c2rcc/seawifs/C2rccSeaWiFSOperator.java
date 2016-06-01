@@ -88,6 +88,12 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
     private static final int VALID_PE_BIT_INDEX = 19;
 
+    /*
+     * Source product type has been changed from L1B to L1C in commit
+     * https://github.com/bcdev/s3tbx-c2rcc/commit/dcf85caa793c08a52d46f79f3004841be57ab04c
+     *
+     * TODO (2016-06-01/mp - Actually we can support both types)
+     */
     @SourceProduct(label = "SeaWiFS L1C product",
                 description = "SeaWiFS L1C source product.")
     private Product sourceProduct;
