@@ -11,6 +11,9 @@ public class C2rccCommons {
         if (product.getSceneTimeCoding() == null) {
             final ProductData.UTC startTime = product.getStartTime();
             final ProductData.UTC endTime = product.getEndTime();
+            if (endTime == null || startTime == null) {
+                throw new OperatorException("Could not retrieve time information from source product");
+            }
             setTimeCoding(product, startTime, endTime);
         }
     }
