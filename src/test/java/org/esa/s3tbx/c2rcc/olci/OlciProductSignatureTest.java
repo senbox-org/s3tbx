@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -227,6 +229,11 @@ public class OlciProductSignatureTest {
             product.addBand(String.format("Oa%02d_radiance", i), expression);
             product.addBand("solar_flux_band_" + i, expression);
         }
+
+        Date time = new Date();
+        product.setStartTime(ProductData.UTC.create(time, 0));
+        product.setEndTime(ProductData.UTC.create(time, 500));
+
 
         product.addBand(C2rccOlciOperator.RASTER_NAME_ALTITUDE, "500");
         product.addBand(C2rccOlciOperator.RASTER_NAME_SUN_AZIMUTH, "42");

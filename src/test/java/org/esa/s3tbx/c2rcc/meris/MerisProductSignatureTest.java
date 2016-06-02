@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -226,6 +228,9 @@ public class MerisProductSignatureTest {
             Band radiance = product.addBand(C2rccMerisOperator.SOURCE_RADIANCE_NAME_PREFIX + i, expression);
             radiance.setSolarFlux((float) C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX[i-1]);
         }
+        Date time = new Date();
+        product.setStartTime(ProductData.UTC.create(time, 0));
+        product.setEndTime(ProductData.UTC.create(time, 500));
 
         product.addBand(C2rccMerisOperator.RASTER_NAME_DEM_ALT, "500");
         product.addBand(C2rccMerisOperator.RASTER_NAME_SUN_AZIMUTH, "42");

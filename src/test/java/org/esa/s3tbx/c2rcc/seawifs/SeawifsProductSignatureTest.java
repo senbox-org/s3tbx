@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -130,6 +132,10 @@ public class SeawifsProductSignatureTest {
             String expression = String.valueOf(reflec_wavelength);
             product.addBand(C2rccSeaWiFSOperator.SOURCE_RADIANCE_NAME_PREFIX + reflec_wavelength, expression);
         }
+
+        Date time = new Date();
+        product.setStartTime(ProductData.UTC.create(time, 0));
+        product.setEndTime(ProductData.UTC.create(time, 500));
 
         for (String angleName : C2rccSeaWiFSOperator.GEOMETRY_ANGLE_NAMES) {
             product.addBand(angleName, "42");
