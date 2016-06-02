@@ -485,7 +485,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         double lon = geoPos.getLon();
         double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
         double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
-        ;
 
         C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y, lat, lon,
                                                                    radiances,
