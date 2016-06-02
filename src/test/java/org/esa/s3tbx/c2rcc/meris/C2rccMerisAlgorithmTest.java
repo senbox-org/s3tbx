@@ -36,7 +36,7 @@ public class C2rccMerisAlgorithmTest {
         System.arraycopy(y1, 59, iopsExpected1, 0, iopsExpected1.length);
         assertArrayEquals(iopsExpected1, result1.iops_nn, 1e-2);
 
-        assertEquals(524288, result1.flags);
+        assertEquals(-2147483648, result1.flags);
 
         C2rccMerisAlgorithm.Result result32 = algo.processPixel(
                     278, 583, 8.346703, 54.009,
@@ -63,7 +63,7 @@ public class C2rccMerisAlgorithmTest {
         System.arraycopy(y32, 59, iopsExpected32, 0, iopsExpected32.length);
         assertArrayEquals(iopsExpected32, result32.iops_nn, 1e-1);
 
-        assertEquals(524288, result32.flags);
+        assertEquals(-2147483648, result32.flags);
 
         System.out.println("iopsExpected32 = " + Arrays.toString(iopsExpected32));
         System.out.println("result32 = " + Arrays.toString(result32.iops_nn));
