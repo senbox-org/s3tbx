@@ -273,8 +273,8 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
             double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
             GeoPos geoPos = geoCoding.getGeoPos(pixelPos, new GeoPos());
 
-            double ozone = fetchOzone(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
-            double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, geoPos.lat, geoPos.lon);
+            double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, geoPos.lat, geoPos.lon);
+            double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, geoPos.lat, geoPos.lon);
             Result result = algorithm.processPixel(
                     toa_ref,
                     sourceSamples[SUN_ZEN_IX].getDouble(),

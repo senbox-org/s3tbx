@@ -24,15 +24,14 @@ public class RasterAtmosphericAuxdata implements AtmosphericAuxdata {
     }
 
     @Override
-    public double getOzone(double timeMJD, double lat, double lon) throws Exception {
+    public double getOzone(double mjd, int x, int y, double lat, double lon) throws Exception {
         PixelPos pixelPos = ozoneRaster.getGeoCoding().getPixelPos(new GeoPos(lat, lon), null);
         return ozoneRaster.getSampleFloat((int)pixelPos.x, (int)pixelPos.y);
     }
 
     @Override
-    public double getSurfacePressure(double timeMJD, double lat, double lon) throws Exception {
-        PixelPos pixelPos = surfPressureRaster.getGeoCoding().getPixelPos(new GeoPos(lat, lon), null);
-        return surfPressureRaster.getSampleFloat((int)pixelPos.x, (int)pixelPos.y);
+    public double getSurfacePressure(double mjd, int x, int y, double lat, double lon) throws Exception {
+        return surfPressureRaster.getSampleFloat(x, y);
     }
 
     @Override

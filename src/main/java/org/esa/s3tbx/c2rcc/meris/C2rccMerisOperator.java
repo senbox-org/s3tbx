@@ -483,8 +483,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
-        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
-        double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
+        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, lat, lon);
+        double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, lat, lon);
 
         C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y, lat, lon,
                                                                    radiances,
@@ -764,7 +764,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             }
             if (outputAsRrs) {
                 autoGrouping.append(":rrs");
-            }else {
+            } else {
                 autoGrouping.append(":rhow");
             }
         }

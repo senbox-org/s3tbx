@@ -12,15 +12,15 @@ public class ConstantAtmosphericAuxdataTest {
     public void getValues() throws Exception {
         ConstantAtmosphericAuxdata auxdata = new ConstantAtmosphericAuxdata(337, 980.7);
 
-        assertEquals(337.0, auxdata.getOzone(23434.0, 43, 12.67), 1.0e-8);
-        assertEquals(337.0, auxdata.getOzone(234.0, 43, 12.67), 1.0e-8);
-        assertEquals(337.0, auxdata.getOzone(234.0, 143, 12.67), 1.0e-8);
-        assertEquals(337.0, auxdata.getOzone(234.0, 143, -48), 1.0e-8);
+        assertEquals(337.0, auxdata.getOzone(23434.0, -1, -1, 43, 12.67), 1.0e-8);
+        assertEquals(337.0, auxdata.getOzone(234.0, -1, -1, 43, 12.67), 1.0e-8);
+        assertEquals(337.0, auxdata.getOzone(234.0, -1, -1, 143, 12.67), 1.0e-8);
+        assertEquals(337.0, auxdata.getOzone(234.0, -1, -1, 143, -48), 1.0e-8);
 
-        assertEquals(980.7, auxdata.getSurfacePressure(23434.0, 43, 12.67), 1.0e-8);
-        assertEquals(980.7, auxdata.getSurfacePressure(234.0, 43, 12.67), 1.0e-8);
-        assertEquals(980.7, auxdata.getSurfacePressure(234.0, 143, 12.67), 1.0e-8);
-        assertEquals(980.7, auxdata.getSurfacePressure(234.0, 143, -48), 1.0e-8);
+        assertEquals(980.7, auxdata.getSurfacePressure(23434.0, -1, -1, 43, 12.67), 1.0e-8);
+        assertEquals(980.7, auxdata.getSurfacePressure(234.0, -1, -1, 43, 12.67), 1.0e-8);
+        assertEquals(980.7, auxdata.getSurfacePressure(234.0, -1, -1, 143, 12.67), 1.0e-8);
+        assertEquals(980.7, auxdata.getSurfacePressure(234.0, -1, -1, 143, -48), 1.0e-8);
 
     }
 

@@ -495,8 +495,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
-        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
-        double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
+        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, lat, lon);
+        double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, lat, lon);
         final double altitude;
         if (useSnapDem) {
             try {

@@ -226,8 +226,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
             final double view_zeni = sourceSamples[VIEW_ZEN_IX].getDouble();
             final double view_azi = sourceSamples[VIEW_AZI_IX].getDouble();
             final double dem_alt = 0.0;  // todo to be replaced by a real value
-            final double atm_press = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
-            final double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
+            final double atm_press = fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, lat, lon);
+            final double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, lat, lon);
 
             C2rccSeaWiFSAlgorithm.Result result = algorithm.processPixel(
                     toa_ref,

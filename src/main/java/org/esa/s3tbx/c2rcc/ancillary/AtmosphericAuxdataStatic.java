@@ -61,13 +61,13 @@ public class AtmosphericAuxdataStatic implements AtmosphericAuxdata {
     }
 
     @Override
-    public double getOzone(double timeMJD, double lat, double lon) throws IOException {
-        return ozoneInterpolator.getValue(timeMJD, lat, lon);
+    public double getOzone(double mjd, int x, int y, double lat, double lon) throws IOException {
+        return ozoneInterpolator.getValue(mjd, lat, lon);
     }
 
     @Override
-    public double getSurfacePressure(double timeMJD, double lat, double lon) throws Exception {
-        return pressureInterpolator.getValue(timeMJD, lat, lon);
+    public double getSurfacePressure(double mjd, int x, int y, double lat, double lon) throws IOException {
+        return pressureInterpolator.getValue(mjd, lat, lon);
     }
 
     @Override

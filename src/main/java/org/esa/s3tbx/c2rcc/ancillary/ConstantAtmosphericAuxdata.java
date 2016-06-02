@@ -14,34 +14,36 @@ public class ConstantAtmosphericAuxdata implements AtmosphericAuxdata {
     }
 
     /**
-     * Ignores the {@code timeMJD}, {@code lat} and {@code lon} parameters and returns always the constant
+     * Ignores all parameters and returns always the constant
      * ozone value given in the constructor of this class.
      *
-     * @param timeMJD the date/time value as mjd to retrieve the data for (ignored)
-     * @param lat     the latitude value (ignored)
-     * @param lon     the longitude value (ignored)
-     *
+     * @param mjd ignored
+     * @param x   ignored
+     * @param y   ignored
+     * @param lat ignored
+     * @param lon ignored
      * @return constant ozone value
      * @throws Exception never thrown
      */
     @Override
-    public double getOzone(double timeMJD, double lat, double lon) throws Exception {
+    public double getOzone(double mjd, int x, int y, double lat, double lon) throws Exception {
         return ozone;
     }
 
     /**
-     * Ignores the {@code timeMJD}, {@code lat} and {@code lon} parameters and returns always the constant
+     * Ignores all parameters and returns always the constant
      * surface pressure value given in the constructor of this class.
      *
-     * @param timeMJD the date/time value as mjd to retrieve the data for (ignored)
-     * @param lat     the latitude value (ignored)
-     * @param lon     the longitude value (ignored)
-     *
+     * @param mjd ignored
+     * @param x   ignored
+     * @param y   ignored
+     * @param lat ignored
+     * @param lon ignored
      * @return constant surface pressure value
      * @throws Exception never thrown
      */
     @Override
-    public double getSurfacePressure(double timeMJD, double lat, double lon) throws Exception {
+    public double getSurfacePressure(double mjd, int x, int y, double lat, double lon) throws Exception {
         return surfPressure;
     }
 

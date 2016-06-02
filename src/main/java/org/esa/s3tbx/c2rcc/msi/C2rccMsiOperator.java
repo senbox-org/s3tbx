@@ -461,8 +461,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
         // todo MSI has no time information
         final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
-        double ozone = fetchOzone(atmosphericAuxdata, mjd, lat, lon);
-        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, lat, lon);
+        double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, lat, lon);
+        double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, lat, lon);
 
         final double altitude;
         if (elevationModel != null) {
