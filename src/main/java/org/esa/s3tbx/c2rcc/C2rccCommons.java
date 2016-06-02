@@ -3,6 +3,7 @@ package org.esa.s3tbx.c2rcc;
 import org.esa.snap.core.datamodel.ConstantTimeCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.gpf.OperatorException;
 
 public class C2rccCommons {
 
@@ -17,7 +18,7 @@ public class C2rccCommons {
     public static void setTimeCoding(Product product, ProductData.UTC startTime, ProductData.UTC endTime) {
         if (startTime != null && endTime != null) {
             product.setStartTime(startTime);
-            product.setEndTime(startTime);
+            product.setEndTime(endTime);
             double startTimeMJD = startTime.getMJD();
             double constantTime = (endTime.getMJD() - startTimeMJD) / 2.0 + startTimeMJD;
             product.setSceneTimeCoding(new ConstantTimeCoding(constantTime));
