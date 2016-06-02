@@ -46,7 +46,7 @@ public class SeawifsProductSignatureTest {
 
     private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
     private static final String EXPECTED_VALID_PE_FLAG = "Valid_PE";
-    private static final int EXPECTED_VPE_MASK = 0x080000;
+    private static final int EXPECTED_VPE_MASK = 0x80000000;
     private static final String EXPECTED_L2_FLAGS = "l2_flags";
 
     @Test
