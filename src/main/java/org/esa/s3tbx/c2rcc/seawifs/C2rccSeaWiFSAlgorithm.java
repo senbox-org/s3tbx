@@ -28,8 +28,6 @@ import static org.esa.s3tbx.ArrayMath.a_min;
  */
 public class C2rccSeaWiFSAlgorithm {
 
-    private Thread thread;
-
     /**
      * Structure for returning the algorithm's result.
      */

@@ -35,9 +35,6 @@ import static org.esa.s3tbx.ArrayMath.a_max;
  */
 public class C2rccOlciAlgorithm {
 
-    public final static double pressure_default = 1000.0;
-    public final static double ozone_default = 330.0;
-
     public static final int IDX_rtosa_aann = 0;
     public static final int IDX_rtosa_rw = 1;
     public static final int IDX_rw_iop = 2;
@@ -419,10 +416,10 @@ public class C2rccOlciAlgorithm {
             if (outputTdown || outputTup) {
                 double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
                 if (outputTdown) {
-                    transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
+                    transd_nn = Arrays.copyOfRange(trans_nn, 0, 16);
                 }
                 if (outputTup) {
-                    transu_nn = Arrays.copyOfRange(trans_nn, 12, 24);
+                    transu_nn = Arrays.copyOfRange(trans_nn, 16, 32);
                 }
             }
 
