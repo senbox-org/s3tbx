@@ -943,6 +943,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Override
     protected void prepareInputs() throws OperatorException {
+        ensureSingleRasterSize(sourceProduct);
         for (String sourceBandName : NN_SOURCE_BAND_REFL_NAMES) {
             assertSourceBand(sourceBandName);
         }
@@ -1006,15 +1007,23 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     }
 
     private ProductData.UTC getStartTime() {
-        MetadataElement gi = getGeneralInfo();
-        MetadataElement productInfo = getSubElementSafe(gi, "Product_Info");
-        return getTime(productInfo, PRODUCT_DATE_FORMAT, "PRODUCT_START_TIME");
+        ProductData.UTC startTime = sourceProduct.getStartTime();
+        if (startTime == null) {
+            MetadataElement gi = getGeneralInfo();
+            MetadataElement productInfo = getSubElementSafe(gi, "Product_Info");
+            startTime = getTime(productInfo, PRODUCT_DATE_FORMAT, "PRODUCT_START_TIME");
+        }
+        return startTime;
     }
 
     private ProductData.UTC getEndTime() {
-        MetadataElement gi = getGeneralInfo();
-        MetadataElement productInfo = getSubElementSafe(gi, "Product_Info");
-        return getTime(productInfo, PRODUCT_DATE_FORMAT, "PRODUCT_STOP_TIME");
+        ProductData.UTC endTime = sourceProduct.getEndTime();
+        if (endTime == null) {
+            MetadataElement gi = getGeneralInfo();
+            MetadataElement productInfo = getSubElementSafe(gi, "Product_Info");
+            endTime = getTime(productInfo, PRODUCT_DATE_FORMAT, "PRODUCT_STOP_TIME");
+        }
+        return endTime;
     }
 
     private ProductData.UTC getTime(MetadataElement productInfo, DateFormat dateFormat, String timeAttrName) {
