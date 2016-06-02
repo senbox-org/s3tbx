@@ -98,14 +98,6 @@ public class C2rccSeaWiFSAlgorithm {
                                double atm_press,
                                double ozone) {
 
-        final Thread thread = Thread.currentThread();
-        if (this.thread == null) {
-            this.thread = thread;
-        }
-        if (this.thread != thread) {
-            throw new OperatorException("Kotz!!!!");
-        }
-
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
         double cos_view = cos(toRadians(view_zeni));
