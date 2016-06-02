@@ -55,7 +55,7 @@ public class TargetProductPreparer {
         flagCoding.addFlag("Rtosa_OOS", 0x01, "The input spectrum to atmospheric correction neural net was unknown");
         flagCoding.addFlag("Rtosa_OOR", 0x02, "The input spectrum to atmospheric correction neural net out of training range");
         flagCoding.addFlag("Iop_OOR", 0x04, "One of the inputs to the IOP retrieval neural net is out of training range");
-        flagCoding.addFlag("Valid_PE", 0x080000, "The operators valid pixel expression has resolved to true");
+        flagCoding.addFlag("Valid_PE", 0x80000000, "The operators valid pixel expression has resolved to true");
         targetProduct.getFlagCodingGroup().add(flagCoding);
         c2rcc_flags.setSampleCoding(flagCoding);
 

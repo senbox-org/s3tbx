@@ -137,9 +137,10 @@ public class C2rccOlciAlgorithm {
 //    double[] thresh_rwslope = {0.95, 1.05};    // threshold for out of scope flag Rw has to be adjusted
 
     // (5) thresholds for flags
-    double log_threshfak_oor = 0.02; // == ~1.02, for log variables
-    double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
-    double thresh_rwlogslope;  // threshold for rwa_oos
+    private double log_threshfak_oor = 0.02; // == ~1.02, for log variables
+    private double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
+    private double thresh_rwlogslope;  // threshold for rwa_oos
+    private double thresh_cloudTransD;
     private boolean outputRtoaGcAann;
     private boolean outputRpath;
     private boolean outputTdown;
@@ -196,6 +197,11 @@ public class C2rccOlciAlgorithm {
     public void setThresh_rwlogslope(double thresh_rwlogslope) {
         this.thresh_rwlogslope = thresh_rwlogslope;
     }
+
+    public void setThresh_cloudTransD(double thresh_cloudTransD) {
+        this.thresh_cloudTransD = thresh_cloudTransD;
+    }
+
 
     public void setOutputRtoaGcAann(boolean outputRtoaGcAann) {
         this.outputRtoaGcAann = outputRtoaGcAann;
@@ -417,6 +423,8 @@ public class C2rccOlciAlgorithm {
                 double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
                 if (outputTdown) {
                     transd_nn = Arrays.copyOfRange(trans_nn, 0, 16);
+                    // cloud flag test @865
+                    flags = BitSetter.setFlag(flags, 19, transd_nn[13] < thresh_cloudTransD);
                 }
                 if (outputTup) {
                     transu_nn = Arrays.copyOfRange(trans_nn, 16, 32);
@@ -616,7 +624,7 @@ public class C2rccOlciAlgorithm {
             }
         }
 
-        flags = BitSetter.setFlag(flags, 19, validPixel);
+        flags = BitSetter.setFlag(flags, 31, validPixel);
 
         return new Result(r_toa, r_tosa, rtosa_aann, rpath_nn, transd_nn, transu_nn, rwa, rwn, rtosa_oos, rwa_oos,
                           iops_nn, kd489_nn, kdmin_nn, unc_iop_abs, unc_abs_adg, unc_abs_atot, unc_abs_btot,

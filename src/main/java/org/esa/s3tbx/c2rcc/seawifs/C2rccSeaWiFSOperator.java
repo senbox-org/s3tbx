@@ -86,7 +86,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     private static final int RTOSA_IN_1_IX = WL_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + WL_BAND_COUNT;
 
-    private static final int VALID_PE_BIT_INDEX = 19;
+    private static final int VALID_PE_BIT_INDEX = 31;
 
     /*
      * Source product type has been changed from L1B to L1C in commit

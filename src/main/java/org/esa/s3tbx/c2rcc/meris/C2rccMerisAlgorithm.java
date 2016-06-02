@@ -112,9 +112,11 @@ public class C2rccMerisAlgorithm {
 //    double[] thresh_rwslope = {0.95, 1.05};    // threshold for out of scope flag Rw has to be adjusted
 
     // (5) thresholds for flags
-    double log_threshfak_oor = 0.02; // == ~1.02, for log variables
-    double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
-    double thresh_rwlogslope;  // threshold for rwa_oos
+    private double log_threshfak_oor = 0.02; // == ~1.02, for log variables
+    private double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
+    private double thresh_rwlogslope;  // threshold for rwa_oos
+    private double thresh_cloudTransD;
+
     private boolean outputRtosaGcAann;
     private boolean outputRpath;
     private boolean outputTdown;
@@ -124,6 +126,7 @@ public class C2rccMerisAlgorithm {
     private boolean outputOos;
     private boolean outputKd;
     private boolean outputUncertainties;
+
     C2rccMerisAlgorithm(final String[] nnFilePaths, final boolean loadFromResources) throws IOException {
         nnNames = new ArrayList<>();
 
@@ -169,6 +172,10 @@ public class C2rccMerisAlgorithm {
 
     public void setThresh_rwlogslope(double thresh_rwlogslope) {
         this.thresh_rwlogslope = thresh_rwlogslope;
+    }
+
+    public void setThresh_cloudTransD(double thresh_cloudTransD) {
+        this.thresh_cloudTransD = thresh_cloudTransD;
     }
 
     public void setOutputRtosaGcAann(boolean outputRtosaGcAann) {
@@ -386,6 +393,8 @@ public class C2rccMerisAlgorithm {
                 double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
                 if (outputTdown) {
                     transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
+                    // cloud flag test @865
+                    flags = BitSetter.setFlag(flags, 19, transd_nn[11] < thresh_cloudTransD);
                 }
                 if (outputTup) {
                     transu_nn = Arrays.copyOfRange(trans_nn, 12, 24);
@@ -585,7 +594,7 @@ public class C2rccMerisAlgorithm {
             }
         }
 
-        flags = BitSetter.setFlag(flags, 19, validPixel);
+        flags = BitSetter.setFlag(flags, 31, validPixel);
 
         return new Result(r_toa, r_tosa, rtosa_aann, rpath_nn, transd_nn, transu_nn, rwa, rwn, rtosa_oos, rwa_oos,
                           iops_nn, kd489_nn, kdmin_nn, unc_iop_abs, unc_abs_adg, unc_abs_atot, unc_abs_btot,

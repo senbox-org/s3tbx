@@ -78,7 +78,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     private static final int RTOSA_IN_1_IX = REFLEC_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
 
-    private static final int VALID_PE_BIT_INDEX = 19;
+    private static final int VALID_PE_BIT_INDEX = 31;
 
     private static final String RASTER_NAME_SOLAR_ZENITH = "solz";
     private static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";

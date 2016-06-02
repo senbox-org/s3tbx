@@ -272,6 +272,11 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             label = "Threshold AC reflecteances OOS")
     private double thresholdAcReflecOos;
 
+    @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
+            label = "Threshold for cloud flag on transmittance down @865")
+    private double thresholdCloudTDown865;
+
+
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
             "for calculations. If the auxiliary data needed for interpolation not available in this " +
@@ -908,7 +913,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         flagCoding.addFlag("Kdmin_OOR", 0x010000, "kdmin is out of range");
         flagCoding.addFlag("Kd489_at_max", 0x020000, "kdmin is at max");
         flagCoding.addFlag("Kdmin_at_max", 0x040000, "kdmin is at max");
-        flagCoding.addFlag("Valid_PE", 0x080000, "The operators valid pixel expression has resolved to true");
+        flagCoding.addFlag("Cloud", 0x080000, "Cloud flag");
+        flagCoding.addFlag("Valid_PE", 0x80000000, "The operators valid pixel expression has resolved to true");
 
         targetProduct.getFlagCodingGroup().add(flagCoding);
         c2rcc_flags.setSampleCoding(flagCoding);
@@ -1011,6 +1017,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         algorithm.setSalinity(salinity);
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
         algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
+        algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
 
         algorithm.setOutputRtosaGcAann(outputRtosaGcAann);
         algorithm.setOutputRpath(outputRpath);
