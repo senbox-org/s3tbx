@@ -60,10 +60,10 @@ public class C2rccOlciAlgorithm {
 //    };
     // gas absorption constants for 16 OLCI channels
     static final double[] absorb_ozon = {
-                0.0, 0.0002174, 0.0034448, 0.0205669,
-                0.0400134, 0.105446, 0.1081787, 0.0501634,
-                0.0410249, 0.0349671, 0.0187495, 0.0086322,
-                0.0084989, 0.0018944, 0.0012369, 0.0000488
+            0.0, 0.0002174, 0.0034448, 0.0205669,
+            0.0400134, 0.105446, 0.1081787, 0.0501634,
+            0.0410249, 0.0349671, 0.0187495, 0.0086322,
+            0.0084989, 0.0018944, 0.0012369, 0.0000488
     };
 
 
@@ -256,6 +256,10 @@ public class C2rccOlciAlgorithm {
                                boolean validPixel,
                                double atm_press,
                                double ozone) {
+
+        if (view_azi < 0) {
+            view_azi = 360 + view_azi; // view_azi is negative and therefore it will be subtracted from 360
+        }
 
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
