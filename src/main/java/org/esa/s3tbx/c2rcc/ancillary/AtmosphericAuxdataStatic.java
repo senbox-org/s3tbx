@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class AtmosphericAuxdataStatic implements AtmosphericAuxdata {
+class AtmosphericAuxdataStatic implements AtmosphericAuxdata {
 
     private static final int[] months = new int[]{
                 Calendar.JANUARY, Calendar.FEBRUARY, Calendar.MARCH,
@@ -21,17 +21,36 @@ public class AtmosphericAuxdataStatic implements AtmosphericAuxdata {
     private final DataInterpolator ozoneInterpolator;
     private final DataInterpolator pressureInterpolator;
 
-    public AtmosphericAuxdataStatic(Product startOzone, Product endOzone,
-                                    String ozoneBandName, double ozoneDefault,
-                                    Product startPressure, Product endPressure,
-                                    String pressureBandName, double pressureDefault) throws IOException {
+    AtmosphericAuxdataStatic(Product startOzone, Product endOzone,
+                             String ozoneBandName, double ozoneDefault,
+                             Product startPressure, Product endPressure,
+                             String pressureBandName, double pressureDefault) throws IOException {
         this(getOzoneInterpolator(startOzone, endOzone, ozoneBandName, ozoneDefault),
              getPressureInterpolator(startPressure, endPressure, pressureBandName, pressureDefault));
     }
 
-    public AtmosphericAuxdataStatic(DataInterpolator ozoneInterpolator, DataInterpolator pressureInterpolator) {
+    private AtmosphericAuxdataStatic(DataInterpolator ozoneInterpolator, DataInterpolator pressureInterpolator) {
         this.ozoneInterpolator = ozoneInterpolator;
         this.pressureInterpolator = pressureInterpolator;
+    }
+
+    @Override
+    public double getOzone(double mjd, int x, int y, double lat, double lon) throws IOException {
+        return ozoneInterpolator.getValue(mjd, lat, lon);
+    }
+
+    @Override
+    public double getSurfacePressure(double mjd, int x, int y, double lat, double lon) throws IOException {
+        return pressureInterpolator.getValue(mjd, lat, lon);
+    }
+
+    @Override
+    public void dispose() {
+        //todo not a good practice because the products should be set to null but should be disposed where they are initialized
+        ozoneInterpolator.dispose();
+        ozoneInterpolator.dispose();
+        pressureInterpolator.dispose();
+        pressureInterpolator.dispose();
     }
 
     private static DataInterpolator getOzoneInterpolator(Product startOzone, Product endOzone, String ozoneBandName, double ozoneDefault) throws IOException {
@@ -60,30 +79,11 @@ public class AtmosphericAuxdataStatic implements AtmosphericAuxdata {
         return new DataInterpolatorStatic(pressureTimeStart, pressureTimeEnd, startPressure, endPressure, pressureBandName, pressureDefault);
     }
 
-    @Override
-    public double getOzone(double mjd, int x, int y, double lat, double lon) throws IOException {
-        return ozoneInterpolator.getValue(mjd, lat, lon);
-    }
-
-    @Override
-    public double getSurfacePressure(double mjd, int x, int y, double lat, double lon) throws IOException {
-        return pressureInterpolator.getValue(mjd, lat, lon);
-    }
-
-    @Override
-    public void dispose() {
-        //todo not a good practice because the products should be set to null but should be disposed where they are initialized
-        ozoneInterpolator.dispose();
-        ozoneInterpolator.dispose();
-        pressureInterpolator.dispose();
-        pressureInterpolator.dispose();
-    }
-
     private static boolean isValidProduct(Product product) {
         return product != null;
     }
 
-    static double getTime(Product product) {
+    private static double getTime(Product product) {
         final ProductData.UTC startTime = product.getStartTime();
         if (startTime != null) {
             return startTime.getMJD();
@@ -114,7 +114,7 @@ public class AtmosphericAuxdataStatic implements AtmosphericAuxdata {
         return product.getStartTime().getMJD();
     }
 
-    static boolean isLeapYear(int year) {
+    private static boolean isLeapYear(int year) {
         return !(year % 4 != 0 || year % 400 == 0);
     }
 }

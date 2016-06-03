@@ -2,7 +2,7 @@ package org.esa.s3tbx.c2rcc.ancillary;
 
 import java.io.IOException;
 
-public class AtmosphericAuxdataDynamic implements AtmosphericAuxdata {
+class AtmosphericAuxdataDynamic implements AtmosphericAuxdata {
 
     private final DataInterpolatorDynamic ozoneInterpolator;
     private final DataInterpolatorDynamic pressInterpolator;

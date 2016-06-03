@@ -3,12 +3,12 @@ package org.esa.s3tbx.c2rcc.ancillary;
 /**
  * @author Marco Peters
  */
-public class ConstantAtmosphericAuxdata implements AtmosphericAuxdata {
+class ConstantAtmosphericAuxdata implements AtmosphericAuxdata {
 
     private final double ozone;
     private final double surfPressure;
 
-    public ConstantAtmosphericAuxdata(double ozone, double surfPressure) {
+    ConstantAtmosphericAuxdata(double ozone, double surfPressure) {
         this.ozone = ozone;
         this.surfPressure = surfPressure;
     }
