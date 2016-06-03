@@ -461,6 +461,11 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
+        boolean samplesValid = C2rccCommons.areSamplesValid(sourceSamples, x, y);
+        if(!samplesValid) {
+            setInvalid(targetSamples);
+            return;
+        }
 
         double[] radiances = new double[BAND_COUNT];
         for (int i = 0; i < BAND_COUNT; i++) {

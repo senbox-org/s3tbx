@@ -17,7 +17,6 @@ import org.esa.snap.core.datamodel.ProductNode;
 import org.esa.snap.core.datamodel.ProductNodeEvent;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
-import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelDescriptor;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
@@ -48,7 +47,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
-import static com.jidesoft.swing.AbstractLayoutPersistence.i;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_rw;
@@ -447,6 +445,11 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
+        boolean samplesValid = C2rccCommons.areSamplesValid(sourceSamples, x, y);
+        if(!samplesValid) {
+            setInvalid(targetSamples);
+            return;
+        }
 
         final double[] reflectances = new double[C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES.length];
         for (int i = 0; i < reflectances.length; i++) {
@@ -475,18 +478,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             // in case elevationModel could not be initialised
             altitude = elevation;
         }
-        boolean validPixel = sourceSamples[VALID_PIXEL_IX].getBoolean();
-        boolean samplesValid = true;
-        for (Sample sourceSample : sourceSamples) {
-            // can be null because samples for ozone and atm_pressure might be missing
-            RasterDataNode node = sourceSample.getNode();
-            if (node != null) {
-                if (!node.isPixelValid(x, y)) {
-                    samplesValid = false;
-                    break;
-                }
-            }
-        }
 
         Result result = algorithm.processPixel(x, y, lat, lon,
                                                reflectances,
@@ -496,7 +487,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
                                                sourceSamples[VIEW_ZEN_IX].getDouble(),
                                                sourceSamples[VIEW_AZI_IX].getDouble(),
                                                altitude,
-                                               validPixel && samplesValid,
+                                               sourceSamples[VALID_PIXEL_IX].getBoolean(),
                                                atmPress,
                                                ozone);
 

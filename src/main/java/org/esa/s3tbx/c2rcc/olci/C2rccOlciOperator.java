@@ -469,6 +469,11 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
+        boolean samplesValid = C2rccCommons.areSamplesValid(sourceSamples, x, y);
+        if(!samplesValid) {
+            setInvalid(targetSamples);
+            return;
+        }
 
         final double[] radiances = new double[BAND_COUNT];
         // @todo discuss with Carsten and Roland
@@ -507,6 +512,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         } else {
             altitude = sourceSamples[DEM_ALT_IX].getDouble();
         }
+
         Result result = algorithm.processPixel(x, y, lat, lon,
                                                radiances,
                                                solflux,

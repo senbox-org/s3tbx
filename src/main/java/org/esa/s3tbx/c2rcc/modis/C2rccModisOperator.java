@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.modis;
 
+import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
@@ -262,8 +263,8 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
-
-        if (sourceSamples[VALID_PIXEL_IX].getBoolean()) {
+        boolean samplesValid = C2rccCommons.areSamplesValid(sourceSamples, x, y);
+        if (sourceSamples[VALID_PIXEL_IX].getBoolean() && samplesValid) {
             double[] toa_ref = new double[SOURCE_BAND_COUNT];
             for (int i = 0; i < SOURCE_BAND_COUNT; i++) {
                 toa_ref[i] = sourceSamples[i].getDouble();

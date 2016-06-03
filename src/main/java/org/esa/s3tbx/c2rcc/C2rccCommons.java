@@ -3,7 +3,9 @@ package org.esa.s3tbx.c2rcc;
 import org.esa.snap.core.datamodel.ConstantTimeCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.gpf.OperatorException;
+import org.esa.snap.core.gpf.pointop.Sample;
 
 public class C2rccCommons {
 
@@ -26,5 +28,20 @@ public class C2rccCommons {
             double constantTime = (endTime.getMJD() - startTimeMJD) / 2.0 + startTimeMJD;
             product.setSceneTimeCoding(new ConstantTimeCoding(constantTime));
         }
+    }
+
+    public static boolean areSamplesValid(Sample[] sourceSamples, int x, int y) {
+        boolean samplesValid = true;
+        for (Sample sourceSample : sourceSamples) {
+            // can be null because samples for ozone and atm_pressure might be missing
+            RasterDataNode node = sourceSample.getNode();
+            if (node != null) {
+                if (!node.isPixelValid(x, y)) {
+                    samplesValid = false;
+                    break;
+                }
+            }
+        }
+        return samplesValid;
     }
 }
