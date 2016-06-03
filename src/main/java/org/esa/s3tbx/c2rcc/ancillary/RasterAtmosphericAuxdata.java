@@ -7,12 +7,12 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 /**
  * @author Marco Peters
  */
-public class RasterAtmosphericAuxdata implements AtmosphericAuxdata {
+class RasterAtmosphericAuxdata implements AtmosphericAuxdata {
 
     private RasterDataNode ozoneRaster;
     private RasterDataNode surfPressureRaster;
 
-    public RasterAtmosphericAuxdata(RasterDataNode ozoneRaster, RasterDataNode surfPressureRaster) {
+    RasterAtmosphericAuxdata(RasterDataNode ozoneRaster, RasterDataNode surfPressureRaster) {
         if(ozoneRaster.getGeoCoding() == null) {
             throw new IllegalStateException("Raster for ozone must be geo-referenced");
         }
@@ -25,8 +25,7 @@ public class RasterAtmosphericAuxdata implements AtmosphericAuxdata {
 
     @Override
     public double getOzone(double mjd, int x, int y, double lat, double lon) throws Exception {
-        PixelPos pixelPos = ozoneRaster.getGeoCoding().getPixelPos(new GeoPos(lat, lon), null);
-        return ozoneRaster.getSampleFloat((int)pixelPos.x, (int)pixelPos.y);
+        return ozoneRaster.getSampleFloat(x, y);
     }
 
     @Override
