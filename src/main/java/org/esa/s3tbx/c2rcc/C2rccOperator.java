@@ -28,10 +28,10 @@ import static org.esa.snap.core.util.StringUtils.*;
  * @author Sabine Embacher
  */
 @OperatorMetadata(alias = "c2rcc", version = "0.9.9",
-            authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
-            category = "Optical Processing/Thematic Water Processing",
-            copyright = "Copyright (C) 2015 by Brockmann Consult",
-            description = "Performs atmospheric correction and IOP retrieval on OLCI, MSI, MERIS, MODIS or SeaWiFS L1 product.")
+        authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
+        category = "Optical Processing/Thematic Water Processing",
+        copyright = "Copyright (C) 2015 by Brockmann Consult",
+        description = "Performs atmospheric correction and IOP retrieval on OLCI, MSI, MERIS, MODIS or SeaWiFS L1 product.")
 public class C2rccOperator extends Operator {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
@@ -43,35 +43,35 @@ public class C2rccOperator extends Operator {
     private Product sourceProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Ozone interpolation start product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Ozone interpolation end product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation start product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation end product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
 
     @TargetProduct
@@ -81,7 +81,7 @@ public class C2rccOperator extends Operator {
     private String sensorName;
 
     @Parameter(label = "Valid-pixel expression", converter = BooleanExpressionConverter.class,
-                description = "If not specified a sensor specific default expression will be used.")
+            description = "If not specified a sensor specific default expression will be used.")
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)")
@@ -97,9 +97,9 @@ public class C2rccOperator extends Operator {
     private double press;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
-                             "for calculations. If the auxiliary data needed for interpolation not available in this " +
-                             "path, the data will automatically downloaded.")
+            "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
+            "for calculations. If the auxiliary data needed for interpolation not available in this " +
+            "path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")
@@ -109,8 +109,8 @@ public class C2rccOperator extends Operator {
     private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "true", description =
-                "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used",
-                label = "Use ECMWF aux data of source product (in case of MERIS sensor)")
+            "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used",
+            label = "Use ECMWF aux data of source product (in case of MERIS sensor)")
     private boolean useEcmwfAuxData;
 
     @Parameter(defaultValue = "false", description =
@@ -221,6 +221,9 @@ public class C2rccOperator extends Operator {
     }
 
     public static class Spi extends OperatorSpi {
+        static {
+            C2rccCommons.installRGBProfiles();
+        }
 
         public Spi() {
             super(C2rccOperator.class);
