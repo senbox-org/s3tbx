@@ -155,7 +155,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     @Parameter(defaultValue = "false", description =
             "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
-            label = "Output AC reflectances as remote sensing or water leaving reflectances")
+            label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 
     @Parameter(defaultValue = "false", label = "Output the input angle bands sena, senz, sola and solz")

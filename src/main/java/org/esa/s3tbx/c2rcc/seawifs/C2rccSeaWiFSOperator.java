@@ -159,7 +159,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
     @Parameter(defaultValue = "false", description =
             "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
-            label = "Output AC reflectances as remote sensing or water leaving reflectances")
+            label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 
 
