@@ -9,6 +9,7 @@ import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.PixelPos;
@@ -16,6 +17,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.ProductNode;
 import org.esa.snap.core.datamodel.ProductNodeEvent;
+import org.esa.snap.core.datamodel.ProductNodeGroup;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
 import org.esa.snap.core.datamodel.VirtualBand;
@@ -708,6 +710,11 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
         targetProduct.setPreferredTileSize(128, 128);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
+        ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
+        for (int i = 0; i < maskGroup.getNodeCount(); i++) {
+            Mask mask = maskGroup.get(i);
+            mask.setDescription("Copied from OLCI L1b input product");
+        }
 
         final StringBuilder autoGrouping = new StringBuilder("iop");
         autoGrouping.append(":conc");
