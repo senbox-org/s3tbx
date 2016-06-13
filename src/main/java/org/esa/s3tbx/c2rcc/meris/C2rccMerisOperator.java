@@ -907,8 +907,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         for (int i = 0; i < flagNames.length; i++) {
             String flagName = flagNames[i];
             MetadataAttribute flag = flagCoding.getFlag(flagName);
-            double transparency = flagCoding.getFlagMask(flagName) == 0x01 << FLAG_INDEX_VALID_PE ? 0.0 : 0.5;
-            Color color = flagCoding.getFlagMask(flagName) == 0x01 << FLAG_INDEX_VALID_PE ? Color.lightGray : maskColors[i % maskColors.length];
+            double transparency = flagCoding.getFlagMask(flagName) == 0x01 << FLAG_INDEX_CLOUD ? 0.0 : 0.5;
+            Color color = flagCoding.getFlagMask(flagName) == 0x01 << FLAG_INDEX_CLOUD ? Color.lightGray : maskColors[i % maskColors.length];
             targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
