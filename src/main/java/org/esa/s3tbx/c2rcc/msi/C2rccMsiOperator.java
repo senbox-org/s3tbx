@@ -906,7 +906,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         for (int i = 0; i < flagNames.length; i++) {
             String flagName = flagNames[i];
             MetadataAttribute flag = flagCoding.getFlag(flagName);
-            targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), maskColors[i % maskColors.length], 0.5);
+            double transparency = flagCoding.getFlagMask(flagName) == 0x01 << FLAG_INDEX_VALID_PE ? 0.0 : 0.5;
+            Color color = flagCoding.getFlagMask(flagName) == 0x01 << FLAG_INDEX_VALID_PE ? Color.lightGray : maskColors[i % maskColors.length];
+            targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
 
