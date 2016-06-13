@@ -84,22 +84,24 @@ public class C2rccOperator extends Operator {
             description = "If not specified a sensor specific default expression will be used.")
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)",
+            description = "The value used as salinity for the scene")
     private double salinity;
 
-    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)")
+    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)",
+            description = "The value used as temperature for the scene")
     private double temperature;
 
-    @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
+    @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)",
+            description = "The value used as ozone if not provided by auxiliary data")
     private double ozone;
 
-    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure")
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure",
+            description = "The value used as air pressure if not provided by auxiliary data")
     private double press;
 
-    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
-            "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
-            "for calculations. If the auxiliary data needed for interpolation not available in this " +
-            "path, the data will automatically downloaded.")
+    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
+            "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(defaultValue = "false", label = "Output top-of-standard-atmosphere (TOSA) reflectances")

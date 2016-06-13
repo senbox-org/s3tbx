@@ -127,25 +127,28 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     @Parameter(label = "Valid-pixel expression",
             defaultValue = "!(l2_flags.LAND ||  max(rhot_412,max(rhot_443,max(rhot_488,max(rhot_531,max(rhot_547,max(rhot_555,max(rhot_667,max(rhot_678,max(rhot_748,rhot_869)))))))))>0.25)",
+            description = "Defines the pixels which are valid for processing",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)",
+            description = "The value used as salinity for the scene")
     private double salinity;
 
-    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)")
+    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)",
+            description = "The value used as temperature for the scene")
     private double temperature;
 
-    @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)")
+    @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)",
+            description = "The value used as ozone if not provided by auxiliary data")
     private double ozone;
 
-    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure")
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure",
+            description = "The value used as air pressure if not provided by auxiliary data")
     private double press;
 
-    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
-            "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
-            "for calculations. If the auxiliary data needed for interpolation not available in this " +
-            "path, the data will automatically downloaded.")
+    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
+            "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(defaultValue = "false", label = "Output TOSA reflectances")

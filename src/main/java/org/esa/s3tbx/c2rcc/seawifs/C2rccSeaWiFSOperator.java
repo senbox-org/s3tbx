@@ -45,10 +45,10 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengt
  * @author Norman Fomferra
  */
 @OperatorMetadata(alias = "seawifs.c2rcc", version = "0.9.10",
-            authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
-            category = "Optical Processing/Thematic Water Processing",
-            copyright = "Copyright (C) 2015 by Brockmann Consult",
-            description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1C data products.")
+        authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
+        category = "Optical Processing/Thematic Water Processing",
+        copyright = "Copyright (C) 2015 by Brockmann Consult",
+        description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1C data products.")
 public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
@@ -94,62 +94,67 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
      * TODO (2016-06-01/mp - Actually we can support both types)
      */
     @SourceProduct(label = "SeaWiFS L1C product",
-                description = "SeaWiFS L1C source product.")
+            description = "SeaWiFS L1C source product.")
     private Product sourceProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Ozone interpolation start product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Ozone interpolation end product (TOMSOMI)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation start product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-                                 "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-                                 "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-                                 "aux data for calculations.",
-                optional = true,
-                label = "Air pressure interpolation end product (NCEP)")
+            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
+            "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
+            "aux data for calculations.",
+            optional = true,
+            label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-                defaultValue = "!(l2_flags.LAND || rhot_865 > 0.25)",
-                converter = BooleanExpressionConverter.class)
+            defaultValue = "!(l2_flags.LAND || rhot_865 > 0.25)",
+            description = "Defines the pixels which are valid for processing",
+            converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
-    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)")
+    @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)",
+            description = "The value used as salinity for the scene")
     private double salinity;
 
-    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)")
+    @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)",
+            description = "The value used as temperature for the scene")
     private double temperature;
 
-    @Parameter(defaultValue = "330.0", unit = "DU", interval = "(0, 1000)")
+    @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)",
+            description = "The value used as ozone if not provided by auxiliary data")
     private double ozone;
 
-    @Parameter(defaultValue = "1000.0", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure")
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure",
+            description = "The value used as air pressure if not provided by auxiliary data")
     private double press;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +
-                             "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
-                             "for calculations. If the auxiliary data needed for interpolation not available in this " +
-                             "path, the data will automatically downloaded.")
+            "tomsomiEndProduct, ncepStartProduct and ncepEndProduct to use ozone and air pressure aux data " +
+            "for calculations. If the auxiliary data needed for interpolation not available in this " +
+            "path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(defaultValue = "false", label = "Output TOSA reflectances")
@@ -258,7 +263,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
                     targetSamples[RTOSA_OUT_1_IX + i].set(result.rtosa_out[i]);
                 }
             }
-        }else {
+        } else {
             setInvalid(targetSamples);
             int flags = BitSetter.setFlag(0, C2rccSeaWiFSAlgorithm.FLAG_INDEX_VALID_PE, false);
             targetSamples[C2RCC_FLAGS_IX].set(flags);
@@ -289,7 +294,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
             int wl = seawifsWavelengths[i];
             if (outputAsRrs) {
                 sc.defineSample(REFLEC_1_IX + i, "rrs_" + wl);
-            }else {
+            } else {
                 sc.defineSample(REFLEC_1_IX + i, "rhow_" + wl);
             }
         }
