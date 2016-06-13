@@ -1,5 +1,5 @@
 # s3tbx-c2rcc
-This is the source distribution of the Case-2 Regional / Coast Colour (C2R-CC) Atmospheric Correction (AC) and Inherent Optical Properties (IOP) Processor for MERIS, MODIS and the SeaWiFS Level 1b radiance products.
+This is the source distribution of the Case-2 Regional / Coast Colour (C2RCC) Atmospheric Correction (AC) and Inherent Optical Properties (IOP) Processor for MERIS, MODIS and the SeaWiFS Level 1b radiance products.
 
 How to build
 ------------
@@ -49,7 +49,7 @@ Then
 * restart SNAP.
 
 Once the C2RCC processor is installed into SNAP it can be run from the SNAP Desktop UI's main menu at
-> **Optical / Thematic Water Processing / C2R-CC**
+> **Optical / Thematic Water Processing / C2RCC**
   
 Or in batch mode using SNAP's `gpt` command-line tool found in `${SNAP_HOME}/bin`:
 ```
@@ -60,7 +60,7 @@ Or in batch mode using SNAP's `gpt` command-line tool found in `${SNAP_HOME}/bin
 Modifying, running and debugging the processor code
 ---------------------------------------------------
 
-This section explains how to run and debug the C2R-CC processor code from a Java IDE without having to install the plugin into SNAP.
+This section explains how to run and debug the C2RCC processor code from a Java IDE without having to install the plugin into SNAP.
 
 You will need to install
 * SNAP with the Sentinel-3 Toolbox (S3TBX) from http://step.esa.int/main/download/
@@ -79,7 +79,7 @@ From the main menu select **Run / Edit Configurations**. In the dialog click the
 where 
 
 * `${SNAP_HOME}` must be replaced by your SNAP installation directory
-* `${C2RCC_HOME}` must be replaced by your C2R-CC project directory (where the `pom.xml` is located in)
+* `${C2RCC_HOME}` must be replaced by your C2RCC project directory (where the `pom.xml` is located in)
 
 
 
