@@ -95,6 +95,8 @@ public class MsiProductSignatureTest {
     public void testProductSignature_OnlyMandatory() throws FactoryException, TransformException {
 
         C2rccMsiOperator operator = createDefaultOperator();
+        operator.setOutputRtoa(false);
+        operator.setOutputUncertainties(false);
         operator.setOutputAcReflectance(false);
         operator.setOutputRhown(false);
         operator.setOutputKd(false);
@@ -147,27 +149,13 @@ public class MsiProductSignatureTest {
     }
 
     @Test
-    public void testProductSignature_DefaultWithUncertainties() throws FactoryException, TransformException {
+    public void testProductSignature_DefaultWithKd() throws FactoryException, TransformException {
 
         C2rccMsiOperator operator = createDefaultOperator();
-        operator.setOutputUncertainties(true);
-        Product targetProduct = operator.getTargetProduct();
-
-        assertDefaultBands(targetProduct, false);
-        assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
-    }
-
-    @Test
-    public void testProductSignature_DefaultWithUncertaintiesAndKd() throws FactoryException, TransformException {
-
-        C2rccMsiOperator operator = createDefaultOperator();
-        operator.setOutputUncertainties(true);
         operator.setOutputKd(true);
         Product targetProduct = operator.getTargetProduct();
 
         assertDefaultBands(targetProduct, false);
-        assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
-        assertBands(targetProduct, EXPECTED_KD_UNC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_BANDS);
     }
 
@@ -178,8 +166,11 @@ public class MsiProductSignatureTest {
         }else {
             assertBands(targetProduct, EXPECTED_RHOW_BANDS);
         }
+        assertBands(targetProduct, EXPECTED_RTOA_BANDS);
         assertBands(targetProduct, EXPECTED_NORM_REFLEC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_BANDS);
+        assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
+        assertBands(targetProduct, EXPECTED_KD_UNC_BANDS);
     }
 
     private void assertMandatoryBands(Product targetProduct) {

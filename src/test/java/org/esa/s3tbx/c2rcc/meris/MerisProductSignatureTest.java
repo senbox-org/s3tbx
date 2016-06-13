@@ -106,6 +106,8 @@ public class MerisProductSignatureTest {
     public void testProductSignature_OnlyMandatory() throws FactoryException, TransformException {
 
         C2rccMerisOperator operator = createDefaultOperator();
+        operator.setOutputRtoa(false);
+        operator.setOutputUncertainties(false);
         operator.setOutputAcReflectance(false);
         operator.setOutputRhown(false);
         operator.setOutputKd(false);
@@ -189,8 +191,11 @@ public class MerisProductSignatureTest {
         }else {
             assertBands(targetProduct, EXPECTED_RHOW_BANDS);
         }
+        assertBands(targetProduct, EXPECTED_RTOA_BANDS);
         assertBands(targetProduct, EXPECTED_NORM_REFLEC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_BANDS);
+        assertBands(targetProduct, EXPECTED_KD_UNC_BANDS);
+        assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
     }
 
     private void assertMandatoryBands(Product targetProduct) {
