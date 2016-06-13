@@ -199,7 +199,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            defaultValue = "!quality_flags.invalid && !quality_flags.land",
+            defaultValue = "!quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)",
             description = "Defines the pixels which are valid for processing",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
