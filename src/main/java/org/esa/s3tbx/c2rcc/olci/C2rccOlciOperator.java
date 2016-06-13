@@ -173,33 +173,25 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private Product cloudProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-            "Use either this in combination with other start- and end-products (tomsomiEndProduct, " +
-            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-            "auxiliary data for calculations.",
+            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
             label = "Ozone interpolation start product (TOMSOMI)")
     private Product tomsomiStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-            "ncepStartProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-            "auxiliary data for calculations.",
+            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
             label = "Ozone interpolation end product (TOMSOMI)")
     private Product tomsomiEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-            "tomsomiEndProduct, ncepEndProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-            "auxiliary data for calculations.",
+            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
             label = "Air pressure interpolation start product (NCEP)")
     private Product ncepStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-            "Use either this in combination with other start- and end-products (tomsomiStartProduct, " +
-            "tomsomiEndProduct, ncepStartProduct) or atmosphericAuxdataPath to use ozone and air pressure " +
-            "auxiliary data for calculations.",
+            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
             label = "Air pressure interpolation end product (NCEP)")
     private Product ncepEndProduct;
