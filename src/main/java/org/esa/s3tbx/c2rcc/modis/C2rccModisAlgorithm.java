@@ -16,6 +16,28 @@ import static org.esa.s3tbx.ArrayMath.*;
  * @author Sabine Embacher
  */
 public class C2rccModisAlgorithm {
+    public static final int FLAG_INDEX_RTOSA_OOS = 0;
+    public static final int FLAG_INDEX_RTOSA_OOR = 1;
+    public static final int FLAG_INDEX_RHOW_OOR = 2;
+    //    static final int FLAG_INDEX_IOP_OOR = 3;
+//    static final int FLAG_INDEX_APIG_AT_MAX = 4;
+//    static final int FLAG_INDEX_ADET_AT_MAX = 5;
+//    static final int FLAG_INDEX_AGELB_AT_MAX = 6;
+//    static final int FLAG_INDEX_BPART_AT_MAX = 7;
+//    static final int FLAG_INDEX_BWIT_AT_MAX = 8;
+//    static final int FLAG_INDEX_APIG_AT_MIN = 9;
+//    static final int FLAG_INDEX_ADET_AT_MIN = 10;
+//    static final int FLAG_INDEX_AGELB_AT_MIN = 11;
+//    static final int FLAG_INDEX_BPART_AT_MIN = 12;
+//    static final int FLAG_INDEX_BWIT_AT_MIN = 13;
+//    static final int FLAG_INDEX_RHOW_OOS = 14;
+//    static final int FLAG_INDEX_KD489_OOR = 15;
+//    static final int FLAG_INDEX_KDMIN_OOR = 16;
+//    static final int FLAG_INDEX_KD489_AT_MAX = 17;
+//    static final int FLAG_INDEX_KDMIN_AT_MAX = 18;
+//    static final int FLAG_INDEX_CLOUD = 19;
+    public static final int FLAG_INDEX_VALID_PE = 31;
+
 
     // input for rtoa_rw_modis_nn3/33x73x53x33_508087.3.net
     public final static int[] NN_INPUT_REFLEC_WAVELENGTHS = new int[]{
@@ -175,7 +197,7 @@ public class C2rccModisAlgorithm {
         if (rtosa_aaNNrat_min < thresh_rtosaaaNNrat[0] || rtosa_aaNNrat_max > thresh_rtosaaaNNrat[1]) {
             flag_rtosa = true; // set flag if difference of band 5 > threshold // (ipix)
         }
-        flags = BitSetter.setFlag(flags, 0, flag_rtosa);
+        flags = BitSetter.setFlag(flags, FLAG_INDEX_RTOSA_OOS, flag_rtosa);
 
         // (9.6.2) test if input tosa spectrum is out of range
         // mima=aa_rtosa_nn_bn7_9(5); // minima and maxima of aaNN input
@@ -188,7 +210,7 @@ public class C2rccModisAlgorithm {
                 tosa_oor_flag = true; // (ipix)
             }
         }
-        flags = BitSetter.setFlag(flags, 1, tosa_oor_flag);
+        flags = BitSetter.setFlag(flags, FLAG_INDEX_RTOSA_OOR, tosa_oor_flag);
 
         // (9.10.1) NN compute IOPs from rw
 
@@ -215,7 +237,7 @@ public class C2rccModisAlgorithm {
                 rw_oor_flag = true; // (ipix)
             }
         }
-        flags = BitSetter.setFlag(flags, 2, rw_oor_flag);
+        flags = BitSetter.setFlag(flags, FLAG_INDEX_RHOW_OOR, rw_oor_flag);
 
 // todo (nf): migrate following code to Java
 /*

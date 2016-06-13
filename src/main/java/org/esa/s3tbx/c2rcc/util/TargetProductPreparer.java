@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.util;
 
+import org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.MetadataAttribute;
@@ -52,10 +53,10 @@ public class TargetProductPreparer {
         c2rcc_flags.setDescription("C2RCC quality flags");
 
         FlagCoding flagCoding = new FlagCoding("c2rcc_flags");
-        flagCoding.addFlag("Rtosa_OOS", 0x01, "The input spectrum to atmospheric correction neural net was unknown");
-        flagCoding.addFlag("Rtosa_OOR", 0x02, "The input spectrum to atmospheric correction neural net out of training range");
-        flagCoding.addFlag("Iop_OOR", 0x04, "One of the inputs to the IOP retrieval neural net is out of training range");
-        flagCoding.addFlag("Valid_PE", 0x80000000, "The operators valid pixel expression has resolved to true");
+        flagCoding.addFlag("Rtosa_OOS", 0x01 << C2rccSeaWiFSAlgorithm.FLAG_INDEX_RTOSA_OOS, "The input spectrum to atmospheric correction neural net was unknown");
+        flagCoding.addFlag("Rtosa_OOR", 0x01 << C2rccSeaWiFSAlgorithm.FLAG_INDEX_RTOSA_OOR, "The input spectrum to atmospheric correction neural net out of training range");
+        flagCoding.addFlag("Rhow_OOR", 0x01 << C2rccSeaWiFSAlgorithm.FLAG_INDEX_RHOW_OOR, "One of the inputs to the IOP retrieval neural net is out of training range");
+        flagCoding.addFlag("Valid_PE", 0x01 << C2rccSeaWiFSAlgorithm.FLAG_INDEX_VALID_PE, "The operators valid pixel expression has resolved to true");
         targetProduct.getFlagCodingGroup().add(flagCoding);
         c2rcc_flags.setSampleCoding(flagCoding);
 

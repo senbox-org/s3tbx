@@ -87,8 +87,6 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     private static final int RTOSA_IN_1_IX = WL_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + WL_BAND_COUNT;
 
-    private static final int VALID_PE_BIT_INDEX = 31;
-
     /*
      * Source product type has been changed from L1B to L1C in commit
      * https://github.com/bcdev/s3tbx-c2rcc/commit/dcf85caa793c08a52d46f79f3004841be57ab04c
@@ -249,7 +247,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
             targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
             targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
 
-            int flags = BitSetter.setFlag(result.flags, VALID_PE_BIT_INDEX, true);
+            int flags = BitSetter.setFlag(result.flags, C2rccSeaWiFSAlgorithm.FLAG_INDEX_VALID_PE, true);
             targetSamples[C2RCC_FLAGS_IX].set(flags);
 
             if (outputRtosa) {
@@ -262,7 +260,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
             }
         }else {
             setInvalid(targetSamples);
-            int flags = BitSetter.setFlag(0, VALID_PE_BIT_INDEX, false);
+            int flags = BitSetter.setFlag(0, C2rccSeaWiFSAlgorithm.FLAG_INDEX_VALID_PE, false);
             targetSamples[C2RCC_FLAGS_IX].set(flags);
         }
     }

@@ -79,8 +79,6 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     private static final int RTOSA_IN_1_IX = REFLEC_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + REFLEC_BAND_COUNT;
 
-    private static final int VALID_PE_BIT_INDEX = 31;
-
     private static final String RASTER_NAME_SOLAR_ZENITH = "solz";
     private static final String RASTER_NAME_SOLAR_AZIMUTH = "sola";
     private static final String RASTER_NAME_VIEW_AZIMUTH = "sena";
@@ -297,7 +295,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
             targetSamples[RTOSA_RATIO_MIN_IX].set(result.rtosa_ratio_min);
             targetSamples[RTOSA_RATIO_MAX_IX].set(result.rtosa_ratio_max);
 
-            int flags = BitSetter.setFlag(result.flags, VALID_PE_BIT_INDEX, true);
+            int flags = BitSetter.setFlag(result.flags, C2rccModisAlgorithm.FLAG_INDEX_VALID_PE, true);
             targetSamples[C2RCC_FLAGS_IX].set(flags);
 
             if (outputAngles) {
@@ -318,7 +316,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
             }
         } else {
             setInvalid(targetSamples);
-            int flags = BitSetter.setFlag(0, VALID_PE_BIT_INDEX, false);
+            int flags = BitSetter.setFlag(0, C2rccModisAlgorithm.FLAG_INDEX_VALID_PE, false);
             targetSamples[C2RCC_FLAGS_IX].set(flags);
         }
     }

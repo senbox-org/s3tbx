@@ -45,6 +45,29 @@ public class C2rccMerisAlgorithm {
     public static final int IDX_rw_rwnorm = 7;
     public static final int IDX_rtosa_trans = 8;
     public static final int IDX_rtosa_rpath = 9;
+
+    static final int FLAG_INDEX_RTOSA_OOS = 0;
+    static final int FLAG_INDEX_RTOSA_OOR = 1;
+    static final int FLAG_INDEX_RHOW_OOR = 2;
+    static final int FLAG_INDEX_IOP_OOR = 3;
+    static final int FLAG_INDEX_APIG_AT_MAX = 4;
+    static final int FLAG_INDEX_ADET_AT_MAX = 5;
+    static final int FLAG_INDEX_AGELB_AT_MAX = 6;
+    static final int FLAG_INDEX_BPART_AT_MAX = 7;
+    static final int FLAG_INDEX_BWIT_AT_MAX = 8;
+    static final int FLAG_INDEX_APIG_AT_MIN = 9;
+    static final int FLAG_INDEX_ADET_AT_MIN = 10;
+    static final int FLAG_INDEX_AGELB_AT_MIN = 11;
+    static final int FLAG_INDEX_BPART_AT_MIN = 12;
+    static final int FLAG_INDEX_BWIT_AT_MIN = 13;
+    static final int FLAG_INDEX_RHOW_OOS = 14;
+    static final int FLAG_INDEX_KD489_OOR = 15;
+    static final int FLAG_INDEX_KDMIN_OOR = 16;
+    static final int FLAG_INDEX_KD489_AT_MAX = 17;
+    static final int FLAG_INDEX_KDMIN_AT_MAX = 18;
+    static final int FLAG_INDEX_CLOUD = 19;
+    static final int FLAG_INDEX_VALID_PE = 31;
+
     // gas absorption constants for 12 MERIS channels
     static final double[] absorb_ozon = {
                 8.2e-04, 2.82e-03, 2.076e-02, 3.96e-02,
@@ -342,7 +365,7 @@ public class C2rccMerisAlgorithm {
                     rtosa_oor_flag = true; // (ipix)
                 }
             }
-            flags = BitSetter.setFlag(flags, 0, rtosa_oor_flag);
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_RTOSA_OOR, rtosa_oor_flag);
 
 
             // (9.4.2) test out of scope spectra with autoassociative neural network
@@ -377,7 +400,7 @@ public class C2rccMerisAlgorithm {
             flag_rtosa = true; // set flag if difference of band 5 > threshold // (ipix)
         }
         */
-            flags = BitSetter.setFlag(flags, 1, rtosa_oos_flag);
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_RTOSA_OOS, rtosa_oos_flag);
 
             // (9.4.4) NN compute rpath from rtosa
             rpath_nn = new double[0];
@@ -394,7 +417,7 @@ public class C2rccMerisAlgorithm {
                 if (outputTdown) {
                     transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
                     // cloud flag test @865
-                    flags = BitSetter.setFlag(flags, 19, transd_nn[11] < thresh_cloudTransD);
+                    flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, transd_nn[11] < thresh_cloudTransD);
                 }
                 if (outputTup) {
                     transu_nn = Arrays.copyOfRange(trans_nn, 12, 24);
@@ -429,7 +452,7 @@ public class C2rccMerisAlgorithm {
                     rwa_oor_flag = true; // (ipix)
                 }
             }
-            flags = BitSetter.setFlag(flags, 2, rwa_oor_flag);
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_RHOW_OOR, rwa_oor_flag);
 
             // (9.x.x.) NN compute Rwn from Rw
             rwn = new double[0];
@@ -475,17 +498,19 @@ public class C2rccMerisAlgorithm {
                     iop_oor_flag = true;
                 }
             }
-            flags = BitSetter.setFlag(flags, 3, iop_oor_flag);
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_IOP_OOR, iop_oor_flag);
 
+            int firstIopMaxFlagIndex = FLAG_INDEX_APIG_AT_MAX;
             // (9.5.5)check if log_IOPs at limit
             for (int iv = 0; iv < log_iops_nn1.length; iv++) {
                 final boolean iopAtMax = log_iops_nn1[iv] > (ma[iv] - log_threshfak_oor);
-                flags = BitSetter.setFlag(flags, iv + 4, iopAtMax);
+                flags = BitSetter.setFlag(flags, iv + firstIopMaxFlagIndex, iopAtMax);
             }
 
+            int firstIopMinFlagIndex = FLAG_INDEX_APIG_AT_MIN;
             for (int iv = 0; iv < log_iops_nn1.length; iv++) {
                 final boolean iopAtMin = log_iops_nn1[iv] < (mi[iv] + log_threshfak_oor);
-                flags = BitSetter.setFlag(flags, iv + 9, iopAtMin);
+                flags = BitSetter.setFlag(flags, iv + firstIopMinFlagIndex, iopAtMin);
             }
 
             // (9.5.6) compute Rw out of scope
@@ -518,7 +543,7 @@ public class C2rccMerisAlgorithm {
                 if (rwa_oos > thresh_rwlogslope) {
                     rwa_oos_flag = true;
                 }
-                flags = BitSetter.setFlag(flags, 14, rwa_oos_flag);
+                flags = BitSetter.setFlag(flags, FLAG_INDEX_RHOW_OOS, rwa_oos_flag);
             }
 
             // (9.5.8) NN compute kd from rw
@@ -537,25 +562,25 @@ public class C2rccMerisAlgorithm {
                 if (log_kd2_nn[0] < mi[0] | log_kd2_nn[0] > ma[0]) {
                     kdmin_oor_flag = true;
                 }
-                flags = BitSetter.setFlag(flags, 16, kdmin_oor_flag);
+                flags = BitSetter.setFlag(flags, FLAG_INDEX_KDMIN_OOR, kdmin_oor_flag);
 
                 boolean kd489_oor_flag = false;
                 if (log_kd2_nn[1] < mi[1] | log_kd2_nn[1] > ma[1]) {
                     kd489_oor_flag = true;
                 }
-                flags = BitSetter.setFlag(flags, 15, kd489_oor_flag);
+                flags = BitSetter.setFlag(flags, FLAG_INDEX_KD489_OOR, kd489_oor_flag);
 
                 boolean kdmin_at_max_flag = false;
                 if (log_kd2_nn[1] > ma[1] - log_threshfak_oor) {
                     kdmin_at_max_flag = true;
                 }
-                flags = BitSetter.setFlag(flags, 18, kdmin_at_max_flag);
+                flags = BitSetter.setFlag(flags, FLAG_INDEX_KDMIN_AT_MAX, kdmin_at_max_flag);
 
                 boolean kd489_at_max_flag = false;
                 if (log_kd2_nn[1] > ma[1] - log_threshfak_oor) {
                     kd489_at_max_flag = true;
                 }
-                flags = BitSetter.setFlag(flags, 17, kd489_at_max_flag);
+                flags = BitSetter.setFlag(flags, FLAG_INDEX_KD489_AT_MAX, kd489_at_max_flag);
             }
 
             // (9.6) )NN compute uncertainties
