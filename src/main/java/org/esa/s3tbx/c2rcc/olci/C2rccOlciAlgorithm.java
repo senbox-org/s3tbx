@@ -441,16 +441,14 @@ public class C2rccOlciAlgorithm {
             // (9.4.5) NN compute transmittance from rtosa
             transd_nn = new double[0];
             transu_nn = new double[0];
-            if (outputTdown || outputTup) {
-                double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
-                if (outputTdown) {
-                    transd_nn = Arrays.copyOfRange(trans_nn, 0, 16);
-                    // cloud flag test @865
-                    flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, transd_nn[13] < thresh_cloudTransD);
-                }
-                if (outputTup) {
-                    transu_nn = Arrays.copyOfRange(trans_nn, 16, 32);
-                }
+            double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
+            // cloud flag test @865
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, transd_nn[13] < thresh_cloudTransD);
+            if (outputTdown) {
+                transd_nn = Arrays.copyOfRange(trans_nn, 0, 16);
+            }
+            if (outputTup) {
+                transu_nn = Arrays.copyOfRange(trans_nn, 16, 32);
             }
 
             // (9.4.6)

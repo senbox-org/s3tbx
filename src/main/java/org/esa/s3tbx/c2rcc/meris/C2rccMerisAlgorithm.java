@@ -70,9 +70,9 @@ public class C2rccMerisAlgorithm {
 
     // gas absorption constants for 12 MERIS channels
     static final double[] absorb_ozon = {
-                8.2e-04, 2.82e-03, 2.076e-02, 3.96e-02,
-                1.022e-01, 1.059e-01, 5.313e-02, 3.552e-02,
-                1.895e-02, 8.38e-03, 7.2e-04, 0.0
+            8.2e-04, 2.82e-03, 2.076e-02, 3.96e-02,
+            1.022e-01, 1.059e-01, 5.313e-02, 3.552e-02,
+            1.895e-02, 8.38e-03, 7.2e-04, 0.0
     };
 
 
@@ -82,22 +82,22 @@ public class C2rccMerisAlgorithm {
     static final int[] merband12_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13};
     static final int[] merband15_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
     public static double[] DEFAULT_SOLAR_FLUX = new double[]{
-                1724.724,
-                1889.8026,
-                1939.5339,
-                1940.1365,
-                1813.5457,
-                1660.3589,
-                1540.5198,
-                1480.7161,
-                1416.1177,
-                1273.394,
-                1261.8658,
-                1184.0952,
-                963.94995,
-                935.23706,
-                900.659,
-                };
+            1724.724,
+            1889.8026,
+            1939.5339,
+            1940.1365,
+            1813.5457,
+            1660.3589,
+            1540.5198,
+            1480.7161,
+            1416.1177,
+            1273.394,
+            1261.8658,
+            1184.0952,
+            963.94995,
+            935.23706,
+            900.659,
+    };
     public static float[] DEFAULT_MERIS_WAVELENGTH = new float[]{
        /*  1 */     412.691f,
        /*  2 */     442.55902f,
@@ -412,16 +412,14 @@ public class C2rccMerisAlgorithm {
             // (9.4.5) NN compute transmittance from rtosa
             transd_nn = new double[0];
             transu_nn = new double[0];
-            if (outputTdown || outputTup) {
-                double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
-                if (outputTdown) {
-                    transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
-                    // cloud flag test @865
-                    flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, transd_nn[11] < thresh_cloudTransD);
-                }
-                if (outputTup) {
-                    transu_nn = Arrays.copyOfRange(trans_nn, 12, 24);
-                }
+            double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
+            // cloud flag test @865
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, transd_nn[11] < thresh_cloudTransD);
+            if (outputTdown) {
+                transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
+            }
+            if (outputTup) {
+                transu_nn = Arrays.copyOfRange(trans_nn, 12, 24);
             }
 
             // (9.4.6)

@@ -14,7 +14,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.acos;
 import static java.lang.Math.cos;
@@ -67,7 +66,6 @@ public class C2rccMsiAlgorithm {
     static final int FLAG_INDEX_KD489_AT_MAX = 18;
     static final int FLAG_INDEX_KDMIN_AT_MAX = 19;
     static final int FLAG_INDEX_VALID_PE = 31;
-
 
 
     // gas absorption constants for 8 MSI channels
@@ -261,7 +259,7 @@ public class C2rccMsiAlgorithm {
             double[] r_tosa_ur = new double[NN_SOURCE_BAND_REFL_NAMES.length];
             System.arraycopy(r_toa, 0, r_tosa_ur, 0, r_tosa_ur.length - 1);
             // skipping B8 and use B8A
-            r_tosa_ur[NN_SOURCE_BAND_REFL_NAMES.length-1] = r_toa[NN_SOURCE_BAND_REFL_NAMES.length];
+            r_tosa_ur[NN_SOURCE_BAND_REFL_NAMES.length - 1] = r_toa[NN_SOURCE_BAND_REFL_NAMES.length];
 
 
             // todo (mp/20160502)- not needed for MSI?
@@ -372,16 +370,14 @@ public class C2rccMsiAlgorithm {
             // (9.4.5) NN compute transmittance from rtosa
             transd_nn = new double[0];
             transu_nn = new double[0];
-            if (outputTdown || outputTup) {
-                double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
-                if (outputTdown) {
-                    transd_nn = Arrays.copyOfRange(trans_nn, 0, r_tosa_ur.length);
-                    // cloud flag test @865
-                    flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, transd_nn[7] < thresh_cloudTransD);
-                }
-                if (outputTup) {
-                    transu_nn = Arrays.copyOfRange(trans_nn, r_tosa_ur.length, trans_nn.length);
-                }
+            double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
+            // cloud flag test @865
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, transd_nn[7] < thresh_cloudTransD);
+            if (outputTdown) {
+                transd_nn = Arrays.copyOfRange(trans_nn, 0, r_tosa_ur.length);
+            }
+            if (outputTup) {
+                transu_nn = Arrays.copyOfRange(trans_nn, r_tosa_ur.length, trans_nn.length);
             }
 
             // (9.4.6)
