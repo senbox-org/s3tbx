@@ -414,7 +414,7 @@ public class C2rccMerisAlgorithm {
             transu_nn = new double[0];
             double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
             // cloud flag test @865
-            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, transd_nn[11] < thresh_cloudTransD);
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[11] < thresh_cloudTransD);
             if (outputTdown) {
                 transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
             }
