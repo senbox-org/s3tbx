@@ -13,6 +13,24 @@
                 <!--<attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>-->
                 <!--<attr name="helpId" stringvalue="c2rccScientificTool"/>-->
             <!--</file>-->
+            <file name="org-esa-s3tbx-c2rcc-olci-OpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="C2RCC OLCI Processor"/>
+                <attr name="operatorName" stringvalue="olci.c2rcc"/>
+                <attr name="dialogTitle" stringvalue="C2RCC OLCI Processor"/>
+                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
+                <attr name="helpId" stringvalue="c2rccScientificTool"/>
+            </file>
+            <file name="org-esa-s3tbx-c2rcc-msi-OpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="C2RCC S2-MSI Processor"/>
+                <attr name="operatorName" stringvalue="msi.c2rcc"/>
+                <attr name="dialogTitle" stringvalue="C2RCC MSI Processor"/>
+                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
+                <attr name="helpId" stringvalue="c2rccScientificTool"/>
+            </file>
             <file name="org-esa-s3tbx-c2rcc-meris-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
@@ -37,24 +55,6 @@
                 <attr name="displayName" stringvalue="C2RCC SeaWiFS Processor"/>
                 <attr name="operatorName" stringvalue="seawifs.c2rcc"/>
                 <attr name="dialogTitle" stringvalue="C2RCC SeaWiFS Processor"/>
-                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
-                <attr name="helpId" stringvalue="c2rccScientificTool"/>
-            </file>
-            <file name="org-esa-s3tbx-c2rcc-olci-OpAction.instance">
-                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="C2RCC OLCI Processor"/>
-                <attr name="operatorName" stringvalue="olci.c2rcc"/>
-                <attr name="dialogTitle" stringvalue="C2RCC OLCI Processor"/>
-                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
-                <attr name="helpId" stringvalue="c2rccScientificTool"/>
-            </file>
-            <file name="org-esa-s3tbx-c2rcc-msi-OpAction.instance">
-                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="C2RCC MSI Processor"/>
-                <attr name="operatorName" stringvalue="msi.c2rcc"/>
-                <attr name="dialogTitle" stringvalue="C2RCC MSI Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
             </file>
