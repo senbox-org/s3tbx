@@ -17,7 +17,7 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2RCC OLCI Processor"/>
-                <attr name="operatorName" stringvalue="olci.c2rcc"/>
+                <attr name="operatorName" stringvalue="c2rcc.olci"/>
                 <attr name="dialogTitle" stringvalue="C2RCC OLCI Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
@@ -26,7 +26,7 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2RCC S2-MSI Processor"/>
-                <attr name="operatorName" stringvalue="msi.c2rcc"/>
+                <attr name="operatorName" stringvalue="c2rcc.msi"/>
                 <attr name="dialogTitle" stringvalue="C2RCC MSI Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
@@ -35,7 +35,7 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2RCC MERIS Processor"/>
-                <attr name="operatorName" stringvalue="meris.c2rcc"/>
+                <attr name="operatorName" stringvalue="c2rcc.meris"/>
                 <attr name="dialogTitle" stringvalue="C2RCC MERIS Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
@@ -44,7 +44,7 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2RCC MODIS Processor"/>
-                <attr name="operatorName" stringvalue="modis.c2rcc"/>
+                <attr name="operatorName" stringvalue="c2rcc.modis"/>
                 <attr name="dialogTitle" stringvalue="C2RCC MODIS Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
@@ -53,7 +53,7 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="C2RCC SeaWiFS Processor"/>
-                <attr name="operatorName" stringvalue="seawifs.c2rcc"/>
+                <attr name="operatorName" stringvalue="c2rcc.seawifs"/>
                 <attr name="dialogTitle" stringvalue="C2RCC SeaWiFS Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
@@ -125,24 +125,24 @@
             <attr name="operatorName" stringvalue="c2rcc"/>
             <attr name="disableFromGraphBuilder" stringvalue="true"/>
         </file>
-        <file name="org.esa.s3tbx.c2rcc.meris">
-            <attr name="operatorName" stringvalue="meris.c2rcc"/>
-            <attr name="disableFromGraphBuilder" stringvalue="true"/>
-        </file>
-        <file name="org.esa.s3tbx.c2rcc.modis">
-            <attr name="operatorName" stringvalue="modis.c2rcc"/>
-            <attr name="disableFromGraphBuilder" stringvalue="true"/>
-        </file>
-        <file name="org.esa.s3tbx.c2rcc.seawifs">
-            <attr name="operatorName" stringvalue="seawifs.c2rcc"/>
-            <attr name="disableFromGraphBuilder" stringvalue="true"/>
-        </file>
         <file name="org.esa.s3tbx.c2rcc.olci">
-            <attr name="operatorName" stringvalue="olci.c2rcc"/>
+            <attr name="operatorName" stringvalue="c2rcc.olci"/>
             <attr name="disableFromGraphBuilder" stringvalue="true"/>
         </file>
         <file name="org.esa.s3tbx.c2rcc.msi">
-            <attr name="operatorName" stringvalue="msi.c2rcc"/>
+            <attr name="operatorName" stringvalue="c2rcc.msi"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+        <file name="org.esa.s3tbx.c2rcc.meris">
+            <attr name="operatorName" stringvalue="c2rcc.meris"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+        <file name="org.esa.s3tbx.c2rcc.modis">
+            <attr name="operatorName" stringvalue="c2rcc.modis"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+        <file name="org.esa.s3tbx.c2rcc.seawifs">
+            <attr name="operatorName" stringvalue="c2rcc.seawifs"/>
             <attr name="disableFromGraphBuilder" stringvalue="true"/>
         </file>
     </folder>
