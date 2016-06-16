@@ -45,5 +45,14 @@ public class SmileCorrectionAlgorithm {
         double dr = (r2 - r1) * dl * E0;
         return (float) (rc + dr);
     }
+
+    public static float[] correctWithReflectance(float[] sourceRefs, float[] lowerRefs, float[] upperRefs, float[] lambdaSourceSamples, float[] lambadaLowerSamples, float[] lambadaUpperSamples, float refCentralWaveLength) {
+        int length = sourceRefs.length;
+        float[] floats = new float[length];
+        for (int i = 0; i < length; i++) {
+            floats[i] = correctWithReflectance(sourceRefs[i], lowerRefs[i], upperRefs[i], lambdaSourceSamples[i], lambadaLowerSamples[i], lambadaUpperSamples[i], refCentralWaveLength);
+        }
+        return floats;
+    }
 }
 
