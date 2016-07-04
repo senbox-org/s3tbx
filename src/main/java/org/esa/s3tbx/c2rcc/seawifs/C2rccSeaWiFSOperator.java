@@ -44,7 +44,7 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengt
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.seawifs", version = "0.10",
+@OperatorMetadata(alias = "c2rcc.seawifs", version = "0.11",
         authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2015 by Brockmann Consult",
