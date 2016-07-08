@@ -293,7 +293,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private AtmosphericAuxdata atmosphericAuxdata;
     private ElevationModel elevationModel;
     private double[] solflux;
-    private double quantificationValue;
 
 
     @Override
@@ -433,7 +432,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
         final double[] reflectances = new double[C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES.length];
         for (int i = 0; i < reflectances.length; i++) {
-            reflectances[i] = sourceSamples[i].getDouble() / quantificationValue;
+            reflectances[i] = sourceSamples[i].getDouble();
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
@@ -929,7 +928,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
         // (mp/20160504) - SolarFlux is not used so we set it to 0
         solflux = new double[SOURCE_BAND_REFL_NAMES.length]; //getSolarFluxValues();
-        quantificationValue = getQuantificationValue();
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
@@ -973,11 +971,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         // instead we can have the time coding ad a field and set it only to the target product.
         C2rccCommons.setTimeCoding(sourceProduct, getStartTime(), getEndTime());
         initAtmosphericAuxdata();
-    }
-
-    private double getQuantificationValue() {
-        MetadataElement pic = getProductImageCharacteristics();
-        return Integer.parseInt(getAttributeStringSafe(pic, "QUANTIFICATION_VALUE"));
     }
 
     private ProductData.UTC getStartTime() {
