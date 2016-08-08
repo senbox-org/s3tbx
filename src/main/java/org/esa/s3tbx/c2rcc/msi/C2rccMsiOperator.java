@@ -133,8 +133,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final String[] c2rccNNResourcePaths = new String[10];
     static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
     static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
-    static final String RASTER_NAME_VIEWING_ZENITH = "view_zenith";
-    static final String RASTER_NAME_VIEWING_AZIMUTH = "view_azimuth";
+    static final String RASTER_NAME_VIEWING_ZENITH = "view_zenith_mean";
+    static final String RASTER_NAME_VIEWING_AZIMUTH = "view_azimuth_mean";
     private static final String RASTER_NAME_SEA_LEVEL_PRESSURE = "sea_level_pressure";
     private static final String RASTER_NAME_TOTAL_OZONE = "total_ozone";
 
