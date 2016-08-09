@@ -10,6 +10,7 @@ import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -27,7 +28,6 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
 import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.*;
 import static org.esa.s3tbx.c2rcc.util.TargetProductPreparer.*;
@@ -156,6 +156,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
 
     private C2rccModisAlgorithm algorithm;
     private AtmosphericAuxdata atmosphericAuxdata;
+    private TimeCoding timeCoding;
 
     public static boolean isValidInput(Product product) {
         for (int wl : NN_INPUT_REFLEC_WAVELENGTHS) {
@@ -264,7 +265,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
             }
             GeoCoding geoCoding = sourceProduct.getSceneGeoCoding();
             PixelPos pixelPos = new PixelPos(x + 0.5, y + 0.5);
-            double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
+            double mjd = timeCoding.getMJD(pixelPos);
             GeoPos geoPos = geoCoding.getGeoPos(pixelPos, new GeoPos());
 
             double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, geoPos.lat, geoPos.lon);
@@ -381,6 +382,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         Product targetProduct = productConfigurer.getTargetProduct();
         prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, NN_INPUT_REFLEC_WAVELENGTHS,
                              outputRtosa, outputAsRrs);
+        C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
 
         if (outputAngles) {
             for (String angleName : GEOMETRY_ANGLE_NAMES) {
@@ -410,7 +412,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
 
-        ensureTimeCoding_Fallback(sourceProduct);
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
     }
 

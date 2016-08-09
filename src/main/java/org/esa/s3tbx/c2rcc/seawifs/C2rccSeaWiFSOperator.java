@@ -10,6 +10,7 @@ import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -27,7 +28,7 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.ensureTimeCoding_Fallback;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.getTimeCoding;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengths;
@@ -160,6 +161,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
     private C2rccSeaWiFSAlgorithm algorithm;
     private AtmosphericAuxdata atmosphericAuxdata;
+    private TimeCoding timeCoding;
 
     @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
@@ -213,7 +215,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
             final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
             GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
-            final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
+            final double mjd = timeCoding.getMJD(pixelPos);
             final double lat = geoPos.getLat();
             final double lon = geoPos.getLon();
 
@@ -319,6 +321,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         Product targetProduct = productConfigurer.getTargetProduct();
         TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, seawifsWavelengths,
                                                    outputRtosa, outputAsRrs);
+        C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
     }
 
     @Override
@@ -346,7 +349,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
 
-        ensureTimeCoding_Fallback(sourceProduct);
+        timeCoding = getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
 
     }

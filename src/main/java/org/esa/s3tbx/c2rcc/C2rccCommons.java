@@ -6,6 +6,7 @@ import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.RGBImageProfile;
 import org.esa.snap.core.datamodel.RGBImageProfileManager;
 import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.pointop.Sample;
 
@@ -16,24 +17,37 @@ public class C2rccCommons {
             "rtosa_gc", "rtosagc_aann", "tdown", "tup"
     };
 
-    public static void ensureTimeCoding_Fallback(Product product) {
-        if (product.getSceneTimeCoding() == null) {
-            final ProductData.UTC startTime = product.getStartTime();
-            final ProductData.UTC endTime = product.getEndTime();
-            if (endTime == null || startTime == null) {
-                throw new OperatorException("Could not retrieve time information from source product");
-            }
-            setTimeCoding(product, startTime, endTime);
+    public static TimeCoding getTimeCoding(Product product) {
+        if (product.getSceneTimeCoding() != null) {
+            return product.getSceneTimeCoding();
+        }
+        final ProductData.UTC startTime = product.getStartTime();
+        final ProductData.UTC endTime = product.getEndTime();
+        if (endTime == null || startTime == null) {
+            throw new OperatorException("Could not retrieve time information from source product");
+        }
+        return getTimeCoding(startTime, endTime);
+    }
+
+    public static TimeCoding getTimeCoding(ProductData.UTC startTime, ProductData.UTC endTime) {
+        if (startTime == null || endTime == null) {
+            throw new IllegalArgumentException("Arguments startTime and endTime must be given.");
+        } else {
+            double startTimeMJD = startTime.getMJD();
+            double constantTime = (endTime.getMJD() - startTimeMJD) / 2.0 + startTimeMJD;
+            return new ConstantTimeCoding(constantTime);
         }
     }
 
-    public static void setTimeCoding(Product product, ProductData.UTC startTime, ProductData.UTC endTime) {
-        if (startTime != null && endTime != null) {
+    public static void ensureTimeInformation(Product product, ProductData.UTC startTime, ProductData.UTC endTime, TimeCoding timeCoding) {
+        if(product.getStartTime() == null) {
             product.setStartTime(startTime);
+        }
+        if(product.getEndTime() == null) {
             product.setEndTime(endTime);
-            double startTimeMJD = startTime.getMJD();
-            double constantTime = (endTime.getMJD() - startTimeMJD) / 2.0 + startTimeMJD;
-            product.setSceneTimeCoding(new ConstantTimeCoding(constantTime));
+        }
+        if (product.getSceneTimeCoding() == null) {
+            product.setSceneTimeCoding(timeCoding);
         }
     }
 

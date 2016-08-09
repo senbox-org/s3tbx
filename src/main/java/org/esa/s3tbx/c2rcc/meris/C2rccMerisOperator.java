@@ -18,6 +18,7 @@ import org.esa.snap.core.datamodel.ProductNode;
 import org.esa.snap.core.datamodel.ProductNodeEvent;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
+import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -329,6 +330,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private SolarFluxLazyLookup solarFluxLazyLookup;
     private double[] constantSolarFlux;
     private AtmosphericAuxdata atmosphericAuxdata;
+    private TimeCoding timeCoding;
 
     @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
@@ -452,7 +454,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
-        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
+        final double mjd = timeCoding.getMJD(pixelPos);
         final double[] solflux;
         if (useDefaultSolarFlux) {
             ProductData.UTC utc = new ProductData.UTC(mjd);
@@ -678,6 +680,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         productConfigurer.copyMetadata();
 
         final Product targetProduct = productConfigurer.getTargetProduct();
+        C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
 
         final StringBuilder autoGrouping = new StringBuilder("iop");
@@ -1027,7 +1030,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 throw new OperatorException("Invalid solar flux in source product!");
             }
         }
-        C2rccCommons.ensureTimeCoding_Fallback(sourceProduct);
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
     }
 

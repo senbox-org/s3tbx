@@ -20,6 +20,7 @@ import org.esa.snap.core.datamodel.ProductNodeEvent;
 import org.esa.snap.core.datamodel.ProductNodeGroup;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
+import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.datamodel.VirtualBand;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
@@ -315,6 +316,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private AtmosphericAuxdata atmosphericAuxdata;
     private boolean useSnapDem;
     private ElevationModel elevationModel;
+    private TimeCoding timeCoding;
 
     public static boolean isValidInput(Product product) {
         for (int i = 0; i < BAND_COUNT; i++) {
@@ -466,7 +468,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
-        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
+        final double mjd = timeCoding.getMJD(pixelPos);
 
         // @todo discuss with Carsten and Roland
 //        if (useDefaultSolarFlux) {
@@ -707,6 +709,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         productConfigurer.copyMetadata();
 
         final Product targetProduct = productConfigurer.getTargetProduct();
+        C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
 
         targetProduct.setPreferredTileSize(128, 128);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
@@ -1018,7 +1021,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 //            }
 //        }
 
-        C2rccCommons.ensureTimeCoding_Fallback(sourceProduct);
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
     }
 

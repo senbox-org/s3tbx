@@ -17,6 +17,7 @@ import org.esa.snap.core.datamodel.ProductNode;
 import org.esa.snap.core.datamodel.ProductNodeEvent;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
+import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelDescriptor;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
@@ -293,6 +294,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private AtmosphericAuxdata atmosphericAuxdata;
     private ElevationModel elevationModel;
     private double[] solflux;
+    private TimeCoding timeCoding;
 
 
     @Override
@@ -441,8 +443,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
 
-        // todo MSI has no time information
-        final double mjd = sourceProduct.getSceneTimeCoding().getMJD(pixelPos);
+        final double mjd = timeCoding.getMJD(pixelPos);
         double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, lat, lon);
         double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, lat, lon);
 
@@ -665,6 +666,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         productConfigurer.copyMetadata();
 
         final Product targetProduct = productConfigurer.getTargetProduct();
+        C2rccCommons.ensureTimeInformation(targetProduct, getStartTime(), getEndTime(), timeCoding);
 
         targetProduct.setPreferredTileSize(128, 128);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
@@ -967,9 +969,19 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         algorithm.setOutputOos(outputOos);
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
-        // todo (mp/20160504) - we should not alter the input product
-        // instead we can have the time coding ad a field and set it only to the target product.
-        C2rccCommons.setTimeCoding(sourceProduct, getStartTime(), getEndTime());
+
+        timeCoding = sourceProduct.getSceneTimeCoding();
+        if(timeCoding == null) {
+            // if not time coding is set, create one
+            if (sourceProduct.getStartTime() == null || sourceProduct.getEndTime() == null) {
+                // if no start/end time is set, read it from the metadata
+                // (should not happen anymore from SNAP 4.0.2 on)
+                timeCoding = C2rccCommons.getTimeCoding(getStartTime(), getEndTime());
+            } else {
+                timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+            }
+
+        }
         initAtmosphericAuxdata();
     }
 

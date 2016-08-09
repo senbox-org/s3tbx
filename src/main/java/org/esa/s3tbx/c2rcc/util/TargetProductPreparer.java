@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.util;
 
+import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
