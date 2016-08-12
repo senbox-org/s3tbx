@@ -538,7 +538,7 @@ public class S3NetcdfReader {
                     }
                     array = newArray;
                 }
-                productData = ProductData.createInstance((int[]) array);
+                productData = ProductData.createUnsignedInstance((int[]) array);
                 break;
             }
             case ProductData.TYPE_FLOAT32: {
