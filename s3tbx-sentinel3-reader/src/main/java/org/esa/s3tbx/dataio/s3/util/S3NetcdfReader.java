@@ -499,7 +499,7 @@ public class S3NetcdfReader {
         return type;
     }
 
-    protected ProductData getAttributeData(Attribute attribute, int type) {
+    private ProductData getAttributeData(Attribute attribute, int type) {
         final Array attributeValues = attribute.getValues();
         ProductData productData = null;
         switch (type) {
@@ -516,28 +516,12 @@ public class S3NetcdfReader {
                 break;
             }
             case ProductData.TYPE_INT32: {
-                Object array = attributeValues.copyTo1DJavaArray();
-                if (array instanceof long[]) {
-                    long[] longArray = (long[]) array;
-                    int[] newArray = new int[longArray.length];
-                    for (int i = 0; i < longArray.length; i++) {
-                        newArray[i] = (int) longArray[i];
-                    }
-                    array = newArray;
-                }
+                Object array = convertLongToIntArray(attributeValues.copyTo1DJavaArray());
                 productData = ProductData.createInstance((int[]) array);
                 break;
             }
             case ProductData.TYPE_UINT32: {
-                Object array = attributeValues.copyTo1DJavaArray();
-                if (array instanceof long[]) {
-                    long[] longArray = (long[]) array;
-                    int[] newArray = new int[longArray.length];
-                    for (int i = 0; i < longArray.length; i++) {
-                        newArray[i] = (int) longArray[i];
-                    }
-                    array = newArray;
-                }
+                Object array = convertLongToIntArray(attributeValues.copyTo1DJavaArray());
                 productData = ProductData.createUnsignedInstance((int[]) array);
                 break;
             }
@@ -554,6 +538,18 @@ public class S3NetcdfReader {
             }
         }
         return productData;
+    }
+
+    private Object convertLongToIntArray(Object array) {
+        if (array instanceof long[]) {
+            long[] longArray = (long[]) array;
+            int[] newArray = new int[longArray.length];
+            for (int i = 0; i < longArray.length; i++) {
+                newArray[i] = (int) longArray[i];
+            }
+            array = newArray;
+        }
+        return array;
     }
 
     int getWidth() {
