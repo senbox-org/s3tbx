@@ -182,7 +182,7 @@
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
             <artifactId>s3tbx-proba-v-reader</artifactId>
-            <version>4.0.0.1</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.s3tbx</groupId>

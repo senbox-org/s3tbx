@@ -10,9 +10,6 @@
     </parent>
 
     <artifactId>s3tbx-proba-v-reader</artifactId>
-    <!-- Version 4.0.0.1 is an intermediate/internal release of the reader.
-    Version is also adjusted in the Kit module -->
-    <version>4.0.0.1</version>
     <packaging>nbm</packaging>
 
     <name>PROBA V Product Reader</name>
