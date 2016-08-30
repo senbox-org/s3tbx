@@ -83,8 +83,6 @@ public class RayleighAux {
     private double[] cosOZARads;
     private double[] airMass;
 
-    public RayleighAux() {
-    }
 
     public static void initDefaultAuxiliary() {
         try {
