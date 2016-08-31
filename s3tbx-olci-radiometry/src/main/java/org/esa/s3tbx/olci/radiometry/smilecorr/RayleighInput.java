@@ -21,7 +21,7 @@ package org.esa.s3tbx.olci.radiometry.smilecorr;
 /**
  * @author muhammad.bc.
  */
-public class RayleighSample {
+public class RayleighInput {
     float sourceReflectance;
     float lowerReflectance;
     float upperReflectance;
@@ -29,7 +29,7 @@ public class RayleighSample {
     int lowerWaterIndex;
     int upperWaterIndex;
 
-    public RayleighSample(float sourceReflectance, float lowerReflectance, float upperReflectance, int sourceIndex, int lowerWaterIndex, int upperWaterIndex) {
+    public RayleighInput(float sourceReflectance, float lowerReflectance, float upperReflectance, int sourceIndex, int lowerWaterIndex, int upperWaterIndex) {
         this.sourceReflectance = sourceReflectance;
         this.lowerReflectance = lowerReflectance;
         this.upperReflectance = upperReflectance;

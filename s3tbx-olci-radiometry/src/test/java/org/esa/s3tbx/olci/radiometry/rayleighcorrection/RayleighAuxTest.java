@@ -60,14 +60,12 @@ public class RayleighAuxTest {
     @Ignore
     @Test
     public void testGetAirMass() throws Exception {
-        rayleighAux.setAirMass();
         assertArrayEquals(new double[]{2.0003046560878155, 2.0012190885976433, 2.002744691995842}, rayleighAux.getAirMass(), 1e-8);
     }
 
     @Ignore
     @Test
     public void testAziDiff() throws Exception {
-        rayleighAux.setAziDifferent();
         assertArrayEquals(new double[]{0.05235987755983066, 0.05235987755983066, 0.05235987755983066}, rayleighAux.getAziDifferent(), 1e-8);
     }
 

@@ -72,14 +72,12 @@ public class SpikeInterpolation {
     public static double[] useLibJAI(double[][] samples, float xfrac, float yfrac) {
         Interpolation interpolation = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
         double interpolateBI = interpolation.interpolate(samples, xfrac, yfrac);
-        System.out.println("interpolate with bilinear JAI lib = " + interpolateBI);
         return new double[]{interpolateBI};
     }
 
     public static double useApacheMath(double[] xval, double[] yval, double[][] fval, double x, double y) {
         BicubicSplineInterpolator interpolator = new BicubicSplineInterpolator();
         BicubicSplineInterpolatingFunction interpolate = interpolator.interpolate(xval, yval, fval);
-        System.out.println("interpolate with bicubic Apache Lib = " + interpolate.value(x, y));
         return interpolate.value(x, y);
 
     }

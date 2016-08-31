@@ -2,7 +2,7 @@ package org.esa.s3tbx.olci.radiometry.rayleighcorrection;
 
 import java.util.List;
 import java.util.Map;
-import org.esa.s3tbx.olci.radiometry.smilecorr.RayleighSample;
+import org.esa.s3tbx.olci.radiometry.smilecorr.RayleighInput;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.util.math.RsMathUtils;
 
@@ -11,8 +11,6 @@ import org.esa.snap.core.util.math.RsMathUtils;
  */
 public class RayleighCorrAlgorithm {
 
-    public static final int NUM_BANDS = 21;
-    public static final String BAND_NAME_PATTERN = "Oa%02d_radiance";
 
     //todo mba/* write test
     public double[] waterVaporCorrection709(double[] reflectances, double[] bWVRefTile, double[] bWVTile) {
@@ -141,16 +139,16 @@ public class RayleighCorrAlgorithm {
         return rho_BRR;
     }
 
-    private double[] getFourierSeries(double rayleighOpticalThickness, double massAir, double cosOZARad, double cosSZARad, List<double[]> interpolateValues, double[] fourierSeries) {
-        double rho_Rm[] = new double[fourierSeries.length];
-        for (int i = 0; i < fourierSeries.length; i++) {
+    public double[] getFourierSeries(double rayleighOpticalThickness, double massAir, double cosOZARad, double cosSZARad, List<double[]> interpolateValues, double[] fourierSeriesCof) {
+        double rho_Rm[] = new double[fourierSeriesCof.length];
+        for (int i = 0; i < fourierSeriesCof.length; i++) {
             double[] interpolatedValueABCD = interpolateValues.get(i);
             double a = interpolatedValueABCD[0];
             double b = interpolatedValueABCD[1];
             double c = interpolatedValueABCD[2];
             double d = interpolatedValueABCD[3];
 
-            double rayPrimaryScatters = (fourierSeries[i] / (4.0 * (cosSZARad + cosOZARad))) * (1.0 - Math.exp(-massAir * rayleighOpticalThickness));
+            double rayPrimaryScatters = (fourierSeriesCof[i] / (4.0 * (cosSZARad + cosOZARad))) * (1.0 - Math.exp(-massAir * rayleighOpticalThickness));
             double rayMultiCorr = a + b * rayleighOpticalThickness + c * Math.pow(rayleighOpticalThickness, 2) + d * Math.pow(rayleighOpticalThickness, 3);
             rho_Rm[i] = rayMultiCorr * rayPrimaryScatters;
         }
@@ -186,18 +184,13 @@ public class RayleighCorrAlgorithm {
         return rho_BRR;
     }
 
-    public RayleighSample getRayleighReflectance(RayleighSample rayleighSample, RayleighAux rayleighAux, Product sourceProduct, int indexOfArray, double[] absorptionOfBand) {
+    public RayleighOutput getRayleighReflectance(RayleighInput rayleighInput, RayleighAux rayleighAux, int indexOfArray, double[] absorptionOfBand, double[] crossSectionSigma) {
+        double sourceRayRefl = getRayleigh(rayleighAux, crossSectionSigma, absorptionOfBand, rayleighInput.getSourceReflectance(), rayleighInput.getSourceIndex(), indexOfArray);
+        double lowerRayRefl = getRayleigh(rayleighAux, crossSectionSigma, absorptionOfBand, rayleighInput.getLowerReflectance(), rayleighInput.getLowerWaterIndex(), indexOfArray);
+        double upperRayRefl = getRayleigh(rayleighAux, crossSectionSigma, absorptionOfBand, rayleighInput.getUpperReflectance(), rayleighInput.getUpperWaterIndex(), indexOfArray);
 
-        double[] crossSectionSigma = getCrossSectionSigma(sourceProduct, NUM_BANDS, BAND_NAME_PATTERN);
-
-        double sourceRayRefl = getRayleigh(rayleighAux, crossSectionSigma, absorptionOfBand, rayleighSample.getSourceReflectance(), rayleighSample.getSourceIndex(), indexOfArray);
-        double lowerRayRefl = getRayleigh(rayleighAux, crossSectionSigma, absorptionOfBand, rayleighSample.getLowerReflectance(), rayleighSample.getLowerWaterIndex(), indexOfArray);
-        double upperRayRefl = getRayleigh(rayleighAux, crossSectionSigma, absorptionOfBand, rayleighSample.getUpperReflectance(), rayleighSample.getUpperWaterIndex(), indexOfArray);
-
-        rayleighSample.setSourceReflectance((float) sourceRayRefl);
-        rayleighSample.setLowerReflectance((float) lowerRayRefl);
-        rayleighSample.setUpperReflectance((float) upperRayRefl);
-        return rayleighSample;
+        RayleighOutput rayleighOutput= new RayleighOutput((float) sourceRayRefl,(float) lowerRayRefl,(float) upperRayRefl);
+        return rayleighOutput;
     }
 
     private double getRayleigh(RayleighAux rayleighAux, double[] crossSectionSigma, double[] absorptionOfBand, double ref, int index, int indexOfArray) {
@@ -207,6 +200,8 @@ public class RayleighCorrAlgorithm {
 
         double sigma = crossSectionSigma[index];
         double absorp = absorptionOfBand[index];
+        float rayleighThickness = getRayleighThickness(rayleighAux, indexOfArray, sigma);
+
         double ozone = rayleighAux.getTotalOzones()[indexOfArray];
         double cosOZARad = rayleighAux.getCosOZARads()[indexOfArray];
         double cosSZARad = rayleighAux.getCosSZARads()[indexOfArray];
@@ -216,8 +211,6 @@ public class RayleighCorrAlgorithm {
         List<double[]> interpolateValues = interpolation.get(indexOfArray);
         double[] fourierSeries = fourier.get(indexOfArray);
 
-
-        float rayleighThickness = getRayleighThickness(rayleighAux, indexOfArray, sigma);
         double sARay[] = rayleighAux.getInterpolateRayleighThickness(rayleighThickness);
         double corrOzone = getCorrOzone(ref, absorp, ozone, cosSZARad, cosOZARad);
         double rhoBrr = getRhoBrr(rayleighThickness, aziDiffs, airMasses, cosOZARad, cosSZARad, interpolateValues, tau_ray, sARay[0], fourierSeries, corrOzone);
@@ -226,10 +219,10 @@ public class RayleighCorrAlgorithm {
     }
 
     public float getRayleighThickness(RayleighAux rayleighAux, int indexOfArray, double sigma) {
-        double[] seaLevels = rayleighAux.getSeaLevels();
-        double[] latitudes = rayleighAux.getLatitudes();
-        double[] altitudes = rayleighAux.getAltitudes();
-        return (float) getRayleighOpticalThickness(sigma, seaLevels[indexOfArray], altitudes[indexOfArray], latitudes[indexOfArray]);
+        double seaLevel = rayleighAux.getSeaLevels()[indexOfArray];
+        double latitude = rayleighAux.getLatitudes()[indexOfArray];
+        double altitude = rayleighAux.getAltitudes()[indexOfArray];
+        return (float) getRayleighOpticalThickness(sigma, seaLevel, altitude, latitude);
     }
 
     public double getRayleighOpticalThickness(double sigma, double seaLevelPressure, double altitude, double latitude) {

@@ -157,7 +157,7 @@ public class RayleighCorrectionOp extends Operator {
                 targetTile.setSamples(rayleighOpticalThickness);
             } else if (isRBrr || isRtoa_ngSelected) {
                 double[] reflectance = getReflectance(rayleighAux);
-                if (Math.ceil(rayleighAux.getWaveLenght()) == WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION) {
+                if (Math.ceil(rayleighAux.getWaveLength()) == WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION) {
                     reflectance = waterVaporCorrection709(reflectance, targetRectangle, sensor);
                 }
                 double[] corrOzoneRefl = getCorrectOzone(rayleighAux, reflectance, sourceBandIndex);
@@ -308,7 +308,6 @@ public class RayleighCorrectionOp extends Operator {
             rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(MERIS_OZONE), rectangle));
             rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(MERIS_LATITUDE), rectangle));
             rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(MERIS_LONGITUDE), rectangle));
-            rayleighAux.setAltitudes();
 
 
         } else if (sensor.equals(Sensor.OLCI)) {
@@ -324,16 +323,6 @@ public class RayleighCorrectionOp extends Operator {
 //            auxiliaryValues.setAltitudes();
         }
 
-        if (isAirMass || isRBrr) {
-            rayleighAux.setAirMass();
-        }
-
-        if (isRBrr) {
-            rayleighAux.setAziDifferent();
-            rayleighAux.setFourier();
-//            auxiliaryValues.setInterpolation();
-            rayleighAux.setSpikeInterpolation();
-        }
         return rayleighAux;
     }
 
