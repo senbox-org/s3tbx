@@ -21,6 +21,8 @@ package org.esa.s3tbx.olci.radiometry.smilecorr;
 import com.bc.ceres.core.ProgressMonitor;
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.util.HashMap;
+import java.util.Map;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.ConstantDescriptor;
 import org.esa.s3tbx.olci.radiometry.gaseousabsorption.GaseousAbsorptionAux;
@@ -93,6 +95,7 @@ public class SmileCorretionOp extends Operator {
     private RayleighCorrAlgorithm rayleighCorrAlgorithm;
     private double[] absorpOzones;
     private double[] crossSectionSigma;
+    private Map<Integer, double[]> thicknessAllBand;
 
     @Override
     public void initialize() throws OperatorException {
@@ -336,7 +339,7 @@ public class SmileCorretionOp extends Operator {
 
             if (applyRayleigh) {
                 rayleighAux = prepareRayleighAux(rectangle);
-                crossSectionSigma = rayleighCorrAlgorithm.getCrossSectionSigma(getSourceProduct(), NUM_BANDS, BAND_NAME_PATTERN);
+                thicknessAllBand = getThicknessAllBands(rayleighAux);
             }
         }
         SmileTiles landTiles = null;
@@ -379,9 +382,18 @@ public class SmileCorretionOp extends Operator {
                     }
                 }
 
-
             }
         }
+    }
+
+    private Map<Integer, double[]> getThicknessAllBands(RayleighAux rayleighAux) {
+        double[] crossSectionSigma = rayleighCorrAlgorithm.getCrossSectionSigma(getSourceProduct(), NUM_BANDS, BAND_NAME_PATTERN);
+        Map<Integer, double[]> thicknessPerBand = new HashMap<>();
+        for (int bandIndex = 1; bandIndex <= NUM_BANDS; bandIndex++) {
+            double[] rayleighThickness = rayleighCorrAlgorithm.getRayleighThickness(rayleighAux, crossSectionSigma, bandIndex);
+            thicknessPerBand.put(bandIndex, rayleighThickness);
+        }
+        return thicknessPerBand;
     }
 
     private float correctForSmileEffect(float radiance, Tile solarIrradianceTile, Tile effectWavelengthTargetTile,
@@ -412,7 +424,7 @@ public class SmileCorretionOp extends Operator {
                 //ref: org/esa/snap/core/gpf/DirectDriverTest.java:561
                 int indexInArray = y * solarIrradianceTile.getWidth() + x;
                 RayleighInput rayleighInputToCompute = new RayleighInput(sourceRefl, lowerRefl, upperRefl, targetBandIndx, lowerWaterIndx, upperWaterIndx);
-                RayleighOutput computedRayleighOutput = rayleighCorrAlgorithm.getRayleighReflectance(rayleighInputToCompute, rayleighAux, indexInArray, absorpOzones, crossSectionSigma);
+                RayleighOutput computedRayleighOutput = rayleighCorrAlgorithm.getRayleighReflectance(rayleighInputToCompute, rayleighAux, absorpOzones, thicknessAllBand, indexInArray);
                 sourceRefl = computedRayleighOutput.getSourceRayRefl();
                 lowerRefl = computedRayleighOutput.getLowerRayRefl();
                 upperRefl = computedRayleighOutput.getUpperRayRefl();
@@ -430,8 +442,6 @@ public class SmileCorretionOp extends Operator {
     }
 
     private RayleighAux prepareRayleighAux(Rectangle rectangle) {
-
-
         RayleighAux rayleighAux = new RayleighAux();
         rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(SZA), rectangle));
         rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(RayleighCorrectionOp.OZA), rectangle));
