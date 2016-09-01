@@ -410,7 +410,7 @@ public class SmileCorretionOp extends Operator {
                 int minX = solarIrradianceTile.getMinX();
                 int maxY = solarIrradianceTile.getMaxY();
                 //ref: org/esa/snap/core/gpf/DirectDriverTest.java:561
-                int indexInArray = (y - minY) * (maxY - minY + 1) + x - minX;
+                int indexInArray = y * solarIrradianceTile.getWidth() + x;
                 RayleighInput rayleighInputToCompute = new RayleighInput(sourceRefl, lowerRefl, upperRefl, targetBandIndx, lowerWaterIndx, upperWaterIndx);
                 RayleighOutput computedRayleighOutput = rayleighCorrAlgorithm.getRayleighReflectance(rayleighInputToCompute, rayleighAux, indexInArray, absorpOzones, crossSectionSigma);
                 sourceRefl = computedRayleighOutput.getSourceRayRefl();
