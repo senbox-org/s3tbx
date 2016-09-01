@@ -434,18 +434,6 @@ public class SmileCorretionOp extends Operator {
 
     private RayleighAux prepareRayleighAux(Rectangle rectangle, int x, int y) {
         RayleighAux rayleighAux = new RayleighAux();
-
-
-/*      rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(SZA), rectangle));
-        rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(RayleighCorrectionOp.OZA), rectangle));
-        rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(SAA), rectangle));
-        rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(OAA), rectangle));
-        rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(SEA_LEVEL_PRESSURE), rectangle));
-        rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(TOTAL_OZONE), rectangle));
-        rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_LATITUDE), rectangle));
-        rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(TP_LONGITUDE), rectangle));
-        rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(ALTITUDE), rectangle));*/
-
         rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(SZA), rectangle).getSampleDouble(x, y));
         rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(RayleighCorrectionOp.OZA), rectangle).getSampleDouble(x, y));
         rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(SAA), rectangle).getSampleDouble(x, y));

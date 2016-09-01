@@ -130,8 +130,8 @@ public class RayleighAux {
         this.altitudes = getSampleDoubles(altitude);
     }
 
-    public void setSunZenithAngles(double... sunZenithAngles) {
-        this.sunZenithAngles = sunZenithAngles;
+    public void setAltitudes(double... alt) {
+        this.altitudes = alt;
     }
 
     //for test only
@@ -162,6 +162,7 @@ public class RayleighAux {
         }
         return altitudes;
     }
+
 
     void setInterpolation() {
         BicubicSplineInterpolator gridInterpolator = new BicubicSplineInterpolator();
@@ -341,6 +342,8 @@ public class RayleighAux {
         throw new NullPointerException("The sun zenith angles is null.");
     }
 
+
+
     public void setViewZenithAnglesRad(double[] viewZenithAngles) {
         if (Objects.nonNull(viewZenithAngles)) {
             viewZenithAnglesRad = SmileUtils.convertDegreesToRadians(viewZenithAngles);
@@ -426,6 +429,10 @@ public class RayleighAux {
         return sunZenithAngles;
     }
 
+    public void setSunZenithAngles(double... sunZenithAngles) {
+        this.sunZenithAngles = sunZenithAngles;
+        setSunZenithAnglesRad(sunZenithAngles);
+    }
     public void setSunZenithAngles(Tile sourceTile) {
         this.sunZenithAngles = getSampleDoubles(sourceTile);
         setSunZenithAnglesRad(sunZenithAngles);
@@ -440,12 +447,22 @@ public class RayleighAux {
         setViewZenithAnglesRad(viewZenithAngles);
     }
 
+    public void setViewZenithAngles(double... viewZenithAngles) {
+        this.viewZenithAngles = viewZenithAngles;
+        setViewZenithAnglesRad(viewZenithAngles);
+    }
+
     public double[] getSunAzimuthAngles() {
         return sunAzimuthAngles;
     }
 
     public void setSunAzimuthAngles(Tile sourceTile) {
         this.sunAzimuthAngles = getSampleDoubles(sourceTile);
+        setSunAzimuthAnglesRad(sunAzimuthAngles);
+    }
+
+    public void setSunAzimuthAngles(double... sunAzimuthAngles) {
+        this.sunAzimuthAngles = sunAzimuthAngles;
         setSunAzimuthAnglesRad(sunAzimuthAngles);
     }
 
@@ -457,12 +474,21 @@ public class RayleighAux {
         this.latitudes = getSampleDoubles(sourceTile);
     }
 
+    public void setLatitudes(double... lat) {
+        this.latitudes = lat;
+    }
+
     public double[] getViewAzimuthAngles() {
         return viewAzimuthAngles;
     }
 
     public void setViewAzimuthAngles(Tile sourceTile) {
         this.viewAzimuthAngles = getSampleDoubles(sourceTile);
+        setViewAzimuthAnglesRad(viewAzimuthAngles);
+    }
+
+    public void setViewAzimuthAngles(double... viewAzimuthAngles) {
+        this.viewAzimuthAngles = viewAzimuthAngles;
         setViewAzimuthAnglesRad(viewAzimuthAngles);
     }
 
@@ -474,12 +500,20 @@ public class RayleighAux {
         this.seaLevels = getSampleDoubles(sourceTile);
     }
 
+    public void setSeaLevels(double... seaLevels) {
+        this.seaLevels = seaLevels;
+    }
+
     public double[] getTotalOzones() {
         return totalOzones;
     }
 
     public void setTotalOzones(Tile sourceTile) {
         this.totalOzones = getSampleDoubles(sourceTile);
+    }
+
+    public void setTotalOzones(double... totalO) {
+        this.totalOzones = totalO;
     }
 
     public double[] getSolarFluxs() {
@@ -520,6 +554,10 @@ public class RayleighAux {
 
     public void setLongitude(Tile sourceTile) {
         this.longitude = getSampleDoubles(sourceTile);
+    }
+
+    public void setLongitude(double... longitude) {
+        this.longitude = longitude;
     }
 
 

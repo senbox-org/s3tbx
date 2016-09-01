@@ -153,7 +153,7 @@ public class RayleighCorrectionOp extends Operator {
             if (targetBandName.matches(RTOA_PATTERN) && isRtoaSelected) {
                 targetTile.setSamples(getReflectance(rayleighAux));
             } else if (targetBandName.matches(TAUR_PATTERN) && isTaurSelected) {
-                double[] rayleighOpticalThickness = getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
+                double[] rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
                 targetTile.setSamples(rayleighOpticalThickness);
             } else if (isRBrr || isRtoa_ngSelected) {
                 double[] reflectance = getReflectance(rayleighAux);
@@ -166,7 +166,7 @@ public class RayleighCorrectionOp extends Operator {
                     continue;
                 }
                 if (targetBandName.matches(R_BRR_PATTERN) && isRBrr) {
-                    double[] rayleighOpticalThickness = getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
+                    double[] rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
                     double[] rhoBrr = getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
                     targetTile.setSamples(rhoBrr);
                 }
@@ -202,20 +202,6 @@ public class RayleighCorrectionOp extends Operator {
         return algorithm.getCrossSectionSigma(sourceProduct, numBands, getBandNamePattern);
     }
 
-
-    private double[] getRayleighThickness(RayleighAux rayleighAux, double[] crossSectionSigma, int sourceBandIndex) {
-        double[] seaLevels = rayleighAux.getSeaLevels();
-        double[] altitudes = rayleighAux.getAltitudes();
-        double[] latitudes = rayleighAux.getLatitudes();
-        double sigma = crossSectionSigma[sourceBandIndex - 1];
-
-        double rayleighOpticalThickness[] = new double[altitudes.length];
-        for (int i = 0; i < altitudes.length; i++) {
-            rayleighOpticalThickness[i] = algorithm.getRayleighOpticalThickness(sigma, seaLevels[i], altitudes[i], latitudes[i]);
-        }
-
-        return rayleighOpticalThickness;
-    }
 
     private double[] getReflectance(RayleighAux rayleighAux) {
         double[] sourceSampleRad = rayleighAux.getSourceSampleRad();
