@@ -21,8 +21,6 @@ package org.esa.s3tbx.olci.radiometry.smilecorr;
 import com.bc.ceres.core.ProgressMonitor;
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.util.HashMap;
-import java.util.Map;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.ConstantDescriptor;
 import org.esa.s3tbx.olci.radiometry.gaseousabsorption.GaseousAbsorptionAux;
@@ -94,6 +92,7 @@ public class SmileCorretionOp extends Operator {
 
     private RayleighCorrAlgorithm rayleighCorrAlgorithm;
     private double[] absorpOzones;
+    private double[] crossSectionSigma;
 
 
     @Override
@@ -106,6 +105,7 @@ public class SmileCorretionOp extends Operator {
             RayleighAux.initDefaultAuxiliary();
             rayleighCorrAlgorithm = new RayleighCorrAlgorithm();
             absorpOzones = new GaseousAbsorptionAux().absorptionOzone(OLCI_SENSOR);
+            crossSectionSigma = rayleighCorrAlgorithm.getCrossSectionSigma(getSourceProduct(), NUM_BANDS, BAND_NAME_PATTERN);
         }
         // Configure the target
         Product targetProduct = new Product(sourceProduct.getName(), sourceProduct.getProductType(),
@@ -378,15 +378,6 @@ public class SmileCorretionOp extends Operator {
         }
     }
 
-    private Map<Integer, double[]> getThicknessAllBands(RayleighAux rayleighAux) {
-        double[] crossSectionSigma = rayleighCorrAlgorithm.getCrossSectionSigma(getSourceProduct(), NUM_BANDS, BAND_NAME_PATTERN);
-        Map<Integer, double[]> thicknessPerBand = new HashMap<>();
-        for (int bandIndex = 1; bandIndex <= NUM_BANDS; bandIndex++) {
-            double[] rayleighThickness = rayleighCorrAlgorithm.getRayleighThickness(rayleighAux, crossSectionSigma, bandIndex);
-            thicknessPerBand.put(bandIndex, rayleighThickness);
-        }
-        return thicknessPerBand;
-    }
 
     private float correctForSmileEffect(float radiance, Tile solarIrradianceTile, Tile effectWavelengthTargetTile,
                                         float refCentralWaveLength, SmileTiles smileTiles,
@@ -408,13 +399,10 @@ public class SmileCorretionOp extends Operator {
         if (applyRayleigh) {
             int lowerWaterIndx = smileAuxdata.getWaterLowerBands()[targetBandIndx] - 1;
             int upperWaterIndx = smileAuxdata.getWaterUpperBands()[targetBandIndx] - 1;
-            int indexInArray = y * solarIrradianceTile.getWidth() + x;
-
             if (lowerWaterIndx != DO_NOT_CORRECT_BAND && upperWaterIndx != DO_NOT_CORRECT_BAND) {
                 RayleighAux rayleighAux = prepareRayleighAux(solarIrradianceTile.getRectangle(), x, y);
-                Map<Integer, double[]> thicknessAllBand = getThicknessAllBands(rayleighAux);
                 RayleighInput rayleighInputToCompute = new RayleighInput(sourceRefl, lowerRefl, upperRefl, targetBandIndx, lowerWaterIndx, upperWaterIndx);
-                RayleighOutput computedRayleighOutput = rayleighCorrAlgorithm.getRayleighReflectance(rayleighInputToCompute, rayleighAux, absorpOzones, thicknessAllBand, 0);
+                RayleighOutput computedRayleighOutput = getRayleigh(rayleighInputToCompute, rayleighAux, absorpOzones, crossSectionSigma, x, y);
 
                 sourceRefl = computedRayleighOutput.getSourceRayRefl();
                 lowerRefl = computedRayleighOutput.getLowerRayRefl();
@@ -432,17 +420,22 @@ public class SmileCorretionOp extends Operator {
         return convertReflToRad(correctedReflectance, sza, shiftedSolarIrradiance);
     }
 
+    private RayleighOutput getRayleigh(RayleighInput rayleighInputToCompute, RayleighAux rayleighAux, double[] absorpOzones, double[] crossSectionSigma, int x, int y) {
+        RayleighOutput rayleighReflectance = rayleighCorrAlgorithm.getRayleighReflectance(rayleighInputToCompute, rayleighAux, absorpOzones, crossSectionSigma, x, y);
+        return rayleighReflectance;
+    }
+
     private RayleighAux prepareRayleighAux(Rectangle rectangle, int x, int y) {
         RayleighAux rayleighAux = new RayleighAux();
-        rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(SZA), rectangle).getSampleDouble(x, y));
-        rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(RayleighCorrectionOp.OZA), rectangle).getSampleDouble(x, y));
-        rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(SAA), rectangle).getSampleDouble(x, y));
-        rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(OAA), rectangle).getSampleDouble(x, y));
-        rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(SEA_LEVEL_PRESSURE), rectangle).getSampleDouble(x, y));
-        rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(TOTAL_OZONE), rectangle).getSampleDouble(x, y));
-        rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_LATITUDE), rectangle).getSampleDouble(x, y));
-        rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(TP_LONGITUDE), rectangle).getSampleDouble(x, y));
-        rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(ALTITUDE), rectangle).getSampleDouble(x, y));
+        rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(SZA), rectangle));
+        rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(RayleighCorrectionOp.OZA), rectangle));
+        rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(SAA), rectangle));
+        rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(OAA), rectangle));
+        rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(SEA_LEVEL_PRESSURE), rectangle));
+        rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(TOTAL_OZONE), rectangle));
+        rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_LATITUDE), rectangle));
+        rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(TP_LONGITUDE), rectangle));
+        rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(ALTITUDE), rectangle));
         return rayleighAux;
     }
 
