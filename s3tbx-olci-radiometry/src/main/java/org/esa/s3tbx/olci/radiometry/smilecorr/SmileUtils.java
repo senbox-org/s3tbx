@@ -39,13 +39,13 @@ public class SmileUtils {
         return multiple2ArrayFloat(multiple2ArrayFloat(array1, array2), array3);
     }
 
-    public static double[] convertDegreesToRadians(double[] angle) {
+    public static double[] convertDegreesToRadians(double... angle) {
         final double[] rads = new double[angle.length];
         IntStream.range(0, rads.length).forEach(value -> rads[value] = Math.toRadians(angle[value]));
         return rads;
     }
 
-    public static float[] convertDegreesToRadians(float[] angle) {
+    public static float[] convertDegreesToRadians(float... angle) {
         final float[] rads = new float[angle.length];
         IntStream.range(0, rads.length).forEach(value -> rads[value] = (float) Math.toRadians(angle[value]));
         return rads;
@@ -57,6 +57,10 @@ public class SmileUtils {
         return massAir;
     }
 
+    public static double getAirMass(double cosOZARads, double cosSZARads) {
+        return 1 / cosSZARads + 1 / cosOZARads;
+    }
+
     public static double[] getAziDiff(double[] saaRads, double[] aooRads) {
         int length = saaRads.length;
         double[] aziDiff = new double[length];
@@ -66,5 +70,11 @@ public class SmileUtils {
             aziDiff[value] = Math.acos(cosDelta);
         });
         return aziDiff;
+    }
+
+    public static double getAziDiff(double saaRads, double aooRads) {
+        double a = aooRads - saaRads;
+        double cosDelta = Math.cos(a);
+        return Math.acos(cosDelta);
     }
 }
