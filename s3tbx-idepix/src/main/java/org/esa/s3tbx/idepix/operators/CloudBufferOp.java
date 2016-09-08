@@ -87,7 +87,7 @@ public class CloudBufferOp extends Operator {
         final Tile sourceFlagTile = getSourceTile(origClassifFlagBand, srcRectangle);
 
 //        for (int y = srcRectangle.y; y < srcRectangle.y + srcRectangle.height; y++) {
-//            checkForCancellation();
+//            ();
 //            for (int x = srcRectangle.x; x < srcRectangle.x + srcRectangle.width; x++) {
 //
 //                if (targetRectangle.contains(x, y)) {
@@ -109,7 +109,6 @@ public class CloudBufferOp extends Operator {
 //        }
 
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
-            checkForCancellation();
             for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
 
                 IdepixUtils.combineFlags(x, y, sourceFlagTile, targetTile);
@@ -130,7 +129,6 @@ public class CloudBufferOp extends Operator {
 
 
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
-            checkForCancellation();
             for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
                 IdepixUtils.consolidateCloudAndBuffer(targetTile, x, y);
             }

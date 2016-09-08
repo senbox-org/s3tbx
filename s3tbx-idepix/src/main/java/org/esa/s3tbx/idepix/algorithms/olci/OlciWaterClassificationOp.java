@@ -165,7 +165,6 @@ public class OlciWaterClassificationOp extends Operator {
             Tile waterFractionTile = getSourceTile(landWaterBand, sourceRectangle);
 
             for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
-                checkForCancellation();
                 for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
                     if (!l1FlagsTile.getSampleBit(x, y, OlciConstants.L1_F_INVALID)) {
                         final int waterFraction = waterFractionTile.getSampleInt(x, y);

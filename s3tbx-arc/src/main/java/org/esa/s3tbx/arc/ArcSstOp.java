@@ -222,7 +222,6 @@ public class ArcSstOp extends PixelOperator {
 
     private void checkCancellation() {
         if (currentPixel % 1000 == 0) {
-            checkForCancellation();
             currentPixel = 0;
         }
         currentPixel++;
