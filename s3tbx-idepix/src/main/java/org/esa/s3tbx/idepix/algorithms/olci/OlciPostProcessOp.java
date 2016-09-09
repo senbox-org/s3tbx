@@ -88,6 +88,7 @@ public class OlciPostProcessOp extends Operator {
         final Tile waterFractionTile = getSourceTile(waterFractionBand, srcRectangle);
 
         for (int y = srcRectangle.y; y < srcRectangle.y + srcRectangle.height; y++) {
+            checkForCancellation();
             for (int x = srcRectangle.x; x < srcRectangle.x + srcRectangle.width; x++) {
 
                 if (targetRectangle.contains(x, y)) {

@@ -282,6 +282,7 @@ public class N1PatcherOp extends MerisBasisOp {
                                 outputStream.writeShort(data[x + y * rectangle.width]);
                             }
                             outputStream.skipBytes((rectangle.x) * 2);
+                            checkForCancellation();
                             pm.worked(1);
                         }
                     }
@@ -300,6 +301,7 @@ public class N1PatcherOp extends MerisBasisOp {
                             }
                             outputStream.skipBytes(rectangle.x);
                             outputStream.skipBytes(targetProduct.getSceneRasterWidth() * 2);
+                            checkForCancellation();
                             pm.worked(1);
                         }
                     }

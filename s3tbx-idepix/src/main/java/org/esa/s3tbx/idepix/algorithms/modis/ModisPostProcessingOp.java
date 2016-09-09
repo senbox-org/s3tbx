@@ -84,6 +84,7 @@ public class ModisPostProcessingOp extends BasisOp {
         final Tile waterFractionTile = getSourceTile(landWaterBand, extendedRectangle);
 
         for (int y = extendedRectangle.y; y < extendedRectangle.y + extendedRectangle.height; y++) {
+            checkForCancellation();
             for (int x = extendedRectangle.x; x < extendedRectangle.x + extendedRectangle.width; x++) {
 
                 if (targetRectangle.contains(x, y)) {

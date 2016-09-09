@@ -145,6 +145,7 @@ public class OlciLandClassificationOp extends Operator {
         }
         try {
             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                     final int waterFraction = waterFractionTile.getSampleInt(x, y);
                     initCloudFlag(olciQualityFlagTile, targetTiles.get(cloudFlagTargetBand), olciReflectance, y, x);

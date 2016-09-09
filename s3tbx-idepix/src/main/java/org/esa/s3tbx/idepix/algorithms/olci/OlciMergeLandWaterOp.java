@@ -86,6 +86,7 @@ public class OlciMergeLandWaterOp extends Operator {
 
         if (targetBand == mergedClassifBand) {
             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                     boolean isLand = landClassifTile.getSampleBit(x, y, OlciConstants.F_LAND);
                     final int sample = isLand ? landClassifTile.getSampleInt(x, y) : waterClassifTile.getSampleInt(x, y);
@@ -94,6 +95,7 @@ public class OlciMergeLandWaterOp extends Operator {
             }
         } else if (hasNNOutput && targetBand == mergedNNBand) {
             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                     boolean isLand = landClassifTile.getSampleBit(x, y, OlciConstants.F_LAND);
                     final float sample = isLand ? landNNTile.getSampleFloat(x, y) : waterNNTile.getSampleFloat(x, y);

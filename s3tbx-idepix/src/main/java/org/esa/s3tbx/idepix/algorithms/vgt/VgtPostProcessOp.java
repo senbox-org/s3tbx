@@ -73,6 +73,7 @@ public class VgtPostProcessOp extends Operator {
         final Tile smFlagTile = getSourceTile(origSmFlagBand, targetRectangle);
 
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+            checkForCancellation();
             for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
 
                 if (targetRectangle.contains(x, y)) {

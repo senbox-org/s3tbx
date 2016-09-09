@@ -83,6 +83,7 @@ public class MerisMergeLandWaterOp extends Operator {
 
         if (targetBand == mergedClassifBand) {
             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                     boolean isLand = landClassifTile.getSampleBit(x, y, MerisConstants.F_LAND);
                     final int sample = isLand ? landClassifTile.getSampleInt(x, y) : waterClassifTile.getSampleInt(x, y);
@@ -91,6 +92,7 @@ public class MerisMergeLandWaterOp extends Operator {
             }
         } else if (hasNNOutput && targetBand == mergedNNBand) {
             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                     boolean isLand = landClassifTile.getSampleBit(x, y, MerisConstants.F_LAND);
                     final float sample = isLand ? landNNTile.getSampleFloat(x, y) : waterNNTile.getSampleFloat(x, y);

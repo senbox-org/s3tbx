@@ -181,6 +181,7 @@ public class CloudTopPressureOp extends MerisBasisOp {
         JnnNet nnWater = waterNet.get();
 
         for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+            checkForCancellation();
             for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                 if (isInvalid.getSampleBoolean(x, y)) {
                     targetTile.setSample(x, y, 0);

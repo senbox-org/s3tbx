@@ -166,6 +166,7 @@ public class Rad2ReflOp extends Operator {
             }
 
             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
 //                    if (x == 200 && y == 200) {
 //                        System.out.println("x = " + x);
@@ -344,6 +345,7 @@ public class Rad2ReflOp extends Operator {
 
     private void checkCancellation() {
         if (currentPixel % 1000 == 0) {
+            checkForCancellation();
             currentPixel = 0;
         }
         currentPixel++;
