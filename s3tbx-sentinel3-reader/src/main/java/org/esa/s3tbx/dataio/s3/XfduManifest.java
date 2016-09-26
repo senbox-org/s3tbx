@@ -21,8 +21,10 @@ import java.util.List;
  */
 public class XfduManifest implements Manifest {
 
+    protected static final String MANIFEST_FILE_NAME = "xfdumanifest.xml";
     private final Document doc;
     private final XPathHelper xPathHelper;
+    private MetadataElement manifestElement;
 
     public static Manifest createManifest(Document manifestDocument) {
         return new XfduManifest(manifestDocument);
@@ -31,6 +33,19 @@ public class XfduManifest implements Manifest {
     private XfduManifest(Document manifestDocument) {
         doc = manifestDocument;
         xPathHelper = new XPathHelper(XPathFactory.newInstance().newXPath());
+    }
+
+    @Override
+    public String getProductName() {
+        final Node gpi = xPathHelper.getNode("/XFDU/metadataSection/metadataObject[@ID='generalProductInformation']", doc);
+        return  xPathHelper.getString("//metadataWrap/xmlData/generalProductInformation/productName", gpi);
+    }
+
+    @Override
+    public String getProductType() {
+        final Node gpi = xPathHelper.getNode("/XFDU/metadataSection/metadataObject[@ID='generalProductInformation']", doc);
+        String typeString = xPathHelper.getString("//metadataWrap/xmlData/generalProductInformation/productType", gpi);
+        return removeUnderbarsAtEnd(typeString);
     }
 
     @Override
@@ -83,9 +98,11 @@ public class XfduManifest implements Manifest {
 
     @Override
     public MetadataElement getMetadata() {
-        final MetadataElement manifestElement = new MetadataElement("Manifest");
-        final Node node = xPathHelper.getNode("//metadataSection", doc);
-        manifestElement.addElement(convertNodeToMetadataElement(node, new MetadataElement(node.getNodeName())));
+        if (manifestElement == null) {
+            manifestElement = new MetadataElement("Manifest");
+            Node node = xPathHelper.getNode("//metadataSection", doc);
+            manifestElement.addElement(convertNodeToMetadataElement(node, new MetadataElement(node.getNodeName())));
+        }
         return manifestElement;
     }
 
@@ -189,6 +206,19 @@ public class XfduManifest implements Manifest {
         } catch (ParseException ignored) {
             return null;
         }
+    }
+
+
+    private String removeUnderbarsAtEnd(String typeString) {
+        char[] chars = typeString.toCharArray();
+        int endIndex = chars.length;
+        for (int i = chars.length - 1; i >= 0; i--) {
+            if (chars[i] != '_') {
+                endIndex = i;
+                break;
+            }
+        }
+        return typeString.substring(0, endIndex+1);
     }
 
 }

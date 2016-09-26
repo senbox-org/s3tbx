@@ -30,8 +30,6 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.SampleCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.util.ProductUtils;
-import org.esa.snap.core.util.io.FileUtils;
-import org.esa.snap.runtime.Config;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -53,7 +51,8 @@ import java.util.logging.Logger;
 
 public abstract class AbstractProductFactory implements ProductFactory {
 
-    private final List<Product> openProductList = new ArrayList<Product>();
+    private static Map<TiePointGrid, MultiLevelImage> tpgImageMap;
+    private final List<Product> openProductList = new ArrayList<>();
     private final Sentinel3ProductReader productReader;
     private final Logger logger;
     private final static Color[] uncertainty_colors = new Color[]{
@@ -67,46 +66,12 @@ public abstract class AbstractProductFactory implements ProductFactory {
     private final List<String> separatingDimensions;
 
     private volatile Manifest manifest;
-    public final static String LOAD_PROFILE_TIE_POINTS = "s3tbx.reader.loadProfileTiePoints";
 
     public AbstractProductFactory(Sentinel3ProductReader productReader) {
         this.productReader = productReader;
         this.logger = Logger.getLogger(getClass().getSimpleName());
         separatingDimensions = new ArrayList<>();
-    }
-
-    protected final Logger getLogger() {
-        return logger;
-    }
-
-    protected static Band copyBand(Band sourceBand, Product targetProduct, boolean copySourceImage) {
-        return ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), targetProduct, copySourceImage);
-    }
-
-    protected static TiePointGrid copyBandAsTiePointGrid(Band sourceBand, Product targetProduct, int subSamplingX,
-                                                         int subSamplingY,
-                                                         float offsetX, float offsetY) {
-        final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
-        final int w = sourceImage.getWidth();
-        final int h = sourceImage.getHeight();
-        final float[] tiePoints = sourceImage.getData().getSamples(0, 0, w, h, 0, new float[w * h]);
-
-        final String unit = sourceBand.getUnit();
-        final TiePointGrid tiePointGrid = new TiePointGrid(sourceBand.getName(), w, h,
-                                                           offsetX,
-                                                           offsetY,
-                                                           subSamplingX,
-                                                           subSamplingY,
-                                                           tiePoints,
-                                                           unit != null && unit.toLowerCase().contains("degree"));
-        final String description = sourceBand.getDescription();
-        tiePointGrid.setDescription(description);
-        tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
-        tiePointGrid.setUnit(unit);
-        targetProduct.addTiePointGrid(tiePointGrid);
-        sourceImage.dispose();
-
-        return tiePointGrid;
+        tpgImageMap = new HashMap<>();
     }
 
     @Override
@@ -117,12 +82,12 @@ public abstract class AbstractProductFactory implements ProductFactory {
         readProducts(fileNames);
 
         final String productName = getProductName();
-        final String productType = productName.substring(0, 12);
+        final String productType = manifest.getProductType();
         final Product masterProduct = findMasterProduct();
         final int w = getSceneRasterWidth(masterProduct);
         final int h = masterProduct.getSceneRasterHeight();
         final Product targetProduct = new Product(productName, productType, w, h, productReader);
-        changeTargetProductName(targetProduct);
+        targetProduct.setDescription(manifest.getDescription());
         targetProduct.setFileLocation(getInputFile());
         targetProduct.setNumResolutionsMax(masterProduct.getNumResolutionsMax());
 
@@ -160,7 +125,49 @@ public abstract class AbstractProductFactory implements ProductFactory {
         return targetProduct;
     }
 
-    protected void changeTargetProductName(Product targetProduct) {
+    @Override
+    public final void dispose() throws IOException {
+        openProductList.forEach(Product::dispose);
+        openProductList.clear();
+    }
+
+    protected final Logger getLogger() {
+        return logger;
+    }
+
+    protected static Band copyBand(Band sourceBand, Product targetProduct, boolean copySourceImage) {
+        return ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), targetProduct, copySourceImage);
+    }
+
+    @Override
+    public MultiLevelImage getImageForTpg(TiePointGrid tpg) {
+        return tpgImageMap.get(tpg);
+    }
+
+    protected TiePointGrid copyBandAsTiePointGrid(Band sourceBand, Product targetProduct, int subSamplingX,
+                                                  int subSamplingY,
+                                                  float offsetX, float offsetY) {
+        final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
+        final int w = sourceImage.getWidth();
+        final int h = sourceImage.getHeight();
+//        final float[] tiePoints = sourceImage.getData().getSamples(0, 0, w, h, 0, new float[w * h]);
+        final String unit = sourceBand.getUnit();
+        final TiePointGrid tiePointGrid = new TiePointGrid(sourceBand.getName(), w, h,
+                                                           offsetX, offsetY,
+                                                           subSamplingX, subSamplingY);
+
+        if (unit != null && unit.toLowerCase().contains("degree")) {
+            tiePointGrid.setDiscontinuity(TiePointGrid.DISCONT_AUTO);
+        }
+        tpgImageMap.put(tiePointGrid, sourceImage);
+        final String description = sourceBand.getDescription();
+        tiePointGrid.setDescription(description);
+        tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
+        tiePointGrid.setUnit(unit);
+        targetProduct.addTiePointGrid(tiePointGrid);
+        sourceImage.dispose();
+
+        return tiePointGrid;
     }
 
     protected void setSceneTransforms(Product product) {
@@ -246,26 +253,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
         }
     }
 
-    private void setTimes(Product targetProduct) {
-        final Product sourceProduct = findMasterProduct();
-        targetProduct.setStartTime(sourceProduct.getStartTime());
-        targetProduct.setEndTime(sourceProduct.getEndTime());
-        if (targetProduct.getStartTime() == null) {
-            targetProduct.setStartTime(manifest.getStartTime());
-        }
-        if (targetProduct.getEndTime() == null) {
-            targetProduct.setEndTime(manifest.getStopTime());
-        }
-    }
-
-    @Override
-    public final void dispose() throws IOException {
-        for (final Product product : openProductList) {
-            product.dispose();
-        }
-        openProductList.clear();
-    }
-
     protected Band addBand(Band sourceBand, Product targetProduct) {
         return copyBand(sourceBand, targetProduct, true);
     }
@@ -294,17 +281,16 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected void addDataNodes(Product masterProduct, Product targetProduct) throws IOException {
-        final boolean loadProfileTiepoints = Config.instance("s3tbx").load().preferences().getBoolean(LOAD_PROFILE_TIE_POINTS, false);
         final int w = targetProduct.getSceneRasterWidth();
         final int h = targetProduct.getSceneRasterHeight();
         for (final Product sourceProduct : openProductList) {
-            final Map<String, String> mapping = new HashMap<String, String>();
+            final Map<String, String> mapping = new HashMap<>();
             for (final Band sourceBand : sourceProduct.getBands()) {
                 if (!sourceBand.getName().contains("orphan")) {
                     RasterDataNode targetNode = null;
                     if (sourceBand.getRasterWidth() == w && sourceBand.getRasterHeight() == h) {
                         targetNode = addBand(sourceBand, targetProduct);
-                    } else if (loadProfileTiepoints || !isProfileNode(sourceBand.getName())) {
+                    } else {
                         targetNode = addSpecialNode(masterProduct, sourceBand, targetProduct);
                     }
                     if (targetNode != null) {
@@ -348,25 +334,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
         return maskGroup;
     }
 
-    private void readProducts(List<String> fileNames) throws IOException {
-        for (final String fileName : fileNames) {
-            Product product = null;
-            try {
-                product = readProduct(fileName);
-            } catch (IOException ioe) {
-                logger.log(Level.WARNING, ioe.getMessage());
-            }
-            if (product != null) {
-                openProductList.add(product);
-            } else {
-                logger.log(Level.WARNING, MessageFormat.format("Could not find ''{0}''.", fileName));
-            }
-        }
-        if (openProductList.isEmpty()) {
-            throw new IOException("Could not find or read any valid products.");
-        }
-    }
-
     protected Product readProduct(String fileName) throws IOException {
         final File file = new File(getInputFileParentDirectory(), fileName);
         if (!file.exists()) {
@@ -400,8 +367,8 @@ public abstract class AbstractProductFactory implements ProductFactory {
         return productReader.getInputFileParentDirectory();
     }
 
-    protected final String getProductName() {
-        return FileUtils.getFilenameWithoutExtension(getInputFileParentDirectory());
+    protected String getProductName() {
+        return manifest.getProductName();
     }
 
 
@@ -410,6 +377,39 @@ public abstract class AbstractProductFactory implements ProductFactory {
             if (!separatingDimensions.contains(suffixForSeparatingDimension)) {
                 separatingDimensions.add(suffixForSeparatingDimension);
             }
+        }
+    }
+
+    protected abstract List<String> getFileNames(Manifest manifest);
+
+    private void setTimes(Product targetProduct) {
+        final Product sourceProduct = findMasterProduct();
+        targetProduct.setStartTime(sourceProduct.getStartTime());
+        targetProduct.setEndTime(sourceProduct.getEndTime());
+        if (targetProduct.getStartTime() == null) {
+            targetProduct.setStartTime(manifest.getStartTime());
+        }
+        if (targetProduct.getEndTime() == null) {
+            targetProduct.setEndTime(manifest.getStopTime());
+        }
+    }
+
+    private void readProducts(List<String> fileNames) throws IOException {
+        for (final String fileName : fileNames) {
+            Product product = null;
+            try {
+                product = readProduct(fileName);
+            } catch (IOException ioe) {
+                logger.log(Level.WARNING, ioe.getMessage());
+            }
+            if (product != null) {
+                openProductList.add(product);
+            } else {
+                logger.log(Level.WARNING, MessageFormat.format("Could not find ''{0}''.", fileName));
+            }
+        }
+        if (openProductList.isEmpty()) {
+            throw new IOException("Could not find or read any valid products.");
         }
     }
 
@@ -422,18 +422,15 @@ public abstract class AbstractProductFactory implements ProductFactory {
         return false;
     }
 
-    protected abstract List<String> getFileNames(Manifest manifest);
-
     private Manifest createManifest(File file) throws IOException {
-        final InputStream inputStream = new FileInputStream(file);
-        try {
+        try (InputStream inputStream = new FileInputStream(file)) {
             final Document xmlDocument = createXmlDocument(inputStream);
-            if (file.getName().equals("L1c_Manifest.xml")) {
+            // TODO (mp/16.09.2016) - probably not needed anymore
+            // according to the documentation SYN L1C should also have a xfdumanifest file
+            if (file.getName().equals(EarthExplorerManifest.L1C_MANIFEST_FILE_NAME)) {
                 return EarthExplorerManifest.createManifest(xmlDocument);
             }
             return XfduManifest.createManifest(xmlDocument);
-        } finally {
-            inputStream.close();
         }
     }
 

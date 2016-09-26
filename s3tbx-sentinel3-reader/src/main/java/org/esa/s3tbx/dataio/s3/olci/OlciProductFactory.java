@@ -41,9 +41,9 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
 
     public OlciProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
-        nameToWavelengthMap = new HashMap<String, Float>();
-        nameToBandwidthMap = new HashMap<String, Float>();
-        nameToIndexMap = new HashMap<String, Integer>();
+        nameToWavelengthMap = new HashMap<>();
+        nameToBandwidthMap = new HashMap<>();
+        nameToIndexMap = new HashMap<>();
         registerRGBProfiles();
     }
 
@@ -176,9 +176,9 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         if (!file.exists()) {
             return null;
         }
-        final S3NetcdfReader reader = S3NetcdfReaderFactory.createS3NetcdfReader(file);
+        final S3NetcdfReader reader = S3NetcdfReaderFactory.createS3NetcdfProduct(file);
         addSeparatingDimensions(reader.getSuffixesForSeparatingDimensions());
-        return reader.readProduct();
+        return reader.readProductNodes(file, null);
     }
 
     private static void registerRGBProfiles() {

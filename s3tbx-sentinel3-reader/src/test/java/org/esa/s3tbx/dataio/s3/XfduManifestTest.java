@@ -1,8 +1,7 @@
 package org.esa.s3tbx.dataio.s3;
 
-import junit.framework.TestCase;
 import org.esa.snap.core.datamodel.ProductData;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -13,23 +12,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 /**
  * @author Tonio Fincke
  */
-public class XfduManifestTest extends TestCase {
+public class XfduManifestTest {
 
 
-    private Manifest manifestTest;
+    private static Manifest manifestTest;
 
-    @Before
-    public void setUp() throws ParserConfigurationException, IOException, SAXException {
-        InputStream stream = getClass().getResourceAsStream("xfdumanifest.xml");
-        try {
+    @BeforeClass
+    public static void setUp() throws ParserConfigurationException, IOException, SAXException {
+        try (InputStream stream = XfduManifestTest.class.getResourceAsStream("xfdumanifest.xml")) {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
             manifestTest = XfduManifest.createManifest(doc);
-        } finally {
-            stream.close();
         }
+    }
+
+    @Test
+    public void testGetProductname() throws Exception {
+        assertEquals("S3A_SL_1_RBT____20160820T201637_20160820T201937_20160820T222707_0179_007_370_4500_MAR_O_NR_001.SEN3", manifestTest.getProductName());
+    }
+
+    @Test
+    public void testGetProductType() throws Exception {
+        assertEquals("SL_1_RBT", manifestTest.getProductType());
     }
 
     @Test

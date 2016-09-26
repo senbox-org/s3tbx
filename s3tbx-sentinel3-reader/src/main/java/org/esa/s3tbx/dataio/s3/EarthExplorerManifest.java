@@ -37,6 +37,8 @@ import java.util.List;
  */
 class EarthExplorerManifest implements Manifest {
 
+    protected static final String L1C_MANIFEST_FILE_NAME = "L1c_Manifest.xml";
+
     private final Document doc;
     private final XPathHelper xPathHelper;
 
@@ -53,6 +55,16 @@ class EarthExplorerManifest implements Manifest {
         doc = manifestDocument;
         XPath xPath = XPathFactory.newInstance().newXPath();
         xPathHelper = new XPathHelper(xPath);
+    }
+
+    @Override
+    public String getProductName() {
+        return xPathHelper.getString("//File_Name", doc);
+    }
+
+    @Override
+    public String getProductType() {
+        return xPathHelper.getString("//File_Type", doc).trim();
     }
 
     @Override

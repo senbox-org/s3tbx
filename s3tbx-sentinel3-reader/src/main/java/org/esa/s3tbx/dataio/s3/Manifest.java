@@ -21,6 +21,10 @@ import java.util.List;
 
 public interface Manifest {
 
+    String getProductName();
+
+    String getProductType();
+
     String getDescription();
 
     ProductData.UTC getStartTime();
@@ -32,4 +36,5 @@ public interface Manifest {
     List<String> getFileNames(String[] excluded);
 
     MetadataElement getMetadata();
+
 }
