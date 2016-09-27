@@ -51,7 +51,7 @@ import java.util.logging.Logger;
 
 public abstract class AbstractProductFactory implements ProductFactory {
 
-    private static Map<TiePointGrid, MultiLevelImage> tpgImageMap;
+    private Map<TiePointGrid, MultiLevelImage> tpgImageMap;
     private final List<Product> openProductList = new ArrayList<>();
     private final Sentinel3ProductReader productReader;
     private final Logger logger;
@@ -150,7 +150,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
         final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
         final int w = sourceImage.getWidth();
         final int h = sourceImage.getHeight();
-//        final float[] tiePoints = sourceImage.getData().getSamples(0, 0, w, h, 0, new float[w * h]);
         final String unit = sourceBand.getUnit();
         final TiePointGrid tiePointGrid = new TiePointGrid(sourceBand.getName(), w, h,
                                                            offsetX, offsetY,
