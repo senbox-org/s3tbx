@@ -22,9 +22,14 @@ package org.esa.s3tbx.olci.radiometry.smilecorr;
  * @author muhammad.bc.
  */
 public class RayleighInput {
+    private float[] sourceRefls;
+    private float[] lowerRefls;
+    private float[] upperRefls;
+
     float sourceReflectance;
     float lowerReflectance;
     float upperReflectance;
+
     int sourceIndex;
     int lowerWaterIndex;
     int upperWaterIndex;
@@ -38,29 +43,29 @@ public class RayleighInput {
         this.upperWaterIndex = upperWaterIndex;
     }
 
+    public RayleighInput(float[] sourceRefl, float[] lowerRefl, float[] upperRefl, int sourceIndx, int lowerWaterIndx, int upperWaterIndx) {
+
+        this.sourceRefls = sourceRefl;
+        this.lowerRefls = lowerRefl;
+        this.upperRefls = upperRefl;
+        this.sourceReflectance = sourceIndx;
+        this.lowerReflectance = lowerWaterIndx;
+        this.upperReflectance = upperWaterIndx;
+    }
+
 
     public float getSourceReflectance() {
         return sourceReflectance;
     }
 
-    public void setSourceReflectance(float sourceReflectance) {
-        this.sourceReflectance = sourceReflectance;
-    }
 
     public float getLowerReflectance() {
         return lowerReflectance;
     }
 
-    public void setLowerReflectance(float lowerReflectance) {
-        this.lowerReflectance = lowerReflectance;
-    }
 
     public float getUpperReflectance() {
         return upperReflectance;
-    }
-
-    public void setUpperReflectance(float upperReflectance) {
-        this.upperReflectance = upperReflectance;
     }
 
     public int getSourceIndex() {
@@ -73,5 +78,17 @@ public class RayleighInput {
 
     public int getUpperWaterIndex() {
         return upperWaterIndex;
+    }
+
+    public float[] getSourceRefls() {
+        return sourceRefls;
+    }
+
+    public float[] getLowerRefls() {
+        return lowerRefls;
+    }
+
+    public float[] getUpperRefls() {
+        return upperRefls;
     }
 }

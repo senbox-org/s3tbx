@@ -26,10 +26,21 @@ public class RayleighOutput {
     float lowerRayRefl;
     float upperRayRefl;
 
+    float[] sourceRayRefls;
+    float[] lowerRayRefls;
+    float[] upperRayRefls;
+
     public RayleighOutput(float sourceRayRefl, float lowerRayRefl, float upperRayRefl) {
         this.sourceRayRefl = sourceRayRefl;
         this.lowerRayRefl = lowerRayRefl;
         this.upperRayRefl = upperRayRefl;
+    }
+
+    public RayleighOutput(float[] sourceRayRefl, float[] lowerRayRefl, float[] upperRayRefl) {
+
+        this.sourceRayRefls = sourceRayRefl;
+        this.lowerRayRefls = lowerRayRefl;
+        this.upperRayRefls = upperRayRefl;
     }
 
     public float getSourceRayRefl() {
@@ -42,6 +53,18 @@ public class RayleighOutput {
 
     public float getUpperRayRefl() {
         return upperRayRefl;
+    }
+
+    public float[] getSourceRayRefls() {
+        return sourceRayRefls;
+    }
+
+    public float[] getLowerRayRefls() {
+        return lowerRayRefls;
+    }
+
+    public float[] getUpperRayRefls() {
+        return upperRayRefls;
     }
 }
 
