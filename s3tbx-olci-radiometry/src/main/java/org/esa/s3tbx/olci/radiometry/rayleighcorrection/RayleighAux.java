@@ -18,15 +18,6 @@
 
 package org.esa.s3tbx.olci.radiometry.rayleighcorrection;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -40,6 +31,16 @@ import org.esa.snap.core.gpf.Tile;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author muhammad.bc.
@@ -342,8 +343,6 @@ public class RayleighAux {
         throw new NullPointerException("The sun zenith angles is null.");
     }
 
-
-
     public void setViewZenithAnglesRad(double[] viewZenithAngles) {
         if (Objects.nonNull(viewZenithAngles)) {
             viewZenithAnglesRad = SmileUtils.convertDegreesToRadians(viewZenithAngles);
@@ -433,6 +432,7 @@ public class RayleighAux {
         this.sunZenithAngles = sunZenithAngles;
         setSunZenithAnglesRad(sunZenithAngles);
     }
+
     public void setSunZenithAngles(Tile sourceTile) {
         this.sunZenithAngles = getSampleDoubles(sourceTile);
         setSunZenithAnglesRad(sunZenithAngles);
@@ -586,7 +586,7 @@ public class RayleighAux {
     }
 
     //todo mb/*** write a test
-    private double[] getSquarePower(double[] sinOZARads) {
+    public double[] getSquarePower(double[] sinOZARads) {
         if (Objects.nonNull(sinOZARads)) {
             return Arrays.stream(sinOZARads).map(p -> Math.pow(p, 2)).toArray();
         }

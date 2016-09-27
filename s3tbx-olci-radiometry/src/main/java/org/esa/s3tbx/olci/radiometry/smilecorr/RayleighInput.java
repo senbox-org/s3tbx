@@ -38,6 +38,7 @@ public class RayleighInput {
         this.sourceReflectance = sourceReflectance;
         this.lowerReflectance = lowerReflectance;
         this.upperReflectance = upperReflectance;
+
         this.sourceIndex = sourceIndex;
         this.lowerWaterIndex = lowerWaterIndex;
         this.upperWaterIndex = upperWaterIndex;
@@ -48,9 +49,10 @@ public class RayleighInput {
         this.sourceRefls = sourceRefl;
         this.lowerRefls = lowerRefl;
         this.upperRefls = upperRefl;
-        this.sourceReflectance = sourceIndx;
-        this.lowerReflectance = lowerWaterIndx;
-        this.upperReflectance = upperWaterIndx;
+        this.sourceIndex = sourceIndx;
+        this.lowerWaterIndex = lowerWaterIndx;
+        this.upperWaterIndex = upperWaterIndx;
+
     }
 
 
@@ -80,15 +82,15 @@ public class RayleighInput {
         return upperWaterIndex;
     }
 
-    public float[] getSourceRefls() {
+    public float[] getSourceReflectences() {
         return sourceRefls;
     }
 
-    public float[] getLowerRefls() {
+    public float[] getLowerReflectences() {
         return lowerRefls;
     }
 
-    public float[] getUpperRefls() {
+    public float[] getUpperReflectences() {
         return upperRefls;
     }
 }

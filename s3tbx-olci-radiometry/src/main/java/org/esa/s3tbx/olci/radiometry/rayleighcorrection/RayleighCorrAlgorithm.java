@@ -175,12 +175,12 @@ public class RayleighCorrAlgorithm {
         double[] bandThicknessUpper = thickness.getThicknessBand(upperWaterIndex);
 
         double absorpSourceBand = absorptionOfBand[sourceIndex];
-        double absorpLowerBand = absorptionOfBand[sourceIndex];
-        double absorpUppereBand = absorptionOfBand[sourceIndex];
+        double absorpLowerBand = absorptionOfBand[lowerWaterIndex];
+        double absorpUppereBand = absorptionOfBand[upperWaterIndex];
 
-        float[] sourceRayRefl = getRayleigh(rayleighAux, absorpSourceBand, bandThicknessSource, rayleighInput.getSourceRefls());
-        float[] lowerRayRefl = getRayleigh(rayleighAux, absorpLowerBand, bandThicknessLower, rayleighInput.getLowerRefls());
-        float[] upperRayRefl = getRayleigh(rayleighAux, absorpUppereBand, bandThicknessUpper, rayleighInput.getUpperRefls());
+        float[] sourceRayRefl = getRayleigh(rayleighAux, absorpSourceBand, bandThicknessSource, rayleighInput.getSourceReflectences());
+        float[] lowerRayRefl = getRayleigh(rayleighAux, absorpLowerBand, bandThicknessLower, rayleighInput.getLowerReflectences());
+        float[] upperRayRefl = getRayleigh(rayleighAux, absorpUppereBand, bandThicknessUpper, rayleighInput.getUpperReflectences());
 
         RayleighOutput rayleighOutput = new RayleighOutput(sourceRayRefl, lowerRayRefl, upperRayRefl);
         return rayleighOutput;
@@ -270,7 +270,7 @@ public class RayleighCorrAlgorithm {
             if (thicknessAllBands == null) {
                 thicknessAllBands = getThicknessAllBands();
             }
-            return thicknessAllBands.get(bandIndex);
+            return thicknessAllBands.get(bandIndex + 1);
         }
     }
 }
