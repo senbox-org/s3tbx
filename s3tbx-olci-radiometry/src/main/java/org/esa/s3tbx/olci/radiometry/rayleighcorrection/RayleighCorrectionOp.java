@@ -19,16 +19,8 @@
 package org.esa.s3tbx.olci.radiometry.rayleighcorrection;
 
 import com.bc.ceres.core.ProgressMonitor;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import org.esa.s3tbx.olci.radiometry.gaseousabsorption.GaseousAbsorptionAux;
+import org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
@@ -40,6 +32,16 @@ import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
+
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * @author muhammad.bc.
@@ -119,7 +121,7 @@ public class RayleighCorrectionOp extends Operator {
         crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getGetPattern());
 
         Product targetProduct = new Product(sourceProduct.getName(), sourceProduct.getProductType(),
-                sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
+                                            sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
 
         RayleighAux.initDefaultAuxiliary();
         initTargetBand(targetProduct);
@@ -177,8 +179,8 @@ public class RayleighCorrectionOp extends Operator {
     private double[] waterVaporCorrection709(double[] reflectances, Rectangle targetRectangle, Sensor sensor) {
         String bandNamePattern = sensor.getGetPattern();
         int[] upperLowerBounds = sensor.getBounds();
-        double[] bWVRefTile = RayleighAux.getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNamePattern, upperLowerBounds[1])), targetRectangle));
-        double[] bWVTile = RayleighAux.getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNamePattern, upperLowerBounds[0])), targetRectangle));
+        double[] bWVRefTile = SmileCorrectionUtils.getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNamePattern, upperLowerBounds[1])), targetRectangle));
+        double[] bWVTile = SmileCorrectionUtils.getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNamePattern, upperLowerBounds[0])), targetRectangle));
         return algorithm.waterVaporCorrection709(reflectances, bWVRefTile, bWVTile);
     }
 

@@ -21,7 +21,7 @@ package org.esa.s3tbx.olci.radiometry.rayleighcorrection;
 import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.esa.s3tbx.olci.radiometry.smilecorr.SmileUtils;
+import org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelDescriptor;
@@ -128,7 +128,7 @@ public class RayleighAux {
     }
 
     public void setAltitudes(Tile altitude) {
-        this.altitudes = getSampleDoubles(altitude);
+        this.altitudes = SmileCorrectionUtils.getSampleDoubles(altitude);
     }
 
     public void setAltitudes(double... alt) {
@@ -304,7 +304,7 @@ public class RayleighAux {
 
     public void setSunAzimuthAnglesRad(double[] sunAzimuthAngles) {
         if (Objects.nonNull(sunAzimuthAngles)) {
-            sunAzimuthAnglesRad = SmileUtils.convertDegreesToRadians(sunAzimuthAngles);
+            sunAzimuthAnglesRad = SmileCorrectionUtils.convertDegreesToRadians(sunAzimuthAngles);
         }
     }
 
@@ -317,7 +317,7 @@ public class RayleighAux {
 
     public void setViewAzimuthAnglesRad(double[] viewAzimuthAngles) {
         if (Objects.nonNull(viewAzimuthAngles)) {
-            viewAzimuthAnglesRad = SmileUtils.convertDegreesToRadians(viewAzimuthAngles);
+            viewAzimuthAnglesRad = SmileCorrectionUtils.convertDegreesToRadians(viewAzimuthAngles);
         }
     }
 
@@ -330,7 +330,7 @@ public class RayleighAux {
 
     public void setSunZenithAnglesRad(double[] sunZenithAngles) {
         if (Objects.nonNull(sunZenithAngles)) {
-            sunZenithAnglesRad = SmileUtils.convertDegreesToRadians(sunZenithAngles);
+            sunZenithAnglesRad = SmileCorrectionUtils.convertDegreesToRadians(sunZenithAngles);
         }
         setCosSZARads(sunZenithAnglesRad);
         setSinSZARads(sunZenithAnglesRad);
@@ -345,7 +345,7 @@ public class RayleighAux {
 
     public void setViewZenithAnglesRad(double[] viewZenithAngles) {
         if (Objects.nonNull(viewZenithAngles)) {
-            viewZenithAnglesRad = SmileUtils.convertDegreesToRadians(viewZenithAngles);
+            viewZenithAnglesRad = SmileCorrectionUtils.convertDegreesToRadians(viewZenithAngles);
         }
         setCosOZARads(viewZenithAnglesRad);
         setSinOZARads(viewZenithAnglesRad);
@@ -360,14 +360,14 @@ public class RayleighAux {
 
     public double[] getAirMass() {
         if (Objects.isNull(airMass)) {
-            airMass = SmileUtils.getAirMass(this.getCosOZARads(), this.getCosSZARads());
+            airMass = SmileCorrectionUtils.getAirMass(this.getCosOZARads(), this.getCosSZARads());
         }
         return airMass;
     }
 
     public double[] getAziDifferent() {
         if (Objects.isNull(aziDiff)) {
-            aziDiff = SmileUtils.getAziDiff(this.getSunAzimuthAnglesRad(), this.getViewAzimuthAnglesRad());
+            aziDiff = SmileCorrectionUtils.getAziDiff(this.getSunAzimuthAnglesRad(), this.getViewAzimuthAnglesRad());
         }
         return aziDiff;
     }
@@ -434,7 +434,7 @@ public class RayleighAux {
     }
 
     public void setSunZenithAngles(Tile sourceTile) {
-        this.sunZenithAngles = getSampleDoubles(sourceTile);
+        this.sunZenithAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
         setSunZenithAnglesRad(sunZenithAngles);
     }
 
@@ -443,7 +443,7 @@ public class RayleighAux {
     }
 
     public void setViewZenithAngles(Tile sourceTile) {
-        this.viewZenithAngles = getSampleDoubles(sourceTile);
+        this.viewZenithAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
         setViewZenithAnglesRad(viewZenithAngles);
     }
 
@@ -457,7 +457,7 @@ public class RayleighAux {
     }
 
     public void setSunAzimuthAngles(Tile sourceTile) {
-        this.sunAzimuthAngles = getSampleDoubles(sourceTile);
+        this.sunAzimuthAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
         setSunAzimuthAnglesRad(sunAzimuthAngles);
     }
 
@@ -471,7 +471,7 @@ public class RayleighAux {
     }
 
     public void setLatitudes(Tile sourceTile) {
-        this.latitudes = getSampleDoubles(sourceTile);
+        this.latitudes = SmileCorrectionUtils.getSampleDoubles(sourceTile);
     }
 
     public void setLatitudes(double... lat) {
@@ -483,7 +483,7 @@ public class RayleighAux {
     }
 
     public void setViewAzimuthAngles(Tile sourceTile) {
-        this.viewAzimuthAngles = getSampleDoubles(sourceTile);
+        this.viewAzimuthAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
         setViewAzimuthAnglesRad(viewAzimuthAngles);
     }
 
@@ -497,7 +497,7 @@ public class RayleighAux {
     }
 
     public void setSeaLevels(Tile sourceTile) {
-        this.seaLevels = getSampleDoubles(sourceTile);
+        this.seaLevels = SmileCorrectionUtils.getSampleDoubles(sourceTile);
     }
 
     public void setSeaLevels(double... seaLevels) {
@@ -509,7 +509,7 @@ public class RayleighAux {
     }
 
     public void setTotalOzones(Tile sourceTile) {
-        this.totalOzones = getSampleDoubles(sourceTile);
+        this.totalOzones = SmileCorrectionUtils.getSampleDoubles(sourceTile);
     }
 
     public void setTotalOzones(double... totalO) {
@@ -521,7 +521,7 @@ public class RayleighAux {
     }
 
     public void setSolarFluxs(Tile sourceTile) {
-        this.solarFluxs = getSampleDoubles(sourceTile);
+        this.solarFluxs = SmileCorrectionUtils.getSampleDoubles(sourceTile);
     }
 
     public double[] getLambdaSource() {
@@ -529,7 +529,7 @@ public class RayleighAux {
     }
 
     public void setLambdaSource(Tile sourceTile) {
-        this.lambdaSource = getSampleDoubles(sourceTile);
+        this.lambdaSource = SmileCorrectionUtils.getSampleDoubles(sourceTile);
     }
 
     public double[] getSourceSampleRad() {
@@ -537,7 +537,7 @@ public class RayleighAux {
     }
 
     public void setSourceSampleRad(Tile sourceTile) {
-        this.sourceSampleRad = getSampleDoubles(sourceTile);
+        this.sourceSampleRad = SmileCorrectionUtils.getSampleDoubles(sourceTile);
     }
 
     public int getSourceBandIndex() {
@@ -553,7 +553,7 @@ public class RayleighAux {
     }
 
     public void setLongitude(Tile sourceTile) {
-        this.longitude = getSampleDoubles(sourceTile);
+        this.longitude = SmileCorrectionUtils.getSampleDoubles(sourceTile);
     }
 
     public void setLongitude(double... longitude) {
@@ -593,17 +593,5 @@ public class RayleighAux {
         throw new NullPointerException("The array is null.");
     }
 
-    public static double[] getSampleDoubles(Tile sourceTile) {
-        int maxX = sourceTile.getWidth();
-        int maxY = sourceTile.getHeight();
 
-        double[] val = new double[maxX * maxY];
-        int index = 0;
-        for (int y = sourceTile.getMinY(); y <= sourceTile.getMaxY(); y++) {
-            for (int x = sourceTile.getMinX(); x <= sourceTile.getMaxX(); x++) {
-                val[index++] = sourceTile.getSampleDouble(x, y);
-            }
-        }
-        return val;
-    }
 }

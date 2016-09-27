@@ -45,6 +45,8 @@ public class RayleighAuxTest {
         rayleighAux.setLongitude(angleOne);
         rayleighAux.setSunZenithAngles(angleOne);
         rayleighAux.setSunAzimuthAngles(angleOne);
+        rayleighAux.setViewAzimuthAngles(angleOne);
+        rayleighAux.setViewZenithAngles(angleOne);
         rayleighAux.setTotalOzones(angleOne);
     }
 
@@ -72,7 +74,7 @@ public class RayleighAuxTest {
 
     @Test
     public void testAziDiff() throws Exception {
-        assertArrayEquals(new double[]{0.05235987755983066, 0.05235987755983066, 0.05235987755983066}, rayleighAux.getAziDifferent(), 1e-8);
+        assertArrayEquals(new double[]{0.0, 0.0, 0.0}, rayleighAux.getAziDifferent(), 1e-8);
     }
 
     @Test
@@ -93,7 +95,7 @@ public class RayleighAuxTest {
             lineSpace = rayleighAux.getLineSpace(0, 10, -5);
             fail("Array cant have negative index");
         } catch (NegativeArraySizeException ex) {
-            
+
         }
     }
 

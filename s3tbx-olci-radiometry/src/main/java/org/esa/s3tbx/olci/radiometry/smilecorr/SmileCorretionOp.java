@@ -365,18 +365,18 @@ public class SmileCorretionOp extends Operator {
                                           float refCentralWaveLength, SmileTiles smileTiles,
                                           Tile szaTile, int targetBandIndx) {
 
-        float[] sza = szaTile.getSamplesFloat();
-        float[] sourceTargetLambda = effectWavelengthTargetTile.getSamplesFloat();
-        float[] solarIrradiance = solarIrradianceTile.getSamplesFloat();
-        float[] radiance = sourceRadTile.getSamplesFloat();
+        float[] sza = SmileCorrectionUtils.getSampleFloats(szaTile);
+        float[] sourceTargetLambda = SmileCorrectionUtils.getSampleFloats(effectWavelengthTargetTile);
+        float[] solarIrradiance = SmileCorrectionUtils.getSampleFloats(solarIrradianceTile);
+        float[] radiance = SmileCorrectionUtils.getSampleFloats(sourceRadTile);
+        float[] lowerBandRad = SmileCorrectionUtils.getSampleFloats(smileTiles.getLowerRadianceTile());
+        float[] lowerBandSolarIrrad = SmileCorrectionUtils.getSampleFloats(smileTiles.getLowerSolarIrradianceTile());
+        float[] upperBandRad = SmileCorrectionUtils.getSampleFloats(smileTiles.getUpperRadianceTile());
+        float[] upperBandSolarIrrad = SmileCorrectionUtils.getSampleFloats(smileTiles.getUpperSolarIrradianceTile());
 
         float[] sourceRefl = convertRadToRefl(radiance, solarIrradiance, sza);
-
-        float[] lowerRefl = convertRadToRefl(smileTiles.getLowerRadianceTile().getSamplesFloat(),
-                                             smileTiles.getLowerSolarIrradianceTile().getSamplesFloat(), sza);
-
-        float[] upperRefl = convertRadToRefl(smileTiles.getUpperRadianceTile().getSamplesFloat(),
-                                             smileTiles.getUpperSolarIrradianceTile().getSamplesFloat(), sza);
+        float[] lowerRefl = convertRadToRefl(lowerBandRad, lowerBandSolarIrrad, sza);
+        float[] upperRefl = convertRadToRefl(upperBandRad, upperBandSolarIrrad, sza);
 
         if (applyRayleigh) {
             int lowerWaterIndx = smileAuxdata.getWaterLowerBands()[targetBandIndx] - 1;

@@ -2,7 +2,7 @@ package org.esa.s3tbx.olci.radiometry.rayleighcorrection;
 
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.esa.s3tbx.olci.radiometry.smilecorr.RayleighInput;
-import org.esa.s3tbx.olci.radiometry.smilecorr.SmileUtils;
+import org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
@@ -38,7 +38,7 @@ public class RayleighCorrAlgorithmTest {
 
     @Test
     public void testConvertToRadian() throws Exception {
-        double[] convertDegreesToRadians = SmileUtils.convertDegreesToRadians(new double[]{50, 30, -1});
+        double[] convertDegreesToRadians = SmileCorrectionUtils.convertDegreesToRadians(new double[]{50, 30, -1});
         assertEquals(0.872664626, convertDegreesToRadians[0], 1e-8);
         assertEquals(0.5235987756, convertDegreesToRadians[1], 1e-8);
         assertEquals(-0.017453292519943295, convertDegreesToRadians[2], 1e-8);
