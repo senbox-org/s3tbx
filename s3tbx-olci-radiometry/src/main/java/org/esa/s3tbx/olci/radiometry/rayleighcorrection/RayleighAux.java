@@ -296,7 +296,7 @@ public class RayleighAux {
             return fourierPoly;
 
         }
-        throw new NullPointerException("The zenith angle or view angle is null. ");
+        throw new NullPointerException("The Fourier polynomial is empty.");
     }
 
     public Map<Integer, double[]> getFourier() {
@@ -306,8 +306,8 @@ public class RayleighAux {
         return fourierPoly;
     }
 
-    public void setWavelength(float waveLenght) {
-        this.waveLength = waveLenght;
+    public void setWavelength(float waveLength) {
+        this.waveLength = waveLength;
     }
 
     public double getWaveLength() {

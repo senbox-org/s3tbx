@@ -54,6 +54,10 @@ public class GaseousAbsorptionAux {
         }
     }
 
+    public static GaseousAbsorptionAux getInstance() {
+        return Holder.instance;
+    }
+
     public List<double[]> getOzoneHighs() {
         return ozoneHighs;
     }
@@ -126,5 +130,13 @@ public class GaseousAbsorptionAux {
             }
         }
         return Doubles.toArray(o3absorpInstrument);
+    }
+
+    private static class Holder {
+
+        private static final GaseousAbsorptionAux instance = new GaseousAbsorptionAux();
+
+        private Holder() {
+        }
     }
 }

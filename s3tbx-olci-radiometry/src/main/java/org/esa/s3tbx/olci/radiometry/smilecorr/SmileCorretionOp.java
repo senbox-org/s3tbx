@@ -55,7 +55,7 @@ import static org.esa.s3tbx.olci.radiometry.rayleighcorrection.RayleighCorrectio
 /**
  * @author muhammad.bc
  */
-@OperatorMetadata(alias = "Olci.SmileCorrection",
+@OperatorMetadata(alias = "SmileCorrection.Olci",
         description = "Performs radiometric corrections on OLCI L1b data products.",
         authors = " Marco Peters ,Muhammad Bala (Brockmann Consult)",
         copyright = "(c) 2015 by Brockmann Consult",
@@ -85,11 +85,12 @@ public class SmileCorretionOp extends Operator {
     @SourceProduct(alias = "source", label = "Name", description = "The source product.")
     private Product sourceProduct;
 
-    @Parameter(defaultValue = "false", description = "Applies Rayleigh correction", label = "Apply Rayleigh correction")
-    private boolean applyRayleigh;
+    @Parameter(defaultValue = "false", description = "Execute Rayleigh Operator", label = "Execute Rayleigh Operator")
+    private boolean isRalyeighOperator;
 
     private RayleighCorrAlgorithm rayleighCorrAlgorithm;
-    private double[] absorpOzones;
+    private double[] absorpOzone;
+    private RayleighAux rayleighAux;
 
     @Override
     public void initialize() throws OperatorException {
@@ -97,11 +98,13 @@ public class SmileCorretionOp extends Operator {
             throw new OperatorException("Can not evaluate expression'" + WATER_EXPRESSION + "' on source product");
         }
 
-        if (applyRayleigh) {
+
+        if (isRalyeighOperator) {
             RayleighAux.initDefaultAuxiliary();
             rayleighCorrAlgorithm = new RayleighCorrAlgorithm();
-            absorpOzones = new GaseousAbsorptionAux().absorptionOzone(OLCI_SENSOR);
+            absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(OLCI_SENSOR);
         }
+
         // Configure the target
         Product targetProduct = new Product(sourceProduct.getName(), sourceProduct.getProductType(),
                                             sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
@@ -128,6 +131,7 @@ public class SmileCorretionOp extends Operator {
         ProductUtils.copyProductNodes(sourceProduct, targetProduct);
 
         setTargetProduct(targetProduct);
+
 
         waterMask = Mask.BandMathsType.create("__water_mask", null,
                                               getSourceProduct().getSceneRasterWidth(),
@@ -378,13 +382,13 @@ public class SmileCorretionOp extends Operator {
         float[] lowerRefl = convertRadToRefl(lowerBandRad, lowerBandSolarIrrad, sza);
         float[] upperRefl = convertRadToRefl(upperBandRad, upperBandSolarIrrad, sza);
 
-        if (applyRayleigh) {
+        if (isRalyeighOperator) {
             int lowerWaterIndx = smileAuxdata.getWaterLowerBands()[targetBandIndx] - 1;
             int upperWaterIndx = smileAuxdata.getWaterUpperBands()[targetBandIndx] - 1;
             if (lowerWaterIndx != DO_NOT_CORRECT_BAND && upperWaterIndx != DO_NOT_CORRECT_BAND) {
                 RayleighInput rayleighInputToCompute = new RayleighInput(sourceRefl, lowerRefl, upperRefl, targetBandIndx, lowerWaterIndx, upperWaterIndx);
                 RayleighAux rayleighAux = prepareRayleighAux(sourceRadTile.getRectangle());
-                RayleighOutput computedRayleighOutput = rayleighCorrAlgorithm.getRayleighReflectance(rayleighInputToCompute, rayleighAux, absorpOzones, getSourceProduct());
+                RayleighOutput computedRayleighOutput = rayleighCorrAlgorithm.getRayleighReflectance(rayleighInputToCompute, rayleighAux, absorpOzone, getSourceProduct());
                 sourceRefl = computedRayleighOutput.getSourceRayRefls();
                 lowerRefl = computedRayleighOutput.getLowerRayRefls();
                 upperRefl = computedRayleighOutput.getUpperRayRefls();

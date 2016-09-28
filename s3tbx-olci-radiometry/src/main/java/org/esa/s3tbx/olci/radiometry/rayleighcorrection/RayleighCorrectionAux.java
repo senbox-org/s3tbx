@@ -38,8 +38,8 @@ import java.util.stream.Collectors;
 public class RayleighCorrectionAux {
 
     Path installAuxdata() throws IOException {
-        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/smile-correction");
-        final Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(RayleighCorrectionAux.class).resolve("auxdata/smile");
+        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/rayleigh");
+        final Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(RayleighCorrectionAux.class).resolve("auxdata/rayleigh");
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirectory);
         resourceInstaller.install(".*", ProgressMonitor.NULL);
         return auxdataDirectory;

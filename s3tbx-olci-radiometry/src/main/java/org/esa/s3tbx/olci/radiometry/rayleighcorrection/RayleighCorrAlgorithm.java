@@ -89,8 +89,7 @@ public class RayleighCorrAlgorithm {
         double trans_ozoned12 = Math.exp(-(absorpO * ozone / 1000.0 - model_ozone) / cts);
         double trans_ozoneu12 = Math.exp(-(absorpO * ozone / 1000.0 - model_ozone) / ctv);
         double trans_ozone12 = trans_ozoned12 * trans_ozoneu12;
-        double rho = rho_ng / trans_ozone12;
-        return rho;
+        return rho_ng / trans_ozone12;
     }
 
     public double[] getRhoBrr(RayleighAux rayleighAux, double[] rayleighOpticalThickness, double[] corrOzoneRefl) {

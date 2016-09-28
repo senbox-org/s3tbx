@@ -35,11 +35,11 @@ public class SpikeInterpolation {
                                        double x, double y) {
 
 //        https://en.wikipedia.org/wiki/Bilinear_interpolation
-        double x1 = getMin(xCoordinate, x);
-        double y1 = getMin(yCoordinate, y);
+        double x1 = getLowerBound(xCoordinate, x);
+        double y1 = getLowerBound(yCoordinate, y);
 
-        double x2 = getMax(xCoordinate, x);
-        double y2 = getMax(yCoordinate, y);
+        double x2 = getUpperValue(xCoordinate, x);
+        double y2 = getUpperValue(yCoordinate, y);
 
         int ix1 = arrayIndex(xCoordinate, x1);
         int ix2 = arrayIndex(xCoordinate, x2);
@@ -66,25 +66,27 @@ public class SpikeInterpolation {
     public static double[] useLibJAI(double[][] samples, float xfrac, float yfrac) {
         Interpolation interpolation = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
         double interpolateBI = interpolation.interpolate(samples, xfrac, yfrac);
+        System.out.println("interpolate with bilinear JAI lib = " + interpolateBI);
         return new double[]{interpolateBI};
     }
 
     public static double useApacheMath(double[] xval, double[] yval, double[][] fval, double x, double y) {
         BicubicSplineInterpolator interpolator = new BicubicSplineInterpolator();
         BicubicSplineInterpolatingFunction interpolate = interpolator.interpolate(xval, yval, fval);
+        System.out.println("interpolate with bicubic Apache Lib = " + interpolate.value(x, y));
         return interpolate.value(x, y);
 
     }
 
-    private static double interBetween(double f11, double f12, double x2, double x1, double x) {
-        return f11 + ((f12 - f11) * (x - x1)) / (x2 - x1);
+    public static double interBetween(double lowerY1, double upperY2, double upperX2, double lowerX1, double position) {
+        return lowerY1 + ((upperY2 - lowerY1) * (position - lowerX1)) / (upperX2 - lowerX1);
     }
 
-    private static int arrayIndex(double[] xCoordinate, double val) {
+    public static int arrayIndex(double[] xCoordinate, double val) {
         return Doubles.asList(xCoordinate).indexOf(val);
     }
 
-    public static double getMax(double[] doubles, double val) {
+    public static double getUpperValue(double[] doubles, double val) {
         final List<Double> xMin = new ArrayList<>();
         int length = doubles.length;
         IntStream.range(0, length).forEach(i -> {
@@ -94,16 +96,22 @@ public class SpikeInterpolation {
             }
         });
         double[] allMax = Doubles.toArray(xMin);
+        if (allMax.length == 0) {
+            throw new IllegalArgumentException("Can fine the closest max value of " + val);
+        }
         return Doubles.min(allMax);
     }
 
-    public static double getMin(double[] doubles, double val) {
+    public static double getLowerBound(double[] doubles, double val) {
         final double[] xMin = new double[1];
         int length = doubles.length;
         IntStream.range(0, length).forEach(i -> {
             double v = doubles[i];
             xMin[0] = v < val ? v : xMin[0];
         });
+        if (xMin[0] > val) {
+            throw new IllegalArgumentException("Can find the closest min value of " + val);
+        }
         return xMin[0];
     }
 }

@@ -30,13 +30,13 @@ import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 
 /**
  * @author muhammad.bc.
  */
-@OperatorMetadata(alias =  "OLCI.GaseousAbsorption",
+@OperatorMetadata(alias =  "GaseousAbsorption",
         authors = "Marco Peters, Muhamamd Bala (Brockmann Consult)",
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Correct the influence of atmospheric gas absorption for those OLCI channels.")
