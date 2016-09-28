@@ -19,12 +19,13 @@
 package org.esa.s3tbx.olci.radiometry.rayleighcorrection;
 
 import com.google.common.primitives.Doubles;
+import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolatingFunction;
+import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator;
+
+import javax.media.jai.Interpolation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import javax.media.jai.Interpolation;
-import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolatingFunction;
-import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator;
 
 /**
  * @author muhammad.bc.
@@ -46,13 +47,6 @@ public class SpikeInterpolation {
         int iy1 = arrayIndex(yCoordinate, y1);
         int iy2 = arrayIndex(yCoordinate, y2);
 
-        if (iy1 == -1 || iy2 == -1 || ix1 == -1 || ix2 == -1) {
-            // todo: mba ask Carsten what to do about the extrapolation 8/26/2016
-            // check if is ascending coordinate
-            // check if the same length
-//            findNormDistance() (y-y2)/(yCoordinate[iy2+1]-yCoordinate[iy2])
-            doExtrapolation();
-        }
         double f11 = doubles2D[ix1][iy1];
         double f12 = doubles2D[ix1][iy2];
         double f21 = doubles2D[ix2][iy1];

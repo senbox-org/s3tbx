@@ -218,25 +218,45 @@ public class RayleighAux {
                 double yVal = viewZenithAngles[index];
                 double xVal = sunZenithAngles[index];
 
+                double thetaMin = thetas[0];
+                double thetaMax = thetas[thetas.length - 1];
                 List<double[]> valueList = new ArrayList<>();
                 for (int i = 0; i < rayCooefMatrixA.length; i++) {
-                    double thetaMin = thetas[0];
-                    double thetaMax = thetas[thetas.length - 1];
-                    if (yVal > thetaMin && yVal < thetaMax) {
-                        double[] values = new double[4];
+                    double[] values = new double[4];
+                    if (yVal > thetaMin && yVal < thetaMax && xVal > thetaMin && xVal < thetaMax) {
                         values[0] = SpikeInterpolation.interpolate2D(rayCooefMatrixA[i], thetas, thetas, xVal, yVal);
                         values[1] = SpikeInterpolation.interpolate2D(rayCooefMatrixB[i], thetas, thetas, xVal, yVal);
                         values[2] = SpikeInterpolation.interpolate2D(rayCooefMatrixC[i], thetas, thetas, xVal, yVal);
                         values[3] = SpikeInterpolation.interpolate2D(rayCooefMatrixD[i], thetas, thetas, xVal, yVal);
                         valueList.add(values);
                     } else {
-                        valueList.add(new double[]{0, 0, 0, 0});
+                        if (yVal < thetaMin && xVal < thetaMax) {
+                            valueList.add(getGridValueAt(0, 0));
+                        } else {
+                            int len = thetas.length - 1;
+                            if (yVal > thetaMax && xVal > thetaMin) {
+                                valueList.add(getGridValueAt(0, len));
+                            } else if (xVal < thetaMin && yVal < thetaMax) {
+                                valueList.add(getGridValueAt(0, 0));
+                            } else if (yVal > thetaMax && xVal < thetaMin) {
+                                valueList.add(getGridValueAt(len, len));
+                            }
+                        }
                     }
                 }
                 interpolate.put(index, valueList);
             }
         }
         return interpolate;
+    }
+
+    private double[] getGridValueAt(int x, int y) {
+        double[] values = new double[4];
+        values[0] = rayCooefMatrixA[x][y][0];
+        values[1] = rayCooefMatrixB[x][y][0];
+        values[2] = rayCooefMatrixC[x][y][0];
+        values[3] = rayCooefMatrixD[x][y][0];
+        return values;
     }
 
     private Map<Integer, double[]> getFourierMap() {
