@@ -43,7 +43,7 @@ import static org.esa.s3tbx.c2rcc.util.TargetProductPreparer.*;
  *
  * @author Norman Fomferra, Sabine Embacher
  */
-@OperatorMetadata(alias = "c2rcc.modis", version = "0.13",
+@OperatorMetadata(alias = "c2rcc.modis", version = "0.14",
         authors = "Wolfgang Schoenfeld (HZG), Sabine Embacher, Norman Fomferra (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2015 by Brockmann Consult",
