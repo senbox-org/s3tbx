@@ -126,6 +126,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
+    private static final String RADIANCE_BANDNAME_PATTERN = "Oa%02d_radiance";
+    private static final String SOLAR_FLUX_BANDNAME_PATTERN = "solar_flux_band_%d";
 
     private static final String[] alternativeNetDirNames = new String[]{
             "rtosa_aann",
@@ -293,7 +295,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private TimeCoding timeCoding;
 
     public static boolean isValidInput(Product product) {
-        for (int i = 0; i < BAND_COUNT; i++) {
+        for (int i = 1; i <= BAND_COUNT; i++) {
             if (!product.containsBand(getRadianceBandName(i))
                     || !product.containsBand(getSolarFluxBandname(i))) {
                 return false;
@@ -547,8 +549,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
         for (int i = 0; i < BAND_COUNT; i++) {
-            sc.defineSample(i + RADIANCE_START_IX, getRadianceBandName(i));
-            sc.defineSample(i + SOLAR_FLUX_START_IX, getSolarFluxBandname(i));
+            sc.defineSample(i + RADIANCE_START_IX, getRadianceBandName(i + 1));
+            sc.defineSample(i + SOLAR_FLUX_START_IX, getSolarFluxBandname(i + 1));
         }
         if (!useSnapDem) {
             sc.defineSample(DEM_ALT_IX, RASTER_NAME_ALTITUDE);
@@ -913,7 +915,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        for (int i = 0; i < BAND_COUNT; i++) {
+        for (int i = 1; i <= BAND_COUNT; i++) {
             assertSourceBand(getRadianceBandName(i));
             assertSourceBand(getSolarFluxBandname(i));
         }
@@ -966,16 +968,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         initAtmosphericAuxdata();
     }
 
-    private static String getRadianceBandName(int i) {
-        return String.format("Oa%02d_radiance", i + 1);
+    private static String getRadianceBandName(int index) {
+        return String.format(RADIANCE_BANDNAME_PATTERN, index);
     }
 
-    private static String getSolarFluxBandname(int i) {
-        return String.format("solar_flux_band_%d", i + 1);
+    private static String getSolarFluxBandname(int index) {
+        return String.format(SOLAR_FLUX_BANDNAME_PATTERN, index);
     }
 
     private void ensureSpectralProperties(Band band, int i) {
-        ProductUtils.copySpectralBandProperties(sourceProduct.getBand(String.format("Oa%02d_radiance", i)), band);
+        ProductUtils.copySpectralBandProperties(sourceProduct.getBand(getRadianceBandName(i)), band);
         if (band.getSpectralWavelength() == 0) {
             band.setSpectralWavelength(DEFAULT_OLCI_WAVELENGTH[i - 1]);
             band.setSpectralBandIndex(i);
