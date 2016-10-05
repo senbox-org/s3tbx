@@ -65,7 +65,7 @@ import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.*;
 @OperatorMetadata(alias = "c2rcc.msi", version = "0.14",
         authors = "Roland Doerffer, Marco Peters, Sabine Embacher (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
-        copyright = "Copyright (C) 2015 by Brockmann Consult",
+        copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
 public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable {
     private static final int SUN_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 0;
