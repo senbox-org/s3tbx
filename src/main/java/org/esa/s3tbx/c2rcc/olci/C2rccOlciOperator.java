@@ -69,67 +69,65 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         see https://senbox.atlassian.net/browse/SNAP-395
     */
 
+    static final String RASTER_NAME_QUALITY_FLAGS = "quality_flags";
+    static final String RASTER_NAME_SEA_LEVEL_PRESSURE = "sea_level_pressure";
+    static final String RASTER_NAME_TOTAL_OZONE = "total_ozone";
+    static final String RASTER_NAME_SUN_ZENITH = "SZA";
+    static final String RASTER_NAME_SUN_AZIMUTH = "SAA";
+    static final String RASTER_NAME_VIEWING_ZENITH = "OZA";
+    static final String RASTER_NAME_VIEWING_AZIMUTH = "OAA";
+    static final String RASTER_NAME_ALTITUDE = "altitude";
+
     // OLCI sources
-    public static final int BAND_COUNT = 21;
-    public static final int RADIANCE_START_IX = 0;
-    public static final int SOLAR_FLUX_START_IX = BAND_COUNT;
-    public static final int DEM_ALT_IX = BAND_COUNT * 2;
-    public static final int SUN_ZEN_IX = DEM_ALT_IX + 1;
-    public static final int SUN_AZI_IX = DEM_ALT_IX + 2;
-    public static final int VIEW_ZEN_IX = DEM_ALT_IX + 3;
-    public static final int VIEW_AZI_IX = DEM_ALT_IX + 4;
-    public static final int VALID_PIXEL_IX = DEM_ALT_IX + 5;
+    static final int BAND_COUNT = 21;
+    private static final int RADIANCE_START_IX = 0;
+    private static final int SOLAR_FLUX_START_IX = BAND_COUNT;
+    private static final int DEM_ALT_IX = BAND_COUNT * 2;
+    private static final int SUN_ZEN_IX = DEM_ALT_IX + 1;
+    private static final int SUN_AZI_IX = DEM_ALT_IX + 2;
+    private static final int VIEW_ZEN_IX = DEM_ALT_IX + 3;
+    private static final int VIEW_AZI_IX = DEM_ALT_IX + 4;
+    private static final int VALID_PIXEL_IX = DEM_ALT_IX + 5;
 
     // OLCI targets
-    public static final int BC_16 = olciband16_ix.length; // Band count 16
-    public static final int BC_21 = olciband21_ix.length; // Band count 21
-    public static final int SINGLE_IX = BC_21 + 7 * BC_16;
+    private static final int BC_16 = olciband16_ix.length; // Band count 16
+    private static final int BC_21 = olciband21_ix.length; // Band count 21
+    private static final int SINGLE_IX = BC_21 + 7 * BC_16;
 
-    public static final int RTOA_IX = 0;
-    public static final int RTOSA_IX = BC_21;
-    public static final int RTOSA_AANN_IX = BC_21 + BC_16;
-    public static final int RPATH_IX = BC_21 + 2 * BC_16;
-    public static final int TDOWN_IX = BC_21 + 3 * BC_16;
-    public static final int TUP_IX = BC_21 + 4 * BC_16;
-    public static final int AC_REFLEC_IX = BC_21 + 5 * BC_16;
-    public static final int RHOWN_IX = BC_21 + 6 * BC_16;
+    private static final int RTOA_IX = 0;
+    private static final int RTOSA_IX = BC_21;
+    private static final int RTOSA_AANN_IX = BC_21 + BC_16;
+    private static final int RPATH_IX = BC_21 + 2 * BC_16;
+    private static final int TDOWN_IX = BC_21 + 3 * BC_16;
+    private static final int TUP_IX = BC_21 + 4 * BC_16;
+    private static final int AC_REFLEC_IX = BC_21 + 5 * BC_16;
+    private static final int RHOWN_IX = BC_21 + 6 * BC_16;
 
-    public static final int OOS_RTOSA_IX = SINGLE_IX;
-    public static final int OOS_AC_REFLEC_IX = SINGLE_IX + 1;
+    private static final int OOS_RTOSA_IX = SINGLE_IX;
+    private static final int OOS_AC_REFLEC_IX = SINGLE_IX + 1;
 
-    public static final int IOP_APIG_IX = SINGLE_IX + 2;
-    public static final int IOP_ADET_IX = SINGLE_IX + 3;
-    public static final int IOP_AGELB_IX = SINGLE_IX + 4;
-    public static final int IOP_BPART_IX = SINGLE_IX + 5;
-    public static final int IOP_BWIT_IX = SINGLE_IX + 6;
+    private static final int IOP_APIG_IX = SINGLE_IX + 2;
+    private static final int IOP_ADET_IX = SINGLE_IX + 3;
+    private static final int IOP_AGELB_IX = SINGLE_IX + 4;
+    private static final int IOP_BPART_IX = SINGLE_IX + 5;
+    private static final int IOP_BWIT_IX = SINGLE_IX + 6;
+    private static final int KD489_IX = SINGLE_IX + 7;
+    private static final int KDMIN_IX = SINGLE_IX + 8;
+    private static final int UNC_APIG_IX = SINGLE_IX + 9;
+    private static final int UNC_ADET_IX = SINGLE_IX + 10;
+    private static final int UNC_AGELB_IX = SINGLE_IX + 11;
+    private static final int UNC_BPART_IX = SINGLE_IX + 12;
+    private static final int UNC_BWIT_IX = SINGLE_IX + 13;
+    private static final int UNC_ADG_IX = SINGLE_IX + 14;
+    private static final int UNC_ATOT_IX = SINGLE_IX + 15;
+    private static final int UNC_BTOT_IX = SINGLE_IX + 16;
+    private static final int UNC_KD489_IX = SINGLE_IX + 17;
+    private static final int UNC_KDMIN_IX = SINGLE_IX + 18;
 
-    //    public static final int IOP_ADG_IX = SINGLE_IX + 7;  // virtual band
-//    public static final int IOP_ATOT_IX = SINGLE_IX + 8;  // virtual band
-//    public static final int IOP_BTOT_IX = SINGLE_IX + 9;  // virtual band
-    public static final int KD489_IX = SINGLE_IX + 7;
-    public static final int KDMIN_IX = SINGLE_IX + 8;
-//    public static final int KD_Z90MAX_IX = SINGLE_IX + 12;  // virtual band
-//    public static final int CONC_CHL_IX = SINGLE_IX + 13;  // virtual band
-//    public static final int CONC_TSM_IX = SINGLE_IX + 14;  // virtual band
-
-    public static final int UNC_APIG_IX = SINGLE_IX + 9;
-    public static final int UNC_ADET_IX = SINGLE_IX + 10;
-    public static final int UNC_AGELB_IX = SINGLE_IX + 11;
-    public static final int UNC_BPART_IX = SINGLE_IX + 12;
-    public static final int UNC_BWIT_IX = SINGLE_IX + 13;
-    public static final int UNC_ADG_IX = SINGLE_IX + 14;
-    public static final int UNC_ATOT_IX = SINGLE_IX + 15;
-    public static final int UNC_BTOT_IX = SINGLE_IX + 16;
-    //    public static final int UNC_TSM_IX = SINGLE_IX + 24;  // virtual band
-//    public static final int UNC_CHL_IX = SINGLE_IX + 23;  // virtual band
-    public static final int UNC_KD489_IX = SINGLE_IX + 17;
-    public static final int UNC_KDMIN_IX = SINGLE_IX + 18;
-//    public static final int UNC_Z90MAX_IX = SINGLE_IX + 27;  // virtual band
-
-    public static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
+    private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
 
-    public static final String[] alternativeNetDirNames = new String[]{
+    private static final String[] alternativeNetDirNames = new String[]{
             "rtosa_aann",
             "rtosa_rw",
             "rw_iop",
@@ -142,16 +140,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             "rtosa_rpath"
     };
 
-    public static final String[] c2rccNNResourcePaths = new String[10];
-    public static final String RASTER_NAME_QUALITY_FLAGS = "quality_flags";
-    public static final String RASTER_NAME_SEA_LEVEL_PRESSURE = "sea_level_pressure";
-    public static final String RASTER_NAME_TOTAL_OZONE = "total_ozone";
-    public static final String RASTER_NAME_SUN_ZENITH = "SZA";
-    public static final String RASTER_NAME_SUN_AZIMUTH = "SAA";
-    public static final String RASTER_NAME_VIEWING_ZENITH = "OZA";
-    public static final String RASTER_NAME_VIEWING_AZIMUTH = "OAA";
-    public static final String RASTER_NAME_ALTITUDE = "altitude";
-
+    private static final String[] c2rccNNResourcePaths = new String[10];
     static {
         c2rccNNResourcePaths[IDX_iop_rw] = "olci/iop_rw/17x97x47_464.3.net";
         c2rccNNResourcePaths[IDX_iop_unciop] = "olci/iop_unciop/17x77x37_11486.7.net";
@@ -259,18 +248,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 
-
-//    private final String[] availableNetSets = new String[]{"C2RCC-Nets", "C2X-Nets"};
-//    @Parameter(valueSet = {"C2RCC-Nets", "C2X-Nets"},
-//            description = "Set of neuronal nets for algorithm.",
-//            defaultValue = "C2RCC-Nets",
-//            label = "Set of neuronal nets")
-//    private String netSet = "C2RCC-Nets";
-
-    // @todo discuss with Carsten and Roland
-//    @Parameter(defaultValue = "false")
-//    private boolean useDefaultSolarFlux;
-
     @Parameter(defaultValue = "true", description =
             "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
             label = "Use ECMWF aux data of source product")
@@ -310,9 +287,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private boolean outputUncertainties;
 
     private C2rccOlciAlgorithm algorithm;
-    // @todo discuss with Carsten and Roland
-//    private SolarFluxLazyLookup solarFluxLazyLookup;
-//    private double[] constantSolarFlux;
     private AtmosphericAuxdata atmosphericAuxdata;
     private boolean useSnapDem;
     private ElevationModel elevationModel;
@@ -367,11 +341,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     public void setSalinity(double salinity) {
         this.salinity = salinity;
     }
-
-    // @todo discuss with Carsten and Roland
-//    public void setUseDefaultSolarFlux(boolean useDefaultSolarFlux) {
-//        this.useDefaultSolarFlux = useDefaultSolarFlux;
-//    }
 
     @Override
     public void setOzone(double ozone) {
@@ -460,7 +429,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         }
 
         final double[] radiances = new double[BAND_COUNT];
-        // @todo discuss with Carsten and Roland
         final double[] solflux = new double[BAND_COUNT];
         for (int i = 0; i < BAND_COUNT; i++) {
             radiances[i] = sourceSamples[i].getDouble();
@@ -469,17 +437,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
         final double mjd = timeCoding.getMJD(pixelPos);
-
-        // @todo discuss with Carsten and Roland
-//        if (useDefaultSolarFlux) {
-//            ProductData.UTC utc = new ProductData.UTC(mjd);
-//            Calendar calendar = utc.getAsCalendar();
-//            final int doy = calendar.get(Calendar.DAY_OF_YEAR);
-//            final int year = calendar.get(Calendar.YEAR);
-//            solflux = solarFluxLazyLookup.getCorrectedFluxFor(doy, year);
-//        } else {
-//        solflux = constantSolarFlux;
-//        }
 
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
@@ -589,7 +546,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
-//        sc.setValidPixelMask(validPixelExpression);
         for (int i = 0; i < BAND_COUNT; i++) {
             sc.defineSample(i + RADIANCE_START_IX, getRadianceBandName(i));
             sc.defineSample(i + SOLAR_FLUX_START_IX, getSolarFluxBandname(i));
@@ -1006,21 +962,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
 
-        // @todo discuss with Carsten and Roland
-//        if (useDefaultSolarFlux) {  // not the sol flux values from the input product
-//            solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
-//        } else {
-//            double[] solfluxFromL1b = new double[BAND_COUNT];
-//            for (int i = 0; i < BAND_COUNT; i++) {
-//                solfluxFromL1b[i] = sourceProduct.getBand("radiance_" + (i + 1)).getSolarFlux();
-//            }
-//            if (isSolfluxValid(solfluxFromL1b)) {
-//                constantSolarFlux = solfluxFromL1b;
-//            } else {
-//                throw new OperatorException("Invalid solar flux in source product!");
-//            }
-//        }
-
         timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
     }
@@ -1032,15 +973,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private static String getSolarFluxBandname(int i) {
         return String.format("solar_flux_band_%d", i + 1);
     }
-
-//    private static boolean isSolfluxValid(double[] solflux) {
-//        for (double v : solflux) {
-//            if (v <= 0.0) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
 
     private void ensureSpectralProperties(Band band, int i) {
         ProductUtils.copySpectralBandProperties(sourceProduct.getBand(String.format("Oa%02d_radiance", i)), band);
@@ -1121,13 +1053,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private void assertSourceBand(String name) {
         if (!sourceProduct.containsBand(name)) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
-        }
-    }
-
-    private void assertFlagCoding(String name) {
-        assertSourceBand(name);
-        if (sourceProduct.getBand(name).getFlagCoding() == null) {
-            throw new OperatorException("Invalid source product, flag coding '" + name + "' required");
         }
     }
 
