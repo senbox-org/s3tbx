@@ -1,5 +1,6 @@
 org.esa.s3tbx.c2rcc.C2rccOperator$Spi
 org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator$Spi
+org.esa.s3tbx.c2rcc.meris.C2rccMeris4Operator$Spi
 org.esa.s3tbx.c2rcc.modis.C2rccModisOperator$Spi
 org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSOperator$Spi
 org.esa.s3tbx.c2rcc.olci.C2rccOlciOperator$Spi

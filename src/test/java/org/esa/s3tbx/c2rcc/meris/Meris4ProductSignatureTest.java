@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Marco Peters
  */
-public class MerisProductSignatureTest {
+public class Meris4ProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_" + 1, "rhow_" + 2, "rhow_" + 3, "rhow_" + 4, "rhow_" + 5,
             "rhow_" + 6, "rhow_" + 7, "rhow_" + 8, "rhow_" + 9, "rhow_" + 10,
@@ -75,13 +75,13 @@ public class MerisProductSignatureTest {
             "tup_" + 6, "tup_" + 7, "tup_" + 8, "tup_" + 9, "tup_" + 10,
             "tup_" + 12, "tup_" + 13};
 
-    private static final String EXPECTED_L1_FLAGS = "l1_flags";
+    private static final String EXPECTED_QUALITY_FLAGS = "quality_flags";
     private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
 
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
 
-        C2rccMerisOperator operator = createDefaultOperator();
+        C2rccMeris4Operator operator = createDefaultOperator();
 
         Product targetProduct = operator.getTargetProduct();
 
@@ -89,13 +89,13 @@ public class MerisProductSignatureTest {
     }
 
     @Test
-    public void testProductSignature_Default_Rrs() throws FactoryException, TransformException {
+    public void testProductSignature_Default_AsRrs() throws FactoryException, TransformException {
 
-        C2rccMerisOperator operator = createDefaultOperator();
+        C2rccMeris4Operator operator = createDefaultOperator();
         operator.setOutputAsRrs(true);
         operator.setOutputOos(true);
-
         Product targetProduct = operator.getTargetProduct();
+
         assertDefaultBands(targetProduct, true);
         assertBands(targetProduct, EXPECTED_OOS_RTOSA);
         assertBands(targetProduct, EXPECTED_OOS_RRS);
@@ -105,7 +105,7 @@ public class MerisProductSignatureTest {
     @Test
     public void testProductSignature_OnlyMandatory() throws FactoryException, TransformException {
 
-        C2rccMerisOperator operator = createDefaultOperator();
+        C2rccMeris4Operator operator = createDefaultOperator();
         operator.setOutputRtoa(false);
         operator.setOutputUncertainties(false);
         operator.setOutputAcReflec(false);
@@ -120,7 +120,7 @@ public class MerisProductSignatureTest {
     @Test
     public void testProductSignature_DefaultWithRtosa() throws FactoryException, TransformException {
 
-        C2rccMerisOperator operator = createDefaultOperator();
+        C2rccMeris4Operator operator = createDefaultOperator();
         operator.setOutputRtosa(true);
         operator.setOutputRtosaGcAann(true);
         Product targetProduct = operator.getTargetProduct();
@@ -133,18 +133,18 @@ public class MerisProductSignatureTest {
     @Test
     public void testProductSignature_DefaultWithRtoa() throws FactoryException, TransformException {
 
-        C2rccMerisOperator operator = createDefaultOperator();
+        C2rccMeris4Operator operator = createDefaultOperator();
         operator.setOutputRtoa(true);
         Product targetProduct = operator.getTargetProduct();
 
         assertDefaultBands(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RTOA_BANDS);
     }
-    
+
     @Test
     public void testProductSignature_DefaultWithOthers() throws FactoryException, TransformException {
 
-        C2rccMerisOperator operator = createDefaultOperator();
+        C2rccMeris4Operator operator = createDefaultOperator();
         operator.setOutputRpath(true);
         operator.setOutputTdown(true);
         operator.setOutputTup(true);
@@ -162,7 +162,7 @@ public class MerisProductSignatureTest {
     @Test
     public void testProductSignature_DefaultWithUncertainties() throws FactoryException, TransformException {
 
-        C2rccMerisOperator operator = createDefaultOperator();
+        C2rccMeris4Operator operator = createDefaultOperator();
         operator.setOutputUncertainties(true);
         Product targetProduct = operator.getTargetProduct();
 
@@ -173,7 +173,7 @@ public class MerisProductSignatureTest {
     @Test
     public void testProductSignature_DefaultWithUncertaintiesAndKd() throws FactoryException, TransformException {
 
-        C2rccMerisOperator operator = createDefaultOperator();
+        C2rccMeris4Operator operator = createDefaultOperator();
         operator.setOutputUncertainties(true);
         operator.setOutputKd(true);
         Product targetProduct = operator.getTargetProduct();
@@ -194,8 +194,8 @@ public class MerisProductSignatureTest {
         assertBands(targetProduct, EXPECTED_RTOA_BANDS);
         assertBands(targetProduct, EXPECTED_NORM_REFLEC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_BANDS);
-        assertBands(targetProduct, EXPECTED_KD_UNC_BANDS);
         assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
+        assertBands(targetProduct, EXPECTED_KD_UNC_BANDS);
     }
 
     private void assertMandatoryBands(Product targetProduct) {
@@ -209,7 +209,7 @@ public class MerisProductSignatureTest {
         assertBands(targetProduct, EXPECTED_IOP_BTOT);
         assertBands(targetProduct, EXPECTED_CONC_CHL);
         assertBands(targetProduct, EXPECTED_CONC_TSM);
-        assertBands(targetProduct, EXPECTED_L1_FLAGS);
+        assertBands(targetProduct, EXPECTED_QUALITY_FLAGS);
         assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);
     }
 
@@ -219,31 +219,35 @@ public class MerisProductSignatureTest {
         }
     }
 
-    private C2rccMerisOperator createDefaultOperator() throws FactoryException, TransformException {
-        C2rccMerisOperator operator = new C2rccMerisOperator();
+    private C2rccMeris4Operator createDefaultOperator() throws FactoryException, TransformException {
+        C2rccMeris4Operator operator = new C2rccMeris4Operator();
         operator.setParameterDefaultValues();
-        operator.setSourceProduct(createMerisTestProduct());
+        operator.setSourceProduct(createMeris4TestProduct());
         return operator;
     }
 
-    private Product createMerisTestProduct() throws FactoryException, TransformException {
-        Product product = new Product("test-meris", "t", 1, 1);
-        for (int i = 1; i <= C2rccMerisOperator.BAND_COUNT; i++) {
+    private Product createMeris4TestProduct() throws FactoryException, TransformException {
+        Product product = new Product("test-olci", "t", 1, 1);
+        for (int i = 1; i <= C2rccCommonMerisOp.BAND_COUNT; i++) {
             String expression = String.valueOf(i);
-            Band radiance = product.addBand(C2rccMerisOperator.SOURCE_RADIANCE_NAME_PREFIX + i, expression);
-            radiance.setSolarFlux((float) C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX[i-1]);
+            product.addBand(String.format("M%02d_radiance", i), expression);
+            product.addBand("solar_flux_band_" + i, expression);
         }
+
         Date time = new Date();
         product.setStartTime(ProductData.UTC.create(time, 0));
         product.setEndTime(ProductData.UTC.create(time, 500));
 
-        product.addBand(C2rccMerisOperator.RASTER_NAME_DEM_ALT, "500");
-        product.addBand(C2rccMerisOperator.RASTER_NAME_SUN_AZIMUTH, "42");
-        product.addBand(C2rccMerisOperator.RASTER_NAME_SUN_ZENITH, "42");
-        product.addBand(C2rccMerisOperator.RASTER_NAME_VIEW_AZIMUTH, "42");
-        product.addBand(C2rccMerisOperator.RASTER_NAME_VIEW_ZENITH, "42");
-        Band flagBand = product.addBand(C2rccMerisOperator.RASTER_NAME_L1_FLAGS, ProductData.TYPE_INT8);
-        FlagCoding l1FlagsCoding = new FlagCoding(C2rccMerisOperator.RASTER_NAME_L1_FLAGS);
+
+        product.addBand(C2rccMeris4Operator.RASTER_NAME_ALTITUDE, "500");
+        product.addBand(C2rccMeris4Operator.RASTER_NAME_SUN_AZIMUTH, "42");
+        product.addBand(C2rccMeris4Operator.RASTER_NAME_SUN_ZENITH, "42");
+        product.addBand(C2rccMeris4Operator.RASTER_NAME_VIEWING_AZIMUTH, "42");
+        product.addBand(C2rccMeris4Operator.RASTER_NAME_VIEWING_ZENITH, "42");
+        product.addBand(C2rccCommonMerisOp.RASTER_NAME_SEA_LEVEL_PRESSURE, "999");
+        product.addBand(C2rccCommonMerisOp.RASTER_NAME_TOTAL_OZONE, "333");
+        Band flagBand = product.addBand(C2rccMeris4Operator.RASTER_NAME_QUALITY_FLAGS, ProductData.TYPE_INT8);
+        FlagCoding l1FlagsCoding = new FlagCoding(C2rccMeris4Operator.RASTER_NAME_QUALITY_FLAGS);
         product.getFlagCodingGroup().add(l1FlagsCoding);
         flagBand.setSampleCoding(l1FlagsCoding);
 

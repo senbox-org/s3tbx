@@ -3,12 +3,15 @@ package org.esa.s3tbx.c2rcc.meris;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
-import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.VirtualBand;
+import org.esa.snap.core.dataop.dem.ElevationModel;
+import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
+import org.esa.snap.core.dataop.resamp.Resampling;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -22,61 +25,55 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Calendar;
 
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
 
-// todo (nf) - Add Thullier solar fluxes as default values to C2RCC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
-// todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
-// todo (RD) - salinity and temperautre have to be passed to C2R ?
-// todo (RD) - parameters, to control which variables to be processed, pass to C2R
 
 /**
- * The Case 2 Regional / CoastColour Operator for MERIS.
+ * The Case 2 Regional / CoastColour Operator for MERIS data of the 4th reprocessing.
  * <p/>
- * Computes AC-reflectances and IOPs from MERIS L1b data products using
+ * Computes AC-reflectances and IOPs from OLCI L1b data products using
  * an neural-network approach.
  */
-@OperatorMetadata(alias = "c2rcc.meris", version = "0.14",
-        authors = "Roland Doerffer, Sabine Embacher, Marco Peters (Brockmann Consult)",
+@OperatorMetadata(alias = "c2rcc.meris4", version = "0.14",
+        authors = "Roland Doerffer, Marco Peters (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
-        description = "Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products.")
-public class C2rccMerisOperator extends C2rccCommonMerisOp {
+        description = "Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products from the 4th reprocessing.")
+public class C2rccMeris4Operator extends C2rccCommonMerisOp {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
         see https://senbox.atlassian.net/browse/SNAP-395
     */
 
     // MERIS sources
-    static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
-    static final String RASTER_NAME_OZONE = "ozone";
-    static final String RASTER_NAME_ATM_PRESS = "atm_press";
-    static final String RASTER_NAME_L1_FLAGS = "l1_flags";
-    static final String RASTER_NAME_DEM_ALT = "dem_alt";
-    static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
-    static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
-    static final String RASTER_NAME_VIEW_ZENITH = "view_zenith";
-    static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth";
+    private static final String RADIANCE_BANDNAME_PATTERN = "M%02d_radiance";
+    static final String RASTER_NAME_QUALITY_FLAGS = "quality_flags";
+    static final String RASTER_NAME_SUN_ZENITH = "SZA";
+    static final String RASTER_NAME_SUN_AZIMUTH = "SAA";
+    static final String RASTER_NAME_VIEWING_ZENITH = "OZA";
+    static final String RASTER_NAME_VIEWING_AZIMUTH = "OAA";
+    static final String RASTER_NAME_ALTITUDE = "altitude";
 
-    private static final int DEM_ALT_IX = BAND_COUNT;
-    private static final int SUN_ZEN_IX = BAND_COUNT + 1;
-    private static final int SUN_AZI_IX = BAND_COUNT + 2;
-    private static final int VIEW_ZEN_IX = BAND_COUNT + 3;
-    private static final int VIEW_AZI_IX = BAND_COUNT + 4;
-    private static final int VALID_PIXEL_IX = BAND_COUNT + 5;
+    private static final int RADIANCE_START_IX = 0;
+    private static final int SOLAR_FLUX_START_IX = BAND_COUNT;
+    private static final int DEM_ALT_IX = BAND_COUNT * 2;
+    private static final int SUN_ZEN_IX = DEM_ALT_IX + 1;
+    private static final int SUN_AZI_IX = DEM_ALT_IX + 2;
+    private static final int VIEW_ZEN_IX = DEM_ALT_IX + 3;
+    private static final int VIEW_AZI_IX = DEM_ALT_IX + 4;
+    private static final int VALID_PIXEL_IX = DEM_ALT_IX + 5;
 
+    private static final String SOLAR_FLUX_BANDNAME_PATTERN = "solar_flux_band_%d";
 
-    @SourceProduct(label = "MERIS L1b product",
-            description = "MERIS L1b source product.")
+    @SourceProduct(label = "MERIS L1b 4th Reproc. product", description = "MERIS L1b source product.")
     private Product sourceProduct;
 
     @SourceProduct(description = "A second source product which is congruent to the L1b source product but contains cloud flags. " +
             "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
-            "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN && !$cloudProduct.l2_flags.CLOUD' ",
+            "containing source product. Expression example: '!quality_flags.invalid && !quality_flags.land && !$cloudProduct.l2_flags.CLOUD' ",
             optional = true,
             label = "Product with cloud flag")
     private Product cloudProduct;
@@ -106,7 +103,7 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
+            defaultValue = "!quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)",
             description = "Defines the pixels which are valid for processing",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
@@ -144,13 +141,12 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     private double thresholdRtosaOOS;
 
     @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances",
-            label = "Threshold AC reflecteances OOS")
+            label = "Threshold AC reflectances OOS")
     private double thresholdAcReflecOos;
 
     @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
             label = "Threshold for cloud flag on transmittance down @865")
     private double thresholdCloudTDown865;
-
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
             "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
@@ -162,6 +158,7 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     private String alternativeNNPath;
 
     private final String[] availableNetSets = new String[]{"C2RCC-Nets", "C2X-Nets"};
+
     @Parameter(valueSet = {"C2RCC-Nets", "C2X-Nets"},
             description = "Set of neuronal nets for algorithm.",
             defaultValue = "C2RCC-Nets",
@@ -211,27 +208,22 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     @Parameter(defaultValue = "true", label = "Output uncertainties")
     protected boolean outputUncertainties;
 
-    @Parameter(defaultValue = "false",
-            description = "If 'false', use solar flux from source product")
-    private boolean useDefaultSolarFlux;
-
-    private SolarFluxLazyLookup solarFluxLazyLookup;
-    private double[] constantSolarFlux;
+    private boolean useSnapDem;
+    private ElevationModel elevationModel;
 
     public static boolean isValidInput(Product product) {
         for (int i = 1; i <= BAND_COUNT; i++) {
-            if (!product.containsBand("radiance_" + i)) {
+            if (!product.containsBand(String.format(RADIANCE_BANDNAME_PATTERN, i))
+                    || !product.containsBand(getSolarFluxBandname(i))) {
                 return false;
             }
         }
-        return product.containsBand(RASTER_NAME_L1_FLAGS) &&
-                product.containsRasterDataNode(RASTER_NAME_DEM_ALT) &&
-                product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH) &&
-                product.containsRasterDataNode(RASTER_NAME_SUN_AZIMUTH) &&
-                product.containsRasterDataNode(RASTER_NAME_VIEW_ZENITH) &&
-                product.containsRasterDataNode(RASTER_NAME_VIEW_AZIMUTH) &&
-                product.containsRasterDataNode(RASTER_NAME_ATM_PRESS) &&
-                product.containsRasterDataNode(RASTER_NAME_OZONE);
+
+        return product.containsBand(RASTER_NAME_QUALITY_FLAGS)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
+                && product.containsRasterDataNode(RASTER_NAME_SUN_AZIMUTH)
+                && product.containsRasterDataNode(RASTER_NAME_VIEWING_ZENITH)
+                && product.containsRasterDataNode(RASTER_NAME_VIEWING_AZIMUTH);
     }
 
     @Override
@@ -335,68 +327,28 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     }
 
     @Override
+    public void setUseEcmwfAuxData(boolean useEcmwfAuxData) {
+        this.useEcmwfAuxData = useEcmwfAuxData;
+    }
+
+    @Override
     public void setOutputRtosa(boolean outputRtosa) {
         this.outputRtosaGc = outputRtosa;
     }
 
     @Override
-    public void setOutputAsRrs(boolean asRrs) {
-        outputAsRrs = asRrs;
+    public void setOutputAsRrs(boolean asRadianceRefl) {
+        this.outputAsRrs = asRadianceRefl;
     }
 
     @Override
-    public void setOutputKd(boolean outputKd) {
+    protected boolean getUseEcmwfAuxData() {
+        return useEcmwfAuxData;
+    }
+
+    @Override
+    protected void setOutputKd(boolean outputKd) {
         this.outputKd = outputKd;
-    }
-
-    @Override
-    public void setOutputOos(boolean outputOos) {
-        this.outputOos = outputOos;
-    }
-
-    @Override
-    public void setOutputRpath(boolean outputRpath) {
-        this.outputRpath = outputRpath;
-    }
-
-    @Override
-    public void setOutputRtoa(boolean outputRtoa) {
-        this.outputRtoa = outputRtoa;
-    }
-
-    @Override
-    public void setOutputRtosaGcAann(boolean outputRtosaGcAann) {
-        this.outputRtosaGcAann = outputRtosaGcAann;
-    }
-
-    @Override
-    public void setOutputAcReflec(boolean outputAcReflec) {
-        this.outputAcReflectance = outputAcReflec;
-    }
-
-    @Override
-    public void setOutputRhown(boolean outputRhown) {
-        this.outputRhown = outputRhown;
-    }
-
-    @Override
-    public void setOutputTdown(boolean outputTdown) {
-        this.outputTdown = outputTdown;
-    }
-
-    @Override
-    public void setOutputTup(boolean outputTup) {
-        this.outputTup = outputTup;
-    }
-
-    @Override
-    public void setOutputUncertainties(boolean outputUncertainties) {
-        this.outputUncertainties = outputUncertainties;
-    }
-
-    @Override
-    public void setUseEcmwfAuxData(boolean useEcmwfAuxData) {
-        this.useEcmwfAuxData = useEcmwfAuxData;
     }
 
     @Override
@@ -405,13 +357,28 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     }
 
     @Override
+    protected void setOutputOos(boolean outputOos) {
+        this.outputOos = outputOos;
+    }
+
+    @Override
     protected boolean getOutputOos() {
         return outputOos;
     }
 
     @Override
+    protected void setOutputRpath(boolean outputRpath) {
+        this.outputRpath = outputRpath;
+    }
+
+    @Override
     protected boolean getOutputRpath() {
         return outputRpath;
+    }
+
+    @Override
+    protected void setOutputRtoa(boolean outputRtoa) {
+        this.outputRtoa = outputRtoa;
     }
 
     @Override
@@ -425,8 +392,18 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     }
 
     @Override
+    protected void setOutputRtosaGcAann(boolean outputRtosaGcAann) {
+        this.outputRtosaGcAann = outputRtosaGcAann;
+    }
+
+    @Override
     protected boolean getOutputRtosaGcAann() {
         return outputRtosaGcAann;
+    }
+
+    @Override
+    protected void setOutputAcReflec(boolean outputAcReflec) {
+        this.outputAcReflectance = outputAcReflec;
     }
 
     @Override
@@ -435,18 +412,38 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     }
 
     @Override
+    protected void setOutputRhown(boolean outputRhown) {
+        this.outputRhown = outputRhown;
+    }
+
+    @Override
     protected boolean getOutputRhown() {
         return outputRhown;
     }
 
     @Override
+    protected void setOutputTdown(boolean outputTdown) {
+        this.outputTdown = outputTdown;
+    }
+
+    @Override
     protected boolean getOutputTdown() {
-        return outputTdown;
+        return this.outputTdown;
+    }
+
+    @Override
+    protected void setOutputTup(boolean outputTup) {
+        this.outputTup = outputTup;
     }
 
     @Override
     protected boolean getOutputTup() {
         return outputTup;
+    }
+
+    @Override
+    protected void setOutputUncertainties(boolean outputUncertainties) {
+        this.outputUncertainties = outputUncertainties;
     }
 
     @Override
@@ -460,18 +457,10 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     }
 
     @Override
-    public boolean getUseEcmwfAuxData() {
-        return useEcmwfAuxData;
-    }
-
-    public void setUseDefaultSolarFlux(boolean useDefaultSolarFlux) {
-        this.useDefaultSolarFlux = useDefaultSolarFlux;
-    }
-
-    @Override
     public void setValidPixelExpression(String validPixelExpression) {
         this.validPixelExpression = validPixelExpression;
     }
+
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
@@ -481,29 +470,31 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
             return;
         }
 
-        double[] radiances = new double[BAND_COUNT];
+        final double[] radiances = new double[BAND_COUNT];
+        final double[] solflux = new double[BAND_COUNT];
         for (int i = 0; i < BAND_COUNT; i++) {
             radiances[i] = sourceSamples[i].getDouble();
+            solflux[i] = sourceSamples[i + SOLAR_FLUX_START_IX].getDouble();
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
         final double mjd = timeCoding.getMJD(pixelPos);
-        final double[] solflux;
-        if (useDefaultSolarFlux) {
-            ProductData.UTC utc = new ProductData.UTC(mjd);
-            Calendar calendar = utc.getAsCalendar();
-            final int doy = calendar.get(Calendar.DAY_OF_YEAR);
-            final int year = calendar.get(Calendar.YEAR);
-            solflux = solarFluxLazyLookup.getCorrectedFluxFor(doy, year);
-        } else {
-            solflux = constantSolarFlux;
-        }
 
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
         double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, lat, lon);
         double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, lat, lon);
+        final double altitude;
+        if (useSnapDem) {
+            try {
+                altitude = elevationModel.getElevation(geoPos);
+            } catch (Exception e) {
+                throw new OperatorException("Unable to compute altitude.", e);
+            }
+        } else {
+            altitude = sourceSamples[DEM_ALT_IX].getDouble();
+        }
 
         C2rccMerisAlgorithm.Result result = algorithm.processPixel(x, y, lat, lon,
                                                                    radiances,
@@ -512,7 +503,7 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
                                                                    sourceSamples[SUN_AZI_IX].getDouble(),
                                                                    sourceSamples[VIEW_ZEN_IX].getDouble(),
                                                                    sourceSamples[VIEW_AZI_IX].getDouble(),
-                                                                   sourceSamples[DEM_ALT_IX].getDouble(),
+                                                                   altitude,
                                                                    sourceSamples[VALID_PIXEL_IX].getBoolean(),
                                                                    atmPress,
                                                                    ozone);
@@ -523,13 +514,16 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
         for (int i = 0; i < BAND_COUNT; i++) {
-            sc.defineSample(i, SOURCE_RADIANCE_NAME_PREFIX + (i + 1));
+            sc.defineSample(i + RADIANCE_START_IX, getRadianceBandName(i + 1));
+            sc.defineSample(i + SOLAR_FLUX_START_IX, getSolarFluxBandname(i + 1));
         }
-        sc.defineSample(DEM_ALT_IX, RASTER_NAME_DEM_ALT);
+        if (!useSnapDem) {
+            sc.defineSample(DEM_ALT_IX, RASTER_NAME_ALTITUDE);
+        }
         sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH);
         sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH);
-        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEW_ZENITH);
-        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEW_AZIMUTH);
+        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH);
+        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH);
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
@@ -541,13 +535,24 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
     @Override
     protected void prepareInputs() throws OperatorException {
         for (int i = 1; i <= BAND_COUNT; i++) {
-            assertSourceBand(SOURCE_RADIANCE_NAME_PREFIX + i);
+            assertSourceBand(getRadianceBandName(i));
+            assertSourceBand(getSolarFluxBandname(i));
         }
-        assertSourceBand(RASTER_NAME_L1_FLAGS);
+        useSnapDem = !sourceProduct.containsRasterDataNode(RASTER_NAME_ALTITUDE);
+        if (useSnapDem) {
+            elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
+        }
+
+        sourceProduct.isCompatibleBandArithmeticExpression(validPixelExpression);
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
+
+        assertSourceRaster(RASTER_NAME_SUN_ZENITH);
+        assertSourceRaster(RASTER_NAME_SUN_AZIMUTH);
+        assertSourceRaster(RASTER_NAME_VIEWING_ZENITH);
+        assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH);
 
         try {
             final String[] nnFilePaths;
@@ -582,58 +587,51 @@ public class C2rccMerisOperator extends C2rccCommonMerisOp {
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
 
-        if (useDefaultSolarFlux) {  // not the sol flux values from the input product
-            solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
-        } else {
-            double[] solfluxFromL1b = new double[BAND_COUNT];
-            for (int i = 0; i < BAND_COUNT; i++) {
-                solfluxFromL1b[i] = sourceProduct.getBand("radiance_" + (i + 1)).getSolarFlux();
-            }
-            if (isSolfluxValid(solfluxFromL1b)) {
-                constantSolarFlux = solfluxFromL1b;
-            } else {
-                throw new OperatorException("Invalid solar flux in source product!");
-            }
-        }
         timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
     }
 
-
     @Override
     protected String getRadianceBandName(int index) {
-        return "radiance_" + index;
+        return String.format(RADIANCE_BANDNAME_PATTERN, index);
+    }
+
+    private static String getSolarFluxBandname(int index) {
+        return String.format(SOLAR_FLUX_BANDNAME_PATTERN, index);
     }
 
     @Override
     protected RasterDataNode getPressureRaster() {
-        return getSourceProduct().getRasterDataNode(RASTER_NAME_ATM_PRESS);
+        return sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE);
     }
 
     @Override
     protected RasterDataNode getOzoneRaster() {
-        return getSourceProduct().getRasterDataNode(RASTER_NAME_OZONE);
+        VirtualBand ozoneInDu = new VirtualBand("__ozone_in_du_",
+                                                ProductData.TYPE_FLOAT32,
+                                                getSourceProduct().getSceneRasterWidth(),
+                                                getSourceProduct().getSceneRasterHeight(),
+                                                RASTER_NAME_TOTAL_OZONE + " * 46698");
+        ozoneInDu.setOwner(sourceProduct);
+        return ozoneInDu;
+    }
+
+    private void assertSourceRaster(String name) {
+        if (!sourceProduct.containsRasterDataNode(name)) {
+            throw new OperatorException("Invalid source product, raster '" + name + "' required");
+        }
     }
 
     private void assertSourceBand(String name) {
-        if (sourceProduct.getBand(name) == null) {
+        if (!sourceProduct.containsBand(name)) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
         }
-    }
-
-    private static boolean isSolfluxValid(double[] solflux) {
-        for (double v : solflux) {
-            if (v <= 0.0) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public static class Spi extends OperatorSpi {
 
         public Spi() {
-            super(C2rccMerisOperator.class);
+            super(C2rccMeris4Operator.class);
         }
     }
 }

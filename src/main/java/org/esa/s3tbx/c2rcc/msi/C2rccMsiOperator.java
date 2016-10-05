@@ -48,6 +48,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
+import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.*;
@@ -426,7 +427,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
-        boolean samplesValid = C2rccCommons.areSamplesValid(sourceSamples, x, y);
+        boolean samplesValid = areSamplesValid(sourceSamples, x, y);
         if(!samplesValid) {
             setInvalid(targetSamples);
             return;
@@ -666,7 +667,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         productConfigurer.copyMetadata();
 
         final Product targetProduct = productConfigurer.getTargetProduct();
-        C2rccCommons.ensureTimeInformation(targetProduct, getStartTime(), getEndTime(), timeCoding);
+        ensureTimeInformation(targetProduct, getStartTime(), getEndTime(), timeCoding);
 
         targetProduct.setPreferredTileSize(128, 128);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
@@ -976,9 +977,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             if (sourceProduct.getStartTime() == null || sourceProduct.getEndTime() == null) {
                 // if no start/end time is set, read it from the metadata
                 // (should not happen anymore from SNAP 4.0.2 on)
-                timeCoding = C2rccCommons.getTimeCoding(getStartTime(), getEndTime());
+                timeCoding = getTimeCoding(getStartTime(), getEndTime());
             } else {
-                timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+                timeCoding = getTimeCoding(sourceProduct);
             }
 
         }
@@ -1137,25 +1138,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         if (!sourceProduct.containsBand(name)) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
         }
-    }
-
-    private Band addBand(Product targetProduct, String name, String unit, String description) {
-        Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
-        targetBand.setUnit(unit);
-        targetBand.setDescription(description);
-        targetBand.setGeophysicalNoDataValue(Double.NaN);
-        targetBand.setNoDataValueUsed(true);
-        return targetBand;
-    }
-
-    private Band addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
-        Band band = targetProduct.addBand(name, expression);
-        band.setUnit(unit);
-        band.setDescription(description);
-        band.getSourceImage(); // trigger source image creation
-        band.setGeophysicalNoDataValue(Double.NaN);
-        band.setNoDataValueUsed(true);
-        return band;
     }
 
     public static class Spi extends OperatorSpi {
