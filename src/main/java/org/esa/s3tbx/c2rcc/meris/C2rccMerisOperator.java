@@ -278,6 +278,11 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             label = "Set of neuronal nets")
     private String netSet = "C2RCC-Nets";
 
+    @Parameter(defaultValue = "false", description =
+            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+            label = "Output AC reflectances as rrs instead of rhow")
+    private boolean outputAsRrs;
+
     @Parameter(defaultValue = "false",
             description = "If 'false', use solar flux from source product")
     private boolean useDefaultSolarFlux;
@@ -319,12 +324,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
     @Parameter(defaultValue = "true", label = "Output uncertainties")
     private boolean outputUncertainties;
-
-    @Parameter(defaultValue = "false", description =
-            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
-            label = "Output AC reflectances as rrs instead of rhow")
-    private boolean outputAsRrs;
-
 
     private C2rccMerisAlgorithm algorithm;
     private SolarFluxLazyLookup solarFluxLazyLookup;
