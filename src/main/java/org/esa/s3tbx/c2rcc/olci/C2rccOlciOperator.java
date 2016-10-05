@@ -304,9 +304,9 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
         return product.containsBand(RASTER_NAME_QUALITY_FLAGS)
                 && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH);
+                && product.containsRasterDataNode(RASTER_NAME_SUN_AZIMUTH)
+                && product.containsRasterDataNode(RASTER_NAME_VIEWING_ZENITH)
+                && product.containsRasterDataNode(RASTER_NAME_VIEWING_AZIMUTH);
     }
 
     @Override
