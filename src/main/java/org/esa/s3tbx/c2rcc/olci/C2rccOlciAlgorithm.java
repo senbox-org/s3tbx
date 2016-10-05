@@ -35,28 +35,19 @@ import static org.esa.s3tbx.ArrayMath.a_max;
  */
 public class C2rccOlciAlgorithm {
 
-    public static final int IDX_rtosa_aann = 0;
-    public static final int IDX_rtosa_rw = 1;
-    public static final int IDX_rw_iop = 2;
-    public static final int IDX_iop_rw = 3;
-    public static final int IDX_rw_kd = 4;
-    public static final int IDX_iop_unciop = 5;
-    public static final int IDX_iop_uncsumiop_unckd = 6;
-    public static final int IDX_rw_rwnorm = 7;
-    public static final int IDX_rtosa_trans = 8;
-    public static final int IDX_rtosa_rpath = 9;
+    private static final int IDX_rtosa_aann = 0;
+    private static final int IDX_rtosa_rw = 1;
+    private static final int IDX_rw_iop = 2;
+    private static final int IDX_iop_rw = 3;
+    private static final int IDX_rw_kd = 4;
+    private static final int IDX_iop_unciop = 5;
+    private static final int IDX_iop_uncsumiop_unckd = 6;
+    private static final int IDX_rw_rwnorm = 7;
+    private static final int IDX_rtosa_trans = 8;
+    private static final int IDX_rtosa_rpath = 9;
 
-
-    // @todo discuss with Carsten and Roland
-    // gas absorption constants for 12 MERIS channels
-//    static final double[] absorb_ozon = {
-//                8.2e-04, 2.82e-03, 2.076e-02,
-//                3.96e-02, 1.022e-01, 1.059e-01,
-//                5.313e-02, 3.552e-02, 1.895e-02,
-//                8.38e-03, 7.2e-04, 0.0
-//    };
     // gas absorption constants for 16 OLCI channels
-    static final double[] absorb_ozon = {
+    private static final double[] absorb_ozon = {
             0.0, 0.0002174, 0.0034448, 0.0205669,
             0.0400134, 0.105446, 0.1081787, 0.0501634,
             0.0410249, 0.0349671, 0.0187495, 0.0086322,
@@ -64,10 +55,7 @@ public class C2rccOlciAlgorithm {
     };
 
 
-    // @todo discuss with Carsten and Roland
-    // todo RD20151007 warnings durchsehen
-    // polynom coefficients for band708 H2O correction
-    static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
+    private static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
 
     static final int[] olciband16_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 21};
     static final int[] olciband21_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
@@ -94,26 +82,6 @@ public class C2rccOlciAlgorithm {
     static final int FLAG_INDEX_KDMIN_AT_MAX = 19;
     static final int FLAG_INDEX_VALID_PE = 31;
 
-    // @todo discuss with Carsten and Roland
-//    public static double[] DEFAULT_SOLAR_FLUX = new double[]{
-//                1724.724,
-//                1889.8026,
-//                1939.5339,
-//                1940.1365,
-//                1813.5457,
-//                1660.3589,
-//                1540.5198,
-//                1480.7161,
-//                1416.1177,
-//                1273.394,
-//                1261.8658,
-//                1184.0952,
-//                963.94995,
-//                935.23706,
-//                900.659,
-//                };
-
-    // @todo discuss with Carsten and Roland
     // values from: https://odnature.naturalsciences.be/downloads/publications/129ruddick_esa_sp734_withheader.pdf
     public static float[] DEFAULT_OLCI_WAVELENGTH = new float[]{
       /*  1 */   400f,  //new
@@ -139,24 +107,19 @@ public class C2rccOlciAlgorithm {
       /* 21 */   1020f // new
     };
 
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_aann; // Rtosa -> Rtosa' 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rpath; //Rtosa -> Rpath 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_trans; // Rtosa -> transd, transu 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_rw; // IOPs(5) -> Rw' (10 bands)
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_kd; // Rw (10 bands) -> kd489, kdmin
-    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_unciop; // IOPs (5) -> uncertainties of IOPs (5)
-    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_uncsumiop_unckd; // IOPs (5) -> unc_adg, unc_atot, unc_btot, unc_kd489, unc_kdmin
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_rwnorm; // Rw (10) -> Rwn (10)
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_aann; // Rtosa -> Rtosa' 12 bands
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rpath; //Rtosa -> Rpath 12 bands
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_trans; // Rtosa -> transd, transu 12 bands
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_iop_rw; // IOPs(5) -> Rw' (10 bands)
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_rw_kd; // Rw (10 bands) -> kd489, kdmin
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_iop_unciop; // IOPs (5) -> uncertainties of IOPs (5)
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_iop_uncsumiop_unckd; // IOPs (5) -> unc_adg, unc_atot, unc_btot, unc_kd489, unc_kdmin
+    private final ThreadLocal<NNffbpAlphaTabFast> nn_rw_rwnorm; // Rw (10) -> Rwn (10)
     private final ArrayList<String> nnNames;
-    double salinity = 35.0;
-    double temperature = 15.0;
-
-    // @todo discuss with Carsten and Roland
-    // (5) thresholds for flags
-//    double[] thresh_rtosaaaNNrat = {0.98, 1.05};  // threshold for out of scope flag Rtosa has to be adjusted
-//    double[] thresh_rwslope = {0.95, 1.05};    // threshold for out of scope flag Rw has to be adjusted
+    private double salinity = 35.0;
+    private double temperature = 15.0;
 
     // (5) thresholds for flags
     private double log_threshfak_oor = 0.02; // == ~1.02, for log variables
