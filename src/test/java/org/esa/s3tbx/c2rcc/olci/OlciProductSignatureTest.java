@@ -23,15 +23,15 @@ public class OlciProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_" + 1, "rhow_" + 2, "rhow_" + 3, "rhow_" + 4, "rhow_" + 5,
             "rhow_" + 6, "rhow_" + 7, "rhow_" + 8, "rhow_" + 9, "rhow_" + 10,
-            "rhow_" + 12, "rhow_" + 16, "rhow_" + 17, "rhow_" + 18, "rhow_" + 21};
+            "rhow_" + 11, "rhow_" + 12, "rhow_" + 16, "rhow_" + 17, "rhow_" + 18, "rhow_" + 21};
     private static final String[] EXPECTED_RRS_BANDS = {
             "rrs_" + 1, "rrs_" + 2, "rrs_" + 3, "rrs_" + 4, "rrs_" + 5,
             "rrs_" + 6, "rrs_" + 7, "rrs_" + 8, "rrs_" + 9, "rrs_" + 10,
-            "rrs_" + 12, "rrs_" + 16, "rrs_" + 17, "rrs_" + 18, "rrs_" + 21};
+            "rrs_" + 12, "rrs_" + 12, "rrs_" + 16, "rrs_" + 17, "rrs_" + 18, "rrs_" + 21};
     private static final String[] EXPECTED_NORM_REFLEC_BANDS = {
             "rhown_" + 1, "rhown_" + 2, "rhown_" + 3, "rhown_" + 4, "rhown_" + 5,
             "rhown_" + 6, "rhown_" + 7, "rhown_" + 8, "rhown_" + 9, "rhown_" + 10,
-            "rhown_" + 12, "rhown_" + 16, "rhown_" + 17, "rhown_" + 18, "rhown_" + 21};
+            "rhown_" + 11, "rhown_" + 12, "rhown_" + 16, "rhown_" + 17, "rhown_" + 18, "rhown_" + 21};
     private static final String EXPECTED_IOP_APIG = "iop_apig";
     private static final String EXPECTED_IOP_ADET = "iop_adet";
     private static final String EXPECTED_IOP_AGELB = "iop_agelb";
@@ -53,11 +53,11 @@ public class OlciProductSignatureTest {
     private static final String[] EXPECTED_RTOSA_GC_BANDS = {
             "rtosa_gc_" + 1, "rtosa_gc_" + 2, "rtosa_gc_" + 3, "rtosa_gc_" + 4, "rtosa_gc_" + 5,
             "rtosa_gc_" + 6, "rtosa_gc_" + 7, "rtosa_gc_" + 8, "rtosa_gc_" + 9, "rtosa_gc_" + 10,
-            "rtosa_gc_" + 12, "rtosa_gc_" + 16, "rtosa_gc_" + 17, "rtosa_gc_" + 18, "rtosa_gc_" + 21};
+            "rtosa_gc_" + 11, "rtosa_gc_" + 12, "rtosa_gc_" + 16, "rtosa_gc_" + 17, "rtosa_gc_" + 18, "rtosa_gc_" + 21};
     private static final String[] EXPECTED_RTOSA_GCAANN_BANDS = {
             "rtosagc_aann_" + 1, "rtosagc_aann_" + 2, "rtosagc_aann_" + 3, "rtosagc_aann_" + 4, "rtosagc_aann_" + 5,
             "rtosagc_aann_" + 6, "rtosagc_aann_" + 7, "rtosagc_aann_" + 8, "rtosagc_aann_" + 9, "rtosagc_aann_" + 10,
-            "rtosagc_aann_" + 12, "rtosagc_aann_" + 16, "rtosagc_aann_" + 17, "rtosagc_aann_" + 18, "rtosagc_aann_" + 21};
+            "rtosagc_aann_" + 11, "rtosagc_aann_" + 12, "rtosagc_aann_" + 16, "rtosagc_aann_" + 17, "rtosagc_aann_" + 18, "rtosagc_aann_" + 21};
     private static final String[] EXPECTED_RTOA_BANDS = {
             "rtoa_" + 1, "rtoa_" + 2, "rtoa_" + 3, "rtoa_" + 4, "rtoa_" + 5,
             "rtoa_" + 6, "rtoa_" + 7, "rtoa_" + 8, "rtoa_" + 9, "rtoa_" + 10,
@@ -66,15 +66,15 @@ public class OlciProductSignatureTest {
     private static final String[] EXPECTED_RPATH_BANDS = {
             "rpath_" + 1, "rpath_" + 2, "rpath_" + 3, "rpath_" + 4, "rpath_" + 5,
             "rpath_" + 6, "rpath_" + 7, "rpath_" + 8, "rpath_" + 9, "rpath_" + 10,
-            "rpath_" + 12, "rpath_" + 16, "rpath_" + 17, "rpath_" + 18, "rpath_" + 21};
+            "rpath_" + 11, "rpath_" + 12, "rpath_" + 16, "rpath_" + 17, "rpath_" + 18, "rpath_" + 21};
     private static final String[] EXPECTED_TDOWN_BANDS = {
             "tdown_" + 1, "tdown_" + 2, "tdown_" + 3, "tdown_" + 4, "tdown_" + 5,
             "tdown_" + 6, "tdown_" + 7, "tdown_" + 8, "tdown_" + 9, "tdown_" + 10,
-            "tdown_" + 12, "tdown_" + 16, "tdown_" + 17, "tdown_" + 18, "tdown_" + 21};
+            "tdown_" + 11, "tdown_" + 12, "tdown_" + 16, "tdown_" + 17, "tdown_" + 18, "tdown_" + 21};
     private static final String[] EXPECTED_TUP_BANDS = {
             "tup_" + 1, "tup_" + 2, "tup_" + 3, "tup_" + 4, "tup_" + 5,
             "tup_" + 6, "tup_" + 7, "tup_" + 8, "tup_" + 9, "tup_" + 10,
-            "tup_" + 12, "tup_" + 16, "tup_" + 17, "tup_" + 18, "tup_" + 21};
+            "tup_" + 11, "tup_" + 12, "tup_" + 16, "tup_" + 17, "tup_" + 18, "tup_" + 21};
 
     private static final String EXPECTED_QUALITY_FLAGS = "quality_flags";
     private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
