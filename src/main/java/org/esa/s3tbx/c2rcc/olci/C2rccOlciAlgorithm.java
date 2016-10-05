@@ -35,27 +35,41 @@ import static org.esa.s3tbx.ArrayMath.a_max;
  */
 public class C2rccOlciAlgorithm {
 
-    private static final int IDX_rtosa_aann = 0;
-    private static final int IDX_rtosa_rw = 1;
-    private static final int IDX_rw_iop = 2;
-    private static final int IDX_iop_rw = 3;
-    private static final int IDX_rw_kd = 4;
-    private static final int IDX_iop_unciop = 5;
-    private static final int IDX_iop_uncsumiop_unckd = 6;
-    private static final int IDX_rw_rwnorm = 7;
-    private static final int IDX_rtosa_trans = 8;
-    private static final int IDX_rtosa_rpath = 9;
-
-    // gas absorption constants for 16 OLCI channels
-    private static final double[] absorb_ozon = {
-            0.0, 0.0002174, 0.0034448, 0.0205669,
-            0.0400134, 0.105446, 0.1081787, 0.0501634,
-            0.0410249, 0.0349671, 0.0187495, 0.0086322,
-            0.0084989, 0.0018944, 0.0012369, 0.0000488
+    // values from: https://odnature.naturalsciences.be/downloads/publications/129ruddick_esa_sp734_withheader.pdf
+    public static float[] DEFAULT_OLCI_WAVELENGTH = new float[]{
+      /*  1 */   400f,  //new
+      /*  2 */   412.5f,
+      /*  3 */   442.5f,
+      /*  4 */   490f,
+      /*  5 */   510f,
+      /*  6 */   560f,
+      /*  7 */   620f,
+      /*  8 */   665f,
+      /*  9 */   673.75f, //new
+      /* 10 */   681.25f,
+      /* 11 */   708.75f,
+      /* 12 */   753.75f,
+      /* 13 */   761.25f,
+      /* 14 */   764.375f,
+      /* 15 */   767.5f,
+      /* 16 */   778.75f,
+      /* 17 */   865f,
+      /* 18 */   885f,
+      /* 19 */   900f,
+      /* 20 */   940f,
+      /* 21 */   1020f // new
     };
 
-
-    private static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
+    static final int IDX_rtosa_aann = 0;
+    static final int IDX_rtosa_rw = 1;
+    static final int IDX_rw_iop = 2;
+    static final int IDX_iop_rw = 3;
+    static final int IDX_rw_kd = 4;
+    static final int IDX_iop_unciop = 5;
+    static final int IDX_iop_uncsumiop_unckd = 6;
+    static final int IDX_rw_rwnorm = 7;
+    static final int IDX_rtosa_trans = 8;
+    static final int IDX_rtosa_rpath = 9;
 
     static final int[] olciband16_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 21};
     static final int[] olciband21_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
@@ -82,30 +96,16 @@ public class C2rccOlciAlgorithm {
     static final int FLAG_INDEX_KDMIN_AT_MAX = 19;
     static final int FLAG_INDEX_VALID_PE = 31;
 
-    // values from: https://odnature.naturalsciences.be/downloads/publications/129ruddick_esa_sp734_withheader.pdf
-    public static float[] DEFAULT_OLCI_WAVELENGTH = new float[]{
-      /*  1 */   400f,  //new
-      /*  2 */   412.5f,
-      /*  3 */   442.5f,
-      /*  4 */   490f,
-      /*  5 */   510f,
-      /*  6 */   560f,
-      /*  7 */   620f,
-      /*  8 */   665f,
-      /*  9 */   673.75f, //new
-      /* 10 */   681.25f,
-      /* 11 */   708.75f,
-      /* 12 */   753.75f,
-      /* 13 */   761.25f,
-      /* 14 */   764.375f,
-      /* 15 */   767.5f,
-      /* 16 */   778.75f,
-      /* 17 */   865f,
-      /* 18 */   885f,
-      /* 19 */   900f,
-      /* 20 */   940f,
-      /* 21 */   1020f // new
+    // gas absorption constants for 16 OLCI channels
+    private static final double[] absorb_ozon = {
+            0.0, 0.0002174, 0.0034448, 0.0205669,
+            0.0400134, 0.105446, 0.1081787, 0.0501634,
+            0.0410249, 0.0349671, 0.0187495, 0.0086322,
+            0.0084989, 0.0018944, 0.0012369, 0.0000488
     };
+
+
+    private static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
 
     private final ThreadLocal<NNffbpAlphaTabFast> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
     private final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands
