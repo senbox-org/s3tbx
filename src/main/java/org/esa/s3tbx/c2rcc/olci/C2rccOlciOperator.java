@@ -161,7 +161,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     @SourceProduct(description = "A second source product which is congruent to the L1b source product but contains cloud flags. " +
             "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
-            "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN && !$cloudProduct.l2_flags.CLOUD' ",
+            "containing source product. Expression example: '!quality_flags.invalid && !quality_flags.land && !$cloudProduct.l2_flags.CLOUD' ",
             optional = true,
             label = "Product with cloud flag")
     private Product cloudProduct;
