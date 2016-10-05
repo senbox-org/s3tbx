@@ -976,7 +976,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
         try {
             final String[] nnFilePaths;
-            final boolean loadFromResources = alternativeNNPath == null || alternativeNNPath.trim().length() == 0;
+            final boolean loadFromResources = StringUtils.isNullOrEmpty(alternativeNNPath);
             if (loadFromResources) {
                 if (availableNetSets[0].equalsIgnoreCase(netSet)) {
                     nnFilePaths = c2rccNNResourcePaths;

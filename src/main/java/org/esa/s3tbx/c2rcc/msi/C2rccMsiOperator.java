@@ -943,7 +943,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
         try {
             final String[] nnFilePaths;
-            final boolean loadFromResources = alternativeNNPath == null || alternativeNNPath.trim().length() == 0;
+            final boolean loadFromResources = StringUtils.isNullOrEmpty(alternativeNNPath);
             if (loadFromResources) {
                 nnFilePaths = c2rccNNResourcePaths;
             } else {
