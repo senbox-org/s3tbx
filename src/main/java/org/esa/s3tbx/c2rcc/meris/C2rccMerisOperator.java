@@ -102,14 +102,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private static final int IOP_BPART_IX = SINGLE_IX + 5;
     private static final int IOP_BWIT_IX = SINGLE_IX + 6;
 
-    //    public static final int IOP_ADG_IX = SINGLE_IX + 7;  // virtual band
-//    public static final int IOP_ATOT_IX = SINGLE_IX + 8;  // virtual band
-//    public static final int IOP_BTOT_IX = SINGLE_IX + 9;  // virtual band
     private static final int KD489_IX = SINGLE_IX + 7;
     private static final int KDMIN_IX = SINGLE_IX + 8;
-//    public static final int KD_Z90MAX_IX = SINGLE_IX + 12;  // virtual band
-//    public static final int CONC_CHL_IX = SINGLE_IX + 13;  // virtual band
-//    public static final int CONC_TSM_IX = SINGLE_IX + 14;  // virtual band
 
     private static final int UNC_APIG_IX = SINGLE_IX + 9;
     private static final int UNC_ADET_IX = SINGLE_IX + 10;
@@ -119,11 +113,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private static final int UNC_ADG_IX = SINGLE_IX + 14;
     private static final int UNC_ATOT_IX = SINGLE_IX + 15;
     private static final int UNC_BTOT_IX = SINGLE_IX + 16;
-    //    public static final int UNC_TSM_IX = SINGLE_IX + 24;  // virtual band
-//    public static final int UNC_CHL_IX = SINGLE_IX + 23;  // virtual band
     private static final int UNC_KD489_IX = SINGLE_IX + 17;
     private static final int UNC_KDMIN_IX = SINGLE_IX + 18;
-//    public static final int UNC_Z90MAX_IX = SINGLE_IX + 27;  // virtual band
 
     private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
@@ -140,7 +131,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             "rtosa_rpath"
     };
 
-    static final String[] c2rccNNResourcePaths = new String[10];
     static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
     static final String RASTER_NAME_OZONE = "ozone";
     static final String RASTER_NAME_ATM_PRESS = "atm_press";
@@ -151,6 +141,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     static final String RASTER_NAME_VIEW_ZENITH = "view_zenith";
     static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth";
 
+    static final String[] c2rccNNResourcePaths = new String[10];
     static {
         c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
         c2rccNNResourcePaths[IDX_rtosa_rw] = "meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net";
@@ -164,8 +155,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         c2rccNNResourcePaths[IDX_rtosa_rpath] = "meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net";
     }
 
-    private static final String[] c2xNNResourcePaths = new String[10];
-
+    static final String[] c2xNNResourcePaths = new String[10];
     static {
         c2xNNResourcePaths[IDX_rtosa_aann] = "meris/c2x/nn4snap_meris_hitsm_20151128/rtosa_aann/31x7x31_1244.3.net";
         c2xNNResourcePaths[IDX_rtosa_rw] = "meris/c2x/nn4snap_meris_hitsm_20151128/rtosa_rw/17x27x27x17_677356.6.net";
