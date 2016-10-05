@@ -142,6 +142,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth";
 
     static final String[] c2rccNNResourcePaths = new String[10];
+
     static {
         c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
         c2rccNNResourcePaths[IDX_rtosa_rw] = "meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net";
@@ -156,6 +157,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     }
 
     static final String[] c2xNNResourcePaths = new String[10];
+
     static {
         c2xNNResourcePaths[IDX_rtosa_aann] = "meris/c2x/nn4snap_meris_hitsm_20151128/rtosa_aann/31x7x31_1244.3.net";
         c2xNNResourcePaths[IDX_rtosa_rw] = "meris/c2x/nn4snap_meris_hitsm_20151128/rtosa_rw/17x27x27x17_677356.6.net";
@@ -432,7 +434,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
         boolean samplesValid = C2rccCommons.areSamplesValid(sourceSamples, x, y);
-        if(!samplesValid) {
+        if (!samplesValid) {
             setInvalid(targetSamples);
             return;
         }
@@ -1024,39 +1026,21 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     }
 
     public static boolean isValidInput(Product product) {
-        for (int i = 0; i < BAND_COUNT; i++) {
-            if (!product.containsBand("radiance_" + (i + 1))) {
+        for (int i = 1; i <= BAND_COUNT; i++) {
+            if (!product.containsBand("radiance_" + i)) {
                 return false;
             }
         }
-        if (!product.containsBand("l1_flags")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("dem_alt")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("sun_zenith")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("sun_azimuth")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("view_zenith")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode("view_azimuth")) {
-            return false;
-        }
-        if (!product.containsRasterDataNode(RASTER_NAME_ATM_PRESS)) {
-            return false;
-        }
-        if (!product.containsRasterDataNode(RASTER_NAME_OZONE)) {
-            return false;
-        }
-        return true;
+        return product.containsBand(RASTER_NAME_L1_FLAGS) &&
+                product.containsRasterDataNode(RASTER_NAME_DEM_ALT) &&
+                product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH) &&
+                product.containsRasterDataNode(RASTER_NAME_SUN_AZIMUTH) &&
+                product.containsRasterDataNode(RASTER_NAME_VIEW_ZENITH) &&
+                product.containsRasterDataNode(RASTER_NAME_VIEW_AZIMUTH) &&
+                product.containsRasterDataNode(RASTER_NAME_ATM_PRESS) &&
+                product.containsRasterDataNode(RASTER_NAME_OZONE);
     }
 
-    // todo (mp/20160526) - move to common base class
     private void initAtmosphericAuxdata() {
         AtmosphericAuxdataBuilder auxdataBuilder = new AtmosphericAuxdataBuilder();
         auxdataBuilder.setOzone(ozone);
