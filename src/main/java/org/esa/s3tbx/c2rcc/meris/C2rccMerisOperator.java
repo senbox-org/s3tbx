@@ -79,7 +79,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
 
     // MERIS targets
-
     private static final int BC_12 = merband12_ix.length; // Band count 12
     private static final int BC_15 = merband15_ix.length; // Band count 15
     private static final int SINGLE_IX = BC_15 + 7 * BC_12;
