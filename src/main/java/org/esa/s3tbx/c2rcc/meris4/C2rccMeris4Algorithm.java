@@ -255,9 +255,9 @@ public class C2rccMeris4Algorithm {
                                double atm_press,
                                double ozone) {
         // todo (mp/20161006) - necessary for MERIS 4th reprocessing? It was for OLCI
-//        if (view_azi < 0) {
-//            view_azi = 360 + view_azi; // view_azi is negative and therefore it will be subtracted from 360
-//        }
+        if (view_azi < 0) {
+            view_azi = 360 + view_azi; // view_azi is negative and therefore it will be subtracted from 360
+        }
 
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
