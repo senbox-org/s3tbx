@@ -1,7 +1,7 @@
 package org.esa.s3tbx.c2rcc;
 
 import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
-import org.esa.s3tbx.c2rcc.meris.C2rccMeris4Operator;
+import org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Operator;
 import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
 import org.esa.s3tbx.c2rcc.msi.C2rccMsiOperator;
 import org.esa.s3tbx.c2rcc.olci.C2rccOlciOperator;

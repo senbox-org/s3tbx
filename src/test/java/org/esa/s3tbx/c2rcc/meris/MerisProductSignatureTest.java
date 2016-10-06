@@ -108,7 +108,7 @@ public class MerisProductSignatureTest {
         C2rccMerisOperator operator = createDefaultOperator();
         operator.setOutputRtoa(false);
         operator.setOutputUncertainties(false);
-        operator.setOutputAcReflec(false);
+        operator.setOutputAcReflectance(false);
         operator.setOutputRhown(false);
         operator.setOutputKd(false);
         Product targetProduct = operator.getTargetProduct();
@@ -122,7 +122,7 @@ public class MerisProductSignatureTest {
 
         C2rccMerisOperator operator = createDefaultOperator();
         operator.setOutputRtosa(true);
-        operator.setOutputRtosaGcAann(true);
+        operator.setOutputRtoaGcAann(true);
         Product targetProduct = operator.getTargetProduct();
 
         assertDefaultBands(targetProduct, false);

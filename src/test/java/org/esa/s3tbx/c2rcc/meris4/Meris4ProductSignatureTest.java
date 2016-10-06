@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc.meris;
+package org.esa.s3tbx.c2rcc.meris4;
 
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
@@ -228,7 +228,7 @@ public class Meris4ProductSignatureTest {
 
     private Product createMeris4TestProduct() throws FactoryException, TransformException {
         Product product = new Product("test-olci", "t", 1, 1);
-        for (int i = 1; i <= C2rccCommonMerisOp.BAND_COUNT; i++) {
+        for (int i = 1; i <= C2rccMeris4Operator.BAND_COUNT; i++) {
             String expression = String.valueOf(i);
             product.addBand(String.format("M%02d_radiance", i), expression);
             product.addBand("solar_flux_band_" + i, expression);
@@ -244,8 +244,8 @@ public class Meris4ProductSignatureTest {
         product.addBand(C2rccMeris4Operator.RASTER_NAME_SUN_ZENITH, "42");
         product.addBand(C2rccMeris4Operator.RASTER_NAME_VIEWING_AZIMUTH, "42");
         product.addBand(C2rccMeris4Operator.RASTER_NAME_VIEWING_ZENITH, "42");
-        product.addBand(C2rccCommonMerisOp.RASTER_NAME_SEA_LEVEL_PRESSURE, "999");
-        product.addBand(C2rccCommonMerisOp.RASTER_NAME_TOTAL_OZONE, "333");
+        product.addBand(C2rccMeris4Operator.RASTER_NAME_SEA_LEVEL_PRESSURE, "999");
+        product.addBand(C2rccMeris4Operator.RASTER_NAME_TOTAL_OZONE, "333");
         Band flagBand = product.addBand(C2rccMeris4Operator.RASTER_NAME_QUALITY_FLAGS, ProductData.TYPE_INT8);
         FlagCoding l1FlagsCoding = new FlagCoding(C2rccMeris4Operator.RASTER_NAME_QUALITY_FLAGS);
         product.getFlagCodingGroup().add(l1FlagsCoding);

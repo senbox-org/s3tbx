@@ -1,10 +1,5 @@
 # s3tbx-c2rcc
-This is the source distribution of the Case-2 Regional / Coast Colour (C2RCC) Atmospheric Correction (AC) and Inherent Optical Properties (IOP) Processor for OLCI, S2-MSI, MERIS, MODIS and the SeaWiFS Level 1b radiance products.
-
-> **NOTE**
-> The development and validation of the processor is not yet finished.  It is not yet intended for productive use. 
-> We haven't made it publicly available because the results are not fully verified and validated, although the first results look promising.
-> If you want to try the C2RCC processor you are welcome and we like to hear your findings. You can send us a brief report at c2rcc@brockmann-consult.de or you can use the [SNAP forum](http://forum.step.esa.int) 
+This is the source distribution of the Case-2 Regional / Coast Colour (C2RCC) Atmospheric Correction (AC) and Inherent Optical Properties (IOP) Processor for MERIS, MODIS and the SeaWiFS Level 1b radiance products.
 
 How to build
 ------------
