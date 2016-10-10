@@ -122,7 +122,7 @@ public class MerisProductSignatureTest {
 
         C2rccMerisOperator operator = createDefaultOperator();
         operator.setOutputRtosa(true);
-        operator.setOutputRtoaGcAann(true);
+        operator.setOutputRtosaGcAann(true);
         Product targetProduct = operator.getTargetProduct();
 
         assertDefaultBands(targetProduct, false);
@@ -244,6 +244,9 @@ public class MerisProductSignatureTest {
         product.addBand(C2rccMerisOperator.RASTER_NAME_VIEW_ZENITH, "42");
         Band flagBand = product.addBand(C2rccMerisOperator.RASTER_NAME_L1_FLAGS, ProductData.TYPE_INT8);
         FlagCoding l1FlagsCoding = new FlagCoding(C2rccMerisOperator.RASTER_NAME_L1_FLAGS);
+        l1FlagsCoding.addFlag("INVALID", 1, "description");
+        l1FlagsCoding.addFlag("LAND_OCEAN", 2, "description");
+
         product.getFlagCodingGroup().add(l1FlagsCoding);
         flagBand.setSampleCoding(l1FlagsCoding);
 
