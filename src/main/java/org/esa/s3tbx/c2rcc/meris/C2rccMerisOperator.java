@@ -408,7 +408,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         this.outputRtoa = outputRtoa;
     }
 
-    public void setOutputRtoaGcAann(boolean outputRtoaGcAann) {
+    public void setOutputRtosaGcAann(boolean outputRtoaGcAann) {
         this.outputRtosaGcAann = outputRtoaGcAann;
     }
 
