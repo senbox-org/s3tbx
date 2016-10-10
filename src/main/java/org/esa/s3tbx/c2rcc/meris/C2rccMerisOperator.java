@@ -19,6 +19,7 @@ import org.esa.snap.core.datamodel.ProductNodeEvent;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
 import org.esa.snap.core.datamodel.TimeCoding;
+import org.esa.snap.core.dataop.barithm.BandArithmetic;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -30,6 +31,7 @@ import org.esa.snap.core.gpf.pointop.Sample;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
+import org.esa.snap.core.jexp.ParseException;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
@@ -968,7 +970,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         for (int i = 1; i <= BAND_COUNT; i++) {
             assertSourceBand(SOURCE_RADIANCE_NAME_PREFIX + i);
         }
-        assertSourceBand(RASTER_NAME_L1_FLAGS);
+
+        assertVpeIsApplicable();
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
@@ -1022,6 +1025,18 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         }
         timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
+    }
+
+    private void assertVpeIsApplicable() {
+        try {
+            if (cloudProduct != null) {
+                BandArithmetic.parseExpression(validPixelExpression, new Product[]{sourceProduct, cloudProduct}, 0);
+            } else {
+                BandArithmetic.parseExpression(validPixelExpression, sourceProduct);
+            }
+        } catch (ParseException e) {
+            throw new OperatorException("Valid-pixel expression is not applicable", e);
+        }
     }
 
     public static boolean isValidInput(Product product) {
