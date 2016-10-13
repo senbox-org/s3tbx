@@ -19,12 +19,12 @@
     <parent>
         <groupId>org.esa.s3tbx</groupId>
         <artifactId>s3tbx</artifactId>
-        <version>4.0.1</version>
+        <version>4.0.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.esa.snap.seadas</groupId>
     <artifactId>seadas-reader-ui</artifactId>
-    <version>1.5.7</version>
+    <version>1.5.8-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>NASA OBPG Ocean Color UI</name>
