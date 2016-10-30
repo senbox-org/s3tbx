@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Marco Peters
  */
-public class Landsa8ProductSignatureTest {
+public class Landsat8ProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_" + 1, "rhow_" + 2, "rhow_" + 3, "rhow_" + 4, "rhow_" + 5};
     private static final String[] EXPECTED_RRS_BANDS = {
