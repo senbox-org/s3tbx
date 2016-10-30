@@ -5,7 +5,6 @@ import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
-import org.esa.s3tbx.c2rcc.util.SolarFluxLazyLookup;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -39,7 +38,7 @@ import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -103,8 +102,8 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     */
 
     // Landsat sources
-    private static final String[] EXPECTED_BANDNAMES = new String[]{"coastal_aerosol", "blue", "green", "red", "near_infrared"};
-    private static final int L8_BAND_COUNT = EXPECTED_BANDNAMES.length;
+    static final String[] EXPECTED_BANDNAMES = new String[]{"coastal_aerosol", "blue", "green", "red", "near_infrared"};
+    static final int L8_BAND_COUNT = EXPECTED_BANDNAMES.length;
 
     private static final int VALID_PIXEL_IX = L8_BAND_COUNT + 1;
 
@@ -206,7 +205,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            defaultValue = "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
+            defaultValue = "water_confidence_mid || water_confidence_high",
             description = "Defines the pixels which are valid for processing",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
@@ -974,7 +973,6 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         reflectance_offset = new double[L8_BAND_COUNT];
         reflectance_scale = new double[L8_BAND_COUNT];
         for (int i = 0; i < L8_BAND_COUNT; i++) {
-            Band sourceBand = sourceProduct.getBand(EXPECTED_BANDNAMES[i]);
             reflectance_offset[i] = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_ADD_BAND_%d", i + 1));
             reflectance_scale[i] = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_MULT_BAND_%d", i + 1));
         }
