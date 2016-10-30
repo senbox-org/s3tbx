@@ -90,7 +90,7 @@ import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.Result;
  * Computes AC-reflectances and IOPs from MERIS L1b data products using
  * an neural-network approach.
  */
-@OperatorMetadata(alias = "c2rcc.lands1t8", version = "0.14",
+@OperatorMetadata(alias = "c2rcc.landsat8", version = "0.14",
         authors = "Roland Doerffer, Marco Peters (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
