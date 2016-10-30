@@ -18,7 +18,12 @@ import org.esa.snap.core.datamodel.ProductNode;
 import org.esa.snap.core.datamodel.ProductNodeEvent;
 import org.esa.snap.core.datamodel.ProductNodeListener;
 import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TimeCoding;
+import org.esa.snap.core.dataop.dem.ElevationModel;
+import org.esa.snap.core.dataop.dem.ElevationModelDescriptor;
+import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
+import org.esa.snap.core.dataop.resamp.Resampling;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -37,14 +42,10 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Calendar;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
-import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.DEFAULT_MERIS_WAVELENGTH;
-import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.DEFAULT_SOLAR_FLUX;
+import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.DEFAULT_WAVELENGTH;
 import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.FLAG_INDEX_ADET_AT_MAX;
 import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.FLAG_INDEX_ADET_AT_MIN;
 import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.FLAG_INDEX_AGELB_AT_MAX;
@@ -77,8 +78,6 @@ import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.IDX_rw_iop;
 import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.IDX_rw_kd;
 import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.IDX_rw_rwnorm;
 import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.Result;
-import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.merband12_ix;
-import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.merband15_ix;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2RCC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
@@ -91,11 +90,9 @@ import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.merband15_ix;
  * <p/>
  * Computes AC-reflectances and IOPs from MERIS L1b data products using
  * an neural-network approach.
- *
- * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.meris", version = "0.14",
-        authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
+@OperatorMetadata(alias = "c2rcc.lands1t8", version = "0.14",
+        authors = "Roland Doerffer, Marco Peters (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products.")
@@ -105,56 +102,47 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         see https://senbox.atlassian.net/browse/SNAP-395
     */
 
-    // MERIS sources
-    static final int BAND_COUNT = 15;
-    private static final int DEM_ALT_IX = BAND_COUNT;
-    private static final int SUN_ZEN_IX = BAND_COUNT + 1;
-    private static final int SUN_AZI_IX = BAND_COUNT + 2;
-    private static final int VIEW_ZEN_IX = BAND_COUNT + 3;
-    private static final int VIEW_AZI_IX = BAND_COUNT + 4;
-    private static final int VALID_PIXEL_IX = BAND_COUNT + 5;
+    // Landsat sources
+    private static final String[] EXPECTED_BANDNAMES = new String[]{"coastal_aerosol", "blue", "green", "red", "near_infrared"};
+    private static final int L8_BAND_COUNT = EXPECTED_BANDNAMES.length;
 
-
-    // MERIS targets
-    private static final int BC_12 = merband12_ix.length; // Band count 12
-    private static final int BC_15 = merband15_ix.length; // Band count 15
-    private static final int SINGLE_IX = BC_15 + 7 * BC_12;
+    private static final int VALID_PIXEL_IX = L8_BAND_COUNT + 1;
 
     private static final int RTOA_IX = 0;
-    private static final int RTOSA_IX = BC_15;
-    private static final int RTOSA_AANN_IX = BC_15 + BC_12;
-    private static final int RPATH_IX = BC_15 + 2 * BC_12;
-    private static final int TDOWN_IX = BC_15 + 3 * BC_12;
-    private static final int TUP_IX = BC_15 + 4 * BC_12;
-    private static final int AC_REFLEC_IX = BC_15 + 5 * BC_12;
-    private static final int RHOWN_IX = BC_15 + 6 * BC_12;
+    private static final int RTOSA_IX = L8_BAND_COUNT;
+    private static final int RTOSA_AANN_IX = 2 * L8_BAND_COUNT;
+    private static final int RPATH_IX = 3 * L8_BAND_COUNT;
+    private static final int TDOWN_IX = 4 * L8_BAND_COUNT;
+    private static final int TUP_IX = 5 * L8_BAND_COUNT;
+    private static final int AC_REFLEC_IX = 6 * L8_BAND_COUNT;
+    private static final int RHOWN_IX = 7 * L8_BAND_COUNT;
 
-    private static final int OOS_RTOSA_IX = SINGLE_IX;
-    private static final int OOS_AC_REFLEC_IX = SINGLE_IX + 1;
+    private static final int OOS_RTOSA_IX = 8 * L8_BAND_COUNT;
+    private static final int OOS_AC_REFLEC_IX = OOS_RTOSA_IX + 1;
 
-    private static final int IOP_APIG_IX = SINGLE_IX + 2;
-    private static final int IOP_ADET_IX = SINGLE_IX + 3;
-    private static final int IOP_AGELB_IX = SINGLE_IX + 4;
-    private static final int IOP_BPART_IX = SINGLE_IX + 5;
-    private static final int IOP_BWIT_IX = SINGLE_IX + 6;
+    private static final int IOP_APIG_IX = OOS_RTOSA_IX + 2;
+    private static final int IOP_ADET_IX = OOS_RTOSA_IX + 3;
+    private static final int IOP_AGELB_IX = OOS_RTOSA_IX + 4;
+    private static final int IOP_BPART_IX = OOS_RTOSA_IX + 5;
+    private static final int IOP_BWIT_IX = OOS_RTOSA_IX + 6;
 
-    private static final int KD489_IX = SINGLE_IX + 7;
-    private static final int KDMIN_IX = SINGLE_IX + 8;
+    private static final int KD489_IX = OOS_RTOSA_IX + 7;
+    private static final int KDMIN_IX = OOS_RTOSA_IX + 8;
 
-    private static final int UNC_APIG_IX = SINGLE_IX + 9;
-    private static final int UNC_ADET_IX = SINGLE_IX + 10;
-    private static final int UNC_AGELB_IX = SINGLE_IX + 11;
-    private static final int UNC_BPART_IX = SINGLE_IX + 12;
-    private static final int UNC_BWIT_IX = SINGLE_IX + 13;
-    private static final int UNC_ADG_IX = SINGLE_IX + 14;
-    private static final int UNC_ATOT_IX = SINGLE_IX + 15;
-    private static final int UNC_BTOT_IX = SINGLE_IX + 16;
-    private static final int UNC_KD489_IX = SINGLE_IX + 17;
-    private static final int UNC_KDMIN_IX = SINGLE_IX + 18;
+    private static final int UNC_APIG_IX = OOS_RTOSA_IX + 9;
+    private static final int UNC_ADET_IX = OOS_RTOSA_IX + 10;
+    private static final int UNC_AGELB_IX = OOS_RTOSA_IX + 11;
+    private static final int UNC_BPART_IX = OOS_RTOSA_IX + 12;
+    private static final int UNC_BWIT_IX = OOS_RTOSA_IX + 13;
+    private static final int UNC_ADG_IX = OOS_RTOSA_IX + 14;
+    private static final int UNC_ATOT_IX = OOS_RTOSA_IX + 15;
+    private static final int UNC_BTOT_IX = OOS_RTOSA_IX + 16;
+    private static final int UNC_KD489_IX = OOS_RTOSA_IX + 17;
+    private static final int UNC_KDMIN_IX = OOS_RTOSA_IX + 18;
 
-    private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
+    private static final int C2RCC_FLAGS_IX = OOS_RTOSA_IX + 19;
 
-    static final String[] alternativeNetDirNames = new String[]{
+    private static final String[] alternativeNetDirNames = new String[]{
             "rtosa_aann",
             "rtosa_rw",
             "rw_iop",
@@ -167,23 +155,13 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             "rtosa_rpath"
     };
 
-    static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
-    static final String RASTER_NAME_OZONE = "ozone";
-    static final String RASTER_NAME_ATM_PRESS = "atm_press";
-    static final String RASTER_NAME_L1_FLAGS = "l1_flags";
-    static final String RASTER_NAME_DEM_ALT = "dem_alt";
-    static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
-    static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
-    static final String RASTER_NAME_VIEW_ZENITH = "view_zenith";
-    static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth";
-
-    static final String[] c2rccNNResourcePaths = new String[10];
+    private static final String[] c2rccNNResourcePaths = new String[10];
 
     static {
         c2rccNNResourcePaths[IDX_iop_rw] = "landsat8/landsat8_netze_20160818/iop_rw/17x97x47_79.9.net";
         c2rccNNResourcePaths[IDX_iop_unciop] = "landsat8/landsat8_netze_20160818/iop_unciop/17x77x37_11486.7.net";
         c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "landsat8/landsat8_netze_20160818/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "landsat8/landsat8_netze_20160818/rtosa_aaNN/29x7x29_56.3.net";
+        c2rccNNResourcePaths[IDX_rtosa_aann] = "landsat8/landsat8_netze_20160818/rtosa_aann/29x7x29_56.3.net";
         c2rccNNResourcePaths[IDX_rtosa_rpath] = "landsat8/landsat8_netze_20160818/rtosa_rpath/31x77x57x37_2336.9.net";
         c2rccNNResourcePaths[IDX_rtosa_rw] = "landsat8/landsat8_netze_20160818/rtosa_rw/31x71x51x31_229436.1.net";
         c2rccNNResourcePaths[IDX_rtosa_trans] = "landsat8/landsat8_netze_20160818/rtosa_trans/29x75x55x35_28119.6.net";
@@ -192,8 +170,8 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         c2rccNNResourcePaths[IDX_rw_rwnorm] = "landsat8/landsat8_netze_20160818/rw_rwnorm/27x7x27_9.7.net";
     }
 
-    @SourceProduct(label = "MERIS L1b product",
-            description = "MERIS L1b source product.")
+    @SourceProduct(label = "Landsat 8 product",
+            description = "Landsat 8 source product.")
     private Product sourceProduct;
 
     @SourceProduct(description = "A second source product which is congruent to the L1b source product but contains cloud flags. " +
@@ -249,6 +227,9 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             description = "The value used as air pressure if not provided by auxiliary data")
     private double press;
 
+    @Parameter(defaultValue = "1000", unit = "m", interval = "(0, 8500)", label = "Elevation")
+    private double elevation;
+
     @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")
     private double TSMfakBpart;
 
@@ -273,7 +254,6 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             label = "Threshold for cloud flag on transmittance down @865")
     private double thresholdCloudTDown865;
 
-
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
             "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
     private String atmosphericAuxDataPath;
@@ -287,15 +267,6 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
-
-    @Parameter(defaultValue = "false",
-            description = "If 'false', use solar flux from source product")
-    private boolean useDefaultSolarFlux;
-
-    @Parameter(defaultValue = "true", description =
-            "If selected, the ECMWF auxiliary data (ozon, air pressure) of the source product is used",
-            label = "Use ECMWF aux data of source product")
-    private boolean useEcmwfAuxData;
 
     @Parameter(defaultValue = "true", label = "Output TOA reflectances")
     private boolean outputRtoa;
@@ -331,10 +302,14 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     private boolean outputUncertainties;
 
     private C2rccLandsat8Algorithm algorithm;
-    private SolarFluxLazyLookup solarFluxLazyLookup;
-    private double[] constantSolarFlux;
     private AtmosphericAuxdata atmosphericAuxdata;
     private TimeCoding timeCoding;
+    private double[] reflectance_offset;
+    private double[] reflectance_scale;
+    private double sunAzimuth;
+    private double sunZenith;
+    private GeometryAnglesBuilder geometryAnglesBuilder;
+    private ElevationModel elevationModel;
 
     @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
@@ -379,14 +354,6 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     @Override
     public void setPress(double press) {
         this.press = press;
-    }
-
-    public void setUseDefaultSolarFlux(boolean useDefaultSolarFlux) {
-        this.useDefaultSolarFlux = useDefaultSolarFlux;
-    }
-
-    public void setUseEcmwfAuxData(boolean useEcmwfAuxData) {
-        this.useEcmwfAuxData = useEcmwfAuxData;
     }
 
     @Override
@@ -452,41 +419,53 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             return;
         }
 
-        double[] radiances = new double[BAND_COUNT];
-        for (int i = 0; i < BAND_COUNT; i++) {
-            radiances[i] = sourceSamples[i].getDouble();
+        double[] reflectances = new double[L8_BAND_COUNT];
+        for (int i = 0; i < L8_BAND_COUNT; i++) {
+            Sample sample = sourceSamples[i];
+            double sourceValue = sample.getDouble();
+            RasterDataNode rasterNode = sample.getNode();
+            if (rasterNode.getDescription().contains("TOA Reflectance")) {
+                reflectances[i] = sourceValue;
+            } else {
+                double radianceOffset = rasterNode.getScalingOffset();
+                double radianceScaling = rasterNode.getScalingFactor();
+                reflectances[i] = toReflectances(sourceValue, radianceOffset, radianceScaling,
+                                                 reflectance_offset[i], reflectance_scale[i]);
+            }
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
         final double mjd = timeCoding.getMJD(pixelPos);
-        final double[] solflux;
-        if (useDefaultSolarFlux) {
-            ProductData.UTC utc = new ProductData.UTC(mjd);
-            Calendar calendar = utc.getAsCalendar();
-            final int doy = calendar.get(Calendar.DAY_OF_YEAR);
-            final int year = calendar.get(Calendar.YEAR);
-            solflux = solarFluxLazyLookup.getCorrectedFluxFor(doy, year);
-        } else {
-            solflux = constantSolarFlux;
-        }
 
         GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
         double lat = geoPos.getLat();
         double lon = geoPos.getLon();
         double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, lat, lon);
         double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, lat, lon);
+        final double altitude;
+        if (elevationModel != null) {
+            try {
+                altitude = elevationModel.getElevation(geoPos);
+            } catch (Exception e) {
+                throw new OperatorException("Unable to compute altitude.", e);
+            }
+        } else {
+            // in case elevationModel could not be initialised
+            altitude = elevation;
+        }
 
+        GeometryAngles geometryAngles = geometryAnglesBuilder.getGeometryAngles(x, lat);
         Result result = algorithm.processPixel(x, y, lat, lon,
-                                                                   radiances,
-                                                                   solflux,
-                                                                   sourceSamples[SUN_ZEN_IX].getDouble(),
-                                                                   sourceSamples[SUN_AZI_IX].getDouble(),
-                                                                   sourceSamples[VIEW_ZEN_IX].getDouble(),
-                                                                   sourceSamples[VIEW_AZI_IX].getDouble(),
-                                                                   sourceSamples[DEM_ALT_IX].getDouble(),
-                                                                   sourceSamples[VALID_PIXEL_IX].getBoolean(),
-                                                                   atmPress,
-                                                                   ozone);
+                                               reflectances,
+                                               new double[0],
+                                               sunZenith,
+                                               sunAzimuth,
+                                               geometryAngles.view_zenith,
+                                               geometryAngles.view_azimuth,
+                                               altitude,
+                                               sourceSamples[VALID_PIXEL_IX].getBoolean(),
+                                               atmPress,
+                                               ozone);
 
         if (outputRtoa) {
             for (int i = 0; i < result.r_toa.length; i++) {
@@ -566,16 +545,15 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         targetSamples[C2RCC_FLAGS_IX].set(result.flags);
     }
 
+    public GeometryAngles computeViewGeometry(double xb, double latitude) {
+        return geometryAnglesBuilder.getGeometryAngles(xb, latitude);
+    }
+
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
-        for (int i = 0; i < BAND_COUNT; i++) {
-            sc.defineSample(i, SOURCE_RADIANCE_NAME_PREFIX + (i + 1));
+        for (int i = 0; i < EXPECTED_BANDNAMES.length; i++) {
+            sc.defineSample(i, EXPECTED_BANDNAMES[i]);
         }
-        sc.defineSample(DEM_ALT_IX, RASTER_NAME_DEM_ALT);
-        sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH);
-        sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH);
-        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEW_ZENITH);
-        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEW_AZIMUTH);
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
@@ -588,54 +566,54 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     protected void configureTargetSamples(TargetSampleConfigurer tsc) throws OperatorException {
 
         if (outputRtoa) {
-            for (int i = 0; i < merband15_ix.length; i++) {
-                tsc.defineSample(RTOA_IX + i, "rtoa_" + merband15_ix[i]);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RTOA_IX + i, "rtoa_" + (i + 1));
             }
         }
 
         if (outputRtosaGc) {
-            for (int i = 0; i < merband12_ix.length; i++) {
-                tsc.defineSample(RTOSA_IX + i, "rtosa_gc_" + merband12_ix[i]);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RTOSA_IX + i, "rtosa_gc_" + (i + 1));
             }
         }
 
         if (outputRtosaGcAann) {
-            for (int i = 0; i < merband12_ix.length; i++) {
-                tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + merband12_ix[i]);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + (i + 1));
             }
         }
 
         if (outputRpath) {
-            for (int i = 0; i < merband12_ix.length; i++) {
-                tsc.defineSample(RPATH_IX + i, "rpath_" + merband12_ix[i]);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RPATH_IX + i, "rpath_" + (i + 1));
             }
         }
 
         if (outputTdown) {
-            for (int i = 0; i < merband12_ix.length; i++) {
-                tsc.defineSample(TDOWN_IX + i, "tdown_" + merband12_ix[i]);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(TDOWN_IX + i, "tdown_" + (i + 1));
             }
         }
 
         if (outputTup) {
-            for (int i = 0; i < merband12_ix.length; i++) {
-                tsc.defineSample(TUP_IX + i, "tup_" + merband12_ix[i]);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(TUP_IX + i, "tup_" + (i + 1));
             }
         }
 
         if (outputAcReflectance) {
-            for (int i = 0; i < merband12_ix.length; i++) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
                 if (outputAsRrs) {
-                    tsc.defineSample(AC_REFLEC_IX + i, "rrs_" + merband12_ix[i]);
+                    tsc.defineSample(AC_REFLEC_IX + i, "rrs_" + (i + 1));
                 } else {
-                    tsc.defineSample(AC_REFLEC_IX + i, "rhow_" + merband12_ix[i]);
+                    tsc.defineSample(AC_REFLEC_IX + i, "rhow_" + (i + 1));
                 }
             }
         }
 
         if (outputRhown) {
-            for (int i = 0; i < merband12_ix.length; i++) {
-                tsc.defineSample(RHOWN_IX + i, "rhown_" + merband12_ix[i]);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RHOWN_IX + i, "rhown_" + (i + 1));
             }
         }
 
@@ -691,66 +669,66 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         autoGrouping.append(":conc");
 
         if (outputRtoa) {
-            for (int i : merband15_ix) {
-                final Band band = addBand(targetProduct, "rtoa_" + i, "1", "Top-of-atmosphere reflectance");
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                final Band band = addBand(targetProduct, "rtoa_" + (i + 1), "1", "Top-of-atmosphere reflectance");
                 ensureSpectralProperties(band, i);
             }
             autoGrouping.append(":rtoa");
         }
         final String validPixelExpression = "c2rcc_flags.Valid_PE";
         if (outputRtosaGc) {
-            for (int bi : merband12_ix) {
-                Band band = addBand(targetProduct, "rtosa_gc_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, input to AC");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                Band band = addBand(targetProduct, "rtosa_gc_" + (i + 1), "1", "Gas corrected top-of-atmosphere reflectance, input to AC");
+                ensureSpectralProperties(band, i);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rtosa_gc");
         }
         if (outputRtosaGcAann) {
-            for (int bi : merband12_ix) {
-                Band band = addBand(targetProduct, "rtosagc_aann_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                Band band = addBand(targetProduct, "rtosagc_aann_" + (i + 1), "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
+                ensureSpectralProperties(band, i);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rtosagc_aann");
         }
 
         if (outputRpath) {
-            for (int bi : merband12_ix) {
-                Band band = addBand(targetProduct, "rpath_" + bi, "1", "Path-radiance reflectances");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                Band band = addBand(targetProduct, "rpath_" + (i + 1), "1", "Path-radiance reflectances");
+                ensureSpectralProperties(band, i);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rpath");
         }
 
         if (outputTdown) {
-            for (int bi : merband12_ix) {
-                Band band = addBand(targetProduct, "tdown_" + bi, "1", "Transmittance of downweling irradiance");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                Band band = addBand(targetProduct, "tdown_" + (i + 1), "1", "Transmittance of downweling irradiance");
+                ensureSpectralProperties(band, i);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":tdown");
         }
 
         if (outputTup) {
-            for (int bi : merband12_ix) {
-                Band band = addBand(targetProduct, "tup_" + bi, "1", "Transmittance of upweling irradiance");
-                ensureSpectralProperties(band, bi);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                Band band = addBand(targetProduct, "tup_" + (i + 1), "1", "Transmittance of upweling irradiance");
+                ensureSpectralProperties(band, i);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":tup");
         }
 
         if (outputAcReflectance) {
-            for (int index : merband12_ix) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
                 final Band band;
                 if (outputAsRrs) {
-                    band = addBand(targetProduct, "rrs_" + index, "sr^-1", "Atmospherically corrected Angular dependent remote sensing reflectances");
+                    band = addBand(targetProduct, "rrs_" + (i + 1), "sr^-1", "Atmospherically corrected Angular dependent remote sensing reflectances");
                 } else {
-                    band = addBand(targetProduct, "rhow_" + index, "1", "Atmospherically corrected Angular dependent water leaving reflectances");
+                    band = addBand(targetProduct, "rhow_" + (i + 1), "1", "Atmospherically corrected Angular dependent water leaving reflectances");
                 }
-                ensureSpectralProperties(band, index);
+                ensureSpectralProperties(band, i);
                 band.setValidPixelExpression(validPixelExpression);
             }
             if (outputAsRrs) {
@@ -761,9 +739,9 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         }
 
         if (outputRhown) {
-            for (int index : merband12_ix) {
-                final Band band = addBand(targetProduct, "rhown_" + index, "1", "Normalized water leaving reflectances");
-                ensureSpectralProperties(band, index);
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                final Band band = addBand(targetProduct, "rhown_" + (i + 1), "1", "Normalized water leaving reflectances");
+                ensureSpectralProperties(band, i);
                 band.setValidPixelExpression(validPixelExpression);
             }
             autoGrouping.append(":rhown");
@@ -924,12 +902,11 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     }
 
     private void ensureSpectralProperties(Band band, int i) {
-        ProductUtils.copySpectralBandProperties(sourceProduct.getBand("radiance_" + i), band);
+        ProductUtils.copySpectralBandProperties(sourceProduct.getBand(EXPECTED_BANDNAMES[i]), band);
         if (band.getSpectralWavelength() == 0) {
-            band.setSpectralWavelength(DEFAULT_MERIS_WAVELENGTH[i - 1]);
+            band.setSpectralWavelength(DEFAULT_WAVELENGTH[i]);
             band.setSpectralBandIndex(i);
         }
-
     }
 
     private ProductNodeListener getNnNamesMetadataAppender() {
@@ -979,13 +956,37 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        for (int i = 1; i <= BAND_COUNT; i++) {
-            assertSourceBand(SOURCE_RADIANCE_NAME_PREFIX + i);
+        for (String EXPECTED_BANDNAME : EXPECTED_BANDNAMES) {
+            assertSourceBand(EXPECTED_BANDNAME);
         }
-        assertSourceBand(RASTER_NAME_L1_FLAGS);
+
+        MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
+        MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
+        MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
+        sunAzimuth = imageAttributes.getAttribute("SUN_AZIMUTH").getData().getElemDouble();
+        sunZenith = 90 - imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
+
+        SubsetInfo subsetInfo = getSubsetInfo(metadataRoot);
+        geometryAnglesBuilder = new GeometryAnglesBuilder(subsetInfo.subsampling_x, subsetInfo.offset_x, subsetInfo.center_x,
+                                                          sunAzimuth, sunZenith);
+
+        MetadataElement radiometricRescaling = l1MetadataFile.getElement("RADIOMETRIC_RESCALING");
+        reflectance_offset = new double[L8_BAND_COUNT];
+        reflectance_scale = new double[L8_BAND_COUNT];
+        for (int i = 0; i < L8_BAND_COUNT; i++) {
+            Band sourceBand = sourceProduct.getBand(EXPECTED_BANDNAMES[i]);
+            reflectance_offset[i] = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_ADD_BAND_%d", i + 1));
+            reflectance_scale[i] = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_MULT_BAND_%d", i + 1));
+        }
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
+        }
+
+        ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30");
+        if (getasse30 != null) {
+            // if elevation model cannot be initialised the fallback height will be used
+            elevationModel = getasse30.createDem(Resampling.BILINEAR_INTERPOLATION);
         }
 
         try {
@@ -1017,37 +1018,25 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
 
-        if (useDefaultSolarFlux) {  // not the sol flux values from the input product
-            solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
-        } else {
-            double[] solfluxFromL1b = new double[BAND_COUNT];
-            for (int i = 0; i < BAND_COUNT; i++) {
-                solfluxFromL1b[i] = sourceProduct.getBand("radiance_" + (i + 1)).getSolarFlux();
-            }
-            if (isSolfluxValid(solfluxFromL1b)) {
-                constantSolarFlux = solfluxFromL1b;
-            } else {
-                throw new OperatorException("Invalid solar flux in source product!");
-            }
-        }
         timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
     }
 
-    public static boolean isValidInput(Product product) {
-        for (int i = 1; i <= BAND_COUNT; i++) {
-            if (!product.containsBand("radiance_" + i)) {
-                return false;
+    private SubsetInfo getSubsetInfo(MetadataElement metadataRoot) {
+        SubsetInfo subsetInfo = new SubsetInfo();
+        MetadataElement history = metadataRoot.getElement("history");
+        if (history != null) {
+            MetadataElement subsetElement = history.getElement("SubsetInfo");
+            if (subsetElement != null) {
+                subsetInfo.subsampling_x = subsetElement.getAttributeInt("SubSampling.x", 1);
+                // subsetInfo.subsampling_y = subsetElement.getAttributeInt("SubSampling.y", 1);
+                subsetInfo.offset_x = subsetElement.getAttributeInt("SubRegion.x", 0);
+                // y_off = subsetElement.getAttributeInt("SubRegion.y", 0);
+                subsetInfo.center_x = subsetElement.getProduct().getSceneRasterWidth() / 2;
+                // subsetInfo.double center_y = subsetElement.getProduct().getSceneRasterHeight() / 2;
             }
         }
-        return product.containsBand(RASTER_NAME_L1_FLAGS) &&
-                product.containsRasterDataNode(RASTER_NAME_DEM_ALT) &&
-                product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH) &&
-                product.containsRasterDataNode(RASTER_NAME_SUN_AZIMUTH) &&
-                product.containsRasterDataNode(RASTER_NAME_VIEW_ZENITH) &&
-                product.containsRasterDataNode(RASTER_NAME_VIEW_AZIMUTH) &&
-                product.containsRasterDataNode(RASTER_NAME_ATM_PRESS) &&
-                product.containsRasterDataNode(RASTER_NAME_OZONE);
+        return subsetInfo;
     }
 
     private void initAtmosphericAuxdata() {
@@ -1057,10 +1046,6 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
         auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
         auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
-        if (useEcmwfAuxData) {
-            auxdataBuilder.useAtmosphericRaster(sourceProduct.getRasterDataNode(RASTER_NAME_OZONE),
-                                                sourceProduct.getRasterDataNode(RASTER_NAME_ATM_PRESS));
-        }
         try {
             atmosphericAuxdata = auxdataBuilder.create();
         } catch (Exception e) {
@@ -1074,13 +1059,29 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         }
     }
 
-    private static boolean isSolfluxValid(double[] solflux) {
-        for (double v : solflux) {
-            if (v <= 0.0) {
-                return false;
-            }
-        }
-        return true;
+    private Band addBand(Product targetProduct, String name, String unit, String description) {
+        Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
+        targetBand.setUnit(unit);
+        targetBand.setDescription(description);
+        targetBand.setGeophysicalNoDataValue(Double.NaN);
+        targetBand.setNoDataValueUsed(true);
+        return targetBand;
+    }
+
+    private Band addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
+        Band band = targetProduct.addBand(name, expression);
+        band.setUnit(unit);
+        band.setDescription(description);
+        band.getSourceImage(); // trigger source image creation
+        band.setGeophysicalNoDataValue(Double.NaN);
+        band.setNoDataValueUsed(true);
+        return band;
+    }
+
+    private static double toReflectances(double source, double radiance_offset, double radiance_scale,
+                                         double reflectance_offset, double reflectance_scale) {
+        double count = (source - radiance_offset) / radiance_scale;
+        return count * reflectance_scale + reflectance_offset;
     }
 
     public static class Spi extends OperatorSpi {

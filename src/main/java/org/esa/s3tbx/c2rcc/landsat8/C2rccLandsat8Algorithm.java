@@ -14,7 +14,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.acos;
 import static java.lang.Math.cos;
@@ -31,20 +30,19 @@ import static org.esa.s3tbx.ArrayMath.a_max;
 
 /**
  * @author Roland Doerffer
- * @author Norman Fomferra
  */
-public class C2rccLandsat8Algorithm {
+class C2rccLandsat8Algorithm {
 
-    public static final int IDX_rtosa_aann = 0;
-    public static final int IDX_rtosa_rw = 1;
-    public static final int IDX_rw_iop = 2;
-    public static final int IDX_iop_rw = 3;
-    public static final int IDX_rw_kd = 4;
-    public static final int IDX_iop_unciop = 5;
-    public static final int IDX_iop_uncsumiop_unckd = 6;
-    public static final int IDX_rw_rwnorm = 7;
-    public static final int IDX_rtosa_trans = 8;
-    public static final int IDX_rtosa_rpath = 9;
+    static final int IDX_rtosa_aann = 0;
+    static final int IDX_rtosa_rw = 1;
+    static final int IDX_rw_iop = 2;
+    static final int IDX_iop_rw = 3;
+    static final int IDX_rw_kd = 4;
+    static final int IDX_iop_unciop = 5;
+    static final int IDX_iop_uncsumiop_unckd = 6;
+    static final int IDX_rw_rwnorm = 7;
+    static final int IDX_rtosa_trans = 8;
+    static final int IDX_rtosa_rpath = 9;
 
     static final int FLAG_INDEX_RTOSA_OOS = 0;
     static final int FLAG_INDEX_RTOSA_OOR = 1;
@@ -68,53 +66,18 @@ public class C2rccLandsat8Algorithm {
     static final int FLAG_INDEX_KDMIN_AT_MAX = 19;
     static final int FLAG_INDEX_VALID_PE = 31;
 
-    // gas absorption constants for 12 MERIS channels
-    static final double[] absorb_ozon = {
-            8.2e-04, 2.82e-03, 2.076e-02, 3.96e-02,
-            1.022e-01, 1.059e-01, 5.313e-02, 3.552e-02,
-            1.895e-02, 8.38e-03, 7.2e-04, 0.0
+
+    static float[] DEFAULT_WAVELENGTH = new float[]{440, 480, 560, 655, 865};
+
+    private static final double[] absorb_ozon = {
+            0.0034448, 0.0205669, 0.105446, 0.0501634, 0.0018944
     };
 
-
-    // todo RD20151007 warnings durchsehen
     // polynom coefficients for band708 H2O correction
-    static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
-    static final int[] merband12_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13};
-    static final int[] merband15_ix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-    public static double[] DEFAULT_SOLAR_FLUX = new double[]{
-            1724.724,
-            1889.8026,
-            1939.5339,
-            1940.1365,
-            1813.5457,
-            1660.3589,
-            1540.5198,
-            1480.7161,
-            1416.1177,
-            1273.394,
-            1261.8658,
-            1184.0952,
-            963.94995,
-            935.23706,
-            900.659,
-    };
-    public static float[] DEFAULT_MERIS_WAVELENGTH = new float[]{
-       /*  1 */     412.691f,
-       /*  2 */     442.55902f,
-       /*  3 */     489.88202f,
-       /*  4 */     509.81903f,
-       /*  5 */     559.69403f,
-       /*  6 */     619.601f,
-       /*  7 */     664.57306f,
-       /*  8 */     680.82104f,
-       /*  9 */     708.32904f,
-       /* 10 */     753.37103f,
-       /* 11 */     761.50806f,
-       /* 12 */     778.40906f,
-       /* 13 */     864.87604f,
-       /* 14 */     884.94403f,
-       /* 15 */     900.00006f
-    };
+    // todo (mp/20161030)- not needed for L8?
+    // static final double[] h2o_cor_poly = {0.3832989, 1.6527957, -1.5635101, 0.5311913};
+
+
     final ThreadLocal<NNffbpAlphaTabFast> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
     final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands
     final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_aann; // Rtosa -> Rtosa' 12 bands
@@ -159,28 +122,18 @@ public class C2rccLandsat8Algorithm {
         // rtosa-rw NN
         nn_rtosa_rw = nnhs(nnFilePaths[IDX_rtosa_rw], loadFromResources);
 
-        // rtosa - rpath NN
-        //ThreadLocal<NNffbpAlphaTabFast> rpath_nn9 = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net");
-
-        // rtosa - trans NN
-        //ThreadLocal<NNffbpAlphaTabFast> inv_trans_nn = nnhs("meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net");
-
         // rw-IOP inverse NN
         nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources);
 
         // IOP-rw forward NN
-        //ThreadLocal<NNffbpAlphaTabFast> for_nn9b = nnhs("coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net"); //only 10 MERIS bands
-        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources); //only 10 MERIS bands
+        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources);
 
         // rw-kd NN, output are kdmin and kd449
-        //ThreadLocal<NNffbpAlphaTabFast> kd2_nn7 = nnhs("coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net");
         nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources);
 
         // uncertainty NN for IOPs after bias corretion
-        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_nn1 = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net");
         nn_iop_unciop = nnhs(nnFilePaths[IDX_iop_unciop], loadFromResources);
         // uncertainty for atot, adg, btot and kd
-        //ThreadLocal<NNffbpAlphaTabFast> unc_biasc_atotkd_nn = nnhs("../nets/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net");
         nn_iop_uncsumiop_unckd = nnhs(nnFilePaths[IDX_iop_uncsumiop_unckd], loadFromResources);
 
         // todo RD20151007
@@ -200,6 +153,7 @@ public class C2rccLandsat8Algorithm {
     public void setThresh_cloudTransD(double thresh_cloudTransD) {
         this.thresh_cloudTransD = thresh_cloudTransD;
     }
+
 
     public void setOutputRtosaGcAann(boolean outputRtosaGcAann) {
         this.outputRtosaGcAann = outputRtosaGcAann;
@@ -247,7 +201,7 @@ public class C2rccLandsat8Algorithm {
 
     public Result processPixel(int px, int py,
                                double lat, double lon,
-                               double[] toa_rad,
+                               double[] toa_refl,
                                double[] solflux,
                                double sun_zeni,
                                double sun_azi,
@@ -273,10 +227,8 @@ public class C2rccLandsat8Algorithm {
         double y = sin_view * sin_azi_diff;
         double z = cos_view;
 
-        double[] r_toa = new double[toa_rad.length];
-        for (int i = 0; i < toa_rad.length; i++) {
-            r_toa[i] = PI * toa_rad[i] / solflux[i] / cos_sun;
-        }
+        //noinspection UnnecessaryLocalVariable
+        double[] r_toa = Arrays.copyOf(toa_refl, toa_refl.length);
 
         double[] r_tosa = new double[0];
         int flags = 0;
@@ -301,16 +253,11 @@ public class C2rccLandsat8Algorithm {
         double unc_abs_tsm = 0;
 
         if (validPixel) {
-            double[] r_tosa_ur = new double[merband12_ix.length];
-            for (int i = 0; i < merband12_ix.length; i++) {
-                r_tosa_ur[i] = r_toa[merband12_ix[i] - 1]; // -1 because counts in Scilab start at 1 not 0
-            }
+            double[] r_tosa_ur = new double[r_toa.length];
+            System.arraycopy(r_toa, 0, r_tosa_ur, 0, r_tosa_ur.length - 1);
+            // skipping B8 and use B8A
+            r_tosa_ur[r_toa.length - 1] = r_toa[r_toa.length];
 
-            // (9.3.0) +++ water vapour correction for band 9 +++++ */
-            //X2=rho_900/rho_885;
-            double X2 = r_toa[14] / r_toa[13];
-            double trans708 = h2o_cor_poly[0] + (h2o_cor_poly[1] + (h2o_cor_poly[2] + h2o_cor_poly[3] * X2) * X2) * X2;
-            r_tosa_ur[8] /= trans708;
 
             //*** (9.3.1) ozone correction ***/
             double model_ozone = 0;
@@ -342,7 +289,8 @@ public class C2rccLandsat8Algorithm {
 
             // (9.4) )set input to all atmosphere NNs
             //nn_in=[sun_zeni,x,y,z,temperature, salinity, alti_press, log_rtosa];
-            double[] nn_in = new double[7 + log_rtosa.length];
+            int ancNnInputCount = 7;
+            double[] nn_in = new double[ancNnInputCount + log_rtosa.length];
             nn_in[0] = sun_zeni;
             nn_in[1] = x;
             nn_in[2] = y;
@@ -350,7 +298,7 @@ public class C2rccLandsat8Algorithm {
             nn_in[4] = temperature;
             nn_in[5] = salinity;
             nn_in[6] = alti_press;
-            System.arraycopy(log_rtosa, 0, nn_in, 7, log_rtosa.length);
+            System.arraycopy(log_rtosa, 0, nn_in, ancNnInputCount, log_rtosa.length);
 
             flags = 0;
 
@@ -414,12 +362,12 @@ public class C2rccLandsat8Algorithm {
             transu_nn = new double[0];
             double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
             // cloud flag test @865
-            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[11] < thresh_cloudTransD);
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[7] < thresh_cloudTransD);
             if (outputTdown) {
-                transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
+                transd_nn = Arrays.copyOfRange(trans_nn, 0, r_tosa_ur.length);
             }
             if (outputTup) {
-                transu_nn = Arrays.copyOfRange(trans_nn, 12, 24);
+                transu_nn = Arrays.copyOfRange(trans_nn, r_tosa_ur.length, trans_nn.length);
             }
 
             // (9.4.6)
@@ -433,13 +381,15 @@ public class C2rccLandsat8Algorithm {
 
             // define input to water NNs
             //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:10)];
-            double[] nn_in_inv = new double[5 + 10];
+            int ancNnInvInputCount = 5;
+            int logRwNNInvInputCount = log_rw.length - 2;
+            double[] nn_in_inv = new double[ancNnInvInputCount + logRwNNInvInputCount];
             nn_in_inv[0] = sun_zeni;
             nn_in_inv[1] = view_zeni;
             nn_in_inv[2] = azi_diff_deg;
             nn_in_inv[3] = temperature;
             nn_in_inv[4] = salinity;
-            System.arraycopy(log_rw, 0, nn_in_inv, 5, 10);
+            System.arraycopy(log_rw, 0, nn_in_inv, ancNnInvInputCount, logRwNNInvInputCount);
 
             // (9.5.1)check input to rw -> IOP NN out of range
             mi = nn_rw_iop.get().getInmin();
@@ -498,29 +448,29 @@ public class C2rccLandsat8Algorithm {
             }
             flags = BitSetter.setFlag(flags, FLAG_INDEX_IOP_OOR, iop_oor_flag);
 
-            int firstIopMaxFlagIndex = FLAG_INDEX_APIG_AT_MAX;
             // (9.5.5)check if log_IOPs at limit
-            for (int iv = 0; iv < log_iops_nn1.length; iv++) {
-                final boolean iopAtMax = log_iops_nn1[iv] > (ma[iv] - log_threshfak_oor);
-                flags = BitSetter.setFlag(flags, iv + firstIopMaxFlagIndex, iopAtMax);
+            int firstIopAtMaxFlagIndex = FLAG_INDEX_APIG_AT_MAX;
+            for (int i = 0; i < log_iops_nn1.length; i++) {
+                final boolean iopAtMax = log_iops_nn1[i] > (ma[i] - log_threshfak_oor);
+                flags = BitSetter.setFlag(flags, i + firstIopAtMaxFlagIndex, iopAtMax);
             }
 
             int firstIopMinFlagIndex = FLAG_INDEX_APIG_AT_MIN;
-            for (int iv = 0; iv < log_iops_nn1.length; iv++) {
-                final boolean iopAtMin = log_iops_nn1[iv] < (mi[iv] + log_threshfak_oor);
-                flags = BitSetter.setFlag(flags, iv + firstIopMinFlagIndex, iopAtMin);
+            for (int i = 0; i < log_iops_nn1.length; i++) {
+                final boolean iopAtMin = log_iops_nn1[i] < (mi[i] + log_threshfak_oor);
+                flags = BitSetter.setFlag(flags, i + firstIopMinFlagIndex, iopAtMin);
             }
 
             // (9.5.6) compute Rw out of scope
             //nn_in_for=[sun_zeni view_zeni azi_diff_deg temperature salinity log_iops_nn1];// input to forward water NN
-
-            double[] nn_in_for = new double[5 + 5];
+            int ancNnForInputCount = 5;
+            double[] nn_in_for = new double[ancNnForInputCount + log_iops_nn1.length];
             nn_in_for[0] = sun_zeni;
             nn_in_for[1] = view_zeni;
             nn_in_for[2] = azi_diff_deg;
             nn_in_for[3] = temperature;
             nn_in_for[4] = salinity;
-            System.arraycopy(log_iops_nn1, 0, nn_in_for, 5, 5);
+            System.arraycopy(log_iops_nn1, 0, nn_in_for, ancNnForInputCount, log_iops_nn1.length);
 
             //log_rw_nn2 = nnhs_ff(for_nn9b,nn_in_for); // compute rho_w from IOPs
 
@@ -617,7 +567,7 @@ public class C2rccLandsat8Algorithm {
             }
         }
 
-        flags = BitSetter.setFlag(flags, 31, validPixel);
+        flags = BitSetter.setFlag(flags, FLAG_INDEX_VALID_PE, validPixel);
 
         return new Result(r_toa, r_tosa, rtosa_aann, rpath_nn, transd_nn, transu_nn, rwa, rwn, rtosa_oos, rwa_oos,
                           iops_nn, kd489_nn, kdmin_nn, unc_iop_abs, unc_abs_adg, unc_abs_atot, unc_abs_btot,
@@ -733,75 +683,6 @@ public class C2rccLandsat8Algorithm {
             this.unc_abs_kd489 = unc_abs_kd489;
             this.flags = flags;
         }
-    }
-
-
-    public static double[] computeReflectances(double[] radiance_1_5, double[] radiance_add_1_5, double[] radiance_mult_1_5,
-                                               double[] reflectance_add, double[] reflectance_mult) {
-        double[] refls = new double[radiance_1_5.length];
-        for (int i = 0; i < refls.length; i++) {
-            double count = (radiance_1_5[i] - radiance_add_1_5[i]) / radiance_mult_1_5[i];
-            refls[i] = count * reflectance_mult[i] + reflectance_add[i];
-        }
-        return refls;
-    }
-
-    public GeometryAngels computeViewGeometry(double xb, double yb, double latitude) {
-        GeometryAngels geomAngels = new GeometryAngels();
-        double a = Math.toRadians(latitude);
-        double alpha = 98.2; // Landsat 8 inclination
-        double alpha_rad = Math.toRadians(alpha);
-        double cos_alpha = Math.cos(alpha_rad);
-        double sin_beta = cos_alpha / (Math.sin(Math.PI / 2 - a));
-        double beta_rad = Math.asin(sin_beta);
-        double beta_deg = Math.toDegrees(beta_rad);
-
-//        double bb = y_c - (yb * subsampling_y + y_off);
-        geomAngels.ab = xb * subsampling_x + x_off - x_c;
-//        double cb = Math.sqrt(Math.pow(ab, 2) + Math.pow(bb, 2));
-//        alpha_rad = Math.acos(bb / cb);
-//        double db = Math.asin(beta_rad + alpha_rad) * cb;
-        geomAngels.view_zenith = geomAngels.ab * zenith_wink_fak;
-        double view_azimuth;
-        // viewing left of ascending path, definition when standing on pixel looking to sensor
-        if (geomAngels.ab < 0.0) {
-            view_azimuth = beta_deg + 90.0;
-        } else {
-            // right of image
-            view_azimuth = beta_deg + 270;
-        }
-
-        geomAngels.cos_sun = Math.cos(Math.toRadians(sun_zenith));
-        geomAngels.cos_view = Math.cos(Math.toRadians(geomAngels.view_zenith));
-        geomAngels.sin_sun = Math.sin(Math.toRadians(sun_zenith));
-        geomAngels.sin_view = Math.sin(Math.toRadians(geomAngels.view_zenith));
-
-        geomAngels.cos_azi_diff = Math.cos(Math.toRadians(view_azimuth - sun_azimuth));
-        double azi_diff_rad = Math.acos(Math.cos(Math.toRadians(view_azimuth - sun_azimuth)));
-        geomAngels.sin_azi_diff = Math.sin(azi_diff_rad);
-        geomAngels.azi_diff_deg = Math.toDegrees(azi_diff_rad);
-
-        geomAngels.x = geomAngels.sin_view * geomAngels.cos_azi_diff;
-        geomAngels.y = geomAngels.sin_view * geomAngels.sin_azi_diff;
-        geomAngels.z = geomAngels.cos_view;
-
-        return geomAngels;
-    }
-
-    static class GeometryAngels {
-
-        double ab;
-        double view_zenith;
-        double cos_sun;
-        double sin_sun;
-        double cos_view;
-        double sin_view;
-        double cos_azi_diff;
-        double sin_azi_diff;
-        double azi_diff_deg;
-        double x;
-        double y;
-        double z;
     }
 
 }
