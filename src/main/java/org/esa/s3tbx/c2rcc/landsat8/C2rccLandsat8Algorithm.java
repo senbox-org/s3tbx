@@ -254,10 +254,7 @@ class C2rccLandsat8Algorithm {
 
         if (validPixel) {
             double[] r_tosa_ur = new double[r_toa.length];
-            System.arraycopy(r_toa, 0, r_tosa_ur, 0, r_tosa_ur.length - 1);
-            // skipping B8 and use B8A
-            r_tosa_ur[r_toa.length - 1] = r_toa[r_toa.length];
-
+            System.arraycopy(r_toa, 0, r_tosa_ur, 0, r_tosa_ur.length);
 
             //*** (9.3.1) ozone correction ***/
             double model_ozone = 0;
@@ -382,7 +379,7 @@ class C2rccLandsat8Algorithm {
             // define input to water NNs
             //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:10)];
             int ancNnInvInputCount = 5;
-            int logRwNNInvInputCount = log_rw.length - 2;
+            int logRwNNInvInputCount = log_rw.length;
             double[] nn_in_inv = new double[ancNnInvInputCount + logRwNNInvInputCount];
             nn_in_inv[0] = sun_zeni;
             nn_in_inv[1] = view_zeni;
