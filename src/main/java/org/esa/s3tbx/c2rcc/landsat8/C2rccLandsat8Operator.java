@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.landsat8;
 
+import com.bc.ceres.core.Assert;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -23,6 +24,7 @@ import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelDescriptor;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
 import org.esa.snap.core.dataop.resamp.Resampling;
+import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -41,6 +43,7 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
@@ -218,6 +221,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             description = "The value used as temperature for the scene")
     private double temperature;
 
+
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)",
             description = "The value used as ozone if not provided by auxiliary data")
     private double ozone;
@@ -309,6 +313,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     private double sunZenith;
     private GeometryAnglesBuilder geometryAnglesBuilder;
     private ElevationModel elevationModel;
+    private Product resampledProduct;
 
     @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
@@ -544,125 +549,38 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         targetSamples[C2RCC_FLAGS_IX].set(result.flags);
     }
 
-    public GeometryAngles computeViewGeometry(double xb, double latitude) {
-        return geometryAnglesBuilder.getGeometryAngles(xb, latitude);
-    }
-
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sc) throws OperatorException {
         for (int i = 0; i < EXPECTED_BANDNAMES.length; i++) {
-            sc.defineSample(i, EXPECTED_BANDNAMES[i]);
+            sc.defineSample(i, EXPECTED_BANDNAMES[i], resampledProduct);
         }
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
-            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression, resampledProduct);
         } else {
-            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true");
+            sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true", resampledProduct);
         }
 
     }
 
     @Override
-    protected void configureTargetSamples(TargetSampleConfigurer tsc) throws OperatorException {
-
-        if (outputRtoa) {
-            for (int i = 0; i < L8_BAND_COUNT; i++) {
-                tsc.defineSample(RTOA_IX + i, "rtoa_" + (i + 1));
-            }
-        }
-
-        if (outputRtosaGc) {
-            for (int i = 0; i < L8_BAND_COUNT; i++) {
-                tsc.defineSample(RTOSA_IX + i, "rtosa_gc_" + (i + 1));
-            }
-        }
-
-        if (outputRtosaGcAann) {
-            for (int i = 0; i < L8_BAND_COUNT; i++) {
-                tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + (i + 1));
-            }
-        }
-
-        if (outputRpath) {
-            for (int i = 0; i < L8_BAND_COUNT; i++) {
-                tsc.defineSample(RPATH_IX + i, "rpath_" + (i + 1));
-            }
-        }
-
-        if (outputTdown) {
-            for (int i = 0; i < L8_BAND_COUNT; i++) {
-                tsc.defineSample(TDOWN_IX + i, "tdown_" + (i + 1));
-            }
-        }
-
-        if (outputTup) {
-            for (int i = 0; i < L8_BAND_COUNT; i++) {
-                tsc.defineSample(TUP_IX + i, "tup_" + (i + 1));
-            }
-        }
-
-        if (outputAcReflectance) {
-            for (int i = 0; i < L8_BAND_COUNT; i++) {
-                if (outputAsRrs) {
-                    tsc.defineSample(AC_REFLEC_IX + i, "rrs_" + (i + 1));
-                } else {
-                    tsc.defineSample(AC_REFLEC_IX + i, "rhow_" + (i + 1));
-                }
-            }
-        }
-
-        if (outputRhown) {
-            for (int i = 0; i < L8_BAND_COUNT; i++) {
-                tsc.defineSample(RHOWN_IX + i, "rhown_" + (i + 1));
-            }
-        }
-
-        if (outputOos) {
-            tsc.defineSample(OOS_RTOSA_IX, "oos_rtosa");
-            if (outputAsRrs) {
-                tsc.defineSample(OOS_AC_REFLEC_IX, "oos_rrs");
-            } else {
-                tsc.defineSample(OOS_AC_REFLEC_IX, "oos_rhow");
-            }
-        }
-
-        tsc.defineSample(IOP_APIG_IX, "iop_apig");
-        tsc.defineSample(IOP_ADET_IX, "iop_adet");
-        tsc.defineSample(IOP_AGELB_IX, "iop_agelb");
-        tsc.defineSample(IOP_BPART_IX, "iop_bpart");
-        tsc.defineSample(IOP_BWIT_IX, "iop_bwit");
-
-        if (outputKd) {
-            tsc.defineSample(KD489_IX, "kd489");
-            tsc.defineSample(KDMIN_IX, "kdmin");
-        }
-
-        if (outputUncertainties) {
-            tsc.defineSample(UNC_APIG_IX, "unc_apig");
-            tsc.defineSample(UNC_ADET_IX, "unc_adet");
-            tsc.defineSample(UNC_AGELB_IX, "unc_agelb");
-            tsc.defineSample(UNC_BPART_IX, "unc_bpart");
-            tsc.defineSample(UNC_BWIT_IX, "unc_bwit");
-
-            tsc.defineSample(UNC_ADG_IX, "unc_adg");
-            tsc.defineSample(UNC_ATOT_IX, "unc_atot");
-            tsc.defineSample(UNC_BTOT_IX, "unc_btot");
-            if (outputKd) {
-                tsc.defineSample(UNC_KD489_IX, "unc_kd489");
-                tsc.defineSample(UNC_KDMIN_IX, "unc_kdmin");
-            }
-        }
-
-        tsc.defineSample(C2RCC_FLAGS_IX, "c2rcc_flags");
+    protected Product createTargetProduct() throws OperatorException {
+        Assert.state(resampledProduct != null, "source product not set");
+        return new Product(getId(),
+                           getClass().getName(),
+                           resampledProduct.getSceneRasterWidth(),
+                           resampledProduct.getSceneRasterHeight());
     }
-
     @Override
     protected void configureTargetProduct(ProductConfigurer productConfigurer) {
-        super.configureTargetProduct(productConfigurer);
-        productConfigurer.copyMetadata();
-
         final Product targetProduct = productConfigurer.getTargetProduct();
-        C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
-        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
+        targetProduct.setStartTime(getSourceProduct().getStartTime());
+        targetProduct.setEndTime(getSourceProduct().getEndTime());
+        ProductUtils.copyTiePointGrids(resampledProduct, targetProduct);
+        ProductUtils.copyGeoCoding(resampledProduct, targetProduct);
+        ProductUtils.copyMetadata(resampledProduct, targetProduct);
+
+        C2rccCommons.ensureTimeInformation(targetProduct, resampledProduct.getStartTime(), resampledProduct.getEndTime(), timeCoding);
+        ProductUtils.copyFlagBands(resampledProduct, targetProduct, true);
 
         final StringBuilder autoGrouping = new StringBuilder("iop");
         autoGrouping.append(":conc");
@@ -900,8 +818,101 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
+    @Override
+    protected void configureTargetSamples(TargetSampleConfigurer tsc) throws OperatorException {
+        if (outputRtoa) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RTOA_IX + i, "rtoa_" + (i + 1));
+            }
+        }
+
+        if (outputRtosaGc) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RTOSA_IX + i, "rtosa_gc_" + (i + 1));
+            }
+        }
+
+        if (outputRtosaGcAann) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RTOSA_AANN_IX + i, "rtosagc_aann_" + (i + 1));
+            }
+        }
+
+        if (outputRpath) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RPATH_IX + i, "rpath_" + (i + 1));
+            }
+        }
+
+        if (outputTdown) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(TDOWN_IX + i, "tdown_" + (i + 1));
+            }
+        }
+
+        if (outputTup) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(TUP_IX + i, "tup_" + (i + 1));
+            }
+        }
+
+        if (outputAcReflectance) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                if (outputAsRrs) {
+                    tsc.defineSample(AC_REFLEC_IX + i, "rrs_" + (i + 1));
+                } else {
+                    tsc.defineSample(AC_REFLEC_IX + i, "rhow_" + (i + 1));
+                }
+            }
+        }
+
+        if (outputRhown) {
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                tsc.defineSample(RHOWN_IX + i, "rhown_" + (i + 1));
+            }
+        }
+
+        if (outputOos) {
+            tsc.defineSample(OOS_RTOSA_IX, "oos_rtosa");
+            if (outputAsRrs) {
+                tsc.defineSample(OOS_AC_REFLEC_IX, "oos_rrs");
+            } else {
+                tsc.defineSample(OOS_AC_REFLEC_IX, "oos_rhow");
+            }
+        }
+
+        tsc.defineSample(IOP_APIG_IX, "iop_apig");
+        tsc.defineSample(IOP_ADET_IX, "iop_adet");
+        tsc.defineSample(IOP_AGELB_IX, "iop_agelb");
+        tsc.defineSample(IOP_BPART_IX, "iop_bpart");
+        tsc.defineSample(IOP_BWIT_IX, "iop_bwit");
+
+        if (outputKd) {
+            tsc.defineSample(KD489_IX, "kd489");
+            tsc.defineSample(KDMIN_IX, "kdmin");
+        }
+
+        if (outputUncertainties) {
+            tsc.defineSample(UNC_APIG_IX, "unc_apig");
+            tsc.defineSample(UNC_ADET_IX, "unc_adet");
+            tsc.defineSample(UNC_AGELB_IX, "unc_agelb");
+            tsc.defineSample(UNC_BPART_IX, "unc_bpart");
+            tsc.defineSample(UNC_BWIT_IX, "unc_bwit");
+
+            tsc.defineSample(UNC_ADG_IX, "unc_adg");
+            tsc.defineSample(UNC_ATOT_IX, "unc_atot");
+            tsc.defineSample(UNC_BTOT_IX, "unc_btot");
+            if (outputKd) {
+                tsc.defineSample(UNC_KD489_IX, "unc_kd489");
+                tsc.defineSample(UNC_KDMIN_IX, "unc_kdmin");
+            }
+        }
+
+        tsc.defineSample(C2RCC_FLAGS_IX, "c2rcc_flags");
+    }
+
     private void ensureSpectralProperties(Band band, int i) {
-        ProductUtils.copySpectralBandProperties(sourceProduct.getBand(EXPECTED_BANDNAMES[i]), band);
+        ProductUtils.copySpectralBandProperties(resampledProduct.getBand(EXPECTED_BANDNAMES[i]), band);
         if (band.getSpectralWavelength() == 0) {
             band.setSpectralWavelength(DEFAULT_WAVELENGTH[i]);
             band.setSpectralBandIndex(i);
@@ -1018,10 +1029,20 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
 
         timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
+
+        if (sourceProduct.isMultiSize()) {
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("referenceBand", EXPECTED_BANDNAMES[0]);
+            resampledProduct = GPF.createProduct("Resample", parameters, sourceProduct);
+        }
+        else {
+            resampledProduct = sourceProduct;
+        }
     }
 
     private SubsetInfo getSubsetInfo(MetadataElement metadataRoot) {
-        SubsetInfo subsetInfo = new SubsetInfo();
+        SubsetInfo subsetInfo = new SubsetInfo(metadataRoot.getProduct().getSceneRasterWidth() / 2);
+
         MetadataElement history = metadataRoot.getElement("history");
         if (history != null) {
             MetadataElement subsetElement = history.getElement("SubsetInfo");
@@ -1030,8 +1051,6 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
                 // subsetInfo.subsampling_y = subsetElement.getAttributeInt("SubSampling.y", 1);
                 subsetInfo.offset_x = subsetElement.getAttributeInt("SubRegion.x", 0);
                 // y_off = subsetElement.getAttributeInt("SubRegion.y", 0);
-                subsetInfo.center_x = subsetElement.getProduct().getSceneRasterWidth() / 2;
-                // subsetInfo.double center_y = subsetElement.getProduct().getSceneRasterHeight() / 2;
             }
         }
         return subsetInfo;
