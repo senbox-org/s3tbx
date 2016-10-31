@@ -147,16 +147,16 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     static final String[] c2rccNNResourcePaths = new String[10];
 
     static {
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/richard_atmo_invers29_press_20150125/rtoa_aaNN7/31x7x31_555.6.net";
-        c2rccNNResourcePaths[IDX_rtosa_rw] = "meris/richard_atmo_invers29_press_20150125/rtoa_rw_nn3/33x73x53x33_470639.6.net";
-        c2rccNNResourcePaths[IDX_rw_iop] = "meris/coastcolour_wat_20140318/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net";
-        c2rccNNResourcePaths[IDX_iop_rw] = "meris/coastcolour_wat_20140318/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net";
-        c2rccNNResourcePaths[IDX_rw_kd] = "meris/coastcolour_wat_20140318/inv_meris_kd/97x77x7_232.4.net";
-        c2rccNNResourcePaths[IDX_iop_unciop] = "meris/coastcolour_wat_20140318/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net";
-        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "meris/coastcolour_wat_20140318/uncertain_log_abs_tot_kd/17x77x37_9113.1.net";
-        c2rccNNResourcePaths[IDX_rw_rwnorm] = "meris/coastcolour_wat_20140318/norma_net_20150307/37x57x17_76.8.net";
-        c2rccNNResourcePaths[IDX_rtosa_trans] = "meris/richard_atmo_invers29_press_20150125/rtoa_trans_nn2/31x77x57x37_37087.4.net";
-        c2rccNNResourcePaths[IDX_rtosa_rpath] = "meris/richard_atmo_invers29_press_20150125/rtoa_rpath_nn2/31x77x57x37_2388.6.net";
+        c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtoa_aann/31x7x31_786.7.net";
+        c2rccNNResourcePaths[IDX_rtosa_rpath] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtoa_rpath/31x37_2058.3.net";
+        c2rccNNResourcePaths[IDX_rtosa_rw] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtoa_rw/33x77x57x37_727927.1.net";
+        c2rccNNResourcePaths[IDX_rtosa_trans] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtoa_trans/31x37_39553.7.net";
+        c2rccNNResourcePaths[IDX_iop_rw] = "meris/coastcolour_midtsm_20161012/water_midtsm/iop_rw/17x97x47_490.7.net";
+        c2rccNNResourcePaths[IDX_iop_unciop] = "meris/coastcolour_midtsm_20161012/water_midtsm/iop_unciop/17x77x37_11486.7.net";
+        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "meris/coastcolour_midtsm_20161012/water_midtsm/iop_uncsumiop_unchkd/17x77x37_9113.1.net";
+        c2rccNNResourcePaths[IDX_rw_iop] = "meris/coastcolour_midtsm_20161012/water_midtsm/rw_iop/97x77x37_22393.1.net";
+        c2rccNNResourcePaths[IDX_rw_kd] = "meris/coastcolour_midtsm_20161012/water_midtsm/rw_kd/97x77x7_376.3.net";
+        c2rccNNResourcePaths[IDX_rw_rwnorm] = "meris/coastcolour_midtsm_20161012/water_midtsm/rw_rwnorm/37x57x17_76.8.net";
     }
 
     static final String[] c2xNNResourcePaths = new String[10];
