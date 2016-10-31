@@ -477,10 +477,11 @@ class C2rccLandsat8Algorithm {
 
                 // (9.5.7) test out of scope of rho_w by combining inverse and forward NN
                 //  compute the test and set rw is out of scope flag
-                double s1_mess = abs(log_rw[4] - log_rw[1]); // s1_mess and s2_mess are the band ratios of Rw
-                double s2_mess = abs(log_rw[5] - log_rw[4]);
-                double s1_nn2 = abs(log_rw_nn2[4] - log_rw_nn2[1]);// s1_nn2 is the band ratios of Rw'
-                double s2_nn2 = abs(log_rw_nn2[5] - log_rw_nn2[4]);
+                // todo (mp/20161031) - indices changed need to be confirmed by Roland
+                double s1_mess = abs(log_rw[3] - log_rw[0]); // s1_mess and s2_mess are the band ratios of Rw
+                double s2_mess = abs(log_rw[4] - log_rw[3]);
+                double s1_nn2 = abs(log_rw_nn2[3] - log_rw_nn2[0]);// s1_nn2 is the band ratios of Rw'
+                double s2_nn2 = abs(log_rw_nn2[4] - log_rw_nn2[3]);
                 double s1_test = abs(s1_nn2 - s1_mess); // relative deviation for band ratio 5/2 (diff on log)
                 double s2_test = abs(s2_nn2 - s2_mess); // relative deviation for band ratio 6/5 (diff on log)
                 rwa_oos = max(s1_test, s2_test);// maximum deviation output as quality indicator
