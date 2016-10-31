@@ -44,6 +44,8 @@ import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
@@ -937,7 +939,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
         try {
             final String[] nnFilePaths;
-            final boolean loadFromResources = StringUtils.isNullOrEmpty(alternativeNNPath);
+            final boolean loadFromResources = alternativeNNPath == null || alternativeNNPath.trim().length() == 0;
             if (loadFromResources) {
                 nnFilePaths = c2rccNNResourcePaths;
             } else {
@@ -1056,25 +1058,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         if (!sourceProduct.containsBand(name)) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
         }
-    }
-
-    private Band addBand(Product targetProduct, String name, String unit, String description) {
-        Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
-        targetBand.setUnit(unit);
-        targetBand.setDescription(description);
-        targetBand.setGeophysicalNoDataValue(Double.NaN);
-        targetBand.setNoDataValueUsed(true);
-        return targetBand;
-    }
-
-    private Band addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
-        Band band = targetProduct.addBand(name, expression);
-        band.setUnit(unit);
-        band.setDescription(description);
-        band.getSourceImage(); // trigger source image creation
-        band.setGeophysicalNoDataValue(Double.NaN);
-        band.setNoDataValueUsed(true);
-        return band;
     }
 
     public static class Spi extends OperatorSpi {

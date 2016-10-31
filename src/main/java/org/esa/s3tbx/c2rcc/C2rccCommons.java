@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc;
 
+import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.ConstantTimeCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
@@ -74,5 +75,24 @@ public class C2rccCommons {
                     String.format("log(0.05 + 0.21 * %1$s_3 + 0.50 * %1$s_4 + %1$s_5 + 0.38 * %1$s_6)", profileName),
                     String.format("log(0.05 + 0.21 * %1$s_1 + 1.75 * %1$s_2 + 0.47 * %1$s_3 + 0.16 * %1$s_4)", profileName)}));
         }
+    }
+
+    public static Band addBand(Product targetProduct, String name, String unit, String description) {
+        Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
+        targetBand.setUnit(unit);
+        targetBand.setDescription(description);
+        targetBand.setGeophysicalNoDataValue(Double.NaN);
+        targetBand.setNoDataValueUsed(true);
+        return targetBand;
+    }
+
+    public static Band addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
+        Band band = targetProduct.addBand(name, expression);
+        band.setUnit(unit);
+        band.setDescription(description);
+        band.getSourceImage(); // trigger source image creation
+        band.setGeophysicalNoDataValue(Double.NaN);
+        band.setNoDataValueUsed(true);
+        return band;
     }
 }

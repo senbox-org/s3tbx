@@ -49,6 +49,15 @@
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
             </file>
+            <file name="org-esa-s3tbx-c2rcc-meris4-OpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="C2RCC MERIS4 Processor"/>
+                <attr name="operatorName" stringvalue="c2rcc.meris4"/>
+                <attr name="dialogTitle" stringvalue="C2RCC MERIS4 Processor"/>
+                <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
+                <attr name="helpId" stringvalue="c2rccScientificTool"/>
+            </file>
             <file name="org-esa-s3tbx-c2rcc-modis-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
@@ -74,6 +83,7 @@
         <folder name="Optical">
             <folder name="Thematic Water Processing">
                 <attr name="position" intvalue="400"/>
+                <!-- Currently disabled the generic processor; it causes confusion -->
                 <!--<file name="org-esa-s3tbx-c2rcc-OpAction.shadow">-->
                     <!--<attr name="originalFile"-->
                           <!--stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-OpAction.instance"/>-->
@@ -100,6 +110,11 @@
                     <file name="org-esa-s3tbx-c2rcc-meris-OpAction.shadow">
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-meris-OpAction.instance"/>
+                        <attr name="position" intvalue="4"/>
+                    </file>
+                    <file name="org-esa-s3tbx-c2rcc-meris4-OpAction.shadow">
+                        <attr name="originalFile"
+                              stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-meris4-OpAction.instance"/>
                         <attr name="position" intvalue="4"/>
                     </file>
                     <file name="org-esa-s3tbx-c2rcc-modis-OpAction.shadow">
@@ -144,6 +159,10 @@
         </file>
         <file name="org.esa.s3tbx.c2rcc.meris">
             <attr name="operatorName" stringvalue="c2rcc.meris"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+        <file name="org.esa.s3tbx.c2rcc.meris4">
+            <attr name="operatorName" stringvalue="c2rcc.meris4"/>
             <attr name="disableFromGraphBuilder" stringvalue="true"/>
         </file>
         <file name="org.esa.s3tbx.c2rcc.modis">

@@ -1,6 +1,7 @@
 package org.esa.s3tbx.c2rcc;
 
 import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
+import org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Operator;
 import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
 import org.esa.s3tbx.c2rcc.msi.C2rccMsiOperator;
 import org.esa.s3tbx.c2rcc.olci.C2rccOlciOperator;
@@ -31,7 +32,7 @@ import static org.esa.snap.core.util.StringUtils.*;
         authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
         internal = true,
         category = "Optical Processing/Thematic Water Processing",
-        copyright = "Copyright (C) 2015 by Brockmann Consult",
+        copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on OLCI, MSI, MERIS, MODIS or SeaWiFS L1 product.")
 public class C2rccOperator extends Operator {
     /*
@@ -40,7 +41,7 @@ public class C2rccOperator extends Operator {
     */
 
 
-    @SourceProduct(description = "OLCI, MSI, MERIS, MODIS or SeaWiFS L1 product")
+    @SourceProduct(description = "OLCI, MSI, MERIS, MERIS4, MODIS or SeaWiFS L1 product")
     private Product sourceProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
@@ -70,7 +71,7 @@ public class C2rccOperator extends Operator {
     @TargetProduct
     private Product targetProduct;
 
-    @Parameter(valueSet = {"", "olci", "msi", "meris", "modis", "seawifs"})
+    @Parameter(valueSet = {"", "olci", "msi", "meris", "meris4", "modis", "seawifs"})
     private String sensorName;
 
     @Parameter(label = "Valid-pixel expression", converter = BooleanExpressionConverter.class,
@@ -104,7 +105,7 @@ public class C2rccOperator extends Operator {
     private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "true", description =
-            "If selected, the ecmwf auxiliary data (ozon, air pressure) of the source product is used",
+            "If selected, the ECMWF auxiliary data (ozone, air pressure) of the source product is used",
             label = "Use ECMWF aux data of source product (in case of MERIS sensor)")
     private boolean useEcmwfAuxData;
 
@@ -122,6 +123,12 @@ public class C2rccOperator extends Operator {
             c2rccMerisOperator.setUseEcmwfAuxData(useEcmwfAuxData);
             configure(c2rccMerisOperator);
             targetProduct = setSourceAndGetTarget(c2rccMerisOperator);
+        } else if (isMeris4(sourceProduct)) {
+            C2rccMeris4Operator c2rccMeris4Operator = new C2rccMeris4Operator();
+            c2rccMeris4Operator.setParameterDefaultValues();
+            c2rccMeris4Operator.setUseEcmwfAuxData(useEcmwfAuxData);
+            configure(c2rccMeris4Operator);
+            targetProduct = setSourceAndGetTarget(c2rccMeris4Operator);
         } else if (isModis(sourceProduct)) {
             C2rccModisOperator c2rccModisOperator = new C2rccModisOperator();
             c2rccModisOperator.setParameterDefaultValues();
@@ -132,8 +139,6 @@ public class C2rccOperator extends Operator {
             c2rccSeaWiFSOperator.setParameterDefaultValues();
             configure(c2rccSeaWiFSOperator);
             targetProduct = setSourceAndGetTarget(c2rccSeaWiFSOperator);
-        } else if (isNotNullAndNotEmpty(sensorName) && "viirs".equalsIgnoreCase(sensorName)) {
-            throw new OperatorException("The VIIRS operator is currently not implemented.");
         } else if (isOlci(sourceProduct)) {
             C2rccOlciOperator c2rccOlciOperator = new C2rccOlciOperator();
             c2rccOlciOperator.setParameterDefaultValues();
@@ -180,6 +185,14 @@ public class C2rccOperator extends Operator {
             return "meris".equalsIgnoreCase(sensorName);
         } else {
             return C2rccMerisOperator.isValidInput(product);
+        }
+    }
+
+    private boolean isMeris4(Product product) {
+        if (isNotNullAndNotEmpty(sensorName)) {
+            return "meris4".equalsIgnoreCase(sensorName);
+        } else {
+            return C2rccMeris4Operator.isValidInput(product);
         }
     }
 

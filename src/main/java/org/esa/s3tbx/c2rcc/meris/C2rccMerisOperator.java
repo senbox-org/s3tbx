@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Calendar;
 
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.*;
@@ -281,7 +283,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private boolean useDefaultSolarFlux;
 
     @Parameter(defaultValue = "true", description =
-            "If selected, the ECMWF auxiliary data (ozone, air pressure) of the source product is used",
+            "If selected, the ECMWF auxiliary data (ozon, air pressure) of the source product is used",
             label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
 
@@ -408,8 +410,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         this.outputRtoa = outputRtoa;
     }
 
-    public void setOutputRtosaGcAann(boolean outputRtosaGcAann) {
-        this.outputRtosaGcAann = outputRtosaGcAann;
+    public void setOutputRtosaGcAann(boolean outputRtoaGcAann) {
+        this.outputRtosaGcAann = outputRtoaGcAann;
     }
 
     public void setOutputAcReflectance(boolean outputAcReflectance) {
@@ -734,9 +736,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             for (int index : merband12_ix) {
                 final Band band;
                 if (outputAsRrs) {
-                    band = addBand(targetProduct, "rrs_" + index, "sr^-1", "Atmospherically corrected angular dependent remote sensing reflectances");
+                    band = addBand(targetProduct, "rrs_" + index, "sr^-1", "Atmospherically corrected Angular dependent remote sensing reflectances");
                 } else {
-                    band = addBand(targetProduct, "rhow_" + index, "1", "Atmospherically corrected angular dependent water leaving reflectances");
+                    band = addBand(targetProduct, "rhow_" + index, "1", "Atmospherically corrected Angular dependent water leaving reflectances");
                 }
                 ensureSpectralProperties(band, index);
                 band.setValidPixelExpression(validPixelExpression);
@@ -829,14 +831,14 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             iop_atot.addAncillaryVariable(unc_atot, "uncertainty");
             iop_btot.addAncillaryVariable(unc_btot, "uncertainty");
 
-            unc_apig.setValidPixelExpression(validPixelExpression);
-            unc_adet.setValidPixelExpression(validPixelExpression);
-            unc_agelb.setValidPixelExpression(validPixelExpression);
-            unc_bpart.setValidPixelExpression(validPixelExpression);
-            unc_bwit.setValidPixelExpression(validPixelExpression);
-            unc_adg.setValidPixelExpression(validPixelExpression);
-            unc_atot.setValidPixelExpression(validPixelExpression);
-            unc_btot.setValidPixelExpression(validPixelExpression);
+            iop_apig.setValidPixelExpression(validPixelExpression);
+            iop_adet.setValidPixelExpression(validPixelExpression);
+            iop_agelb.setValidPixelExpression(validPixelExpression);
+            iop_bpart.setValidPixelExpression(validPixelExpression);
+            iop_bwit.setValidPixelExpression(validPixelExpression);
+            iop_adg.setValidPixelExpression(validPixelExpression);
+            iop_atot.setValidPixelExpression(validPixelExpression);
+            iop_btot.setValidPixelExpression(validPixelExpression);
 
             Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
             Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophyll concentration");
@@ -844,8 +846,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
 
-            unc_tsm.setValidPixelExpression(validPixelExpression);
-            unc_chl.setValidPixelExpression(validPixelExpression);
+            conc_tsm.setValidPixelExpression(validPixelExpression);
+            conc_chl.setValidPixelExpression(validPixelExpression);
 
             if (outputKd) {
                 Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
@@ -856,9 +858,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 kdmin.addAncillaryVariable(unc_kdmin, "uncertainty");
                 kd_z90max.addAncillaryVariable(unc_kd_z90max, "uncertainty");
 
-                unc_kd489.setValidPixelExpression(validPixelExpression);
-                unc_kdmin.setValidPixelExpression(validPixelExpression);
-                unc_kd_z90max.setValidPixelExpression(validPixelExpression);
+                kd489.setValidPixelExpression(validPixelExpression);
+                kdmin.setValidPixelExpression(validPixelExpression);
+                kd_z90max.setValidPixelExpression(validPixelExpression);
             }
 
             autoGrouping.append(":unc");
@@ -1077,25 +1079,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         if (sourceProduct.getBand(name) == null) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
         }
-    }
-
-    private Band addBand(Product targetProduct, String name, String unit, String description) {
-        Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
-        targetBand.setUnit(unit);
-        targetBand.setDescription(description);
-        targetBand.setGeophysicalNoDataValue(Double.NaN);
-        targetBand.setNoDataValueUsed(true);
-        return targetBand;
-    }
-
-    private Band addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
-        Band band = targetProduct.addBand(name, expression);
-        band.setUnit(unit);
-        band.setDescription(description);
-        band.getSourceImage(); // trigger source image creation
-        band.setGeophysicalNoDataValue(Double.NaN);
-        band.setNoDataValueUsed(true);
-        return band;
     }
 
     private static boolean isSolfluxValid(double[] solflux) {
