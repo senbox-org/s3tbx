@@ -146,16 +146,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     private static final String[] c2rccNNResourcePaths = new String[10];
     static {
-        c2rccNNResourcePaths[IDX_iop_rw] = "olci/olci_20160516/iop_rw/17x97x47_464.3.net";
-        c2rccNNResourcePaths[IDX_iop_unciop] = "olci/olci_20160516/iop_unciop/17x77x37_11486.7.net";
-        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "olci/olci_20160516/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "olci/olci_20160516/rtosa_aann/31x7x31_1078.2.net";
-        c2rccNNResourcePaths[IDX_rtosa_rpath] = "olci/olci_20160516/rtosa_rpath/31x77x57x37_2430.4.net";
-        c2rccNNResourcePaths[IDX_rtosa_rw] = "olci/olci_20160516/rtosa_rw/33x73x53x33_930865.5.net";
-        c2rccNNResourcePaths[IDX_rtosa_trans] = "olci/olci_20160516/rtosa_trans/31x77x57x37_30152.6.net";
-        c2rccNNResourcePaths[IDX_rw_iop] = "olci/olci_20160516/rw_iop/97x77x37_20196.0.net";
-        c2rccNNResourcePaths[IDX_rw_kd] = "olci/olci_20160516/rw_kd/97x77x7_389.5.net";
-        c2rccNNResourcePaths[IDX_rw_rwnorm] = "olci/olci_20160516/rw_rwnorm/37x57x17_69.1.net";
+        c2rccNNResourcePaths[IDX_iop_rw] = "olci/olci_20161012/iop_rw/17x97x47_464.3.net";
+        c2rccNNResourcePaths[IDX_iop_unciop] = "olci/olci_20161012/iop_unciop/17x77x37_11486.7.net";
+        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "olci/olci_20161012/iop_uncsumiop_unckd/17x77x37_9113.1.net";
+        c2rccNNResourcePaths[IDX_rtosa_aann] = "olci/olci_20161012/rtosa_aann/31x7x31_1073.7.net";
+        c2rccNNResourcePaths[IDX_rtosa_rpath] = "olci/olci_20161012/rtosa_rpath/31x37_2483.0.net";
+        c2rccNNResourcePaths[IDX_rtosa_rw] = "olci/olci_20161012/rtosa_rw/33x73x53x33_955327.7.net";
+        c2rccNNResourcePaths[IDX_rtosa_trans] = "olci/olci_20161012/rtosa_trans/31x37_46275.8.net";
+        c2rccNNResourcePaths[IDX_rw_iop] = "olci/olci_20161012/rw_iop/97x77x37_20196.0.net";
+        c2rccNNResourcePaths[IDX_rw_kd] = "olci/olci_20161012/rw_kd/97x77x7_389.5.net";
+        c2rccNNResourcePaths[IDX_rw_rwnorm] = "olci/olci_20161012/rw_rwnorm/37x57x17_69.1.net";
     }
 
     @SourceProduct(label = "OLCI L1b product", description = "OLCI L1b source product.")
