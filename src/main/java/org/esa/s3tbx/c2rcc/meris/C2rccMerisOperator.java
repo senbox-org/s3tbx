@@ -61,7 +61,7 @@ import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.*;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.meris", version = "0.14",
+@OperatorMetadata(alias = "c2rcc.meris", version = "0.15",
         authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",

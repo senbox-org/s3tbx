@@ -45,6 +45,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
 import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.DEFAULT_WAVELENGTH;
@@ -93,7 +95,7 @@ import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.Result;
  * Computes AC-reflectances and IOPs from MERIS L1b data products using
  * an neural-network approach.
  */
-@OperatorMetadata(alias = "c2rcc.landsat8", version = "0.14",
+@OperatorMetadata(alias = "c2rcc.landsat8", version = "0.15",
         authors = "Roland Doerffer, Marco Peters (Brockmann Consult)",
         category = "Optical Processing/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
@@ -1074,25 +1076,6 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         if (sourceProduct.getBand(name) == null) {
             throw new OperatorException("Invalid source product, band '" + name + "' required");
         }
-    }
-
-    private Band addBand(Product targetProduct, String name, String unit, String description) {
-        Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
-        targetBand.setUnit(unit);
-        targetBand.setDescription(description);
-        targetBand.setGeophysicalNoDataValue(Double.NaN);
-        targetBand.setNoDataValueUsed(true);
-        return targetBand;
-    }
-
-    private Band addVirtualBand(Product targetProduct, String name, String expression, String unit, String description) {
-        Band band = targetProduct.addBand(name, expression);
-        band.setUnit(unit);
-        band.setDescription(description);
-        band.getSourceImage(); // trigger source image creation
-        band.setGeophysicalNoDataValue(Double.NaN);
-        band.setNoDataValueUsed(true);
-        return band;
     }
 
     private static double toReflectances(double source, double radiance_offset, double radiance_scale,
