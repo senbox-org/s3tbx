@@ -426,6 +426,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
+        // todo (mp/20161101) - this is expensive; probably we can remove it and gain some performance
         boolean samplesValid = C2rccCommons.areSamplesValid(sourceSamples, x, y);
         if (!samplesValid) {
             setInvalid(targetSamples);
