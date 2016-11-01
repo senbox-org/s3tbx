@@ -419,12 +419,6 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
-        boolean samplesValid = C2rccCommons.areSamplesValid(sourceSamples, x, y);
-        if (!samplesValid) {
-            setInvalid(targetSamples);
-            return;
-        }
-
         double[] reflectances = new double[L8_BAND_COUNT];
         for (int i = 0; i < L8_BAND_COUNT; i++) {
             Sample sample = sourceSamples[i];

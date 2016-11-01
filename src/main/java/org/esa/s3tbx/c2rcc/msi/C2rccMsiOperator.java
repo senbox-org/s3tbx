@@ -463,12 +463,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
-        boolean samplesValid = areSamplesValid(sourceSamples, x, y);
-        if(!samplesValid) {
-            setInvalid(targetSamples);
-            return;
-        }
-
         final double[] reflectances = new double[C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES.length];
         for (int i = 0; i < reflectances.length; i++) {
             reflectances[i] = sourceSamples[i].getDouble();
