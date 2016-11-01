@@ -178,13 +178,13 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
 
     static final String[] c2rccNNResourcePaths = new String[10];
     static {
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtoa_aann/31x7x31_786.7.net";
-        c2rccNNResourcePaths[IDX_rtosa_rpath] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtoa_rpath/31x37_2058.3.net";
-        c2rccNNResourcePaths[IDX_rtosa_rw] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtoa_rw/33x77x57x37_727927.1.net";
-        c2rccNNResourcePaths[IDX_rtosa_trans] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtoa_trans/31x37_39553.7.net";
+        c2rccNNResourcePaths[IDX_rtosa_aann] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtosa_aann/31x7x31_786.7.net";
+        c2rccNNResourcePaths[IDX_rtosa_rpath] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtosa_rpath/31x37_2058.3.net";
+        c2rccNNResourcePaths[IDX_rtosa_rw] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtosa_rw/37x77x57x37_727927.1.net";
+        c2rccNNResourcePaths[IDX_rtosa_trans] = "meris/coastcolour_midtsm_20161012/atmo_midtsm/rtosa_trans/31x37_39553.7.net";
         c2rccNNResourcePaths[IDX_iop_rw] = "meris/coastcolour_midtsm_20161012/water_midtsm/iop_rw/17x97x47_490.7.net";
         c2rccNNResourcePaths[IDX_iop_unciop] = "meris/coastcolour_midtsm_20161012/water_midtsm/iop_unciop/17x77x37_11486.7.net";
-        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "meris/coastcolour_midtsm_20161012/water_midtsm/iop_uncsumiop_unchkd/17x77x37_9113.1.net";
+        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "meris/coastcolour_midtsm_20161012/water_midtsm/iop_uncsumiop_unckd/17x77x37_9113.1.net";
         c2rccNNResourcePaths[IDX_rw_iop] = "meris/coastcolour_midtsm_20161012/water_midtsm/rw_iop/97x77x37_22393.1.net";
         c2rccNNResourcePaths[IDX_rw_kd] = "meris/coastcolour_midtsm_20161012/water_midtsm/rw_kd/97x77x7_376.3.net";
         c2rccNNResourcePaths[IDX_rw_rwnorm] = "meris/coastcolour_midtsm_20161012/water_midtsm/rw_rwnorm/37x57x17_76.8.net";
