@@ -1,5 +1,15 @@
 package org.esa.s3tbx.c2rcc.meris;
 
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_iop_rw;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_iop_unciop;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_iop_uncsumiop_unckd;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_aann;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_rpath;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_rw;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_trans;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_iop;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_kd;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_rwnorm;
 import static org.junit.Assert.*;
 
 import org.junit.*;
@@ -10,7 +20,17 @@ import java.util.Arrays;
 public class C2rccMerisAlgorithmTest {
     @Test
     public void testIt() throws Exception {
-        final String[] paths = C2rccMerisOperator.c2rccNNResourcePaths;
+        final String[] paths = new String[10];
+        paths[IDX_rtosa_aann] = "test_meris/rtoa_aaNN7/31x7x31_555.6.net";
+        paths[IDX_rtosa_rw] = "test_meris/rtoa_rw_nn3/33x73x53x33_470639.6.net";
+        paths[IDX_rw_iop] = "test_meris/inv_meris_logrw_logiop_20140318_noise_p5_fl/97x77x37_11671.0.net";
+        paths[IDX_iop_rw] = "test_meris/for_meris_logrw_logiop_20140318_p5_fl/17x97x47_335.3.net";
+        paths[IDX_rw_kd] = "test_meris/inv_meris_kd/97x77x7_232.4.net";
+        paths[IDX_iop_unciop] = "test_meris/uncertain_log_abs_biasc_iop/17x77x37_11486.7.net";
+        paths[IDX_iop_uncsumiop_unckd] = "test_meris/uncertain_log_abs_tot_kd/17x77x37_9113.1.net";
+        paths[IDX_rw_rwnorm] = "test_meris/norma_net_20150307/37x57x17_76.8.net";
+        paths[IDX_rtosa_trans] = "test_meris/rtoa_trans_nn2/31x77x57x37_37087.4.net";
+        paths[IDX_rtosa_rpath] = "test_meris/rtoa_rpath_nn2/31x77x57x37_2388.6.net";
         C2rccMerisAlgorithm algo = new C2rccMerisAlgorithm(paths, true);
 
         algo.setOutputRhow(true);
