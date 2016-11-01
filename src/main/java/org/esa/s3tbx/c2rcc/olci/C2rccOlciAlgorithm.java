@@ -245,20 +245,20 @@ public class C2rccOlciAlgorithm {
                                double atm_press,
                                double ozone) {
 
-        if (view_azi < 0) {
-            view_azi = 360 + view_azi; // view_azi is negative and therefore it will be subtracted from 360
-        }
-
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
         double cos_view = cos(toRadians(view_zeni));
 //        double sin_sun = sin(toRadians(sun_zeni));
         double sin_view = sin(toRadians(view_zeni));
 
-        double cos_azi_diff = cos(toRadians(view_azi - sun_azi));
-        double azi_diff_rad = acos(cos_azi_diff);
+
+        double azi_diff_deg = abs(180 + view_azi - sun_azi);
+        if (azi_diff_deg > 180) {
+            azi_diff_deg = 360 - azi_diff_deg;
+        }
+        double azi_diff_rad = toRadians(azi_diff_deg);
+        double cos_azi_diff = cos(azi_diff_rad);
         double sin_azi_diff = sin(azi_diff_rad);
-        double azi_diff_deg = toDegrees(azi_diff_rad);
 
         double x = sin_view * cos_azi_diff;
         double y = sin_view * sin_azi_diff;
@@ -266,6 +266,7 @@ public class C2rccOlciAlgorithm {
 
         double[] r_toa = new double[toa_rad.length];
         for (int i = 0; i < toa_rad.length; i++) {
+            // r_toa =toa_rad'./solflux'.*%pi./cos_sun;
             r_toa[i] = PI * toa_rad[i] / solflux[i] / cos_sun;
         }
 
@@ -311,11 +312,11 @@ public class C2rccOlciAlgorithm {
             double[] log_rtosa = new double[r_tosa_ur.length];
             for (int i = 0; i < r_tosa_ur.length; i++) {
 
-                double trans_ozoned12 = exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_sun);
-                double trans_ozoneu12 = exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_view);
-                double trans_ozone12 = trans_ozoned12 * trans_ozoneu12;
+                double trans_ozoned = exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_sun);
+                double trans_ozoneu = exp(-(absorb_ozon[i] * ozone / 1000.0 - model_ozone) / cos_view);
+                double trans_ozone = trans_ozoned * trans_ozoneu;
 
-                double r_tosa_oz = r_tosa_ur[i] / trans_ozone12;
+                double r_tosa_oz = r_tosa_ur[i] / trans_ozone;
 
                 r_tosa[i] = r_tosa_oz;
                 log_rtosa[i] = log(r_tosa[i]);

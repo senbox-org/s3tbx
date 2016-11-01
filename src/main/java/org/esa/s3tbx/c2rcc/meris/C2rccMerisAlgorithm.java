@@ -264,10 +264,13 @@ public class C2rccMerisAlgorithm {
 //        double sin_sun = sin(toRadians(sun_zeni));
         double sin_view = sin(toRadians(view_zeni));
 
-        double cos_azi_diff = cos(toRadians(view_azi - sun_azi));
-        double azi_diff_rad = acos(cos_azi_diff);
+        double azi_diff_deg = abs(180 + view_azi - sun_azi);
+        if (azi_diff_deg > 180) {
+            azi_diff_deg = 360 - azi_diff_deg;
+        }
+        double azi_diff_rad = toRadians(azi_diff_deg);
+        double cos_azi_diff = cos(azi_diff_rad);
         double sin_azi_diff = sin(azi_diff_rad);
-        double azi_diff_deg = toDegrees(azi_diff_rad);
 
         double x = sin_view * cos_azi_diff;
         double y = sin_view * sin_azi_diff;
@@ -275,6 +278,7 @@ public class C2rccMerisAlgorithm {
 
         double[] r_toa = new double[toa_rad.length];
         for (int i = 0; i < toa_rad.length; i++) {
+            // r_toa =toa_rad'./solflux'.*%pi./cos_sun;
             r_toa[i] = PI * toa_rad[i] / solflux[i] / cos_sun;
         }
 
