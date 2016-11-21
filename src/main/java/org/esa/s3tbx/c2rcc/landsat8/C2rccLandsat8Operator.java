@@ -232,7 +232,8 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             description = "The value used as air pressure if not provided by auxiliary data")
     private double press;
 
-    @Parameter(defaultValue = "0", unit = "m", interval = "(0, 8500)", label = "Elevation")
+    @Parameter(defaultValue = "0", unit = "m", interval = "(0, 8500)", label = "Elevation",
+            description = "Used as fallback if elevation could not be taken from GETASSE30 DEM")
     private double elevation;
 
     @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")
