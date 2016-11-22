@@ -61,6 +61,15 @@ public class ArrayMath {
         return max;
     }
 
+    public static double a_sumx(double[] x,int anf, int ende) {
+        double suma; //= new double; //Double.NEGATIVE_INFINITY;
+        suma= 0.0;
+        for (int i=anf; i < (ende+1); i++) {
+            suma = suma+x[i];
+        }
+        return suma;
+    }
+
     /**
      * Returns a {@code double[]} array with quotients x[n] divided by y[n].
      * It is mandatory that both input arrays must have the same size.

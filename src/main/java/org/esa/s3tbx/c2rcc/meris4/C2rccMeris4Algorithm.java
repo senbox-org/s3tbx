@@ -28,6 +28,7 @@ import static java.lang.Math.toRadians;
 import static org.esa.s3tbx.ArrayMath.a_abs;
 import static org.esa.s3tbx.ArrayMath.a_exp;
 import static org.esa.s3tbx.ArrayMath.a_max;
+import static org.esa.s3tbx.ArrayMath.a_sumx;
 
 /**
  * @author Roland Doerffer
@@ -370,20 +371,26 @@ public class C2rccMeris4Algorithm {
 
 
             // (9.4.2) test out of scope spectra with autoassociative neural network
+            // RD20161103 aaNN will always be computed, because needed for flagging
             rtosa_aann = new double[0];
             double[] log_rtosa_aann = new double[0];
-            if (outputRtoaGcAann || outputOos) {
+            //if (outputRtoaGcAann || outputOos) {
                 log_rtosa_aann = this.nn_rtosa_aann.get().calc(nn_in);
                 rtosa_aann = a_exp(log_rtosa_aann);
-            }
+            //}
             //double[] rtosa_aaNNrat = adiv(rtosa_aann, r_tosa);
             //rtosa_aaNNrat_a(ipix,:)=rtosa_aaNNrat;
             rtosa_oos = 0;
-            if (outputOos) {
-                double[] abs_diff_log_rtosa = a_abs(log_rtosa, log_rtosa_aann);
-                rtosa_oos = a_max(abs_diff_log_rtosa);
-            }
+            //if (outputOos) {
+            //    double[] abs_diff_log_rtosa = a_abs(log_rtosa, log_rtosa_aann);
+            //    rtosa_oos = a_max(abs_diff_log_rtosa);
+            //}
 
+            // RD20161103 changed to sum of differences of bands 9-12
+            //if (outputOos) {
+                double[] abs_diff_rtosa = a_abs(r_tosa, rtosa_aann);
+            rtosa_oos = a_sumx(abs_diff_rtosa,8,11);
+            //}
 
             // (9.6.1) set rho_toa out of scope flag
             // double rtosa_aaNNrat_min = amin(rtosa_aaNNrat);
@@ -526,7 +533,8 @@ public class C2rccMeris4Algorithm {
             //log_rw_nn2 = nnhs_ff(for_nn9b,nn_in_for); // compute rho_w from IOPs
 
             rwa_oos = 0;
-            if (outputOos) {
+            // RD20161103 no if question, because this calculation is needed for flagging
+            //if (outputOos) {
                 double[] log_rw_nn2 = nn_iop_rw.get().calc(nn_in_for);
 
                 // (9.5.7) test out of scope of rho_w by combining inverse and forward NN
@@ -543,7 +551,7 @@ public class C2rccMeris4Algorithm {
                     rwa_oos_flag = true;
                 }
                 flags = BitSetter.setFlag(flags, FLAG_INDEX_RHOW_OOS, rwa_oos_flag);
-            }
+            //}
 
             // (9.5.8) NN compute kd from rw
             kdmin_nn = 0;

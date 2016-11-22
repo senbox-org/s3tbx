@@ -244,7 +244,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     @Parameter(defaultValue = "21.0", description = "Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
     private double CHLfak;
 
-    @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
+    //RD20161103 parameter 0.05 -> 0.003 for sum of differences of MERIS12 bands 9-12
+    @Parameter(defaultValue = "0.003", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
             label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
