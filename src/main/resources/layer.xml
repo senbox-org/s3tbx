@@ -16,7 +16,7 @@
             <file name="org-esa-s3tbx-c2rcc-olci-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="C2RCC OLCI Processor"/>
+                <attr name="displayName" stringvalue="OLCI"/>
                 <attr name="operatorName" stringvalue="c2rcc.olci"/>
                 <attr name="dialogTitle" stringvalue="C2RCC OLCI Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
@@ -25,7 +25,7 @@
             <file name="org-esa-s3tbx-c2rcc-msi-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="C2RCC S2-MSI Processor"/>
+                <attr name="displayName" stringvalue="S2-MSI"/>
                 <attr name="operatorName" stringvalue="c2rcc.msi"/>
                 <attr name="dialogTitle" stringvalue="C2RCC MSI Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
@@ -34,7 +34,7 @@
             <file name="org-esa-s3tbx-c2rcc-landsat8-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="C2RCC Landsat-8 Processor"/>
+                <attr name="displayName" stringvalue="Landsat-8"/>
                 <attr name="operatorName" stringvalue="c2rcc.landsat8"/>
                 <attr name="dialogTitle" stringvalue="C2RCC Landsat-8 Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
@@ -43,7 +43,7 @@
             <file name="org-esa-s3tbx-c2rcc-meris-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="C2RCC MERIS Processor"/>
+                <attr name="displayName" stringvalue="MERIS"/>
                 <attr name="operatorName" stringvalue="c2rcc.meris"/>
                 <attr name="dialogTitle" stringvalue="C2RCC MERIS Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
@@ -52,7 +52,7 @@
             <file name="org-esa-s3tbx-c2rcc-meris4-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="C2RCC MERIS4 Processor"/>
+                <attr name="displayName" stringvalue="MERIS4"/>
                 <attr name="operatorName" stringvalue="c2rcc.meris4"/>
                 <attr name="dialogTitle" stringvalue="C2RCC MERIS4 Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
@@ -61,7 +61,7 @@
             <file name="org-esa-s3tbx-c2rcc-modis-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="C2RCC MODIS Processor"/>
+                <attr name="displayName" stringvalue="MODIS"/>
                 <attr name="operatorName" stringvalue="c2rcc.modis"/>
                 <attr name="dialogTitle" stringvalue="C2RCC MODIS Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
@@ -70,7 +70,7 @@
             <file name="org-esa-s3tbx-c2rcc-seawifs-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="C2RCC SeaWiFS Processor"/>
+                <attr name="displayName" stringvalue="SeaWiFS"/>
                 <attr name="operatorName" stringvalue="c2rcc.seawifs"/>
                 <attr name="dialogTitle" stringvalue="C2RCC SeaWiFS Processor"/>
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
