@@ -56,7 +56,7 @@ public class C2rccMerisAlgorithmTest {
                 0.31943759388761156, 0.028129863341225206};
         assertArrayEquals(iopsExpected1, result1.iops_nn, 1e-2);
 
-        assertEquals(-2147483648, result1.flags);
+        assertEquals(-2147450879, result1.flags);
 
     }
 }
