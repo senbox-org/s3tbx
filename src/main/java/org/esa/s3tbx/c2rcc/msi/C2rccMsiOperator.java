@@ -248,7 +248,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             description = "The value used as air pressure if not provided by auxiliary data")
     private double press;
 
-    @Parameter(defaultValue = "1000", unit = "m", interval = "(0, 8500)", label = "Elevation")
+    @Parameter(defaultValue = "0", unit = "m", interval = "(0, 8500)", label = "Elevation",
+            description = "Used as fallback if elevation could not be taken from GETASSE30 DEM")
     private double elevation;
 
     @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")
@@ -463,12 +464,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
-        boolean samplesValid = areSamplesValid(sourceSamples, x, y);
-        if(!samplesValid) {
-            setInvalid(targetSamples);
-            return;
-        }
-
         final double[] reflectances = new double[C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES.length];
         for (int i = 0; i < reflectances.length; i++) {
             reflectances[i] = sourceSamples[i].getDouble();
