@@ -226,7 +226,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @Parameter(defaultValue = "21.0", description = "Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
     private double CHLfak;
 
-    @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
+    // RD20161103 changed from 0.05 to 0.005 for sum of differences
+    @Parameter(defaultValue = "0.005", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
             label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
