@@ -1,6 +1,6 @@
 # s3tbx-c2rcc
 This is the source distribution of the Case-2 Regional / Coast Colour (C2RCC) Atmospheric Correction (AC) and 
-Inherent Optical Properties (IOP) Processor for Sentinel-3 OLCI, Sentinel-2 MSI, MERIS (incl. 4th repro), 
+Inherent Optical Properties (IOP) Processor for Sentinel-3 OLCI, Sentinel-2 MSI, Landsat-8, MERIS (incl. 4th repro), 
 MODIS and the SeaWiFS Level 1b radiance products.
 
 How to build
