@@ -971,18 +971,25 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
         MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
         sunAzimuth = imageAttributes.getAttribute("SUN_AZIMUTH").getData().getElemDouble();
-        sunZenith = 90 - imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
+        double sunElevation = imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
+        sunZenith = 90 - sunElevation;
 
         SubsetInfo subsetInfo = getSubsetInfo(metadataRoot);
         geometryAnglesBuilder = new GeometryAnglesBuilder(subsetInfo.subsampling_x, subsetInfo.offset_x, subsetInfo.center_x,
                                                           sunAzimuth, sunZenith);
+        double sunAngleCorrectionFactor = Math.sin(Math.toRadians(sunElevation));
 
         MetadataElement radiometricRescaling = l1MetadataFile.getElement("RADIOMETRIC_RESCALING");
         reflectance_offset = new double[L8_BAND_COUNT];
         reflectance_scale = new double[L8_BAND_COUNT];
         for (int i = 0; i < L8_BAND_COUNT; i++) {
-            reflectance_offset[i] = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_ADD_BAND_%d", i + 1));
-            reflectance_scale[i] = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_MULT_BAND_%d", i + 1));
+            // this follows:
+            // http://landsat.usgs.gov/Landsat8_Using_Product.php, section 'Conversion to TOA Reflectance'
+            // also see org.esa.s3tbx.dataio.landsat.geotiff.Landsat8Metadata#getSunAngleCorrectionFactor
+            double scalingOffset = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_ADD_BAND_%d", i + 1));
+            reflectance_offset[i] = scalingOffset / sunAngleCorrectionFactor;
+            double scalingFactor = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_MULT_BAND_%d", i + 1));
+            reflectance_scale[i] = scalingFactor / sunAngleCorrectionFactor;
         }
 
         if (sourceProduct.getSceneGeoCoding() == null) {
