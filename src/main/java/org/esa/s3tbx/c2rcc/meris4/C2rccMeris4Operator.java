@@ -1091,8 +1091,6 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
                                                     getSourceProduct().getSceneRasterHeight(),
                                                     RASTER_NAME_TOTAL_OZONE + " * 46698");
             ozoneInDu.setOwner(sourceProduct);
-            // Note
-            // Meris no need to multiply with 46698
             auxdataBuilder.useAtmosphericRaster(ozoneInDu,
                                                 sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
         }
