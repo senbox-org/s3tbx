@@ -1085,9 +1085,15 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
         auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
         if (useEcmwfAuxData) {
+            VirtualBand ozoneInDu = new VirtualBand("__ozone_in_du_",
+                                                    ProductData.TYPE_FLOAT32,
+                                                    getSourceProduct().getSceneRasterWidth(),
+                                                    getSourceProduct().getSceneRasterHeight(),
+                                                    RASTER_NAME_TOTAL_OZONE + " * 46698");
+            ozoneInDu.setOwner(sourceProduct);
             // Note
             // Meris no need to multiply with 46698
-            auxdataBuilder.useAtmosphericRaster(sourceProduct.getRasterDataNode(RASTER_NAME_TOTAL_OZONE),
+            auxdataBuilder.useAtmosphericRaster(ozoneInDu,
                                                 sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
         }
 
