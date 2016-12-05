@@ -8,15 +8,18 @@ class GeometryAnglesBuilder {
     private final double zenith_wink_fak;
 
     private final double sun_azimuth;
-    private final double sun_zenith;
+    private double cos_sun_zenith;
+    private double sin_sun_zenith;
 
-    public GeometryAnglesBuilder(int subsampling_x, int x_off, int x_c, double sun_azimuth, double sun_zenith) {
+    GeometryAnglesBuilder(int subsampling_x, int x_off, int x_c, double sun_azimuth, double sun_zenith) {
         this.subsampling_x = subsampling_x;
         this.x_off = x_off;
         this.x_c = x_c;
         this.zenith_wink_fak = 7.0 / this.x_c;
         this.sun_azimuth = sun_azimuth;
-        this.sun_zenith = sun_zenith;
+        double sun_zenith_rad = Math.toRadians(sun_zenith);
+        this.cos_sun_zenith = Math.cos(sun_zenith_rad);
+        this.sin_sun_zenith = Math.sin(sun_zenith_rad);
     }
 
     GeometryAngles getGeometryAngles(double xb, double latitude) {
@@ -47,9 +50,9 @@ class GeometryAnglesBuilder {
             geomAngels.view_azimuth = beta_deg + 270;
         }
 
-        geomAngels.cos_sun = Math.cos(Math.toRadians(sun_zenith));
+        geomAngels.cos_sun = cos_sun_zenith;
+        geomAngels.sin_sun = sin_sun_zenith;
         geomAngels.cos_view = Math.cos(Math.toRadians(geomAngels.view_zenith));
-        geomAngels.sin_sun = Math.sin(Math.toRadians(sun_zenith));
         geomAngels.sin_view = Math.sin(Math.toRadians(geomAngels.view_zenith));
 
         geomAngels.cos_azi_diff = Math.cos(Math.toRadians(geomAngels.view_azimuth - sun_azimuth));
