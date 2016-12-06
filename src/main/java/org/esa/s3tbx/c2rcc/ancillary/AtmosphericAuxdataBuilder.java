@@ -59,7 +59,7 @@ public class AtmosphericAuxdataBuilder {
             if (StringUtils.isNullOrEmpty(atmosphericAuxDataPath)) {
                 if (tomsomiStartProduct == null || tomsomiEndProduct == null || ncepStartProduct == null || ncepEndProduct == null) {
                     SystemUtils.LOG.info("Atmospheric auxdata product can't be used. At least one is not specified. " +
-                                                 "Using default values for ozone and surface pressure.");
+                                                 "Using constant values for ozone (" + ozone + ") and surface pressure (" + surfacePressure + ").");
                     auxdata = new ConstantAtmosphericAuxdata(ozone, surfacePressure);
                 } else {
                     auxdata = new AtmosphericAuxdataStatic(tomsomiStartProduct, tomsomiEndProduct, "ozone", ozone,
