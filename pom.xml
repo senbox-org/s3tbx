@@ -27,7 +27,7 @@
     <packaging>nbm</packaging>
     <description>Provides the Case-2 Regional / Coast Colour (C2RCC) Atmospheric Correction (AC) and
         Inherent Optical Properties (IOP) Processor for Sentinel-3 OLCI, Sentinel-2 MSI, Landsat-8,
-        MERIS (incl. 4th repro), MODIS and the SeaWiFS Level 1C radiance products.</description>
+        MERIS (incl. 4th repro), MODIS, SeaWiFS and VIIRS Level 1C radiance products.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
