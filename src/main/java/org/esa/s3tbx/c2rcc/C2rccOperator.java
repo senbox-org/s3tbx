@@ -6,6 +6,7 @@ import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
 import org.esa.s3tbx.c2rcc.msi.C2rccMsiOperator;
 import org.esa.s3tbx.c2rcc.olci.C2rccOlciOperator;
 import org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSOperator;
+import org.esa.s3tbx.c2rcc.viirs.C2rccViirsOperator;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
@@ -71,7 +72,7 @@ public class C2rccOperator extends Operator {
     @TargetProduct
     private Product targetProduct;
 
-    @Parameter(valueSet = {"", "olci", "msi", "meris", "meris4", "modis", "seawifs"})
+    @Parameter(valueSet = {"", "olci", "msi", "meris", "meris4", "modis", "seawifs, viirs"})
     private String sensorName;
 
     @Parameter(label = "Valid-pixel expression", converter = BooleanExpressionConverter.class,
@@ -209,6 +210,14 @@ public class C2rccOperator extends Operator {
             return "seawifs".equalsIgnoreCase(sensorName);
         } else {
             return C2rccSeaWiFSOperator.isValidInput(product);
+        }
+    }
+
+    private boolean isViirs(Product product) {
+        if (isNotNullAndNotEmpty(sensorName)) {
+            return "viirs".equalsIgnoreCase(sensorName);
+        } else {
+            return C2rccViirsOperator.isValidInput(product);
         }
     }
 
