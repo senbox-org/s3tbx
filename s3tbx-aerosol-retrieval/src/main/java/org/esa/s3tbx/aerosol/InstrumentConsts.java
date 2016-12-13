@@ -95,15 +95,15 @@ class InstrumentConsts {
         this.validRetrievalExpr = new HashMap<>(supportedInstruments.length);
         // todo: clarify if the valid retrieval expressions make sense !!
         String merisValidRetrievalExpr = "(!l1_flags.INVALID "
-                + " &&  " + idepixFlagBandName + ".F_LAND "
-                + " && !" + idepixFlagBandName + ".F_SNOW_ICE "
-                + " && !" + idepixFlagBandName + ".F_CLOUD "   // ???
-                + " && !" + idepixFlagBandName + ".F_CLOUD_BUFFER "   // ???
+                + " &&  " + idepixFlagBandName + ".IDEPIX_LAND "
+                + " && !" + idepixFlagBandName + ".IDEPIX_SNOW_ICE "
+                + " && !" + idepixFlagBandName + ".IDEPIX_CLOUD "   // ???
+                + " && !" + idepixFlagBandName + ".IDEPIX_CLOUD_BUFFER "   // ???
                 + " && (" + EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME + "<70))";
         validRetrievalExpr.put(supportedInstruments[0], merisValidRetrievalExpr);
         String vgtValidRetrievaExpr = "(SM.B0_GOOD && SM.B2_GOOD && SM.B3_GOOD && (SM.MIR_GOOD or MIR <= 0.65) "
-                + " &&  " + idepixFlagBandName + ".F_LAND "
-                + " && !" + idepixFlagBandName + ".F_SNOW_ICE "
+                + " &&  " + idepixFlagBandName + ".IDEPIX_LAND "
+                + " && !" + idepixFlagBandName + ".IDEPIX_SNOW_ICE "
 //                + " && !" + idepixFlagBandName + ".F_CLOUD_BUFFER "
                 + " && (SZA<70)) ";
         validRetrievalExpr.put(supportedInstruments[1], vgtValidRetrievaExpr);
@@ -111,12 +111,12 @@ class InstrumentConsts {
         this.validAotOutExpr = new HashMap<>(supportedInstruments.length);
         // todo: clarify if the aot output expressions make sense !!
         String merisValAotOutputExpr = "(!l1_flags.INVALID "
-                + " &&  " + idepixFlagBandName + ".F_LAND "
+                + " &&  " + idepixFlagBandName + ".IDEPIX_LAND "
 //                + " && (!" + idepixFlagBandName + ".F_CLOUD_BUFFER || " + idepixFlagBandName + ".F_SNOW_ICE)"
                 + " && (" + EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME + "<70))";
         validAotOutExpr.put(supportedInstruments[0], merisValAotOutputExpr);
         String vgtValAotOutputExpr = "(SM.B0_GOOD && SM.B2_GOOD && SM.B3_GOOD "
-                + " &&  " + idepixFlagBandName + ".F_LAND "
+                + " &&  " + idepixFlagBandName + ".IDEPIX_LAND "
 //                + " && (!" + idepixFlagBandName + ".F_CLOUD_BUFFER || " + idepixFlagBandName + ".F_SNOW_ICE)"
                 + " && (SZA<70)) ";
         validAotOutExpr.put(supportedInstruments[1], vgtValAotOutputExpr);
