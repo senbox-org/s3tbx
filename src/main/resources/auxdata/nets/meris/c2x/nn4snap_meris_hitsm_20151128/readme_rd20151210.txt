@@ -1,0 +1,14 @@
+info 20151210
+NN for high concentrations of TSM and adg
+
+Note:
+the following NNs are still based on the standard bio-optical model
+and are taken from the standard suite of NNs:
+
+-rw_kd
+-iop_unciop
+-iop_uncsumiop_unckd
+-rw_rwnorm
+
+they will be replaced later by NNs, which are trained with the bio-optical model
+for high concentrations
