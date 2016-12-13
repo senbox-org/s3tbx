@@ -98,7 +98,9 @@ class ModisConstants {
 
     public static final int MODIS_L1B_NUM_EMISSIVE_BANDS = MODIS_L1B_EMISSIVE_BAND_NAMES.length;
 
-    public static final int IDEPIX_MIXED_PIXEL = IdepixConstants.NUM_DEFAULT_FLAGS + 1;
+    public static final int IDEPIX_MIXED_PIXEL = IdepixConstants.NUM_DEFAULT_FLAGS;
+    public static final int IDEPIX_CLOUD_B_NIR= IdepixConstants.NUM_DEFAULT_FLAGS + 1;
 
     public static final String IDEPIX_MIXED_PIXEL_DESCR_TEXT = "Mixed pixel";
+    public static final String IDEPIX_CLOUD_B_NIR_DESCR_TEXT = "Cloudy pixel (from 'b_nir test')";
 }

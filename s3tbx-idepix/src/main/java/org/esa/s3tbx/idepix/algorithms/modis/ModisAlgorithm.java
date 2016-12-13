@@ -13,8 +13,14 @@ public class ModisAlgorithm {
     private boolean modisApplyBrightnessTest;
     private double modisBrightnessThreshCloudSure;
     private double modisBrightnessThreshCloudAmbiguous;
-    private double modisGlintThresh859;
+    private double modisBNirThresh859;
+    private double modisGlintThresh859forCloudSure;
+    private double modisGlintThresh859forCloudAmbiguous;
     private boolean modisApplyOrLogicInCloudTest;
+
+    private double nnCloudAmbiguousLowerBoundaryValue;
+    private double nnCloudAmbiguousSureSeparationValue;
+    private double nnCloudSureSnowSeparationValue;
 
     float waterFraction;
     double[] refl;
@@ -29,13 +35,13 @@ public class ModisAlgorithm {
 
         // for MODIS ALL NN, nnOutput has one element:
         // nnOutput[0] =
-        // 0 < x < 2.0 : clear
+        // 0 < x < nnCloudAmbiguousLowerBoundaryValue : clear
         // 2.0 < x < 3.35 : noncl / semitransparent cloud --> cloud ambiguous
         // 3.35 < x < 4.2 : cloudy --> cloud sure
         // 4.2 < x : clear snow/ice
         boolean isSnowIceFromNN;
         if (nnOutput != null) {
-            isSnowIceFromNN = nnOutput[0] > 4.2 && nnOutput[0] <= 5.0;    // separation numbers from HS, 20140923
+            isSnowIceFromNN = nnOutput[0] > nnCloudSureSnowSeparationValue && nnOutput[0] <= 5.0;    // separation numbers from HS, 20140923
         } else {
             // fallback
             // needs ndsi and brightness
@@ -83,6 +89,11 @@ public class ModisAlgorithm {
      * @return boolean
      */
     public boolean isCloudAmbiguous() {
+        if (isLand()) {
+            // over land, cloud_sure works very well, and the NN thresholds for water do not really work over land
+            return isCloudSure();
+        }
+
         if (isCloudSure() || isSnowIce()) {   // this check has priority
             return false;
         }
@@ -97,8 +108,8 @@ public class ModisAlgorithm {
         final boolean isCloudAmbiguousFromBrightness = modisApplyBrightnessTest &&
                 brightValue() > modisBrightnessThreshCloudAmbiguous;
         if (nnOutput != null) {
-            isCloudAmbiguousFromNN = nnOutput[0] > 2.0 && nnOutput[0] <= 3.35;    // separation numbers from HS, 20140923
-            isCloudAmbiguousFromNN = isCloudAmbiguousFromNN && refl[1] > modisGlintThresh859;
+            isCloudAmbiguousFromNN = nnOutput[0] > nnCloudAmbiguousLowerBoundaryValue && nnOutput[0] <= nnCloudAmbiguousSureSeparationValue;    // separation numbers from HS, 20140923
+            isCloudAmbiguousFromNN = isCloudAmbiguousFromNN && refl[1] > modisGlintThresh859forCloudAmbiguous;
         } else {
             // fallback
             isCloudAmbiguousFromNN = isCloudAmbiguousFromBrightness;
@@ -124,7 +135,8 @@ public class ModisAlgorithm {
         } else {
             isCloudAmbiguousFromWhitenesses = m > 0.3 && c1 > 0.6 && c2 > 0.74 && c3 > 0.9;
         }
-        isCloudAmbiguousFromWhitenesses = isCloudAmbiguousFromWhitenesses && refl[1] > modisGlintThresh859;
+        isCloudAmbiguousFromWhitenesses = isCloudAmbiguousFromWhitenesses &&
+                refl[1] > modisGlintThresh859forCloudAmbiguous;
 
         if (modisApplyOrLogicInCloudTest) {
             return isCloudAmbiguousFromNN || isCloudAmbiguousFromBrightness || isCloudAmbiguousFromWhitenesses;
@@ -153,8 +165,8 @@ public class ModisAlgorithm {
         final boolean isCloudSureFromBrightness = modisApplyBrightnessTest &&
                 brightValue() > Math.max(modisBrightnessThreshCloudSure, modisBrightnessThreshCloudAmbiguous);
         if (nnOutput != null) {
-            isCloudSureFromNN = nnOutput[0] > 3.35 && nnOutput[0] <= 4.2;   // ALL NN separation numbers from HS, 20140923
-            isCloudSureFromNN = isCloudSureFromNN && refl[1] > modisGlintThresh859;
+            isCloudSureFromNN = nnOutput[0] > nnCloudAmbiguousSureSeparationValue && nnOutput[0] <= nnCloudSureSnowSeparationValue;   // ALL NN separation numbers from HS, 20140923
+            isCloudSureFromNN = isCloudSureFromNN  && refl[1] > modisGlintThresh859forCloudSure;
         } else {
             // fallback
             isCloudSureFromNN = isCloudSureFromBrightness;
@@ -181,7 +193,7 @@ public class ModisAlgorithm {
         } else {
             isCloudSureFromWhitenesses = c1 > 0.87 && c2 > 0.9 && c3 > 0.97;
         }
-        isCloudSureFromWhitenesses = isCloudSureFromWhitenesses && refl[1] > modisGlintThresh859;
+        isCloudSureFromWhitenesses = isCloudSureFromWhitenesses && refl[1] > modisGlintThresh859forCloudSure;
 
         if (modisApplyOrLogicInCloudTest) {
             return isCloudSureFromNN || isCloudSureFromBrightness || isCloudSureFromWhitenesses;
@@ -189,6 +201,17 @@ public class ModisAlgorithm {
             return isCloudSureFromNN || (isCloudSureFromBrightness && isCloudSureFromWhitenesses);
         }
     }
+
+    public boolean isCloudBNir() {
+        // a new MODIS test for water  (CB/CL, 20161128)
+        if (isLand()) {
+            // over land, cloud_sure works very well, and the BNir test does not really work here
+            return isCloudSure();
+        } else {
+            return refl[1] > modisBNirThresh859;
+        }
+    }
+
 
     public boolean isCloudBuffer() {
         // is applied in post processing!
@@ -272,15 +295,36 @@ public class ModisAlgorithm {
         this.modisBrightnessThreshCloudSure = modisBrightnessThresh;
     }
 
+    public void setModisBNirThresh859(double modisBNirThresh859) {
+        this.modisBNirThresh859 = modisBNirThresh859;
+    }
+
     public void setModisBrightnessThreshCloudAmbiguous(double modisBrightnessThreshCloudAmbiguous) {
         this.modisBrightnessThreshCloudAmbiguous = modisBrightnessThreshCloudAmbiguous;
     }
 
-    public void setModisGlintThresh859(double modisGlintThresh859) {
-        this.modisGlintThresh859 = modisGlintThresh859;
+    public void setModisGlintThresh859forCloudSure(double modisGlintThresh859forCloudSure) {
+        this.modisGlintThresh859forCloudSure = modisGlintThresh859forCloudSure;
     }
+
+    public void setModisGlintThresh859forCloudAmbiguous(double modisGlintThresh859forCloudAmbiguous) {
+        this.modisGlintThresh859forCloudAmbiguous = modisGlintThresh859forCloudAmbiguous;
+    }
+
 
     public void setModisApplyOrLogicInCloudTest(boolean modisApplyOrLogicInCloudTest) {
         this.modisApplyOrLogicInCloudTest = modisApplyOrLogicInCloudTest;
+    }
+
+    public void setNnCloudAmbiguousLowerBoundaryValue(double nnCloudAmbiguousLowerBoundaryValue) {
+        this.nnCloudAmbiguousLowerBoundaryValue = nnCloudAmbiguousLowerBoundaryValue;
+    }
+
+    public void setNnCloudAmbiguousSureSeparationValue(double nnCloudAmbiguousSureSeparationValue) {
+        this.nnCloudAmbiguousSureSeparationValue = nnCloudAmbiguousSureSeparationValue;
+    }
+
+    public void setNnCloudSureSnowSeparationValue(double nnCloudSureSnowSeparationValue) {
+        this.nnCloudSureSnowSeparationValue = nnCloudSureSnowSeparationValue;
     }
 }

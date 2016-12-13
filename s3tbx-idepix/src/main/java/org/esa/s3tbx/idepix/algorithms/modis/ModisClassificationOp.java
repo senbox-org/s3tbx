@@ -38,7 +38,7 @@ public class ModisClassificationOp extends PixelOperator {
     @Parameter(defaultValue = "0.15",
             label = " 'Dark glint' threshold at 859nm",
             description = "'Dark glint' threshold: Cloud possible only if EV_250_Aggr1km_RefSB_2 > THRESH.")
-    private double ocModisGlintThresh859 = 0.15;
+    private double modisGlintThresh859 = 0.15;
 
     @Parameter(defaultValue = "1", label = " Width of cloud buffer (# of pixels)")
     private int cloudBufferWidth;
@@ -58,7 +58,40 @@ public class ModisClassificationOp extends PixelOperator {
             description = "Write 'Emissive' bands to target product.")
     private boolean outputEmissive = false;
 
+    @Parameter(defaultValue = "2.0",
+            label = " NN cloud ambiguous lower boundary",
+            description = " NN cloud ambiguous lower boundary")
+    double nnCloudAmbiguousLowerBoundaryValue;
 
+    @Parameter(defaultValue = "3.35",
+            label = " NN cloud ambiguous/sure separation value",
+            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
+    double nnCloudAmbiguousSureSeparationValue;
+
+    @Parameter(defaultValue = "4.2",
+            label = " NN cloud sure/snow separation value",
+            description = " NN cloud ambiguous cloud sure/snow separation value")
+    double nnCloudSureSnowSeparationValue;
+
+    @Parameter(defaultValue = "0.08",
+            label = " 'B_NIR' threshold at 859nm (MODIS)",
+            description = "'B_NIR' threshold: 'Cloud B_NIR' set if EV_250_Aggr1km_RefSB_2 > THRESH.")
+    private double bNirThresh859 = 0.08;
+
+    @Parameter(defaultValue = "0.15",
+            label = " 'Dark glint' threshold at 859nm for 'cloud sure' (MODIS)",
+            description = "'Dark glint' threshold: 'Cloud sure' possible only if EV_250_Aggr1km_RefSB_2 > THRESH.")
+    private double glintThresh859forCloudSure = 0.15;
+
+    @Parameter(defaultValue = "0.06",
+            label = " 'Dark glint' threshold at 859nm for 'cloud ambiguous' (MODIS)",
+            description = "'Dark glint' threshold: 'Cloud ambiguous' possible only if EV_250_Aggr1km_RefSB_2 > THRESH.")
+    private double glintThresh859forCloudAmbiguous = 0.06;
+
+    @Parameter(defaultValue = "0.125",
+            label = " Brightness test 'cloud ambiguous' threshold (MODIS)",
+            description = "Brightness test 'cloud ambiguous' threshold: EV_250_Aggr1km_RefSB_1 > THRESH (MODIS).")
+    private double brightnessThreshCloudAmbiguous = 0.125;
 
 
     @SourceProduct(alias = "refl", description = "MODIS L1b reflectance product")
@@ -198,11 +231,17 @@ public class ModisClassificationOp extends PixelOperator {
         final double ocModisBrightnessThreshCloudSure = 0.15;
         modisAlgorithm.setModisBrightnessThreshCloudSure(ocModisBrightnessThreshCloudSure);
         final double ocModisBrightnessThreshCloudAmbiguous = 0.125;
-        modisAlgorithm.
-                setModisBrightnessThreshCloudAmbiguous(ocModisBrightnessThreshCloudAmbiguous);
-        double ocModisGlintThresh859 = 0.15;
-        modisAlgorithm.setModisGlintThresh859(ocModisGlintThresh859);
+        modisAlgorithm.setModisBrightnessThreshCloudAmbiguous(ocModisBrightnessThreshCloudAmbiguous);
+
+        modisAlgorithm.setModisGlintThresh859forCloudAmbiguous(glintThresh859forCloudAmbiguous);
+        modisAlgorithm.setModisGlintThresh859forCloudSure(glintThresh859forCloudSure);
+        modisAlgorithm.setModisBNirThresh859(bNirThresh859);
+
         modisAlgorithm.setModisApplyOrLogicInCloudTest(applyOrLogicInCloudTest);
+
+        modisAlgorithm.setNnCloudAmbiguousLowerBoundaryValue(nnCloudAmbiguousLowerBoundaryValue);
+        modisAlgorithm.setNnCloudAmbiguousSureSeparationValue(nnCloudAmbiguousSureSeparationValue);
+        modisAlgorithm.setNnCloudSureSnowSeparationValue(nnCloudSureSnowSeparationValue);
 
         double[] modisNeuralNetInput = modisAllNeuralNet.get().getInputVector();
         modisNeuralNetInput[0] = Math.sqrt(sourceSamples[0].getFloat());    // EV_250_Aggr1km_RefSB.1 (645nm)
@@ -223,8 +262,10 @@ public class ModisClassificationOp extends PixelOperator {
         neuralNetOutput = modisAllNeuralNet.get().getNeuralNet().calc(modisNeuralNetInput);
 
         modisAlgorithm.setNnOutput(neuralNetOutput);
-
         targetSamples[1].set(neuralNetOutput[0]);
+
+        // new MODIS specific test:
+        targetSamples[0].set(ModisConstants.IDEPIX_CLOUD_B_NIR, modisAlgorithm.isCloudBNir());
 
         return modisAlgorithm;
     }

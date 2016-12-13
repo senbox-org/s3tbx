@@ -30,6 +30,9 @@ public class ModisUtils {
         flagCoding.addFlag("IDEPIX_MIXED_PIXEL", BitSetter.setFlag(0, ModisConstants.IDEPIX_MIXED_PIXEL),
                            ModisConstants.IDEPIX_MIXED_PIXEL_DESCR_TEXT);
 
+        flagCoding.addFlag("IDEPIX_CLOUD_B_NIR", BitSetter.setFlag(0, ModisConstants.IDEPIX_CLOUD_B_NIR),
+                           ModisConstants.IDEPIX_CLOUD_B_NIR_DESCR_TEXT);
+
         return flagCoding;
     }
 
@@ -48,6 +51,11 @@ public class ModisUtils {
 
         mask = Mask.BandMathsType.create("IDEPIX_MIXED_PIXEL", ModisConstants.IDEPIX_MIXED_PIXEL_DESCR_TEXT, w, h,
                                          "pixel_classif_flags.IDEPIX_MIXED_PIXEL",
+                                         IdepixFlagCoding.getRandomColour(r), 0.5f);
+        classifProduct.getMaskGroup().add(index, mask);
+
+        mask = Mask.BandMathsType.create("IDEPIX_CLOUD_B_NIR", ModisConstants.IDEPIX_CLOUD_B_NIR_DESCR_TEXT, w, h,
+                                         "pixel_classif_flags.IDEPIX_CLOUD_B_NIR",
                                          IdepixFlagCoding.getRandomColour(r), 0.5f);
         classifProduct.getMaskGroup().add(index, mask);
     }
