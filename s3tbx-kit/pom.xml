@@ -17,6 +17,11 @@
         data of other optical, medium resolution sensors.
     </description>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <s3tbx-c2rcc.version>0.17-SNAPSHOT</s3tbx-c2rcc.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -93,6 +98,11 @@
             <groupId>org.esa.s3tbx</groupId>
             <artifactId>s3tbx-avhrr-reader</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.s3tbx</groupId>
+            <artifactId>s3tbx-c2rcc</artifactId>
+            <version>${s3tbx-c2rcc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
@@ -272,9 +282,5 @@
         </dependency>
 
     </dependencies>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
 </project>
