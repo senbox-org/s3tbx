@@ -51,13 +51,28 @@ Then
 * restart SNAP.
 
 Once the C2RCC processor is installed into SNAP it can be run from the SNAP Desktop UI's main menu at
-> **Optical / Thematic Water Processing / C2RCC**
+> **Optical / Thematic Water Processing / C2RCC / \<Sensor\>**
   
-Or in batch mode using SNAP's `gpt` command-line tool found in `${SNAP_HOME}/bin`:
+Or in batch mode using SNAP's `gpt` command-line tool found in `${SNAP_HOME}/bin`. Depending on the sensor you want 
+to execute you can call the following to get help.
 ```
-> gpt C2RCC -h
-> gpt C2RCC [-Psalinity=<num>]  [-Ptemperature=<num>] [-PuseDefaultSolarFlux=true|false] -t <target-file> <source-file>
+> gpt c2rcc.<sensor> -h
+```
+e.g.
+```
+> gpt c2rcc.meris -h
 ```  
+Available at the time of writing are:
+* c2rcc.landsat8
+* c2rcc.meris   
+* c2rcc.meris4  
+* c2rcc.modis   
+* c2rcc.msi     
+* c2rcc.olci    
+* c2rcc.seawifs
+* c2rcc.viirs   
+ 
+
 
 Modifying, running and debugging the processor code
 ---------------------------------------------------
