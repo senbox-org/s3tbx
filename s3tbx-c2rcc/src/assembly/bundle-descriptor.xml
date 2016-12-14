@@ -1,0 +1,223 @@
+<bundleDescriptor>
+    <bundleName>c2rcc</bundleName>
+    <bundleVersion>0.9.6</bundleVersion>
+
+    <processorDescriptors>
+        <processorDescriptor>
+            <executableName>c2rcc-ncep</executableName>
+            <processorName>Case 2R/CoastColour Processor with NCEP</processorName>
+            <processorVersion>0.9.6</processorVersion>
+            <descriptionHtml>
+                <![CDATA[<p>Performs atmospheric correction and IOP retrieval on MERIS, MODIS L1C, SeaWiFS L1C data products using
+                 an neural-network approach.</p>]]>
+            </descriptionHtml>
+            <defaultParameters></defaultParameters>
+            <outputFormats>BEAM-DIMAP</outputFormats>
+            <inputProductTypes>MERIS_L1B,MODIS_L1C,SEAWIFS_L1C</inputProductTypes>
+
+            <!--  TODO the graph need to pass these parameters through
+            <parameterDescriptors>
+                <parameterDescriptor>
+                    <name>validPixelExpression</name>
+                    <type>string</type>
+                    <description>Valid-pixel expression</description>
+                    <defaultValue></defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>salinity</name>
+                    <type>string</type>
+                    <description>PSU (0, 100)</description>
+                    <defaultValue>35.0</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>temperature</name>
+                    <type>string</type>
+                    <description>Celsius (-50, 50)</description>
+                    <defaultValue>15.0</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>ozone</name>
+                    <type>string</type>
+                    <description>DU (0, 1000)</description>
+                    <defaultValue>330</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>press</name>
+                    <type>string</type>
+                    <description>Air Pressure hPa (0, 2000)</description>
+                    <defaultValue>1000</defaultValue>
+                </parameterDescriptor>
+            </parameterDescriptors>
+            -->
+        </processorDescriptor>
+
+        <processorDescriptor>
+            <executableName>meris.c2rcc</executableName>
+            <processorName>Case 2R/CoastColour Processor for MERIS</processorName>
+            <processorVersion>0.9.6</processorVersion>
+            <descriptionHtml>
+                <![CDATA[<p>Performs atmospheric correction and IOP retrieval on MERIS products using
+                 an neural-network approach.</p>]]>
+            </descriptionHtml>
+            <defaultParameters></defaultParameters>
+            <outputFormats>BEAM-DIMAP</outputFormats>
+            <inputProductTypes>MERIS_L1B</inputProductTypes>
+
+
+            <parameterDescriptors>
+                <parameterDescriptor>
+                    <name>validPixelExpression</name>
+                    <type>string</type>
+                    <description>Valid-pixel expression</description>
+                    <defaultValue>!l1_flags.INVALID AND !l1_flags.LAND_OCEAN</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>salinity</name>
+                    <type>float</type>
+                    <description>interval: 0 ... 100  ,  unit: PSU</description>
+                    <defaultValue>35.0</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>temperature</name>
+                    <type>float</type>
+                    <description>interval: -50 ... 50  ,  unit: C</description>
+                    <defaultValue>15.0</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>ozone</name>
+                    <type>float</type>
+                    <description>interval: 0 ... 1000  ,  unit: DU</description>
+                    <defaultValue>330</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>press</name>
+                    <type>float</type>
+                    <description>Air Pressure , interval: 0 ... 2000 , unit: hPa</description>
+                    <defaultValue>1000</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>TSMfakBpart</name>
+                    <type>float</type>
+                    <description>TSM factor bpart. Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)</description>
+                    <defaultValue>1.72</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>TSMfakBwit</name>
+                    <type>float</type>
+                    <description>TSM factor bwit. Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)</description>
+                    <defaultValue>6.2</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>CHLexp</name>
+                    <type>float</type>
+                    <description>Chlorophyl exponent ( CHL = iop-apig^CHLexp * CHLfak )</description>
+                    <defaultValue>1.04</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>CHLfak</name>
+                    <type>float</type>
+                    <description>Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak )</description>
+                    <defaultValue>21.0</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>thresholdRtosaOOS</name>
+                    <type>float</type>
+                    <description>Threshold rtosa OOS. Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances.</description>
+                    <defaultValue>0.05</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>thresholdAcReflecOos</name>
+                    <type>float</type>
+                    <description>TThreshold for out of scope of nn training dataset flag for atmospherically corrected reflectances.</description>
+                    <defaultValue>0.1</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>netSet</name>
+                    <type>string</type>
+                    <description>Set of neuronal nets for algorithm.</description>
+                    <defaultValue>C2RCC-Nets</defaultValue>
+                    <valueSet>C2RCC-Nets,C2X-Nets</valueSet>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>useDefaultSolarFlux</name>
+                    <type>boolean</type>
+                    <description>If 'false', use solar flux from source product</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputRtoa</name>
+                    <type>boolean</type>
+                    <description>Output top-of-atmosphere (TOA) reflectances.</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputRtosaGc</name>
+                    <type>boolean</type>
+                    <description>Output gas corrected top-of-atmosphere (TOSA) reflectances.</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputRtoaGcAann</name>
+                    <type>boolean</type>
+                    <description>Output of auto nn, reflectances.</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputRpath</name>
+                    <type>boolean</type>
+                    <description>Output path radiance reflectances.</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputTdown</name>
+                    <type>boolean</type>
+                    <description>Output downward transmittance.</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputTup</name>
+                    <type>boolean</type>
+                    <description>Output upward transmittance.</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputAcReflectance</name>
+                    <type>boolean</type>
+                    <description>Output angular dependent water leaving reflectances.</description>
+                    <defaultValue>true</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputRhown</name>
+                    <type>boolean</type>
+                    <description>Output normalized water leaving reflectances.</description>
+                    <defaultValue>true</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputOos</name>
+                    <type>boolean</type>
+                    <description>Output of out of scope values.</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputKd</name>
+                    <type>boolean</type>
+                    <description>Output of irradiance attenuation coefficients.</description>
+                    <defaultValue>true</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputUncertainties</name>
+                    <type>boolean</type>
+                    <description>Output uncertainties.</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+                <parameterDescriptor>
+                    <name>outputAsRrs</name>
+                    <type>boolean</type>
+                    <description>Output AC reflectances as remote sensing or water leaving reflectances</description>
+                    <defaultValue>false</defaultValue>
+                </parameterDescriptor>
+            </parameterDescriptors>
+        </processorDescriptor>
+
+    </processorDescriptors>
+</bundleDescriptor>
