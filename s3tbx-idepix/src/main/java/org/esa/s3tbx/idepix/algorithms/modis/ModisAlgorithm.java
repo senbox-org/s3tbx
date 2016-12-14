@@ -89,60 +89,62 @@ public class ModisAlgorithm {
      * @return boolean
      */
     public boolean isCloudAmbiguous() {
-        if (isLand()) {
-            // over land, cloud_sure works very well, and the NN thresholds for water do not really work over land
-            return isCloudSure();
-        }
+        return isCloudSure(); // todo: discuss and decide finally
 
-        if (isCloudSure() || isSnowIce()) {   // this check has priority
-            return false;
-        }
-
-        // for MODIS ALL NN, nnOutput has one element:
-        // nnOutput[0] =
-        // 0 < x < 2.0 : clear
-        // 2.0 < x < 3.35 : noncl / semitransparent cloud --> cloud ambiguous
-        // 3.35 < x < 4.2 : cloudy --> cloud sure
-        // 4.2 < x : clear snow/ice
-        boolean isCloudAmbiguousFromNN;
-        final boolean isCloudAmbiguousFromBrightness = modisApplyBrightnessTest &&
-                brightValue() > modisBrightnessThreshCloudAmbiguous;
-        if (nnOutput != null) {
-            isCloudAmbiguousFromNN = nnOutput[0] > nnCloudAmbiguousLowerBoundaryValue && nnOutput[0] <= nnCloudAmbiguousSureSeparationValue;    // separation numbers from HS, 20140923
-            isCloudAmbiguousFromNN = isCloudAmbiguousFromNN && refl[1] > modisGlintThresh859forCloudAmbiguous;
-        } else {
-            // fallback
-            isCloudAmbiguousFromNN = isCloudAmbiguousFromBrightness;
-        }
-
-        // MP additional criteria:
-
-        // Whiteness Criteria
-        // (A bright and spectrally flat signal)
-        // c1: EV_250_Aggr1km_RefSB_1 / EV_500_Aggr1km_RefSB_3
-        // c2: EV_500_Aggr1km_RefSB_4/ EV_500_Aggr1km_RefSB_3
-        // c3: EV_250_Aggr1km_RefSB_1 / EV_500_Aggr1km_RefSB_4
-
-        // c1 > 0.87 && c2 > 0.9 && c3 > 0.97 --> cloud sure
-        final float c1 = whiteValue(0, 2);
-        final float c2 = whiteValue(3, 2);
-        final float c3 = whiteValue(0, 3);
-
-        boolean isCloudAmbiguousFromWhitenesses;
-        final double m = Math.min(Math.min(refl[0], refl[2]), refl[3]);
-        if (isLand()) {
-            isCloudAmbiguousFromWhitenesses = m > 0.3 && c1 > 0.85 && c2 > 0.86 && c3 > 0.86 && c1 <= 0.96 && c2 <= 0.93 && c3 <= 0.05;
-        } else {
-            isCloudAmbiguousFromWhitenesses = m > 0.3 && c1 > 0.6 && c2 > 0.74 && c3 > 0.9;
-        }
-        isCloudAmbiguousFromWhitenesses = isCloudAmbiguousFromWhitenesses &&
-                refl[1] > modisGlintThresh859forCloudAmbiguous;
-
-        if (modisApplyOrLogicInCloudTest) {
-            return isCloudAmbiguousFromNN || isCloudAmbiguousFromBrightness || isCloudAmbiguousFromWhitenesses;
-        } else {
-            return isCloudAmbiguousFromNN || (isCloudAmbiguousFromBrightness && isCloudAmbiguousFromWhitenesses);
-        }
+//        if (isLand()) {
+//            // over land, cloud_sure works very well, and the NN thresholds for water do not really work over land
+//            return isCloudSure();
+//        }
+//
+//        if (isCloudSure() || isSnowIce()) {   // this check has priority
+//            return false;
+//        }
+//
+//        // for MODIS ALL NN, nnOutput has one element:
+//        // nnOutput[0] =
+//        // 0 < x < 2.0 : clear
+//        // 2.0 < x < 3.35 : noncl / semitransparent cloud --> cloud ambiguous
+//        // 3.35 < x < 4.2 : cloudy --> cloud sure
+//        // 4.2 < x : clear snow/ice
+//        boolean isCloudAmbiguousFromNN;
+//        final boolean isCloudAmbiguousFromBrightness = modisApplyBrightnessTest &&
+//                brightValue() > modisBrightnessThreshCloudAmbiguous;
+//        if (nnOutput != null) {
+//            isCloudAmbiguousFromNN = nnOutput[0] > nnCloudAmbiguousLowerBoundaryValue && nnOutput[0] <= nnCloudAmbiguousSureSeparationValue;    // separation numbers from HS, 20140923
+//            isCloudAmbiguousFromNN = isCloudAmbiguousFromNN && refl[1] > modisGlintThresh859forCloudAmbiguous;
+//        } else {
+//            // fallback
+//            isCloudAmbiguousFromNN = isCloudAmbiguousFromBrightness;
+//        }
+//
+//        // MP additional criteria:
+//
+//        // Whiteness Criteria
+//        // (A bright and spectrally flat signal)
+//        // c1: EV_250_Aggr1km_RefSB_1 / EV_500_Aggr1km_RefSB_3
+//        // c2: EV_500_Aggr1km_RefSB_4/ EV_500_Aggr1km_RefSB_3
+//        // c3: EV_250_Aggr1km_RefSB_1 / EV_500_Aggr1km_RefSB_4
+//
+//        // c1 > 0.87 && c2 > 0.9 && c3 > 0.97 --> cloud sure
+//        final float c1 = whiteValue(0, 2);
+//        final float c2 = whiteValue(3, 2);
+//        final float c3 = whiteValue(0, 3);
+//
+//        boolean isCloudAmbiguousFromWhitenesses;
+//        final double m = Math.min(Math.min(refl[0], refl[2]), refl[3]);
+//        if (isLand()) {
+//            isCloudAmbiguousFromWhitenesses = m > 0.3 && c1 > 0.85 && c2 > 0.86 && c3 > 0.86 && c1 <= 0.96 && c2 <= 0.93 && c3 <= 0.05;
+//        } else {
+//            isCloudAmbiguousFromWhitenesses = m > 0.3 && c1 > 0.6 && c2 > 0.74 && c3 > 0.9;
+//        }
+//        isCloudAmbiguousFromWhitenesses = isCloudAmbiguousFromWhitenesses &&
+//                refl[1] > modisGlintThresh859forCloudAmbiguous;
+//
+//        if (modisApplyOrLogicInCloudTest) {
+//            return isCloudAmbiguousFromNN || isCloudAmbiguousFromBrightness || isCloudAmbiguousFromWhitenesses;
+//        } else {
+//            return isCloudAmbiguousFromNN || (isCloudAmbiguousFromBrightness && isCloudAmbiguousFromWhitenesses);
+//        }
     }
 
     /**
