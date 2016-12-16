@@ -9,7 +9,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
-import javax.swing.*;
+import javax.swing.Action;
 import java.awt.event.ActionEvent;
 
 /**
@@ -19,7 +19,7 @@ import java.awt.event.ActionEvent;
  */
 @ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixSeawifsAction")
 @ActionRegistration(displayName = "#CTL_IdepixSeawifsAction_Text")
-@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 200)
+@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 600)
 @NbBundle.Messages({"CTL_IdepixSeawifsAction_Text=SeaWiFS"})
 public class IdepixSeawifsAction extends AbstractSnapAction {
 

@@ -23,7 +23,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
-import javax.swing.*;
+import javax.swing.Action;
 import java.awt.event.ActionEvent;
 
 /**
@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
 @ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixVgtAction")
 @ActionRegistration(displayName = "#CTL_IdepixVgtAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 200)
-@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 200)
+@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 800)
 @NbBundle.Messages({"CTL_IdepixVgtAction_Text=SPOT-VGT"})
 public class IdepixVgtAction extends AbstractSnapAction {
 

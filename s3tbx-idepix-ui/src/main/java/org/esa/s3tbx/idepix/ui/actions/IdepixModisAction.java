@@ -23,7 +23,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
-import javax.swing.*;
+import javax.swing.Action;
 import java.awt.event.ActionEvent;
 
 /**
@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
 @ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixModisAction")
 @ActionRegistration(displayName = "#CTL_IdepixModisAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 0)
-@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 0)
+@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 500)
 @NbBundle.Messages({"CTL_IdepixModisAction_Text=MODIS"})
 public class IdepixModisAction extends AbstractSnapAction {
 

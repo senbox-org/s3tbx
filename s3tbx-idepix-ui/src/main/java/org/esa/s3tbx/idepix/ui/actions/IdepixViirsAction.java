@@ -15,7 +15,6 @@
 package org.esa.s3tbx.idepix.ui.actions;
 
 import org.esa.s3tbx.idepix.algorithms.viirs.ViirsOp;
-import org.esa.s3tbx.idepix.algorithms.viirs.ViirsOp;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.ui.DefaultSingleTargetProductDialog;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -24,7 +23,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
-import javax.swing.*;
+import javax.swing.Action;
 import java.awt.event.ActionEvent;
 
 /**
@@ -35,7 +34,7 @@ import java.awt.event.ActionEvent;
 @ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixViirsAction")
 @ActionRegistration(displayName = "#CTL_IdepixViirsAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 0)
-@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 0)
+@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 700)
 @NbBundle.Messages({"CTL_IdepixViirsAction_Text=VIIRS"})
 public class IdepixViirsAction extends AbstractSnapAction {
 

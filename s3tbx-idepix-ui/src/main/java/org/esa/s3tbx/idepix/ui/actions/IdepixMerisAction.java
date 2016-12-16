@@ -23,7 +23,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
-import javax.swing.*;
+import javax.swing.Action;
 import java.awt.event.ActionEvent;
 
 /**
@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
 @ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixMerisAction")
 @ActionRegistration(displayName = "#CTL_IdepixMerisAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 0)
-@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 0)
+@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 400)
 @NbBundle.Messages({"CTL_IdepixMerisAction_Text=MERIS"})
 public class IdepixMerisAction extends AbstractSnapAction {
 

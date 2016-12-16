@@ -14,16 +14,8 @@
  */
 package org.esa.s3tbx.idepix.ui.actions;
 
-import org.esa.s3tbx.idepix.algorithms.avhrr.AvhrrOp;
-import org.esa.s3tbx.idepix.ui.IdepixDefaultDialog;
-import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
-import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
-import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
@@ -34,7 +26,7 @@ import java.awt.event.ActionEvent;
 // todo: activate when ready to publish
 //@ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixAvhrrAction")
 //@ActionRegistration(displayName = "#CTL_IdepixAvhrrAction_Text")
-//@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 200)
+//@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 900)
 //@NbBundle.Messages({"CTL_IdepixAvhrrAction_Text=Avhrr"})
 public class IdepixAvhrrAction extends AbstractSnapAction {
 
