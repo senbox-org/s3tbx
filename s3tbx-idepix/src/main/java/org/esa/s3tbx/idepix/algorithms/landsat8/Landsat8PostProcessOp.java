@@ -4,9 +4,14 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.idepix.algorithms.CloudBuffer;
 import org.esa.s3tbx.idepix.algorithms.CloudShadowFronts;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
-import org.esa.s3tbx.idepix.core.util.IdepixIO;
 import org.esa.s3tbx.idepix.core.util.OperatorUtils;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.CrsGeoCoding;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.TiePointGeoCoding;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -17,7 +22,7 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.RectangleExtender;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * Operator used to consolidate cloud flag for Landsat 8:
@@ -111,9 +116,9 @@ public class Landsat8PostProcessOp extends Operator {
             checkForCancellation();
             for (int x = srcRectangle.x; x < srcRectangle.x + srcRectangle.width; x++) {
 
-                if ((x == 3461 || x == 3462) && y == 477) {
-                    System.out.println("x,y = " + x + "," + y);
-                }
+//                if ((x == 3461 || x == 3462) && y == 477) {
+//                    System.out.println("x,y = " + x + "," + y);
+//                }
 
                 if (targetRectangle.contains(x, y)) {
                     combineFlags(x, y, sourceFlagTile, targetTile);

@@ -5,7 +5,10 @@ import com.bc.ceres.glayer.tools.Tools;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.Stx;
+import org.esa.snap.core.datamodel.StxFactory;
 import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
@@ -180,7 +183,7 @@ public class Landsat8Op extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-        System.out.println("Running IDEPIX Landsat 8 - source product: " + sourceProduct.getName());
+//        System.out.println("Running IDEPIX Landsat 8 - source product: " + sourceProduct.getName());
 
 
         final boolean inputProductIsValid = IdepixIO.validateInputProduct(sourceProduct, AlgorithmSelector.LANDSAT8);
@@ -203,7 +206,7 @@ public class Landsat8Op extends Operator {
             final Band clostBand = clostProduct.getBand(ClostOp.CLOST_BAND_NAME);
 
             clostThresh = computeClostHistogram3PercentOfMaximum(clostBand);
-            System.out.println("clostThresh = " + clostThresh);
+//            System.out.println("clostThresh = " + clostThresh);
         }
 
         if (applyOtsuCloudTest) {
