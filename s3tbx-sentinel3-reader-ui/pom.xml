@@ -17,11 +17,15 @@
     <dependencies>
         <dependency>
             <groupId>org.esa.snap</groupId>
-            <artifactId>snap-rcp</artifactId>
+            <artifactId>snap-runtime</artifactId>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-rcp</artifactId>
         </dependency>
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
@@ -39,6 +43,14 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
     </dependencies>
 
