@@ -31,7 +31,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <snap.version>5.0.0</snap.version>
+        <snap.version>6.0.0-SNAPSHOT</snap.version>
         <javahelp.version>2.0.05</javahelp.version>
     </properties>
 
