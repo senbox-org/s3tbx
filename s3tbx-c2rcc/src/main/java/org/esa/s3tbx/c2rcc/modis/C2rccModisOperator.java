@@ -45,7 +45,7 @@ import static org.esa.s3tbx.c2rcc.util.TargetProductPreparer.*;
  */
 @OperatorMetadata(alias = "c2rcc.modis", version = "0.17",
         authors = "Wolfgang Schoenfeld (HZG), Sabine Embacher, Norman Fomferra (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
+        category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.")
 public class C2rccModisOperator extends PixelOperator implements C2rccConfigurable {

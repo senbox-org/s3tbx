@@ -32,7 +32,7 @@ import static org.esa.snap.core.util.StringUtils.*;
 @OperatorMetadata(alias = "c2rcc", version = "0.17",
         authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
         internal = true,
-        category = "Optical Processing/Thematic Water Processing",
+        category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on OLCI, MSI, MERIS, MODIS or SeaWiFS L1 product.")
 public class C2rccOperator extends Operator {

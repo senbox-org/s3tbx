@@ -62,7 +62,7 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
  */
 @OperatorMetadata(alias = "c2rcc.olci", version = "0.17",
         authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
+        category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
 public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurable {

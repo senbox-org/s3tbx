@@ -47,7 +47,7 @@ import static org.esa.s3tbx.c2rcc.viirs.C2rccViirsAlgorithm.viirsWavelengths;
  */
 @OperatorMetadata(alias = "c2rcc.viirs", version = "0.17",
         authors = "Roland Doerffer, Marco Peters (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
+        category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on Viirs L1C data products.")
 public class C2rccViirsOperator extends PixelOperator implements C2rccConfigurable {
