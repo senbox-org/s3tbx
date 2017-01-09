@@ -47,7 +47,7 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengt
  */
 @OperatorMetadata(alias = "c2rcc.seawifs", version = "0.17",
         authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
+        category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1C data products.")
 public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigurable {
