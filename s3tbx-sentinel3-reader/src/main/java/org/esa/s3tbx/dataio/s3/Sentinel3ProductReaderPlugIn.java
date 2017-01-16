@@ -117,10 +117,10 @@ public class Sentinel3ProductReaderPlugIn implements ProductReaderPlugIn {
         final File inputFile = new File(input.toString());
         final File parentFile = inputFile.getParentFile();
         return parentFile != null &&
-                (isValidDirectoryName(parentFile.getName()) && isValidInputFileName(inputFile.getName())) ||
+               (isValidDirectoryName(parentFile.getName()) && isValidInputFileName(inputFile.getName())) ||
                (isValidDirectoryName(inputFile.getName()) && new File(inputFile, XfduManifest.MANIFEST_FILE_NAME).exists()) ||
                (isValidDirectoryName(inputFile.getName()) && new File(inputFile, EarthExplorerManifest.L1C_MANIFEST_FILE_NAME).exists())
-        ;
+                ;
     }
 
     private boolean isValidDirectoryName(String name) {
@@ -140,7 +140,7 @@ public class Sentinel3ProductReaderPlugIn implements ProductReaderPlugIn {
                                                        "0.16 * Oa05_radiance)"
                                                },
                                                new String[]{
-                                                       "S3*_OL_1*",
+                                                       "OL_1_*",
                                                        "S3*_OL_1*",
                                                        "",
                                                }
@@ -158,7 +158,7 @@ public class Sentinel3ProductReaderPlugIn implements ProductReaderPlugIn {
                                                        "0.47 * Oa04_reflectance + 0.16 * Oa05_reflectance)"
                                                },
                                                new String[]{
-                                                       "S3*OL_2_W*",
+                                                       "OL_2_W*",
                                                        "S3*OL_2_W*",
                                                        "",
                                                }
@@ -206,18 +206,48 @@ public class Sentinel3ProductReaderPlugIn implements ProductReaderPlugIn {
                                                }
         ));
         manager.addProfile(new RGBImageProfile("SLSTR L1 - Oblique",
-                                                new String[]{
-                                                        "S3_radiance_ao",
-                                                        "S2_radiance_ao",
-                                                        "S1_radiance_ao",
-                                                }
+                                               new String[]{
+                                                       "S3_radiance_ao",
+                                                       "S2_radiance_ao",
+                                                       "S1_radiance_ao",
+                                               }
         ));
         manager.addProfile(new RGBImageProfile("SLSTR L1 - Oblique, False colour",
-                                                new String[]{
-                                                        "S5_radiance_ao",
-                                                        "S3_radiance_ao",
-                                                        "S2_radiance_ao",
-                                                }
+                                               new String[]{
+                                                       "S5_radiance_ao",
+                                                       "S3_radiance_ao",
+                                                       "S2_radiance_ao",
+                                               }
+        ));
+        manager.addProfile(new RGBImageProfile("SYN L2 - Tristimulus",
+                                               new String[]{
+                                                       "log(0.05 + 0.01 * SDR_01 + 0.09 * SDR_02 + 0.35 * SDR_03 + " +
+                                                       "0.04 * SDR_04 + 0.01 * SDR_05 + 0.59 * SDR_06 + " +
+                                                       "0.85 * SDR_07 + 0.12 * SDR_08 + 0.07 * SDR_09 + " +
+                                                       "0.04 * SDR_10)",
+                                                       "log(0.05 + 0.26 * SDR_03 + 0.21 * SDR_03 + 0.50 * SDR_05 + " +
+                                                       "SDR_06 + 0.38 * SDR_07 + 0.04 * SDR_08 + " +
+                                                       "0.03 * SDR_09 + 0.02 * SDR_10)",
+                                                       "log(0.05 + 0.07 * SDR_01 + 0.28 * SDR_02 + 1.77 * SDR_03 + " +
+                                                       "0.47 * SDR_04 + 0.16 * SDR_05)"
+                                               },
+                                               new String[]{
+                                                       "SY_2_SYN",
+                                                       "S3*SY_2_SYN*",
+                                                       "",
+                                               }
+        ));
+        manager.addProfile(new RGBImageProfile("SYN L2 - False colour",
+                                               new String[]{
+                                                       "SDR_23",
+                                                       "SDR_21",
+                                                       "SDR_20",
+                                               },
+                                               new String[]{
+                                                       "SY_2_SYN",
+                                                       "S3*SY_2_SYN*",
+                                                       "",
+                                               }
         ));
     }
 }
