@@ -219,7 +219,7 @@ public class Sentinel3ProductReaderPlugIn implements ProductReaderPlugIn {
                                                        "S2_radiance_ao",
                                                }
         ));
-        manager.addProfile(new RGBImageProfile("SYN L2 - Tristimulus",
+        manager.addProfile(new RGBImageProfile("SYN L2 OLCI - Tristimulus",
                                                new String[]{
                                                        "log(0.05 + 0.01 * SDR_01 + 0.09 * SDR_02 + 0.35 * SDR_03 + " +
                                                        "0.04 * SDR_04 + 0.01 * SDR_05 + 0.59 * SDR_06 + " +
@@ -237,11 +237,23 @@ public class Sentinel3ProductReaderPlugIn implements ProductReaderPlugIn {
                                                        "",
                                                }
         ));
-        manager.addProfile(new RGBImageProfile("SYN L2 - False colour",
+        manager.addProfile(new RGBImageProfile("SYN L2 SLSTR - False colour",
                                                new String[]{
                                                        "SDR_23",
                                                        "SDR_21",
                                                        "SDR_20",
+                                               },
+                                               new String[]{
+                                                       "SY_2_SYN",
+                                                       "S3*SY_2_SYN*",
+                                                       "",
+                                               }
+        ));
+        manager.addProfile(new RGBImageProfile("SYN L2 SLSTR/OLCI- False colour",
+                                               new String[]{
+                                                       "SDR_23",
+                                                       "SDR_15",
+                                                       "SDR_08",
                                                },
                                                new String[]{
                                                        "SY_2_SYN",
