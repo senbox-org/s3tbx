@@ -12,9 +12,7 @@ import org.opengis.referencing.operation.TransformException;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 /**
@@ -52,6 +50,8 @@ public class ModisProductSignatureTest {
 
     private static final String EXPECTED_L2_FLAGS = "l2_flags";
     private static final String[] EXPECTED_GEOMETRY_ANGLES = new String[]{"solz", "sola", "senz", "sena"};
+
+    private static final String EXPECTED_PRODUCT_TYPE = "C2RCC_MODIS";
 
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
@@ -123,6 +123,8 @@ public class ModisProductSignatureTest {
         FlagCoding flagCoding = targetProduct.getFlagCodingGroup().get(EXPECTED_C2RCC_FLAGS);
         assertNotNull(flagCoding.getFlag(EXPECTED_VALID_PE_FLAG));
         assertEquals(EXPECTED_VPE_MASK, flagCoding.getFlagMask(EXPECTED_VALID_PE_FLAG));
+
+        assertEquals(EXPECTED_PRODUCT_TYPE, targetProduct.getProductType());
     }
 
     private void assertBands(Product targetProduct, String... expectedBands) {

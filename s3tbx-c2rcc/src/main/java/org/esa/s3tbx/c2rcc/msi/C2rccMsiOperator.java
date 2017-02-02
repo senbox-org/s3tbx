@@ -4,6 +4,7 @@ import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
+import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -47,46 +48,9 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
-import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
-import static org.esa.s3tbx.c2rcc.C2rccCommons.ensureTimeInformation;
-import static org.esa.s3tbx.c2rcc.C2rccCommons.getTimeCoding;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_ADET_AT_MAX;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_ADET_AT_MIN;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_AGELB_AT_MAX;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_AGELB_AT_MIN;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_APIG_AT_MAX;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_APIG_AT_MIN;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_BPART_AT_MAX;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_BPART_AT_MIN;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_BWIT_AT_MAX;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_BWIT_AT_MIN;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_CLOUD;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_IOP_OOR;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_KD489_AT_MAX;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_KD489_OOR;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_KDMIN_AT_MAX;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_KDMIN_OOR;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RHOW_OOR;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RHOW_OOS;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RTOSA_OOR;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RTOSA_OOS;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_VALID_PE;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_rw;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_unciop;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_uncsumiop_unckd;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_aann;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_rpath;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_rw;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_trans;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_iop;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_kd;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_rwnorm;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.Result;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.*;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 
@@ -153,6 +117,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
+    private static final String PRODUCT_TYPE = "C2RCC_S2-MSI";
 
     private static final String[] alternativeNetDirNames = new String[]{
             "rtosa_aann",
@@ -170,8 +135,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final String[] c2rccNNResourcePaths = new String[10];
     static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
     static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
-    static final String RASTER_NAME_VIEWING_ZENITH = "view_zenith_mean";
-    static final String RASTER_NAME_VIEWING_AZIMUTH = "view_azimuth_mean";
+    static final String RASTER_NAME_VIEW_ZENITH = "view_zenith_mean";
+    static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth_mean";
     private static final String RASTER_NAME_SEA_LEVEL_PRESSURE = "sea_level_pressure";
     private static final String RASTER_NAME_TOTAL_OZONE = "total_ozone";
 
@@ -289,6 +254,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 
+    @Parameter(defaultValue = "false", description = "Alternative way of calculating water reflectance. Still experimental.",
+            label = "Derive water reflectance from path radiance and transmittance")
+    private boolean deriveRwFromPathAndTransmittance;
+
     @Parameter(defaultValue = "false", description =
             "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
             label = "Use ECMWF aux data of source product")
@@ -399,6 +368,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         outputAsRrs = asRadianceRefl;
     }
 
+    public void setDeriveRwFromPathAndTransmittance(boolean deriveRwFromPathAndTransmittance) {
+        this.deriveRwFromPathAndTransmittance = deriveRwFromPathAndTransmittance;
+    }
+
     void setOutputKd(boolean outputKd) {
         this.outputKd = outputKd;
     }
@@ -456,9 +429,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
 
         return product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH);
+                && product.containsRasterDataNode(RASTER_NAME_SUN_AZIMUTH)
+                && product.containsRasterDataNode(RASTER_NAME_VIEW_ZENITH)
+                && product.containsRasterDataNode(RASTER_NAME_VIEW_AZIMUTH);
     }
 
     @Override
@@ -587,8 +560,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
         sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH);
         sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH);
-        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH);
-        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH);
+        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEW_ZENITH);
+        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEW_AZIMUTH);
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
@@ -697,6 +670,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         productConfigurer.copyMetadata();
 
         final Product targetProduct = productConfigurer.getTargetProduct();
+        targetProduct.setProductType(PRODUCT_TYPE);
         ensureTimeInformation(targetProduct, getStartTime(), getEndTime(), timeCoding);
 
         targetProduct.setPreferredTileSize(128, 128);
@@ -966,10 +940,17 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             throw new OperatorException("The source product must be geo-coded.");
         }
 
-        assertSourceRaster(RASTER_NAME_SUN_ZENITH);
-        assertSourceRaster(RASTER_NAME_SUN_AZIMUTH);
-        assertSourceRaster(RASTER_NAME_VIEWING_ZENITH);
-        assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH);
+        String msgFormat = "Invalid source product, raster '%s' required";
+        assertSourceRaster(RASTER_NAME_SUN_ZENITH, msgFormat);
+        assertSourceRaster(RASTER_NAME_SUN_AZIMUTH, msgFormat);
+        assertSourceRaster(RASTER_NAME_VIEW_ZENITH, msgFormat);
+        assertSourceRaster(RASTER_NAME_VIEW_AZIMUTH, msgFormat);
+
+        if(useEcmwfAuxData){
+            String ecmwfMsg = "For ECMWF usage a '%s' raster is required";
+            assertSourceRaster(RASTER_NAME_SEA_LEVEL_PRESSURE, ecmwfMsg);
+            assertSourceRaster(RASTER_NAME_TOTAL_OZONE, ecmwfMsg);
+        }
 
 
         try {
@@ -1000,9 +981,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         algorithm.setOutputOos(outputOos);
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
+        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
 
         timeCoding = sourceProduct.getSceneTimeCoding();
-        if(timeCoding == null) {
+        if (timeCoding == null) {
             // if not time coding is set, create one
             if (sourceProduct.getStartTime() == null || sourceProduct.getEndTime() == null) {
                 // if no start/end time is set, read it from the metadata
@@ -1158,9 +1140,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
     }
 
-    private void assertSourceRaster(String name) {
+    private void assertSourceRaster(String name, String msgFormat) {
         if (!sourceProduct.containsRasterDataNode(name)) {
-            throw new OperatorException("Invalid source product, raster '" + name + "' required");
+            throw new OperatorException(String.format(msgFormat, name));
         }
     }
 
@@ -1171,6 +1153,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     }
 
     public static class Spi extends OperatorSpi {
+        static {
+            RgbProfiles.installS2MsiRgbProfiles();
+        }
 
         public Spi() {
             super(C2rccMsiOperator.class);

@@ -238,9 +238,6 @@ public class C2rccOperator extends Operator {
     }
 
     public static class Spi extends OperatorSpi {
-        static {
-            C2rccCommons.installRGBProfiles();
-        }
 
         public Spi() {
             super(C2rccOperator.class);

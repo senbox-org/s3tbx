@@ -4,6 +4,7 @@ import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
+import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -87,6 +88,9 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
             RASTER_NAME_VIEW_ZENITH, RASTER_NAME_VIEW_AZIMUTH};
     static final String SOURCE_RADIANCE_NAME_PREFIX = "rhot_";
     static final String RASTER_NAME_L2_FLAGS = "l2_flags";
+
+    private static final String PRODUCT_TYPE = "C2RCC_MODIS";
+
 
     @SourceProduct(label = "MODIS L1C product",
             description = "MODIS L1C source product.")
@@ -380,6 +384,7 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
+        targetProduct.setProductType(PRODUCT_TYPE);
         prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, NN_INPUT_REFLEC_WAVELENGTHS,
                              outputRtosa, outputAsRrs);
         C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
@@ -437,6 +442,9 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     }
 
     public static class Spi extends OperatorSpi {
+        static{
+            RgbProfiles.installModisRgbProfiles();
+        }
 
         public Spi() {
             super(C2rccModisOperator.class);
