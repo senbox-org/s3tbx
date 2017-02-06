@@ -105,6 +105,20 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
         return scanlineOffset;
     }
 
+    /**
+     * @return the latitude grid, never <code>null</code>.
+     */
+    public TiePointGrid getLatGrid() {
+        return latGrid;
+    }
+
+    /**
+     * @return the longitude grid, never <code>null</code>.
+     */
+    public TiePointGrid getLonGrid() {
+        return lonGrid;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
