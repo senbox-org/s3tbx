@@ -14,19 +14,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.acos;
-import static java.lang.Math.cos;
-import static java.lang.Math.exp;
-import static java.lang.Math.log;
-import static java.lang.Math.max;
-import static java.lang.Math.pow;
-import static java.lang.Math.sin;
-import static java.lang.Math.toDegrees;
-import static java.lang.Math.toRadians;
-import static org.esa.s3tbx.ArrayMath.a_abs;
-import static org.esa.s3tbx.ArrayMath.a_exp;
-import static org.esa.s3tbx.ArrayMath.a_max;
+import static java.lang.Math.*;
+import static org.esa.s3tbx.ArrayMath.*;
 
 /**
  * @author Roland Doerffer
@@ -114,6 +103,7 @@ public class C2rccMsiAlgorithm {
     private boolean outputOos;
     private boolean outputKd;
     private boolean outputUncertainties;
+    private boolean deriveRwFromPathAndTransmittance;
 
     C2rccMsiAlgorithm(final String[] nnFilePaths, final boolean loadFromResources) throws IOException {
         nnNames = new ArrayList<>();
@@ -191,6 +181,10 @@ public class C2rccMsiAlgorithm {
 
     public void setOutputUncertainties(boolean outputUncertainties) {
         this.outputUncertainties = outputUncertainties;
+    }
+
+    public void setDeriveRwFromPathAndTransmittance(boolean deriveRwFromPathAndTransmittance) {
+        this.deriveRwFromPathAndTransmittance = deriveRwFromPathAndTransmittance;
     }
 
     public void setTemperature(double temperature) {
@@ -362,7 +356,7 @@ public class C2rccMsiAlgorithm {
 
             // (9.4.4) NN compute rpath from rtosa
             rpath_nn = new double[0];
-            if (outputRpath) {
+            if (outputRpath || deriveRwFromPathAndTransmittance) {
                 double[] log_rpath_nn = nn_rtosa_rpath.get().calc(nn_in);
                 rpath_nn = a_exp(log_rpath_nn);
             }
@@ -373,15 +367,25 @@ public class C2rccMsiAlgorithm {
             double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
             // cloud flag test @865
             flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[7] < thresh_cloudTransD);
-            if (outputTdown) {
+            if (outputTdown || deriveRwFromPathAndTransmittance) {
                 transd_nn = Arrays.copyOfRange(trans_nn, 0, r_tosa_ur.length);
             }
-            if (outputTup) {
+            if (outputTup || deriveRwFromPathAndTransmittance) {
                 transu_nn = Arrays.copyOfRange(trans_nn, r_tosa_ur.length, trans_nn.length);
             }
 
             // (9.4.6)
-            double[] log_rw = nn_rtosa_rw.get().calc(nn_in);
+            double[] log_rw;
+            if(deriveRwFromPathAndTransmittance) {
+                // needs outputRpath & outputTdown & outputTup
+                log_rw = new double[r_tosa.length];
+                for (int i = 0; i < r_tosa.length; i++) {
+                    log_rw[i] = r_tosa[i] - rpath_nn[i] / (transu_nn[i] * transd_nn[i]);
+                }
+            }else {
+                log_rw = nn_rtosa_rw.get().calc(nn_in);
+            }
+
             rwa = new double[0];
             if (outputRwa) {
                 rwa = a_exp(log_rw);

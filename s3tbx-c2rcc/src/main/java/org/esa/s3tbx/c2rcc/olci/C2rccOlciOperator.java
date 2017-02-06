@@ -4,8 +4,9 @@ import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
-import org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.Result;
+import org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
+import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -44,10 +45,8 @@ import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
-import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
 import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
@@ -125,6 +124,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private static final int UNC_BTOT_IX = SINGLE_IX + 16;
     private static final int UNC_KD489_IX = SINGLE_IX + 17;
     private static final int UNC_KDMIN_IX = SINGLE_IX + 18;
+
+    private static final String PRODUCT_TYPE = "C2RCC_OLCI";
 
     private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
@@ -253,6 +254,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 
+    @Parameter(defaultValue = "false", description = "Alternative way of calculating water reflectance. Still experimental.",
+            label = "Derive water reflectance from path radiance and transmittance")
+    private boolean deriveRwFromPathAndTransmittance;
+
     @Parameter(defaultValue = "true", description =
             "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
             label = "Use ECMWF aux data of source product")
@@ -374,6 +379,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @Override
     public void setOutputAsRrs(boolean asRrs) {
         outputAsRrs = asRrs;
+    }
+
+    public void setDeriveRwFromPathAndTransmittance(boolean deriveRwFromPathAndTransmittance) {
+        this.deriveRwFromPathAndTransmittance = deriveRwFromPathAndTransmittance;
     }
 
     public void setOutputKd(boolean outputKd) {
@@ -664,6 +673,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         productConfigurer.copyMetadata();
 
         final Product targetProduct = productConfigurer.getTargetProduct();
+        targetProduct.setProductType(PRODUCT_TYPE);
         C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
 
         targetProduct.setPreferredTileSize(128, 128);
@@ -891,7 +901,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         flagCoding.addFlag("Kdmin_OOR", 0x01 << FLAG_INDEX_KDMIN_OOR, "Kdmin is out of range");
         flagCoding.addFlag("Kd489_at_max", 0x01 << FLAG_INDEX_KD489_AT_MAX, "Kdmin is at max");
         flagCoding.addFlag("Kdmin_at_max", 0x01 << FLAG_INDEX_KDMIN_AT_MAX, "Kdmin is at max");
-        flagCoding.addFlag("Valid_PE", 0x01 << FLAG_INDEX_VALID_PE, "The operators valid pixel expression has resolved to true");
+        flagCoding.addFlag("Valid_PE", (int) (0x01L << FLAG_INDEX_VALID_PE), "The operators valid pixel expression has resolved to true");
 
         targetProduct.getFlagCodingGroup().add(flagCoding);
         c2rcc_flags.setSampleCoding(flagCoding);
@@ -960,6 +970,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         algorithm.setOutputOos(outputOos);
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
+        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
 
         timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
@@ -1056,6 +1067,12 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     }
 
     public static class Spi extends OperatorSpi {
+        static {
+            RgbProfiles.installRgbProfiles("C2RCC_OLCI",
+                                           "log(0.05 + 0.35 * %1$s_2 + 0.60 * %1$s_5 + %1$s_6 + 0.13 * %1$s_7)",
+                                           "log(0.05 + 0.21 * %1$s_3 + 0.50 * %1$s_4 + %1$s_5 + 0.38 * %1$s_6)",
+                                           "log(0.05 + 0.21 * %1$s_1 + 1.75 * %1$s_2 + 0.47 * %1$s_3 + 0.16 * %1$s_4)");
+        }
 
         public Spi() {
             super(C2rccOlciOperator.class);

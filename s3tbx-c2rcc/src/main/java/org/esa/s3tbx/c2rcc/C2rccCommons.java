@@ -4,19 +4,12 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.ConstantTimeCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.RGBImageProfile;
-import org.esa.snap.core.datamodel.RGBImageProfileManager;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.pointop.Sample;
 
 public class C2rccCommons {
-
-    private static final String[] RGB_PROFILE_NAMES = {
-            "rhow", "rrs", "rhown", "rpath", "rtoa",
-            "rtosa_gc", "rtosagc_aann", "tdown", "tup"
-    };
 
     public static TimeCoding getTimeCoding(Product product) {
         if (product.getSceneTimeCoding() != null) {
@@ -65,16 +58,6 @@ public class C2rccCommons {
             }
         }
         return samplesValid;
-    }
-
-    static void installRGBProfiles() {
-        RGBImageProfileManager profileManager = RGBImageProfileManager.getInstance();
-        for (String profileName : RGB_PROFILE_NAMES) {
-            profileManager.addProfile(new RGBImageProfile(profileName, new String[]{
-                    String.format("log(0.05 + 0.35 * %1$s_2 + 0.60 * %1$s_5 + %1$s_6 + 0.13 * %1$s_7)", profileName),
-                    String.format("log(0.05 + 0.21 * %1$s_3 + 0.50 * %1$s_4 + %1$s_5 + 0.38 * %1$s_6)", profileName),
-                    String.format("log(0.05 + 0.21 * %1$s_1 + 1.75 * %1$s_2 + 0.47 * %1$s_3 + 0.16 * %1$s_4)", profileName)}));
-        }
     }
 
     public static Band addBand(Product targetProduct, String name, String unit, String description) {

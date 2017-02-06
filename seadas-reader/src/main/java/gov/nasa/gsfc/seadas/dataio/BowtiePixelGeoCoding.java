@@ -153,7 +153,12 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
 
         // look at first pixel in each line
         for(int i = 1; i < latBand.getRasterHeight(); i++) {
-            if(latBand.getPixelFloat(0, i - 1) < latBand.getPixelFloat(0, i)) {
+            float p0 = latBand.getPixelFloat(0, i - 1);
+            float p1 = latBand.getPixelFloat(0, i);
+            if (Float.isNaN(p0) || p0 > 90.0 || p0 < -90.0 || Float.isNaN(p1) || p1 > 90.0 || p1 < -90.0) {
+                continue;
+            }
+            if((p0 - p1) < -0.001) {
                 start = i;
                 break;
             }
@@ -162,7 +167,12 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
         if(start == -1) {
             int x = latBand.getRasterWidth() - 1;
             for(int i = 1; i < latBand.getRasterHeight(); i++) {
-                if(latBand.getPixelFloat(x, i - 1) < latBand.getPixelFloat(x, i)) {
+                float p0 = latBand.getPixelFloat(x, i - 1);
+                float p1 = latBand.getPixelFloat(x, i);
+                if (Float.isNaN(p0) || p0 > 90.0 || p0 < -90.0 || Float.isNaN(p1) || p1 > 90.0 || p1 < -90.0) {
+                    continue;
+                }
+                if((p0 - p1) < -0.001) {
                     start = i;
                     break;
                 }

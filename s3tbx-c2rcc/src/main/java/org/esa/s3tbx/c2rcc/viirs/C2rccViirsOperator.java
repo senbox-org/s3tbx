@@ -4,6 +4,7 @@ import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
+import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -28,10 +29,9 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.getTimeCoding;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.viirs.C2rccViirsAlgorithm.viirsWavelengths;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
+import static org.esa.s3tbx.c2rcc.viirs.C2rccViirsAlgorithm.*;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2RCC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
@@ -87,6 +87,8 @@ public class C2rccViirsOperator extends PixelOperator implements C2rccConfigurab
 
     private static final int RTOSA_IN_1_IX = WL_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + WL_BAND_COUNT;
+
+    private static final String PRODUCT_TYPE = "C2RCC_VIIRS";
 
     /*
      * Source product type has been changed from L1B to L1C in commit
@@ -320,6 +322,7 @@ public class C2rccViirsOperator extends PixelOperator implements C2rccConfigurab
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
+        targetProduct.setProductType(PRODUCT_TYPE);
         TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, viirsWavelengths,
                                                    outputRtosa, outputAsRrs);
         C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
@@ -436,6 +439,9 @@ public class C2rccViirsOperator extends PixelOperator implements C2rccConfigurab
     }
 
     public static class Spi extends OperatorSpi {
+        static{
+            RgbProfiles.installViirsRgbProfiles();
+        }
 
         public Spi() {
             super(C2rccViirsOperator.class);
