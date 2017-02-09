@@ -97,6 +97,14 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
         return _scanlineOffset;
     }
 
+    public Band getLatBand() {
+        return latBand;
+    }
+
+    public Band getLonBand() {
+        return lonBand;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
