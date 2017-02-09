@@ -45,7 +45,7 @@ import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.tango.TangoIcons;
 import org.esa.snap.ui.ModalDialog;
 import org.esa.snap.ui.tool.ToolButtonFactory;
-import org.geotools.data.collection.ListFeatureCollection;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -134,17 +134,12 @@ public class InsituClientTopComponent extends TopComponent implements HelpCtx.Pr
         return contentPanel;
     }
 
-    private FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatureCollection(String datasetName,
-                                                                                     InsituObservation observation,
-                                                                                     SimpleFeatureType featureType,
-                                                                                     TreeMap<String, FeatureCollection<SimpleFeatureType, SimpleFeature>> map) {
+    private DefaultFeatureCollection getFeatureCollection(String datasetName,
+                                                          InsituObservation observation,
+                                                          SimpleFeatureType featureType,
+                                                          TreeMap<String, DefaultFeatureCollection> map) {
         String fcKey = datasetName + "_" + observation.getParam();
-        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = map.get(fcKey);
-        if (fc == null) {
-            fc = new ListFeatureCollection(featureType);
-            map.put(fcKey, fc);
-        }
-        return fc;
+        return map.computeIfAbsent(fcKey, k -> new DefaultFeatureCollection(fcKey, featureType));
     }
 
     private static SimpleFeatureType createInsituFeatureType(GeoCoding geoCoding) {
@@ -253,7 +248,7 @@ public class InsituClientTopComponent extends TopComponent implements HelpCtx.Pr
         private final QueryFactory factory;
         private final ResponseHandler handler;
 
-        public ServerButtonActionListener(QueryFactory factory, ResponseHandler handler) {
+        ServerButtonActionListener(QueryFactory factory, ResponseHandler handler) {
             this.factory = factory;
             this.handler = handler;
         }
@@ -360,18 +355,18 @@ public class InsituClientTopComponent extends TopComponent implements HelpCtx.Pr
                 String datasetName = insituDataset.getName();
                 for (Product product : selectedProducts) {
                     SimpleFeatureType featureType = createInsituFeatureType(product.getSceneGeoCoding());
-                    TreeMap<String, FeatureCollection<SimpleFeatureType, SimpleFeature>> fcMap = new TreeMap<>();
+                    TreeMap<String, DefaultFeatureCollection> fcMap = new TreeMap<>();
                     for (int i = 0; i < observations.size(); i++) {
                         InsituObservation observation = observations.get(i);
                         SimpleFeature feature = createFeature(featureType, product.getSceneGeoCoding(), i, observation);
                         if (feature != null) {
-                            FeatureCollection<SimpleFeatureType, SimpleFeature> fc = InsituClientTopComponent.this.getFeatureCollection(
+                            DefaultFeatureCollection fc = InsituClientTopComponent.this.getFeatureCollection(
                                     datasetName, observation, featureType, fcMap);
                             fc.add(feature);
                         }
                     }
 
-                    for (Map.Entry<String, FeatureCollection<SimpleFeatureType, SimpleFeature>> entry : fcMap.entrySet()) {
+                    for (Map.Entry<String, DefaultFeatureCollection> entry : fcMap.entrySet()) {
                         FeatureCollection<SimpleFeatureType, SimpleFeature> fc = entry.getValue();
                         String name = entry.getKey();
                         final PlacemarkDescriptor placemarkDescriptor = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptor(

@@ -65,7 +65,7 @@ public class SeabassReader extends LineNumberReader {
     public FeatureCollection<SimpleFeatureType, SimpleFeature> createFeatureCollection() throws IOException {
 
         SimpleFeatureType featureType = createFeatureType();
-        FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = new ListFeatureCollection(featureType);
+        ListFeatureCollection featureCollection = new ListFeatureCollection(featureType);
 
         String line;
         int pointIndex = 0;
