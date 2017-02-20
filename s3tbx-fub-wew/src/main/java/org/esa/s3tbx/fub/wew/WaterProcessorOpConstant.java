@@ -40,21 +40,21 @@ class WaterProcessorOpConstant {
             0x00000100
     };
     public static final String[] SOURCE_RASTER_NAMES_MERIS = new String[]{
-            EnvisatConstants.MERIS_L1B_RADIANCE_1_BAND_NAME,  // source sample index  0   radiance_1
-            EnvisatConstants.MERIS_L1B_RADIANCE_2_BAND_NAME,  // source sample index  1   radiance_2
-            EnvisatConstants.MERIS_L1B_RADIANCE_3_BAND_NAME,  // source sample index  2   radiance_3
-            EnvisatConstants.MERIS_L1B_RADIANCE_4_BAND_NAME,  // source sample index  3   radiance_4
-            EnvisatConstants.MERIS_L1B_RADIANCE_5_BAND_NAME,  // source sample index  4   radiance_5
-            EnvisatConstants.MERIS_L1B_RADIANCE_6_BAND_NAME,  // source sample index  5   radiance_6
-            EnvisatConstants.MERIS_L1B_RADIANCE_7_BAND_NAME,  // source sample index  6   radiance_7
-            EnvisatConstants.MERIS_L1B_RADIANCE_8_BAND_NAME,  // source sample index  7   radiance_8
-            EnvisatConstants.MERIS_L1B_RADIANCE_9_BAND_NAME,  // source sample index  8   radiance_9
-            EnvisatConstants.MERIS_L1B_RADIANCE_10_BAND_NAME, // source sample index  9   radiance_10
-            EnvisatConstants.MERIS_L1B_RADIANCE_11_BAND_NAME, // source sample index 10   radiance_11
-            EnvisatConstants.MERIS_L1B_RADIANCE_12_BAND_NAME, // source sample index 11   radiance_12
-            EnvisatConstants.MERIS_L1B_RADIANCE_13_BAND_NAME, // source sample index 12   radiance_13
-            EnvisatConstants.MERIS_L1B_RADIANCE_14_BAND_NAME, // source sample index 13   radiance_14
-            EnvisatConstants.MERIS_L1B_RADIANCE_15_BAND_NAME, // source sample index 14   radiance_15
+            EnvisatConstants.MERIS_L1B_RADIANCE_1_BAND_NAME,  // source sample index  0   radiance_1  412.7 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_2_BAND_NAME,  // source sample index  1   radiance_2  442.6 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_3_BAND_NAME,  // source sample index  2   radiance_3  489.9 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_4_BAND_NAME,  // source sample index  3   radiance_4  509.8 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_5_BAND_NAME,  // source sample index  4   radiance_5  559.7 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_6_BAND_NAME,  // source sample index  5   radiance_6  619.6 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_7_BAND_NAME,  // source sample index  6   radiance_7  664.6 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_8_BAND_NAME,  // source sample index  7   radiance_8  680.8 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_9_BAND_NAME,  // source sample index  8   radiance_9  708.3 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_10_BAND_NAME, // source sample index  9   radiance_10 753.4 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_11_BAND_NAME, // source sample index 10   radiance_11 761.5 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_12_BAND_NAME, // source sample index 11   radiance_12 778.4 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_13_BAND_NAME, // source sample index 12   radiance_13 864.9 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_14_BAND_NAME, // source sample index 13   radiance_14 884.9 nm
+            EnvisatConstants.MERIS_L1B_RADIANCE_15_BAND_NAME, // source sample index 14   radiance_15 900.0 nm
             EnvisatConstants.MERIS_L1B_FLAGS_DS_NAME,         // source sample index 15   l1_flags
             EnvisatConstants.MERIS_TIE_POINT_GRID_NAMES[6],   // source sample index 16   sun_zenith
             EnvisatConstants.MERIS_TIE_POINT_GRID_NAMES[7],   // source sample index 17   sun_azimuth
@@ -67,21 +67,27 @@ class WaterProcessorOpConstant {
     };
 
     public static final String[] SOURCE_RASTER_NAMES_OLCI = new String[]{
-            "Oa02_radiance",
-            "Oa03_radiance",
-            "Oa04_radiance",
-            "Oa05_radiance",
-            "Oa06_radiance",
-            "Oa07_radiance",
-            "Oa08_radiance",
-            "Oa10_radiance",
-            "Oa11_radiance",
-            "Oa12_radiance",
-            "Oa13_radiance",
-            "Oa16_radiance",
-            "Oa17_radiance",
-            "Oa18_radiance",
-            "Oa19_radiance",
+//            "Oa01_radiance", // 400.0 nm
+            "Oa02_radiance", // 412.5 nm
+            "Oa03_radiance", // 442.5 nm
+            "Oa04_radiance", // 490.0 nm
+            "Oa05_radiance", // 510.0 nm
+            "Oa06_radiance", // 560.0 nm
+            "Oa07_radiance", // 620.0 nm
+            "Oa08_radiance", // 665.0 nm
+//            "Oa09_radiance", // 673.8 nm
+            "Oa10_radiance", // 681.3 nm
+            "Oa11_radiance", // 708.8 nm
+            "Oa12_radiance", // 753.8 nm
+            "Oa13_radiance", // 761.3 nm
+//            "Oa14_radiance", // 764.4 nm
+//            "Oa15_radiance", // 767.5 nm
+            "Oa16_radiance", // 778.8 nm
+            "Oa17_radiance", // 865.0 nm
+            "Oa18_radiance", // 885.0 nm
+            "Oa19_radiance", // 900.0 nm
+//            "Oa20_radiance", // 940.0 nm
+//            "Oa21_radiance", // 1020.0 nm
             "quality_flags",
             "SZA",
             "SAA",
