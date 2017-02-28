@@ -188,9 +188,9 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
     private int findStart(int x) {
         int increaseDecreaseCount = 0;
         final float[] latPoints = latGrid.getTiePoints();
-        int latWidth = latGrid.getRasterWidth();
+        int latWidth = latGrid.getGridWidth();
 
-        for (int i = 1; i < latGrid.getRasterHeight(); i++) {
+        for (int i = 1; i < latGrid.getGridHeight(); i++) {
             float p0 = latPoints[(i - 1) * latWidth + x];
             float p1 = latPoints[i * latWidth + x];
             if (Float.isNaN(p0) || p0 > 90.0 || p0 < -90.0 || Float.isNaN(p1) || p1 > 90.0 || p1 < -90.0) {
