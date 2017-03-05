@@ -2,7 +2,7 @@ package org.esa.s3tbx.insitu.server;
 
 import com.bc.ceres.core.ServiceRegistry;
 import com.bc.ceres.core.ServiceRegistryManager;
-import org.esa.snap.SnapCoreActivator;
+import org.esa.snap.core.util.ServiceLoader;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class InsituServerRegistry {
 
     private InsituServerRegistry() {
         registry = ServiceRegistryManager.getInstance().getServiceRegistry(InsituServerSpi.class);
-        SnapCoreActivator.loadServices(registry);
+        ServiceLoader.loadServices(registry);
     }
 
     public Set<InsituServerSpi> getAllRegisteredServers() {
