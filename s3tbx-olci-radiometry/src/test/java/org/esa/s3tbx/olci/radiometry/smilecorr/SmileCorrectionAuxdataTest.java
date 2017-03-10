@@ -53,10 +53,10 @@ public class SmileCorrectionAuxdataTest {
         assertEquals(9, auxDataInFlatTable[0].length);
 
         assertEquals(1, auxDataInFlatTable[0][0], 1e-8);
-        assertEquals(1441.8, auxDataInFlatTable[0][8], 1e-8);
+        assertEquals(1513.6257, auxDataInFlatTable[0][8], 1e-8);
 
         assertEquals(6.0, auxDataInFlatTable[5][0], 1e-8);
-        assertEquals(1804.4, auxDataInFlatTable[5][8], 1e-8);
+        assertEquals(1796.8542, auxDataInFlatTable[5][8], 1e-8);
     }
 
     @Test
