@@ -133,41 +133,18 @@ public class SmileCorrectionAuxdataTest {
 
 
         float[] expectedCentralWvl = {
-                412.5f,
-                442.5f,
-                490f,
-                510f,
-                560f,
-                620f,
-                665f,
-                681.25f,
-                708.75f,
-                753.75f,
-                761.875f,
-                778.75f,
-                865f,
-                885f,
-                900f,
-                0f
+                412.5f, 442.5f, 490f, 510f, 560f, 620f,
+                665f, 681.25f, 708.75f, 753.75f, 761.875f,
+                778.75f, 865f, 885f, 900f, 0f
         };
         assertArrayEquals(expectedCentralWvl, smileCorrectionAuxdata.getRefCentralWaveLengths(), 1e-6f);
+
+        // values are taken from the Specification of the Scientific Contents of the MERIS Level-1b & 2 Auxiliary Data Products
+        // https://earth.esa.int/documents/700255/2042855/PO-RS-PAR-GS-0002+3C+-+Prod+Spec.pdf/cb0d20b0-c1f4-4903-a5a7-c250fedda700
         float[] expectedSolarIrradiance = {
-                1713.69f,
-                1877.57f,
-                1929.26f,
-                1926.89f,
-                1800.46f,
-                1649.70f,
-                1530.93f,
-                1470.23f,
-                1405.47f,
-                1266.20f,
-                1249.80f,
-                1175.74f,
-                958.763f,
-                929.786f,
-                895.460f,
-                0f
+                1714.767334f, 1878.892944f, 1928.337158f, 1928.936279f, 1803.076294f,
+                1650.773804f, 1531.626465f, 1472.168091f, 1407.942627f, 1266.042847f,
+                1254.581177f, 1177.259522f, 958.3851929f, 929.8380127f, 895.4595947f,0f
         };
         assertArrayEquals(expectedSolarIrradiance, smileCorrectionAuxdata.getSolarIrradiances(), 1e-6f);
 
