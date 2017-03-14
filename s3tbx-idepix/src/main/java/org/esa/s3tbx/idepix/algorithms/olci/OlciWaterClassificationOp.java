@@ -73,23 +73,31 @@ public class OlciWaterClassificationOp extends Operator {
             description = " If applied, write NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-    @Parameter(defaultValue = "2.0",
-            label = " NN cloud ambiguous lower boundary ",
-            description = " NN cloud ambiguous lower boundary ")
-    double schillerNNCloudAmbiguousLowerBoundaryValue;
+//    @Parameter(defaultValue = "2.0",
+//            label = " NN cloud ambiguous lower boundary ",
+//            description = " NN cloud ambiguous lower boundary ")
+//    double schillerNNCloudAmbiguousLowerBoundaryValue;
+//
+//    @Parameter(defaultValue = "3.7",
+//            label = " NN cloud ambiguous/sure separation value ",
+//            description = " NN cloud ambiguous cloud ambiguous/sure separation value ")
+//    double schillerNNCloudAmbiguousSureSeparationValue;
+//
+//    @Parameter(defaultValue = "4.05",
+//            label = " NN cloud sure/snow separation value ",
+//            description = " NN cloud ambiguous cloud sure/snow separation value ")
+//    double schillerNNCloudSureSnowSeparationValue;
 
-    @Parameter(defaultValue = "3.7",
-            label = " NN cloud ambiguous/sure separation value ",
-            description = " NN cloud ambiguous cloud ambiguous/sure separation value ")
-    double schillerNNCloudAmbiguousSureSeparationValue;
-
-    @Parameter(defaultValue = "4.05",
-            label = " NN cloud sure/snow separation value ",
-            description = " NN cloud ambiguous cloud sure/snow separation value ")
-    double schillerNNCloudSureSnowSeparationValue;
+    // Schiller's best values for OLCI net 9x4_131.7.net, 20170307
+    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.6;
+    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.4;
+    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.5;
 
     public static final String OLCI_WATER_NET_NAME = "11x8x5x3_876.8_water.net";
-    public static final String OLCI_ALL_NET_NAME = "11x8x5x3_1409.7_all.net";
+//    public static final String OLCI_ALL_NET_NAME = "11x8x5x3_1409.7_all.net";
+
+    // NEW net really for OLCI (for all 21 inputs, currently just for water)
+    public static final String OLCI_ALL_NET_NAME = "9x4_131.7.net";
 
     ThreadLocal<SchillerNeuralNetWrapper> olciWaterNeuralNet;
     ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
@@ -240,15 +248,20 @@ public class OlciWaterClassificationOp extends Operator {
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
-            isCloudAmbiguous = nnOutput[0] > schillerNNCloudAmbiguousLowerBoundaryValue &&
-                    nnOutput[0] <= schillerNNCloudAmbiguousSureSeparationValue;
+//            isCloudAmbiguous = nnOutput[0] > schillerNNCloudAmbiguousLowerBoundaryValue &&
+//                    nnOutput[0] <= schillerNNCloudAmbiguousSureSeparationValue;
+            // new OLCI net, 20170307:
+            isCloudAmbiguous = nnOutput[0] > schillerNNSnowIceToCloudAmbiguousSeparationValue &&
+                    nnOutput[0] <= schillerNNCloudAmbiguousUpperBoundaryValue;
             if (isCloudAmbiguous) {
                 // this would be as 'CLOUD_AMBIGUOUS'...
                 targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, true);
                 targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, true);
             }
             // check for snow_ice separation below if needed, first set all to cloud
-            isCloudSure = nnOutput[0] > schillerNNCloudAmbiguousSureSeparationValue;
+//            isCloudSure = nnOutput[0] > schillerNNCloudAmbiguousSureSeparationValue;
+            // new OLCI net, 20170307:
+            isCloudSure = nnOutput[0] < schillerNNOpaqueCloudToSnowIceSeparationValue;
             if (isCloudSure) {
                 // this would be as 'CLOUD_SURE'...
                 targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, true);
@@ -257,7 +270,10 @@ public class OlciWaterClassificationOp extends Operator {
 
             is_snow_ice = false;
             if (checkForSeaIce) {
-                is_snow_ice = nnOutput[0] > schillerNNCloudSureSnowSeparationValue;
+//                is_snow_ice = nnOutput[0] > schillerNNCloudSureSnowSeparationValue;
+                // new OLCI net, 20170307:
+                is_snow_ice = nnOutput[0] > schillerNNOpaqueCloudToSnowIceSeparationValue&&
+                        nnOutput[0] <= schillerNNSnowIceToCloudAmbiguousSeparationValue;
             }
             if (is_snow_ice) {
                 // this would be as 'SNOW/ICE'...
@@ -274,9 +290,13 @@ public class OlciWaterClassificationOp extends Operator {
 
     private double[] getOlciNNOutputImpl(int x, int y, Tile[] rhoToaTiles, SchillerNeuralNetWrapper nnWrapper) {
         double[] nnInput = nnWrapper.getInputVector();
+//        for (int i = 0; i < nnInput.length; i++) {
+//            final int merisEquivalentWvlIndex = Rad2ReflConstants.OLCI_MERIS_EQUIVALENT_WVL_INDICES[i];
+//            nnInput[i] = Math.sqrt(rhoToaTiles[merisEquivalentWvlIndex].getSampleFloat(x, y));
+//        }
+        // we have a real OLCI net for all inputs now:
         for (int i = 0; i < nnInput.length; i++) {
-            final int merisEquivalentWvlIndex = Rad2ReflConstants.OLCI_MERIS_EQUIVALENT_WVL_INDICES[i];
-            nnInput[i] = Math.sqrt(rhoToaTiles[merisEquivalentWvlIndex].getSampleFloat(x, y));
+            nnInput[i] = Math.sqrt(rhoToaTiles[i].getSampleFloat(x, y));
         }
         return nnWrapper.getNeuralNet().calc(nnInput);
     }

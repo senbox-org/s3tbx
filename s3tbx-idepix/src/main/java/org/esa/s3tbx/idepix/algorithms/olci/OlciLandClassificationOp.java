@@ -38,20 +38,26 @@ public class OlciLandClassificationOp extends Operator {
             description = " If applied, write Schiller NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-    @Parameter(defaultValue = "2.0",
-            label = " NN cloud ambiguous lower boundary",
-            description = " NN cloud ambiguous lower boundary")
-    double schillerNNCloudAmbiguousLowerBoundaryValue;
+//    @Parameter(defaultValue = "2.0",
+//            label = " NN cloud ambiguous lower boundary",
+//            description = " NN cloud ambiguous lower boundary")
+//    double schillerNNCloudAmbiguousLowerBoundaryValue;
+//
+//    @Parameter(defaultValue = "3.7",
+//            label = " NN cloud ambiguous/sure separation value",
+//            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
+//    double schillerNNCloudAmbiguousSureSeparationValue;
+//
+//    @Parameter(defaultValue = "4.05",
+//            label = " NN cloud sure/snow separation value",
+//            description = " NN cloud ambiguous cloud sure/snow separation value")
+//    double schillerNNCloudSureSnowSeparationValue;
 
-    @Parameter(defaultValue = "3.7",
-            label = " NN cloud ambiguous/sure separation value",
-            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
-    double schillerNNCloudAmbiguousSureSeparationValue;
+    // Schiller's best values for OLCI net 11x5x3_159.4.net, 20170314
+    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.65;
+    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.35;
+    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.4;
 
-    @Parameter(defaultValue = "4.05",
-            label = " NN cloud sure/snow separation value",
-            description = " NN cloud ambiguous cloud sure/snow separation value")
-    double schillerNNCloudSureSnowSeparationValue;
 
     @SourceProduct(alias = "l1b", description = "The source product.")
     Product sourceProduct;
@@ -68,7 +74,11 @@ public class OlciLandClassificationOp extends Operator {
     private Band[] olciReflBands;
     private Band landWaterBand;
 
-    public static final String OLCI_LAND_NET_NAME = "11x8x5x3_1062.5_land.net";
+//    public static final String OLCI_LAND_NET_NAME = "11x8x5x3_1062.5_land.net";
+
+    // NEW net really for OLCI (for all 21 inputs, currently just for water)
+    public static final String OLCI_LAND_NET_NAME = "11x5x3_159.4.net";
+
     ThreadLocal<SchillerNeuralNetWrapper> olciLandNeuralNet;
 
     @Override
@@ -164,9 +174,13 @@ public class OlciLandClassificationOp extends Operator {
 
                         SchillerNeuralNetWrapper nnWrapper = olciLandNeuralNet.get();
                         double[] inputVector = nnWrapper.getInputVector();
+//                        for (int i = 0; i < inputVector.length; i++) {
+//                            final int olciEquivalentWvlIndex = Rad2ReflConstants.OLCI_MERIS_EQUIVALENT_WVL_INDICES[i];
+//                            inputVector[i] = Math.sqrt(olciReflectance[olciEquivalentWvlIndex]);
+//                        }
+                        // we have a real OLCI net for all inputs now:
                         for (int i = 0; i < inputVector.length; i++) {
-                            final int olciEquivalentWvlIndex = Rad2ReflConstants.OLCI_MERIS_EQUIVALENT_WVL_INDICES[i];
-                            inputVector[i] = Math.sqrt(olciReflectance[olciEquivalentWvlIndex]);
+                            inputVector[i] = Math.sqrt(olciReflectance[i]);
                         }
 
                         final double[] nnOutput = nnWrapper.getNeuralNet().calc(inputVector);
@@ -176,19 +190,28 @@ public class OlciLandClassificationOp extends Operator {
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
-                            if (nnOutput[0] > schillerNNCloudAmbiguousLowerBoundaryValue &&
-                                    nnOutput[0] <= schillerNNCloudAmbiguousSureSeparationValue) {
+
+//                            if (nnOutput[0] > schillerNNCloudAmbiguousLowerBoundaryValue &&
+//                                    nnOutput[0] <= schillerNNCloudAmbiguousSureSeparationValue) {
+                            // new OLCI net, 20170307:
+                            if (nnOutput[0] > schillerNNSnowIceToCloudAmbiguousSeparationValue &&
+                                    nnOutput[0] <= schillerNNCloudAmbiguousUpperBoundaryValue) {
                                 // this would be as 'CLOUD_AMBIGUOUS'...
                                 cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, true);
                                 cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, true);
                             }
-                            if (nnOutput[0] > schillerNNCloudAmbiguousSureSeparationValue &&
-                                    nnOutput[0] <= schillerNNCloudSureSnowSeparationValue) {
+//                            if (nnOutput[0] > schillerNNCloudAmbiguousSureSeparationValue &&
+//                                    nnOutput[0] <= schillerNNCloudSureSnowSeparationValue) {
+                            // new OLCI net, 20170307:
+                            if (nnOutput[0] < schillerNNOpaqueCloudToSnowIceSeparationValue) {
                                 // this would be as 'CLOUD_SURE'...
                                 cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, true);
                                 cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, true);
                             }
-                            if (nnOutput[0] > schillerNNCloudSureSnowSeparationValue) {
+//                            if (nnOutput[0] > schillerNNCloudSureSnowSeparationValue) {
+                            // new OLCI net, 20170307:
+                            if (nnOutput[0] > schillerNNOpaqueCloudToSnowIceSeparationValue &&
+                                    nnOutput[0] <= schillerNNSnowIceToCloudAmbiguousSeparationValue) {
                                 // this would be as 'SNOW/ICE'...
                                 cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, true);
                             }

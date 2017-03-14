@@ -83,35 +83,35 @@ public class OlciOp extends BasisOp {
             description = " If applied, write NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-    @Parameter(defaultValue = "2.0",
-            label = " NN cloud ambiguous lower boundary (applied on WATER)",
-            description = " NN cloud ambiguous lower boundary (applied on WATER)")
-    double schillerWaterNNCloudAmbiguousLowerBoundaryValue;
-
-    @Parameter(defaultValue = "3.7",
-            label = " NN cloud ambiguous/sure separation value (applied on WATER)",
-            description = " NN cloud ambiguous cloud ambiguous/sure separation value (applied on WATER)")
-    double schillerWaterNNCloudAmbiguousSureSeparationValue;
-
-    @Parameter(defaultValue = "4.05",
-            label = " NN cloud sure/snow separation value (applied on WATER)",
-            description = " NN cloud ambiguous cloud sure/snow separation value (applied on WATER)")
-    double schillerWaterNNCloudSureSnowSeparationValue;
-
-    @Parameter(defaultValue = "1.1",
-            label = " NN cloud ambiguous lower boundary (applied on LAND)",
-            description = " NN cloud ambiguous lower boundary (applied on LAND)")
-    double schillerLandNNCloudAmbiguousLowerBoundaryValue;
-
-    @Parameter(defaultValue = "2.7",
-            label = " NN cloud ambiguous/sure separation value (applied on LAND)",
-            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
-    double schillerLandNNCloudAmbiguousSureSeparationValue;
-
-    @Parameter(defaultValue = "4.6",
-            label = " NN cloud sure/snow separation value (applied on LAND)",
-            description = " NN cloud ambiguous cloud sure/snow separation value")
-    double schillerLandNNCloudSureSnowSeparationValue;
+//    @Parameter(defaultValue = "2.0",
+//            label = " NN cloud ambiguous lower boundary (applied on WATER)",
+//            description = " NN cloud ambiguous lower boundary (applied on WATER)")
+//    double schillerWaterNNCloudAmbiguousLowerBoundaryValue;
+//
+//    @Parameter(defaultValue = "3.7",
+//            label = " NN cloud ambiguous/sure separation value (applied on WATER)",
+//            description = " NN cloud ambiguous cloud ambiguous/sure separation value (applied on WATER)")
+//    double schillerWaterNNCloudAmbiguousSureSeparationValue;
+//
+//    @Parameter(defaultValue = "4.05",
+//            label = " NN cloud sure/snow separation value (applied on WATER)",
+//            description = " NN cloud ambiguous cloud sure/snow separation value (applied on WATER)")
+//    double schillerWaterNNCloudSureSnowSeparationValue;
+//
+//    @Parameter(defaultValue = "1.1",
+//            label = " NN cloud ambiguous lower boundary (applied on LAND)",
+//            description = " NN cloud ambiguous lower boundary (applied on LAND)")
+//    double schillerLandNNCloudAmbiguousLowerBoundaryValue;
+//
+//    @Parameter(defaultValue = "2.7",
+//            label = " NN cloud ambiguous/sure separation value (applied on LAND)",
+//            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
+//    double schillerLandNNCloudAmbiguousSureSeparationValue;
+//
+//    @Parameter(defaultValue = "4.6",
+//            label = " NN cloud sure/snow separation value (applied on LAND)",
+//            description = " NN cloud ambiguous cloud sure/snow separation value")
+//    double schillerLandNNCloudSureSnowSeparationValue;
 
     @Parameter(defaultValue = "true", label = " Compute a cloud buffer")
     private boolean computeCloudBuffer;
@@ -174,12 +174,12 @@ public class OlciOp extends BasisOp {
         landClassificationParameters.put("copyAllTiePoints", true);
         landClassificationParameters.put("outputSchillerNNValue",
                                          outputSchillerNNValue);
-        landClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
-                                         schillerLandNNCloudAmbiguousLowerBoundaryValue);
-        landClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
-                                         schillerLandNNCloudAmbiguousSureSeparationValue);
-        landClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
-                                         schillerLandNNCloudSureSnowSeparationValue);
+//        landClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
+//                                         schillerLandNNCloudAmbiguousLowerBoundaryValue);
+//        landClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
+//                                         schillerLandNNCloudAmbiguousSureSeparationValue);
+//        landClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
+//                                         schillerLandNNCloudSureSnowSeparationValue);
     }
 
     private void setWaterClassificationParameters() {
@@ -187,12 +187,12 @@ public class OlciOp extends BasisOp {
         waterClassificationParameters.put("copyAllTiePoints", true);
         waterClassificationParameters.put("outputSchillerNNValue",
                                           outputSchillerNNValue);
-        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
-                                          schillerWaterNNCloudAmbiguousLowerBoundaryValue);
-        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
-                                          schillerWaterNNCloudAmbiguousSureSeparationValue);
-        waterClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
-                                          schillerWaterNNCloudSureSnowSeparationValue);
+//        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
+//                                          schillerWaterNNCloudAmbiguousLowerBoundaryValue);
+//        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
+//                                          schillerWaterNNCloudAmbiguousSureSeparationValue);
+//        waterClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
+//                                          schillerWaterNNCloudSureSnowSeparationValue);
     }
 
     private void computeWaterCloudProduct() {
