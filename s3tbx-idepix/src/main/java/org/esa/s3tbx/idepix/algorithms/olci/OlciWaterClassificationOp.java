@@ -89,15 +89,21 @@ public class OlciWaterClassificationOp extends Operator {
 //    double schillerNNCloudSureSnowSeparationValue;
 
     // Schiller's best values for OLCI net 9x4_131.7.net, 20170307
+//    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.6;
+//    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.4;
+//    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.5;
+
+    // Schiller's best values for OLCI all net 11x5x3_159.4.net, 20170314
     private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.6;
-    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.4;
-    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.5;
+    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.45;
+    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.45;
 
     public static final String OLCI_WATER_NET_NAME = "11x8x5x3_876.8_water.net";
 //    public static final String OLCI_ALL_NET_NAME = "11x8x5x3_1409.7_all.net";
 
     // NEW net really for OLCI (for all 21 inputs, currently just for water)
-    public static final String OLCI_ALL_NET_NAME = "9x4_131.7.net";
+//    public static final String OLCI_ALL_NET_NAME = "9x4_131.7.net";
+    public static final String OLCI_ALL_NET_NAME = "13x6x3_246.2.net";
 
     ThreadLocal<SchillerNeuralNetWrapper> olciWaterNeuralNet;
     ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;

@@ -53,10 +53,15 @@ public class OlciLandClassificationOp extends Operator {
 //            description = " NN cloud ambiguous cloud sure/snow separation value")
 //    double schillerNNCloudSureSnowSeparationValue;
 
-    // Schiller's best values for OLCI net 11x5x3_159.4.net, 20170314
-    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.65;
-    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.35;
-    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.4;
+    // Schiller's best values for OLCI land net 11x5x3_159.4.net, 20170314
+//    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.65;
+//    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.35;
+//    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.4;
+
+    // Schiller's best values for OLCI all net 11x5x3_159.4.net, 20170314
+    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.6;
+    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.45;
+    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.45;
 
 
     @SourceProduct(alias = "l1b", description = "The source product.")
@@ -78,8 +83,10 @@ public class OlciLandClassificationOp extends Operator {
 
     // NEW net really for OLCI (for all 21 inputs, currently just for water)
     public static final String OLCI_LAND_NET_NAME = "11x5x3_159.4.net";
+    public static final String OLCI_ALL_NET_NAME = "13x6x3_246.2.net";
 
     ThreadLocal<SchillerNeuralNetWrapper> olciLandNeuralNet;
+    ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
 
     @Override
     public void initialize() throws OperatorException {
@@ -93,7 +100,9 @@ public class OlciLandClassificationOp extends Operator {
 
     private void readSchillerNeuralNets() {
         InputStream olciLandIS = getClass().getResourceAsStream(OLCI_LAND_NET_NAME);
+        InputStream olciAllIS = getClass().getResourceAsStream(OLCI_ALL_NET_NAME);
         olciLandNeuralNet = SchillerNeuralNetWrapper.create(olciLandIS);
+        olciAllNeuralNet = SchillerNeuralNetWrapper.create(olciAllIS);
     }
 
     public void setBands() {
@@ -172,7 +181,8 @@ public class OlciLandClassificationOp extends Operator {
                             olciReflectance[i] = olciReflectanceTiles[i].getSampleFloat(x, y);
                         }
 
-                        SchillerNeuralNetWrapper nnWrapper = olciLandNeuralNet.get();
+//                        SchillerNeuralNetWrapper nnWrapper = olciLandNeuralNet.get();
+                        SchillerNeuralNetWrapper nnWrapper = olciAllNeuralNet.get();
                         double[] inputVector = nnWrapper.getInputVector();
 //                        for (int i = 0; i < inputVector.length; i++) {
 //                            final int olciEquivalentWvlIndex = Rad2ReflConstants.OLCI_MERIS_EQUIVALENT_WVL_INDICES[i];
