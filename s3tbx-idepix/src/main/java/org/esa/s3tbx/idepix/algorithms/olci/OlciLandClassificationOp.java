@@ -33,55 +33,37 @@ import java.util.Map;
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Idepix land pixel classification operator for OLCI.")
 public class OlciLandClassificationOp extends Operator {
+
     @Parameter(defaultValue = "false",
             label = " Write NN value to the target product.",
             description = " If applied, write Schiller NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-//    @Parameter(defaultValue = "2.0",
-//            label = " NN cloud ambiguous lower boundary",
-//            description = " NN cloud ambiguous lower boundary")
-//    double schillerNNCloudAmbiguousLowerBoundaryValue;
-//
-//    @Parameter(defaultValue = "3.7",
-//            label = " NN cloud ambiguous/sure separation value",
-//            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
-//    double schillerNNCloudAmbiguousSureSeparationValue;
-//
-//    @Parameter(defaultValue = "4.05",
-//            label = " NN cloud sure/snow separation value",
-//            description = " NN cloud ambiguous cloud sure/snow separation value")
-//    double schillerNNCloudSureSnowSeparationValue;
-
-    // Schiller's best values for OLCI land net 11x5x3_159.4.net, 20170314
-//    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.65;
-//    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.35;
-//    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.4;
-
-    // Schiller's best values for OLCI all net 11x5x3_159.4.net, 20170314
-    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.6;
-    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.45;
-    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.45;
+    @Parameter(defaultValue = "true",
+            label = " Use 'all' NN instead of separate land and water NNs.",
+            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
+    private boolean useSchillerNNAll;
 
 
     @SourceProduct(alias = "l1b", description = "The source product.")
     Product sourceProduct;
+
     @SourceProduct(alias = "rhotoa")
     private Product rad2reflProduct;
     @SourceProduct(alias = "waterMask")
     private Product waterMaskProduct;
-
     @TargetProduct(description = "The target product.")
     Product targetProduct;
+
+    private double schillerNNOpaqueCloudToSnowIceSeparationValue;
+    private double schillerNNSnowIceToCloudAmbiguousSeparationValue;
+    private double schillerNNCloudAmbiguousUpperBoundaryValue;
 
     Band cloudFlagBand;
 
     private Band[] olciReflBands;
     private Band landWaterBand;
 
-//    public static final String OLCI_LAND_NET_NAME = "11x8x5x3_1062.5_land.net";
-
-    // NEW net really for OLCI (for all 21 inputs, currently just for water)
     public static final String OLCI_LAND_NET_NAME = "11x5x3_159.4.net";
     public static final String OLCI_ALL_NET_NAME = "13x6x3_246.2.net";
 
@@ -94,6 +76,18 @@ public class OlciLandClassificationOp extends Operator {
 
         readSchillerNeuralNets();
         createTargetProduct();
+
+        if (useSchillerNNAll) {
+            // Schiller's best values for OLCI all net 11x5x3_159.4.net, 20170314
+            schillerNNOpaqueCloudToSnowIceSeparationValue = 1.6;
+            schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.45;
+            schillerNNCloudAmbiguousUpperBoundaryValue = 4.45;
+        } else {
+            // Schiller's best values for OLCI land net 13x6x3_246.2.net, 20170307
+            schillerNNOpaqueCloudToSnowIceSeparationValue = 1.65;
+            schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.35;
+            schillerNNCloudAmbiguousUpperBoundaryValue = 4.4;
+        }
 
         landWaterBand = waterMaskProduct.getBand("land_water_fraction");
     }
@@ -181,8 +175,8 @@ public class OlciLandClassificationOp extends Operator {
                             olciReflectance[i] = olciReflectanceTiles[i].getSampleFloat(x, y);
                         }
 
-//                        SchillerNeuralNetWrapper nnWrapper = olciLandNeuralNet.get();
-                        SchillerNeuralNetWrapper nnWrapper = olciAllNeuralNet.get();
+                        SchillerNeuralNetWrapper nnWrapper =
+                                useSchillerNNAll ? olciAllNeuralNet.get() : olciLandNeuralNet.get();
                         double[] inputVector = nnWrapper.getInputVector();
 //                        for (int i = 0; i < inputVector.length; i++) {
 //                            final int olciEquivalentWvlIndex = Rad2ReflConstants.OLCI_MERIS_EQUIVALENT_WVL_INDICES[i];

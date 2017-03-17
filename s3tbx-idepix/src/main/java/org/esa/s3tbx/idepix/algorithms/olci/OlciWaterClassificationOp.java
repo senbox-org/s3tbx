@@ -37,21 +37,6 @@ import java.util.Calendar;
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Idepix water pixel classification operator for OLCI.")
 public class OlciWaterClassificationOp extends Operator {
-    private Band cloudFlagBand;
-    private SeaIceClassifier seaIceClassifier;
-    private Band landWaterBand;
-    private Band nnOutputBand;
-
-    @SourceProduct(alias = "l1b")
-    private Product l1bProduct;
-    @SourceProduct(alias = "rhotoa")
-    private Product rhoToaProduct;
-    @SourceProduct(alias = "waterMask")
-    private Product waterMaskProduct;
-
-    @SuppressWarnings({"FieldCanBeLocal"})
-    @TargetProduct
-    private Product targetProduct;
 
     @Parameter(label = " Sea Ice Climatology Value", defaultValue = "false")
     private boolean ccOutputSeaIceClimatologyValue;
@@ -73,36 +58,28 @@ public class OlciWaterClassificationOp extends Operator {
             description = " If applied, write NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-//    @Parameter(defaultValue = "2.0",
-//            label = " NN cloud ambiguous lower boundary ",
-//            description = " NN cloud ambiguous lower boundary ")
-//    double schillerNNCloudAmbiguousLowerBoundaryValue;
-//
-//    @Parameter(defaultValue = "3.7",
-//            label = " NN cloud ambiguous/sure separation value ",
-//            description = " NN cloud ambiguous cloud ambiguous/sure separation value ")
-//    double schillerNNCloudAmbiguousSureSeparationValue;
-//
-//    @Parameter(defaultValue = "4.05",
-//            label = " NN cloud sure/snow separation value ",
-//            description = " NN cloud ambiguous cloud sure/snow separation value ")
-//    double schillerNNCloudSureSnowSeparationValue;
+    @Parameter(defaultValue = "true",
+            label = " Use 'all' NN instead of separate land and water NNs.",
+            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
+    private boolean useSchillerNNAll;
 
-    // Schiller's best values for OLCI net 9x4_131.7.net, 20170307
-//    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.6;
-//    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.4;
-//    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.5;
 
-    // Schiller's best values for OLCI all net 11x5x3_159.4.net, 20170314
-    private double schillerNNOpaqueCloudToSnowIceSeparationValue = 1.6;
-    private double schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.45;
-    private double schillerNNCloudAmbiguousUpperBoundaryValue = 4.45;
+    @SourceProduct(alias = "l1b")
+    private Product l1bProduct;
+    @SourceProduct(alias = "rhotoa")
+    private Product rhoToaProduct;
+    @SourceProduct(alias = "waterMask")
+    private Product waterMaskProduct;
+
+    @SuppressWarnings({"FieldCanBeLocal"})
+    @TargetProduct
+    private Product targetProduct;
+
+    private double schillerNNOpaqueCloudToSnowIceSeparationValue;
+    private double schillerNNSnowIceToCloudAmbiguousSeparationValue;
+    private double schillerNNCloudAmbiguousUpperBoundaryValue;
 
     public static final String OLCI_WATER_NET_NAME = "11x8x5x3_876.8_water.net";
-//    public static final String OLCI_ALL_NET_NAME = "11x8x5x3_1409.7_all.net";
-
-    // NEW net really for OLCI (for all 21 inputs, currently just for water)
-//    public static final String OLCI_ALL_NET_NAME = "9x4_131.7.net";
     public static final String OLCI_ALL_NET_NAME = "13x6x3_246.2.net";
 
     ThreadLocal<SchillerNeuralNetWrapper> olciWaterNeuralNet;
@@ -110,12 +87,28 @@ public class OlciWaterClassificationOp extends Operator {
 
     private static final double SEA_ICE_CLIM_THRESHOLD = 10.0;
 
+    private Band cloudFlagBand;
+    private SeaIceClassifier seaIceClassifier;
+    private Band landWaterBand;
+    private Band nnOutputBand;
+
     private RectangleExtender rectExtender;
 
     @Override
     public void initialize() throws OperatorException {
         readSchillerNets();
         createTargetProduct();
+
+        schillerNNOpaqueCloudToSnowIceSeparationValue = 1.6;
+        if (useSchillerNNAll) {
+            // Schiller's best values for OLCI all net 11x5x3_159.4.net, 20170314
+            schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.45;
+            schillerNNCloudAmbiguousUpperBoundaryValue = 4.45;
+        } else {
+            // Schiller's best values for OLCI water net 9x4_131.7.net, 20170307
+            schillerNNSnowIceToCloudAmbiguousSeparationValue = 2.4;
+            schillerNNCloudAmbiguousUpperBoundaryValue = 4.5;
+        }
 
         initSeaIceClassifier();
 
@@ -291,7 +284,11 @@ public class OlciWaterClassificationOp extends Operator {
     }
 
     private double[] getOlciNNOutput(int x, int y, Tile[] rhoToaTiles) {
-        return getOlciNNOutputImpl(x, y, rhoToaTiles, olciAllNeuralNet.get());
+        if (useSchillerNNAll) {
+            return getOlciNNOutputImpl(x, y, rhoToaTiles, olciAllNeuralNet.get());
+        } else {
+            return getOlciNNOutputImpl(x, y, rhoToaTiles, olciWaterNeuralNet.get());
+        }
     }
 
     private double[] getOlciNNOutputImpl(int x, int y, Tile[] rhoToaTiles, SchillerNeuralNetWrapper nnWrapper) {

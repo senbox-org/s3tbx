@@ -83,6 +83,11 @@ public class OlciOp extends BasisOp {
             description = " If applied, write NN value to the target product ")
     private boolean outputSchillerNNValue;
 
+    @Parameter(defaultValue = "true",
+            label = " Use 'all' NN instead of separate land and water NNs.",
+            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
+    private boolean useSchillerNNAll;
+
 //    @Parameter(defaultValue = "2.0",
 //            label = " NN cloud ambiguous lower boundary (applied on WATER)",
 //            description = " NN cloud ambiguous lower boundary (applied on WATER)")
@@ -172,8 +177,8 @@ public class OlciOp extends BasisOp {
     private void setLandClassificationParameters() {
         landClassificationParameters = new HashMap<>();
         landClassificationParameters.put("copyAllTiePoints", true);
-        landClassificationParameters.put("outputSchillerNNValue",
-                                         outputSchillerNNValue);
+        landClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+        landClassificationParameters.put("useSchillerNNAll", useSchillerNNAll);
 //        landClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
 //                                         schillerLandNNCloudAmbiguousLowerBoundaryValue);
 //        landClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
@@ -185,8 +190,8 @@ public class OlciOp extends BasisOp {
     private void setWaterClassificationParameters() {
         waterClassificationParameters = new HashMap<>();
         waterClassificationParameters.put("copyAllTiePoints", true);
-        waterClassificationParameters.put("outputSchillerNNValue",
-                                          outputSchillerNNValue);
+        waterClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+        waterClassificationParameters.put("useSchillerNNAll", useSchillerNNAll);
 //        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
 //                                          schillerWaterNNCloudAmbiguousLowerBoundaryValue);
 //        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
