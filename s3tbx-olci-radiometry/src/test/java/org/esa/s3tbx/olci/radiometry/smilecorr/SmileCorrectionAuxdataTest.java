@@ -76,8 +76,9 @@ public class SmileCorrectionAuxdataTest {
         assertArrayEquals(expectedLandLowerBands, smileCorrectionAuxdata.getLandLowerBands());
 
         float[] expectedCentralWvl = {
-                400.30316f, 411.84534f, 442.9626f, 490.493f, 510.46756f, 560.45026f, 620.40924f, 665.2744f, 674.02515f, 681.5705f, 709.11487f,
-                754.18134f, 761.72614f, 764.82465f, 767.9175f, 779.2567f, 865.4297f, 884.30835f, 899.31085f, 938.9731f, 1015.7992f, 0f
+                400f, 412.5f, 442.5f, 490f, 510f, 560f, 620f, 665f,
+                673.75f, 681.25f, 708.75f, 753.75f, 761.25f, 764.375f,
+                767.5f, 778.75f, 865f, 885f, 900f, 940f, 1020f, 0f
         };
         assertArrayEquals(expectedCentralWvl, smileCorrectionAuxdata.getRefCentralWaveLengths(), 1e-6f);
 
