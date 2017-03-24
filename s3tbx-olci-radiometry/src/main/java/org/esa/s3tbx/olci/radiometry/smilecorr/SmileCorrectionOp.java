@@ -56,7 +56,7 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
         authors = " Marco Peters, Muhammad Bala (Brockmann Consult)",
         copyright = "(c) 2015 by Brockmann Consult",
         category = "Optical/Pre-Processing",
-        version = "1.2")
+        version = "1.2.1")
 public class SmileCorrectionOp extends Operator {
 
 

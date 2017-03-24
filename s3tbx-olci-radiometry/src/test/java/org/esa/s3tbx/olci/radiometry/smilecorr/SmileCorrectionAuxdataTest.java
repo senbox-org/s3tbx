@@ -76,28 +76,8 @@ public class SmileCorrectionAuxdataTest {
         assertArrayEquals(expectedLandLowerBands, smileCorrectionAuxdata.getLandLowerBands());
 
         float[] expectedCentralWvl = {
-                400f,
-                412.5f,
-                442.5f,
-                490f,
-                510f,
-                560f,
-                620f,
-                665f,
-                673.75f,
-                681.25f,
-                708.75f,
-                753.75f,
-                761.25f,
-                764.37f,
-                767.5f,
-                778.75f,
-                865f,
-                885f,
-                900f,
-                940f,
-                1020f,
-                0f
+                400.30316f, 411.84534f, 442.9626f, 490.493f, 510.46756f, 560.45026f, 620.40924f, 665.2744f, 674.02515f, 681.5705f, 709.11487f,
+                754.18134f, 761.72614f, 764.82465f, 767.9175f, 779.2567f, 865.4297f, 884.30835f, 899.31085f, 938.9731f, 1015.7992f, 0f
         };
         assertArrayEquals(expectedCentralWvl, smileCorrectionAuxdata.getRefCentralWaveLengths(), 1e-6f);
 
@@ -139,12 +119,12 @@ public class SmileCorrectionAuxdataTest {
         };
         assertArrayEquals(expectedCentralWvl, smileCorrectionAuxdata.getRefCentralWaveLengths(), 1e-6f);
 
-        // values are taken from the Specification of the Scientific Contents of the MERIS Level-1b & 2 Auxiliary Data Products
+        // values are taken from the Specification of the Scientific Contents of the MERIS Level-1b & 2 Auxiliary Data Products page 131
         // https://earth.esa.int/documents/700255/2042855/PO-RS-PAR-GS-0002+3C+-+Prod+Spec.pdf/cb0d20b0-c1f4-4903-a5a7-c250fedda700
         float[] expectedSolarIrradiance = {
-                1714.767334f, 1878.892944f, 1928.337158f, 1928.936279f, 1803.076294f,
-                1650.773804f, 1531.626465f, 1472.168091f, 1407.942627f, 1266.042847f,
-                1254.581177f, 1177.259522f, 958.3851929f, 929.8380127f, 895.4595947f,0f
+                1713.692017f, 1877.56604f, 1929.26294f, 1926.890991f, 1800.458008f, 1649.704956f,
+                1530.927002f, 1470.229004f, 1405.473999f, 1266.199951f, 1253.004028f, 1175.737061f,
+                958.7630005f, 929.7860107f, 895.460022f, 0f
         };
         assertArrayEquals(expectedSolarIrradiance, smileCorrectionAuxdata.getSolarIrradiances(), 1e-6f);
 
