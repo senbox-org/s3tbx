@@ -234,11 +234,11 @@ public class OlciWaterClassificationOp extends Operator {
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
 
-            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, nnInterpreter.isCloudAmbiguous(nnOutput));
-            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, nnInterpreter.isCloudAmbiguous(nnOutput));
-
-            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, nnInterpreter.isCloudSure(nnOutput));
-            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, nnInterpreter.isCloudSure(nnOutput));
+            boolean cloudAmbiguous = nnInterpreter.isCloudAmbiguous(nnOutput);
+            boolean cloudSure = nnInterpreter.isCloudSure(nnOutput);
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, cloudSure);
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, cloudAmbiguous || cloudSure);
 
             if (checkForSeaIce && nnInterpreter.isSnowIce(nnOutput)) {
                 targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, true);

@@ -178,10 +178,11 @@ public class OlciLandClassificationOp extends Operator {
 
                             CloudNNInterpreter nnInterpreter = CloudNNInterpreter.create();
 
-                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, nnInterpreter.isCloudAmbiguous(nnOutput));
-                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, nnInterpreter.isCloudAmbiguous(nnOutput));
-                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, nnInterpreter.isCloudSure(nnOutput));
-                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, nnInterpreter.isCloudSure(nnOutput));
+                            boolean cloudAmbiguous = nnInterpreter.isCloudAmbiguous(nnOutput);
+                            boolean cloudSure = nnInterpreter.isCloudSure(nnOutput);
+                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);
+                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, cloudSure);
+                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, cloudAmbiguous || cloudSure);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, nnInterpreter.isSnowIce(nnOutput));
                         }
 
