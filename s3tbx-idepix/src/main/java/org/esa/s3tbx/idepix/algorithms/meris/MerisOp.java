@@ -132,8 +132,6 @@ public class MerisOp extends BasisOp {
 
     @Override
     public void initialize() throws OperatorException {
-        System.out.println("Running IDEPIX MERIS - source product: " + sourceProduct.getName());
-
         final boolean inputProductIsValid = IdepixIO.validateInputProduct(sourceProduct, AlgorithmSelector.MERIS);
         if (!inputProductIsValid) {
             throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);

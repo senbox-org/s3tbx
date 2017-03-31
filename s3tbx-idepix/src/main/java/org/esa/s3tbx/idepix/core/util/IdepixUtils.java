@@ -4,7 +4,7 @@ import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.util.math.MathUtils;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.util.Calendar;
 
 /**
@@ -29,7 +29,6 @@ public class IdepixUtils {
     }
     public static void info(final String msg) {
         logger.info(msg);
-        System.out.println(msg);
     }
 
     public static float spectralSlope(float ch1, float ch2, float wl1, float wl2) {

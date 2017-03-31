@@ -273,9 +273,9 @@ public class Landsat8ClassificationOp extends Operator {
 //                        System.out.println("x,y = " + x + "," + y);
 //                    }
 //                    if ((x == 3461 || x == 3462) && y == 477) {
-                    if ((x == 2800) && y == 340) {
-                        System.out.println("x,y = " + x + "," + y);
-                    }
+//                    if ((x == 2800) && y == 340) {
+//                        System.out.println("x,y = " + x + "," + y);
+//                    }
 
                     // set up pixel properties for given instruments...
                     Landsat8Algorithm landsat8Algorithm = createLandsat8Algorithm(
