@@ -7,12 +7,12 @@ import com.bc.ceres.binding.ValueRange;
  */
 public class CloudNNInterpreter {
 
-    private static final ValueRange CLEAR_SNOW_ICE_BOUNDS = new ValueRange(0.0, 1.66, true, false);
-    private static final ValueRange OPAQUE_CLOUD_BOUNDS = new ValueRange(1.66, 2.46, true, false);
-    private static final ValueRange SEMI_TRANS_CLOUD_BOUNDS = new ValueRange(2.46, 3.46, true, false);
-    private static final ValueRange SPATIAL_MIXED_BOUNDS = new ValueRange(3.46, 4.52, true, false);
-    private static final ValueRange CLEAR_LAND_BOUNDS = new ValueRange(4.52, 5.38, true, false);
-    private static final ValueRange CLEAR_WATER_BOUNDS = new ValueRange(5.38, 6.00, true, true);
+    private static final ValueRange CLEAR_SNOW_ICE_BOUNDS = new ValueRange(0.0, 1.82, true, false);
+    private static final ValueRange OPAQUE_CLOUD_BOUNDS = new ValueRange(1.82, 2.5, true, false);
+    private static final ValueRange SEMI_TRANS_CLOUD_BOUNDS = new ValueRange(2.5, 3.5, true, false);
+    private static final ValueRange SPATIAL_MIXED_BOUNDS = new ValueRange(3.5, 4.38, true, false);
+    private static final ValueRange CLEAR_LAND_BOUNDS = new ValueRange(4.38, 5.3, true, false);
+    private static final ValueRange CLEAR_WATER_BOUNDS = new ValueRange(5.3, 6.00, true, true);
 
 
     private CloudNNInterpreter() {

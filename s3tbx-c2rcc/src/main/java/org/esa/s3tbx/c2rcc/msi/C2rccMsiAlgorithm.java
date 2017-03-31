@@ -396,7 +396,7 @@ public class C2rccMsiAlgorithm {
             // define input to water NNs
             //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:10)];
             int ancNnInvInputCount = 5;
-            int logRwNNInvInputCount = log_rw.length - 2;
+            int logRwNNInvInputCount = log_rw.length;
             double[] nn_in_inv = new double[ancNnInvInputCount + logRwNNInvInputCount];
             nn_in_inv[0] = sun_zeni;
             nn_in_inv[1] = view_zeni;

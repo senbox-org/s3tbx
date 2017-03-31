@@ -82,7 +82,7 @@ public class OlciWaterClassificationOp extends Operator {
     @TargetProduct
     private Product targetProduct;
 
-    public static final String OLCI_ALL_NET_NAME = "11x9x6x4x2_209.7.net";
+    public static final String OLCI_ALL_NET_NAME = "11x10x4x3x2_207.9.net";
 
     ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
 
