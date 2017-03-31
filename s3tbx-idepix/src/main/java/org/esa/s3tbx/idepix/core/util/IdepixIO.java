@@ -5,7 +5,11 @@ import org.esa.s3tbx.idepix.algorithms.viirs.ViirsConstants;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.Scene;
+import org.esa.snap.core.datamodel.SceneFactory;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
@@ -297,7 +301,6 @@ public class IdepixIO {
     public static void addRadianceBands(Product l1bProduct, Product targetProduct, String[] bandsToCopy) {
         for (String bandname : bandsToCopy) {
             if (!targetProduct.containsBand(bandname) && bandname.contains("radiance")) {
-                System.out.println("adding band: " + bandname);
                 ProductUtils.copyBand(bandname, l1bProduct, targetProduct, true);
             }
         }
@@ -310,7 +313,6 @@ public class IdepixIO {
                 if (!targetProduct.containsBand(bandname) &&
                         bandname.startsWith(Rad2ReflConstants.MERIS_AUTOGROUPING_REFL_STRING) &&
                         bandname.endsWith("_" + String.valueOf(i))) {
-                    System.out.println("adding band: " + bandname);
                     ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
                     targetProduct.getBand(bandname).setUnit("dl");
                 }
@@ -323,7 +325,6 @@ public class IdepixIO {
             for (String bandname : reflBandsToCopy) {
                 // e.g. Oa01_reflectance
                 if (!targetProduct.containsBand(bandname) && bandname.equals("Oa" + String.format("%02d", i) + "_reflectance")) {
-                    System.out.println("adding band: " + bandname);
                     ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
                     targetProduct.getBand(bandname).setUnit("dl");
                 }
