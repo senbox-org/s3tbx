@@ -394,16 +394,15 @@ public class C2rccMsiAlgorithm {
             // (9.5) water part
 
             // define input to water NNs
-            //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:10)];
+            //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:6/8)];
             int ancNnInvInputCount = 5;
-            int logRwNNInvInputCount = log_rw.length;
-            double[] nn_in_inv = new double[ancNnInvInputCount + logRwNNInvInputCount];
+            double[] nn_in_inv = new double[nn_rw_iop.get().getInmax().length];
             nn_in_inv[0] = sun_zeni;
             nn_in_inv[1] = view_zeni;
             nn_in_inv[2] = azi_diff_deg;
             nn_in_inv[3] = temperature;
             nn_in_inv[4] = salinity;
-            System.arraycopy(log_rw, 0, nn_in_inv, ancNnInvInputCount, logRwNNInvInputCount);
+            System.arraycopy(log_rw, 0, nn_in_inv, ancNnInvInputCount, nn_in_inv.length - ancNnInvInputCount );
 
             // (9.5.1)check input to rw -> IOP NN out of range
             mi = nn_rw_iop.get().getInmin();
@@ -419,7 +418,12 @@ public class C2rccMsiAlgorithm {
             // (9.x.x.) NN compute Rwn from Rw
             rwn = new double[0];
             if (outputRwn) {
-                double[] log_rwn = nn_rw_rwnorm.get().calc(nn_in_inv);
+                // input of extreme net rw_rwnorm has two inputs less then the rw_iop and rw_kd,
+                // but the same number of inputs as the normal rw_rwnorm.
+                // --> ensure it is not longer than 11
+                double[] norm_nn_in_inv = new double[11];
+                System.arraycopy(nn_in_inv, 0, norm_nn_in_inv, 0, 11);
+                double[] log_rwn = nn_rw_rwnorm.get().calc(norm_nn_in_inv);
                 rwn = a_exp(log_rwn);
             }
 

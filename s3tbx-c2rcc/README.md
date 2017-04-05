@@ -6,7 +6,9 @@ MODIS and the SeaWiFS Level 1C radiance products.
 How to build
 ------------
 
-Make sure you have **git**, **JDK 1.8**, and **Maven 3** installed. Make sure Maven find's the JDK by setting the enviromment variable `JAVA_HOME` to the directory where your JDK is installed. 
+Make sure you have **[git](https://git-scm.com/)**, 
+**[JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)**, and 
+**[Maven 3](https://maven.apache.org/)** installed. Make sure Maven find's the JDK by setting the enviromment variable `JAVA_HOME` to the directory where your JDK is installed. 
 
 Clone or fork the repository at https://github.com/bcdev/s3tbx-c2rcc. 
 ```

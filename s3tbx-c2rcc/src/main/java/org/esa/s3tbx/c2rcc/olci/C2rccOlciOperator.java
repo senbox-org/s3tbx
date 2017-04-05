@@ -221,10 +221,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @Parameter(defaultValue = "3.1", description = "Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bwit")
     private double TSMfakBwit;
 
-    @Parameter(defaultValue = "1.04", description = "Chlorophyl exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
+    @Parameter(defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
     private double CHLexp;
 
-    @Parameter(defaultValue = "21.0", description = "Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
+    @Parameter(defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
     private double CHLfak;
 
     // RD20161103 changed from 0.05 to 0.005 for sum of differences
@@ -814,7 +814,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         }
 
         Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
-        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
+        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophylll concentration");
 
         conc_tsm.setValidPixelExpression(validPixelExpression);
         conc_chl.setValidPixelExpression(validPixelExpression);
@@ -848,7 +848,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             unc_btot.setValidPixelExpression(validPixelExpression);
 
             Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
-            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophyll concentration");
+            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophylll concentration");
 
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");

@@ -110,13 +110,13 @@
                 <parameterDescriptor>
                     <name>CHLexp</name>
                     <type>float</type>
-                    <description>Chlorophyl exponent ( CHL = iop-apig^CHLexp * CHLfak )</description>
+                    <description>Chlorophyll exponent ( CHL = iop-apig^CHLexp * CHLfak )</description>
                     <defaultValue>1.04</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
                     <name>CHLfak</name>
                     <type>float</type>
-                    <description>Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak )</description>
+                    <description>Chlorophyll factor ( CHL = iop-apig^CHLexp * CHLfak )</description>
                     <defaultValue>21.0</defaultValue>
                 </parameterDescriptor>
                 <parameterDescriptor>
