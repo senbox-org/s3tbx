@@ -60,7 +60,7 @@ import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.*;
  * an neural-network approach.
  *
  */
-@OperatorMetadata(alias = "c2rcc.meris4", version = "0.17",
+@OperatorMetadata(alias = "c2rcc.meris4", version = "0.18",
         authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
