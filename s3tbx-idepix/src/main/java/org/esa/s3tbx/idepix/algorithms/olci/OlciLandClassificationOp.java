@@ -5,13 +5,7 @@ import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
 import org.esa.s3tbx.idepix.core.util.SchillerNeuralNetWrapper;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoPos;
-import org.esa.snap.core.datamodel.PixelPos;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -22,7 +16,7 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -69,16 +63,22 @@ public class OlciLandClassificationOp extends Operator {
 
     public static final String OLCI_ALL_NET_NAME = "11x10x4x3x2_207.9.net";
 
+    private static final double THRESH_LAND_MINBRIGHT1 = 0.3;
+    private static final double THRESH_LAND_MINBRIGHT2 = 0.2;
+
     ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
+    private CloudNNInterpreter nnInterpreter;
+
 
     @Override
     public void initialize() throws OperatorException {
         setBands();
-
+        nnInterpreter = CloudNNInterpreter.create();
         readSchillerNeuralNets();
         createTargetProduct();
         
         landWaterBand = waterMaskProduct.getBand("land_water_fraction");
+
     }
 
     private void readSchillerNeuralNets() {
@@ -176,10 +176,12 @@ public class OlciLandClassificationOp extends Operator {
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
 
-                            CloudNNInterpreter nnInterpreter = CloudNNInterpreter.create();
+                            // CB 20170406:
+                            final boolean cloudSure = olciReflectance[2] >  THRESH_LAND_MINBRIGHT1 &&
+                                    nnInterpreter.isCloudSure(nnOutput);
+                            final boolean cloudAmbiguous = olciReflectance[2] >  THRESH_LAND_MINBRIGHT2 &&
+                                    nnInterpreter.isCloudAmbiguous(nnOutput, true, false);
 
-                            boolean cloudAmbiguous = nnInterpreter.isCloudAmbiguous(nnOutput);
-                            boolean cloudSure = nnInterpreter.isCloudSure(nnOutput);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, cloudSure);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, cloudAmbiguous || cloudSure);

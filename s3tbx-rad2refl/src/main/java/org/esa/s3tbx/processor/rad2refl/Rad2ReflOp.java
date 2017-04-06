@@ -33,13 +33,13 @@ import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.core.image.VirtualBandOpImage;
 import org.esa.snap.core.util.ProductUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.Raster;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.esa.snap.dataio.envisat.EnvisatConstants.*;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME;
 
 /**
  * An operator to provide conversion from radiances to reflectances or backwards.
@@ -249,7 +249,6 @@ public class Rad2ReflOp extends Operator {
                     ProductUtils.copyBand(b.getName(), sourceProduct, targetProduct, true);
                 }
             }
-//            targetProduct.setAutoGrouping(sourceProduct.getAutoGrouping());
         }
 
         ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
@@ -261,20 +260,27 @@ public class Rad2ReflOp extends Operator {
         targetProduct.setStartTime(sourceProduct.getStartTime());
         targetProduct.setEndTime(sourceProduct.getEndTime());
         final String autogroupingExt = isRadToReflMode() ? sensor.getReflAutogroupingString() : sensor.getRadAutogroupingString();
-//        targetProduct.setAutoGrouping(isRadToReflMode() ? sensor.getReflAutogroupingString() : sensor.getRadAutogroupingString());
         targetProduct.setAutoGrouping(sourceProduct.getAutoGrouping() + ":" + autogroupingExt);
 
         return targetProduct;
     }
 
     private Band createSpectralBand(Band sourceBand, String targetBandName, String unit, String description) {
-        Band targetBand = new Band(targetBandName, ProductData.TYPE_FLOAT32,
+//        Band targetBand = new Band(targetBandName, ProductData.TYPE_FLOAT32,
+//                                   sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
+//        targetBand.setScalingFactor(1);
+
+        // We significantly save resources if we write reflectances as INT16 with suitable scaling factor.
+        // We lose precision behind 5th decimal place, but that is ok for our purposes.
+        // agreed by CB/MP/OD, 20170406
+        Band targetBand = new Band(targetBandName, ProductData.TYPE_INT16,
                                    sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
         targetProduct.addBand(targetBand);
         ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
-        targetBand.setUnit(description);
+        targetBand.setDescription(description);
         targetBand.setUnit(unit);
-        targetBand.setScalingFactor(1);
+        final double scalingFactor = 1. / 10000.0f;
+        targetBand.setScalingFactor(scalingFactor);
         targetBand.setNoDataValue(Float.NaN);
         targetBand.setNoDataValueUsed(true);
         targetBand.setSpectralBandIndex(sourceBand.getSpectralBandIndex());

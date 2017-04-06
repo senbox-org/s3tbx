@@ -7,13 +7,7 @@ import org.esa.s3tbx.idepix.core.seaice.SeaIceClassifier;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
 import org.esa.s3tbx.idepix.core.util.SchillerNeuralNetWrapper;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoPos;
-import org.esa.snap.core.datamodel.PixelPos;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -25,7 +19,7 @@ import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.RectangleExtender;
 import org.esa.snap.core.util.math.MathUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -84,6 +78,9 @@ public class OlciWaterClassificationOp extends Operator {
 
     public static final String OLCI_ALL_NET_NAME = "11x10x4x3x2_207.9.net";
 
+    private static final double THRESH_WATER_MINBRIGHT1 = 0.2;
+    private static final double THRESH_WATER_MINBRIGHT2 = 0.2;
+
     ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
 
     private static final double SEA_ICE_CLIM_THRESHOLD = 10.0;
@@ -94,10 +91,12 @@ public class OlciWaterClassificationOp extends Operator {
     private Band nnOutputBand;
 
     private RectangleExtender rectExtender;
+    private CloudNNInterpreter nnInterpreter;
 
     @Override
     public void initialize() throws OperatorException {
         readSchillerNets();
+        nnInterpreter = CloudNNInterpreter.create();
         createTargetProduct();
 
         initSeaIceClassifier();
@@ -172,7 +171,7 @@ public class OlciWaterClassificationOp extends Operator {
                             }
                         } else {
                             if (band == cloudFlagBand) {
-                                classifyCloud(x, y, rhoToaTiles, targetTile, waterFraction);
+                                classifyCloud(x, y, l1FlagsTile, rhoToaTiles, targetTile, waterFraction);
                             }
                             if (outputSchillerNNValue && band == nnOutputBand) {
                                 final double[] nnOutput = getOlciNNOutput(x, y, rhoToaTiles);
@@ -205,6 +204,10 @@ public class OlciWaterClassificationOp extends Operator {
         }
     }
 
+    private boolean isGlintPixel(int x, int y, Tile l1FlagsTile) {
+        return l1FlagsTile.getSampleBit(x, y, OlciConstants.L1_F_GLINT);
+    }
+
     private boolean isCoastlinePixel(int x, int y, int waterFraction) {
         // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
         // values bigger than 100 indicate no data
@@ -213,7 +216,7 @@ public class OlciWaterClassificationOp extends Operator {
         return getGeoPos(x, y).lat > -58f && waterFraction <= 100 && waterFraction < 100 && waterFraction > 0;
     }
 
-    private void classifyCloud(int x, int y, Tile[] rhoToaTiles, Tile targetTile, int waterFraction) {
+    private void classifyCloud(int x, int y, Tile l1FlagsTile, Tile[] rhoToaTiles, Tile targetTile, int waterFraction) {
 
         final boolean isCoastline = isCoastlinePixel(x, y, waterFraction);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_COASTLINE, isCoastline);
@@ -222,10 +225,9 @@ public class OlciWaterClassificationOp extends Operator {
         if (!isCoastline) {
             // over water
             final GeoPos geoPos = getGeoPos(x, y);
+
             checkForSeaIce = ignoreSeaIceClimatology || isPixelClassifiedAsSeaice(geoPos);
         }
-
-        CloudNNInterpreter nnInterpreter = CloudNNInterpreter.create();
 
         double nnOutput = getOlciNNOutput(x, y, rhoToaTiles)[0];
         if (!targetTile.getSampleBit(x, y, IdepixConstants.IDEPIX_INVALID)) {
@@ -234,8 +236,13 @@ public class OlciWaterClassificationOp extends Operator {
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
 
-            boolean cloudAmbiguous = nnInterpreter.isCloudAmbiguous(nnOutput);
-            boolean cloudSure = nnInterpreter.isCloudSure(nnOutput);
+            final boolean isGlint = isGlintPixel(x, y, l1FlagsTile);
+            // CB 20170406:
+            final boolean cloudSure = rhoToaTiles[16].getSampleFloat(x, y) > THRESH_WATER_MINBRIGHT1 &&
+                    nnInterpreter.isCloudSure(nnOutput);
+            final boolean cloudAmbiguous = rhoToaTiles[16].getSampleFloat(x, y) > THRESH_WATER_MINBRIGHT2 &&
+                    nnInterpreter.isCloudAmbiguous(nnOutput, false, isGlint);
+
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, cloudSure);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, cloudAmbiguous || cloudSure);
@@ -288,19 +295,6 @@ public class OlciWaterClassificationOp extends Operator {
         final PixelPos pixelPos = new PixelPos(x, y);
         geoCoding.getGeoPos(pixelPos, geoPos);
         return geoPos;
-    }
-
-    private double azimuth(double x, double y) {
-        if (y > 0.0) {
-            // DPM #2.6.5.1.1-1
-            return (MathUtils.RTOD * Math.atan(x / y));
-        } else if (y < 0.0) {
-            // DPM #2.6.5.1.1-5
-            return (180.0 + MathUtils.RTOD * Math.atan(x / y));
-        } else {
-            // DPM #2.6.5.1.1-6
-            return (x >= 0.0 ? 90.0 : 270.0);
-        }
     }
 
     public static class Spi extends OperatorSpi {
