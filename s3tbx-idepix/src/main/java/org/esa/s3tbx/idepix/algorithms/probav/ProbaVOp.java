@@ -120,6 +120,8 @@ public class ProbaVOp extends BasisOp {
 
         Band cloudFlagBand = targetProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME);
         cloudFlagBand.setSourceImage(postProcessingProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME).getSourceImage());
+
+        setTargetProduct(targetProduct);
     }
 
     private void computePostProcessProduct() {
