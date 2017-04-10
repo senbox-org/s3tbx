@@ -4,6 +4,15 @@
 
     <folder name="Actions">
         <folder name="Operators">
+            <file name="org-esa-s3tbx-onns-OpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="ONNS"/>
+                <attr name="operatorName" stringvalue="ONNS"/>
+                <attr name="dialogTitle" stringvalue="OLCI Neural Network Swarm for Ocean Colour (ONNS)"/>
+                <attr name="targetProductNameSuffix" stringvalue="_ONNS"/>
+                <attr name="helpId" stringvalue="onnsScientificTool"/>
+            </file>
             <!--<file name="org-esa-s3tbx-c2rcc-OpAction.instance">-->
                 <!--<attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>-->
                 <!--<attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>-->
@@ -91,6 +100,11 @@
     <folder name="Menu">
         <folder name="Optical">
             <folder name="Thematic Water Processing">
+                <file name="org-esa-s3tbx-onns-OpAction.shadow">
+                    <attr name="originalFile"
+                          stringvalue="Actions/Operators/org-esa-s3tbx-onns-OpAction.instance"/>
+                    <attr name="position" intvalue="399"/>
+                </file>
                 <attr name="position" intvalue="400"/>
                 <!-- Currently disabled the generic processor; it causes confusion -->
                 <!--<file name="org-esa-s3tbx-c2rcc-OpAction.shadow">-->
