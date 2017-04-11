@@ -40,18 +40,6 @@ public class OlciLevel1ProductFactory extends OlciProductFactory {
 
     @Override
     protected ProductNodeGroup<Mask> prepareMasksForCopying(ProductNodeGroup<Mask> maskGroup) {
-        for (int i = 0; i < maskGroup.getNodeCount(); i++) {
-            final Mask mask = maskGroup.get(i);
-            if (mask.getName().equals("quality_flags_invalid")) {
-                mask.setName("quality_flags_cosmetic");
-            } else if (mask.getName().equals("quality_flags_cosmetic")) {
-                mask.setName("quality_flags_invalid");
-            } else if (mask.getName().equals("quality_flags_duplicated")) {
-                mask.setName("quality_flags_sun_glint_risk");
-            } else if (mask.getName().equals("quality_flags_sun_glint_risk")) {
-                mask.setName("quality_flags_duplicated");
-            }
-        }
         return maskGroup;
     }
 }
