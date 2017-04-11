@@ -79,7 +79,8 @@ public class OlciWaterClassificationOp extends Operator {
     public static final String OLCI_ALL_NET_NAME = "11x10x4x3x2_207.9.net";
 
     private static final double THRESH_WATER_MINBRIGHT1 = 0.2;
-    private static final double THRESH_WATER_MINBRIGHT2 = 0.2;
+//    private static final double THRESH_WATER_MINBRIGHT2 = 0.2;
+    private static final double THRESH_WATER_MINBRIGHT2 = 0.08; // CB 20170411
 
     ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
 
