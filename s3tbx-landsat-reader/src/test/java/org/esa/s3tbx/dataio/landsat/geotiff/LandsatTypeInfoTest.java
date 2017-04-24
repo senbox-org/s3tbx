@@ -23,6 +23,31 @@ import static org.junit.Assert.*;
 public class LandsatTypeInfoTest {
 
     @Test
+    public void testIsLandsat() throws Exception {
+        assertTrue(LandsatTypeInfo.isLandsat("LE07_L1TP_016039_20040918_20160211_01_T1_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isLandsat("LM11870291976166ESA00_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isLandsat("LT40140341983030XXX13_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isLandsat("LT41730601990155XXX01.tar.bz"));
+        assertTrue(LandsatTypeInfo.isLandsat("LT51231232013068GSI01_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isLandsat("LT51940252011320KIS00.tar.gz"));
+        assertTrue(LandsatTypeInfo.isLandsat("LE71890342011277ASN00_MTL.TXT"));
+        assertTrue(LandsatTypeInfo.isLandsat("LE71890342011277ASN00.tar.gz"));
+        assertTrue(LandsatTypeInfo.isLandsat("LO82160332013191LGN00.tar.gz"));
+        assertTrue(LandsatTypeInfo.isLandsat("LT82270322013068LGN01_MTL.TXT"));
+    }
+
+    @Test
+    public void testIsLandsatCollectionFilename() throws Exception {
+        assertTrue(LandsatTypeInfo.isLandsatCollection("LE07_L1TP_016039_20040918_20160211_01_T1_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isLandsatCollection("LT04_L1GS_017036_19821115_20160315_01_T2_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isLandsatCollection("LE07_L1GT_037035_20160314_20160314_01_RT_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isLandsatCollection("LT05_L1TP_202026_20031017_20161203_01_T1_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isLandsatCollection("LC08_L1TP_194028_20160622_20170323_01_T1_MTL.txt"));
+
+        assertFalse(LandsatTypeInfo.isLandsatCollection("LT82270322013068LGN01_MTL.txt"));
+    }
+
+    @Test
     public void testIsLandsatMSSFilename() throws Exception {
         assertTrue(LandsatTypeInfo.isMss("LM11870291976166ESA00_MTL.txt"));
         assertTrue(LandsatTypeInfo.isMss("LM32170241982254XXX01_MTL.txt"));
@@ -81,7 +106,7 @@ public class LandsatTypeInfoTest {
         assertTrue(LandsatTypeInfo.isLandsat8("LC82160332013191LGN00.tar.gz"));
         assertTrue(LandsatTypeInfo.isLandsat8("LO82160332013191LGN00.tar.gz"));
         assertTrue(LandsatTypeInfo.isLandsat8("LT82160332013191LGN00.tar.gz"));
-        assertTrue(LandsatTypeInfo.isLandsat8("LT82160332013191LGN00.tgz")); // 'tar.gz' expected as extension
+        assertTrue(LandsatTypeInfo.isLandsat8("LT82160332013191LGN00.tgz"));
         assertTrue(LandsatTypeInfo.isLandsat8("LC81970232013266LGN00.tar.bz")); // 'tar.bz' expected as extension
 
         assertFalse(LandsatTypeInfo.isLandsat8("L8196030_03020031023_MTL.txt"));  // Sensor type missing
