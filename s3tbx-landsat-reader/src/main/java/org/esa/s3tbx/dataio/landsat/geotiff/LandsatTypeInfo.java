@@ -10,11 +10,11 @@ class LandsatTypeInfo {
     private static final String L5_FILENAME_REGEX = "LT5\\d{13}\\w{3}\\d{2}";
     private static final String L7_FILENAME_REGEX = "LE7\\d{13}\\w{3}\\d{2}";
     private static final String L8_FILENAME_REGEX = "L[OTC]8\\d{13}\\w{3}\\d{2}";
-    public static final String MSS_FILENAME_REGEX = "LM[1-5]\\d{13}\\w{3}\\d{2}";
-    public static final String L5LEGACY_FILENAME_REGEX_1 = "LT5\\d{13}\\w{3}\\d{2}";
-    public static final String L5LEGACY_FILENAME_REGEX_2 = "L5\\d{6}_\\d{11}";
-    public static final String L7LEGACY_FILENAME_REGEX_1 = "LE7\\d{13}\\w{3}\\d{2}";
-    public static final String L7LEGACY_FILENAME_REGEX_2 = "L7\\d{7}_\\d{11}";
+    private static final String MSS_FILENAME_REGEX = "LM[1-5]\\d{13}\\w{3}\\d{2}";
+    private static final String L5LEGACY_FILENAME_REGEX_1 = "LT5\\d{13}\\w{3}\\d{2}";
+    private static final String L5LEGACY_FILENAME_REGEX_2 = "L5\\d{6}_\\d{11}";
+    private static final String L7LEGACY_FILENAME_REGEX_1 = "LE7\\d{13}\\w{3}\\d{2}";
+    private static final String L7LEGACY_FILENAME_REGEX_2 = "L7\\d{7}_\\d{11}";
 
     private enum LandsatType {
         LANDSAT_COLLECTION {
