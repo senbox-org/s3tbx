@@ -165,10 +165,6 @@ public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
         return null;
     }
 
-    static boolean isLandsatMSSFilename(String filename) {
-        return LandsatTypeInfo.isMss(filename);
-}
-
     static boolean isCompressedFile(File file) {
         String extension = FileUtils.getExtension(file);
         if (StringUtils.isNullOrEmpty(extension)) {
