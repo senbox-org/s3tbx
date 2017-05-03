@@ -5,11 +5,7 @@ import org.esa.s3tbx.idepix.algorithms.viirs.ViirsConstants;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.Scene;
-import org.esa.snap.core.datamodel.SceneFactory;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
@@ -329,6 +325,36 @@ public class IdepixIO {
                     targetProduct.getBand(bandname).setUnit("dl");
                 }
             }
+        }
+    }
+
+    public static void addCawaBands(Product l1bProduct, Product targetProduct) {
+        for (int i = 12; i <= 15; i++) {
+            final String bandname = "solar_flux_band_" + i;
+            if (!targetProduct.containsBand(bandname)) {
+                ProductUtils.copyBand(bandname, l1bProduct, targetProduct, true);
+                targetProduct.getBand(bandname).setUnit("dl");
+            }
+        }
+        if (!targetProduct.containsBand("detector_index")) {
+            ProductUtils.copyBand("detector_index", l1bProduct, targetProduct, true);
+            targetProduct.getBand("detector_index").setUnit("dl");
+        }
+        if (!targetProduct.containsBand("lambda0_band_13")) {
+            ProductUtils.copyBand("lambda0_band_13", l1bProduct, targetProduct, true);
+            targetProduct.getBand("lambda0_band_13").setUnit("nm");
+        }
+        if (!targetProduct.containsBand("latitude")) {
+            ProductUtils.copyBand("latitude", l1bProduct, targetProduct, true);
+            targetProduct.getBand("latitude").setUnit("deg");
+        }
+        if (!targetProduct.containsBand("longitude")) {
+            ProductUtils.copyBand("longitude", l1bProduct, targetProduct, true);
+            targetProduct.getBand("longitude").setUnit("deg");
+        }
+        if (!targetProduct.containsBand("altitude")) {
+            ProductUtils.copyBand("altitude", l1bProduct, targetProduct, true);
+            targetProduct.getBand("altitude").setUnit("m");
         }
     }
 }

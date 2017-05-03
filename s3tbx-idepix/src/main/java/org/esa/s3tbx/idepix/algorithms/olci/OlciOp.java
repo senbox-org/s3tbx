@@ -83,6 +83,12 @@ public class OlciOp extends BasisOp {
             description = " If applied, write NN value to the target product ")
     private boolean outputSchillerNNValue;
 
+//    @Parameter(defaultValue = "false",
+//            label = " Write specific CAWA bands to the target product.",
+//            description = " If applied, write specific CAWA bands to the target product ")
+//    private boolean copyBandsForCawa;
+    private boolean copyBandsForCawa = false;
+
     // We only have the All NN (mp/20170324)
 //    @Parameter(defaultValue = "true",
 //            label = " Use 'all' NN instead of separate land and water NNs.",
@@ -242,6 +248,9 @@ public class OlciOp extends BasisOp {
         }
         if (outputRad2Refl) {
             IdepixIO.addOlciRadiance2ReflectanceBands(rad2reflProduct, targetProduct, reflBandsToCopy);
+        }
+        if (copyBandsForCawa) {
+            IdepixIO.addCawaBands(sourceProduct, targetProduct);
         }
     }
 
