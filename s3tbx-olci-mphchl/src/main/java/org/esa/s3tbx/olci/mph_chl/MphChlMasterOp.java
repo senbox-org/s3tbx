@@ -1,6 +1,5 @@
 package org.esa.s3tbx.olci.mph_chl;
 
-import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.olci.radiometry.rayleigh.RayleighCorrectionOp;
 import org.esa.snap.core.datamodel.Band;
@@ -10,7 +9,6 @@ import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
-import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
@@ -19,7 +17,6 @@ import org.esa.snap.core.util.ProductUtils;
 import javax.media.jai.*;
 import javax.media.jai.operator.ConvolveDescriptor;
 import java.awt.*;
-import java.util.HashMap;
 
 /**
  * Wrapper for MPH CHL pixel operator.
@@ -29,9 +26,9 @@ import java.util.HashMap;
  */
 @OperatorMetadata(alias = "OlciMphChl",
         version = "1.0",
-        authors = "Olaf Danne",
-        copyright = "(c) 2017 by Brockmann Consult",
-        description = "OLCI MPH CHL main operator")
+        authors = "Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne",
+        copyright = "(c) 2013, 2014, 2017 by Brockmann Consult",
+        description = "This operator computes maximum peak height of chlorophyll (MPH/CHL) from OLCI.")
 public class MphChlMasterOp extends Operator {
 
     @Parameter(defaultValue = "not (quality_flags.land or quality_flags.invalid)",
@@ -50,11 +47,11 @@ public class MphChlMasterOp extends Operator {
             description = "Switch to true to write 'mph' band.")
     boolean exportMph;
 
-    @Parameter(defaultValue = "true",
+    @Parameter(defaultValue = "false",
             description = "Switch to true to apply a 3x3 low-pass filter on the result.")
     boolean applyLowPassFilter;
 
-    @SourceProduct
+    @SourceProduct(description = "OLCI L1 or Rayleigh corrected product", label = "OLCI L1b or Rayleigh corrected product")
     private Product sourceProduct;
 
     @Override

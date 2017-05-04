@@ -8,24 +8,14 @@ import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.util.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
-/**
- * todo: add comment
- * To change this template use File | Settings | File Templates.
- * Date: 03.05.2017
- * Time: 17:18
- *
- * @author olafd
- */
 public class MphChlOpAcceptanceTest {
     private File testOutDirectory;
 
@@ -51,7 +41,6 @@ public class MphChlOpAcceptanceTest {
     }
 
     @Test
-    @Ignore
     public void testComputeMphChlProduct() throws IOException {
         final Product brrProduct = OlciBrrProduct.create();
 
@@ -71,9 +60,14 @@ public class MphChlOpAcceptanceTest {
 
             final Band chlBand = savedProduct.getBand("chl");
             assertNotNull(chlBand);
-            assertEquals(1.5443997383117676f, chlBand.getSampleFloat(0, 0), 1e-8);
-            assertEquals(0.6783487796783447f, chlBand.getSampleFloat(1, 0), 1e-8);
-            assertEquals(25.435853958129883f, chlBand.getSampleFloat(0, 1), 1e-8);
+            // old MERIS:
+//            assertEquals(1.5443997383117676f, chlBand.getSampleFloat(0, 0), 1e-8);
+//            assertEquals(0.6783487796783447f, chlBand.getSampleFloat(1, 0), 1e-8);
+//            assertEquals(25.435853958129883f, chlBand.getSampleFloat(0, 1), 1e-8);
+            // new OLCI, slight differences because wavelengths are not exactly the same:
+            assertEquals(1.9867525100708008f, chlBand.getSampleFloat(0, 0), 1e-8);
+            assertEquals(0.7803683280944824f, chlBand.getSampleFloat(1, 0), 1e-8);
+            assertEquals(25.843711853027344f, chlBand.getSampleFloat(0, 1), 1e-8);
             assertEquals(Double.NaN, chlBand.getSampleFloat(1, 1), 1e-8);
 
             final Band flagBand = savedProduct.getBand("mph_chl_flags");
@@ -107,7 +101,7 @@ public class MphChlOpAcceptanceTest {
             final Band mphBand = savedProduct.getBand("mph");
             assertNull(mphBand);
 
-            final Band l1_flagband = savedProduct.getBand("l1_flags");
+            final Band l1_flagband = savedProduct.getBand("quality_flags");
             assertNotNull(l1_flagband);
             assertEquals(2, l1_flagband.getSampleInt(0, 0));
             assertEquals(0, l1_flagband.getSampleInt(1, 0));
@@ -121,7 +115,6 @@ public class MphChlOpAcceptanceTest {
     }
 
     @Test
-    @Ignore
     public void testComputeMphChlProduct_withMph() throws IOException {
         final Product brrProduct = OlciBrrProduct.create();
 
@@ -141,21 +134,20 @@ public class MphChlOpAcceptanceTest {
 
             final Band mphBand = savedProduct.getBand("mph");
             assertNotNull(mphBand);
-            assertEquals(-1.1474395432742313E-4f, mphBand.getSampleFloat(0, 0), 1e-8);
-            assertEquals(-4.521883383858949E-4f, mphBand.getSampleFloat(1, 0), 1e-8);
-            assertEquals(0.003501386847347021f, mphBand.getSampleFloat(0, 1), 1e-8);
+            // old MERIS:
+//            assertEquals(-1.1474395432742313E-4f, mphBand.getSampleFloat(0, 0), 1e-8);
+//            assertEquals(-4.521883383858949E-4f, mphBand.getSampleFloat(1, 0), 1e-8);
+//            assertEquals(0.003501386847347021f, mphBand.getSampleFloat(0, 1), 1e-8);
+            // new OLCI, slight differences because wavelengths are not exactly the same:
+            assertEquals(3.515405069265398E-6f, mphBand.getSampleFloat(0, 0), 1e-8);
+            assertEquals(-3.961061593145132E-4f, mphBand.getSampleFloat(1, 0), 1e-8);
+            assertEquals(0.003945857286453247f, mphBand.getSampleFloat(0, 1), 1e-8);
             assertEquals(Double.NaN, mphBand.getSampleFloat(1, 1), 1e-8);
         } finally {
             if (savedProduct != null) {
                 savedProduct.dispose();
             }
         }
-    }
-
-    private Map<String, Object> createParameter() {
-        final HashMap<String, Object> parameterMap = new HashMap<>();
-        parameterMap.put("exportMph", Boolean.TRUE);
-        return parameterMap;
     }
 
     @Test
@@ -168,7 +160,7 @@ public class MphChlOpAcceptanceTest {
         try {
             GPF.createProduct("OlciMphChl", params, brrProduct);
             fail("OperatorException expected");
-        } catch (OperatorException expected) {
+        } catch (OperatorException ignored) {
         }
     }
 

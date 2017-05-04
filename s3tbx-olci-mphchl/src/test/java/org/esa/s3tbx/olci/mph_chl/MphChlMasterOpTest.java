@@ -36,9 +36,10 @@ public class MphChlMasterOpTest {
         assertNotNull(operatorMetadata);
         assertEquals("OlciMphChl", operatorMetadata.alias());
         assertEquals("1.0", operatorMetadata.version());
-        assertEquals("Olaf Danne", operatorMetadata.authors());
-        assertEquals("(c) 2017 by Brockmann Consult", operatorMetadata.copyright());
-        assertEquals("OLCI MPH CHL main operator", operatorMetadata.description());
+        assertEquals("Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne", operatorMetadata.authors());
+        assertEquals("(c) 2013, 2014, 2017 by Brockmann Consult", operatorMetadata.copyright());
+        assertEquals("This operator computes maximum peak height of chlorophyll (MPH/CHL) from OLCI.",
+                     operatorMetadata.description());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class MphChlMasterOpTest {
 
         final Parameter annotation = applyLowPassFilterField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
-        assertEquals("true", annotation.defaultValue());
+        assertEquals("false", annotation.defaultValue());
         assertEquals("Switch to true to apply a 3x3 low-pass filter on the result.", annotation.description());
     }
 

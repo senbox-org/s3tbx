@@ -16,7 +16,7 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import java.awt.*;
 
 @OperatorMetadata(alias = "MphChl",
-        version = "1.3.3",
+        version = "1.0",
         internal = true,
         authors = "Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne",
         copyright = "(c) 2013, 2014, 2017 by Brockmann Consult",
@@ -30,7 +30,6 @@ public class MphChlOp extends PixelOperator {
     private static final int REFL_10_IDX = 4;
     private static final int REFL_14_IDX = 5;
 
-//    private final int[] equivWvlIndices = MphChlConstants.OLCI_MERIS_EQUIVALENT_WVL_INDICES;
     private final float[] olciWvls = MphChlConstants.OLCI_WAVELENGHTS;
 
     @SourceProduct(alias = "Name")
@@ -93,10 +92,10 @@ public class MphChlOp extends PixelOperator {
         final double BAIR_peak = r_9 - r_7 - ((r_14 - r_7) * ratioB);
 
         double mph_0 = MphChlUtils.computeMph(maxBrr_0, r_7, r_14, maxLambda_0,
-                                              olciWvls[7],       // 664
+                                              olciWvls[7],         // 664
                                               olciWvls[16]);     // 885
         double mph_1 = MphChlUtils.computeMph(maxBrr_1, r_7, r_14, maxLambda_1,
-                                              olciWvls[7],       // 664
+                                              olciWvls[7],         // 664
                                               olciWvls[16]);     // 885
 
         boolean floating_flag = false;
@@ -218,24 +217,26 @@ public class MphChlOp extends PixelOperator {
         targetProduct.getFlagCodingGroup().add(flagCoding);
         flagBand.setSampleCoding(flagCoding);
 
-        MphChlUtils.setupMphChlBitmask(getTargetProduct());
+        MphChlUtils.setupMphChlBitmask(targetProduct);
 
-        ProductUtils.copyFlagBands(productConfigurer.getSourceProduct(), productConfigurer.getTargetProduct(), true);
+        final Product sourceProduct = productConfigurer.getSourceProduct();
+        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
     }
 
     @Override
     protected void prepareInputs() throws OperatorException {
+        ratioP = (olciWvls[7] - olciWvls[6]) / (olciWvls[9] - olciWvls[6]);
+        ratioC = (olciWvls[9] - olciWvls[7]) / (olciWvls[10] - olciWvls[7]);
+        ratioB = (olciWvls[10] - olciWvls[7]) / (olciWvls[17] - olciWvls[7]);
+
         if (StringUtils.isNullOrEmpty(validPixelExpression)) {
             return;
         }
+
         if (!sourceProduct.isCompatibleBandArithmeticExpression(validPixelExpression)) {
             final String message = String.format("The given expression '%s' is not compatible with the source product.", validPixelExpression);
             throw new OperatorException(message);
         }
-
-        ratioP = (olciWvls[7] - olciWvls[6]) / (olciWvls[9] - olciWvls[6]);
-        ratioC = (olciWvls[9] - olciWvls[7]) / (olciWvls[10] - olciWvls[7]);
-        ratioB = (olciWvls[10] - olciWvls[7]) / (olciWvls[17] - olciWvls[7]);
 
         invalidOpImage = VirtualBandOpImage.builder(validPixelExpression, sourceProduct)
                 .dataType(ProductData.TYPE_FLOAT32)
@@ -244,18 +245,10 @@ public class MphChlOp extends PixelOperator {
                 .mask(false)
                 .level(ResolutionLevel.MAXRES)
                 .create();
-
     }
 
     private boolean isSampleValid(int x, int y) {
-        if (invalidOpImage == null) {
-            return true;
-        }
-        return invalidOpImage.getData(new Rectangle(x, y, 1, 1)).getSample(x, y, 0) != 0;
-    }
-
-    protected Mask mask(String name, String description, String expression, Color color, float transparency, Product product) {
-        return Mask.BandMathsType.create(name, description, product.getSceneRasterWidth(), product.getSceneRasterHeight(), expression, color, transparency);
+        return invalidOpImage == null || invalidOpImage.getData(new Rectangle(x, y, 1, 1)).getSample(x, y, 0) != 0;
     }
 
     public static class Spi extends OperatorSpi {
