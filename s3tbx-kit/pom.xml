@@ -206,12 +206,7 @@
         </dependency>
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
-            <artifactId>s3tbx-olci-mphchl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.s3tbx</groupId>
-            <artifactId>s3tbx-olci-mphchl-ui</artifactId>
+            <artifactId>s3tbx-mphchl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

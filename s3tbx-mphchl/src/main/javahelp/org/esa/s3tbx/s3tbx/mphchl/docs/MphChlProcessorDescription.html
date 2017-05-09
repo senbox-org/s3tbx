@@ -1,0 +1,90 @@
+<!--
+  ~ Copyright (C) 2014 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - OLCI MPH/CHL Processor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            OLCI MPH/CHL Processor - User Interface
+        </td>
+    </tr>
+</table>
+
+<h2>Processor user interface</h2>
+<p>
+    The MPH/CHL processor is invoked from the 'Optical --> Thematic Water Processing' menu by selecting the
+    'OLCI MPH/CHL Processor' command.
+    On the command line the MPH/CHL processor is available by means of the Graph Processing Tool <i>gpt</i>
+    which is located in the SNAP bin directory. Typing <i>gpt OlciMphChl -h</i> displays further information.
+</p>
+
+<p>
+    Selecting the 'OLCI MPH/CHL Processor' command from the SNAP
+    'Optical --> Thematic Water Processing' menu pops up the following dialog:
+</p>
+<p align="center"><img src="images/user_interface.png"></p>
+
+<h3>Source Product Group</h3>
+
+<p><b>Source Product</b>: Here the user specifies the source product, which can be either an OLCI L1b product,
+    or a product containing bottom-of-Rayleigh corrected
+    reflectances, which was generated with the Rayleigh correction processor available in
+    'Optical --> Preprocessing --> Rayleigh correction'. The combo box presents a list of all products open in SNAP.
+    The user may select one of these or, by clicking on the button next to the combo box, choose a product from the
+    file system.
+</p>
+
+<h3>Target Product Group:</h3>
+
+<p><b>Name</b>: Used to specify the name of the target product</p>
+
+<p><b>Save as</b>: Used to specify whether the target product should be saved to the file system.
+    The combo box presents a list of available file formats. The text field or the button next to it allow to specify
+    a target directory.
+</p>
+
+<p><b>Open in SNAP</b>: Used to specify whether the target product should be opened in SNAP. When the target
+    product is not saved, it is opened in SNAP automatically.
+</p>
+
+<h3>Processing Parameters Panel</h3>
+<p align="center"><img src="images/user_interface_params.png"></p>
+
+
+<p><b>Valid pixel expression</b>: An expression which identifies valid input pixels according to flags that are
+    available in the input image.
+</p>
+
+<p><b>Cyano max value</b>: Threshold to cap maximum chlorophyll concentration estimated for cyanobacteria-dominant waters.</p>
+
+<p><b>Chl thresh for float flag</b>: Value, above which cyanobacteria scum is expected, even if not indicated by a
+    BRR maximum at 753 nm (see <a href="MphChlAlgorithmSpecification.html">Algorithm specification</a>, Figure 2).</p>
+
+<p><b>Export mph</b>: Write the internally calculated MPH value to a separate band for the evaluation of custom peak
+    height to concentration conversions.
+</p>
+
+<p><b>Apply low pass filter</b>: If selected, a 3x3 low-pass filter is applied on the CHL result image.
+</p>
+
+</body>
+
