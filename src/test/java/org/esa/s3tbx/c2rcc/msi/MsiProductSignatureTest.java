@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.msi;
 
+import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
@@ -66,6 +67,7 @@ public class MsiProductSignatureTest {
             "tup_B" + 6, "tup_B" + 7, "tup_B" + 8 + "A"};
 
     private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
+    private static final String EXPECTED_PRODUCT_TYPE = "C2RCC_S2-MSI";
 
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
@@ -74,7 +76,7 @@ public class MsiProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
     }
 
     @Test
@@ -85,7 +87,7 @@ public class MsiProductSignatureTest {
         operator.setOutputOos(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, true);
+        assertDefaults(targetProduct, true);
         assertBands(targetProduct, EXPECTED_OOS_RTOSA);
         assertBands(targetProduct, EXPECTED_OOS_RRS);
 
@@ -114,7 +116,7 @@ public class MsiProductSignatureTest {
         operator.setOutputRtosaGcAann(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RTOSA_GC_BANDS);
         assertBands(targetProduct, EXPECTED_RTOSA_GCAANN_BANDS);
     }
@@ -126,7 +128,7 @@ public class MsiProductSignatureTest {
         operator.setOutputRtoa(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RTOA_BANDS);
     }
 
@@ -140,12 +142,22 @@ public class MsiProductSignatureTest {
         operator.setOutputOos(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RPATH_BANDS);
         assertBands(targetProduct, EXPECTED_TDOWN_BANDS);
         assertBands(targetProduct, EXPECTED_TUP_BANDS);
         assertBands(targetProduct, EXPECTED_OOS_RTOSA);
         assertBands(targetProduct, EXPECTED_OOS_RHOW);
+    }
+
+    @Test
+    public void testProductSignature_DeriveRwAlternative() throws FactoryException, TransformException {
+
+        C2rccMsiOperator operator = createDefaultOperator();
+        operator.setDeriveRwFromPathAndTransmittance(true);
+
+        Product targetProduct = operator.getTargetProduct();
+        assertDefaults(targetProduct, false);
     }
 
     @Test
@@ -155,11 +167,11 @@ public class MsiProductSignatureTest {
         operator.setOutputKd(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
         assertBands(targetProduct, EXPECTED_KD_BANDS);
     }
 
-    private void assertDefaultBands(Product targetProduct, boolean asRrs) {
+    private void assertDefaults(Product targetProduct, boolean asRrs) {
         assertMandatoryBands(targetProduct);
         if(asRrs) {
             assertBands(targetProduct, EXPECTED_RRS_BANDS);
@@ -171,6 +183,8 @@ public class MsiProductSignatureTest {
         assertBands(targetProduct, EXPECTED_KD_BANDS);
         assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_UNC_BANDS);
+
+        assertEquals(EXPECTED_PRODUCT_TYPE, targetProduct.getProductType());
     }
 
     private void assertMandatoryBands(Product targetProduct) {
@@ -208,8 +222,8 @@ public class MsiProductSignatureTest {
 
         product.addBand(C2rccMsiOperator.RASTER_NAME_SUN_AZIMUTH, "42");
         product.addBand(C2rccMsiOperator.RASTER_NAME_SUN_ZENITH, "42");
-        product.addBand(C2rccMsiOperator.RASTER_NAME_VIEWING_AZIMUTH, "42");
-        product.addBand(C2rccMsiOperator.RASTER_NAME_VIEWING_ZENITH, "42");
+        product.addBand(C2rccMsiOperator.RASTER_NAME_VIEW_AZIMUTH, "42");
+        product.addBand(C2rccMsiOperator.RASTER_NAME_VIEW_ZENITH, "42");
 
         product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84, 1, 1, 10, 50, 1, 1));
 

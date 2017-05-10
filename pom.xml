@@ -21,7 +21,7 @@
 
     <groupId>org.esa.s3tbx</groupId>
     <artifactId>s3tbx-c2rcc</artifactId>
-    <version>0.17-SNAPSHOT</version>
+    <version>0.18-SNAPSHOT</version>
 
     <name>Case 2 Regional / CoastColour Processor Operator</name>
     <packaging>nbm</packaging>
@@ -31,7 +31,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <snap.version>4.0.0</snap.version>
+        <snap.version>5.0.0</snap.version>
         <javahelp.version>2.0.05</javahelp.version>
     </properties>
 
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -128,14 +128,14 @@
                     <cluster>s3tbx</cluster>
                     <brandingToken>s3tbx</brandingToken>
                     <requiresRestart>true</requiresRestart>
-                    <keystore>${project.basedir}/../keystore/s3tbx.ks</keystore>
+                    <keystore>${project.basedir}/keystore/s3tbx.ks</keystore>
                     <keystorealias>snap</keystorealias>
                     <keystorepassword>snap-123</keystorepassword>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
                 <configuration>
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
@@ -143,7 +143,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.6.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -167,6 +167,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <enableAssertions>true</enableAssertions>
+                    <!--<skip>true</skip>-->
+                    <printSummary>true</printSummary>
+                    <useFile>false</useFile>
+                    <argLine>-Xmx1024M -Dfile.encoding=UTF-8</argLine>
+                </configuration>
             </plugin>
 
         </plugins>

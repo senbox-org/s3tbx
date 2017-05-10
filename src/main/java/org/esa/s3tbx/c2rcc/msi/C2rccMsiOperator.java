@@ -4,6 +4,7 @@ import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
+import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -43,13 +44,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
 import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
 import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
-import static org.esa.s3tbx.c2rcc.C2rccCommons.areSamplesValid;
 import static org.esa.s3tbx.c2rcc.C2rccCommons.ensureTimeInformation;
 import static org.esa.s3tbx.c2rcc.C2rccCommons.getTimeCoding;
 import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
@@ -99,9 +101,9 @@ import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.msi", version = "0.17",
+@OperatorMetadata(alias = "c2rcc.msi", version = "0.18",
         authors = "Roland Doerffer, Marco Peters, Sabine Embacher (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
+        category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
 public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable {
@@ -117,6 +119,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     // MSI targets
     private static final int NN_SPECTRUM_COUNT = NN_SOURCE_BAND_REFL_NAMES.length;
+    private static final int NORM_NN_SPECTRUM_COUNT = NN_SPECTRUM_COUNT - 2;
     private static final int FULL_SPECTRUM_COUNT = SOURCE_BAND_REFL_NAMES.length;
     private static final int SINGLE_IX = FULL_SPECTRUM_COUNT + 7 * NN_SPECTRUM_COUNT;
 
@@ -154,6 +157,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
+    private static final String PRODUCT_TYPE = "C2RCC_S2-MSI";
 
     private static final String[] alternativeNetDirNames = new String[]{
             "rtosa_aann",
@@ -168,26 +172,47 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             "rtosa_rpath"
     };
 
-    private static final String[] c2rccNNResourcePaths = new String[10];
     static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
     static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
-    static final String RASTER_NAME_VIEWING_ZENITH = "view_zenith_mean";
-    static final String RASTER_NAME_VIEWING_AZIMUTH = "view_azimuth_mean";
+    static final String RASTER_NAME_VIEW_ZENITH = "view_zenith_mean";
+    static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth_mean";
     private static final String RASTER_NAME_SEA_LEVEL_PRESSURE = "sea_level_pressure";
     private static final String RASTER_NAME_TOTAL_OZONE = "total_ozone";
 
+    private static final String STANDARD_NETS = "C2RCC-Nets";
+    private static final String EXTREME_NETS = "C2X-Nets";
+    private static final Map<String, String[]> c2rccNetSetMap = new HashMap<>();
     static {
-        c2rccNNResourcePaths[IDX_iop_rw] = "msi/iop_rw/17x97x47_125.5.net";
-        c2rccNNResourcePaths[IDX_iop_unciop] = "msi/iop_unciop/17x77x37_11486.7.net";
-        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "msi/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "msi/rtosa_aann/31x7x31_78.0.net";
-        c2rccNNResourcePaths[IDX_rtosa_rpath] = "msi/rtosa_rpath/31x77x57x37_1564.4.net";
-        c2rccNNResourcePaths[IDX_rtosa_rw] = "msi/rtosa_rw/33x73x53x33_291140.4.net";
-        c2rccNNResourcePaths[IDX_rtosa_trans] = "msi/rtosa_trans/31x77x57x37_37537.6.net";
-        c2rccNNResourcePaths[IDX_rw_iop] = "msi/rw_iop/97x77x37_17515.9.net";
-        c2rccNNResourcePaths[IDX_rw_kd] = "msi/rw_kd/97x77x7_306.8.net";
-        c2rccNNResourcePaths[IDX_rw_rwnorm] = "msi/rw_rwnorm/27x7x27_28.0.net";
+        String[] standardNets = new String[10];
+        standardNets[IDX_iop_rw] = "msi/std_s2_20160502/iop_rw/17x97x47_125.5.net";
+        standardNets[IDX_iop_unciop] = "msi/std_s2_20160502/iop_unciop/17x77x37_11486.7.net";
+        standardNets[IDX_iop_uncsumiop_unckd] = "msi/std_s2_20160502/iop_uncsumiop_unckd/17x77x37_9113.1.net";
+        standardNets[IDX_rtosa_aann] = "msi/std_s2_20160502/rtosa_aann/31x7x31_78.0.net";
+        standardNets[IDX_rtosa_rpath] = "msi/std_s2_20160502/rtosa_rpath/31x77x57x37_1564.4.net";
+        standardNets[IDX_rtosa_rw] = "msi/std_s2_20160502/rtosa_rw/33x73x53x33_291140.4.net";
+        standardNets[IDX_rtosa_trans] = "msi/std_s2_20160502/rtosa_trans/31x77x57x37_37537.6.net";
+        standardNets[IDX_rw_iop] = "msi/std_s2_20160502/rw_iop/97x77x37_17515.9.net";
+        standardNets[IDX_rw_kd] = "msi/std_s2_20160502/rw_kd/97x77x7_306.8.net";
+        standardNets[IDX_rw_rwnorm] = "msi/std_s2_20160502/rw_rwnorm/27x7x27_28.0.net";
+        c2rccNetSetMap.put(STANDARD_NETS, standardNets);
+
     }
+
+    static {
+        String[] extremeNets = new String[10];
+        extremeNets[IDX_iop_rw] = "msi/ext_s2_elbetsm_20170320/iop_rw/77x77x77_28.3.net";
+        extremeNets[IDX_iop_unciop] = "msi/ext_s2_elbetsm_20170320/iop_unciop/17x77x37_11486.7.net";
+        extremeNets[IDX_iop_uncsumiop_unckd] = "msi/ext_s2_elbetsm_20170320/iop_uncsumiop_unckd/17x77x37_9113.1.net";
+        extremeNets[IDX_rtosa_aann] = "msi/ext_s2_elbetsm_20170320/rtosa_aann/31x7x31_7.2.net";
+        extremeNets[IDX_rtosa_rpath] = "msi/ext_s2_elbetsm_20170320/rtosa_rpath/37x37x37_175.7.net";
+        extremeNets[IDX_rtosa_rw] = "msi/ext_s2_elbetsm_20170320/rtosa_rw/77x77x77x77_10688.3.net";
+        extremeNets[IDX_rtosa_trans] = "msi/ext_s2_elbetsm_20170320/rtosa_trans/77x77x77_7809.2.net";
+        extremeNets[IDX_rw_iop] = "msi/ext_s2_elbetsm_20170320/rw_iop/77x77x77_785.6.net";
+        extremeNets[IDX_rw_kd] = "msi/ext_s2_elbetsm_20170320/rw_kd/77x77x77_61.6.net";
+        extremeNets[IDX_rw_rwnorm] = "msi/ext_s2_elbetsm_20170320/rw_rwnorm/27x7x27_28.0.net";
+        c2rccNetSetMap.put(EXTREME_NETS, extremeNets);
+    }
+
 
     private static final DateFormat PRODUCT_DATE_FORMAT = ProductData.UTC.createDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
@@ -258,10 +283,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     @Parameter(defaultValue = "3.1", description = "Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bwit")
     private double TSMfakBwit;
 
-    @Parameter(defaultValue = "1.04", description = "Chlorophyl exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
+    @Parameter(defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
     private double CHLexp;
 
-    @Parameter(defaultValue = "21.0", description = "Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
+    @Parameter(defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
     private double CHLfak;
 
     @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
@@ -285,10 +310,20 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             label = "Alternative NN Path")
     private String alternativeNNPath;
 
+    @Parameter(valueSet = {STANDARD_NETS, EXTREME_NETS},
+            description = "Set of neuronal nets for algorithm.",
+            defaultValue = STANDARD_NETS,
+            label = "Set of neuronal nets")
+    private String netSet = STANDARD_NETS;
+
     @Parameter(defaultValue = "false", description =
             "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
+
+    @Parameter(defaultValue = "false", description = "Alternative way of calculating water reflectance. Still experimental.",
+            label = "Derive water reflectance from path radiance and transmittance")
+    private boolean deriveRwFromPathAndTransmittance;
 
     @Parameter(defaultValue = "false", description =
             "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
@@ -400,6 +435,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         outputAsRrs = asRadianceRefl;
     }
 
+    public void setDeriveRwFromPathAndTransmittance(boolean deriveRwFromPathAndTransmittance) {
+        this.deriveRwFromPathAndTransmittance = deriveRwFromPathAndTransmittance;
+    }
+
     void setOutputKd(boolean outputKd) {
         this.outputKd = outputKd;
     }
@@ -457,9 +496,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
 
         return product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH)
-                && product.containsRasterDataNode(RASTER_NAME_SUN_ZENITH);
+                && product.containsRasterDataNode(RASTER_NAME_SUN_AZIMUTH)
+                && product.containsRasterDataNode(RASTER_NAME_VIEW_ZENITH)
+                && product.containsRasterDataNode(RASTER_NAME_VIEW_AZIMUTH);
     }
 
     @Override
@@ -588,8 +627,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
         sc.defineSample(SUN_ZEN_IX, RASTER_NAME_SUN_ZENITH);
         sc.defineSample(SUN_AZI_IX, RASTER_NAME_SUN_AZIMUTH);
-        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEWING_ZENITH);
-        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEWING_AZIMUTH);
+        sc.defineSample(VIEW_ZEN_IX, RASTER_NAME_VIEW_ZENITH);
+        sc.defineSample(VIEW_AZI_IX, RASTER_NAME_VIEW_AZIMUTH);
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, validPixelExpression);
         } else {
@@ -648,7 +687,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
 
         if (outputRhown) {
-            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+            for (int i = 0; i < NORM_NN_SPECTRUM_COUNT; i++) {
                 tsc.defineSample(RHOWN_IX + i, "rhown_" + NN_SOURCE_BAND_REFL_NAMES[i]);
             }
         }
@@ -698,6 +737,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         productConfigurer.copyMetadata();
 
         final Product targetProduct = productConfigurer.getTargetProduct();
+        targetProduct.setProductType(PRODUCT_TYPE);
         ensureTimeInformation(targetProduct, getStartTime(), getEndTime(), timeCoding);
 
         targetProduct.setPreferredTileSize(128, 128);
@@ -841,7 +881,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
 
         Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
-        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
+        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophylll concentration");
 
         conc_tsm.setValidPixelExpression(validPixelExpression);
         conc_chl.setValidPixelExpression(validPixelExpression);
@@ -875,7 +915,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             unc_btot.setValidPixelExpression(validPixelExpression);
 
             Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
-            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophyll concentration");
+            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophylll concentration");
 
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
@@ -929,7 +969,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         flagCoding.addFlag("Kdmin_OOR", 0x01 << FLAG_INDEX_KDMIN_OOR, "Kdmin is out of range");
         flagCoding.addFlag("Kd489_at_max", 0x01 << FLAG_INDEX_KD489_AT_MAX, "Kdmin is at max");
         flagCoding.addFlag("Kdmin_at_max", 0x01 << FLAG_INDEX_KDMIN_AT_MAX, "Kdmin is at max");
-        flagCoding.addFlag("Valid_PE", 0x01 << FLAG_INDEX_VALID_PE, "The operators valid pixel expression has resolved to true");
+        flagCoding.addFlag("Valid_PE", (int) (0x01L << FLAG_INDEX_VALID_PE), "The operators valid pixel expression has resolved to true");
 
         targetProduct.getFlagCodingGroup().add(flagCoding);
         c2rcc_flags.setSampleCoding(flagCoding);
@@ -967,21 +1007,31 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             throw new OperatorException("The source product must be geo-coded.");
         }
 
-        assertSourceRaster(RASTER_NAME_SUN_ZENITH);
-        assertSourceRaster(RASTER_NAME_SUN_AZIMUTH);
-        assertSourceRaster(RASTER_NAME_VIEWING_ZENITH);
-        assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH);
+        String msgFormat = "Invalid source product, raster '%s' required";
+        assertSourceRaster(RASTER_NAME_SUN_ZENITH, msgFormat);
+        assertSourceRaster(RASTER_NAME_SUN_AZIMUTH, msgFormat);
+        assertSourceRaster(RASTER_NAME_VIEW_ZENITH, msgFormat);
+        assertSourceRaster(RASTER_NAME_VIEW_AZIMUTH, msgFormat);
+
+        if(useEcmwfAuxData){
+            String ecmwfMsg = "For ECMWF usage a '%s' raster is required";
+            assertSourceRaster(RASTER_NAME_SEA_LEVEL_PRESSURE, ecmwfMsg);
+            assertSourceRaster(RASTER_NAME_TOTAL_OZONE, ecmwfMsg);
+        }
+
 
 
         try {
-            final String[] nnFilePaths;
-            final boolean loadFromResources = StringUtils.isNullOrEmpty(alternativeNNPath);
-            if (loadFromResources) {
-                nnFilePaths = c2rccNNResourcePaths;
+            if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
+                algorithm = new C2rccMsiAlgorithm(nnFilePaths, false);
             } else {
-                nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
+                String[] nnFilePaths = c2rccNetSetMap.get(netSet);
+                if(nnFilePaths == null) {
+                    throw new OperatorException(String.format("Unknown set '%s' of neural nets specified.", netSet));
+                }
+                algorithm = new C2rccMsiAlgorithm(nnFilePaths, true);
             }
-            algorithm = new C2rccMsiAlgorithm(nnFilePaths, loadFromResources);
         } catch (IOException e) {
             throw new OperatorException(e);
         }
@@ -1001,9 +1051,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         algorithm.setOutputOos(outputOos);
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
+        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
 
         timeCoding = sourceProduct.getSceneTimeCoding();
-        if(timeCoding == null) {
+        if (timeCoding == null) {
             // if not time coding is set, create one
             if (sourceProduct.getStartTime() == null || sourceProduct.getEndTime() == null) {
                 // if no start/end time is set, read it from the metadata
@@ -1159,9 +1210,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
     }
 
-    private void assertSourceRaster(String name) {
+    private void assertSourceRaster(String name, String msgFormat) {
         if (!sourceProduct.containsRasterDataNode(name)) {
-            throw new OperatorException("Invalid source product, raster '" + name + "' required");
+            throw new OperatorException(String.format(msgFormat, name));
         }
     }
 
@@ -1172,6 +1223,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     }
 
     public static class Spi extends OperatorSpi {
+        static {
+            RgbProfiles.installS2MsiRgbProfiles();
+        }
 
         public Spi() {
             super(C2rccMsiOperator.class);

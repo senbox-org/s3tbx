@@ -114,6 +114,7 @@ public class C2rccMsiAlgorithm {
     private boolean outputOos;
     private boolean outputKd;
     private boolean outputUncertainties;
+    private boolean deriveRwFromPathAndTransmittance;
 
     C2rccMsiAlgorithm(final String[] nnFilePaths, final boolean loadFromResources) throws IOException {
         nnNames = new ArrayList<>();
@@ -191,6 +192,10 @@ public class C2rccMsiAlgorithm {
 
     public void setOutputUncertainties(boolean outputUncertainties) {
         this.outputUncertainties = outputUncertainties;
+    }
+
+    public void setDeriveRwFromPathAndTransmittance(boolean deriveRwFromPathAndTransmittance) {
+        this.deriveRwFromPathAndTransmittance = deriveRwFromPathAndTransmittance;
     }
 
     public void setTemperature(double temperature) {
@@ -362,7 +367,7 @@ public class C2rccMsiAlgorithm {
 
             // (9.4.4) NN compute rpath from rtosa
             rpath_nn = new double[0];
-            if (outputRpath) {
+            if (outputRpath || deriveRwFromPathAndTransmittance) {
                 double[] log_rpath_nn = nn_rtosa_rpath.get().calc(nn_in);
                 rpath_nn = a_exp(log_rpath_nn);
             }
@@ -373,15 +378,25 @@ public class C2rccMsiAlgorithm {
             double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
             // cloud flag test @865
             flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[7] < thresh_cloudTransD);
-            if (outputTdown) {
+            if (outputTdown || deriveRwFromPathAndTransmittance) {
                 transd_nn = Arrays.copyOfRange(trans_nn, 0, r_tosa_ur.length);
             }
-            if (outputTup) {
+            if (outputTup || deriveRwFromPathAndTransmittance) {
                 transu_nn = Arrays.copyOfRange(trans_nn, r_tosa_ur.length, trans_nn.length);
             }
 
             // (9.4.6)
-            double[] log_rw = nn_rtosa_rw.get().calc(nn_in);
+            double[] log_rw;
+            if(deriveRwFromPathAndTransmittance) {
+                // needs outputRpath & outputTdown & outputTup
+                log_rw = new double[r_tosa.length];
+                for (int i = 0; i < r_tosa.length; i++) {
+                    log_rw[i] = r_tosa[i] - rpath_nn[i] / (transu_nn[i] * transd_nn[i]);
+                }
+            }else {
+                log_rw = nn_rtosa_rw.get().calc(nn_in);
+            }
+
             rwa = new double[0];
             if (outputRwa) {
                 rwa = a_exp(log_rw);
@@ -390,16 +405,15 @@ public class C2rccMsiAlgorithm {
             // (9.5) water part
 
             // define input to water NNs
-            //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:10)];
+            //nn_in_inv=[sun_zeni view_zeni azi_diff_deg temperature salinity log_rw(1:6/8)];
             int ancNnInvInputCount = 5;
-            int logRwNNInvInputCount = log_rw.length - 2;
-            double[] nn_in_inv = new double[ancNnInvInputCount + logRwNNInvInputCount];
+            double[] nn_in_inv = new double[nn_rw_iop.get().getInmax().length];
             nn_in_inv[0] = sun_zeni;
             nn_in_inv[1] = view_zeni;
             nn_in_inv[2] = azi_diff_deg;
             nn_in_inv[3] = temperature;
             nn_in_inv[4] = salinity;
-            System.arraycopy(log_rw, 0, nn_in_inv, ancNnInvInputCount, logRwNNInvInputCount);
+            System.arraycopy(log_rw, 0, nn_in_inv, ancNnInvInputCount, nn_in_inv.length - ancNnInvInputCount );
 
             // (9.5.1)check input to rw -> IOP NN out of range
             mi = nn_rw_iop.get().getInmin();
@@ -415,7 +429,12 @@ public class C2rccMsiAlgorithm {
             // (9.x.x.) NN compute Rwn from Rw
             rwn = new double[0];
             if (outputRwn) {
-                double[] log_rwn = nn_rw_rwnorm.get().calc(nn_in_inv);
+                // input of extreme net rw_rwnorm has two inputs less then the rw_iop and rw_kd,
+                // but the same number of inputs as the normal rw_rwnorm.
+                // --> ensure it is not longer than 11
+                double[] norm_nn_in_inv = new double[11];
+                System.arraycopy(nn_in_inv, 0, norm_nn_in_inv, 0, 11);
+                double[] log_rwn = nn_rw_rwnorm.get().calc(norm_nn_in_inv);
                 rwn = a_exp(log_rwn);
             }
 

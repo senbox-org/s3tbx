@@ -6,6 +6,7 @@ import org.esa.s3tbx.c2rcc.modis.C2rccModisOperator;
 import org.esa.s3tbx.c2rcc.msi.C2rccMsiOperator;
 import org.esa.s3tbx.c2rcc.olci.C2rccOlciOperator;
 import org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSOperator;
+import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.s3tbx.c2rcc.viirs.C2rccViirsOperator;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.Operator;
@@ -29,10 +30,10 @@ import static org.esa.snap.core.util.StringUtils.*;
  * @author Norman Fomferra
  * @author Sabine Embacher
  */
-@OperatorMetadata(alias = "c2rcc", version = "0.17",
+@OperatorMetadata(alias = "c2rcc", version = "0.18",
         authors = "Roland Doerffer, Norman Fomferra, Sabine Embacher (Brockmann Consult)",
         internal = true,
-        category = "Optical Processing/Thematic Water Processing",
+        category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on OLCI, MSI, MERIS, MODIS or SeaWiFS L1 product.")
 public class C2rccOperator extends Operator {
@@ -238,9 +239,6 @@ public class C2rccOperator extends Operator {
     }
 
     public static class Spi extends OperatorSpi {
-        static {
-            C2rccCommons.installRGBProfiles();
-        }
 
         public Spi() {
             super(C2rccOperator.class);

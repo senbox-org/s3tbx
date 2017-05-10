@@ -46,7 +46,7 @@ public class TargetProductPreparer {
         addVirtualBand(targetProduct, "iop_btot", "iop_bpart + iop_bwit", "m^-1", "Total particle scattering");
 
         addVirtualBand(targetProduct, "conc_tsm", "(iop_bpart + iop_bwit) * 1.7", "g m^-3", "Total suspended matter dry weight concentration");
-        addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, 1.04) * 20.0", "mg/m^3", "Chlorophyll concentration");
+        addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, 1.04) * 20.0", "mg/m^3", "Chlorophylll concentration");
 
         addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of rtosa_out:rtosa_in ratios");
         addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of rtosa_out:rtosa_in ratios");
@@ -57,7 +57,7 @@ public class TargetProductPreparer {
         flagCoding.addFlag("Rtosa_OOS", 0x01 << C2rccSeaWiFSAlgorithm.FLAG_INDEX_RTOSA_OOS, "The input spectrum to the atmospheric correction neural net was out of the scope of the training range and the inversion is likely to be wrong");
         flagCoding.addFlag("Rtosa_OOR", 0x01 << C2rccSeaWiFSAlgorithm.FLAG_INDEX_RTOSA_OOR, "The input spectrum to atmospheric correction neural net out of training range");
         flagCoding.addFlag("Rhow_OOR", 0x01 << C2rccSeaWiFSAlgorithm.FLAG_INDEX_RHOW_OOR, "One of the inputs to the IOP retrieval neural net is out of training range");
-        flagCoding.addFlag("Valid_PE", 0x01 << C2rccSeaWiFSAlgorithm.FLAG_INDEX_VALID_PE, "The operators valid pixel expression has resolved to true");
+        flagCoding.addFlag("Valid_PE", (int) (0x01L << C2rccSeaWiFSAlgorithm.FLAG_INDEX_VALID_PE), "The operators valid pixel expression has resolved to true");
         targetProduct.getFlagCodingGroup().add(flagCoding);
         c2rcc_flags.setSampleCoding(flagCoding);
 

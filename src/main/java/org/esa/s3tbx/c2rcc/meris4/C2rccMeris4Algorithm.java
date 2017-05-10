@@ -146,6 +146,7 @@ public class C2rccMeris4Algorithm {
     private boolean outputOos;
     private boolean outputKd;
     private boolean outputUncertainties;
+    private boolean deriveRwFromPathAndTransmittance;
 
     C2rccMeris4Algorithm(final String[] nnFilePaths, final boolean loadFromResources) throws IOException {
         nnNames = new ArrayList<>();
@@ -233,6 +234,10 @@ public class C2rccMeris4Algorithm {
 
     public void setOutputUncertainties(boolean outputUncertainties) {
         this.outputUncertainties = outputUncertainties;
+    }
+
+    public void setDeriveRwFromPathAndTransmittance(boolean deriveRwFromPathAndTransmittance) {
+        this.deriveRwFromPathAndTransmittance = deriveRwFromPathAndTransmittance;
     }
 
     public void setTemperature(double temperature) {
@@ -412,7 +417,7 @@ public class C2rccMeris4Algorithm {
 
             // (9.4.4) NN compute rpath from rtosa
             rpath_nn = new double[0];
-            if (outputRpath) {
+            if (outputRpath || deriveRwFromPathAndTransmittance) {
                 double[] log_rpath_nn = nn_rtosa_rpath.get().calc(nn_in);
                 rpath_nn = a_exp(log_rpath_nn);
             }
@@ -423,15 +428,25 @@ public class C2rccMeris4Algorithm {
             double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
             // cloud flag test @865
             flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[11] < thresh_cloudTransD);
-            if (outputTdown) {
+            if (outputTdown || deriveRwFromPathAndTransmittance) {
                 transd_nn = Arrays.copyOfRange(trans_nn, 0, 12);
             }
-            if (outputTup) {
+            if (outputTup || deriveRwFromPathAndTransmittance) {
                 transu_nn = Arrays.copyOfRange(trans_nn, 12, 24);
             }
 
             // (9.4.6)
-            double[] log_rw = nn_rtosa_rw.get().calc(nn_in);
+            double[] log_rw;
+            if(deriveRwFromPathAndTransmittance) {
+                // needs outputRpath & outputTdown & outputTup
+                log_rw = new double[r_tosa.length];
+                for (int i = 0; i < r_tosa.length; i++) {
+                    log_rw[i] = r_tosa[i] - rpath_nn[i] / (transu_nn[i] * transd_nn[i]);
+                }
+            }else {
+                log_rw = nn_rtosa_rw.get().calc(nn_in);
+            }
+
             rwa = new double[0];
             if (outputRwa) {
                 rwa = a_exp(log_rw);

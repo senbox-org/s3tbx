@@ -6,6 +6,7 @@ import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
+import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -44,6 +45,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
 import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
@@ -95,9 +97,9 @@ import static org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Algorithm.Result;
  * Computes AC-reflectances and IOPs from MERIS L1b data products using
  * an neural-network approach.
  */
-@OperatorMetadata(alias = "c2rcc.landsat8", version = "0.17",
+@OperatorMetadata(alias = "c2rcc.landsat8", version = "0.18",
         authors = "Roland Doerffer, Marco Peters (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
+        category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products.")
 public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigurable {
@@ -146,6 +148,8 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
 
     private static final int C2RCC_FLAGS_IX = OOS_RTOSA_IX + 19;
 
+    private static final String PRODUCT_TYPE = "C2RCC_LANDSAT-8";
+
     private static final String[] alternativeNetDirNames = new String[]{
             "rtosa_aann",
             "rtosa_rw",
@@ -159,19 +163,37 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             "rtosa_rpath"
     };
 
-    private static final String[] c2rccNNResourcePaths = new String[10];
+    private static final String STANDARD_NETS = "C2RCC-Nets";
+    private static final String EXTREME_NETS = "C2X-Nets";
+    private static final Map<String, String[]> c2rccNetSetMap = new HashMap<>();
 
     static {
-        c2rccNNResourcePaths[IDX_iop_rw] = "landsat8/landsat8_netze_20160818/iop_rw/17x97x47_79.9.net";
-        c2rccNNResourcePaths[IDX_iop_unciop] = "landsat8/landsat8_netze_20160818/iop_unciop/17x77x37_11486.7.net";
-        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "landsat8/landsat8_netze_20160818/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "landsat8/landsat8_netze_20160818/rtosa_aann/29x7x29_56.3.net";
-        c2rccNNResourcePaths[IDX_rtosa_rpath] = "landsat8/landsat8_netze_20160818/rtosa_rpath/31x77x57x37_2336.9.net";
-        c2rccNNResourcePaths[IDX_rtosa_rw] = "landsat8/landsat8_netze_20160818/rtosa_rw/31x71x51x31_229436.1.net";
-        c2rccNNResourcePaths[IDX_rtosa_trans] = "landsat8/landsat8_netze_20160818/rtosa_trans/29x75x55x35_28119.6.net";
-        c2rccNNResourcePaths[IDX_rw_iop] = "landsat8/landsat8_netze_20160818/rw_iop/47x97x17_15723.1.net";
-        c2rccNNResourcePaths[IDX_rw_kd] = "landsat8/landsat8_netze_20160818/rw_kd/97x77x7_268.5.net";
-        c2rccNNResourcePaths[IDX_rw_rwnorm] = "landsat8/landsat8_netze_20160818/rw_rwnorm/27x7x27_9.7.net";
+        String[] standardNets = new String[10];
+        standardNets[IDX_iop_rw] = "landsat8/landsat8_netze_20160818/iop_rw/17x97x47_79.9.net";
+        standardNets[IDX_iop_unciop] = "landsat8/landsat8_netze_20160818/iop_unciop/17x77x37_11486.7.net";
+        standardNets[IDX_iop_uncsumiop_unckd] = "landsat8/landsat8_netze_20160818/iop_uncsumiop_unckd/17x77x37_9113.1.net";
+        standardNets[IDX_rtosa_aann] = "landsat8/landsat8_netze_20160818/rtosa_aann/29x7x29_56.3.net";
+        standardNets[IDX_rtosa_rpath] = "landsat8/landsat8_netze_20160818/rtosa_rpath/31x77x57x37_2336.9.net";
+        standardNets[IDX_rtosa_rw] = "landsat8/landsat8_netze_20160818/rtosa_rw/31x71x51x31_229436.1.net";
+        standardNets[IDX_rtosa_trans] = "landsat8/landsat8_netze_20160818/rtosa_trans/29x75x55x35_28119.6.net";
+        standardNets[IDX_rw_iop] = "landsat8/landsat8_netze_20160818/rw_iop/47x97x17_15723.1.net";
+        standardNets[IDX_rw_kd] = "landsat8/landsat8_netze_20160818/rw_kd/97x77x7_268.5.net";
+        standardNets[IDX_rw_rwnorm] = "landsat8/landsat8_netze_20160818/rw_rwnorm/27x7x27_9.7.net";
+        c2rccNetSetMap.put(STANDARD_NETS, standardNets);
+    }
+    static {
+        String[] extremeNets = new String[10];
+        extremeNets[IDX_iop_rw] = "landsat8/landsat8_hitsm_20161115/iop_rw/17x97x47_106.0.net";
+        extremeNets[IDX_iop_unciop] = "landsat8/landsat8_hitsm_20161115/iop_unciop/17x77x37_11486.7.net";
+        extremeNets[IDX_iop_uncsumiop_unckd] = "landsat8/landsat8_hitsm_20161115/iop_uncsumiop_unckd/17x77x37_9113.1.net";
+        extremeNets[IDX_rtosa_aann] = "landsat8/landsat8_hitsm_20161115/rtosa_aann/29x7x29_46.7.net";
+        extremeNets[IDX_rtosa_rpath] = "landsat8/landsat8_hitsm_20161115/rtosa_rpath/31x37_3296.0.net";
+        extremeNets[IDX_rtosa_rw] = "landsat8/landsat8_hitsm_20161115/rtosa_rw/31x77x57x37_160378.5.net";
+        extremeNets[IDX_rtosa_trans] = "landsat8/landsat8_hitsm_20161115/rtosa_trans/29x75x55x35_27514.5.net";
+        extremeNets[IDX_rw_iop] = "landsat8/landsat8_hitsm_20161115/rw_iop/47x97x17_10481.8.net";
+        extremeNets[IDX_rw_kd] = "landsat8/landsat8_hitsm_20161115/rw_kd/97x77x7_681.2.net";
+        extremeNets[IDX_rw_rwnorm] = "landsat8/landsat8_hitsm_20161115/rw_rwnorm/27x7x27_9.7.net";
+        c2rccNetSetMap.put(EXTREME_NETS, extremeNets);
     }
 
     @SourceProduct(label = "Landsat 8 product",
@@ -242,10 +264,10 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     @Parameter(defaultValue = "3.1", description = "Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bwit")
     private double TSMfakBwit;
 
-    @Parameter(defaultValue = "1.04", description = "Chlorophyl exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
+    @Parameter(defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
     private double CHLexp;
 
-    @Parameter(defaultValue = "21.0", description = "Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
+    @Parameter(defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
     private double CHLfak;
 
     @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
@@ -269,10 +291,20 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             label = "Alternative NN Path")
     private String alternativeNNPath;
 
+    @Parameter(valueSet = {STANDARD_NETS, EXTREME_NETS},
+            description = "Set of neuronal nets for algorithm.",
+            defaultValue = STANDARD_NETS,
+            label = "Set of neuronal nets")
+    private String netSet = STANDARD_NETS;
+
     @Parameter(defaultValue = "false", description =
             "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
+
+    @Parameter(defaultValue = "false", description = "Alternative way of calculating water reflectance. Still experimental.",
+            label = "Derive water reflectance from path radiance and transmittance")
+    private boolean deriveRwFromPathAndTransmittance;
 
     @Parameter(defaultValue = "true", label = "Output TOA reflectances")
     private boolean outputRtoa;
@@ -376,6 +408,10 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     @Override
     public void setOutputAsRrs(boolean asRrs) {
         outputAsRrs = asRrs;
+    }
+
+    public void setDeriveRwFromPathAndTransmittance(boolean deriveRwFromPathAndTransmittance) {
+        this.deriveRwFromPathAndTransmittance = deriveRwFromPathAndTransmittance;
     }
 
     public void setOutputKd(boolean outputKd) {
@@ -570,6 +606,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     @Override
     protected void configureTargetProduct(ProductConfigurer productConfigurer) {
         final Product targetProduct = productConfigurer.getTargetProduct();
+        targetProduct.setProductType(PRODUCT_TYPE);
         targetProduct.setStartTime(getSourceProduct().getStartTime());
         targetProduct.setEndTime(getSourceProduct().getEndTime());
         ProductUtils.copyTiePointGrids(resampledProduct, targetProduct);
@@ -709,7 +746,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         }
 
         Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
-        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
+        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophylll concentration");
 
         conc_tsm.setValidPixelExpression(validPixelExpression);
         conc_chl.setValidPixelExpression(validPixelExpression);
@@ -743,7 +780,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             iop_btot.setValidPixelExpression(validPixelExpression);
 
             Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
-            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophyll concentration");
+            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophylll concentration");
 
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
@@ -796,7 +833,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         flagCoding.addFlag("Kdmin_OOR", 0x01 << FLAG_INDEX_KDMIN_OOR, "Kdmin is out of range");
         flagCoding.addFlag("Kd489_at_max", 0x01 << FLAG_INDEX_KD489_AT_MAX, "Kdmin is at max");
         flagCoding.addFlag("Kdmin_at_max", 0x01 << FLAG_INDEX_KDMIN_AT_MAX, "Kdmin is at max");
-        flagCoding.addFlag("Valid_PE", 0x01 << FLAG_INDEX_VALID_PE, "The operators valid pixel expression has resolved to true");
+        flagCoding.addFlag("Valid_PE", (int) (0x01L << FLAG_INDEX_VALID_PE), "The operators valid pixel expression has resolved to true");
 
         targetProduct.getFlagCodingGroup().add(flagCoding);
         c2rcc_flags.setSampleCoding(flagCoding);
@@ -1003,14 +1040,16 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         }
 
         try {
-            final String[] nnFilePaths;
-            final boolean loadFromResources = StringUtils.isNullOrEmpty(alternativeNNPath);
-            if (loadFromResources) {
-                nnFilePaths = c2rccNNResourcePaths;
+            if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
+                algorithm = new C2rccLandsat8Algorithm(nnFilePaths, false);
             } else {
-                nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
+                String[] nnFilePaths = c2rccNetSetMap.get(netSet);
+                if(nnFilePaths == null) {
+                    throw new OperatorException(String.format("Unknown set '%s' of neural nets specified.", netSet));
+                }
+                algorithm = new C2rccLandsat8Algorithm(nnFilePaths, true);
             }
-            algorithm = new C2rccLandsat8Algorithm(nnFilePaths, loadFromResources);
         } catch (IOException e) {
             throw new OperatorException(e);
         }
@@ -1030,6 +1069,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         algorithm.setOutputOos(outputOos);
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
+        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
 
         timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
         initAtmosphericAuxdata();
@@ -1087,6 +1127,10 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     }
 
     public static class Spi extends OperatorSpi {
+        static{
+            RgbProfiles.installLandsat8RgbProfiles();
+        }
+
 
         public Spi() {
             super(C2rccLandsat8Operator.class);

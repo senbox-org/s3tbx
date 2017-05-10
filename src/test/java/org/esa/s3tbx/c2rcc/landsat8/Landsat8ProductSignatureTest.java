@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.landsat8;
 
+import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.FlagCoding;
@@ -63,6 +64,8 @@ public class Landsat8ProductSignatureTest {
     private static final String EXPECTED_SOURCE_FLAGS = "flags";
     private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
 
+    private static final String EXPECTED_PRODUCT_TYPE = "C2RCC_LANDSAT-8";
+
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
 
@@ -70,7 +73,7 @@ public class Landsat8ProductSignatureTest {
 
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
     }
 
     @Test
@@ -81,7 +84,7 @@ public class Landsat8ProductSignatureTest {
         operator.setOutputOos(true);
 
         Product targetProduct = operator.getTargetProduct();
-        assertDefaultBands(targetProduct, true);
+        assertDefaults(targetProduct, true);
         assertBands(targetProduct, EXPECTED_OOS_RTOSA);
         assertBands(targetProduct, EXPECTED_OOS_RRS);
 
@@ -110,7 +113,7 @@ public class Landsat8ProductSignatureTest {
         operator.setOutputRtosaGcAann(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RTOSA_GC_BANDS);
         assertBands(targetProduct, EXPECTED_RTOSA_GCAANN_BANDS);
     }
@@ -122,7 +125,7 @@ public class Landsat8ProductSignatureTest {
         operator.setOutputRtoa(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RTOA_BANDS);
     }
 
@@ -136,12 +139,22 @@ public class Landsat8ProductSignatureTest {
         operator.setOutputOos(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
         assertBands(targetProduct, EXPECTED_RPATH_BANDS);
         assertBands(targetProduct, EXPECTED_TDOWN_BANDS);
         assertBands(targetProduct, EXPECTED_TUP_BANDS);
         assertBands(targetProduct, EXPECTED_OOS_RTOSA);
         assertBands(targetProduct, EXPECTED_OOS_RHOW);
+    }
+
+    @Test
+    public void testProductSignature_DeriveRwAlternative() throws FactoryException, TransformException {
+
+        C2rccLandsat8Operator operator = createDefaultOperator();
+        operator.setDeriveRwFromPathAndTransmittance(true);
+
+        Product targetProduct = operator.getTargetProduct();
+        assertDefaults(targetProduct, false);
     }
 
     @Test
@@ -151,7 +164,7 @@ public class Landsat8ProductSignatureTest {
         operator.setOutputUncertainties(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
         assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
     }
 
@@ -163,13 +176,13 @@ public class Landsat8ProductSignatureTest {
         operator.setOutputKd(true);
         Product targetProduct = operator.getTargetProduct();
 
-        assertDefaultBands(targetProduct, false);
+        assertDefaults(targetProduct, false);
         assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_UNC_BANDS);
         assertBands(targetProduct, EXPECTED_KD_BANDS);
     }
 
-    private void assertDefaultBands(Product targetProduct, boolean asRrs) {
+    private void assertDefaults(Product targetProduct, boolean asRrs) {
         assertMandatoryBands(targetProduct);
         if(asRrs) {
             assertBands(targetProduct, EXPECTED_RRS_BANDS);
@@ -181,6 +194,8 @@ public class Landsat8ProductSignatureTest {
         assertBands(targetProduct, EXPECTED_KD_BANDS);
         assertBands(targetProduct, EXPECTED_KD_UNC_BANDS);
         assertBands(targetProduct, EXPECTED_IOP_UNC_BANDS);
+
+        assertEquals(EXPECTED_PRODUCT_TYPE, targetProduct.getProductType());
     }
 
     private void assertMandatoryBands(Product targetProduct) {

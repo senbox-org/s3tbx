@@ -4,6 +4,7 @@ import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
+import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.s3tbx.c2rcc.util.TargetProductPreparer;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoPos;
@@ -45,9 +46,9 @@ import static org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSAlgorithm.seawifsWavelengt
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.seawifs", version = "0.17",
+@OperatorMetadata(alias = "c2rcc.seawifs", version = "0.18",
         authors = "Roland Doerffer, Sabine Embacher, Norman Fomferra (Brockmann Consult)",
-        category = "Optical Processing/Thematic Water Processing",
+        category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval on SeaWifs L1C data products.")
 public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigurable {
@@ -87,6 +88,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
 
     private static final int RTOSA_IN_1_IX = WL_BAND_COUNT + 8;
     private static final int RTOSA_OUT_1_IX = RTOSA_IN_1_IX + WL_BAND_COUNT;
+    private static final String PRODUCT_TYPE = "C2RCC_SEAWIFS";
+
 
     /*
      * Source product type has been changed from L1B to L1C in commit
@@ -319,6 +322,7 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         super.configureTargetProduct(productConfigurer);
         productConfigurer.copyMetadata();
         Product targetProduct = productConfigurer.getTargetProduct();
+        targetProduct.setProductType(PRODUCT_TYPE);
         TargetProductPreparer.prepareTargetProduct(targetProduct, sourceProduct, SOURCE_RADIANCE_NAME_PREFIX, seawifsWavelengths,
                                                    outputRtosa, outputAsRrs);
         C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
@@ -435,6 +439,9 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
     }
 
     public static class Spi extends OperatorSpi {
+        static{
+            RgbProfiles.installSeaWifsRgbProfiles();
+        }
 
         public Spi() {
             super(C2rccSeaWiFSOperator.class);
