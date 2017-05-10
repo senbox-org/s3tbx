@@ -1,6 +1,5 @@
 package org.esa.s3tbx.c2rcc.msi;
 
-import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;

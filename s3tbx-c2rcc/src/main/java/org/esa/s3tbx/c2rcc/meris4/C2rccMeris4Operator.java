@@ -47,34 +47,9 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
-import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.DEFAULT_MERIS_WAVELENGTH;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_ADET_AT_MAX;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_ADET_AT_MIN;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_AGELB_AT_MAX;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_AGELB_AT_MIN;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_APIG_AT_MAX;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_APIG_AT_MIN;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_BPART_AT_MAX;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_BPART_AT_MIN;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_BWIT_AT_MAX;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_BWIT_AT_MIN;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_CLOUD;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_IOP_OOR;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_KD489_AT_MAX;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_KD489_OOR;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_KDMIN_AT_MAX;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_KDMIN_OOR;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_RHOW_OOR;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_RHOW_OOS;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_RTOSA_OOR;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_RTOSA_OOS;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_VALID_PE;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.merband12_ix;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.merband15_ix;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.*;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 

@@ -1,6 +1,5 @@
 package org.esa.s3tbx.c2rcc.meris4;
 
-import org.esa.s3tbx.c2rcc.meris.C2rccMerisOperator;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.FlagCoding;
@@ -259,7 +258,7 @@ public class Meris4ProductSignatureTest {
         product.addBand(C2rccMeris4Operator.RASTER_NAME_VIEWING_AZIMUTH, "42");
         product.addBand(C2rccMeris4Operator.RASTER_NAME_VIEWING_ZENITH, "42");
         product.addBand(C2rccMeris4Operator.RASTER_NAME_SEA_LEVEL_PRESSURE, "999");
-        product.addBand(C2rccMeris4Operator.RASTER_NAME_TOTAL_OZONE, "333");
+        product.addBand(C2rccMeris4Operator.RASTER_NAME_TOTAL_OZONE, "0.004");
         Band flagBand = product.addBand(C2rccMeris4Operator.RASTER_NAME_QUALITY_FLAGS, ProductData.TYPE_INT8);
         FlagCoding l1FlagsCoding = new FlagCoding(C2rccMeris4Operator.RASTER_NAME_QUALITY_FLAGS);
         product.getFlagCodingGroup().add(l1FlagsCoding);
