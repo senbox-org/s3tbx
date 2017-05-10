@@ -44,9 +44,45 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
-import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.*;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_MERIS_WAVELENGTH;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.DEFAULT_SOLAR_FLUX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_ADET_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_ADET_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_AGELB_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_AGELB_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_APIG_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_APIG_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_BPART_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_BPART_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_BWIT_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_BWIT_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_CLOUD;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_IOP_OOR;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_KD489_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_KD489_OOR;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_KDMIN_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_KDMIN_OOR;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_RHOW_OOR;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_RHOW_OOS;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_RTOSA_OOR;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_RTOSA_OOS;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.FLAG_INDEX_VALID_PE;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_iop_rw;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_iop_unciop;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_iop_uncsumiop_unckd;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_aann;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_rpath;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_rw;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rtosa_trans;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_iop;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_kd;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.IDX_rw_rwnorm;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband12_ix;
+import static org.esa.s3tbx.c2rcc.meris.C2rccMerisAlgorithm.merband15_ix;
 
 // todo (nf) - Add Thullier solar fluxes as default values to C2RCC operator (https://github.com/bcdev/s3tbx-c2rcc/issues/1)
 // todo (nf) - Add flags band and check for OOR of inputs and outputs of the NNs (https://github.com/bcdev/s3tbx-c2rcc/issues/2)
