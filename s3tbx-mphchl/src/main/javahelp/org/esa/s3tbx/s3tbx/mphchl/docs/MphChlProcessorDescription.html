@@ -16,7 +16,7 @@
 
 <html>
 <head>
-    <title>SNAP Data Processors - OLCI MPH/CHL Processor</title>
+    <title>SNAP Data Processors - MPH/CHL Processor</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -24,7 +24,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            OLCI MPH/CHL Processor - User Interface
+            MPH/CHL Processor - User Interface
         </td>
     </tr>
 </table>
@@ -32,20 +32,20 @@
 <h2>Processor user interface</h2>
 <p>
     The MPH/CHL processor is invoked from the 'Optical --> Thematic Water Processing' menu by selecting the
-    'OLCI MPH/CHL Processor' command.
+    'MPH/CHL Processor' command.
     On the command line the MPH/CHL processor is available by means of the Graph Processing Tool <i>gpt</i>
-    which is located in the SNAP bin directory. Typing <i>gpt OlciMphChl -h</i> displays further information.
+    which is located in the SNAP bin directory. Typing <i>gpt MphChl -h</i> displays further information.
 </p>
 
 <p>
-    Selecting the 'OLCI MPH/CHL Processor' command from the SNAP
+    Selecting the 'MPH/CHL Processor' command from the SNAP
     'Optical --> Thematic Water Processing' menu pops up the following dialog:
 </p>
 <p align="center"><img src="images/user_interface.png"></p>
 
 <h3>Source Product Group</h3>
 
-<p><b>Source Product</b>: Here the user specifies the source product, which can be either an OLCI L1b product,
+<p><b>Source Product</b>: Here the user specifies the source product, which can be either an OLCI or MERIS L1b product,
     or a product containing bottom-of-Rayleigh corrected
     reflectances, which was generated with the Rayleigh correction processor available in
     'Optical --> Preprocessing --> Rayleigh correction'. The combo box presents a list of all products open in SNAP.
@@ -69,6 +69,10 @@
 <h3>Processing Parameters Panel</h3>
 <p align="center"><img src="images/user_interface_params.png"></p>
 
+<!--
+<p><b>Sensor</b>: The considered sensor. Can be either OLCI or MERIS.
+</p>
+-->
 
 <p><b>Valid pixel expression</b>: An expression which identifies valid input pixels according to flags that are
     available in the input image.

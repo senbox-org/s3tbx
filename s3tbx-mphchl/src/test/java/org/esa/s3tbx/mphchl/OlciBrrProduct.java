@@ -1,4 +1,4 @@
-package org.esa.s3tbx.mph_chl;
+package org.esa.s3tbx.mphchl;
 
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
@@ -6,10 +6,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 
 /**
- * todo: add comment
- * To change this template use File | Settings | File Templates.
- * Date: 03.05.2017
- * Time: 16:26
+ * OLCI BRR test product for MPH retrieval
  *
  * @author olafd
  */

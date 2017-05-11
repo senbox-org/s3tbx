@@ -1,4 +1,4 @@
-package org.esa.s3tbx.mph_chl;
+package org.esa.s3tbx.mphchl;
 
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -52,16 +52,6 @@ public class MphChlOpTest {
     }
 
     @Test
-    public void testInvalidPixelExpressionAnnotation() throws NoSuchFieldException {
-        final Field validPixelField = MphChlOp.class.getDeclaredField("validPixelExpression");
-
-        final Parameter annotation = validPixelField.getAnnotation(Parameter.class);
-        assertNotNull(annotation);
-        assertEquals("not (quality_flags.land or quality_flags.invalid)", annotation.defaultValue());
-        assertEquals("Expression defining pixels considered for processing.", annotation.description());
-    }
-
-    @Test
     public void testCyanoMaxValueAnnotation() throws NoSuchFieldException {
         final Field cyanoMaxValueField = MphChlOp.class.getDeclaredField("cyanoMaxValue");
 
@@ -101,27 +91,4 @@ public class MphChlOpTest {
         assertEquals("Switch to true to apply a 3x3 low-pass filter on the result.", annotation.description());
     }
 
-    @Test
-    public void testComputeMphChlProduct() throws IOException {
-        final Product brrProduct = OlciBrrProduct.create();
-
-        final Product mphChlPixelProduct = GPF.createProduct("MphChl", GPF.NO_PARAMS, brrProduct);
-        assertNotNull(mphChlPixelProduct);
-
-        HashMap<String, Object> mphChlParams = new HashMap<>();
-        mphChlParams.put("applyLowPassFilter", false);
-        final Product mphChlProduct = GPF.createProduct("MphChl", mphChlParams, brrProduct);
-        assertNotNull(mphChlProduct);
-
-        final Band chlBand = mphChlProduct.getBand("chl");
-        assertNotNull(chlBand);
-        final Band chlPixelBand = mphChlPixelProduct.getBand("chl");
-        assertNotNull(chlPixelBand);
-
-        assertEquals(chlBand.getSampleFloat(0, 0), chlPixelBand.getSampleFloat(0, 0), 1e-8);
-        assertEquals(chlBand.getSampleFloat(0, 1), chlPixelBand.getSampleFloat(0, 1), 1e-8);
-        assertEquals(chlBand.getSampleFloat(1, 0), chlPixelBand.getSampleFloat(1, 0), 1e-8);
-        assertEquals(chlBand.getSampleFloat(1, 1), chlPixelBand.getSampleFloat(1, 1), 1e-8);
-
-    }
 }

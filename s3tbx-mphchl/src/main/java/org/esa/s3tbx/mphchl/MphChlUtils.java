@@ -1,4 +1,4 @@
-package org.esa.s3tbx.mph_chl;
+package org.esa.s3tbx.mphchl;
 
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Mask;

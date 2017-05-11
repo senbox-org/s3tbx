@@ -1,4 +1,4 @@
-package org.esa.s3tbx.mph_chl;
+package org.esa.s3tbx.mphchl;
 
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -14,30 +14,29 @@ import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
-public class MphChlOlciOpTest {
-    private MphChlOlciOp mphChlOp;
+public class MphChlBasisOpTest {
+    private MphChlBasisOp mphChlOp;
 
     @Before
     public void setUp() {
-        mphChlOp = new MphChlOlciOp();
-        mphChlOp.setSourceProduct(OlciBrrProduct.create());
-        mphChlOp.setParameterDefaultValues();
+        mphChlOp = new MphChlBasisOp();
     }
 
     @Test
     public void testOperatorMetadata() {
-        final OperatorMetadata operatorMetadata = MphChlOlciOp.class.getAnnotation(OperatorMetadata.class);
+        final OperatorMetadata operatorMetadata = MphChlBasisOp.class.getAnnotation(OperatorMetadata.class);
         assertNotNull(operatorMetadata);
-        assertEquals("MphChlOlci", operatorMetadata.alias());
+        assertEquals("MphChlBasis", operatorMetadata.alias());
         assertEquals("1.0", operatorMetadata.version());
         assertEquals("Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne", operatorMetadata.authors());
         assertEquals("(c) 2013, 2014, 2017 by Brockmann Consult", operatorMetadata.copyright());
-        assertEquals("Computes maximum peak height of chlorophyll for OLCI", operatorMetadata.description());
+        assertEquals("Computes maximum peak height of chlorophyll. Basis class, contains sensor-independent parts.",
+                     operatorMetadata.description());
     }
 
     @Test
     public void testSourceProductAnnotation() throws NoSuchFieldException {
-        final Field productField = MphChlOlciOp.class.getDeclaredField("sourceProduct");
+        final Field productField = MphChlBasisOp.class.getDeclaredField("sourceProduct");
         assertNotNull(productField);
 
         final SourceProduct productFieldAnnotation = productField.getAnnotation(SourceProduct.class);
@@ -47,18 +46,18 @@ public class MphChlOlciOpTest {
 
     @Test
     public void testInvalidPixelExpressionAnnotation() throws NoSuchFieldException {
-        final Field validPixelField = MphChlOlciOp.class.getDeclaredField("validPixelExpression");
+        final Field validPixelField = MphChlBasisOp.class.getDeclaredField("validPixelExpression");
 
         final Parameter annotation = validPixelField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
-        assertEquals("not (quality_flags.land or quality_flags.invalid)", annotation.defaultValue());
+        assertEquals("", annotation.defaultValue());
         assertEquals("Expression defining pixels considered for processing.", annotation.description());
-        //assertEquals(BooleanExpressionConverter.class, annotation.converter());
     }
+
 
     @Test
     public void testCyanoMaxValueAnnotation() throws NoSuchFieldException {
-        final Field cyanoMaxValueField = MphChlOlciOp.class.getDeclaredField("cyanoMaxValue");
+        final Field cyanoMaxValueField = MphChlBasisOp.class.getDeclaredField("cyanoMaxValue");
 
         final Parameter annotation = cyanoMaxValueField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
@@ -68,7 +67,7 @@ public class MphChlOlciOpTest {
 
     @Test
     public void testChlThreshForFloatFlagAnnotation() throws NoSuchFieldException {
-        final Field chlThreshForFloatFlagField = MphChlOlciOp.class.getDeclaredField("chlThreshForFloatFlag");
+        final Field chlThreshForFloatFlagField = MphChlBasisOp.class.getDeclaredField("chlThreshForFloatFlag");
 
         final Parameter annotation = chlThreshForFloatFlagField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
@@ -78,7 +77,7 @@ public class MphChlOlciOpTest {
 
     @Test
     public void testExportMphAnnotation() throws NoSuchFieldException {
-        final Field exportMphField = MphChlOlciOp.class.getDeclaredField("exportMph");
+        final Field exportMphField = MphChlBasisOp.class.getDeclaredField("exportMph");
 
         final Parameter annotation = exportMphField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
@@ -177,21 +176,6 @@ public class MphChlOlciOpTest {
         assertEquals(ProductData.TYPE_FLOAT32, mphBand.getDataType());
         assertEquals("dl", mphBand.getUnit());
         assertEquals(Double.NaN, mphBand.getGeophysicalNoDataValue(), 1e-8);
-    }
-
-    @Test
-    public void testConfigureSourceSample() {
-        final TestSourceSampleConfigurer sampleConfigurer = new TestSourceSampleConfigurer();
-
-        mphChlOp.configureSourceSamples(sampleConfigurer);
-
-        final HashMap<Integer, String> sampleMap = sampleConfigurer.getSampleMap();
-        assertEquals("rBRR_07", sampleMap.get(0));
-        assertEquals("rBRR_08", sampleMap.get(1));
-        assertEquals("rBRR_10", sampleMap.get(2));
-        assertEquals("rBRR_11", sampleMap.get(3));
-        assertEquals("rBRR_12", sampleMap.get(4));
-        assertEquals("rBRR_18", sampleMap.get(5));
     }
 
     @Test

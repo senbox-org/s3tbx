@@ -1,4 +1,4 @@
-package org.esa.s3tbx.mph_chl;
+package org.esa.s3tbx.mphchl;
 
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.datamodel.Band;
@@ -48,6 +48,7 @@ public class MphChlOlciOpAcceptanceTest {
         mphChlOp.setSourceProduct(brrProduct);
         mphChlOp.setParameterDefaultValues();
         mphChlOp.setParameter("applyLowPassFilter", false);
+        mphChlOp.setParameter("validPixelExpression", Sensor.OLCI.getValidPixelExpression());
         final Product mphChlProduct = mphChlOp.getTargetProduct();
 
         Product savedProduct = null;
@@ -60,14 +61,9 @@ public class MphChlOlciOpAcceptanceTest {
 
             final Band chlBand = savedProduct.getBand("chl");
             assertNotNull(chlBand);
-            // old MERIS:
-//            assertEquals(1.5443997383117676f, chlBand.getSampleFloat(0, 0), 1e-8);
-//            assertEquals(0.6783487796783447f, chlBand.getSampleFloat(1, 0), 1e-8);
-//            assertEquals(25.435853958129883f, chlBand.getSampleFloat(0, 1), 1e-8);
-            // new OLCI, slight differences because wavelengths are not exactly the same:
-            assertEquals(1.9867525100708008f, chlBand.getSampleFloat(0, 0), 1e-8);
-            assertEquals(0.7803683280944824f, chlBand.getSampleFloat(1, 0), 1e-8);
-            assertEquals(25.843711853027344f, chlBand.getSampleFloat(0, 1), 1e-8);
+            assertEquals(1.5443997383117676f, chlBand.getSampleFloat(0, 0), 1e-8);
+            assertEquals(0.6783487796783447f, chlBand.getSampleFloat(1, 0), 1e-8);
+            assertEquals(25.435853958129883f, chlBand.getSampleFloat(0, 1), 1e-8);
             assertEquals(Double.NaN, chlBand.getSampleFloat(1, 1), 1e-8);
 
             final Band flagBand = savedProduct.getBand("mph_chl_flags");
@@ -122,6 +118,7 @@ public class MphChlOlciOpAcceptanceTest {
         mphChlOp.setSourceProduct(brrProduct);
         mphChlOp.setParameterDefaultValues();
         mphChlOp.setParameter("exportMph", true);
+        mphChlOp.setParameter("validPixelExpression", Sensor.OLCI.getValidPixelExpression());
         final Product mphChlProduct = mphChlOp.getTargetProduct();
 
                 Product savedProduct = null;
@@ -134,15 +131,9 @@ public class MphChlOlciOpAcceptanceTest {
 
             final Band mphBand = savedProduct.getBand("mph");
             assertNotNull(mphBand);
-            // old MERIS:
-//            assertEquals(-1.1474395432742313E-4f, mphBand.getSampleFloat(0, 0), 1e-8);
-//            assertEquals(-4.521883383858949E-4f, mphBand.getSampleFloat(1, 0), 1e-8);
-//            assertEquals(0.003501386847347021f, mphBand.getSampleFloat(0, 1), 1e-8);
-            // new OLCI, slight differences because wavelengths are not exactly the same:
-            assertEquals(3.515405069265398E-6f, mphBand.getSampleFloat(0, 0), 1e-8);
-            assertEquals(-3.961061593145132E-4f, mphBand.getSampleFloat(1, 0), 1e-8);
-            assertEquals(0.003945857286453247f, mphBand.getSampleFloat(0, 1), 1e-8);
-            assertEquals(Double.NaN, mphBand.getSampleFloat(1, 1), 1e-8);
+            assertEquals(-1.1474395432742313E-4f, mphBand.getSampleFloat(0, 0), 1e-8);
+            assertEquals(-4.521883383858949E-4f, mphBand.getSampleFloat(1, 0), 1e-8);
+            assertEquals(0.003501386847347021f, mphBand.getSampleFloat(0, 1), 1e-8);
         } finally {
             if (savedProduct != null) {
                 savedProduct.dispose();
@@ -158,7 +149,7 @@ public class MphChlOlciOpAcceptanceTest {
         params.put("validPixelExpression", "extremely INVALID");
 
         try {
-            GPF.createProduct("OlciMphChl", params, brrProduct);
+            GPF.createProduct("MphChlOlci", params, brrProduct);
             fail("OperatorException expected");
         } catch (OperatorException ignored) {
         }

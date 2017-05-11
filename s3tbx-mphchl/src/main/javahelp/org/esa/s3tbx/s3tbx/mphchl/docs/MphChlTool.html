@@ -16,7 +16,7 @@
 
 <html>
 <head>
-    <title>SNAP Data Processors - OLCI MPH/CHL Processor</title>
+    <title>SNAP Data Processors - MPH/CHL Processor</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -24,22 +24,27 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            OLCI MPH/CHL Processor
+            MPH/CHL Processor
         </td>
     </tr>
 </table>
 
 <p>
-    The OLCI MPH Processor calculates chl-a concentrations by means of the <u><b>M</b></u>aximum <u><b>P</b></u>eak
+    The MPH Processor calculates chl-a concentrations by means of the <u><b>M</b></u>aximum <u><b>P</b></u>eak
     <u><b>H</b></u>eight and specific arithmetic expressions for different water types. Flags for floating material,
     eucaryote/cyanobacteria dominance and an adjacency effect indicator are provided for each pixel.
     <br> <br>
     The processor was originally developed for the processing of MERIS products in the BEAM toolbox.
-    This processor has been migrated to SNAP, using the same underlying algorithm which has been adapted to OLCI
-    by just replacing the MERIS bands by the corresponding OLCI bands at the same (or closest) wavelength.
-    The algorithm for OLCI requires as input data either OLCI L1 radiances or
-    bottom-of-Rayleigh (BRR) corrected reflectances derived from the OLCI spectral bands.
-    An OLCI BRR product can be processed using the Rayleigh correction processor available from
+    This processor has been migrated to SNAP and was extended to support OLCI products,
+    using the same underlying algorithm which has been adapted
+    by just replacing the MERIS bands by the corresponding OLCI bands at the same wavelength.
+    <!--
+    Furthermore, the processor also supports  now MERIS products of the latest 4th reprocessing in which
+    the product format and many of the product properties were adapted to the up-to-date OLCI specifications.
+    -->
+    The algorithm requires as input data either L1b radiances or
+    bottom-of-Rayleigh (BRR) corrected reflectances derived from the OLCI or MERIS spectral bands.
+    A BRR product can be processed using the Rayleigh correction processor available from
     SNAP Desktop -> Optical --> Preprocessing, or the corresponding GPT processor.
 </p>
 

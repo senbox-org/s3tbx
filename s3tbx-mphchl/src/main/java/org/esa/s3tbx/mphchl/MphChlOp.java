@@ -1,4 +1,4 @@
-package org.esa.s3tbx.mph_chl;
+package org.esa.s3tbx.mphchl;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.olci.radiometry.rayleigh.RayleighCorrectionOp;
@@ -13,10 +13,12 @@ import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import javax.media.jai.*;
 import javax.media.jai.operator.ConvolveDescriptor;
 import java.awt.*;
+import java.util.stream.Stream;
 
 /**
  * Wrapper for MPH CHL pixel operator.
@@ -31,8 +33,13 @@ import java.awt.*;
         description = "This operator computes maximum peak height of chlorophyll (MPH/CHL).")
 public class MphChlOp extends Operator {
 
-    @Parameter(defaultValue = "not (quality_flags.land or quality_flags.invalid)",
-            description = "Expression defining pixels considered for processing.")
+//    @Parameter(defaultValue = "OLCI", description = "The sensor", valueSet = {"OLCI", "MERIS"})
+    private Sensor sensor;
+
+    @Parameter(defaultValue = "",
+            description = "Expression defining pixels considered for processing. " +
+                    "If not set, all valid pixels over water are processed.",
+            converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
     @Parameter(defaultValue = "1000.0",
@@ -51,7 +58,7 @@ public class MphChlOp extends Operator {
             description = "Switch to true to apply a 3x3 low-pass filter on the result.")
     boolean applyLowPassFilter;
 
-    @SourceProduct(description = "OLCI L1 or Rayleigh corrected product", label = "OLCI L1b or Rayleigh corrected product")
+    @SourceProduct(description = "L1b or Rayleigh corrected product", label = "OLCI or MERIS L1b or Rayleigh corrected product")
     private Product sourceProduct;
 
     @Override
@@ -128,7 +135,18 @@ public class MphChlOp extends Operator {
     }
 
     private Product createMphChlPixelProduct() {
-        MphChlOlciOp mphChlOp = new MphChlOlciOp();
+        MphChlBasisOp mphChlOp = null;
+        sensor = getSensorType(sourceProduct);
+        switch (sensor) {
+            case OLCI:
+                mphChlOp = new MphChlOlciOp();
+                break;
+            case MERIS_3RD:
+            case MERIS_4TH:
+                mphChlOp = new MphChlMerisOp();
+                break;
+        }
+
         if (isValidL1bSourceProduct()) {
             RayleighCorrectionOp rayleighCorrectionOp = new RayleighCorrectionOp();
             rayleighCorrectionOp.setParameterDefaultValues();
@@ -138,11 +156,17 @@ public class MphChlOp extends Operator {
         } else if (isValidBrrSourceProduct()) {
             mphChlOp.setSourceProduct(sourceProduct);
         } else {
-            throw new OperatorException("Input product not supported - must be OLCI L1b or Rayleigh corrected BRR product");
+            throw new OperatorException
+                    ("Input product not supported - must be " + sensor.getName() + " L1b or Rayleigh corrected BRR product");
         }
 
         mphChlOp.setParameterDefaultValues();
-        mphChlOp.setParameter("validPixelExpression", validPixelExpression);
+        if (validPixelExpression != null && validPixelExpression.length() > 0) {
+            mphChlOp.setParameter("validPixelExpression", validPixelExpression);
+        } else {
+            // the default - valid pixels over water
+            mphChlOp.setParameter("validPixelExpression", sensor.getValidPixelExpression());
+        }
         mphChlOp.setParameter("cyanoMaxValue", cyanoMaxValue);
         mphChlOp.setParameter("chlThreshForFloatFlag", chlThreshForFloatFlag);
         mphChlOp.setParameter("exportMph", exportMph);
@@ -150,10 +174,31 @@ public class MphChlOp extends Operator {
         return mphChlOp.getTargetProduct();
     }
 
+    public static Sensor getSensorType(Product sourceProduct) {
+        String[] bandNames = sourceProduct.getBandNames();
+
+        boolean isOlci = Stream.of(bandNames).anyMatch(p -> p.matches("Oa\\d+_radiance"));
+        if (isOlci) {
+            return Sensor.OLCI;
+        }
+
+        boolean isMeris3rd = Stream.of(bandNames).anyMatch(p -> p.matches("radiance_\\d+"));
+        if (isMeris3rd) {
+            return Sensor.MERIS_3RD;
+        }
+
+        boolean isMeris4th = Stream.of(bandNames).anyMatch(p -> p.matches("M\\d+_radiance"));
+        if (isMeris4th) {
+            return Sensor.MERIS_4TH;
+        }
+
+        throw new OperatorException("Source product not applicable to this operator.\n" +
+                                            "Only OLCI and MERIS are supported");
+    }
+
     private boolean isValidL1bSourceProduct() {
         // simple check for required radiance bands
-        // todo: distinguish OLCI, MERIS 3rd, MERIS 4th reprocessing
-        for (String bandName : MphChlConstants.OLCI_REQUIRED_RAD_BAND_NAMES) {
+        for (String bandName : sensor.getRadBandNames()) {
             if (!sourceProduct.containsBand(bandName)) {
                 return false;
             }
@@ -163,7 +208,7 @@ public class MphChlOp extends Operator {
 
     private boolean isValidBrrSourceProduct() {
         // simple check for required BRR bands
-        for (String bandName : MphChlConstants.OLCI_REQUIRED_BRR_BAND_NAMES) {
+        for (String bandName : sensor.getRequiredBrrBandNames()) {
             if (!sourceProduct.containsBand(bandName)) {
                 return false;
             }
