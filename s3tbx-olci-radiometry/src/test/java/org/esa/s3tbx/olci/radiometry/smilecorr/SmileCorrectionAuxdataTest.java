@@ -131,6 +131,45 @@ public class SmileCorrectionAuxdataTest {
 
     }
 
+    @Test
+    public void testAuxDataValueForMeris4th() {
+        SmileCorrectionAuxdata smileCorrectionAuxdata = new SmileCorrectionAuxdata(Sensor.MERIS_4TH);
+
+        int[] expectedBands = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
+        assertArrayEquals(expectedBands, smileCorrectionAuxdata.getBandIndices());
+
+        int[] expectedWaterLower = {1, 1, 2, 3, 4, 5, 6, 7, 8, 10, 10, 10, 13, 13, 13, 0};
+        assertArrayEquals(expectedWaterLower, smileCorrectionAuxdata.getWaterLowerBands());
+
+        int[] expectedWaterUpper = {2, 3, 4, 5, 6, 7, 9, 9, 9, 12, 12, 12, 14, 14, 14, 0};
+        assertArrayEquals(expectedWaterUpper, smileCorrectionAuxdata.getWaterUpperBands());
+
+        int[] expectedLandLowerBands = {1, 1, 2, 3, 4, 5, 6, 7, 9, 10, 10, 10, 13, 13, 13, 0};
+        assertArrayEquals(expectedLandLowerBands, smileCorrectionAuxdata.getLandLowerBands());
+
+        int[] expectedLandUpperBands = {2, 3, 4, 5, 6, 7, 9, 8, 10, 12, 12, 12, 14, 14, 14, 0};
+        assertArrayEquals(expectedLandUpperBands, smileCorrectionAuxdata.getLandUpperBands());
+
+
+        float[] expectedCentralWvl = {
+                412.5f, 442.5f, 490f, 510f, 560f, 620f,
+                665f, 681.25f, 708.75f, 753.75f, 761.875f,
+                778.75f, 865f, 885f, 900f, 0f
+        };
+        assertArrayEquals(expectedCentralWvl, smileCorrectionAuxdata.getRefCentralWaveLengths(), 1e-6f);
+
+        // values are taken from the Specification of the Scientific Contents of the MERIS Level-1b & 2 Auxiliary Data Products page 131
+        // https://earth.esa.int/documents/700255/2042855/PO-RS-PAR-GS-0002+3C+-+Prod+Spec.pdf/cb0d20b0-c1f4-4903-a5a7-c250fedda700
+        float[] expectedSolarIrradiance = {
+                1713.692017f, 1877.56604f, 1929.26294f, 1926.890991f, 1800.458008f, 1649.704956f,
+                1530.927002f, 1470.229004f, 1405.473999f, 1266.199951f, 1253.004028f, 1175.737061f,
+                958.7630005f, 929.7860107f, 895.460022f, 0f
+        };
+        assertArrayEquals(expectedSolarIrradiance, smileCorrectionAuxdata.getSolarIrradiances(), 1e-6f);
+
+    }
+
+
     @Ignore
     @Test
     public void testReadSolarFluxMER_F() throws Exception {

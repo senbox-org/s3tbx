@@ -18,168 +18,114 @@
 
 package org.esa.s3tbx.olci.radiometry;
 
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.*;
+
 /**
- * @author muhammad.bc.
+ * Enumeration for supported sensors
+ *
+ * @author muhammad.bc, olafd
  */
 public enum Sensor {
-    MERIS() {
-        @Override
-        public int getNumBands() {
-            return 15;
-        }
 
-        @Override
-        public String getSZA() {
-            return "sun_zenith";
-        }
+    MERIS("MERIS", MERIS_NUM_BANDS, MERIS_SZA_NAME, MERIS_VZA_NAME, MERIS_SAA_NAME, MERIS_VAA_NAME, MERIS_OZONE_NAME,
+          MERIS_LAT_NAME, MERIS_LON_NAME, MERIS_ALT_NAME, MERIS_SLP_NAME,
+          MERIS_BOUNDS, MERIS_NAME_FORMAT, MERIS_BAND_INFO_FILE_NAME),
 
-        @Override
-        public String getOZA() {
-            return "view_zenith";
-        }
+    MERIS_4TH("MERIS", MERIS_4TH_NUM_BANDS, MERIS_4TH_SZA_NAME, MERIS_4TH_VZA_NAME, MERIS_4TH_SAA_NAME, MERIS_4TH_VAA_NAME,
+              MERIS_4TH_OZONE_NAME, MERIS_4TH_LAT_NAME, MERIS_4TH_LON_NAME, MERIS_4TH_ALT_NAME, MERIS_4TH_SLP_NAME,
+              MERIS_4TH_BOUNDS, MERIS_4TH_NAME_FORMAT, MERIS_4TH_BAND_INFO_FILE_NAME),
 
-        @Override
-        public String getSAA() {
-            return "sun_azimuth";
-        }
+    OLCI("OLCI", OLCI_NUM_BANDS, OLCI_SZA_NAME, OLCI_VZA_NAME, OLCI_SAA_NAME, OLCI_VAA_NAME, OLCI_OZONE_NAME,
+         OLCI_LAT_NAME, OLCI_LON_NAME, OLCI_ALT_NAME, OLCI_SLP_NAME,
+         OLCI_BOUNDS, OLCI_NAME_FORMAT, OLCI_BAND_INFO_FILE_NAME);
 
-        @Override
-        public String getOAA() {
-            return "view_azimuth";
-        }
+    private String name;
+    private int numBands;
+    private String szaName;
+    private String vzaName;
+    private String saaName;
+    private String vaaName;
+    private String ozoneName;
+    private String latName;
+    private String lonName;
+    private String altName;
+    private String slpName;
+    private int[] bounds;
+    private String nameFormat;
+    private String bandInfoFileName;
 
-        @Override
-        public String getTotalOzone() {
-            return "ozone";
-        }
+    Sensor(String name, int numBands, String szaName, String vzaName, String saaName, String vaaName,
+           String ozoneName, String latName, String lonName, String altName, String slpName, int[] bounds,
+           String nameFormat, String bandInfoFileName) {
+        this.name = name;
+        this.numBands = numBands;
+        this.szaName = szaName;
+        this.vzaName = vzaName;
+        this.saaName = saaName;
+        this.vaaName = vaaName;
+        this.ozoneName = ozoneName;
+        this.latName = latName;
+        this.lonName = lonName;
+        this.altName = altName;
+        this.slpName = slpName;
+        this.bounds = bounds;
+        this.nameFormat = nameFormat;
+        this.bandInfoFileName = bandInfoFileName;
+    }
 
-        @Override
-        public String getLatitude() {
-            return "latitude";
-        }
+    public String getName() {
+        return name;
+    }
 
-        @Override
-        public String getLongitude() {
-            return "longitude";
-        }
+    public int getNumBands() {
+        return numBands;
+    }
 
-        @Override
-        public String getAltitude() {
-            return "dem_alt";
-        }
+    public String getSzaName() {
+        return szaName;
+    }
 
-        @Override
-        public String getSeaLevelPressure() {
-            return "atm_press";
-        }
+    public String getVzaName() {
+        return vzaName;
+    }
 
-        public int[] getBounds() {
-            return new int[]{13, 14};
-        }
+    public String getSaaName() {
+        return saaName;
+    }
 
-        public String getNamePattern() {
-            return "radiance_%d";
-        }
+    public String getVaaName() {
+        return vaaName;
+    }
 
-        public String getBandInfoFileName() {
-            return "band_info_meris.txt";
-        }
-    },
-    OLCI() {
-        @Override
-        public int getNumBands() {
-            return 21;
-        }
+    public String getOzoneName() {
+        return ozoneName;
+    }
 
-        @Override
-        public String getSZA() {
-            return "SZA";
-        }
+    public String getLatName() {
+        return latName;
+    }
 
-        @Override
-        public String getOZA() {
-            return "OZA";
-        }
+    public String getLonName() {
+        return lonName;
+    }
 
-        @Override
-        public String getSAA() {
-            return "SAA";
-        }
+    public String getAltName() {
+        return altName;
+    }
 
-        @Override
-        public String getOAA() {
-            return "OAA";
-        }
-
-        @Override
-        public String getTotalOzone() {
-            return "total_ozone";
-        }
-
-        @Override
-        public String getLatitude() {
-            return "latitude";
-        }
-
-        @Override
-        public String getLongitude() {
-            return "longitude";
-        }
-
-        @Override
-        public String getAltitude() {
-            return "altitude";
-        }
-
-        @Override
-        public String getSeaLevelPressure() {
-            return "sea_level_pressure";
-        }
-
-        public int[] getBounds() {
-            return new int[]{17, 18};
-        }
-
-        public String getNamePattern() {
-            return "Oa%02d_radiance";
-        }
-
-        public String getBandInfoFileName() {
-            return "band_info_olci.txt";
-        }
-    };
-
+    public String getSlpName() {
+        return slpName;
+    }
 
     public int[] getBounds() {
-        return new int[]{13, 14};
+        return bounds;
     }
 
-    public String getNamePattern() {
-        return "radiance_%d";
+    public String getNameFormat() {
+        return nameFormat;
     }
 
-    public abstract String getBandInfoFileName();
-
-    public abstract int getNumBands();
-
-    public abstract String getSZA();
-
-    public abstract String getOZA();
-
-    public abstract String getSAA();
-
-    public abstract String getOAA();
-
-    public abstract String getTotalOzone();
-
-    public abstract String getLatitude();
-
-    public abstract String getLongitude();
-
-    public abstract String getAltitude();
-
-
-    public abstract String getSeaLevelPressure();
-
-
+    public String getBandInfoFileName() {
+        return bandInfoFileName;
+    }
 }

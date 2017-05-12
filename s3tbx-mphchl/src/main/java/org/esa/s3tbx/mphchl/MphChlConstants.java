@@ -37,7 +37,7 @@ public class MphChlConstants {
             "M11_radiance", "M12_radiance", "M13_radiance", "M14_radiance", "M15_radiance"
     };
 
-    public static final String MERIS_VALID_PIXEL_EXPR_4TH = "not (qualityFlags.LAND_OCEAN or qualityFlags.INVALID)";
+    public static final String MERIS_VALID_PIXEL_EXPR_4TH = "not (quality_flags.land or quality_flags.invalid)";
 
 
     /////// OLCI ////////

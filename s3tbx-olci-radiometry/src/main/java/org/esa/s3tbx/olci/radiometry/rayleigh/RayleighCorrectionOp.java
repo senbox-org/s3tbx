@@ -20,6 +20,7 @@ package org.esa.s3tbx.olci.radiometry.rayleigh;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.olci.radiometry.Sensor;
+import org.esa.s3tbx.olci.radiometry.SensorConstants;
 import org.esa.s3tbx.olci.radiometry.gasabsorption.GaseousAbsorptionAux;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -32,6 +33,7 @@ import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.dataio.envisat.EnvisatConstants;
 
 import java.awt.Rectangle;
 import java.util.Arrays;
@@ -40,6 +42,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.*;
 
 /**
  * @author muhammad.bc.
@@ -58,14 +61,6 @@ public class RayleighCorrectionOp extends Operator {
     private static final int WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION = 709;
     private static final String SOLAR_FLUX_BAND_PATTERN = "solar_flux_band_%d";
     private static final String LAMBDA0_BAND_PATTERN = "lambda0_band_%d";
-    private static final String MERIS_SUN_AZIMUTH = "sun_azimuth";
-    private static final String MERIS_SUN_ZENITH = "sun_zenith";
-    private static final String MERIS_VIEW_ZENITH = "view_zenith";
-    private static final String MERIS_VIEW_AZIMUTH = "view_azimuth";
-    private static final String MERIS_ATM_PRESS = "atm_press";
-    private static final String MERIS_OZONE = "ozone";
-    private static final String MERIS_LATITUDE = "latitude";
-    private static final String MERIS_LONGITUDE = "longitude";
 
     private static final String SZA = "SZA";
     private static final String SAA = "SAA";
@@ -76,6 +71,7 @@ public class RayleighCorrectionOp extends Operator {
     private static final String TOTAL_OZONE = "total_ozone";
     private static final String TP_LATITUDE = "TP_latitude";
     private static final String TP_LONGITUDE = "TP_longitude";
+    private static final String TP_ALTITUDE = "TP_altitude";
     private static final String[] BAND_CATEGORIES = new String[]{
             "taur_%02d",
             "rBRR_%02d",
@@ -117,8 +113,8 @@ public class RayleighCorrectionOp extends Operator {
     public void initialize() throws OperatorException {
         sensor = getSensorType(sourceProduct);
         algorithm = new RayleighCorrAlgorithm();
-        absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.toString());
-        crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getNamePattern());
+        absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
+        crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getNameFormat());
 
         Product targetProduct = new Product(sourceProduct.getName() + "_rayleigh", sourceProduct.getProductType(),
                                             sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
@@ -140,7 +136,7 @@ public class RayleighCorrectionOp extends Operator {
 
         Set<Map.Entry<Band, Tile>> entries = targetTiles.entrySet();
         entries.forEach(targetTileStream -> {
-
+            // todo: add appropriate filtering of invalid pixels
             Tile targetTile = targetTileStream.getValue();
             Band targetBand = targetTileStream.getKey();
 
@@ -183,10 +179,10 @@ public class RayleighCorrectionOp extends Operator {
     }
 
     private double[] waterVaporCorrection709(double[] reflectances, Rectangle targetRectangle, Sensor sensor) {
-        String bandNamePattern = sensor.getNamePattern();
+        String bandNameFormat = sensor.getNameFormat();
         int[] upperLowerBounds = sensor.getBounds();
-        double[] bWVRefTile = getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNamePattern, upperLowerBounds[1])), targetRectangle));
-        double[] bWVTile = getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNamePattern, upperLowerBounds[0])), targetRectangle));
+        double[] bWVRefTile = getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNameFormat, upperLowerBounds[1])), targetRectangle));
+        double[] bWVTile = getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNameFormat, upperLowerBounds[0])), targetRectangle));
         return algorithm.waterVaporCorrection709(reflectances, bWVRefTile, bWVTile);
     }
 
@@ -232,14 +228,14 @@ public class RayleighCorrectionOp extends Operator {
 
     private void addTargetBands(Product targetProduct, String bandCategory) {
         for (int i = 1; i <= sensor.getNumBands(); i++) {
-            Band sourceBand = sourceProduct.getBand(String.format(sensor.getNamePattern(), i));
+            Band sourceBand = sourceProduct.getBand(String.format(sensor.getNameFormat(), i));
             Band targetBand = targetProduct.addBand(String.format(bandCategory, i), ProductData.TYPE_FLOAT32);
             ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
         }
     }
 
     private int addAuxiliaryData(RayleighAux rayleighAux, Rectangle rectangle, int sourceBandRefIndex) {
-        String format = String.format(sensor.getNamePattern(), sourceBandRefIndex);
+        String format = String.format(sensor.getNameFormat(), sourceBandRefIndex);
         Band band = getSourceProduct().getBand(format);
         String sourceBandName = band.getName();
         rayleighAux.setWavelength(band.getSpectralWavelength());
@@ -260,6 +256,17 @@ public class RayleighCorrectionOp extends Operator {
 
             rayleighAux.setSolarFluxs(solarFlux);
             rayleighAux.setLambdaSource(lambdaSource);
+        } else if (sensor.equals(Sensor.MERIS_4TH)) {
+            Band sourceBand = sourceProduct.getBand(sourceBandName);
+            rayleighAux.setSourceSampleRad(getSourceTile(sourceBand, rectangle));
+            int length = rectangle.width * rectangle.height;
+
+            double[] solarFlux = fillDefaultArray(length,
+                                                  EnvisatConstants.MERIS_SOLAR_FLUXES[sourceBand.getSpectralBandIndex()]);
+            double[] lambdaSource = fillDefaultArray(length, sourceBand.getSpectralWavelength());
+
+            rayleighAux.setSolarFluxs(solarFlux);
+            rayleighAux.setLambdaSource(lambdaSource);
         }
         return sourceBandRefIndex;
     }
@@ -273,27 +280,35 @@ public class RayleighCorrectionOp extends Operator {
     private RayleighAux createAuxiliary(Sensor sensor, Rectangle rectangle) {
         RayleighAux rayleighAux = new RayleighAux();
         if (sensor.equals(Sensor.MERIS)) {
-            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_SUN_AZIMUTH), rectangle));
-            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_SUN_ZENITH), rectangle));
-            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_VIEW_ZENITH), rectangle));
-            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_VIEW_AZIMUTH), rectangle));
-            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(MERIS_ATM_PRESS), rectangle));
-            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(MERIS_OZONE), rectangle));
-            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(MERIS_LATITUDE), rectangle));
-            rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(MERIS_LONGITUDE), rectangle));
+            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_SAA_NAME), rectangle));
+            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_SZA_NAME), rectangle));
+            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_VZA_NAME), rectangle));
+            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_VAA_NAME), rectangle));
+            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(MERIS_SLP_NAME), rectangle));
+            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(MERIS_OZONE_NAME), rectangle));
+            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(MERIS_LAT_NAME), rectangle));
+            rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(MERIS_LON_NAME), rectangle));
             rayleighAux.setAltitudes(getSourceTile(sourceProduct.getTiePointGrid(ALTITUDE_DEM), rectangle));
-
-
-        } else if (sensor.equals(Sensor.OLCI)) {
-            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(SZA), rectangle));
-            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(OZA), rectangle));
-            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(SAA), rectangle));
-            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(OAA), rectangle));
-            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(SEA_LEVEL_PRESSURE), rectangle));
-            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(TOTAL_OZONE), rectangle));
+        } else if (sensor.equals(Sensor.MERIS_4TH)) {
+            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_SAA_NAME), rectangle));
+            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_SZA_NAME), rectangle));
+            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_VZA_NAME), rectangle));
+            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_VAA_NAME), rectangle));
+            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_SLP_NAME), rectangle));
+            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_OZONE_NAME), rectangle));
             rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_LATITUDE), rectangle));
             rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(TP_LONGITUDE), rectangle));
-            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(ALTITUDE), rectangle));
+            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_ALTITUDE), rectangle));
+        } else if (sensor.equals(Sensor.OLCI)) {
+            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(OLCI_SZA_NAME), rectangle));
+            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(OLCI_VZA_NAME), rectangle));
+            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(OLCI_SAA_NAME), rectangle));
+            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(OLCI_VAA_NAME), rectangle));
+            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(OLCI_SLP_NAME), rectangle));
+            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(OLCI_OZONE_NAME), rectangle));
+            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_LATITUDE), rectangle));
+            rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(TP_LONGITUDE), rectangle));
+            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(OLCI_ALT_NAME), rectangle));
         }
 
         return rayleighAux;
