@@ -15,15 +15,17 @@ import java.util.stream.IntStream;
  */
 public class RayleighCorrAlgorithm {
 
+    private int numBands;
+    private String bandNamePattern;
 
-    public int numBands = 21;
-    public String bandNamePattern = "Oa%02d_radiance";
+//    public int numBands = 21;
+//    public String bandNamePattern = "Oa%02d_radiance";
+//
+//    public RayleighCorrAlgorithm() {
+//    }
 
-    public RayleighCorrAlgorithm() {
-    }
-
-    public RayleighCorrAlgorithm(String bandPattern, int numBand) {
-        this.numBands = numBand;
+    public RayleighCorrAlgorithm(String bandPattern, int numBands) {
+        this.numBands = numBands;
         this.bandNamePattern = bandPattern;
     }
 

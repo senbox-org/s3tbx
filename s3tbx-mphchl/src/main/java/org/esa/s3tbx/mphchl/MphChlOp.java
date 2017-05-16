@@ -151,6 +151,7 @@ public class MphChlOp extends Operator {
             RayleighCorrectionOp rayleighCorrectionOp = new RayleighCorrectionOp();
             rayleighCorrectionOp.setParameterDefaultValues();
             rayleighCorrectionOp.setParameter("computeTaur", false);
+            rayleighCorrectionOp.setParameter("csvListOfBandsToProcess", sensor.getRequiredRadianceBandNames());
             rayleighCorrectionOp.setSourceProduct(sourceProduct);
             mphChlOp.setSourceProduct(rayleighCorrectionOp.getTargetProduct());
         } else if (isValidBrrSourceProduct()) {
@@ -208,7 +209,8 @@ public class MphChlOp extends Operator {
 
     private boolean isValidBrrSourceProduct() {
         // simple check for required BRR bands
-        for (String bandName : sensor.getRequiredBrrBandNames()) {
+        final String[] requiredBrrBands = sensor.getRequiredBrrBandNames().trim().split("\\s*,\\s*");
+        for (String bandName : requiredBrrBands) {
             if (!sourceProduct.containsBand(bandName)) {
                 return false;
             }

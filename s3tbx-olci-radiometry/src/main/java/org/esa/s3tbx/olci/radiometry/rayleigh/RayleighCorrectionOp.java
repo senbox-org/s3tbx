@@ -20,7 +20,6 @@ package org.esa.s3tbx.olci.radiometry.rayleigh;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.olci.radiometry.Sensor;
-import org.esa.s3tbx.olci.radiometry.SensorConstants;
 import org.esa.s3tbx.olci.radiometry.gasabsorption.GaseousAbsorptionAux;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -35,14 +34,14 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.*;
+import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
 
 /**
  * @author muhammad.bc.
@@ -86,6 +85,13 @@ public class RayleighCorrectionOp extends Operator {
     @SourceProduct
     Product sourceProduct;
 
+
+    @Parameter(description = "Comma-separated list of radiance source bands to be Rayleigh corrected." +
+            "If not specified, all bands will be processed and written to target product.",
+            label = "Subset of TOA radiances to be processed",
+            defaultValue = "")
+    String csvListOfBandsToProcess;
+
     @Parameter(defaultValue = "true", label = "Compute Rayleigh optical thickness bands")
     private boolean computeTaur;
 
@@ -108,11 +114,19 @@ public class RayleighCorrectionOp extends Operator {
     private double[] absorpOzone;
     private double[] crossSectionSigma;
 
+    private String[] specificBandsToProcess = null;
+
 
     @Override
     public void initialize() throws OperatorException {
         sensor = getSensorType(sourceProduct);
-        algorithm = new RayleighCorrAlgorithm();
+
+        if (csvListOfBandsToProcess != null && csvListOfBandsToProcess.length() > 0) {
+            specificBandsToProcess = csvListOfBandsToProcess.trim().split("\\s*,\\s*");
+        }
+
+        algorithm = new RayleighCorrAlgorithm(sensor.getNameFormat(), sensor.getNumBands());
+
         absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
         crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getNameFormat());
 
@@ -228,10 +242,27 @@ public class RayleighCorrectionOp extends Operator {
 
     private void addTargetBands(Product targetProduct, String bandCategory) {
         for (int i = 1; i <= sensor.getNumBands(); i++) {
-            Band sourceBand = sourceProduct.getBand(String.format(sensor.getNameFormat(), i));
-            Band targetBand = targetProduct.addBand(String.format(bandCategory, i), ProductData.TYPE_FLOAT32);
-            ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
+            final String sourceBandName = String.format(sensor.getNameFormat(), i);
+            if (isBandToProcess(sourceBandName)) {
+                Band sourceBand = sourceProduct.getBand(sourceBandName);
+                Band targetBand = targetProduct.addBand(String.format(bandCategory, i), ProductData.TYPE_FLOAT32);
+                ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
+            }
         }
+    }
+
+    private boolean isBandToProcess(String sourceBandName) {
+        if (specificBandsToProcess == null) {
+            return true;
+        }
+        if (specificBandsToProcess.length > 0) {
+            for (String b : specificBandsToProcess) {
+                if (b.equals(sourceBandName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private int addAuxiliaryData(RayleighAux rayleighAux, Rectangle rectangle, int sourceBandRefIndex) {

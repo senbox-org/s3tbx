@@ -507,9 +507,6 @@ public class RayleighAux {
         if (Objects.nonNull(taur)) {
             double[] val = new double[taur.length];
             for (int i = 0; i < taur.length; i++) {
-                if (taur[i] < 0.0 || taur[i] > 1.0) {
-                    System.out.println("taur = " + taur);
-                }
                 val[i] = linearInterpolate.value(taur[i]);
             }
             return val;
