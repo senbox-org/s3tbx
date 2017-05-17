@@ -32,6 +32,7 @@ public class RayleighConstants {
     static double MEAN_MOLECULAR_WEIGHT_C02 = 15.0556 * CO2 + MEAN_MOLECULAR_ZERO;
 
     static double PA = 0.9587256;
-    static double PB = 1.0 - PA; // Rayleigh Phase function, molecular asymmetry factor 2
+
+    static double INVALID_VALUE = -999.9;
 
 }

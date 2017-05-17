@@ -196,8 +196,7 @@ public class RayleighCorrAlgorithm {
         float[] lowerRayRefl = getRayleigh(rayleighAux, absorpLowerBand, bandThicknessLower, rayleighInput.getLowerReflectences());
         float[] upperRayRefl = getRayleigh(rayleighAux, absorpUppereBand, bandThicknessUpper, rayleighInput.getUpperReflectences());
 
-        RayleighOutput rayleighOutput = new RayleighOutput(sourceRayRefl, lowerRayRefl, upperRayRefl);
-        return rayleighOutput;
+        return new RayleighOutput(sourceRayRefl, lowerRayRefl, upperRayRefl);
     }
 
     private float[] getRayleigh(RayleighAux rayleighAux, double absorptionOfBand, double[] thicknessAllBand, float[] ref) {

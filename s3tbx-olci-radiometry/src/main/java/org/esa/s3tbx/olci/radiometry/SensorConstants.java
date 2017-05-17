@@ -19,6 +19,8 @@ public class SensorConstants {
     public static final String MERIS_LON_NAME = "longitude";
     public static final String MERIS_ALT_NAME = "dem_alt";
     public static final String MERIS_SLP_NAME = "atm_press";
+    public static final String MERIS_L1B_FLAGS_NAME = "l1_flags";
+    public static final int MERIS_INVALID_BIT = 7;
     public static final int[] MERIS_BOUNDS = {13, 14};
     public static final String MERIS_NAME_FORMAT = "radiance_%d";
     public static final String MERIS_NAME_PATTERN = "radiance_\\d+";
@@ -34,6 +36,8 @@ public class SensorConstants {
     public static final String MERIS_4TH_LON_NAME = MERIS_LON_NAME;
     public static final String MERIS_4TH_ALT_NAME = "altitude";
     public static final String MERIS_4TH_SLP_NAME = "sea_level_pressure";
+    public static final String MERIS_4TH_L1B_FLAGS_NAME = "quality_flags";
+    public static final int MERIS_4TH_INVALID_BIT = 25;
     public static final int[] MERIS_4TH_BOUNDS = MERIS_BOUNDS;
     public static final String MERIS_4TH_NAME_FORMAT = "M%02d_radiance";
     public static final String MERIS_4TH_NAME_PATTERN = "M\\d+_radiance";
@@ -49,16 +53,11 @@ public class SensorConstants {
     public static final String OLCI_LON_NAME = MERIS_LON_NAME;
     public static final String OLCI_ALT_NAME = "altitude";
     public static final String OLCI_SLP_NAME = "sea_level_pressure";
+    public static final String OLCI_L1B_FLAGS_NAME = "quality_flags";
+    public static final int OLCI_INVALID_BIT = 25;
     public static final int[] OLCI_BOUNDS = {17, 18};
     public static final String OLCI_NAME_FORMAT = "Oa%02d_radiance";
     public static final String OLCI_NAME_PATTERN = "Oa\\d+_radiance";
     public static final String OLCI_BAND_INFO_FILE_NAME = "band_info_olci.txt";
-
-    public final static float[] MERIS_WAVELENGTHS = {
-            0.f, 412.f, 442.f, 490.f, 510.f,
-            560.f, 619.f, 664.f, 681.f, 709.f,
-            753.f, 760.f, 779.f, 865.f, 885.f, 900.f
-    };
-
 
 }

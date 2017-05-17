@@ -18,8 +18,6 @@
 
 package org.esa.s3tbx.olci.radiometry.smilecorr;
 
-import com.google.common.primitives.Doubles;
-import com.google.common.primitives.Floats;
 import org.esa.s3tbx.olci.radiometry.Sensor;
 import org.esa.s3tbx.olci.radiometry.SensorConstants;
 import org.esa.snap.core.datamodel.Product;
@@ -114,10 +112,6 @@ public class SmileCorrectionUtils {
             }
         }
         return val;
-    }
-
-    public static float[] convertDoublesToFloats(double[] ref) {
-        return Floats.toArray(Doubles.asList(ref));
     }
 
     public static int getSourceBandIndex(String name) {

@@ -31,20 +31,22 @@ import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
+import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
 
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.*;
 import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
 
 /**
- * @author muhammad.bc.
+ * This operator performs radiometric corrections on OLCI and MERIS L1b data products.
+ *
+ * @authors Marco Peters, Muhammad Bala, Olaf Danne
  */
 @OperatorMetadata(alias = "RayleighCorrection",
         description = "Performs radiometric corrections on OLCI and MERIS L1b data products.",
@@ -86,11 +88,14 @@ public class RayleighCorrectionOp extends Operator {
     Product sourceProduct;
 
 
-    @Parameter(description = "Comma-separated list of radiance source bands to be Rayleigh corrected." +
-            "If not specified, all bands will be processed and written to target product.",
-            label = "Subset of TOA radiances to be processed",
-            defaultValue = "")
-    String csvListOfBandsToProcess;
+//    @Parameter(description = "Comma-separated list of radiance source bands to be Rayleigh corrected." +
+//            "If not specified, all bands will be processed and written to target product.",
+//            label = "Subset of TOA radiances to be processed",
+//            defaultValue = "")
+//    String csvListOfBandsToProcess;
+
+    @Parameter(label = "Source bands", description = "The source bands for the computation.", rasterDataNodeType = Band.class)
+    private String[] sourceBandNames;
 
     @Parameter(defaultValue = "true", label = "Compute Rayleigh optical thickness bands")
     private boolean computeTaur;
@@ -114,16 +119,21 @@ public class RayleighCorrectionOp extends Operator {
     private double[] absorpOzone;
     private double[] crossSectionSigma;
 
-    private String[] specificBandsToProcess = null;
+//    private String[] specificBandsToProcess = null;
 
 
     @Override
     public void initialize() throws OperatorException {
+
+        if (this.sourceBandNames == null || this.sourceBandNames.length == 0) {
+            throw new OperatorException("Please select at least one band.");
+        }
+
         sensor = getSensorType(sourceProduct);
 
-        if (csvListOfBandsToProcess != null && csvListOfBandsToProcess.length() > 0) {
-            specificBandsToProcess = csvListOfBandsToProcess.trim().split("\\s*,\\s*");
-        }
+//        if (csvListOfBandsToProcess != null && csvListOfBandsToProcess.length() > 0) {
+//            specificBandsToProcess = csvListOfBandsToProcess.trim().split("\\s*,\\s*");
+//        }
 
         algorithm = new RayleighCorrAlgorithm(sensor.getNameFormat(), sensor.getNumBands());
 
@@ -142,55 +152,125 @@ public class RayleighCorrectionOp extends Operator {
         setTargetProduct(targetProduct);
     }
 
-
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {
         checkForCancellation();
         RayleighAux rayleighAux = createAuxiliary(sensor, targetRectangle);
 
+        Tile qualityFlagsTile = getSourceTile(sourceProduct.getBand(sensor.getL1bFlagsName()), targetRectangle);
+
         Set<Map.Entry<Band, Tile>> entries = targetTiles.entrySet();
         entries.forEach(targetTileStream -> {
-            // todo: add appropriate filtering of invalid pixels
             Tile targetTile = targetTileStream.getValue();
             Band targetBand = targetTileStream.getKey();
 
             String targetBandName = targetBand.getName();
-            double[] rayleighOpticalThickness = null;
-            int sourceBandIndex = getSourceBandIndex(targetBand.getName());
-            if (targetBandName.equals(AIRMASS) && addAirMass) {
-                double[] massAirs = rayleighAux.getAirMass();
-                targetTile.setSamples(massAirs);
-                return;
-            }
-            if (sourceBandIndex == -1) {
-                return;
-            }
-            addAuxiliaryData(rayleighAux, targetRectangle, sourceBandIndex);
-            if (targetBandName.matches(RTOA_PATTERN) && computeRtoa) {
-                targetTile.setSamples(getReflectance(rayleighAux));
-            } else if (targetBandName.matches(TAUR_PATTERN) && computeTaur) {
-                rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
-                targetTile.setSamples(rayleighOpticalThickness);
-            } else if (computeRBrr || computeRtoaNg) {
+            double[] targetData = null;
 
-                double[] reflectance = getReflectance(rayleighAux);
-                if (Math.ceil(rayleighAux.getWaveLength()) == WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION) {
-                    reflectance = waterVaporCorrection709(reflectance, targetRectangle, sensor);
-                }
-                double[] corrOzoneRefl = getCorrectOzone(rayleighAux, reflectance, sourceBandIndex);
-                if (targetBandName.matches(RTOA_NG_PATTERN) && computeRtoaNg) {
-                    targetTile.setSamples(corrOzoneRefl);
-                }
-                if (targetBandName.matches(R_BRR_PATTERN) && computeRBrr) {
-                    if (Objects.isNull(rayleighOpticalThickness)) {
-                        rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
+            if (targetBandName.equals(AIRMASS) && addAirMass) {
+                targetData = rayleighAux.getAirMass();
+                setTargetSamples(qualityFlagsTile, targetTile, targetData);
+            }
+
+            final int sourceBandIndex = getSourceBandIndex(targetBand.getName());
+            if (sourceBandIndex != -1) {
+                double[] rayleighOpticalThickness = null;
+                addAuxiliaryData(rayleighAux, targetRectangle, sourceBandIndex);
+
+                if (targetBandName.matches(RTOA_PATTERN) && computeRtoa) {
+                    targetData = getReflectance(rayleighAux);
+                } else if (targetBandName.matches(TAUR_PATTERN) && computeTaur) {
+                    targetData = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
+                } else if (computeRBrr || computeRtoaNg) {
+                    double[] reflectance = getReflectance(rayleighAux);
+                    if (Math.ceil(rayleighAux.getWaveLength()) == WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION) {
+                        reflectance = waterVaporCorrection709(reflectance, targetRectangle, sensor);
                     }
-                    double[] rhoBrr = getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
-                    targetTile.setSamples(rhoBrr);
+                    double[] corrOzoneRefl = getCorrectOzone(rayleighAux, reflectance, sourceBandIndex);
+                    if (targetBandName.matches(RTOA_NG_PATTERN) && computeRtoaNg) {
+                        targetData = corrOzoneRefl;
+                    }
+                    if (targetBandName.matches(R_BRR_PATTERN) && computeRBrr) {
+                        rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
+                        targetData = getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
+                    }
                 }
+
+                setTargetSamples(qualityFlagsTile, targetTile, targetData);
             }
         });
     }
+
+    private void setTargetSamples(Tile qualityFlagsTile, Tile targetTile, double[] targetData) {
+        Object qualityFlags;
+        // todo: make this more general when we have more sensors!
+        if (sensor == Sensor.MERIS) {
+            qualityFlags = qualityFlagsTile.getDataBufferByte();
+            filterInvalid(targetData, (byte[]) qualityFlags);
+        } else {
+            qualityFlags = qualityFlagsTile.getDataBufferInt();
+            filterInvalid(targetData, (int[]) qualityFlags);
+        }
+        targetTile.setSamples(targetData);
+    }
+
+    private void filterInvalid(double[] targetData, int[] qualityFlags) {
+        for (int i = 0; i < targetData.length; i++) {
+            if (BitSetter.isFlagSet(qualityFlags[i], sensor.getInvalidBit())) {
+                targetData[i] = RayleighConstants.INVALID_VALUE;
+            }
+        }
+    }
+
+    private void filterInvalid(double[] targetData, byte[] qualityFlags) {
+        for (int i = 0; i < targetData.length; i++) {
+            if (BitSetter.isFlagSet(qualityFlags[i], sensor.getInvalidBit())) {
+                targetData[i] = RayleighConstants.INVALID_VALUE;
+            }
+        }
+    }
+
+//    @Override
+//    public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
+//        final Rectangle targetRectangle = targetTile.getRectangle();
+//        RayleighAux rayleighAux = createAuxiliary(sensor, targetRectangle);
+//
+//        double[] rayleighOpticalThickness = null;
+//        final String targetBandName = targetBand.getName();
+//        if (targetBandName.equals(AIRMASS) && addAirMass) {
+//            double[] massAirs = rayleighAux.getAirMass();
+//            targetTile.setSamples(massAirs);
+//            return;
+//        }
+//
+//        int sourceBandIndex = getSourceBandIndex(targetBandName);
+//        if (sourceBandIndex == -1) {
+//            return;
+//        }
+//        addAuxiliaryData(rayleighAux, targetRectangle, sourceBandIndex);
+//        if (targetBandName.matches(RTOA_PATTERN) && computeRtoa) {
+//            targetTile.setSamples(getReflectance(rayleighAux));
+//        } else if (targetBandName.matches(TAUR_PATTERN) && computeTaur) {
+//            rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
+//            targetTile.setSamples(rayleighOpticalThickness);
+//        } else if (computeRBrr || computeRtoaNg) {
+//
+//            double[] reflectance = getReflectance(rayleighAux);
+//            if (Math.ceil(rayleighAux.getWaveLength()) == WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION) {
+//                reflectance = waterVaporCorrection709(reflectance, targetRectangle, sensor);
+//            }
+//            double[] corrOzoneRefl = getCorrectOzone(rayleighAux, reflectance, sourceBandIndex);
+//            if (targetBandName.matches(RTOA_NG_PATTERN) && computeRtoaNg) {
+//                targetTile.setSamples(corrOzoneRefl);
+//            }
+//            if (targetBandName.matches(R_BRR_PATTERN) && computeRBrr) {
+//                rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
+//                double[] rhoBrr = getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
+//                targetTile.setSamples(rhoBrr);
+//            }
+//        }
+//    }
+
 
     private double[] waterVaporCorrection709(double[] reflectances, Rectangle targetRectangle, Sensor sensor) {
         String bandNameFormat = sensor.getNameFormat();
@@ -236,34 +316,48 @@ public class RayleighCorrectionOp extends Operator {
             addTargetBands(targetProduct, BAND_CATEGORIES[3]);
         }
         if (addAirMass) {
-            targetProduct.addBand(AIRMASS, ProductData.TYPE_FLOAT32);
+            final Band targetBand = targetProduct.addBand(AIRMASS, ProductData.TYPE_FLOAT32);
+            targetBand.setNoDataValue(RayleighConstants.INVALID_VALUE);
+            targetBand.setNoDataValueUsed(true);
         }
     }
 
     private void addTargetBands(Product targetProduct, String bandCategory) {
-        for (int i = 1; i <= sensor.getNumBands(); i++) {
-            final String sourceBandName = String.format(sensor.getNameFormat(), i);
-            if (isBandToProcess(sourceBandName)) {
-                Band sourceBand = sourceProduct.getBand(sourceBandName);
-                Band targetBand = targetProduct.addBand(String.format(bandCategory, i), ProductData.TYPE_FLOAT32);
+//        for (int i = 1; i <= sensor.getNumBands(); i++) {
+//            final String sourceBandName = String.format(sensor.getNameFormat(), i);
+//            if (isBandToProcess(sourceBandName)) {
+//                Band sourceBand = sourceProduct.getBand(sourceBandName);
+//                Band targetBand = targetProduct.addBand(String.format(bandCategory, i), ProductData.TYPE_FLOAT32);
+//                ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
+//            }
+//        }
+
+        for (String sourceBandName : sourceBandNames) {
+            Band sourceBand = sourceProduct.getBand(sourceBandName);
+            final int spectralBandIndex = sourceBand.getSpectralBandIndex();
+            if (spectralBandIndex >= 0 && spectralBandIndex < sensor.getNumBands()) {
+                Band targetBand = targetProduct.addBand(String.format(bandCategory, spectralBandIndex + 1),
+                                                        ProductData.TYPE_FLOAT32);
+                targetBand.setNoDataValue(RayleighConstants.INVALID_VALUE);
+                targetBand.setNoDataValueUsed(true);
                 ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
             }
         }
     }
 
-    private boolean isBandToProcess(String sourceBandName) {
-        if (specificBandsToProcess == null) {
-            return true;
-        }
-        if (specificBandsToProcess.length > 0) {
-            for (String b : specificBandsToProcess) {
-                if (b.equals(sourceBandName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    private boolean isBandToProcess(String sourceBandName) {
+//        if (specificBandsToProcess == null) {
+//            return true;
+//        }
+//        if (specificBandsToProcess.length > 0) {
+//            for (String b : specificBandsToProcess) {
+//                if (b.equals(sourceBandName)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     private int addAuxiliaryData(RayleighAux rayleighAux, Rectangle rectangle, int sourceBandRefIndex) {
         String format = String.format(sensor.getNameFormat(), sourceBandRefIndex);

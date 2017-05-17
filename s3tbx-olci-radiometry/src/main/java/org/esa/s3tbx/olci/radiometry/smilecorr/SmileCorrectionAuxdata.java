@@ -200,16 +200,11 @@ public class SmileCorrectionAuxdata {
     private double[][] loadFlatAuxDataFile(final String auxFileName, final int numRows, final int numCols) throws
             IOException {
         double[][] tableData = new double[numRows][numCols];
-        IOException ioError = null;
         try (BufferedReader reader = openFlatAuxDataFile(auxFileName)) {
             readFlatAuxDataFile(tableData, reader);
         } catch (IOException e) {
             throw new OperatorException(e);
         }
-
-//        Matrix matrix = new Matrix(tableData);
-//        Matrix transpose = matrix.transpose();
-//        double[][] arrayTranspose = transpose.getArray();
 
         return tableData;
     }

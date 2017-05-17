@@ -29,15 +29,18 @@ public enum Sensor {
 
     MERIS("MERIS", MERIS_NUM_BANDS, MERIS_SZA_NAME, MERIS_VZA_NAME, MERIS_SAA_NAME, MERIS_VAA_NAME, MERIS_OZONE_NAME,
           MERIS_LAT_NAME, MERIS_LON_NAME, MERIS_ALT_NAME, MERIS_SLP_NAME,
-          MERIS_BOUNDS, MERIS_NAME_FORMAT, MERIS_BAND_INFO_FILE_NAME),
+          MERIS_BOUNDS, MERIS_NAME_FORMAT, MERIS_BAND_INFO_FILE_NAME,
+          MERIS_L1B_FLAGS_NAME, MERIS_INVALID_BIT),
 
     MERIS_4TH("MERIS", MERIS_4TH_NUM_BANDS, MERIS_4TH_SZA_NAME, MERIS_4TH_VZA_NAME, MERIS_4TH_SAA_NAME, MERIS_4TH_VAA_NAME,
               MERIS_4TH_OZONE_NAME, MERIS_4TH_LAT_NAME, MERIS_4TH_LON_NAME, MERIS_4TH_ALT_NAME, MERIS_4TH_SLP_NAME,
-              MERIS_4TH_BOUNDS, MERIS_4TH_NAME_FORMAT, MERIS_4TH_BAND_INFO_FILE_NAME),
+              MERIS_4TH_BOUNDS, MERIS_4TH_NAME_FORMAT, MERIS_4TH_BAND_INFO_FILE_NAME,
+              MERIS_4TH_L1B_FLAGS_NAME, MERIS_4TH_INVALID_BIT),
 
     OLCI("OLCI", OLCI_NUM_BANDS, OLCI_SZA_NAME, OLCI_VZA_NAME, OLCI_SAA_NAME, OLCI_VAA_NAME, OLCI_OZONE_NAME,
          OLCI_LAT_NAME, OLCI_LON_NAME, OLCI_ALT_NAME, OLCI_SLP_NAME,
-         OLCI_BOUNDS, OLCI_NAME_FORMAT, OLCI_BAND_INFO_FILE_NAME);
+         OLCI_BOUNDS, OLCI_NAME_FORMAT, OLCI_BAND_INFO_FILE_NAME,
+         OLCI_L1B_FLAGS_NAME, OLCI_INVALID_BIT);
 
     private String name;
     private int numBands;
@@ -53,10 +56,12 @@ public enum Sensor {
     private int[] bounds;
     private String nameFormat;
     private String bandInfoFileName;
+    private String l1bFlagsName;
+    private int invalidBit;
 
     Sensor(String name, int numBands, String szaName, String vzaName, String saaName, String vaaName,
            String ozoneName, String latName, String lonName, String altName, String slpName, int[] bounds,
-           String nameFormat, String bandInfoFileName) {
+           String nameFormat, String bandInfoFileName, String l1bFlagsName, int invalidBit) {
         this.name = name;
         this.numBands = numBands;
         this.szaName = szaName;
@@ -71,6 +76,8 @@ public enum Sensor {
         this.bounds = bounds;
         this.nameFormat = nameFormat;
         this.bandInfoFileName = bandInfoFileName;
+        this.l1bFlagsName = l1bFlagsName;
+        this.invalidBit = invalidBit;
     }
 
     public String getName() {
@@ -127,5 +134,13 @@ public enum Sensor {
 
     public String getBandInfoFileName() {
         return bandInfoFileName;
+    }
+
+    public String getL1bFlagsName() {
+        return l1bFlagsName;
+    }
+
+    public int getInvalidBit() {
+        return invalidBit;
     }
 }

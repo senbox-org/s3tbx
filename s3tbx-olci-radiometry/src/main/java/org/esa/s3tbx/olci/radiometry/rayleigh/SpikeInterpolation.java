@@ -54,13 +54,8 @@ public class SpikeInterpolation {
 
         double q11 = interBetween(f11, f21, x2, x1, x);
         double q12 = interBetween(f12, f22, x2, x1, x);
-        double interpolateValue = interBetween(q11, q12, y2, y1, y);
 
-        return interpolateValue;
-    }
-
-    private static void doExtrapolation() {
-
+        return interBetween(q11, q12, y2, y1, y);
     }
 
     public static double[] useLibJAI(double[][] samples, float xfrac, float yfrac) {

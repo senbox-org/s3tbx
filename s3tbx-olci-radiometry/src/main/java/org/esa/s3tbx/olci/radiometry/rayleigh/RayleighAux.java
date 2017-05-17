@@ -20,7 +20,6 @@ package org.esa.s3tbx.olci.radiometry.rayleigh;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.google.common.primitives.Doubles;
-import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils;
@@ -40,13 +39,7 @@ import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -237,10 +230,6 @@ public class RayleighAux {
         return waveLength;
     }
 
-    public String getSourceBandName() {
-        return sourceBandName;
-    }
-
     public void setSourceBandName(String targetBandName) {
         this.sourceBandName = targetBandName;
     }
@@ -395,10 +384,6 @@ public class RayleighAux {
         setViewZenithAnglesRad(viewZenithAngles);
     }
 
-    public double[] getSunAzimuthAngles() {
-        return sunAzimuthAngles;
-    }
-
     public void setSunAzimuthAngles(double... sunAzimuthAngles) {
         this.sunAzimuthAngles = sunAzimuthAngles;
         setSunAzimuthAnglesRad(sunAzimuthAngles);
@@ -419,10 +404,6 @@ public class RayleighAux {
 
     public void setLatitudes(Tile sourceTile) {
         this.latitudes = SmileCorrectionUtils.getSampleDoubles(sourceTile);
-    }
-
-    public double[] getViewAzimuthAngles() {
-        return viewAzimuthAngles;
     }
 
     public void setViewAzimuthAngles(double... viewAzimuthAngles) {
@@ -467,10 +448,6 @@ public class RayleighAux {
         this.solarFluxs = SmileCorrectionUtils.getSampleDoubles(sourceTile);
     }
 
-    public double[] getLambdaSource() {
-        return lambdaSource;
-    }
-
     public void setLambdaSource(Tile sourceTile) {
         this.lambdaSource = SmileCorrectionUtils.getSampleDoubles(sourceTile);
     }
@@ -481,10 +458,6 @@ public class RayleighAux {
 
     public void setSourceSampleRad(Tile sourceTile) {
         this.sourceSampleRad = SmileCorrectionUtils.getSampleDoubles(sourceTile);
-    }
-
-    public int getSourceBandIndex() {
-        return sourceBandIndex;
     }
 
     public void setSourceBandIndex(int sourceBandIndex) {
@@ -628,43 +601,6 @@ public class RayleighAux {
         }
         return temp;
     }
-
-    void setInterpolation() {
-        BicubicSplineInterpolator gridInterpolator = new BicubicSplineInterpolator();
-        Map<Integer, List<double[]>> interpolate = new HashMap<>();
-        double[] sunZenithAngles = getSunZenithAngles();
-        double[] viewZenithAngles = getViewZenithAngles();
-
-        //todo mba ask Mp if to use this approach.
-        assert sunZenithAngles != null;
-
-        if (Objects.nonNull(sunZenithAngles) && Objects.nonNull(viewZenithAngles)) {
-            for (int index = 0; index < sunZenithAngles.length; index++) {
-                double yVal = viewZenithAngles[index];
-                double xVal = sunZenithAngles[index];
-
-                List<double[]> valueList = new ArrayList<>();
-                for (int i = 0; i < rayCooefMatrixA.length; i++) {
-                    double thetaMin = thetas[0];
-                    double thetaMax = thetas[thetas.length - 1];
-
-                    if (yVal > thetaMin && yVal < thetaMax) {
-                        double[] values = new double[4];
-                        values[0] = gridInterpolator.interpolate(thetas, thetas, rayCooefMatrixA[i]).value(xVal, yVal);
-                        values[1] = gridInterpolator.interpolate(thetas, thetas, rayCooefMatrixB[i]).value(xVal, yVal);
-                        values[2] = gridInterpolator.interpolate(thetas, thetas, rayCooefMatrixC[i]).value(xVal, yVal);
-                        values[3] = gridInterpolator.interpolate(thetas, thetas, rayCooefMatrixD[i]).value(xVal, yVal);
-                        valueList.add(values);
-                    } else {
-                        valueList.add(new double[]{0, 0, 0, 0});
-                    }
-                }
-                interpolate.put(index, valueList);
-            }
-            interpolateMap = interpolate;
-        }
-    }
-
 
 }
 
