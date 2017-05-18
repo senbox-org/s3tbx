@@ -1,6 +1,7 @@
 package org.esa.s3tbx.mphchl;
 
 import com.bc.ceres.glevel.MultiLevelImage;
+import org.esa.s3tbx.olci.radiometry.SensorConstants;
 import org.esa.s3tbx.olci.radiometry.rayleigh.RayleighCorrectionOp;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Kernel;
@@ -18,7 +19,6 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import javax.media.jai.*;
 import javax.media.jai.operator.ConvolveDescriptor;
 import java.awt.*;
-import java.util.stream.Stream;
 
 /**
  * Wrapper for MPH CHL pixel operator.
@@ -32,9 +32,6 @@ import java.util.stream.Stream;
         copyright = "(c) 2013, 2014, 2017 by Brockmann Consult",
         description = "This operator computes maximum peak height of chlorophyll (MPH/CHL).")
 public class MphChlOp extends Operator {
-
-//    @Parameter(defaultValue = "OLCI", description = "The sensor", valueSet = {"OLCI", "MERIS"})
-    private Sensor sensor;
 
     @Parameter(defaultValue = "",
             description = "Expression defining pixels considered for processing. " +
@@ -136,7 +133,7 @@ public class MphChlOp extends Operator {
 
     private Product createMphChlPixelProduct() {
         MphChlBasisOp mphChlOp = null;
-        sensor = getSensorType(sourceProduct);
+        Sensor sensor = getSensorType(sourceProduct);
         switch (sensor) {
             case OLCI:
                 mphChlOp = new MphChlOlciOp();
@@ -147,14 +144,14 @@ public class MphChlOp extends Operator {
                 break;
         }
 
-        if (isValidL1bSourceProduct()) {
+        if (isValidL1bSourceProduct(sourceProduct, sensor)) {
             RayleighCorrectionOp rayleighCorrectionOp = new RayleighCorrectionOp();
+            rayleighCorrectionOp.setSourceProduct(sourceProduct);
             rayleighCorrectionOp.setParameterDefaultValues();
             rayleighCorrectionOp.setParameter("computeTaur", false);
-            rayleighCorrectionOp.setParameter("csvListOfBandsToProcess", sensor.getRequiredRadianceBandNames());
-            rayleighCorrectionOp.setSourceProduct(sourceProduct);
+            rayleighCorrectionOp.setParameter("sourceBandNames", sensor.getRequiredRadianceBandNames());
             mphChlOp.setSourceProduct(rayleighCorrectionOp.getTargetProduct());
-        } else if (isValidBrrSourceProduct()) {
+        } else if (isValidBrrSourceProduct(sourceProduct, sensor)) {
             mphChlOp.setSourceProduct(sourceProduct);
         } else {
             throw new OperatorException
@@ -175,20 +172,23 @@ public class MphChlOp extends Operator {
         return mphChlOp.getTargetProduct();
     }
 
-    public static Sensor getSensorType(Product sourceProduct) {
-        String[] bandNames = sourceProduct.getBandNames();
-
-        boolean isOlci = Stream.of(bandNames).anyMatch(p -> p.matches("Oa\\d+_radiance"));
+    static Sensor getSensorType(Product sourceProduct) {
+        boolean isOlci = isValidL1bSourceProduct(sourceProduct, Sensor.OLCI) ||
+                isValidBrrSourceProduct(sourceProduct, Sensor.OLCI);
         if (isOlci) {
             return Sensor.OLCI;
         }
 
-        boolean isMeris3rd = Stream.of(bandNames).anyMatch(p -> p.matches("radiance_\\d+"));
+        boolean isMeris3rd = isValidL1bSourceProduct(sourceProduct, Sensor.MERIS_3RD) ||
+                (isValidBrrSourceProduct(sourceProduct, Sensor.MERIS_3RD) &&
+                        sourceProduct.containsBand(SensorConstants.MERIS_L1B_FLAGS_NAME));
         if (isMeris3rd) {
             return Sensor.MERIS_3RD;
         }
 
-        boolean isMeris4th = Stream.of(bandNames).anyMatch(p -> p.matches("M\\d+_radiance"));
+        boolean isMeris4th = isValidL1bSourceProduct(sourceProduct, Sensor.MERIS_4TH) ||
+                (isValidBrrSourceProduct(sourceProduct, Sensor.MERIS_4TH) &&
+                        sourceProduct.containsBand(SensorConstants.MERIS_4TH_L1B_FLAGS_NAME));
         if (isMeris4th) {
             return Sensor.MERIS_4TH;
         }
@@ -197,9 +197,8 @@ public class MphChlOp extends Operator {
                                             "Only OLCI and MERIS are supported");
     }
 
-    private boolean isValidL1bSourceProduct() {
-        // simple check for required radiance bands
-        for (String bandName : sensor.getRadBandNames()) {
+    static boolean isValidL1bSourceProduct(Product sourceProduct, Sensor sensor) {
+        for (String bandName : sensor.getRequiredRadianceBandNames()) {
             if (!sourceProduct.containsBand(bandName)) {
                 return false;
             }
@@ -207,9 +206,8 @@ public class MphChlOp extends Operator {
         return true;
     }
 
-    private boolean isValidBrrSourceProduct() {
-        // simple check for required BRR bands
-        final String[] requiredBrrBands = sensor.getRequiredBrrBandNames().trim().split("\\s*,\\s*");
+    static boolean isValidBrrSourceProduct(Product sourceProduct, Sensor sensor) {
+        final String[] requiredBrrBands = sensor.getRequiredBrrBandNames();
         for (String bandName : requiredBrrBands) {
             if (!sourceProduct.containsBand(bandName)) {
                 return false;
@@ -218,6 +216,28 @@ public class MphChlOp extends Operator {
         return true;
     }
 
+    static Sensor getSensorFromBrrSourceProduct(String[] sourceBands) {
+        Sensor[] sensors = {Sensor.OLCI, Sensor.MERIS_3RD, Sensor.MERIS_4TH};
+        for (Sensor sensor : sensors) {
+            boolean containsBand = false;
+            for (String requiredBandName : sensor.getRequiredBrrBandNames()) {
+                containsBand = false;
+                for (String sourceBandName : sourceBands) {
+                    if (sourceBandName.equals(requiredBandName)) {
+                        containsBand = true;
+                    }
+                }
+                if (!containsBand) {
+                    break;
+                }
+            }
+            if (containsBand) {
+                return sensor;
+            }
+        }
+
+        return null;
+    }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public static class Spi extends OperatorSpi {
