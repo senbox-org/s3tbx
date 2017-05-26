@@ -21,14 +21,23 @@ package org.esa.s3tbx.olci.snowalbedo;
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflOp;
-import org.esa.snap.core.datamodel.*;
-import org.esa.snap.core.gpf.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.Operator;
+import org.esa.snap.core.gpf.OperatorException;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * @author olafd

@@ -1,7 +1,5 @@
 package org.esa.s3tbx.olci.snowalbedo;
 
-import org.esa.snap.dataio.envisat.EnvisatConstants;
-
 /**
  * Constants for supported sensors
  *

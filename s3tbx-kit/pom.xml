@@ -226,7 +226,7 @@
         </dependency>
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
-            <artifactId>s3tbx-olci-snow-albedo</artifactId>
+            <artifactId>s3tbx-olci-snowalbedo</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
