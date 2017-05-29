@@ -21,23 +21,15 @@ package org.esa.s3tbx.olci.snowalbedo;
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflOp;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoPos;
-import org.esa.snap.core.datamodel.PixelPos;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.gpf.GPF;
-import org.esa.snap.core.gpf.Operator;
-import org.esa.snap.core.gpf.OperatorException;
-import org.esa.snap.core.gpf.OperatorSpi;
-import org.esa.snap.core.gpf.Tile;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.gpf.*;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.core.util.math.MathUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 /**
  * @author olafd
@@ -112,14 +104,21 @@ public class OlciSnowAlbedoOp extends Operator {
         Rectangle targetRectangle = targetTile.getRectangle();
         try {
             Tile[] rhoToaTiles = new Tile[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
+            Tile[] solarFluxTiles = new Tile[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
             for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
                 final Band rhoToaBand =
-                        reflProduct.getBand(String.format(SensorConstants.OLCI_NAME_FORMAT + "reflectance", i));
+                        reflProduct.getBand(Rad2ReflConstants.OLCI_REFL_BAND_NAMES[i]);
                 rhoToaTiles[i] = getSourceTile(rhoToaBand, targetRectangle);
+                final Band solarFluxBand =
+                        reflProduct.getBand(Rad2ReflConstants.OLCI_SOLAR_FLUX_BAND_NAMES[i]);
+                solarFluxTiles[i] = getSourceTile(solarFluxBand, targetRectangle);
             }
 
-            Tile l1FlagsTile = getSourceTile(sourceProduct.getBand(SensorConstants.OLCI_L1B_FLAGS_NAME),
-                                             targetRectangle);
+            Tile szaTile = getSourceTile(sourceProduct.getBand(SensorConstants.OLCI_SZA_NAME), targetRectangle);
+            Tile vzaTile = getSourceTile(sourceProduct.getBand(SensorConstants.OLCI_VZA_NAME), targetRectangle);
+            Tile saaTile = getSourceTile(sourceProduct.getBand(SensorConstants.OLCI_SAA_NAME), targetRectangle);
+            Tile vaaTile = getSourceTile(sourceProduct.getBand(SensorConstants.OLCI_VAA_NAME), targetRectangle);
+            Tile l1FlagsTile = getSourceTile(sourceProduct.getBand(SensorConstants.OLCI_L1B_FLAGS_NAME), targetRectangle);
             Tile waterFractionTile = getSourceTile(landWaterBand, targetRectangle);
 
             for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
@@ -132,17 +131,27 @@ public class OlciSnowAlbedoOp extends Operator {
                         if (!isLandPixel(x, y, l1FlagsTile, waterFraction)) {
                             targetTile.setSample(x, y, Float.NaN);
                         } else {
-                            float planarSnowAlbedo = 0.0f;
 
-                            // todo: implementation following AK algorithm here
+                            // implementation following AK
 
-                            // for the moment we assume that the TOA reflectances are what Alex calls
-                            // the 'spectral spherical albedo r_s as measured by OLCI'
-                            // todo clarify what we really need and how to convert
+                            double[] rhoToa = new double[Rad2ReflConstants.OLCI_NUM_SPECTRAL_BANDS];
+                            float[] solarFlux = new float[Rad2ReflConstants.OLCI_NUM_SPECTRAL_BANDS];
+                            for (int i = 0; i < Rad2ReflConstants.OLCI_NUM_SPECTRAL_BANDS; i++) {
+                                rhoToa[i] = rhoToaTiles[i].getSampleDouble(x, y);
+                                solarFlux[i] = solarFluxTiles[i].getSampleFloat(x, y);
+                            }
+                            final double rhoToa21 = rhoToa[Rad2ReflConstants.OLCI_NUM_SPECTRAL_BANDS-1];
+                            final double sza = szaTile.getSampleDouble(x, y);
+                            final double vza = vzaTile.getSampleDouble(x, y);
+                            final double saa = saaTile.getSampleDouble(x, y);
+                            final double vaa = vaaTile.getSampleDouble(x, y);
 
+                            final double[] spectralAlbedos =
+                                    OlciSnowAlbedoAlgorithm.computeSpectralAlbedos(rhoToa, sza, vza, saa, vaa);
+                            final double planarBroadbandAlbedo =
+                                    OlciSnowAlbedoAlgorithm.computePlanarBroadbandAlbedo(spectralAlbedos, solarFlux, rhoToa21, sza);
 
-
-                            targetTile.setSample(x, y, planarSnowAlbedo);
+                            targetTile.setSample(x, y, planarBroadbandAlbedo);
                         }
                     } else {
                         targetTile.setSample(x, y, Float.NaN);
