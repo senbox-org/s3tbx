@@ -75,7 +75,7 @@
 
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
-            <artifactId>s3tbx-rad2refl</artifactId>
+            <artifactId>s3tbx-olci-radiometry</artifactId>
             <version>${snap.version}</version>
         </dependency>
 

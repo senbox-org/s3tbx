@@ -2,38 +2,14 @@
 
     <folder name="Actions">
         <folder name="Operators">
-<!--
-            <file name="org-esa-s3tbx-olci-radiometry-smilecorr-SmileCorrectionOpAction.instance">
+            <file name="org-esa-s3tbx-olci-snowalbedo-OlciSnowAlbedoOpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="Smile Correction"/>
-                <attr name="dialogTitle" stringvalue="Smile Correction"/>
-                <attr name="operatorName" stringvalue="SmileCorrection.Olci"/>
-                <attr name="helpId" stringvalue="SmileCorrection.Olci"/>
-                <attr name="targetProductNameSuffix" stringvalue="_smile"/>
-            </file>
--->
-
-<!--
-            <file name="org-esa-s3tbx-olci-radiometry-gasabsorption-GaseousAbsorptionOpAction.instance">
-                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="Gaseous Absorption"/>
-                <attr name="dialogTitle" stringvalue="Gaseous Absorption"/>
-                <attr name="operatorName" stringvalue="GaseousAbsorption"/>
-                <attr name="helpId" stringvalue="GaseousAbsorption"/>
-                <attr name="targetProductNameSuffix" stringvalue="_gaseous"/>
-            </file>
--->
-
-            <file name="org-esa-s3tbx-olci-radiometry-rayleigh-RayleighCorrectionOpAction.instance">
-                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="Rayleigh Correction"/>
-                <attr name="dialogTitle" stringvalue="Rayleigh Correction"/>
-                <attr name="operatorName" stringvalue="RayleighCorrection"/>
-                <attr name="helpId" stringvalue="RayleighCorrection"/>
-                <attr name="targetProductNameSuffix" stringvalue="_rayleigh"/>
+                <attr name="displayName" stringvalue="OLCI Snow Albedo Processor"/>
+                <attr name="dialogTitle" stringvalue="OLCI Snow Albedo Processor"/>
+                <attr name="operatorName" stringvalue="OLCI.SnowAlbedo"/>
+                <attr name="helpId" stringvalue="olciSnowAlbedoProcessor"/>
+                <attr name="targetProductNameSuffix" stringvalue="_snowalbedo"/>
             </file>
 
         </folder>
@@ -41,39 +17,23 @@
 
     <folder name="Menu">
         <folder name="Optical">
-            <folder name="Preprocessing">
-<!--
-                <file name="org-esa-s3tbx-olci-radiometry-smilecorr-SmileCorrectionOpAction.shadow">
+            <folder name="Thematic Land Processing">
+                <file name="org-esa-s3tbx-olci-snowalbedo-OlciSnowAlbedoOpAction.shadow">
                     <attr name="originalFile"
-                          stringvalue="Actions/Operators/org-esa-s3tbx-olci-radiometry-smilecorr-SmileCorrectionOpAction.instance"/>
+                          stringvalue="Actions/Operators/org-esa-s3tbx-olci-snowalbedo-OlciSnowAlbedoOpAction.instance"/>
                     <attr name="position" intvalue="10000"/>
-                </file>
--->
-
-<!--
-                <file name="org-esa-s3tbx-olci-radiometry-gasabsorption-GaseousAbsorptionOpAction.shadow">
-                    <attr name="originalFile"
-                          stringvalue="Actions/Operators/org-esa-s3tbx-olci-radiometry-gasabsorption-GaseousAbsorptionOpAction.instance"/>
-                    <attr name="position" intvalue="11000"/>
-                </file>
--->
-
-                <file name="org-esa-s3tbx-olci-radiometry-rayleigh-RayleighCorrectionOpAction.shadow">
-                    <attr name="originalFile"
-                          stringvalue="Actions/Operators/org-esa-s3tbx-olci-radiometry-rayleigh-RayleighCorrectionOpAction.instance"/>
-                    <attr name="position" intvalue="12000"/>
                 </file>
 
             </folder>
         </folder>
     </folder>
 
-    <!--<folder name="Services">-->
-    <!--<folder name="javahelp">-->
-    <!--<file name="org-esa-s3tbx-olci-radiometry-helpset.xml" url="helpset.xml">-->
-    <!--<attr name="position" intvalue="4600"/>-->
-    <!--</file>-->
-    <!--</folder>-->
-    <!--</folder>-->
+    <folder name="Services">
+        <folder name="javahelp">
+            <file name="org-esa-s3tbx-OlciSnowAlbedoOp-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="4600"/>
+            </file>
+        </folder>
+    </folder>
 
 </filesystem>

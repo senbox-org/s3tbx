@@ -3,6 +3,13 @@ AutoUpdate-Show-In-Client: false
 AutoUpdate-Essential-Module: false
 OpenIDE-Module-Java-Dependencies: Java > 1.8
 OpenIDE-Module-Display-Category: Sentinel-3 Toolbox
-OpenIDE-Module-Layer: layer.xml
 OpenIDE-Module-Specification-Version: ${s3tbx.nbmSpecVersion}
-OpenIDE-Module-Requires: org.netbeans.api.javahelp.Help
+OpenIDE-Module-Layer: layer.xml
+OpenIDE-Module-Long-Description: <p>The MPH/CHL Processor
+ computes the maximum peak height of chlorophyll.</p
+ ><p><b>Vendor:</b> Brockmann Consult GmbH</p><p><b>Contact address:</
+ b> Max-Planck-Str. 2, 21502 Geesthacht (Germany)</p><p><b>Copyright:<
+ /b> (C) 2014 by Brockmann Consult GmbH</p><p><b>Vendor:</b> Brockmann
+  Consult GmbH</p><p><b>License:</b> http://www.gnu.org/licenses/gpl.h
+ tml</p>
+

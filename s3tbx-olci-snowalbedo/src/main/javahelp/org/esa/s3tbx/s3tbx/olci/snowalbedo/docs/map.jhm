@@ -21,8 +21,8 @@
 
 <map version="2.0">
 
-    <mapID target="SmileCorrection.Olci" url="radiometry/SmileCorrection.html"/>
-    <mapID target="GaseousAbsorption" url="radiometry/SmileCorrection.html"/>
-    <mapID target="RayleighCorrection" url="radiometry/RayleighCorrection.html"/>
+    <mapID target="olciSnowAlbedoProcessor" url="snowalbedo/OlciSnowAlbedoTool.html"/>
+    <mapID target="olciSnowAlbedoAlgorithmSpec" url="snowalbedo/OlciSnowAlbedoAlgorithmSpecification.html"/>
+    <mapID target="olciSnowAlbedoProcessorDesc" url="snowalbedo/OlciSnowAlbedoProcessorDescription.html"/>
 
 </map>
