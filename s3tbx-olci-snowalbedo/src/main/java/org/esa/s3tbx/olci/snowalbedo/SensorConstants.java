@@ -30,6 +30,7 @@ public class SensorConstants {
             "Oa16_radiance", "Oa17_radiance", "Oa18_radiance", "Oa21_radiance"
     };
 
+    public final static String OLCI_BRR_BAND_PREFIX = "rBRR";
     public final static String[] OLCI_REQUIRED_BRR_BAND_NAMES =
             {"rBRR_01", "rBRR_02", "rBRR_03", "rBRR_04", "rBRR_05", "rBRR_06",  "rBRR_07",
                     "rBRR_08", "rBRR_10", "rBRR_11", "rBRR_16", "rBRR_17", "rBRR_18",  "rBRR_21"

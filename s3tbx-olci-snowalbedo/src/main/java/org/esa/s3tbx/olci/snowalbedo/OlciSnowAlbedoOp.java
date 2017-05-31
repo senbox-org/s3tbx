@@ -28,14 +28,15 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
 
 import java.awt.*;
+import java.util.Map;
 
 /**
- * Computes planar broadband snow albedo from OLCI L1b data products.
+ * Computes snow albedo quantities from OLCI L1b data products.
  *
  * @author olafd
  */
 @OperatorMetadata(alias = "OLCI.SnowAlbedo",
-        description = "Computes planar broadband snow albedo from OLCI L1b data products.",
+        description = "Computes snow albedo quantities from OLCI L1b data products.",
         authors = "Alexander Kokhanovsky (EUMETSAT),  Olaf Danne (Brockmann Consult)",
         copyright = "(c) 2017 by EUMETSAT, Brockmann Consult",
         category = "Optical/Pre-Processing",
@@ -43,8 +44,14 @@ import java.awt.*;
 
 public class OlciSnowAlbedoOp extends Operator {
 
+    public static final String SPECTRAL_SPHERICAL_ALBEDO_OUTPUT_PREFIX = "spectral_albedo_spherical_";
+    public static final String SPECTRAL_PLANAR_ALBEDO_OUTPUT_PREFIX = "spectral_albedo_planar_";
+    public static final String PLANAR_BBA_BAND_NAME = "planar_BBA";
+    public static final String SPHERICAL_BBA_BAND_NAME = "spherical_BBA";
+    public static final String GRAIN_DIAMETER_BAND_NAME = "grain_diameter";
+
     @Parameter(defaultValue = "false",
-            description = "If set, spectral bands from TOA reflectance product are written to target product")
+            description = "If set, Rayleigh corrected reflectances are written to target product")
     private boolean copyReflectanceBands;
 
     @SourceProduct(description = "L1b or Rayleigh corrected product", label = "OLCI L1b or Rayleigh corrected product")
@@ -61,8 +68,6 @@ public class OlciSnowAlbedoOp extends Operator {
     @Override
     public void initialize() throws OperatorException {
         checkSensorType(sourceProduct);
-
-        createTargetProduct();
 
         waterMaskProduct = GPF.createProduct("LandWaterMask", GPF.NO_PARAMS, sourceProduct);
         landWaterBand = waterMaskProduct.getBand("land_water_fraction");
@@ -82,6 +87,7 @@ public class OlciSnowAlbedoOp extends Operator {
                              " L1b or Rayleigh corrected BRR product");
         }
 
+        createTargetProduct();
     }
 
     private void createTargetProduct() {
@@ -90,38 +96,50 @@ public class OlciSnowAlbedoOp extends Operator {
 
         if (copyReflectanceBands) {
             for (Band band : reflProduct.getBands()) {
-                if (band.getName().matches(Sensor.OLCI.getNamePattern())) {
-                    final Band targetBand = targetProduct.addBand(band.getName(), band.getDataType());
-                    ProductUtils.copyRasterDataNodeProperties(band, targetBand);
+                if (band.getName().startsWith(SensorConstants.OLCI_BRR_BAND_PREFIX)) {
+                    ProductUtils.copyBand(band.getName(), reflProduct, targetProduct, true);
+                    ProductUtils.copyRasterDataNodeProperties(band, targetProduct.getBand(band.getName()));
                 }
             }
         }
 
-        final Band planarAlbedoBand = targetProduct.addBand("planar_albedo", ProductData.TYPE_FLOAT32);
-        planarAlbedoBand.setUnit("dl");
-        planarAlbedoBand.setNoDataValue(Float.NaN);
-        planarAlbedoBand.setNoDataValueUsed(true);
+        targetProduct.addBand(PLANAR_BBA_BAND_NAME, ProductData.TYPE_FLOAT32);
+        targetProduct.addBand(SPHERICAL_BBA_BAND_NAME, ProductData.TYPE_FLOAT32);
+        targetProduct.addBand(GRAIN_DIAMETER_BAND_NAME, ProductData.TYPE_FLOAT32);
+
+        for (int i = 0; i < OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS.length; i++) {
+            int wvl = OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS[i];
+            targetProduct.addBand(SPECTRAL_SPHERICAL_ALBEDO_OUTPUT_PREFIX + wvl, ProductData.TYPE_FLOAT32);
+        }
+        for (int i = 0; i < OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS.length; i++) {
+            int wvl = OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS[i];
+            targetProduct.addBand(SPECTRAL_PLANAR_ALBEDO_OUTPUT_PREFIX + wvl, ProductData.TYPE_FLOAT32);
+        }
+
+        for (Band band : targetProduct.getBands()) {
+            band.setUnit("dl");
+            band.setNoDataValue(Float.NaN);
+            band.setNoDataValueUsed(true);
+        }
+        targetProduct.getBand(GRAIN_DIAMETER_BAND_NAME).setUnit("mm");
 
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
+        ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
         ProductUtils.copyMasks(sourceProduct, targetProduct);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
-        targetProduct.setAutoGrouping(sourceProduct.getAutoGrouping());
+        targetProduct.setAutoGrouping("rBRR:spectral_albedo_spherical:spectral_albedo_planar");
+
         setTargetProduct(targetProduct);
     }
 
     @Override
-    public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
-        Rectangle targetRectangle = targetTile.getRectangle();
+    public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {
         try {
             Tile[] rhoToaTiles = new Tile[Sensor.OLCI.getRequiredBrrBandNames().length];
-//            Tile[] solarFluxTiles = new Tile[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
             for (int i = 0; i < Sensor.OLCI.getRequiredBrrBandNames().length; i++) {
                 final Band rhoToaBand = reflProduct.getBand(Sensor.OLCI.getRequiredBrrBandNames()[i]);
                 rhoToaTiles[i] = getSourceTile(rhoToaBand, targetRectangle);
-//                final Band solarFluxBand =
-//                        reflProduct.getBand(Rad2ReflConstants.OLCI_SOLAR_FLUX_BAND_NAMES[i]);
-//                solarFluxTiles[i] = getSourceTile(solarFluxBand, targetRectangle);
             }
 
             Tile szaTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getSzaName()), targetRectangle);
@@ -139,47 +157,74 @@ public class OlciSnowAlbedoOp extends Operator {
 
                         // we compute snow albedo over land only
                         if (!isLandPixel(x, y, l1FlagsTile, waterFraction)) {
-                            targetTile.setSample(x, y, Float.NaN);
+                            setTargetTilesInvalid(targetTiles, x, y);
                         } else {
-
-                            // implementation following AK
-
-//                            double[] rhoToa = new double[Rad2ReflConstants.OLCI_NUM_SPECTRAL_BANDS];
-//                            float[] solarFlux = new float[Rad2ReflConstants.OLCI_NUM_SPECTRAL_BANDS];
-//                            for (int i = 0; i < Rad2ReflConstants.OLCI_NUM_SPECTRAL_BANDS; i++) {
-//                                rhoToa[i] = rhoToaTiles[i].getSampleDouble(x, y);
-//                                solarFlux[i] = solarFluxTiles[i].getSampleFloat(x, y);
-//                            }
-
                             double[] rhoToa = new double[Sensor.OLCI.getRequiredBrrBandNames().length];
                             for (int i = 0; i < Sensor.OLCI.getRequiredBrrBandNames().length; i++) {
                                 rhoToa[i] = rhoToaTiles[i].getSampleDouble(x, y);
                             }
 
-                            final double rhoToa21 = rhoToa[Sensor.OLCI.getRequiredBrrBandNames().length-1];
+                            final double rhoToa21 = rhoToa[Sensor.OLCI.getRequiredBrrBandNames().length - 1];
                             final double sza = szaTile.getSampleDouble(x, y);
                             final double vza = vzaTile.getSampleDouble(x, y);
                             final double saa = saaTile.getSampleDouble(x, y);
                             final double vaa = vaaTile.getSampleDouble(x, y);
 
-                            final double[] spectralAlbedos =
-                                    OlciSnowAlbedoAlgorithm.computeSpectralAlbedos(rhoToa, sza, vza, saa, vaa);
-                            final double sphericalBroadbandAlbedo =
-                                    OlciSnowAlbedoAlgorithm.computeSphericalBroadbandAlbedo(spectralAlbedos, rhoToa21);
-                            final double planarBroadbandAlbedo =
-                                    OlciSnowAlbedoAlgorithm.computePlanarBroadbandAlbedo(sphericalBroadbandAlbedo, sza);
+                            final double[] spectralSphericalAlbedos =
+                                    OlciSnowAlbedoAlgorithm.computeSpectralSphericalAlbedos(rhoToa, sza, vza, saa, vaa);
+                            setTargetTilesSpectralSphericalAlbedos(spectralSphericalAlbedos, targetTiles, x, y);
 
-                            targetTile.setSample(x, y, planarBroadbandAlbedo);
+                            final double[] spectralPlanarAlbedos =
+                                    OlciSnowAlbedoAlgorithm.computeSpectralPlanarAlbedos(spectralSphericalAlbedos, sza);
+                            setTargetTilesSpectralPlanarAlbedos(spectralPlanarAlbedos, targetTiles, x, y);
+
+                            // todo: write
+                            // - spectral spherical albedos (the one above)
+                            // - spectral planar albedos
+
+                            final OlciSnowAlbedoAlgorithm.SphericalBroadbandAlbedo sbbaTerms =
+                                    OlciSnowAlbedoAlgorithm.computeSphericalBroadbandAlbedoTerms(spectralSphericalAlbedos, rhoToa21);
+
+                            final double sbba = sbbaTerms.getR_b1() + sbbaTerms.getR_b2();
+                            final double planarBroadbandAlbedo =
+                                    OlciSnowAlbedoAlgorithm.computePlanarBroadbandAlbedo(sbba, sza);
+                            final Band sphericalBBABand = targetProduct.getBand(SPHERICAL_BBA_BAND_NAME);
+                            final Band planarBBABand = targetProduct.getBand(PLANAR_BBA_BAND_NAME);
+                            final Band grainDiameterBand = targetProduct.getBand(GRAIN_DIAMETER_BAND_NAME);
+                            targetTiles.get(sphericalBBABand).setSample(x, y, sbba);
+                            targetTiles.get(planarBBABand).setSample(x, y, planarBroadbandAlbedo);
+                            targetTiles.get(grainDiameterBand).setSample(x, y, sbbaTerms.getGrainDiameter()*0.001); // mm
                         }
                     } else {
-                        targetTile.setSample(x, y, Float.NaN);
+                        setTargetTilesInvalid(targetTiles, x, y);
                     }
                 }
             }
         } catch (Exception e) {
             throw new OperatorException(e);
         }
+    }
 
+    private void setTargetTilesSpectralSphericalAlbedos(double[] spectralSphericalAlbedos, Map<Band, Tile> targetTiles, int x, int y) {
+        for (int i = 0; i < OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS.length; i++) {
+            int wvl = OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS[i];
+            final Band spectralSphericalAlbedoBand = targetProduct.getBand(SPECTRAL_SPHERICAL_ALBEDO_OUTPUT_PREFIX + wvl);
+            targetTiles.get(spectralSphericalAlbedoBand).setSample(x, y, spectralSphericalAlbedos[i]);
+        }
+    }
+
+    private void setTargetTilesSpectralPlanarAlbedos(double[] spectralPlanarAlbedos, Map<Band, Tile> targetTiles, int x, int y) {
+        for (int i = 0; i < OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS.length; i++) {
+            int wvl = OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS[i];
+            final Band spectralPlanarAlbedoBand = targetProduct.getBand(SPECTRAL_PLANAR_ALBEDO_OUTPUT_PREFIX + wvl);
+            targetTiles.get(spectralPlanarAlbedoBand).setSample(x, y, spectralPlanarAlbedos[i]);
+        }
+    }
+
+    private void setTargetTilesInvalid(Map<Band, Tile> targetTiles, int x, int y) {
+        for (Tile tile : targetTiles.values()) {
+            tile.setSample(x, y, Float.NaN);
+        }
     }
 
     static void checkSensorType(Product sourceProduct) {
