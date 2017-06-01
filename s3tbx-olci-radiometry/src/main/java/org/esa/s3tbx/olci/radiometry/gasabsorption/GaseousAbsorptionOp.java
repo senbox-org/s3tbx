@@ -40,7 +40,7 @@ import java.awt.Rectangle;
  */
 @OperatorMetadata(alias = "GaseousAbsorption",
         internal = true,
-        authors = "Marco Peters, Muhamamd Bala (Brockmann Consult)",
+        authors = "Marco Peters, Muhammad Bala (Brockmann Consult)",
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Correct the influence of atmospheric gas absorption for those OLCI channels.")
 public class GaseousAbsorptionOp extends Operator {
@@ -62,7 +62,6 @@ public class GaseousAbsorptionOp extends Operator {
                                     sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
 
         for (int i = 1; i <= 21; i++) {
-//            Band targetBand = targetProduct.addBand(String.format("gaseous_absorp_%02d", i), ProductData.TYPE_FLOAT32);
             Band targetBand = targetProduct.addBand(String.format("gaseous_absorp_%02d", i), ProductData.TYPE_FLOAT32);
             Band sourceBand = sourceProduct.getBand(String.format("Oa%02d_radiance", i));
             targetBand.setSpectralWavelength(sourceBand.getSpectralWavelength());
