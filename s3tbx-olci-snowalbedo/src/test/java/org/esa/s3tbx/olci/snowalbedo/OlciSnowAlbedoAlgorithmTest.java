@@ -10,6 +10,7 @@ public class OlciSnowAlbedoAlgorithmTest {
     @Test
     public void testComputeBroadbandAlbedos() throws Exception {
         double[] spectralAlbedos = new double[] {
+//                0.998,
                 0.998, 0.998, 0.996, 0.993, 0.99, 0.984, 0.975, 0.964, 0.961,
                 0.95, 0.92, 0.89, 0.86, 0.712
         };
@@ -20,7 +21,7 @@ public class OlciSnowAlbedoAlgorithmTest {
         final double sphericalBroadbandAlbedo = sbbaTerms.getR_b1() + sbbaTerms.getR_b2();
         assertEquals(0.8385, sphericalBroadbandAlbedo, 1.E-2);
         final double broadbandPlanarAlbedo =
-                OlciSnowAlbedoAlgorithm.computePlanarBroadbandAlbedo(sphericalBroadbandAlbedo, sza);
+                OlciSnowAlbedoAlgorithm.computePlanarFromSphericalAlbedo(sphericalBroadbandAlbedo, sza);
         assertEquals(0.8416, broadbandPlanarAlbedo, 1.E-2);
     }
 
@@ -44,6 +45,7 @@ public class OlciSnowAlbedoAlgorithmTest {
     @Test
     public void testIntegrateR_b1() throws Exception {
         double[] spectralAlbedos = new double[] {
+//                0.998,
                 0.998, 0.998, 0.996, 0.993, 0.99, 0.984, 0.975, 0.964, 0.961,
                 0.95, 0.92, 0.89, 0.86, 0.712
         };
@@ -68,5 +70,23 @@ public class OlciSnowAlbedoAlgorithmTest {
 
         r_b2 = OlciSnowAlbedoAlgorithm.integrateR_b2(800.0);
         assertEquals(0.0604, r_b2, 1.E-2);
+    }
+
+    @Test
+    public void testInterpolateSpectralAlbedos() {
+        //preparation
+        double[] x = { 0, 50, 100 };
+        double[] y = { 0, 50, 200 };
+        double[] xi = { 10, 25, 75, 80, 100 };
+
+        double[] yi = OlciSnowAlbedoAlgorithm.interpolateSpectralAlbedos(x, y, xi);
+
+        //assertion
+        assertEquals(5, yi.length, 1.E-2);
+        assertEquals(10.0, yi[0]);
+        assertEquals(25.0, yi[1]);
+        assertEquals(125.0, yi[2]);
+        assertEquals(140.0, yi[3]);
+        assertEquals(200.0, yi[4]);
     }
 }

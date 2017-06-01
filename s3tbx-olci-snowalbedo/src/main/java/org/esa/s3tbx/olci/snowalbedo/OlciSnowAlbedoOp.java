@@ -39,8 +39,8 @@ import java.util.Map;
         description = "Computes snow albedo quantities from OLCI L1b data products.",
         authors = "Alexander Kokhanovsky (EUMETSAT),  Olaf Danne (Brockmann Consult)",
         copyright = "(c) 2017 by EUMETSAT, Brockmann Consult",
-        category = "Optical/Pre-Processing",
-        version = "1.2")
+        category = "Optical/Thematic Land Processing",
+        version = "1.0")
 
 public class OlciSnowAlbedoOp extends Operator {
 
@@ -54,7 +54,7 @@ public class OlciSnowAlbedoOp extends Operator {
             description = "If set, Rayleigh corrected reflectances are written to target product")
     private boolean copyReflectanceBands;
 
-    @SourceProduct(description = "L1b or Rayleigh corrected product", label = "OLCI L1b or Rayleigh corrected product")
+    @SourceProduct(description = "OLCI L1b product", label = "OLCI L1b product")
     public Product sourceProduct;
 
     private Product targetProduct;
@@ -79,8 +79,6 @@ public class OlciSnowAlbedoOp extends Operator {
             rayleighCorrectionOp.setParameter("computeTaur", false);
             rayleighCorrectionOp.setParameter("sourceBandNames", Sensor.OLCI.getRequiredRadianceBandNames());
             reflProduct = rayleighCorrectionOp.getTargetProduct();
-        } else if (isValidBrrSourceProduct(sourceProduct, Sensor.OLCI)) {
-            reflProduct = sourceProduct;
         } else {
             throw new OperatorException
                     ("Input product not supported - must be " + Sensor.OLCI.getName() +
@@ -88,6 +86,75 @@ public class OlciSnowAlbedoOp extends Operator {
         }
 
         createTargetProduct();
+    }
+
+    @Override
+    public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {
+        try {
+            Tile[] rhoToaTiles = new Tile[Sensor.OLCI.getRequiredBrrBandNames().length];
+            for (int i = 0; i < Sensor.OLCI.getRequiredBrrBandNames().length; i++) {
+                final Band rhoToaBand = reflProduct.getBand(Sensor.OLCI.getRequiredBrrBandNames()[i]);
+                rhoToaTiles[i] = getSourceTile(rhoToaBand, targetRectangle);
+            }
+
+            Tile szaTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getSzaName()), targetRectangle);
+            Tile vzaTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getVzaName()), targetRectangle);
+            Tile saaTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getSaaName()), targetRectangle);
+            Tile vaaTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getVaaName()), targetRectangle);
+            Tile l1FlagsTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getL1bFlagsName()), targetRectangle);
+            Tile waterFractionTile = getSourceTile(landWaterBand, targetRectangle);
+
+            for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+                checkForCancellation();
+                for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+                    if (!l1FlagsTile.getSampleBit(x, y, Sensor.OLCI.getInvalidBit())) {
+                        final int waterFraction = waterFractionTile.getSampleInt(x, y);
+
+                        // we compute snow albedo over land only
+                        if (!isLandPixel(x, y, l1FlagsTile, waterFraction)) {
+                            setTargetTilesInvalid(targetTiles, x, y);
+                        } else {
+                            double[] rhoToa = new double[Sensor.OLCI.getRequiredBrrBandNames().length];
+                            for (int i = 0; i < Sensor.OLCI.getRequiredBrrBandNames().length; i++) {
+                                rhoToa[i] = rhoToaTiles[i].getSampleDouble(x, y);
+                            }
+
+                            final double rhoToa21 = rhoToa[Sensor.OLCI.getRequiredBrrBandNames().length - 1];
+                            final double sza = szaTile.getSampleDouble(x, y);
+                            final double vza = vzaTile.getSampleDouble(x, y);
+                            final double saa = saaTile.getSampleDouble(x, y);
+                            final double vaa = vaaTile.getSampleDouble(x, y);
+
+                            final double[] spectralSphericalAlbedos =
+                                    OlciSnowAlbedoAlgorithm.computeSpectralSphericalAlbedos(rhoToa, sza, vza, saa, vaa);
+                            setTargetTilesSpectralSphericalAlbedos(spectralSphericalAlbedos, targetTiles, x, y);
+
+                            final double[] spectralPlanarAlbedos =
+                                    OlciSnowAlbedoAlgorithm.computePlanarFromSphericalAlbedos(spectralSphericalAlbedos, sza);
+                            setTargetTilesSpectralPlanarAlbedos(spectralPlanarAlbedos, targetTiles, x, y);
+
+                            final OlciSnowAlbedoAlgorithm.SphericalBroadbandAlbedo sbbaTerms =
+                                    OlciSnowAlbedoAlgorithm.computeSphericalBroadbandAlbedoTerms(spectralSphericalAlbedos, rhoToa21);
+
+                            final double sbba = sbbaTerms.getR_b1() + sbbaTerms.getR_b2();
+                            final double planarBroadbandAlbedo =
+                                    OlciSnowAlbedoAlgorithm.computePlanarFromSphericalAlbedo(sbba, sza);
+                            final Band sphericalBBABand = targetProduct.getBand(SPHERICAL_BBA_BAND_NAME);
+                            final Band planarBBABand = targetProduct.getBand(PLANAR_BBA_BAND_NAME);
+                            final Band grainDiameterBand = targetProduct.getBand(GRAIN_DIAMETER_BAND_NAME);
+                            targetTiles.get(sphericalBBABand).setSample(x, y, sbba);
+                            targetTiles.get(planarBBABand).setSample(x, y, planarBroadbandAlbedo);
+                            final double grainDiameterInMillimeter = sbbaTerms.getGrainDiameter() * 0.001;
+                            targetTiles.get(grainDiameterBand).setSample(x, y, grainDiameterInMillimeter);
+                        }
+                    } else {
+                        setTargetTilesInvalid(targetTiles, x, y);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new OperatorException(e);
+        }
     }
 
     private void createTargetProduct() {
@@ -133,78 +200,6 @@ public class OlciSnowAlbedoOp extends Operator {
         setTargetProduct(targetProduct);
     }
 
-    @Override
-    public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {
-        try {
-            Tile[] rhoToaTiles = new Tile[Sensor.OLCI.getRequiredBrrBandNames().length];
-            for (int i = 0; i < Sensor.OLCI.getRequiredBrrBandNames().length; i++) {
-                final Band rhoToaBand = reflProduct.getBand(Sensor.OLCI.getRequiredBrrBandNames()[i]);
-                rhoToaTiles[i] = getSourceTile(rhoToaBand, targetRectangle);
-            }
-
-            Tile szaTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getSzaName()), targetRectangle);
-            Tile vzaTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getVzaName()), targetRectangle);
-            Tile saaTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getSaaName()), targetRectangle);
-            Tile vaaTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getVaaName()), targetRectangle);
-            Tile l1FlagsTile = getSourceTile(sourceProduct.getRasterDataNode(Sensor.OLCI.getL1bFlagsName()), targetRectangle);
-            Tile waterFractionTile = getSourceTile(landWaterBand, targetRectangle);
-
-            for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
-                checkForCancellation();
-                for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
-                    if (!l1FlagsTile.getSampleBit(x, y, Sensor.OLCI.getInvalidBit())) {
-                        final int waterFraction = waterFractionTile.getSampleInt(x, y);
-
-                        // we compute snow albedo over land only
-                        if (!isLandPixel(x, y, l1FlagsTile, waterFraction)) {
-                            setTargetTilesInvalid(targetTiles, x, y);
-                        } else {
-                            double[] rhoToa = new double[Sensor.OLCI.getRequiredBrrBandNames().length];
-                            for (int i = 0; i < Sensor.OLCI.getRequiredBrrBandNames().length; i++) {
-                                rhoToa[i] = rhoToaTiles[i].getSampleDouble(x, y);
-                            }
-
-                            final double rhoToa21 = rhoToa[Sensor.OLCI.getRequiredBrrBandNames().length - 1];
-                            final double sza = szaTile.getSampleDouble(x, y);
-                            final double vza = vzaTile.getSampleDouble(x, y);
-                            final double saa = saaTile.getSampleDouble(x, y);
-                            final double vaa = vaaTile.getSampleDouble(x, y);
-
-                            final double[] spectralSphericalAlbedos =
-                                    OlciSnowAlbedoAlgorithm.computeSpectralSphericalAlbedos(rhoToa, sza, vza, saa, vaa);
-                            setTargetTilesSpectralSphericalAlbedos(spectralSphericalAlbedos, targetTiles, x, y);
-
-                            final double[] spectralPlanarAlbedos =
-                                    OlciSnowAlbedoAlgorithm.computeSpectralPlanarAlbedos(spectralSphericalAlbedos, sza);
-                            setTargetTilesSpectralPlanarAlbedos(spectralPlanarAlbedos, targetTiles, x, y);
-
-                            // todo: write
-                            // - spectral spherical albedos (the one above)
-                            // - spectral planar albedos
-
-                            final OlciSnowAlbedoAlgorithm.SphericalBroadbandAlbedo sbbaTerms =
-                                    OlciSnowAlbedoAlgorithm.computeSphericalBroadbandAlbedoTerms(spectralSphericalAlbedos, rhoToa21);
-
-                            final double sbba = sbbaTerms.getR_b1() + sbbaTerms.getR_b2();
-                            final double planarBroadbandAlbedo =
-                                    OlciSnowAlbedoAlgorithm.computePlanarBroadbandAlbedo(sbba, sza);
-                            final Band sphericalBBABand = targetProduct.getBand(SPHERICAL_BBA_BAND_NAME);
-                            final Band planarBBABand = targetProduct.getBand(PLANAR_BBA_BAND_NAME);
-                            final Band grainDiameterBand = targetProduct.getBand(GRAIN_DIAMETER_BAND_NAME);
-                            targetTiles.get(sphericalBBABand).setSample(x, y, sbba);
-                            targetTiles.get(planarBBABand).setSample(x, y, planarBroadbandAlbedo);
-                            targetTiles.get(grainDiameterBand).setSample(x, y, sbbaTerms.getGrainDiameter()*0.001); // mm
-                        }
-                    } else {
-                        setTargetTilesInvalid(targetTiles, x, y);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new OperatorException(e);
-        }
-    }
-
     private void setTargetTilesSpectralSphericalAlbedos(double[] spectralSphericalAlbedos, Map<Band, Tile> targetTiles, int x, int y) {
         for (int i = 0; i < OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS.length; i++) {
             int wvl = OlciSnowAlbedoConstants.SPECTRAL_ALBEDO_OUTPUT_WAVELENGTHS[i];
@@ -227,27 +222,16 @@ public class OlciSnowAlbedoOp extends Operator {
         }
     }
 
-    static void checkSensorType(Product sourceProduct) {
-        boolean isOlci = isValidL1bSourceProduct(sourceProduct, Sensor.OLCI) ||
-                isValidBrrSourceProduct(sourceProduct, Sensor.OLCI);
+    private static void checkSensorType(Product sourceProduct) {
+        boolean isOlci = isValidL1bSourceProduct(sourceProduct, Sensor.OLCI);
         if (!isOlci) {
             throw new OperatorException("Source product not applicable to this operator.\n" +
                                                 "Only OLCI is currently supported");
         }
     }
 
-    static boolean isValidL1bSourceProduct(Product sourceProduct, Sensor sensor) {
+    private static boolean isValidL1bSourceProduct(Product sourceProduct, Sensor sensor) {
         for (String bandName : sensor.getRequiredRadianceBandNames()) {
-            if (!sourceProduct.containsBand(bandName)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    static boolean isValidBrrSourceProduct(Product sourceProduct, Sensor sensor) {
-        final String[] requiredBrrBands = sensor.getRequiredBrrBandNames();
-        for (String bandName : requiredBrrBands) {
             if (!sourceProduct.containsBand(bandName)) {
                 return false;
             }
