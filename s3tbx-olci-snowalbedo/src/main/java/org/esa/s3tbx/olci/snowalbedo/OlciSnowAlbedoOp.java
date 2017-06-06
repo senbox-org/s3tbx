@@ -51,8 +51,12 @@ public class OlciSnowAlbedoOp extends Operator {
     public static final String GRAIN_DIAMETER_BAND_NAME = "grain_diameter";
 
     @Parameter(defaultValue = "false",
-            description = "If set, Rayleigh corrected reflectances are written to target product")
+            description = "If selected, Rayleigh corrected reflectances are written to target product")
     private boolean copyReflectanceBands;
+
+    @Parameter(defaultValue = "false",
+            description = "If selected, albedo computation is done for land pixels only")
+    private boolean computeLandPixelsOnly;
 
     @SourceProduct(description = "OLCI L1b product", label = "OLCI L1b product")
     public Product sourceProduct;
@@ -111,7 +115,7 @@ public class OlciSnowAlbedoOp extends Operator {
                         final int waterFraction = waterFractionTile.getSampleInt(x, y);
 
                         // we compute snow albedo over land only
-                        if (!isLandPixel(x, y, l1FlagsTile, waterFraction)) {
+                        if (computeLandPixelsOnly && !isLandPixel(x, y, l1FlagsTile, waterFraction)) {
                             setTargetTilesInvalid(targetTiles, x, y);
                         } else {
                             double[] rhoToa = new double[Sensor.OLCI.getRequiredBrrBandNames().length];
