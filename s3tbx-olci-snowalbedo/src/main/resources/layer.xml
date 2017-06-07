@@ -31,7 +31,7 @@
     <folder name="Services">
         <folder name="javahelp">
             <file name="org-esa-s3tbx-OlciSnowAlbedoOp-helpset.xml" url="helpset.xml">
-                <attr name="position" intvalue="4600"/>
+                <attr name="position" intvalue="4630"/>
             </file>
         </folder>
     </folder>
