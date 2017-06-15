@@ -23,6 +23,7 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCodingFactory;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
@@ -157,12 +158,11 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
-        //todo use this later - currently it slows the reader down during product opening
-//        final String latBandName = "lat";
-//        final String lonBandName = "lon";
-//        final Band latBand = targetProduct.getBand(latBandName);
-//        final Band lonBand = targetProduct.getBand(lonBandName);
-//        targetProduct.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, latBand.getValidMaskExpression(), 5));
+        final String latBandName = "lat";
+        final String lonBandName = "lon";
+        final Band latBand = targetProduct.getBand(latBandName);
+        final Band lonBand = targetProduct.getBand(lonBandName);
+        targetProduct.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, latBand.getValidMaskExpression(), 5));
     }
 
     @Override

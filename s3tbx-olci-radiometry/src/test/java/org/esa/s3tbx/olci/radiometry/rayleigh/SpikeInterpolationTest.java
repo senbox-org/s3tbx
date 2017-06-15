@@ -18,12 +18,10 @@
 
 package org.esa.s3tbx.olci.radiometry.rayleigh;
 
-import org.esa.s3tbx.olci.radiometry.rayleigh.SpikeInterpolation;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * @author muhammad.bc.
@@ -37,7 +35,7 @@ public class SpikeInterpolationTest {
         Assert.assertEquals(1.3, SpikeInterpolation.getLowerBound(useAr, 1.5), 1e-2);
         Assert.assertEquals(1.7, SpikeInterpolation.getLowerBound(useAr, 1.9), 1e-2);
         Assert.assertEquals(2.0, SpikeInterpolation.getLowerBound(useAr, 2.1), 1e-2);
-        Assert.assertEquals(2.9, SpikeInterpolation.getLowerBound(useAr, 3), 1e-2);
+        Assert.assertEquals(3, SpikeInterpolation.getLowerBound(useAr, 3), 1e-2);
         Assert.assertEquals(3, SpikeInterpolation.getLowerBound(useAr, 4), 1e-2);
         Assert.assertEquals(3, SpikeInterpolation.getLowerBound(useAr, 30), 1e-2);
     }

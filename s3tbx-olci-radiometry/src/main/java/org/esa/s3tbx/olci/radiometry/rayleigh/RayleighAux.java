@@ -39,7 +39,13 @@ import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -180,30 +186,30 @@ public class RayleighAux {
 
         if (Objects.nonNull(sunZenithAngles) && Objects.nonNull(viewZenithAngles)) {
             for (int index = 0; index < sunZenithAngles.length; index++) {
-                double yVal = viewZenithAngles[index];
-                double xVal = sunZenithAngles[index];
+                double vzaVal = viewZenithAngles[index];
+                double szaVal = sunZenithAngles[index];
 
                 double thetaMin = thetas[0];
                 double thetaMax = thetas[thetas.length - 1];
                 List<double[]> valueList = new ArrayList<>();
                 for (int i = 0; i < rayCooefMatrixA.length; i++) {
                     double[] values = new double[4];
-                    if (yVal > thetaMin && yVal < thetaMax && xVal > thetaMin && xVal < thetaMax) {
-                        values[0] = SpikeInterpolation.interpolate2D(rayCooefMatrixA[i], thetas, thetas, xVal, yVal);
-                        values[1] = SpikeInterpolation.interpolate2D(rayCooefMatrixB[i], thetas, thetas, xVal, yVal);
-                        values[2] = SpikeInterpolation.interpolate2D(rayCooefMatrixC[i], thetas, thetas, xVal, yVal);
-                        values[3] = SpikeInterpolation.interpolate2D(rayCooefMatrixD[i], thetas, thetas, xVal, yVal);
+                    if (vzaVal >= thetaMin && vzaVal <= thetaMax && szaVal >= thetaMin && szaVal <= thetaMax) {
+                        values[0] = SpikeInterpolation.interpolate2D(rayCooefMatrixA[i], thetas, thetas, szaVal, vzaVal);
+                        values[1] = SpikeInterpolation.interpolate2D(rayCooefMatrixB[i], thetas, thetas, szaVal, vzaVal);
+                        values[2] = SpikeInterpolation.interpolate2D(rayCooefMatrixC[i], thetas, thetas, szaVal, vzaVal);
+                        values[3] = SpikeInterpolation.interpolate2D(rayCooefMatrixD[i], thetas, thetas, szaVal, vzaVal);
                         valueList.add(values);
                     } else {
-                        if (yVal < thetaMin && xVal < thetaMax) {
+                        if (vzaVal < thetaMin && szaVal < thetaMax) {
                             valueList.add(getGridValueAt(0, 0));
                         } else {
                             int len = thetas.length - 1;
-                            if (yVal > thetaMax && xVal > thetaMin) {
+                            if (vzaVal > thetaMax && szaVal > thetaMin) {
                                 valueList.add(getGridValueAt(0, len));
-                            } else if (xVal < thetaMin && yVal < thetaMax) {
+                            } else if (szaVal < thetaMin && vzaVal < thetaMax) {
                                 valueList.add(getGridValueAt(0, 0));
-                            } else if (yVal > thetaMax && xVal < thetaMin) {
+                            } else if (vzaVal > thetaMax && szaVal < thetaMin) {
                                 valueList.add(getGridValueAt(len, len));
                             }
                         }
