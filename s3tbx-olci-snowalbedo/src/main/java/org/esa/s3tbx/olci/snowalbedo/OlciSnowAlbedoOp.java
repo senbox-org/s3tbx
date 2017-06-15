@@ -20,6 +20,7 @@ package org.esa.s3tbx.olci.snowalbedo;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.olci.radiometry.rayleigh.RayleighCorrectionOp;
+import org.esa.s3tbx.processor.rad2refl.Rad2ReflOp;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.*;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -77,12 +78,19 @@ public class OlciSnowAlbedoOp extends Operator {
         landWaterBand = waterMaskProduct.getBand("land_water_fraction");
 
         if (isValidL1bSourceProduct(sourceProduct, Sensor.OLCI)) {
-            RayleighCorrectionOp rayleighCorrectionOp = new RayleighCorrectionOp();
-            rayleighCorrectionOp.setSourceProduct(sourceProduct);
-            rayleighCorrectionOp.setParameterDefaultValues();
-            rayleighCorrectionOp.setParameter("computeTaur", false);
-            rayleighCorrectionOp.setParameter("sourceBandNames", Sensor.OLCI.getRequiredRadianceBandNames());
-            reflProduct = rayleighCorrectionOp.getTargetProduct();
+//            RayleighCorrectionOp rayleighCorrectionOp = new RayleighCorrectionOp();
+//            rayleighCorrectionOp.setSourceProduct(sourceProduct);
+//            rayleighCorrectionOp.setParameterDefaultValues();
+//            rayleighCorrectionOp.setParameter("computeTaur", false);
+//            rayleighCorrectionOp.setParameter("sourceBandNames", Sensor.OLCI.getRequiredRadianceBandNames());
+//            reflProduct = rayleighCorrectionOp.getTargetProduct();
+
+            Rad2ReflOp rad2ReflOp = new Rad2ReflOp();
+            rad2ReflOp.setSourceProduct(sourceProduct);
+            rad2ReflOp.setParameterDefaultValues();
+            rad2ReflOp.setParameter("sensor", org.esa.s3tbx.processor.rad2refl.Sensor.OLCI);
+            rad2ReflOp.setParameter("copyNonSpectralBands", false);
+            reflProduct = rad2ReflOp.getTargetProduct();
         } else {
             throw new OperatorException
                     ("Input product not supported - must be " + Sensor.OLCI.getName() +
@@ -167,7 +175,8 @@ public class OlciSnowAlbedoOp extends Operator {
 
         if (copyReflectanceBands) {
             for (Band band : reflProduct.getBands()) {
-                if (band.getName().startsWith(SensorConstants.OLCI_BRR_BAND_PREFIX)) {
+//                if (band.getName().startsWith(SensorConstants.OLCI_BRR_BAND_PREFIX)) {
+                if (band.getName().endsWith(SensorConstants.OLCI_REFL_BAND_SUFFIX)) {
                     ProductUtils.copyBand(band.getName(), reflProduct, targetProduct, true);
                     ProductUtils.copyRasterDataNodeProperties(band, targetProduct.getBand(band.getName()));
                 }
@@ -252,10 +261,10 @@ public class OlciSnowAlbedoOp extends Operator {
                 // is always 0 or 100!! (TS, OD, 20140502)
                 return waterFraction == 0;
             } else {
-                return l1FlagsTile.getSampleBit(x, y, Sensor.OLCI.getInvalidBit());
+                return l1FlagsTile.getSampleBit(x, y, Sensor.OLCI.getLandBit());
             }
         } else {
-            return l1FlagsTile.getSampleBit(x, y, Sensor.OLCI.getInvalidBit());
+            return l1FlagsTile.getSampleBit(x, y, Sensor.OLCI.getLandBit());
         }
     }
 

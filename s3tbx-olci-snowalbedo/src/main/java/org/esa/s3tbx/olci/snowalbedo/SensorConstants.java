@@ -13,6 +13,7 @@ public class SensorConstants {
     public static final String OLCI_VAA_NAME = "OAA";
     public static final String OLCI_L1B_FLAGS_NAME = "quality_flags";
     public static final int OLCI_INVALID_BIT = 25;
+    public static final int OLCI_LAND_BIT = 31;
 
     public final static String[] OLCI_REQUIRED_RADIANCE_BAND_NAMES = new String[]{
             "Oa01_radiance", "Oa02_radiance", "Oa03_radiance", "Oa04_radiance", "Oa05_radiance",
@@ -21,8 +22,15 @@ public class SensorConstants {
     };
 
     public final static String OLCI_BRR_BAND_PREFIX = "rBRR";
+    public final static String OLCI_REFL_BAND_SUFFIX = "reflectance";
+//    public final static String[] OLCI_REQUIRED_BRR_BAND_NAMES =
+//            {"rBRR_01", "rBRR_02", "rBRR_03", "rBRR_04", "rBRR_05", "rBRR_06",  "rBRR_07",
+//                    "rBRR_08", "rBRR_10", "rBRR_11", "rBRR_16", "rBRR_17", "rBRR_18",  "rBRR_21"
+//            };
+
     public final static String[] OLCI_REQUIRED_BRR_BAND_NAMES =
-            {"rBRR_01", "rBRR_02", "rBRR_03", "rBRR_04", "rBRR_05", "rBRR_06",  "rBRR_07",
-                    "rBRR_08", "rBRR_10", "rBRR_11", "rBRR_16", "rBRR_17", "rBRR_18",  "rBRR_21"
+            {"Oa01_reflectance", "Oa02_reflectance", "Oa03_reflectance", "Oa04_reflectance", "Oa05_reflectance",
+                    "Oa06_reflectance", "Oa07_reflectance", "Oa08_reflectance", "Oa10_reflectance", "Oa11_reflectance",
+                    "Oa16_reflectance", "Oa17_reflectance", "Oa18_reflectance", "Oa21_reflectance"
             };
 }
