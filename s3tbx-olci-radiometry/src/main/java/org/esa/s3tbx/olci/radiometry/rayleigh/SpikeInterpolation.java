@@ -71,12 +71,15 @@ public class SpikeInterpolation {
 
     }
 
-    public static double interBetween(double lowerY1, double upperY2, double upperX2, double lowerX1, double position) {
-        return lowerY1 + ((upperY2 - lowerY1) * (position - lowerX1)) / (upperX2 - lowerX1);
+    public static double interBetween(double lowerY, double upperY, double upperX, double lowerX, double position) {
+        if (upperX - lowerX == 0) {
+            return lowerY;
+        }
+        return lowerY + ((upperY - lowerY) * (position - lowerX)) / (upperX - lowerX);
     }
 
-    public static int arrayIndex(double[] xCoordinate, double val) {
-        return Doubles.asList(xCoordinate).indexOf(val);
+    public static int arrayIndex(double[] values, double val) {
+        return Doubles.asList(values).indexOf(val);
     }
 
     public static double getUpperValue(double[] doubles, double val) {
@@ -100,7 +103,7 @@ public class SpikeInterpolation {
         int length = doubles.length;
         IntStream.range(0, length).forEach(i -> {
             double v = doubles[i];
-            xMin[0] = v < val ? v : xMin[0];
+            xMin[0] = v <= val ? v : xMin[0];
         });
         if (xMin[0] > val) {
             throw new IllegalArgumentException("Can find the closest min value of " + val);
