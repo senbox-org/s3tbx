@@ -75,13 +75,15 @@ public class RayleighCorrAlgorithm {
 
 
     public double[] getCorrOzone(double[] rho_ng_ref, double absorpO, double[] ozones, double[] cosOZARads, double[] cosSZARads) {
+        double[] ozoneCorrRefl = new double[rho_ng_ref.length];
         for (int i = 0; i < rho_ng_ref.length; i++) {
             double cts = cosSZARads[i]; //#cosine of sun zenith angle
             double ctv = cosOZARads[i];//#cosine of view zenith angle
             double ozone = ozones[i];
-            rho_ng_ref[i] = getCorrOzone(rho_ng_ref[i], absorpO, ozone, cts, ctv);
+            double rho_ng = rho_ng_ref[i];
+            ozoneCorrRefl[i] = getCorrOzone(rho_ng, absorpO, ozone, cts, ctv);
         }
-        return rho_ng_ref;
+        return ozoneCorrRefl;
     }
 
     public double getCorrOzone(double rho_ng, double absorpO, double ozone, double cts, double ctv) {

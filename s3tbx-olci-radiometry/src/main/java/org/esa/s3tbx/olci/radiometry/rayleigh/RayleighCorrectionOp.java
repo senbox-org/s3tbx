@@ -35,7 +35,7 @@ import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -60,7 +60,6 @@ public class RayleighCorrectionOp extends Operator {
     private static final String AUTO_GROUPING = "rtoa:taur:rtoa_ng:rtoaRay:rBRR";
     private static final int WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION = 709;
     private static final String SOLAR_FLUX_BAND_PATTERN = "solar_flux_band_%d";
-    private static final String LAMBDA0_BAND_PATTERN = "lambda0_band_%d";
 
     private static final String TP_LATITUDE = "TP_latitude";
     private static final String TP_LONGITUDE = "TP_longitude";
@@ -135,9 +134,7 @@ public class RayleighCorrectionOp extends Operator {
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {
         checkForCancellation();
-        RayleighAux rayleighAux = createAuxiliary(sensor, targetRectangle);
 
-        Tile qualityFlagsTile = getSourceTile(sourceProduct.getBand(sensor.getL1bFlagsName()), targetRectangle);
 
         Set<Map.Entry<Band, Tile>> entries = targetTiles.entrySet();
         entries.forEach(targetTileStream -> {
@@ -147,6 +144,9 @@ public class RayleighCorrectionOp extends Operator {
             String targetBandName = targetBand.getName();
             double[] targetData = null;
 
+            Tile qualityFlagsTile = getSourceTile(sourceProduct.getBand(sensor.getL1bFlagsName()), targetRectangle);
+            RayleighAux rayleighAux = createAuxiliary(sensor, targetRectangle);
+
             if (targetBandName.equals(AIRMASS) && addAirMass) {
                 targetData = rayleighAux.getAirMass();
                 setTargetSamples(qualityFlagsTile, targetTile, targetData);
@@ -154,7 +154,7 @@ public class RayleighCorrectionOp extends Operator {
 
             final int sourceBandIndex = getSourceBandIndex(targetBand.getName());
             if (sourceBandIndex != -1) {
-                double[] rayleighOpticalThickness = null;
+                double[] rayleighOpticalThickness;
                 addAuxiliaryData(rayleighAux, targetRectangle, sourceBandIndex);
 
                 if (targetBandName.matches(RTOA_PATTERN) && computeRtoa) {
@@ -185,16 +185,19 @@ public class RayleighCorrectionOp extends Operator {
         Object qualityFlags;
         // todo: make this more general when we have more sensors!
         if (sensor == Sensor.MERIS) {
-            qualityFlags = qualityFlagsTile.getDataBufferByte();
+            qualityFlags = qualityFlagsTile.getSamplesByte();
             filterInvalid(targetData, (byte[]) qualityFlags);
         } else {
-            qualityFlags = qualityFlagsTile.getDataBufferInt();
+            qualityFlags = qualityFlagsTile.getSamplesInt();
             filterInvalid(targetData, (int[]) qualityFlags);
         }
         targetTile.setSamples(targetData);
     }
 
     private void filterInvalid(double[] targetData, int[] qualityFlags) {
+        if(targetData.length != qualityFlags.length) {
+            throw new OperatorException("targetData.length != qualityFlags.length");
+        }
         for (int i = 0; i < targetData.length; i++) {
             if (BitSetter.isFlagSet(qualityFlags[i], sensor.getInvalidBit())) {
                 targetData[i] = RayleighConstants.INVALID_VALUE;
@@ -203,6 +206,9 @@ public class RayleighCorrectionOp extends Operator {
     }
 
     private void filterInvalid(double[] targetData, byte[] qualityFlags) {
+        if(targetData.length != qualityFlags.length) {
+            throw new OperatorException("targetData.length != qualityFlags.length");
+        }
         for (int i = 0; i < targetData.length; i++) {
             if (BitSetter.isFlagSet(qualityFlags[i], sensor.getInvalidBit())) {
                 targetData[i] = RayleighConstants.INVALID_VALUE;
@@ -273,17 +279,14 @@ public class RayleighCorrectionOp extends Operator {
         }
     }
 
-    private int addAuxiliaryData(RayleighAux rayleighAux, Rectangle rectangle, int sourceBandRefIndex) {
+    private void addAuxiliaryData(RayleighAux rayleighAux, Rectangle rectangle, int sourceBandRefIndex) {
         String format = String.format(sensor.getNameFormat(), sourceBandRefIndex);
         Band band = getSourceProduct().getBand(format);
         String sourceBandName = band.getName();
         rayleighAux.setWavelength(band.getSpectralWavelength());
-        rayleighAux.setSourceBandIndex(sourceBandRefIndex);
-        rayleighAux.setSourceBandName(sourceBandName);
 
         if (sensor.equals(Sensor.OLCI)) {
             rayleighAux.setSolarFluxs(getSourceTile(sourceProduct.getBand(String.format(SOLAR_FLUX_BAND_PATTERN, sourceBandRefIndex)), rectangle));
-            rayleighAux.setLambdaSource(getSourceTile(sourceProduct.getBand(String.format(LAMBDA0_BAND_PATTERN, sourceBandRefIndex)), rectangle));
             rayleighAux.setSourceSampleRad(getSourceTile(sourceProduct.getBand(sourceBandName), rectangle));
         } else if (sensor.equals(Sensor.MERIS)) {
             Band sourceBand = sourceProduct.getBand(sourceBandName);
@@ -291,23 +294,17 @@ public class RayleighCorrectionOp extends Operator {
             int length = rectangle.width * rectangle.height;
 
             double[] solarFlux = fillDefaultArray(length, sourceBand.getSolarFlux());
-            double[] lambdaSource = fillDefaultArray(length, sourceBand.getSpectralWavelength());
 
             rayleighAux.setSolarFluxs(solarFlux);
-            rayleighAux.setLambdaSource(lambdaSource);
         } else if (sensor.equals(Sensor.MERIS_4TH)) {
             Band sourceBand = sourceProduct.getBand(sourceBandName);
             rayleighAux.setSourceSampleRad(getSourceTile(sourceBand, rectangle));
             int length = rectangle.width * rectangle.height;
 
-            double[] solarFlux = fillDefaultArray(length,
-                                                  EnvisatConstants.MERIS_SOLAR_FLUXES[sourceBand.getSpectralBandIndex()]);
-            double[] lambdaSource = fillDefaultArray(length, sourceBand.getSpectralWavelength());
+            double[] solarFlux = fillDefaultArray(length, EnvisatConstants.MERIS_SOLAR_FLUXES[sourceBand.getSpectralBandIndex()]);
 
             rayleighAux.setSolarFluxs(solarFlux);
-            rayleighAux.setLambdaSource(lambdaSource);
         }
-        return sourceBandRefIndex;
     }
 
     private double[] fillDefaultArray(int length, double value) {

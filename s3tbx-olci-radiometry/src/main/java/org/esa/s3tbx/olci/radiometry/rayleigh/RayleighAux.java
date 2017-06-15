@@ -75,11 +75,8 @@ public class RayleighAux {
     private double[] totalOzones;
     private double[] latitudes;
     private double[] solarFluxs;
-    private double[] lambdaSource;
     private double[] sourceSampleRad;
-    private int sourceBandIndex;
     private float waveLength;
-    private String sourceBandName;
     private double[] longitude;
     private double[] altitudes;
     private Map<Integer, double[]> fourierPoly;
@@ -131,12 +128,8 @@ public class RayleighAux {
         this.solarFluxs = solarFluxs;
     }
 
-    public void setLambdaSource(double[] lambdaSource) {
-        this.lambdaSource = lambdaSource;
-    }
-
     public void setAltitudes(Tile altitude) {
-        this.altitudes = SmileCorrectionUtils.getSampleDoubles(altitude);
+        this.altitudes = altitude.getSamplesDouble(); 
     }
 
     public double[] getTaur() {
@@ -234,10 +227,6 @@ public class RayleighAux {
 
     public double getWaveLength() {
         return waveLength;
-    }
-
-    public void setSourceBandName(String targetBandName) {
-        this.sourceBandName = targetBandName;
     }
 
     public double[] getSunAzimuthAnglesRad() {
@@ -367,7 +356,7 @@ public class RayleighAux {
     }
 
     public void setSunZenithAngles(Tile sourceTile) {
-        this.sunZenithAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.sunZenithAngles = sourceTile.getSamplesDouble(); 
         setSunZenithAnglesRad(sunZenithAngles);
     }
 
@@ -386,7 +375,7 @@ public class RayleighAux {
     }
 
     public void setViewZenithAngles(Tile sourceTile) {
-        this.viewZenithAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.viewZenithAngles = sourceTile.getSamplesDouble(); 
         setViewZenithAnglesRad(viewZenithAngles);
     }
 
@@ -396,7 +385,7 @@ public class RayleighAux {
     }
 
     public void setSunAzimuthAngles(Tile sourceTile) {
-        this.sunAzimuthAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.sunAzimuthAngles = sourceTile.getSamplesDouble(); 
         setSunAzimuthAnglesRad(sunAzimuthAngles);
     }
 
@@ -409,7 +398,7 @@ public class RayleighAux {
     }
 
     public void setLatitudes(Tile sourceTile) {
-        this.latitudes = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.latitudes = sourceTile.getSamplesDouble(); 
     }
 
     public void setViewAzimuthAngles(double... viewAzimuthAngles) {
@@ -418,7 +407,7 @@ public class RayleighAux {
     }
 
     public void setViewAzimuthAngles(Tile sourceTile) {
-        this.viewAzimuthAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.viewAzimuthAngles = sourceTile.getSamplesDouble(); 
         setViewAzimuthAnglesRad(viewAzimuthAngles);
     }
 
@@ -431,7 +420,7 @@ public class RayleighAux {
     }
 
     public void setSeaLevels(Tile sourceTile) {
-        this.seaLevels = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.seaLevels = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getTotalOzones() {
@@ -443,7 +432,7 @@ public class RayleighAux {
     }
 
     public void setTotalOzones(Tile sourceTile) {
-        this.totalOzones = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.totalOzones = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getSolarFluxs() {
@@ -451,11 +440,7 @@ public class RayleighAux {
     }
 
     public void setSolarFluxs(Tile sourceTile) {
-        this.solarFluxs = SmileCorrectionUtils.getSampleDoubles(sourceTile);
-    }
-
-    public void setLambdaSource(Tile sourceTile) {
-        this.lambdaSource = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.solarFluxs = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getSourceSampleRad() {
@@ -463,11 +448,7 @@ public class RayleighAux {
     }
 
     public void setSourceSampleRad(Tile sourceTile) {
-        this.sourceSampleRad = SmileCorrectionUtils.getSampleDoubles(sourceTile);
-    }
-
-    public void setSourceBandIndex(int sourceBandIndex) {
-        this.sourceBandIndex = sourceBandIndex;
+        this.sourceSampleRad = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getLongitude() {
@@ -479,7 +460,7 @@ public class RayleighAux {
     }
 
     public void setLongitude(Tile sourceTile) {
-        this.longitude = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.longitude = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getInterpolateRayleighThickness(double... taur) {
@@ -587,7 +568,7 @@ public class RayleighAux {
             }
             k++;
         }
-        ArrayList<double[][][]> rayCoefficient = new ArrayList();
+        ArrayList<double[][][]> rayCoefficient = new ArrayList<>();
         rayCoefficient.add(rayCooffA);
         rayCoefficient.add(rayCooffB);
         rayCoefficient.add(rayCooffC);
