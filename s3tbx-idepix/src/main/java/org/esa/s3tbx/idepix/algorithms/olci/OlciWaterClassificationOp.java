@@ -37,21 +37,6 @@ import java.util.Calendar;
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Idepix water pixel classification operator for OLCI.")
 public class OlciWaterClassificationOp extends Operator {
-    private Band cloudFlagBand;
-    private SeaIceClassifier seaIceClassifier;
-    private Band landWaterBand;
-    private Band nnOutputBand;
-
-    @SourceProduct(alias = "l1b")
-    private Product l1bProduct;
-    @SourceProduct(alias = "rhotoa")
-    private Product rhoToaProduct;
-    @SourceProduct(alias = "waterMask")
-    private Product waterMaskProduct;
-
-    @SuppressWarnings({"FieldCanBeLocal"})
-    @TargetProduct
-    private Product targetProduct;
 
     @Parameter(label = " Sea Ice Climatology Value", defaultValue = "false")
     private boolean ccOutputSeaIceClimatologyValue;
@@ -73,34 +58,46 @@ public class OlciWaterClassificationOp extends Operator {
             description = " If applied, write NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-    @Parameter(defaultValue = "2.0",
-            label = " NN cloud ambiguous lower boundary ",
-            description = " NN cloud ambiguous lower boundary ")
-    double schillerNNCloudAmbiguousLowerBoundaryValue;
+    // We only have the All NN (mp/20170324)
+//    @Parameter(defaultValue = "true",
+//            label = " Use 'all' NN instead of separate land and water NNs.",
+//            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
+//    private boolean useSchillerNNAll;
 
-    @Parameter(defaultValue = "3.7",
-            label = " NN cloud ambiguous/sure separation value ",
-            description = " NN cloud ambiguous cloud ambiguous/sure separation value ")
-    double schillerNNCloudAmbiguousSureSeparationValue;
 
-    @Parameter(defaultValue = "4.05",
-            label = " NN cloud sure/snow separation value ",
-            description = " NN cloud ambiguous cloud sure/snow separation value ")
-    double schillerNNCloudSureSnowSeparationValue;
+    @SourceProduct(alias = "l1b")
+    private Product l1bProduct;
+    @SourceProduct(alias = "rhotoa")
+    private Product rhoToaProduct;
+    @SourceProduct(alias = "waterMask")
+    private Product waterMaskProduct;
 
-    public static final String OLCI_WATER_NET_NAME = "11x8x5x3_876.8_water.net";
-    public static final String OLCI_ALL_NET_NAME = "11x8x5x3_1409.7_all.net";
+    @SuppressWarnings({"FieldCanBeLocal"})
+    @TargetProduct
+    private Product targetProduct;
 
-    ThreadLocal<SchillerNeuralNetWrapper> olciWaterNeuralNet;
+    public static final String OLCI_ALL_NET_NAME = "11x10x4x3x2_207.9.net";
+
+    private static final double THRESH_WATER_MINBRIGHT1 = 0.2;
+//    private static final double THRESH_WATER_MINBRIGHT2 = 0.2;
+    private static final double THRESH_WATER_MINBRIGHT2 = 0.08; // CB 20170411
+
     ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
 
     private static final double SEA_ICE_CLIM_THRESHOLD = 10.0;
 
+    private Band cloudFlagBand;
+    private SeaIceClassifier seaIceClassifier;
+    private Band landWaterBand;
+    private Band nnOutputBand;
+
     private RectangleExtender rectExtender;
+    private CloudNNInterpreter nnInterpreter;
 
     @Override
     public void initialize() throws OperatorException {
         readSchillerNets();
+        nnInterpreter = CloudNNInterpreter.create();
         createTargetProduct();
 
         initSeaIceClassifier();
@@ -112,9 +109,7 @@ public class OlciWaterClassificationOp extends Operator {
     }
 
     private void readSchillerNets() {
-        try (InputStream isWater = getClass().getResourceAsStream(OLCI_WATER_NET_NAME);
-             InputStream isAll = getClass().getResourceAsStream(OLCI_ALL_NET_NAME)) {
-            olciWaterNeuralNet = SchillerNeuralNetWrapper.create(isWater);
+        try (InputStream isAll = getClass().getResourceAsStream(OLCI_ALL_NET_NAME)) {
             olciAllNeuralNet = SchillerNeuralNetWrapper.create(isAll);
         } catch (IOException e) {
             throw new OperatorException("Cannot read Neural Nets: " + e.getMessage());
@@ -177,7 +172,7 @@ public class OlciWaterClassificationOp extends Operator {
                             }
                         } else {
                             if (band == cloudFlagBand) {
-                                classifyCloud(x, y, rhoToaTiles, targetTile, waterFraction);
+                                classifyCloud(x, y, l1FlagsTile, rhoToaTiles, targetTile, waterFraction);
                             }
                             if (outputSchillerNNValue && band == nnOutputBand) {
                                 final double[] nnOutput = getOlciNNOutput(x, y, rhoToaTiles);
@@ -210,6 +205,10 @@ public class OlciWaterClassificationOp extends Operator {
         }
     }
 
+    private boolean isGlintPixel(int x, int y, Tile l1FlagsTile) {
+        return l1FlagsTile.getSampleBit(x, y, OlciConstants.L1_F_GLINT);
+    }
+
     private boolean isCoastlinePixel(int x, int y, int waterFraction) {
         // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
         // values bigger than 100 indicate no data
@@ -218,49 +217,38 @@ public class OlciWaterClassificationOp extends Operator {
         return getGeoPos(x, y).lat > -58f && waterFraction <= 100 && waterFraction < 100 && waterFraction > 0;
     }
 
-    private void classifyCloud(int x, int y, Tile[] rhoToaTiles, Tile targetTile, int waterFraction) {
+    private void classifyCloud(int x, int y, Tile l1FlagsTile, Tile[] rhoToaTiles, Tile targetTile, int waterFraction) {
 
         final boolean isCoastline = isCoastlinePixel(x, y, waterFraction);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_COASTLINE, isCoastline);
 
-        boolean is_snow_ice;
         boolean checkForSeaIce = false;
         if (!isCoastline) {
             // over water
             final GeoPos geoPos = getGeoPos(x, y);
+
             checkForSeaIce = ignoreSeaIceClimatology || isPixelClassifiedAsSeaice(geoPos);
         }
 
-        boolean isCloudSure;
-        boolean isCloudAmbiguous;
-
-        double[] nnOutput = getOlciNNOutput(x, y, rhoToaTiles);
+        double nnOutput = getOlciNNOutput(x, y, rhoToaTiles)[0];
         if (!targetTile.getSampleBit(x, y, IdepixConstants.IDEPIX_INVALID)) {
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
-            isCloudAmbiguous = nnOutput[0] > schillerNNCloudAmbiguousLowerBoundaryValue &&
-                    nnOutput[0] <= schillerNNCloudAmbiguousSureSeparationValue;
-            if (isCloudAmbiguous) {
-                // this would be as 'CLOUD_AMBIGUOUS'...
-                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, true);
-                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, true);
-            }
-            // check for snow_ice separation below if needed, first set all to cloud
-            isCloudSure = nnOutput[0] > schillerNNCloudAmbiguousSureSeparationValue;
-            if (isCloudSure) {
-                // this would be as 'CLOUD_SURE'...
-                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, true);
-                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, true);
-            }
 
-            is_snow_ice = false;
-            if (checkForSeaIce) {
-                is_snow_ice = nnOutput[0] > schillerNNCloudSureSnowSeparationValue;
-            }
-            if (is_snow_ice) {
-                // this would be as 'SNOW/ICE'...
+            final boolean isGlint = isGlintPixel(x, y, l1FlagsTile);
+            // CB 20170406:
+            final boolean cloudSure = rhoToaTiles[16].getSampleFloat(x, y) > THRESH_WATER_MINBRIGHT1 &&
+                    nnInterpreter.isCloudSure(nnOutput);
+            final boolean cloudAmbiguous = rhoToaTiles[16].getSampleFloat(x, y) > THRESH_WATER_MINBRIGHT2 &&
+                    nnInterpreter.isCloudAmbiguous(nnOutput, false, isGlint);
+
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, cloudSure);
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, cloudAmbiguous || cloudSure);
+
+            if (checkForSeaIce && nnInterpreter.isSnowIce(nnOutput)) {
                 targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, true);
                 targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
                 targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
@@ -269,14 +257,10 @@ public class OlciWaterClassificationOp extends Operator {
     }
 
     private double[] getOlciNNOutput(int x, int y, Tile[] rhoToaTiles) {
-        return getOlciNNOutputImpl(x, y, rhoToaTiles, olciAllNeuralNet.get());
-    }
-
-    private double[] getOlciNNOutputImpl(int x, int y, Tile[] rhoToaTiles, SchillerNeuralNetWrapper nnWrapper) {
+        SchillerNeuralNetWrapper nnWrapper = olciAllNeuralNet.get();
         double[] nnInput = nnWrapper.getInputVector();
         for (int i = 0; i < nnInput.length; i++) {
-            final int merisEquivalentWvlIndex = Rad2ReflConstants.OLCI_MERIS_EQUIVALENT_WVL_INDICES[i];
-            nnInput[i] = Math.sqrt(rhoToaTiles[merisEquivalentWvlIndex].getSampleFloat(x, y));
+            nnInput[i] = Math.sqrt(rhoToaTiles[i].getSampleFloat(x, y));
         }
         return nnWrapper.getNeuralNet().calc(nnInput);
     }
@@ -312,19 +296,6 @@ public class OlciWaterClassificationOp extends Operator {
         final PixelPos pixelPos = new PixelPos(x, y);
         geoCoding.getGeoPos(pixelPos, geoPos);
         return geoPos;
-    }
-
-    private double azimuth(double x, double y) {
-        if (y > 0.0) {
-            // DPM #2.6.5.1.1-1
-            return (MathUtils.RTOD * Math.atan(x / y));
-        } else if (y < 0.0) {
-            // DPM #2.6.5.1.1-5
-            return (180.0 + MathUtils.RTOD * Math.atan(x / y));
-        } else {
-            // DPM #2.6.5.1.1-6
-            return (x >= 0.0 ? 90.0 : 270.0);
-        }
     }
 
     public static class Spi extends OperatorSpi {

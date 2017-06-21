@@ -19,7 +19,7 @@
             <folder name="Thematic Water Processing">
                 <file name="org-esa-s3tbx-FuOpAction.shadow">
                     <attr name="originalFile" stringvalue="Actions/Operators/org-esa-s3tbx-FuOpAction.instance"/>
-                    <attr name="position" intvalue="10000"/>
+                    <attr name="position" intvalue="10010"/>
                 </file>
             </folder>
         </folder>
@@ -28,7 +28,7 @@
     <folder name="Services">
         <folder name="javahelp">
             <file name="org-esa-s3tbx-FuOp-helpset.xml" url="helpset.xml">
-                <attr name="position" intvalue="4600"/>
+                <attr name="position" intvalue="4610"/>
             </file>
         </folder>
     </folder>

@@ -18,9 +18,8 @@
 
 package org.esa.s3tbx.olci.radiometry.smilecorr;
 
-import com.google.common.primitives.Doubles;
-import com.google.common.primitives.Floats;
 import org.esa.s3tbx.olci.radiometry.Sensor;
+import org.esa.s3tbx.olci.radiometry.SensorConstants;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.Tile;
@@ -115,10 +114,6 @@ public class SmileCorrectionUtils {
         return val;
     }
 
-    public static float[] convertDoublesToFloats(double[] ref) {
-        return Floats.toArray(Doubles.asList(ref));
-    }
-
     public static int getSourceBandIndex(String name) {
         Matcher matcher = Pattern.compile("(\\d+)").matcher(name);
         if (!matcher.find()) {
@@ -130,16 +125,23 @@ public class SmileCorrectionUtils {
 
     public static Sensor getSensorType(Product sourceProduct) {
         String[] bandNames = sourceProduct.getBandNames();
-        boolean isSensor = Stream.of(bandNames).anyMatch(p -> p.matches("Oa\\d+_radiance"));
+
+        boolean isSensor = Stream.of(bandNames).anyMatch(p -> p.matches(SensorConstants.OLCI_NAME_PATTERN));
         if (isSensor) {
             return Sensor.OLCI;
         }
-        isSensor = Stream.of(bandNames).anyMatch(p -> p.matches("radiance_\\d+"));
 
+        isSensor = Stream.of(bandNames).anyMatch(p -> p.matches(SensorConstants.MERIS_NAME_PATTERN));
         if (isSensor) {
             return Sensor.MERIS;
         }
-        throw new OperatorException("The operator can't be applied on this sensor.\n" +
+
+        isSensor = Stream.of(bandNames).anyMatch(p -> p.matches(SensorConstants.MERIS_4TH_NAME_PATTERN));
+        if (isSensor) {
+            return Sensor.MERIS_4TH;
+        }
+
+        throw new OperatorException("No supported sensor found for given source product.\n" +
                                             "Only OLCI and MERIS are supported");
     }
 }

@@ -19,7 +19,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <s3tbx-c2rcc.version>0.17-SNAPSHOT</s3tbx-c2rcc.version>
+        <s3tbx-c2rcc.version>0.17</s3tbx-c2rcc.version>
     </properties>
 
     <build>
@@ -206,6 +206,11 @@
         </dependency>
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
+            <artifactId>s3tbx-mphchl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.s3tbx</groupId>
             <artifactId>s3tbx-rad2refl</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -217,6 +222,11 @@
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
             <artifactId>s3tbx-owt-classification</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.s3tbx</groupId>
+            <artifactId>s3tbx-olci-snowalbedo</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

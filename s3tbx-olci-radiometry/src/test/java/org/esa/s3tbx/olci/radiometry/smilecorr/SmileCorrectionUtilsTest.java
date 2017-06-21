@@ -55,4 +55,12 @@ public class SmileCorrectionUtilsTest {
         Sensor sensorType = SmileCorrectionUtils.getSensorType(sourceProduct);
         assertEquals(Sensor.MERIS, sensorType);
     }
+
+    @Test
+    public void testSensorTypeMeris_4th() throws Exception {
+        Product sourceProduct = new Product("bla", "what", 300, 300);
+        sourceProduct.addBand("M05_radiance", ProductData.TYPE_UINT8);
+        Sensor sensorType = SmileCorrectionUtils.getSensorType(sourceProduct);
+        assertEquals(Sensor.MERIS_4TH, sensorType);
+    }
 }

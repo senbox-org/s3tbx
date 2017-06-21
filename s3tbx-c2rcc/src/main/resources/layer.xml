@@ -171,6 +171,10 @@
             <attr name="operatorName" stringvalue="c2rcc.msi"/>
             <attr name="disableFromGraphBuilder" stringvalue="true"/>
         </file>
+        <file name="org.esa.s3tbx.c2rcc.landsat8">
+            <attr name="operatorName" stringvalue="c2rcc.landsat8"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
         <file name="org.esa.s3tbx.c2rcc.meris">
             <attr name="operatorName" stringvalue="c2rcc.meris"/>
             <attr name="disableFromGraphBuilder" stringvalue="true"/>

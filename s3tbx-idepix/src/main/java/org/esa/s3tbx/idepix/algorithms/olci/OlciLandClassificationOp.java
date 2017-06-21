@@ -33,33 +33,26 @@ import java.util.Map;
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Idepix land pixel classification operator for OLCI.")
 public class OlciLandClassificationOp extends Operator {
+
     @Parameter(defaultValue = "false",
             label = " Write NN value to the target product.",
             description = " If applied, write Schiller NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-    @Parameter(defaultValue = "2.0",
-            label = " NN cloud ambiguous lower boundary",
-            description = " NN cloud ambiguous lower boundary")
-    double schillerNNCloudAmbiguousLowerBoundaryValue;
+    // We only have the All NN (mp/20170324)
+//    @Parameter(defaultValue = "true",
+//            label = " Use 'all' NN instead of separate land and water NNs.",
+//            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
+//    private boolean useSchillerNNAll;
 
-    @Parameter(defaultValue = "3.7",
-            label = " NN cloud ambiguous/sure separation value",
-            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
-    double schillerNNCloudAmbiguousSureSeparationValue;
-
-    @Parameter(defaultValue = "4.05",
-            label = " NN cloud sure/snow separation value",
-            description = " NN cloud ambiguous cloud sure/snow separation value")
-    double schillerNNCloudSureSnowSeparationValue;
 
     @SourceProduct(alias = "l1b", description = "The source product.")
     Product sourceProduct;
+
     @SourceProduct(alias = "rhotoa")
     private Product rad2reflProduct;
     @SourceProduct(alias = "waterMask")
     private Product waterMaskProduct;
-
     @TargetProduct(description = "The target product.")
     Product targetProduct;
 
@@ -68,22 +61,30 @@ public class OlciLandClassificationOp extends Operator {
     private Band[] olciReflBands;
     private Band landWaterBand;
 
-    public static final String OLCI_LAND_NET_NAME = "11x8x5x3_1062.5_land.net";
-    ThreadLocal<SchillerNeuralNetWrapper> olciLandNeuralNet;
+    public static final String OLCI_ALL_NET_NAME = "11x10x4x3x2_207.9.net";
+
+    private static final double THRESH_LAND_MINBRIGHT1 = 0.3;
+//    private static final double THRESH_LAND_MINBRIGHT2 = 0.2;
+    private static final double THRESH_LAND_MINBRIGHT2 = 0.25;  // test OD 20170411
+
+    ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
+    private CloudNNInterpreter nnInterpreter;
+
 
     @Override
     public void initialize() throws OperatorException {
         setBands();
-
+        nnInterpreter = CloudNNInterpreter.create();
         readSchillerNeuralNets();
         createTargetProduct();
-
+        
         landWaterBand = waterMaskProduct.getBand("land_water_fraction");
+
     }
 
     private void readSchillerNeuralNets() {
-        InputStream olciLandIS = getClass().getResourceAsStream(OLCI_LAND_NET_NAME);
-        olciLandNeuralNet = SchillerNeuralNetWrapper.create(olciLandIS);
+        InputStream olciAllIS = getClass().getResourceAsStream(OLCI_ALL_NET_NAME);
+        olciAllNeuralNet = SchillerNeuralNetWrapper.create(olciAllIS);
     }
 
     public void setBands() {
@@ -162,40 +163,34 @@ public class OlciLandClassificationOp extends Operator {
                             olciReflectance[i] = olciReflectanceTiles[i].getSampleFloat(x, y);
                         }
 
-                        SchillerNeuralNetWrapper nnWrapper = olciLandNeuralNet.get();
+                        SchillerNeuralNetWrapper nnWrapper = olciAllNeuralNet.get();
                         double[] inputVector = nnWrapper.getInputVector();
                         for (int i = 0; i < inputVector.length; i++) {
-                            final int olciEquivalentWvlIndex = Rad2ReflConstants.OLCI_MERIS_EQUIVALENT_WVL_INDICES[i];
-                            inputVector[i] = Math.sqrt(olciReflectance[olciEquivalentWvlIndex]);
+                            inputVector[i] = Math.sqrt(olciReflectance[i]);
                         }
 
-                        final double[] nnOutput = nnWrapper.getNeuralNet().calc(inputVector);
+                        final double nnOutput = nnWrapper.getNeuralNet().calc(inputVector)[0];
 
                         if (!cloudFlagTargetTile.getSampleBit(x, y, IdepixConstants.IDEPIX_INVALID)) {
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, false);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
-                            if (nnOutput[0] > schillerNNCloudAmbiguousLowerBoundaryValue &&
-                                    nnOutput[0] <= schillerNNCloudAmbiguousSureSeparationValue) {
-                                // this would be as 'CLOUD_AMBIGUOUS'...
-                                cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, true);
-                                cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, true);
-                            }
-                            if (nnOutput[0] > schillerNNCloudAmbiguousSureSeparationValue &&
-                                    nnOutput[0] <= schillerNNCloudSureSnowSeparationValue) {
-                                // this would be as 'CLOUD_SURE'...
-                                cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, true);
-                                cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, true);
-                            }
-                            if (nnOutput[0] > schillerNNCloudSureSnowSeparationValue) {
-                                // this would be as 'SNOW/ICE'...
-                                cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, true);
-                            }
+
+                            // CB 20170406:
+                            final boolean cloudSure = olciReflectance[2] >  THRESH_LAND_MINBRIGHT1 &&
+                                    nnInterpreter.isCloudSure(nnOutput);
+                            final boolean cloudAmbiguous = olciReflectance[2] >  THRESH_LAND_MINBRIGHT2 &&
+                                    nnInterpreter.isCloudAmbiguous(nnOutput, true, false);
+
+                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);
+                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, cloudSure);
+                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, cloudAmbiguous || cloudSure);
+                            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, nnInterpreter.isSnowIce(nnOutput));
                         }
 
                         if (nnTargetTile != null) {
-                            nnTargetTile.setSample(x, y, nnOutput[0]);
+                            nnTargetTile.setSample(x, y, nnOutput);
                         }
                     }
                 }

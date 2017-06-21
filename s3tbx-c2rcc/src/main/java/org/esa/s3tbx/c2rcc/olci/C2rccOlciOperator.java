@@ -59,7 +59,7 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.olci", version = "0.17",
+@OperatorMetadata(alias = "c2rcc.olci", version = "0.18",
         authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
@@ -146,6 +146,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     };
 
     private static final String[] c2rccNNResourcePaths = new String[10];
+
     static {
         c2rccNNResourcePaths[IDX_iop_rw] = "olci/olci_20161012/iop_rw/17x97x47_464.3.net";
         c2rccNNResourcePaths[IDX_iop_unciop] = "olci/olci_20161012/iop_unciop/17x77x37_11486.7.net";
@@ -221,10 +222,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @Parameter(defaultValue = "3.1", description = "Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bwit")
     private double TSMfakBwit;
 
-    @Parameter(defaultValue = "1.04", description = "Chlorophyl exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
+    @Parameter(defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
     private double CHLexp;
 
-    @Parameter(defaultValue = "21.0", description = "Chlorophyl factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
+    @Parameter(defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
     private double CHLfak;
 
     // RD20161103 changed from 0.05 to 0.005 for sum of differences
@@ -440,7 +441,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         final double[] solflux = new double[BAND_COUNT];
         for (int i = 0; i < BAND_COUNT; i++) {
             radiances[i] = sourceSamples[i].getDouble();
-            solflux[i] = sourceSamples[i + SOLAR_FLUX_START_IX].getDouble();
+            Sample solFluxSample = sourceSamples[i + SOLAR_FLUX_START_IX];
+            solflux[i] = solFluxSample.getNode().isPixelValid(x, y) ? solFluxSample.getDouble() : Double.NaN;
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
@@ -687,6 +689,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         final StringBuilder autoGrouping = new StringBuilder("iop");
         autoGrouping.append(":conc");
 
+        final String validPixelFlagExpression = "c2rcc_flags.Valid_PE";
         if (outputRtoa) {
             for (int i : olciband21_ix) {
                 final Band band = addBand(targetProduct, "rtoa_" + i, "1", "Top-of-atmosphere reflectance");
@@ -694,12 +697,11 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             }
             autoGrouping.append(":rtoa");
         }
-        final String validPixelExpression = "c2rcc_flags.Valid_PE";
         if (outputRtosaGc) {
             for (int bi : olciband16_ix) {
                 Band band = addBand(targetProduct, "rtosa_gc_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, input to AC");
                 ensureSpectralProperties(band, bi);
-                band.setValidPixelExpression(validPixelExpression);
+                band.setValidPixelExpression(validPixelFlagExpression);
             }
             autoGrouping.append(":rtosa_gc");
         }
@@ -707,7 +709,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             for (int bi : olciband16_ix) {
                 Band band = addBand(targetProduct, "rtosagc_aann_" + bi, "1", "Gas corrected top-of-atmosphere reflectance, output from AANN");
                 ensureSpectralProperties(band, bi);
-                band.setValidPixelExpression(validPixelExpression);
+                band.setValidPixelExpression(validPixelFlagExpression);
             }
             autoGrouping.append(":rtosagc_aann");
         }
@@ -716,7 +718,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             for (int bi : olciband16_ix) {
                 Band band = addBand(targetProduct, "rpath_" + bi, "1", "Path-radiance reflectances");
                 ensureSpectralProperties(band, bi);
-                band.setValidPixelExpression(validPixelExpression);
+                band.setValidPixelExpression(validPixelFlagExpression);
             }
             autoGrouping.append(":rpath");
         }
@@ -725,7 +727,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             for (int bi : olciband16_ix) {
                 Band band = addBand(targetProduct, "tdown_" + bi, "1", "Transmittance of downweling irradiance");
                 ensureSpectralProperties(band, bi);
-                band.setValidPixelExpression(validPixelExpression);
+                band.setValidPixelExpression(validPixelFlagExpression);
             }
             autoGrouping.append(":tdown");
         }
@@ -734,7 +736,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             for (int bi : olciband16_ix) {
                 Band band = addBand(targetProduct, "tup_" + bi, "1", "Transmittance of upweling irradiance");
                 ensureSpectralProperties(band, bi);
-                band.setValidPixelExpression(validPixelExpression);
+                band.setValidPixelExpression(validPixelFlagExpression);
             }
             autoGrouping.append(":tup");
         }
@@ -748,7 +750,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                     band = addBand(targetProduct, "rhow_" + index, "1", "Atmospherically corrected angular dependent water leaving reflectances");
                 }
                 ensureSpectralProperties(band, index);
-                band.setValidPixelExpression(validPixelExpression);
+                band.setValidPixelExpression(validPixelFlagExpression);
             }
             if (outputAsRrs) {
                 autoGrouping.append(":rrs");
@@ -761,20 +763,20 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             for (int index : olciband16_ix) {
                 final Band band = addBand(targetProduct, "rhown_" + index, "1", "Normalized water leaving reflectances");
                 ensureSpectralProperties(band, index);
-                band.setValidPixelExpression(validPixelExpression);
+                band.setValidPixelExpression(validPixelFlagExpression);
             }
             autoGrouping.append(":rhown");
         }
 
         if (outputOos) {
             final Band oos_rtosa = addBand(targetProduct, "oos_rtosa", "1", "Gas corrected top-of-atmosphere reflectances are out of scope of nn training dataset");
-            oos_rtosa.setValidPixelExpression(validPixelExpression);
+            oos_rtosa.setValidPixelExpression(validPixelFlagExpression);
             if (outputAsRrs) {
                 final Band oos_rrs = addBand(targetProduct, "oos_rrs", "1", "Remote sensing reflectance are out of scope of nn training dataset");
-                oos_rrs.setValidPixelExpression(validPixelExpression);
+                oos_rrs.setValidPixelExpression(validPixelFlagExpression);
             } else {
                 final Band oos_rhow = addBand(targetProduct, "oos_rhow", "1", "Water leaving reflectances are out of scope of nn training dataset");
-                oos_rhow.setValidPixelExpression(validPixelExpression);
+                oos_rhow.setValidPixelExpression(validPixelFlagExpression);
             }
 
             autoGrouping.append(":oos");
@@ -789,14 +791,14 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         Band iop_atot = addVirtualBand(targetProduct, "iop_atot", "iop_apig + iop_adet + iop_agelb", "m^-1", "phytoplankton + detritus + gelbstoff absorption at 443 nm");
         Band iop_btot = addVirtualBand(targetProduct, "iop_btot", "iop_bpart + iop_bwit", "m^-1", "total particle scattering at 443 nm");
 
-        iop_apig.setValidPixelExpression(validPixelExpression);
-        iop_adet.setValidPixelExpression(validPixelExpression);
-        iop_agelb.setValidPixelExpression(validPixelExpression);
-        iop_bpart.setValidPixelExpression(validPixelExpression);
-        iop_bwit.setValidPixelExpression(validPixelExpression);
-        iop_adg.setValidPixelExpression(validPixelExpression);
-        iop_atot.setValidPixelExpression(validPixelExpression);
-        iop_btot.setValidPixelExpression(validPixelExpression);
+        iop_apig.setValidPixelExpression(validPixelFlagExpression);
+        iop_adet.setValidPixelExpression(validPixelFlagExpression);
+        iop_agelb.setValidPixelExpression(validPixelFlagExpression);
+        iop_bpart.setValidPixelExpression(validPixelFlagExpression);
+        iop_bwit.setValidPixelExpression(validPixelFlagExpression);
+        iop_adg.setValidPixelExpression(validPixelFlagExpression);
+        iop_atot.setValidPixelExpression(validPixelFlagExpression);
+        iop_btot.setValidPixelExpression(validPixelFlagExpression);
 
         Band kd489 = null;
         Band kdmin = null;
@@ -806,18 +808,18 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             kdmin = addBand(targetProduct, "kdmin", "m^-1", "Mean irradiance attenuation coefficient at the three bands with minimum kd");
             kd_z90max = addVirtualBand(targetProduct, "kd_z90max", "1 / kdmin", "m", "Depth of the water column from which 90% of the water leaving irradiance comes from");
 
-            kd489.setValidPixelExpression(validPixelExpression);
-            kdmin.setValidPixelExpression(validPixelExpression);
-            kd_z90max.setValidPixelExpression(validPixelExpression);
+            kd489.setValidPixelExpression(validPixelFlagExpression);
+            kdmin.setValidPixelExpression(validPixelFlagExpression);
+            kd_z90max.setValidPixelExpression(validPixelFlagExpression);
 
             autoGrouping.append(":kd");
         }
 
         Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
-        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
+        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophylll concentration");
 
-        conc_tsm.setValidPixelExpression(validPixelExpression);
-        conc_chl.setValidPixelExpression(validPixelExpression);
+        conc_tsm.setValidPixelExpression(validPixelFlagExpression);
+        conc_chl.setValidPixelExpression(validPixelFlagExpression);
 
         if (outputUncertainties) {
             Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "uncertainty of pigment absorption coefficient");
@@ -838,23 +840,23 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             iop_atot.addAncillaryVariable(unc_atot, "uncertainty");
             iop_btot.addAncillaryVariable(unc_btot, "uncertainty");
 
-            unc_apig.setValidPixelExpression(validPixelExpression);
-            unc_adet.setValidPixelExpression(validPixelExpression);
-            unc_agelb.setValidPixelExpression(validPixelExpression);
-            unc_bpart.setValidPixelExpression(validPixelExpression);
-            unc_bwit.setValidPixelExpression(validPixelExpression);
-            unc_adg.setValidPixelExpression(validPixelExpression);
-            unc_atot.setValidPixelExpression(validPixelExpression);
-            unc_btot.setValidPixelExpression(validPixelExpression);
+            unc_apig.setValidPixelExpression(validPixelFlagExpression);
+            unc_adet.setValidPixelExpression(validPixelFlagExpression);
+            unc_agelb.setValidPixelExpression(validPixelFlagExpression);
+            unc_bpart.setValidPixelExpression(validPixelFlagExpression);
+            unc_bwit.setValidPixelExpression(validPixelFlagExpression);
+            unc_adg.setValidPixelExpression(validPixelFlagExpression);
+            unc_atot.setValidPixelExpression(validPixelFlagExpression);
+            unc_btot.setValidPixelExpression(validPixelFlagExpression);
 
             Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
-            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophyll concentration");
+            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophylll concentration");
 
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
 
-            unc_tsm.setValidPixelExpression(validPixelExpression);
-            unc_chl.setValidPixelExpression(validPixelExpression);
+            unc_tsm.setValidPixelExpression(validPixelFlagExpression);
+            unc_chl.setValidPixelExpression(validPixelFlagExpression);
 
             if (outputKd) {
                 Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
@@ -865,9 +867,9 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                 kdmin.addAncillaryVariable(unc_kdmin, "uncertainty");
                 kd_z90max.addAncillaryVariable(unc_kd_z90max, "uncertainty");
 
-                unc_kd489.setValidPixelExpression(validPixelExpression);
-                unc_kdmin.setValidPixelExpression(validPixelExpression);
-                unc_kd_z90max.setValidPixelExpression(validPixelExpression);
+                unc_kd489.setValidPixelExpression(validPixelFlagExpression);
+                unc_kdmin.setValidPixelExpression(validPixelFlagExpression);
+                unc_kd_z90max.setValidPixelExpression(validPixelFlagExpression);
             }
 
             autoGrouping.append(":unc");

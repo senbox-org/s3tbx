@@ -32,7 +32,7 @@ public class RayleighCorrAlgorithmTest {
 
     @Before
     public void setUp() throws Exception {
-        algo = new RayleighCorrAlgorithm();
+        algo = new RayleighCorrAlgorithm("Oa%02d_radiance", 21);
     }
 
     @Test

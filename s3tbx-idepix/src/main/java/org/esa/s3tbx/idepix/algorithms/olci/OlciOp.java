@@ -83,35 +83,47 @@ public class OlciOp extends BasisOp {
             description = " If applied, write NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-    @Parameter(defaultValue = "2.0",
-            label = " NN cloud ambiguous lower boundary (applied on WATER)",
-            description = " NN cloud ambiguous lower boundary (applied on WATER)")
-    double schillerWaterNNCloudAmbiguousLowerBoundaryValue;
+//    @Parameter(defaultValue = "false",
+//            label = " Write specific CAWA bands to the target product.",
+//            description = " If applied, write specific CAWA bands to the target product ")
+//    private boolean copyBandsForCawa;
+    private boolean copyBandsForCawa = false;
 
-    @Parameter(defaultValue = "3.7",
-            label = " NN cloud ambiguous/sure separation value (applied on WATER)",
-            description = " NN cloud ambiguous cloud ambiguous/sure separation value (applied on WATER)")
-    double schillerWaterNNCloudAmbiguousSureSeparationValue;
+    // We only have the All NN (mp/20170324)
+//    @Parameter(defaultValue = "true",
+//            label = " Use 'all' NN instead of separate land and water NNs.",
+//            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
+//    private boolean useSchillerNNAll;
 
-    @Parameter(defaultValue = "4.05",
-            label = " NN cloud sure/snow separation value (applied on WATER)",
-            description = " NN cloud ambiguous cloud sure/snow separation value (applied on WATER)")
-    double schillerWaterNNCloudSureSnowSeparationValue;
-
-    @Parameter(defaultValue = "1.1",
-            label = " NN cloud ambiguous lower boundary (applied on LAND)",
-            description = " NN cloud ambiguous lower boundary (applied on LAND)")
-    double schillerLandNNCloudAmbiguousLowerBoundaryValue;
-
-    @Parameter(defaultValue = "2.7",
-            label = " NN cloud ambiguous/sure separation value (applied on LAND)",
-            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
-    double schillerLandNNCloudAmbiguousSureSeparationValue;
-
-    @Parameter(defaultValue = "4.6",
-            label = " NN cloud sure/snow separation value (applied on LAND)",
-            description = " NN cloud ambiguous cloud sure/snow separation value")
-    double schillerLandNNCloudSureSnowSeparationValue;
+//    @Parameter(defaultValue = "2.0",
+//            label = " NN cloud ambiguous lower boundary (applied on WATER)",
+//            description = " NN cloud ambiguous lower boundary (applied on WATER)")
+//    double schillerWaterNNCloudAmbiguousLowerBoundaryValue;
+//
+//    @Parameter(defaultValue = "3.7",
+//            label = " NN cloud ambiguous/sure separation value (applied on WATER)",
+//            description = " NN cloud ambiguous cloud ambiguous/sure separation value (applied on WATER)")
+//    double schillerWaterNNCloudAmbiguousSureSeparationValue;
+//
+//    @Parameter(defaultValue = "4.05",
+//            label = " NN cloud sure/snow separation value (applied on WATER)",
+//            description = " NN cloud ambiguous cloud sure/snow separation value (applied on WATER)")
+//    double schillerWaterNNCloudSureSnowSeparationValue;
+//
+//    @Parameter(defaultValue = "1.1",
+//            label = " NN cloud ambiguous lower boundary (applied on LAND)",
+//            description = " NN cloud ambiguous lower boundary (applied on LAND)")
+//    double schillerLandNNCloudAmbiguousLowerBoundaryValue;
+//
+//    @Parameter(defaultValue = "2.7",
+//            label = " NN cloud ambiguous/sure separation value (applied on LAND)",
+//            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
+//    double schillerLandNNCloudAmbiguousSureSeparationValue;
+//
+//    @Parameter(defaultValue = "4.6",
+//            label = " NN cloud sure/snow separation value (applied on LAND)",
+//            description = " NN cloud ambiguous cloud sure/snow separation value")
+//    double schillerLandNNCloudSureSnowSeparationValue;
 
     @Parameter(defaultValue = "true", label = " Compute a cloud buffer")
     private boolean computeCloudBuffer;
@@ -134,7 +146,6 @@ public class OlciOp extends BasisOp {
 
     @Override
     public void initialize() throws OperatorException {
-        System.out.println("Running IDEPIX OLCI - source product: " + sourceProduct.getName());
 
         final boolean inputProductIsValid = IdepixIO.validateInputProduct(sourceProduct, AlgorithmSelector.OLCI);
         if (!inputProductIsValid) {
@@ -172,27 +183,29 @@ public class OlciOp extends BasisOp {
     private void setLandClassificationParameters() {
         landClassificationParameters = new HashMap<>();
         landClassificationParameters.put("copyAllTiePoints", true);
-        landClassificationParameters.put("outputSchillerNNValue",
-                                         outputSchillerNNValue);
-        landClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
-                                         schillerLandNNCloudAmbiguousLowerBoundaryValue);
-        landClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
-                                         schillerLandNNCloudAmbiguousSureSeparationValue);
-        landClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
-                                         schillerLandNNCloudSureSnowSeparationValue);
+        landClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+        // We only have the All NN (mp/20170324)
+//        landClassificationParameters.put("useSchillerNNAll", true);
+//        landClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
+//                                         schillerLandNNCloudAmbiguousLowerBoundaryValue);
+//        landClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
+//                                         schillerLandNNCloudAmbiguousSureSeparationValue);
+//        landClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
+//                                         schillerLandNNCloudSureSnowSeparationValue);
     }
 
     private void setWaterClassificationParameters() {
         waterClassificationParameters = new HashMap<>();
         waterClassificationParameters.put("copyAllTiePoints", true);
-        waterClassificationParameters.put("outputSchillerNNValue",
-                                          outputSchillerNNValue);
-        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
-                                          schillerWaterNNCloudAmbiguousLowerBoundaryValue);
-        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
-                                          schillerWaterNNCloudAmbiguousSureSeparationValue);
-        waterClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
-                                          schillerWaterNNCloudSureSnowSeparationValue);
+        waterClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+        // We only have the All NN (mp/20170324)
+//        waterClassificationParameters.put("useSchillerNNAll", useSchillerNNAll);
+//        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
+//                                          schillerWaterNNCloudAmbiguousLowerBoundaryValue);
+//        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
+//                                          schillerWaterNNCloudAmbiguousSureSeparationValue);
+//        waterClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
+//                                          schillerWaterNNCloudSureSnowSeparationValue);
     }
 
     private void computeWaterCloudProduct() {
@@ -235,6 +248,9 @@ public class OlciOp extends BasisOp {
         }
         if (outputRad2Refl) {
             IdepixIO.addOlciRadiance2ReflectanceBands(rad2reflProduct, targetProduct, reflBandsToCopy);
+        }
+        if (copyBandsForCawa) {
+            IdepixIO.addCawaBands(sourceProduct, targetProduct);
         }
     }
 

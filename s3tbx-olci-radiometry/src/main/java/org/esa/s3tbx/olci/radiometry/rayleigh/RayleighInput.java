@@ -55,21 +55,6 @@ public class RayleighInput {
 
     }
 
-
-    public float getSourceReflectance() {
-        return sourceReflectance;
-    }
-
-
-    public float getLowerReflectance() {
-        return lowerReflectance;
-    }
-
-
-    public float getUpperReflectance() {
-        return upperReflectance;
-    }
-
     public int getSourceIndex() {
         return sourceIndex;
     }

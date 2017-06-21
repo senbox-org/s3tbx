@@ -249,7 +249,7 @@ public class OlciProductSignatureTest {
         product.addBand(C2rccOlciOperator.RASTER_NAME_VIEWING_AZIMUTH, "42");
         product.addBand(C2rccOlciOperator.RASTER_NAME_VIEWING_ZENITH, "42");
         product.addBand(C2rccOlciOperator.RASTER_NAME_SEA_LEVEL_PRESSURE, "999");
-        product.addBand(C2rccOlciOperator.RASTER_NAME_TOTAL_OZONE, "333");
+        product.addBand(C2rccOlciOperator.RASTER_NAME_TOTAL_OZONE, "0.004");
         Band flagBand = product.addBand(C2rccOlciOperator.RASTER_NAME_QUALITY_FLAGS, ProductData.TYPE_INT8);
         FlagCoding l1FlagsCoding = new FlagCoding(C2rccOlciOperator.RASTER_NAME_QUALITY_FLAGS);
         product.getFlagCodingGroup().add(l1FlagsCoding);

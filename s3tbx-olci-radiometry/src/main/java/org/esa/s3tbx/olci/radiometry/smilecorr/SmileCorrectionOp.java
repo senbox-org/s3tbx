@@ -56,7 +56,7 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
         authors = " Marco Peters, Muhammad Bala (Brockmann Consult)",
         copyright = "(c) 2015 by Brockmann Consult",
         category = "Optical/Pre-Processing",
-        version = "1.2")
+        version = "1.2.2")
 public class SmileCorrectionOp extends Operator {
 
 
@@ -66,7 +66,6 @@ public class SmileCorrectionOp extends Operator {
     private static final String LATITUDE_BAND = "latitude";
     private static final String LONGITUDE_BAND = "longitude";
     private static final String DETECTOR_INDEX_BAND = "detector_index";
-    private static final String OLCI_SENSOR = "OLCI";
     private static final int DO_NOT_CORRECT_BAND = -1;
     private static final String LAMBDA0_BAND_NAME_PATTERN = "lambda0_band_%d";
     private static final String SOLAR_FLUX_BAND_NAME_PATTERN = "solar_flux_band_%d";
@@ -90,7 +89,7 @@ public class SmileCorrectionOp extends Operator {
     public void initialize() throws OperatorException {
         sensor = getSensorType(getSourceProduct());
         smileAuxdata = new SmileCorrectionAuxdata(sensor);
-        if (Sensor.MERIS.equals(sensor)) {
+        if (Sensor.MERIS.equals(sensor) || Sensor.MERIS_4TH.equals(sensor)) {
             try {
                 smileAuxdata.loadFluxWaven(sourceProduct.getProductType());
             } catch (IOException e) {
@@ -99,8 +98,8 @@ public class SmileCorrectionOp extends Operator {
         }
 
         RayleighAux.initDefaultAuxiliary();
-        rayleighCorrAlgorithm = new RayleighCorrAlgorithm(sensor.getNamePattern(), sensor.getNumBands());
-        absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(OLCI_SENSOR);
+        rayleighCorrAlgorithm = new RayleighCorrAlgorithm(sensor.getNameFormat(), sensor.getNumBands());
+        absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
 
         Product targetProduct = createTargetBands(sensor);
         setTargetProduct(targetProduct);
@@ -118,7 +117,7 @@ public class SmileCorrectionOp extends Operator {
         String targetBandName = targetBand.getName();
         int targetBandIndex = getSourceBandIndex(targetBandName);
 
-        if (Sensor.MERIS == sensor) {
+        if (Sensor.MERIS == sensor || Sensor.MERIS_4TH.equals(sensor)) {
             correctRadMeris(targetTile, targetBandName, targetBandIndex, smileAuxdata, pm);
         } else if (Sensor.OLCI == sensor) {
             if (targetBandName.matches(OLCI_RADIANCE_PATTERN)) {
@@ -148,7 +147,7 @@ public class SmileCorrectionOp extends Operator {
 
 
         if (Sensor.OLCI == sensor) {
-            createTargetBands(targetProduct, sensor.getNamePattern(), landRefCorrectionSwitches, waterRefCorrectionSwitches, refCentralWaveLengths);
+            createTargetBands(targetProduct, sensor.getNameFormat(), landRefCorrectionSwitches, waterRefCorrectionSwitches, refCentralWaveLengths);
             createTargetLambda(targetProduct, LAMBDA0_BAND_NAME_PATTERN, landRefCorrectionSwitches, waterRefCorrectionSwitches,
                                refCentralWaveLengths);
             createTargetBands(targetProduct, SOLAR_FLUX_BAND_NAME_PATTERN, landRefCorrectionSwitches, waterRefCorrectionSwitches,
@@ -158,8 +157,8 @@ public class SmileCorrectionOp extends Operator {
             copyTargetBandImage(targetProduct, ALTITUDE_BAND);
             copyTargetBandImage(targetProduct, LATITUDE_BAND);
             copyTargetBandImage(targetProduct, LONGITUDE_BAND);
-        } else if (Sensor.MERIS == sensor) {
-            createTargetBands(targetProduct, sensor.getNamePattern(), landRefCorrectionSwitches, waterRefCorrectionSwitches, refCentralWaveLengths);
+        } else if (Sensor.MERIS == sensor || Sensor.MERIS_4TH.equals(sensor)) {
+            createTargetBands(targetProduct, sensor.getNameFormat(), landRefCorrectionSwitches, waterRefCorrectionSwitches, refCentralWaveLengths);
             copyTargetBandImage(targetProduct, DETECTOR_INDEX_BAND);
             ProductUtils.copyMasks(sourceProduct, targetProduct);
         }
@@ -343,7 +342,7 @@ public class SmileCorrectionOp extends Operator {
     private void correctRad(Tile targetTile, String targetBandName, int targetBandIndex, Sensor sensor, ProgressMonitor pm) {
         checkForCancellation();
         Rectangle rectangle = targetTile.getRectangle();
-        Tile szaTile = getSourceTile(sourceProduct.getTiePointGrid(sensor.getSZA()), rectangle);
+        Tile szaTile = getSourceTile(sourceProduct.getTiePointGrid(sensor.getSzaName()), rectangle);
         Tile sourceRadianceTile = getSourceTile(sourceProduct.getBand(targetBandName), rectangle);
 
         Band sourceSolarIrradianceBand = sourceProduct.getBand(String.format(SOLAR_FLUX_BAND_NAME_PATTERN, targetBandIndex + 1));
@@ -469,20 +468,20 @@ public class SmileCorrectionOp extends Operator {
     private RayleighAux prepareRayleighAux(Rectangle rectangle) {
         RayleighAux rayleighAux = new RayleighAux();
 
-        rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getSZA()), rectangle));
-        rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getOZA()), rectangle));
-        rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getSAA()), rectangle));
-        rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getOAA()), rectangle));
-        rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(sensor.getSeaLevelPressure()), rectangle));
-        rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(sensor.getTotalOzone()), rectangle));
+        rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getSzaName()), rectangle));
+        rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getVzaName()), rectangle));
+        rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getSaaName()), rectangle));
+        rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getVaaName()), rectangle));
+        rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(sensor.getSlpName()), rectangle));
+        rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(sensor.getOzoneName()), rectangle));
         if (Sensor.MERIS.equals(sensor)) {
-            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getTiePointGrid(sensor.getAltitude()), rectangle));
-            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(sensor.getLatitude()), rectangle));
-            rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(sensor.getLongitude()), rectangle));
+            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getTiePointGrid(sensor.getAltName()), rectangle));
+            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(sensor.getLatName()), rectangle));
+            rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(sensor.getLonName()), rectangle));
         } else {
-            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(sensor.getAltitude()), rectangle));
-            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getBand(sensor.getLatitude()), rectangle));
-            rayleighAux.setLongitude(getSourceTile(sourceProduct.getBand(sensor.getLongitude()), rectangle));
+            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(sensor.getAltName()), rectangle));
+            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getBand(sensor.getLatName()), rectangle));
+            rayleighAux.setLongitude(getSourceTile(sourceProduct.getBand(sensor.getLonName()), rectangle));
         }
         return rayleighAux;
     }
@@ -558,8 +557,8 @@ public class SmileCorrectionOp extends Operator {
             solarIrradianceLowerBand = getLambdas(smileAuxdata.getDetectorSunSpectralFluxes(), lowerBandIndex, sourceTile);
             solarIrradianceUpperBand = getLambdas(smileAuxdata.getDetectorSunSpectralFluxes(), upperBandIndex, sourceTile);
 
-            Band radianceWaterLowerBand = sourceProduct.getBand(String.format(sensor.getNamePattern(), lowerBandIndex));
-            Band radianceWaterUpperBand = sourceProduct.getBand(String.format(sensor.getNamePattern(), upperBandIndex));
+            Band radianceWaterLowerBand = sourceProduct.getBand(String.format(sensor.getNameFormat(), lowerBandIndex));
+            Band radianceWaterUpperBand = sourceProduct.getBand(String.format(sensor.getNameFormat(), upperBandIndex));
 
             samplesFloatRadianceLower = getSourceTile(radianceWaterLowerBand, rectangle).getSamplesFloat();
             samplesFloatRadianceUpper = getSourceTile(radianceWaterUpperBand, rectangle).getSamplesFloat();

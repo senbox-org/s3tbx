@@ -39,7 +39,7 @@
                 <file name="org-esa-s3tbx-owt-OWTClassificationOpAction.shadow">
                     <attr name="originalFile"
                           stringvalue="Actions/Operators/org-esa-s3tbx-owt-OWTClassificationOpAction.instance"/>
-                    <attr name="position" intvalue="10000"/>
+                    <attr name="position" intvalue="10020"/>
                 </file>
 
             </folder>

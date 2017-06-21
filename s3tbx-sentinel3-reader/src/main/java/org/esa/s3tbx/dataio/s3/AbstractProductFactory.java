@@ -304,7 +304,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected final void copyMasks(Product sourceProduct, Product targetProduct, Map<String, String> mapping) {
-        final ProductNodeGroup<Mask> maskGroup = prepareMasksForCopying(sourceProduct.getMaskGroup());
+        final ProductNodeGroup<Mask> maskGroup = sourceProduct.getMaskGroup();
         for (int i = 0; i < maskGroup.getNodeCount(); i++) {
             final Mask mask = maskGroup.get(i);
             final Mask.ImageType imageType = mask.getImageType();
@@ -329,7 +329,12 @@ public abstract class AbstractProductFactory implements ProductFactory {
         }
     }
 
-    //todo this method has been added as a workaround to deal with incorrect test data. Remove it when masks are correct
+    /**
+     * Of no use anymore. Implementations return just the unchanged parameter
+     *
+     * @deprecated since SNAP 6.0, can be removed in SNAP 7.0 without further notice
+     */
+    @Deprecated()
     protected ProductNodeGroup<Mask> prepareMasksForCopying(ProductNodeGroup<Mask> maskGroup) {
         return maskGroup;
     }
@@ -423,15 +428,16 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     private Manifest createManifest(File file) throws IOException {
+        final Document xmlDocument;
         try (InputStream inputStream = new FileInputStream(file)) {
-            final Document xmlDocument = createXmlDocument(inputStream);
-            // TODO (mp/16.09.2016) - probably not needed anymore
-            // according to the documentation SYN L1C should also have a xfdumanifest file
-            if (file.getName().equals(EarthExplorerManifest.L1C_MANIFEST_FILE_NAME)) {
-                return EarthExplorerManifest.createManifest(xmlDocument);
-            }
-            return XfduManifest.createManifest(xmlDocument);
+            xmlDocument = createXmlDocument(inputStream);
         }
+        // TODO (mp/16.09.2016) - probably not needed anymore
+        // according to the documentation SYN L1C should also have a xfdumanifest file
+        if (file.getName().equals(EarthExplorerManifest.L1C_MANIFEST_FILE_NAME)) {
+            return EarthExplorerManifest.createManifest(xmlDocument);
+        }
+        return XfduManifest.createManifest(xmlDocument);
     }
 
     private Document createXmlDocument(InputStream inputStream) throws IOException {

@@ -247,7 +247,7 @@ public class ViirsPostProcessOp extends BasisOp {
         ProductUtils.copyFlagCodings(classifProduct, targetProduct);
         ProductUtils.copyGeoCoding(reflProduct, targetProduct);
 
-        ModisUtils.setupModisClassifBitmask(targetProduct);
+        ViirsUtils.setupViirsClassifBitmask(targetProduct);
     }
 
     private void combineFlags(int x, int y, Tile sourceFlagTile, Tile targetTile) {

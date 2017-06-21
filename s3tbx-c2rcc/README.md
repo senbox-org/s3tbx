@@ -3,10 +3,17 @@ This is the source distribution of the Case-2 Regional / Coast Colour (C2RCC) At
 Inherent Optical Properties (IOP) Processor for Sentinel-3 OLCI, Sentinel-2 MSI, Landsat-8, MERIS (incl. 4th repro), 
 MODIS and the SeaWiFS Level 1C radiance products.
 
+Documentation
+-------------
+As this processor is still in its pre-release phase and not yet final, the documentation is also very sparse.
+Some documentation can be found in the [docs folder](https://github.com/bcdev/s3tbx-c2rcc/tree/master/docs). 
+
 How to build
 ------------
 
-Make sure you have **git**, **JDK 1.8**, and **Maven 3** installed. Make sure Maven find's the JDK by setting the enviromment variable `JAVA_HOME` to the directory where your JDK is installed. 
+Make sure you have **[git](https://git-scm.com/)**, 
+**[JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)**, and 
+**[Maven 3](https://maven.apache.org/)** installed. Make sure Maven find's the JDK by setting the enviromment variable `JAVA_HOME` to the directory where your JDK is installed. 
 
 Clone or fork the repository at https://github.com/bcdev/s3tbx-c2rcc. 
 ```

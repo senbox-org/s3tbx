@@ -48,7 +48,7 @@ public class ViirsOp extends Operator{
     private int waterMaskResolution;
 
 
-    @SourceProduct(alias = "source", label = "Name (MODIS/SeaWiFS L1b product)", description = "The source product.")
+    @SourceProduct(alias = "source", label = "Name (VIIRS L1b product)", description = "The source product.")
     private Product sourceProduct;
 
     private Product classifProduct;

@@ -297,7 +297,6 @@ public class IdepixIO {
     public static void addRadianceBands(Product l1bProduct, Product targetProduct, String[] bandsToCopy) {
         for (String bandname : bandsToCopy) {
             if (!targetProduct.containsBand(bandname) && bandname.contains("radiance")) {
-                System.out.println("adding band: " + bandname);
                 ProductUtils.copyBand(bandname, l1bProduct, targetProduct, true);
             }
         }
@@ -310,7 +309,6 @@ public class IdepixIO {
                 if (!targetProduct.containsBand(bandname) &&
                         bandname.startsWith(Rad2ReflConstants.MERIS_AUTOGROUPING_REFL_STRING) &&
                         bandname.endsWith("_" + String.valueOf(i))) {
-                    System.out.println("adding band: " + bandname);
                     ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
                     targetProduct.getBand(bandname).setUnit("dl");
                 }
@@ -323,11 +321,40 @@ public class IdepixIO {
             for (String bandname : reflBandsToCopy) {
                 // e.g. Oa01_reflectance
                 if (!targetProduct.containsBand(bandname) && bandname.equals("Oa" + String.format("%02d", i) + "_reflectance")) {
-                    System.out.println("adding band: " + bandname);
                     ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
                     targetProduct.getBand(bandname).setUnit("dl");
                 }
             }
+        }
+    }
+
+    public static void addCawaBands(Product l1bProduct, Product targetProduct) {
+        for (int i = 12; i <= 15; i++) {
+            final String bandname = "solar_flux_band_" + i;
+            if (!targetProduct.containsBand(bandname)) {
+                ProductUtils.copyBand(bandname, l1bProduct, targetProduct, true);
+                targetProduct.getBand(bandname).setUnit("dl");
+            }
+        }
+        if (!targetProduct.containsBand("detector_index")) {
+            ProductUtils.copyBand("detector_index", l1bProduct, targetProduct, true);
+            targetProduct.getBand("detector_index").setUnit("dl");
+        }
+        if (!targetProduct.containsBand("lambda0_band_13")) {
+            ProductUtils.copyBand("lambda0_band_13", l1bProduct, targetProduct, true);
+            targetProduct.getBand("lambda0_band_13").setUnit("nm");
+        }
+        if (!targetProduct.containsBand("latitude")) {
+            ProductUtils.copyBand("latitude", l1bProduct, targetProduct, true);
+            targetProduct.getBand("latitude").setUnit("deg");
+        }
+        if (!targetProduct.containsBand("longitude")) {
+            ProductUtils.copyBand("longitude", l1bProduct, targetProduct, true);
+            targetProduct.getBand("longitude").setUnit("deg");
+        }
+        if (!targetProduct.containsBand("altitude")) {
+            ProductUtils.copyBand("altitude", l1bProduct, targetProduct, true);
+            targetProduct.getBand("altitude").setUnit("m");
         }
     }
 }

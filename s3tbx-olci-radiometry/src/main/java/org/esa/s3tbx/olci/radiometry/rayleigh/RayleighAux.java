@@ -20,7 +20,6 @@ package org.esa.s3tbx.olci.radiometry.rayleigh;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.google.common.primitives.Doubles;
-import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils;
@@ -76,11 +75,8 @@ public class RayleighAux {
     private double[] totalOzones;
     private double[] latitudes;
     private double[] solarFluxs;
-    private double[] lambdaSource;
     private double[] sourceSampleRad;
-    private int sourceBandIndex;
     private float waveLength;
-    private String sourceBandName;
     private double[] longitude;
     private double[] altitudes;
     private Map<Integer, double[]> fourierPoly;
@@ -132,12 +128,8 @@ public class RayleighAux {
         this.solarFluxs = solarFluxs;
     }
 
-    public void setLambdaSource(double[] lambdaSource) {
-        this.lambdaSource = lambdaSource;
-    }
-
     public void setAltitudes(Tile altitude) {
-        this.altitudes = SmileCorrectionUtils.getSampleDoubles(altitude);
+        this.altitudes = altitude.getSamplesDouble(); 
     }
 
     public double[] getTaur() {
@@ -187,30 +179,30 @@ public class RayleighAux {
 
         if (Objects.nonNull(sunZenithAngles) && Objects.nonNull(viewZenithAngles)) {
             for (int index = 0; index < sunZenithAngles.length; index++) {
-                double yVal = viewZenithAngles[index];
-                double xVal = sunZenithAngles[index];
+                double vzaVal = viewZenithAngles[index];
+                double szaVal = sunZenithAngles[index];
 
                 double thetaMin = thetas[0];
                 double thetaMax = thetas[thetas.length - 1];
                 List<double[]> valueList = new ArrayList<>();
                 for (int i = 0; i < rayCooefMatrixA.length; i++) {
                     double[] values = new double[4];
-                    if (yVal > thetaMin && yVal < thetaMax && xVal > thetaMin && xVal < thetaMax) {
-                        values[0] = SpikeInterpolation.interpolate2D(rayCooefMatrixA[i], thetas, thetas, xVal, yVal);
-                        values[1] = SpikeInterpolation.interpolate2D(rayCooefMatrixB[i], thetas, thetas, xVal, yVal);
-                        values[2] = SpikeInterpolation.interpolate2D(rayCooefMatrixC[i], thetas, thetas, xVal, yVal);
-                        values[3] = SpikeInterpolation.interpolate2D(rayCooefMatrixD[i], thetas, thetas, xVal, yVal);
+                    if (vzaVal >= thetaMin && vzaVal <= thetaMax && szaVal >= thetaMin && szaVal <= thetaMax) {
+                        values[0] = SpikeInterpolation.interpolate2D(rayCooefMatrixA[i], thetas, thetas, szaVal, vzaVal);
+                        values[1] = SpikeInterpolation.interpolate2D(rayCooefMatrixB[i], thetas, thetas, szaVal, vzaVal);
+                        values[2] = SpikeInterpolation.interpolate2D(rayCooefMatrixC[i], thetas, thetas, szaVal, vzaVal);
+                        values[3] = SpikeInterpolation.interpolate2D(rayCooefMatrixD[i], thetas, thetas, szaVal, vzaVal);
                         valueList.add(values);
                     } else {
-                        if (yVal < thetaMin && xVal < thetaMax) {
+                        if (vzaVal < thetaMin && szaVal < thetaMax) {
                             valueList.add(getGridValueAt(0, 0));
                         } else {
                             int len = thetas.length - 1;
-                            if (yVal > thetaMax && xVal > thetaMin) {
+                            if (vzaVal > thetaMax && szaVal > thetaMin) {
                                 valueList.add(getGridValueAt(0, len));
-                            } else if (xVal < thetaMin && yVal < thetaMax) {
+                            } else if (szaVal < thetaMin && vzaVal < thetaMax) {
                                 valueList.add(getGridValueAt(0, 0));
-                            } else if (yVal > thetaMax && xVal < thetaMin) {
+                            } else if (vzaVal > thetaMax && szaVal < thetaMin) {
                                 valueList.add(getGridValueAt(len, len));
                             }
                         }
@@ -235,14 +227,6 @@ public class RayleighAux {
 
     public double getWaveLength() {
         return waveLength;
-    }
-
-    public String getSourceBandName() {
-        return sourceBandName;
-    }
-
-    public void setSourceBandName(String targetBandName) {
-        this.sourceBandName = targetBandName;
     }
 
     public double[] getSunAzimuthAnglesRad() {
@@ -372,7 +356,7 @@ public class RayleighAux {
     }
 
     public void setSunZenithAngles(Tile sourceTile) {
-        this.sunZenithAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.sunZenithAngles = sourceTile.getSamplesDouble(); 
         setSunZenithAnglesRad(sunZenithAngles);
     }
 
@@ -391,12 +375,8 @@ public class RayleighAux {
     }
 
     public void setViewZenithAngles(Tile sourceTile) {
-        this.viewZenithAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.viewZenithAngles = sourceTile.getSamplesDouble(); 
         setViewZenithAnglesRad(viewZenithAngles);
-    }
-
-    public double[] getSunAzimuthAngles() {
-        return sunAzimuthAngles;
     }
 
     public void setSunAzimuthAngles(double... sunAzimuthAngles) {
@@ -405,7 +385,7 @@ public class RayleighAux {
     }
 
     public void setSunAzimuthAngles(Tile sourceTile) {
-        this.sunAzimuthAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.sunAzimuthAngles = sourceTile.getSamplesDouble(); 
         setSunAzimuthAnglesRad(sunAzimuthAngles);
     }
 
@@ -418,11 +398,7 @@ public class RayleighAux {
     }
 
     public void setLatitudes(Tile sourceTile) {
-        this.latitudes = SmileCorrectionUtils.getSampleDoubles(sourceTile);
-    }
-
-    public double[] getViewAzimuthAngles() {
-        return viewAzimuthAngles;
+        this.latitudes = sourceTile.getSamplesDouble(); 
     }
 
     public void setViewAzimuthAngles(double... viewAzimuthAngles) {
@@ -431,7 +407,7 @@ public class RayleighAux {
     }
 
     public void setViewAzimuthAngles(Tile sourceTile) {
-        this.viewAzimuthAngles = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.viewAzimuthAngles = sourceTile.getSamplesDouble(); 
         setViewAzimuthAnglesRad(viewAzimuthAngles);
     }
 
@@ -444,7 +420,7 @@ public class RayleighAux {
     }
 
     public void setSeaLevels(Tile sourceTile) {
-        this.seaLevels = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.seaLevels = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getTotalOzones() {
@@ -456,7 +432,7 @@ public class RayleighAux {
     }
 
     public void setTotalOzones(Tile sourceTile) {
-        this.totalOzones = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.totalOzones = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getSolarFluxs() {
@@ -464,15 +440,7 @@ public class RayleighAux {
     }
 
     public void setSolarFluxs(Tile sourceTile) {
-        this.solarFluxs = SmileCorrectionUtils.getSampleDoubles(sourceTile);
-    }
-
-    public double[] getLambdaSource() {
-        return lambdaSource;
-    }
-
-    public void setLambdaSource(Tile sourceTile) {
-        this.lambdaSource = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.solarFluxs = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getSourceSampleRad() {
@@ -480,15 +448,7 @@ public class RayleighAux {
     }
 
     public void setSourceSampleRad(Tile sourceTile) {
-        this.sourceSampleRad = SmileCorrectionUtils.getSampleDoubles(sourceTile);
-    }
-
-    public int getSourceBandIndex() {
-        return sourceBandIndex;
-    }
-
-    public void setSourceBandIndex(int sourceBandIndex) {
-        this.sourceBandIndex = sourceBandIndex;
+        this.sourceSampleRad = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getLongitude() {
@@ -500,7 +460,7 @@ public class RayleighAux {
     }
 
     public void setLongitude(Tile sourceTile) {
-        this.longitude = SmileCorrectionUtils.getSampleDoubles(sourceTile);
+        this.longitude = sourceTile.getSamplesDouble(); 
     }
 
     public double[] getInterpolateRayleighThickness(double... taur) {
@@ -608,7 +568,7 @@ public class RayleighAux {
             }
             k++;
         }
-        ArrayList<double[][][]> rayCoefficient = new ArrayList();
+        ArrayList<double[][][]> rayCoefficient = new ArrayList<>();
         rayCoefficient.add(rayCooffA);
         rayCoefficient.add(rayCooffB);
         rayCoefficient.add(rayCooffC);
@@ -628,43 +588,6 @@ public class RayleighAux {
         }
         return temp;
     }
-
-    void setInterpolation() {
-        BicubicSplineInterpolator gridInterpolator = new BicubicSplineInterpolator();
-        Map<Integer, List<double[]>> interpolate = new HashMap<>();
-        double[] sunZenithAngles = getSunZenithAngles();
-        double[] viewZenithAngles = getViewZenithAngles();
-
-        //todo mba ask Mp if to use this approach.
-        assert sunZenithAngles != null;
-
-        if (Objects.nonNull(sunZenithAngles) && Objects.nonNull(viewZenithAngles)) {
-            for (int index = 0; index < sunZenithAngles.length; index++) {
-                double yVal = viewZenithAngles[index];
-                double xVal = sunZenithAngles[index];
-
-                List<double[]> valueList = new ArrayList<>();
-                for (int i = 0; i < rayCooefMatrixA.length; i++) {
-                    double thetaMin = thetas[0];
-                    double thetaMax = thetas[thetas.length - 1];
-
-                    if (yVal > thetaMin && yVal < thetaMax) {
-                        double[] values = new double[4];
-                        values[0] = gridInterpolator.interpolate(thetas, thetas, rayCooefMatrixA[i]).value(xVal, yVal);
-                        values[1] = gridInterpolator.interpolate(thetas, thetas, rayCooefMatrixB[i]).value(xVal, yVal);
-                        values[2] = gridInterpolator.interpolate(thetas, thetas, rayCooefMatrixC[i]).value(xVal, yVal);
-                        values[3] = gridInterpolator.interpolate(thetas, thetas, rayCooefMatrixD[i]).value(xVal, yVal);
-                        valueList.add(values);
-                    } else {
-                        valueList.add(new double[]{0, 0, 0, 0});
-                    }
-                }
-                interpolate.put(index, valueList);
-            }
-            interpolateMap = interpolate;
-        }
-    }
-
 
 }
 
