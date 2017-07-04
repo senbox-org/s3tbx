@@ -46,17 +46,18 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     public final static String SLSTR_L1B_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl1b.pixelGeoCodings";
 
     //todo read all these as metadata - tf 20160401
+    // --> included Sn_quality_*.nc products to access solar irradiances - od 20170630
     private final static String[] EXCLUDED_IDS = new String[]{
                 "ADFData", "SLSTR_F1_QUALITY_IN_Data",
                 "SLSTR_F1_QUALITY_IO_Data", "SLSTR_F2_QUALITY_IN_Data", "SLSTR_F2_QUALITY_IO_Data",
-                "SLSTR_S1_QUALITY_AN_Data", "SLSTR_S1_QUALITY_AO_Data", "SLSTR_S2_QUALITY_AN_Data",
-                "SLSTR_S2_QUALITY_AO_Data", "SLSTR_S3_QUALITY_AN_Data", "SLSTR_S3_QUALITY_AO_Data",
-                "SLSTR_S4_QUALITY_AN_Data", "SLSTR_S4_QUALITY_AO_Data", "SLSTR_S4_QUALITY_BN_Data",
-                "SLSTR_S4_QUALITY_BO_Data", "SLSTR_S4_QUALITY_CN_Data", "SLSTR_S4_QUALITY_CO_Data",
-                "SLSTR_S5_QUALITY_AN_Data", "SLSTR_S5_QUALITY_AO_Data", "SLSTR_S5_QUALITY_BN_Data",
-                "SLSTR_S5_QUALITY_BO_Data", "SLSTR_S5_QUALITY_CN_Data", "SLSTR_S5_QUALITY_CO_Data",
-                "SLSTR_S6_QUALITY_AN_Data", "SLSTR_S6_QUALITY_AO_Data", "SLSTR_S6_QUALITY_BN_Data",
-                "SLSTR_S6_QUALITY_BO_Data", "SLSTR_S6_QUALITY_CN_Data", "SLSTR_S6_QUALITY_CO_Data",
+//                "SLSTR_S1_QUALITY_AN_Data", "SLSTR_S1_QUALITY_AO_Data", "SLSTR_S2_QUALITY_AN_Data",
+//                "SLSTR_S2_QUALITY_AO_Data", "SLSTR_S3_QUALITY_AN_Data", "SLSTR_S3_QUALITY_AO_Data",
+//                "SLSTR_S4_QUALITY_AN_Data", "SLSTR_S4_QUALITY_AO_Data", "SLSTR_S4_QUALITY_BN_Data",
+//                "SLSTR_S4_QUALITY_BO_Data", "SLSTR_S4_QUALITY_CN_Data", "SLSTR_S4_QUALITY_CO_Data",
+//                "SLSTR_S5_QUALITY_AN_Data", "SLSTR_S5_QUALITY_AO_Data", "SLSTR_S5_QUALITY_BN_Data",
+//                "SLSTR_S5_QUALITY_BO_Data", "SLSTR_S5_QUALITY_CN_Data", "SLSTR_S5_QUALITY_CO_Data",
+//                "SLSTR_S6_QUALITY_AN_Data", "SLSTR_S6_QUALITY_AO_Data", "SLSTR_S6_QUALITY_BN_Data",
+//                "SLSTR_S6_QUALITY_BO_Data", "SLSTR_S6_QUALITY_CN_Data", "SLSTR_S6_QUALITY_CO_Data",
                 "SLSTR_S7_QUALITY_IN_Data", "SLSTR_S7_QUALITY_IO_Data", "SLSTR_S8_QUALITY_IN_Data",
                 "SLSTR_S8_QUALITY_IO_Data", "SLSTR_S9_QUALITY_IN_Data", "SLSTR_S9_QUALITY_IO_Data"
     };

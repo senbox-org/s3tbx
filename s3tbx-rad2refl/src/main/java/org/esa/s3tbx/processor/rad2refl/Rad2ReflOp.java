@@ -38,6 +38,7 @@ import java.awt.image.Raster;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME;
 
@@ -56,9 +57,9 @@ import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_DETECTOR_INDEX_
         description = "Provides conversion from radiances to reflectances or backwards.")
 public class Rad2ReflOp extends Operator {
 
-    //    @Parameter(defaultValue = "OLCI", description = "The sensor", valueSet = {"MERIS", "OLCI", "SLSTR_500m"})
+    @Parameter(defaultValue = "OLCI", description = "The sensor", valueSet = {"MERIS", "OLCI", "SLSTR_500m"})
     // hide SLSTR for the moment, needs to be tested in more detail (20160818)
-    @Parameter(defaultValue = "OLCI", description = "The sensor", valueSet = {"MERIS", "OLCI"})
+//    @Parameter(defaultValue = "OLCI", description = "The sensor", valueSet = {"MERIS", "OLCI"})
     private Sensor sensor;
 
     @Parameter(description = "Conversion mode: from rad to refl, or backwards", valueSet = {"RAD_TO_REFL", "REFL_TO_RAD"},
@@ -68,8 +69,15 @@ public class Rad2ReflOp extends Operator {
     @SourceProduct(alias = "source", label = "Name", description = "The source product.")
     private Product sourceProduct;
 
-    @Parameter(defaultValue = "false", description = "If set, non-spectral bands from source product are written to target product")
+    @Parameter(defaultValue = "false", description = "If set, all tie point grids from source product are written to target product")
+    private boolean copyTiePointGrids;
+
+    @Parameter(defaultValue = "false", description = "If set, all flag bands and masks from source product are written to target product")
+    private boolean copyFlagBandsAndMasks;
+
+    @Parameter(defaultValue = "false", description = "If set, all other non-spectral bands from source product are written to target product")
     private boolean copyNonSpectralBands;
+
 
     private RadReflConverter converter;
 
@@ -82,6 +90,9 @@ public class Rad2ReflOp extends Operator {
     private String[] spectralOutputBandNames;
 
     private VirtualBandOpImage invalidImage;
+    private VirtualBandOpImage[] slstrInvalidImages;
+
+    private Map<String, Float> slstrSolarFluxMap;
 
 
     @Override
@@ -90,26 +101,30 @@ public class Rad2ReflOp extends Operator {
         spectralInputBandNames = isRadToReflMode() ? sensor.getRadBandNames() : sensor.getReflBandNames();
         spectralOutputBandNames = isRadToReflMode() ? sensor.getReflBandNames() : sensor.getRadBandNames();
 
-
         Product targetProduct = createTargetProduct();
         setTargetProduct(targetProduct);
 
-        setupInvalidImage(sensor.getInvalidPixelExpression());
-
-        boolean checkSensor = checkSensor(spectralInputBandNames);
-        if (sensor == Sensor.MERIS && checkSensor) {
+        boolean spectralBandsAvailable = productHasAllSpectralBands(spectralInputBandNames);
+        if (sensor == Sensor.MERIS && spectralBandsAvailable) {
+            setupInvalidImage(Sensor.MERIS.getInvalidPixelExpression());
             converter = new MerisRadReflConverter(conversionMode);
             try {
                 rad2ReflAuxdata = Rad2ReflAuxdata.loadMERISAuxdata(sourceProduct.getProductType());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (sensor == Sensor.OLCI && checkSensor) {
+        } else if (sensor == Sensor.OLCI && spectralBandsAvailable) {
+            setupInvalidImage(Sensor.OLCI.getInvalidPixelExpression());
             converter = new OlciRadReflConverter(conversionMode);
-        } else if (sensor == Sensor.SLSTR_500m && checkSensor) {
+        } else if (sensor == Sensor.SLSTR_500m && spectralBandsAvailable) {
+            slstrSolarFluxMap = SlstrRadReflConverter.getSolarFluxMapFromQualityMetadata(sourceProduct,
+                                                                                         spectralInputBandNames,
+                                                                                         isRadToReflMode());
+            slstrInvalidImages = SlstrRadReflConverter.createInvalidImages(sourceProduct);
             converter = new SlstrRadReflConverter(conversionMode);
         } else {
-            throw new OperatorException("Sensor '" + sensor.getName() + "' not supported. Please check the sensor selection.");
+            throw new OperatorException
+                    ("Sensor '" + sensor.getName() + "' not compliant with input product. Please check your selection.");
         }
 
     }
@@ -127,14 +142,16 @@ public class Rad2ReflOp extends Operator {
         if (bandIndex >= 0) {
             final Rectangle rectangle = targetTile.getRectangle();
 
-            Raster isInvalid = invalidImage.getData(rectangle);
-            // NOTE: in this case we use a single invalid expression for ALL target bands (e.g. l1_flags.INVALID for MERIS).
-            // In general, we may have different invalid expressions for different bands (e.g. containing thresholds etc.)
-            // In that case, we would have to use rasterDataNode.isPixelValid(x, y), which is rather slow...
+            Raster isInvalid;
+            if (sensor == Sensor.SLSTR_500m) {
+                isInvalid = slstrInvalidImages[bandIndex].getData(rectangle);
+            } else {
+                isInvalid = invalidImage.getData(rectangle);
+            }
 
-            final Tile szaTile = getSzaSourceTile(rectangle);
-            final Band radianceBand = sourceProduct.getBand(spectralInputBandNames[bandIndex]);
-            final Tile radianceTile = getSourceTile(radianceBand, rectangle);
+            final Band spectralBandToConvert = sourceProduct.getBand(spectralInputBandNames[bandIndex]);
+            final Tile[] szaTiles = getSzaSourceTiles(rectangle);
+            final Tile spectralBandToConvertTile = getSourceTile(spectralBandToConvert, rectangle);
 
             Tile detectorIndexTile = null;
             if (sensor == Sensor.MERIS) {
@@ -152,61 +169,70 @@ public class Rad2ReflOp extends Operator {
                         targetTile.setSample(x, y, Float.NaN);
                     } else {
                         float solarFlux = Float.NaN;
+                        float sza = Float.NaN;
                         if (solarFluxTile != null && sensor == Sensor.OLCI) {
                             solarFlux = solarFluxTile.getSampleFloat(x, y);
+                            sza = szaTiles[0].getSampleFloat(x, y);
                         } else if (detectorIndexTile != null && sensor == Sensor.MERIS) {
                             final int detectorIndex = detectorIndexTile.getSampleInt(x, y);
                             if (detectorIndex >= 0) {
                                 solarFlux = (float) rad2ReflAuxdata.getDetectorSunSpectralFluxes()[detectorIndex][bandIndex];
                             } else {
-                                solarFlux = radianceBand.getSolarFlux();
+                                solarFlux = spectralBandToConvert.getSolarFlux();
                             }
+                            sza = szaTiles[0].getSampleFloat(x, y);
                         } else if (sensor == Sensor.SLSTR_500m) {
-                            final int channel = Integer.parseInt(Sensor.SLSTR_500m.getRadBandNames()[bandIndex].substring(1, 2));
-                            solarFlux = Sensor.SLSTR_500m.getSolarFluxesDefault()[channel - 1];
+                            solarFlux = slstrSolarFluxMap.get(spectralBandToConvert.getName());
+                            if (spectralBandToConvert.getName().endsWith("o")) {
+                                sza = szaTiles[1].getSampleFloat(x, y);
+                            } else {
+                                sza = szaTiles[0].getSampleFloat(x, y);
+                            }
                         }
 
-                        final float sza = szaTile.getSampleFloat(x, y);
-                        final float radiance = radianceTile.getSampleFloat(x, y);
-                        final float reflectance = converter.convert(radiance, sza, solarFlux);
-                        targetTile.setSample(x, y, reflectance);
+                        final float spectralValueToConvert = spectralBandToConvertTile.getSampleFloat(x, y);
+                        final float spectralValueConverted = converter.convert(spectralValueToConvert, sza, solarFlux);
+                        targetTile.setSample(x, y, spectralValueConverted);
                     }
                 }
             }
         }
     }
 
-    //todo 2 mba/** write a testcase 06/05/2016
-    private boolean checkSensor(String[] firstBandName) {
+    private boolean productHasAllSpectralBands(String[] spectralInputBandNames) {
+        // check if input product contains all expected spectral bands
         List<String> allBandsName = Arrays.asList(sourceProduct.getBandNames());
         boolean checker = false;
-        for (String bandName : firstBandName) {
+        for (String bandName : spectralInputBandNames) {
             checker = allBandsName.contains(bandName);
         }
 
         return checker;
     }
 
-    private Tile getSzaSourceTile(Rectangle rectangle) {
-        Tile sourceTileSza;
+    private Tile[] getSzaSourceTiles(Rectangle rectangle) {
         try {
             if (sensor.equals(Sensor.MERIS) || sensor.equals(Sensor.OLCI)) {
                 TiePointGrid tiePointGrid = sourceProduct.getTiePointGrid(sensor.getSzaBandNames()[0]);
                 if (tiePointGrid == null) {
-                    throw new OperatorException("SZA is null ");
+                    throw new OperatorException("No Sun Zenith Angle available from source product - cannot proceed.");
                 }
-                sourceTileSza = getSourceTile(tiePointGrid, rectangle);
+                return new Tile[]{getSourceTile(tiePointGrid, rectangle)};
             } else {
-                if (sourceProduct.getBandAt(0).getName().endsWith("_o")) {
-                    sourceTileSza = getSourceTile(sourceProduct.getTiePointGrid(sensor.getSzaBandNames()[0]), rectangle);
+                // SLSTR
+                final TiePointGrid szaTpgN = sourceProduct.getTiePointGrid(sensor.getSzaBandNames()[0]);
+                final TiePointGrid szaTpgO = sourceProduct.getTiePointGrid(sensor.getSzaBandNames()[1]);
+                if (szaTpgN != null && szaTpgO != null) {
+                    final Tile sourceTileN = getSourceTile(szaTpgN, rectangle);
+                    final Tile sourceTileO = getSourceTile(szaTpgO, rectangle);
+                    return new Tile[]{sourceTileN, sourceTileO};
                 } else {
-                    sourceTileSza = getSourceTile(sourceProduct.getTiePointGrid(sensor.getSzaBandNames()[1]), rectangle);
+                    throw new OperatorException("No Sun Zenith Angle available from source product - cannot proceed.");
                 }
             }
         } catch (OperatorException e) {
-            throw new OperatorException("SZA is null ");
+            throw new OperatorException("No Sun Zenith Angle available from source product - cannot proceed.");
         }
-        return sourceTileSza;
     }
 
     private void setupInvalidImage(String expression) {
@@ -226,36 +252,43 @@ public class Rad2ReflOp extends Operator {
         for (int i = 0; i < sensor.getNumSpectralBands(); i++) {
             if (isRadToReflMode()) {
                 Band sourceBand = sourceProduct.getBand(sensor.getRadBandNames()[i]);
-                createSpectralBand(sourceBand, sensor.getReflBandNames()[i], Rad2ReflConstants.REFL_UNIT,"Reflectance converted from radiance");
+                if (sourceBand != null) {
+                    createReflectanceBand(sourceBand, sensor.getReflBandNames()[i]);
+                }
             } else {
                 Band sourceBand = sourceProduct.getBand(sensor.getReflBandNames()[i]);
-                createSpectralBand(sourceBand, sensor.getRadBandNames()[i], Rad2ReflConstants.RAD_UNIT, "Radiance converted from reflectance");
-            }
-        }
-
-        if (sensor == Sensor.MERIS || sensor == Sensor.OLCI) {
-            ProductUtils.copyBand(MERIS_DETECTOR_INDEX_DS_NAME, sourceProduct, targetProduct, true);
-        }
-
-        if (sensor != Sensor.MERIS) {
-            for (int i = 0; i < sensor.getSolarFluxBandNames().length; i++) {
-                ProductUtils.copyBand(sensor.getSolarFluxBandNames()[i], sourceProduct, targetProduct, true);
-            }
-        }
-
-        if (copyNonSpectralBands) {
-            for (Band b : sourceProduct.getBands()) {
-                if (!b.getName().contains(spectralInputBandPrefix) && !targetProduct.containsBand(b.getName())) {
-                    ProductUtils.copyBand(b.getName(), sourceProduct, targetProduct, true);
+                if (sourceBand != null) {
+                    createRadianceBand(sourceBand, sensor.getRadBandNames()[i]);
                 }
             }
         }
 
-        ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
+//        if (sensor == Sensor.MERIS || sensor == Sensor.OLCI) {
+//            ProductUtils.copyBand(MERIS_DETECTOR_INDEX_DS_NAME, sourceProduct, targetProduct, true);
+//        }
+//
+//        if (sensor == Sensor.OLCI) {
+//            for (int i = 0; i < sensor.getSolarFluxBandNames().length; i++) {
+//                ProductUtils.copyBand(sensor.getSolarFluxBandNames()[i], sourceProduct, targetProduct, true);
+//            }
+//        }
+
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
-        ProductUtils.copyMasks(sourceProduct, targetProduct);
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
-        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
+        if (copyTiePointGrids) {
+            ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
+        }
+        if (copyFlagBandsAndMasks) {
+            ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
+        }
+        if (copyNonSpectralBands) {
+            for (Band b : sourceProduct.getBands()) {
+                if (!b.isFlagBand() &&
+                        !b.getName().contains(spectralInputBandPrefix) && !targetProduct.containsBand(b.getName())) {
+                    ProductUtils.copyBand(b.getName(), sourceProduct, targetProduct, true);
+                }
+            }
+        }
 
         targetProduct.setStartTime(sourceProduct.getStartTime());
         targetProduct.setEndTime(sourceProduct.getEndTime());
@@ -265,7 +298,25 @@ public class Rad2ReflOp extends Operator {
         return targetProduct;
     }
 
-    private Band createSpectralBand(Band sourceBand, String targetBandName, String unit, String description) {
+    private Band createRadianceBand(Band sourceBand, String targetBandName) {
+        Band targetBand = new Band(targetBandName, ProductData.TYPE_FLOAT32,
+                                   sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
+
+        targetProduct.addBand(targetBand);
+        ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
+        targetBand.setDescription(Rad2ReflConstants.REFL_TO_RAD_DESCR);
+        targetBand.setUnit(Rad2ReflConstants.RAD_UNIT);
+        targetBand.setScalingFactor(1.0);
+        targetBand.setNoDataValue(Float.NaN);
+        targetBand.setNoDataValueUsed(true);
+        targetBand.setSpectralBandIndex(sourceBand.getSpectralBandIndex());
+        targetBand.setSpectralWavelength(sourceBand.getSpectralWavelength());
+        targetBand.setSpectralBandwidth(sourceBand.getSpectralBandwidth());
+
+        return targetBand;
+    }
+
+    private Band createReflectanceBand(Band sourceBand, String targetBandName) {
 //        Band targetBand = new Band(targetBandName, ProductData.TYPE_FLOAT32,
 //                                   sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
 //        targetBand.setScalingFactor(1);
@@ -277,8 +328,8 @@ public class Rad2ReflOp extends Operator {
                                    sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
         targetProduct.addBand(targetBand);
         ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
-        targetBand.setDescription(description);
-        targetBand.setUnit(unit);
+        targetBand.setDescription(Rad2ReflConstants.RAD_TO_REFL_DESCR);
+        targetBand.setUnit(Rad2ReflConstants.REFL_UNIT);
         final double scalingFactor = 1. / 10000.0f;
         targetBand.setScalingFactor(scalingFactor);
         targetBand.setNoDataValue(Float.NaN);

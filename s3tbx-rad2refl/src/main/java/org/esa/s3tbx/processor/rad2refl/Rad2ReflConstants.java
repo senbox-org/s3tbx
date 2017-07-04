@@ -9,8 +9,11 @@ import org.esa.snap.dataio.envisat.EnvisatConstants;
  */
 public class Rad2ReflConstants {
 
-    public final static String RAD_UNIT = "mw.m-2.sr-1.nm-1";
+    public final static String RAD_UNIT = "mW.m-2.sr-1.nm-1";
     public final static String REFL_UNIT = "dl";
+
+    public final static String RAD_TO_REFL_DESCR = "Reflectance converted from radiance";
+    public final static String REFL_TO_RAD_DESCR = "Radiance converted from reflectance";
 
     public final static int MERIS_NUM_SPECTRAL_BANDS = EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS;
 
