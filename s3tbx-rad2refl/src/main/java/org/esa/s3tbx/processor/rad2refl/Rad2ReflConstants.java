@@ -57,10 +57,6 @@ public class Rad2ReflConstants {
             778.75f, 865.0f, 885.0f, 900.0f, 940.0f, 1020.0f
     };
 
-    public final static int[] OLCI_MERIS_EQUIVALENT_WVL_INDICES = {
-           1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 15, 16, 17, 18
-    };
-
     public final static int OLCI_NUM_SPECTRAL_BANDS = OLCI_WAVELENGHTS.length;
 
     public final static String[] OLCI_RAD_BAND_NAMES = new String[]{
@@ -136,15 +132,12 @@ public class Rad2ReflConstants {
             "S4_reflectance_co", "S5_reflectance_co", "S6_reflectance_co"
     };
 
-    public final static String[] SLSTR_SOLAR_FLUX_BAND_NAMES = null;  // todo: if available, clarify band names in latest test products
     public final static String[] SLSTR_SZA_BAND_NAMES = {"solar_zenith_tn", "solar_zenith_to"};
 
     public static final String SLSTR_AUTOGROUPING_RAD_STRING =
             "radiance_an:radiance_ao:radiance_bn:radiance_bo:radiance_cn:radiance_co";
     public static final String SLSTR_AUTOGROUPING_REFL_STRING =
             "reflectance_an:reflectance_ao:reflectance_bn:reflectance_bo:reflectance_cn:reflectance_co";
-
-    public static final String SLSTR_INVALID_PIXEL_EXPR = "1 == 0"; // todo: define
 
     public final static float[] SLSTR_SOLAR_FLUXES_DEFAULT = {
             1837.39f,

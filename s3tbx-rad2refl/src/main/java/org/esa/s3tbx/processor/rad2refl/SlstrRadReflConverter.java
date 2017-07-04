@@ -25,23 +25,12 @@ public class SlstrRadReflConverter implements RadReflConverter {
     }
 
     @Override
-    public float[] convert(float[] spectralInputValue, float[] sza, float[] solarFlux) {
-        return new float[0];
-    }
-
-    @Override
     public float convert(float spectralInputValue, float sza, float solarFlux) {
         if (conversionMode.equals("RAD_TO_REFL")) {
             return RsMathUtils.radianceToReflectance(spectralInputValue, sza, solarFlux);
         } else {
             return RsMathUtils.reflectanceToRadiance(spectralInputValue, sza, solarFlux);
         }
-    }
-
-    float getSolarFlux(int allSpectralBandsIndex) {
-        final int channel = Integer.parseInt(Sensor.SLSTR_500m.getRadBandNames()[allSpectralBandsIndex].substring(1, 2));
-        // channel is between 1 and 6
-        return Sensor.SLSTR_500m.getSolarFluxesDefault()[channel - 1];
     }
 
     static Map<String, Float> getSolarFluxMapFromQualityMetadata(Product sourceProduct,

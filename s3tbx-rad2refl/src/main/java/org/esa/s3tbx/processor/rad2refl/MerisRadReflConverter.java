@@ -2,8 +2,6 @@ package org.esa.s3tbx.processor.rad2refl;
 
 import org.esa.snap.core.util.math.RsMathUtils;
 
-import java.util.Arrays;
-
 /**
  * Radiance/reflectance conversion for MERIS
  *
@@ -15,20 +13,6 @@ public class MerisRadReflConverter implements RadReflConverter {
 
     public MerisRadReflConverter(String conversionMode) {
         this.conversionMode = conversionMode;
-    }
-
-    @Override
-    public float[] convert(float[] spectralInputValue, float[] sza, float[] solarFlux) {
-        float[] reflectance = new float[spectralInputValue.length];
-        Arrays.fill(reflectance, Float.NaN);
-        for (int i = 0; i < spectralInputValue.length; i++) {
-            if (conversionMode.equals("RAD_TO_REFL")) {
-                reflectance[i] = RsMathUtils.radianceToReflectance(spectralInputValue[i], sza[i], solarFlux[i]);
-            } else {
-                reflectance[i] = RsMathUtils.reflectanceToRadiance(spectralInputValue[i], sza[i], solarFlux[i]);
-            }
-        }
-        return reflectance;
     }
 
     @Override

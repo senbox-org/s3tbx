@@ -58,8 +58,6 @@ import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_DETECTOR_INDEX_
 public class Rad2ReflOp extends Operator {
 
     @Parameter(defaultValue = "OLCI", description = "The sensor", valueSet = {"MERIS", "OLCI", "SLSTR_500m"})
-    // hide SLSTR for the moment, needs to be tested in more detail (20160818)
-//    @Parameter(defaultValue = "OLCI", description = "The sensor", valueSet = {"MERIS", "OLCI"})
     private Sensor sensor;
 
     @Parameter(description = "Conversion mode: from rad to refl, or backwards", valueSet = {"RAD_TO_REFL", "REFL_TO_RAD"},
@@ -262,16 +260,6 @@ public class Rad2ReflOp extends Operator {
                 }
             }
         }
-
-//        if (sensor == Sensor.MERIS || sensor == Sensor.OLCI) {
-//            ProductUtils.copyBand(MERIS_DETECTOR_INDEX_DS_NAME, sourceProduct, targetProduct, true);
-//        }
-//
-//        if (sensor == Sensor.OLCI) {
-//            for (int i = 0; i < sensor.getSolarFluxBandNames().length; i++) {
-//                ProductUtils.copyBand(sensor.getSolarFluxBandNames()[i], sourceProduct, targetProduct, true);
-//            }
-//        }
 
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);

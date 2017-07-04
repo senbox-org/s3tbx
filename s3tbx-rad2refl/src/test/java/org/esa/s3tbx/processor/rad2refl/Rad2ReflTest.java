@@ -52,28 +52,5 @@ public class Rad2ReflTest {
         }
 
     }
-
-    @Test
-    public void testGetSolarFluxSlstr() {
-        SlstrRadReflConverter converter = new SlstrRadReflConverter("RAD_TO_REFL");
-
-        assertEquals(1837.39f, converter.getSolarFlux(0), 1e-8);
-        assertEquals(1525.94f, converter.getSolarFlux(1), 1e-8);
-        assertEquals(956.17f, converter.getSolarFlux(2), 1e-8);
-        assertEquals(365.9f, converter.getSolarFlux(3), 1e-8);
-        assertEquals(248.33f, converter.getSolarFlux(4), 1e-8);
-        assertEquals(78.33f, converter.getSolarFlux(5), 1e-8);
-    }
-
-    @Test
-    public void testConvert() throws Exception {
-        SlstrRadReflConverter converter = new SlstrRadReflConverter("REFL_TO_RAD");
-        float refl = 0.1838f;
-        float sza = 0.1838f;
-        float solarFlux = 31.11985f;
-        final float rad = converter.convert(refl, sza, solarFlux);
-        System.out.println("rad = " + rad);
-
-    }
 }
 
