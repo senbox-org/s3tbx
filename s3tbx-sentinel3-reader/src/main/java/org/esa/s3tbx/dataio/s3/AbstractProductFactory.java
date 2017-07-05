@@ -126,7 +126,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     @Override
-    public final void dispose() throws IOException {
+    public void dispose() throws IOException {
         openProductList.forEach(Product::dispose);
         openProductList.clear();
     }
@@ -287,7 +287,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
             final Map<String, String> mapping = new HashMap<>();
             for (final Band sourceBand : sourceProduct.getBands()) {
                 if (!sourceBand.getName().contains("orphan")) {
-                    RasterDataNode targetNode = null;
+                    RasterDataNode targetNode;
                     if (sourceBand.getRasterWidth() == w && sourceBand.getRasterHeight() == h) {
                         targetNode = addBand(sourceBand, targetProduct);
                     } else {

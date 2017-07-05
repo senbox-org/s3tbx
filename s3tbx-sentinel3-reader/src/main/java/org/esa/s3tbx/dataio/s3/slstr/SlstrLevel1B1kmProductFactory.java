@@ -58,4 +58,8 @@ public class SlstrLevel1B1kmProductFactory extends SlstrLevel1FixedResolutionPro
                                       bandGrouping);
     }
 
+    @Override
+    protected boolean isOrphanPixelsAllowed() {
+        return false;
+    }
 }

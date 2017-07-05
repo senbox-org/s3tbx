@@ -39,4 +39,8 @@ public class SlstrLevel1B500mProductFactory extends SlstrLevel1FixedResolutionPr
         return masterProduct;
     }
 
+    @Override
+    protected boolean isOrphanPixelsAllowed() {
+        return false;
+    }
 }
