@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(displayName = "#CTL_IdepixViirsAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 0)
 @ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 700)
-@NbBundle.Messages({"CTL_IdepixViirsAction_Text=VIIRS"})
+@NbBundle.Messages({"CTL_IdepixViirsAction_Text=Suomi NPP VIIRS"})
 public class IdepixViirsAction extends AbstractSnapAction {
 
     private static final String HELP_ID = "idepixTool";
@@ -51,7 +51,7 @@ public class IdepixViirsAction extends AbstractSnapAction {
         final DefaultSingleTargetProductDialog dialog =
                 new DefaultSingleTargetProductDialog(opMetadata.alias(),
                                                      getAppContext(),
-                                                     "Idepix (VIIRS mode)",
+                                                     "Idepix (Suomi NPP VIIRS mode)",
                                                      HELP_ID);
 
         dialog.setTargetProductNameSuffix("_IDEPIX");

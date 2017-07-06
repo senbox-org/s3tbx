@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>SNAP Data Processors - Idepix Landsat-8 Algorithm Specification</title>
+    <title>SNAP Data Processors - Idepix Landsat-8 OLI Algorithm Specification</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -9,7 +9,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            SNAP Data Processors - Idepix Landsat-8 Algorithm Specification
+            SNAP Data Processors - Idepix Landsat-8 OLI Algorithm Specification
         </td>
         <td class="header" align="right"><a
                 href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
@@ -24,7 +24,7 @@
 <h4>Neural network classification</h4>
 
 <p>
-    The Idepix classification algorithm for Landsat-8 is primarily based on a neural network approach [1].
+    The Idepix classification algorithm for Landsat-8 OLI is primarily based on a neural network approach [1].
     Depending on the given scene, the user can select different neural nets for the processing, i.e. if the
     scene mainly consists of land or water pixels.
 
@@ -49,7 +49,7 @@ As output, the neural net finally provides per pixel one of the properties 'clea
 
 <h4>Additional cloud tests</h4>
 
-The classification algorithm for Landsat-8 provides a couple of further cloud tests which can be applied optionally.
+The classification algorithm for Landsat-8 OLI provides a couple of further cloud tests which can be applied optionally.
 These are:
 
 <ul>
@@ -164,7 +164,7 @@ The 'land' and 'coastline' pixels are identified from an SRTM land/water mask [5
 
 <h4>Final classification flags</h4>
 <p>
-    From the algorithm steps outlined above, the following final classification flags are provided for Landsat-8:
+    From the algorithm steps outlined above, the following final classification flags are provided for Landsat-8 OLI:
 <ul>
     <li>
         'INVALID' (input invalid or no classification possible)
@@ -200,11 +200,11 @@ The 'land' and 'coastline' pixels are identified from an SRTM land/water mask [5
 
 <h4>Known issues</h4>
 <p>
-    Due to the large number of pixels in Landsat-8 products and the variety of classification tests,
+    Due to the large number of pixels in Landsat-8 OLI products and the variety of classification tests,
     the pixel classification is usually rather time-consuming.
 </p>
 <p>
-    The following pixel properties are currently NOT provided for Landsat-8:
+    The following pixel properties are currently NOT provided for Landsat-8 OLI:
 <ul>
     <li>
         'CLOUD_SHADOW'

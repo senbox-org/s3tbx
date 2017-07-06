@@ -16,7 +16,7 @@
 
 <html>
 <head>
-    <title>SNAP Data Processors - Idepix Processor - MODIS Processor Description</title>
+    <title>SNAP Data Processors - Idepix Terra/Aqua MODIS Processor Description</title>
     <link rel="stylesheet" href="../style.css">
 </head>
 
@@ -25,7 +25,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            SNAP Data Processors - Idepix Processor - MODIS Processor Description
+            SNAP Data Processors - Idepix Terra/Aqua MODIS Processor Description
         </td>
         <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg"
                                                                                                                                                        border=0></a>
@@ -48,12 +48,12 @@
     open a data product currently not opened in the Sentinel Toolbox.
 </p>
 
-<h5>Supported MODIS Source Products</h5>
-    From the existing MODIS L1b products, the following are supported for Idepix classification:
+<h5>Supported Terra/Aqua MODIS Source Products</h5>
+    From the existing Terra/Aqua MODIS L1b products, the following are supported for Idepix classification:
     <ul>
         <li>
             SSS021KM.Ayyyyddd.hhmm.vvv.yyyydddHHMMSS:<br>
-            MODIS Aqua/Terra Calibrated Radiances 5-Min L1B Swath 1km, with SSS = MOD (Terra) or SSS = MYD (Aqua);
+            Terra/Aqua MODIS Calibrated Radiances 5-Min L1B Swath 1km, with SSS = MOD (Terra) or SSS = MYD (Aqua);
             yyyy = year; ddd = Julian day; hhmm = acquisition hour and minute in GMT; vvv = version (collection);
             yyyydddHHMMSS = production date. See e.g.
             http://gcmd.nasa.gov/records/GCMD_MOD021KM.html, https://ladsweb.nascom.nasa.gov/.
@@ -122,7 +122,7 @@
 
 <h3>The Processing Result</h3>
 The Idepix classification result is written into the target product as a flag band named 'pixel_classif_flags'.
-This band holds integer values which for MODIS follow the flag coding shown below.
+This band holds integer values which for Terra/Aqua MODIS follow the flag coding shown below.
 
 <p align="center">
     <img src="images/ModisFlagCoding.png" border="0">

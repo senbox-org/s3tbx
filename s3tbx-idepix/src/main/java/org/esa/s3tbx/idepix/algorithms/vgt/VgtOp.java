@@ -23,7 +23,7 @@ import java.util.Map;
  *
  * @author olafd
  */
-@OperatorMetadata(alias = "Idepix.Vgt",
+@OperatorMetadata(alias = "Idepix.Spot.Vegetation",
         category = "Optical/Pre-Processing",
         internal = true, // todo: remove when activated
         version = "1.0",
@@ -86,7 +86,7 @@ public class VgtOp extends BasisOp {
     private boolean useL1bLandWaterFlag;
 
 
-    @SourceProduct(alias = "l1bProduct",
+    @SourceProduct(alias = "sourceProduct",
             label = "L1b product",
             description = "The SPOT-VGT L1b product.")
     private Product sourceProduct;

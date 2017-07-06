@@ -21,9 +21,8 @@ import java.util.Map;
  *
  * @author olafd
  */
-@OperatorMetadata(alias = "Idepix.Probav",
+@OperatorMetadata(alias = "Idepix.Probav.Vegetation",
         category = "Optical/Pre-Processing",
-        internal = true, // todo: remove when activated
         version = "2.2",
         authors = "Olaf Danne",
         copyright = "(c) 2016 by Brockmann Consult",
@@ -79,9 +78,9 @@ public class ProbaVOp extends BasisOp {
     private boolean useL1bLandWaterFlag;
 
 
-    @SourceProduct(alias = "l1bProduct",
-            label = "OLCI L1b product",
-            description = "The OLCI L1b source product.")
+    @SourceProduct(alias = "sourceProduct",
+            label = "Proba-V L1b product",
+            description = "The Proba-V L1b source product.")
     private Product sourceProduct;
 
     private Product cloudProduct;

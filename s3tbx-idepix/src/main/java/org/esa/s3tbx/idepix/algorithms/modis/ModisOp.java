@@ -23,7 +23,7 @@ import java.util.Map;
  * @author olafd
  */
 @SuppressWarnings({"FieldCanBeLocal"})
-@OperatorMetadata(alias = "Idepix.Modis",
+@OperatorMetadata(alias = "Idepix.TerraAqua.Modis",
         category = "Optical/Pre-Processing",
         version = "2.2",
         authors = "Olaf Danne, Marco Zuehlke",
@@ -106,7 +106,7 @@ public class ModisOp extends BasisOp {
     private double brightnessThreshCloudAmbiguous = 0.125;
 
 
-    @SourceProduct(alias = "source", label = "Name (MODIS L1b product)", description = "The source product.")
+    @SourceProduct(alias = "sourceProduct", label = "Name (MODIS L1b product)", description = "The source product.")
     private Product sourceProduct;
 
     private Product waterMaskProduct;

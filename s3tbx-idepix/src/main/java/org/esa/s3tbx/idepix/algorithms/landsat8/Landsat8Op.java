@@ -24,17 +24,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Idepix operator for pixel identification and classification for Landsat 8
+ * Idepix operator for pixel identification and classification for Landsat-8 OLI instrument
  *
  * @author olafd
  */
 @SuppressWarnings({"FieldCanBeLocal"})
-@OperatorMetadata(alias = "Idepix.Landsat8",
+@OperatorMetadata(alias = "Idepix.Landsat8.OLI",
         category = "Optical/Pre-Processing",
         version = "2.2",
         authors = "Olaf Danne",
         copyright = "(c) 2016 by Brockmann Consult",
-        description = "Pixel identification and classification for Landsat 8.")
+        description = "Pixel identification and classification for Landsat-8 OLI instrument.")
 public class Landsat8Op extends Operator {
 
     @SourceProduct(alias = "sourceProduct",

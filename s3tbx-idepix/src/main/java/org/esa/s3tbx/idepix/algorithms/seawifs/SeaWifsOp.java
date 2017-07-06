@@ -22,8 +22,7 @@ import java.util.Map;
  * @author olafd
  */
 @SuppressWarnings({"FieldCanBeLocal"})
-@OperatorMetadata(alias = "Idepix.Seawifs",
-        internal = true, // todo: remove when activated
+@OperatorMetadata(alias = "Idepix.OrbView2.Seawifs",
         category = "Optical/Pre-Processing",
         version = "2.2",
         authors = "Olaf Danne, Marco Zuehlke",
@@ -63,7 +62,7 @@ public class SeaWifsOp extends BasisOp {
     private int waterMaskResolution;
 
 
-    @SourceProduct(alias = "source", label = "Name (SeaWiFS L1b product)", description = "The source product.")
+    @SourceProduct(alias = "sourceProduct", label = "Name (SeaWiFS L1b product)", description = "The source product.")
     private Product sourceProduct;
 
 

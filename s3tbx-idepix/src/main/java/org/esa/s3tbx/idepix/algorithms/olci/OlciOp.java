@@ -34,15 +34,14 @@ import java.util.Map;
  *
  * @author olafd
  */
-@OperatorMetadata(alias = "Idepix.Olci",
+@OperatorMetadata(alias = "Idepix.Sentinel3.Olci",
         category = "Optical/Pre-Processing",
-        internal = true, // todo: remove when activated
         version = "1.0",
         authors = "Olaf Danne",
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Pixel identification and classification for OLCI.")
 public class OlciOp extends BasisOp {
-    @SourceProduct(alias = "l1bProduct",
+    @SourceProduct(alias = "sourceProduct",
             label = "OLCI L1b product",
             description = "The OLCI L1b source product.")
     private Product sourceProduct;

@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 @ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixSeawifsAction")
 @ActionRegistration(displayName = "#CTL_IdepixSeawifsAction_Text")
 @ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 600)
-@NbBundle.Messages({"CTL_IdepixSeawifsAction_Text=SeaWiFS"})
+@NbBundle.Messages({"CTL_IdepixSeawifsAction_Text=OrbView-2 SeaWiFS"})
 public class IdepixSeawifsAction extends AbstractSnapAction {
 
     private static final String HELP_ID = "idepixTool";
@@ -34,7 +34,7 @@ public class IdepixSeawifsAction extends AbstractSnapAction {
         final OperatorMetadata opMetadata = SeaWifsOp.class.getAnnotation(OperatorMetadata.class);
         final IdepixDefaultDialog dialog = new IdepixDefaultDialog(opMetadata.alias(),
                                                                    getAppContext(),
-                                                                   "Idepix (SeaWiFS mode)",
+                                                                   "Idepix (OrbView-2 SeaWiFS mode)",
                                                                    HELP_ID,
                                                                    "_idepix");
         dialog.getJDialog().pack();

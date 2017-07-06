@@ -27,16 +27,15 @@ import java.util.Map;
  *
  * @author olafd
  */
-@OperatorMetadata(alias = "Idepix.Meris",
+@OperatorMetadata(alias = "Idepix.Envisat.Meris",
         category = "Optical/Pre-Processing",
-        internal = true, // todo: remove when activated
         version = "1.0",
         authors = "Olaf Danne",
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Pixel identification and classification for MERIS.")
 public class MerisOp extends BasisOp {
 
-    @SourceProduct(alias = "l1bProduct",
+    @SourceProduct(alias = "sourceProduct",
             label = "MERIS L1b product",
             description = "The MERIS L1b source product.")
     private Product sourceProduct;

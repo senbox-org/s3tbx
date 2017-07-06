@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(displayName = "#CTL_IdepixVgtAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 200)
 @ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 800)
-@NbBundle.Messages({"CTL_IdepixVgtAction_Text=SPOT-VGT"})
+@NbBundle.Messages({"CTL_IdepixVgtAction_Text=SPOT VGT"})
 public class IdepixVgtAction extends AbstractSnapAction {
 
     private static final String HELP_ID = "idepixTool";

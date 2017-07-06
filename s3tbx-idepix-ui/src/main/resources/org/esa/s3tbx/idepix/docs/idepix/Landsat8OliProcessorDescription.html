@@ -16,7 +16,7 @@
 
 <html>
 <head>
-    <title>SNAP Data Processors - Idepix Processor - Landsat-8 Processor Description</title>
+    <title>SNAP Data Processors - Idepix Landsat-8 OLI Processor Description</title>
     <link rel="stylesheet" href="../style.css">
 </head>
 
@@ -25,7 +25,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            SNAP Data Processors - Idepix Processor - Landsat-8 Processor Description
+            SNAP Data Processors - Idepix Landsat-8 OLI Processor Description
         </td>
         <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg"
                                                                                                                                                        border=0></a>
@@ -48,12 +48,12 @@
     open a data product currently not opened in the Sentinel Toolbox.
 </p>
 
-<h5>Supported Landsat-8 Source Products</h5>
-The following Landsat-8 source products are supported for Idepix classification:
+<h5>Supported Landsat-8 OLI Source Products</h5>
+The following Landsat-8 OLI source products are supported for Idepix classification:
 <ul>
     <li>
         Ls8ppprrrYYYYDDDGGGVV_MTL.txt:<br>
-        Landsat-8 Level 1 T- Terrain Corrected products (30/15m), for detailed product description and
+        Landsat-8 OLI Level 1 T- Terrain Corrected products (30/15m), for detailed product description and
         file naming convention see USGS Landsat Product Handbook, section4
         (http://landsat.usgs.gov/l8handbook_section4.php).
     </li>
@@ -83,8 +83,8 @@ The following Landsat-8 source products are supported for Idepix classification:
 
 
 <p>
-    <b>NOTE: </b> The pixel classification for Landsat-8, i.e. all the cloud tests, work on TOA reflectances rather than
-    radiances. As the Landsat-8 product reader by default interprets the spectral band values as radiances, a
+    <b>NOTE: </b> The pixel classification for Landsat-8 OLI, i.e. all the cloud tests, work on TOA reflectances rather than
+    radiances. As the Landsat-8 OLI product reader by default interprets the spectral band values as radiances, a
     specific property must be set to read the data as reflectances before using Idepix:
 </p>
 <ul>
@@ -112,7 +112,7 @@ The following Landsat-8 source products are supported for Idepix classification:
     <b>Refine pixel classification near coastlines (time consuming!): </b><br>
     If set, the pixel classification near coastlines is refined using a spatial filtering.
     This improves distinction of clouds and bright beaches. Note that this is a time consuming operation
-    for Landsat-8 products, as this filtering also considers neighbourhood pixels of the pixel being
+    for Landsat-8 OLI products, as this filtering also considers neighbourhood pixels of the pixel being
     classified. The default value is 'false'.
 </p>
 
@@ -205,7 +205,7 @@ The following Landsat-8 source products are supported for Idepix classification:
 
 <h3>The Processing Result</h3>
 The Idepix classification result is written into the target product as a flag band named 'pixel_classif_flags'.
-This band holds integer values which for Landsat-8 follow the flag coding shown below.
+This band holds integer values which for Landsat-8 OLI follow the flag coding shown below.
 
 <p align="center">
     <img src="images/Landsat8FlagCoding.png" border="0">

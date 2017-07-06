@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(displayName = "#CTL_IdepixModisAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 0)
 @ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 500)
-@NbBundle.Messages({"CTL_IdepixModisAction_Text=MODIS"})
+@NbBundle.Messages({"CTL_IdepixModisAction_Text=Terra/Aqua MODIS"})
 public class IdepixModisAction extends AbstractSnapAction {
 
     private static final String HELP_ID = "idepixTool";
@@ -51,7 +51,7 @@ public class IdepixModisAction extends AbstractSnapAction {
         final DefaultSingleTargetProductDialog dialog =
                 new DefaultSingleTargetProductDialog(opMetadata.alias(),
                                                      getAppContext(),
-                                                     "Idepix (MODIS mode)",
+                                                     "Idepix (Terra/Aqua MODIS mode)",
                                                      HELP_ID);
 
         dialog.setTargetProductNameSuffix("_IDEPIX");

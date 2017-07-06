@@ -22,7 +22,7 @@ import java.util.Map;
  * @author olafd
  */
 @SuppressWarnings({"FieldCanBeLocal"})
-@OperatorMetadata(alias = "Idepix.Viirs",
+@OperatorMetadata(alias = "Idepix.SuomiNpp.Viirs",
         category = "Optical/Pre-Processing",
         version = "2.2",
         authors = "Olaf Danne, Marco Zuehlke",
@@ -48,7 +48,7 @@ public class ViirsOp extends Operator{
     private int waterMaskResolution;
 
 
-    @SourceProduct(alias = "source", label = "Name (VIIRS L1b product)", description = "The source product.")
+    @SourceProduct(alias = "sourceProduct", label = "Name (VIIRS L1b product)", description = "The source product.")
     private Product sourceProduct;
 
     private Product classifProduct;
