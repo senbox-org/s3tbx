@@ -141,6 +141,11 @@ public class SmileCorrectionUtils {
             return Sensor.MERIS_4TH;
         }
 
+        isSensor = Stream.of(bandNames).anyMatch(p -> p.matches(SensorConstants.S2_MSI_NAME_PATTERN));
+        if (isSensor) {
+            return Sensor.S2_MSI;
+        }
+
         throw new OperatorException("No supported sensor found for given source product.\n" +
                                             "Only OLCI and MERIS are supported");
     }

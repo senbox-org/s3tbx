@@ -129,6 +129,18 @@ public class GaseousAbsorptionAux {
                 o3absorpInstrument.add(convolve(lower, upper, this.coeffhighres));
             }
         }
+        if (instrument.equals("S2_MSI")) {
+            lamC = new double[]{
+                    442.0, 490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 945.0};
+            double[] lamW = new double[]{20.0, 65.0, 35.0, 30.0, 15.0, 15.0, 20.0, 115.0, 20.0, 20.0}; // http://www.gdal.org/frmt_sentinel2.html
+
+            for (int i = 0; i < lamC.length; i++) {
+                double lower = lamC[i] - lamW[i] / 2;
+                double upper = lamC[i] + lamW[i] / 2;
+                o3absorpInstrument.add(convolve(lower, upper, this.coeffhighres));
+            }
+        }
+
         return Doubles.toArray(o3absorpInstrument);
     }
 

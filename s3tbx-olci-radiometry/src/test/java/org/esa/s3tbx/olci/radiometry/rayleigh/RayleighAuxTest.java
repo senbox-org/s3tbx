@@ -45,7 +45,7 @@ public class RayleighAuxTest {
         rayleighAux.setAltitudes(angleOne);
         rayleighAux.setLatitudes(angleOne);
         rayleighAux.setSeaLevels(angleOne);
-        rayleighAux.setLongitude(angleOne);
+        rayleighAux.setLongitudes(angleOne);
         rayleighAux.setSunZenithAngles(angleOne);
         rayleighAux.setSunAzimuthAngles(angleOne);
         rayleighAux.setViewAzimuthAngles(angleOne);

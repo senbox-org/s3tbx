@@ -81,7 +81,7 @@ public class RayleighCorrAlgorithm {
             double ctv = cosOZARads[i];//#cosine of view zenith angle
             double ozone = ozones[i];
             double rho_ng = rho_ng_ref[i];
-            ozoneCorrRefl[i] = getCorrOzone(rho_ng, absorpO, ozone, cts, ctv);
+            ozoneCorrRefl[i] = Double.isNaN(rho_ng) ? Double.NaN : getCorrOzone(rho_ng, absorpO, ozone, cts, ctv);
         }
         return ozoneCorrRefl;
     }
@@ -115,6 +115,10 @@ public class RayleighCorrAlgorithm {
         for (int index = 0; index < length; index++) {
 
             double corrOzone = corrOzoneRefl[index];
+            if (Double.isNaN(corrOzone)) {
+                rho_BRR[index] = RayleighConstants.INVALID_VALUE;;
+                continue;
+            }
             if (corrOzone <= 0) {
                 rho_BRR[index] = 0.0;
                 continue;

@@ -23,7 +23,10 @@ import com.google.common.primitives.Doubles;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils;
+import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelDescriptor;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
@@ -36,6 +39,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -47,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_SZA_NAME;
 
 /**
  * @author muhammad.bc.
@@ -77,7 +83,7 @@ public class RayleighAux {
     private double[] solarFluxs;
     private double[] sourceSampleRad;
     private float waveLength;
-    private double[] longitude;
+    private double[] longitudes;
     private double[] altitudes;
     private Map<Integer, double[]> fourierPoly;
     private Map<Integer, List<double[]>> interpolateMap;
@@ -138,7 +144,7 @@ public class RayleighAux {
 
     public double[] getAltitudes() {
         if (Objects.isNull(altitudes)) {
-            double[] longitudes = getLongitude();
+            double[] longitudes = getLongitudes();
             double[] latitudes = getLatitudes();
 
             if (Objects.nonNull(longitudes) && Objects.nonNull(latitudes)) {
@@ -419,6 +425,29 @@ public class RayleighAux {
         this.seaLevels = seaLevels;
     }
 
+    public void setS2MsiSeaLevelsPressures(double seaLevel, Rectangle rectangle) {
+        this.seaLevels = new double[rectangle.width * rectangle.height];
+        Arrays.fill(this.seaLevels, seaLevel);
+    }
+
+    public void setS2MsiTotalOzones(double ozone, Rectangle rectangle) {
+        this.totalOzones = new double[rectangle.width * rectangle.height];
+        Arrays.fill(this.totalOzones, ozone);
+    }
+
+    public void setS2MsiAngles(GeoCoding geoCoding, Tile szaTile, Tile vzaTile, Tile saaTile, Tile vaaTile, Rectangle rectangle) {
+        // in general we have no lat/lon raster in S2,
+        // so we use a center values for given tile, should be ok for our purpose
+        this.latitudes = new double[rectangle.width * rectangle.height];
+        this.longitudes = new double[rectangle.width * rectangle.height];
+
+        final PixelPos pixelPos = new PixelPos(rectangle.x + rectangle.width/2, rectangle.y + rectangle.height/2);
+
+        final GeoPos geoPos = geoCoding.getGeoPos(pixelPos, null);
+        Arrays.fill(this.latitudes, geoPos.getLat());
+        Arrays.fill(this.longitudes, geoPos.getLon());
+    }
+
     public void setSeaLevels(Tile sourceTile) {
         this.seaLevels = sourceTile.getSamplesDouble(); 
     }
@@ -451,16 +480,16 @@ public class RayleighAux {
         this.sourceSampleRad = sourceTile.getSamplesDouble(); 
     }
 
-    public double[] getLongitude() {
-        return longitude;
+    public double[] getLongitudes() {
+        return longitudes;
     }
 
-    public void setLongitude(double... longitude) {
-        this.longitude = longitude;
+    public void setLongitudes(double... longitudes) {
+        this.longitudes = longitudes;
     }
 
     public void setLongitude(Tile sourceTile) {
-        this.longitude = sourceTile.getSamplesDouble(); 
+        this.longitudes = sourceTile.getSamplesDouble();
     }
 
     public double[] getInterpolateRayleighThickness(double... taur) {
