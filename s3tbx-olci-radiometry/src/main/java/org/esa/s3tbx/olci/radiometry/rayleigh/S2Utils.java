@@ -19,21 +19,23 @@ import java.awt.*;
  *
  * @author olafd
  */
-public class S2Utils {
+class S2Utils {
 
     /**
      * Rescales S2 input source images to common resolution of 20m and returns a new product
      * containing the selected spectral bands and the geometry bands, all with the rescaled source images
      *
+     * todo: this might become a separate operator for more general use in S2 processors,
+     * as it avoids rescaling of the whole input product if only certain bands are needed.
+     *
      * @param sourceProduct   - the source product
      * @param sourceBandNames - the selected input spectral S2 bands
-     *
-     * @param s2MsiTargetResolution
+     * @param s2MsiTargetResolution - the target resolution (10, 20 or 60m)
      * @return s2RescaledProduct
      */
-    public static Product rescaleS2SourceImages(Product sourceProduct,
-                                                String[] sourceBandNames,
-                                                int s2MsiTargetResolution) {
+    static Product getS2ProductWithRescaledSourceBands(Product sourceProduct,
+                                                       String[] sourceBandNames,
+                                                       int s2MsiTargetResolution) {
         int s2ScaleWidth;
         int s2ScaleHeight;
         GeoCoding s2GeoCoding;
@@ -63,15 +65,13 @@ public class S2Utils {
         s2RescaledProduct.setEndTime(sourceProduct.getEndTime());
 
         for (String sourceBandName : sourceBandNames) {
-            // B5, 6, 7, 8A are already at 20m. B10-12 are currently ignored (no RC).
-            // --> remaining bands are: B1, B9 (60m); B2, B3, B4, B8 (10m)
-            downscaleS2Bands(s2RescaledProduct, sourceProduct, sourceBandName, s2MsiTargetResolution);
-            upscaleS2Bands(s2RescaledProduct, sourceProduct, sourceBandName, s2MsiTargetResolution);
-            copyS2Bands(s2RescaledProduct, sourceProduct, sourceBandName, s2MsiTargetResolution);
+            downscaleS2Band(s2RescaledProduct, sourceProduct, sourceBandName, s2MsiTargetResolution);
+            upscaleS2Band(s2RescaledProduct, sourceProduct, sourceBandName, s2MsiTargetResolution);
+            copyS2Band(s2RescaledProduct, sourceProduct, sourceBandName, s2MsiTargetResolution);
         }
 
         for (String geomBandName : SensorConstants.S2_GEOMETRY_BANDS) {
-            upscaleS2Bands(s2RescaledProduct, sourceProduct, geomBandName, s2MsiTargetResolution);
+            upscaleS2Band(s2RescaledProduct, sourceProduct, geomBandName, s2MsiTargetResolution);
         }
 
         return s2RescaledProduct;
@@ -84,7 +84,7 @@ public class S2Utils {
      * @param sourceBand - the S2 source band
      * @return spectralBandIndex
      */
-    public static int getS2SpectralBandIndex(Band sourceBand) {
+    static int getS2SpectralBandIndex(Band sourceBand) {
         // S2 spectralBandIndex:
         // bands B1..B8: spectralBandIndex = 0..7
         // band B8A: spectralBandIndex = 8
@@ -107,7 +107,7 @@ public class S2Utils {
      * @param sourceBand   - the S2 source band
      * @return targetBandName
      */
-    public static String getS2TargetBandName(String bandCategory, Band sourceBand) {
+    static String getS2TargetBandName(String bandCategory, Band sourceBand) {
         // bandCategory e.g. "rBRR_%02d"
         final String bandCategoryPrefix = bandCategory.substring(0, bandCategory.length() - 4); // e.g. "rBRR_"
 
@@ -132,7 +132,7 @@ public class S2Utils {
      * @param pattern        - the pattern
      * @return boolean
      */
-    public static boolean targetS2BandNameMatches(String targetBandName, String pattern) {
+    static boolean targetS2BandNameMatches(String targetBandName, String pattern) {
         // pattern e.g. "rtoa_\\d{2}"
         String s2Pattern;
         if (targetBandName.indexOf("_B") == targetBandName.length() - 3) {
@@ -157,7 +157,7 @@ public class S2Utils {
      *
      * @return s2SourceBandIndex
      */
-    public static int getS2SourceBandIndex(int sourceBandIndex, String targetBandName) {
+    static int getS2SourceBandIndex(int sourceBandIndex, String targetBandName) {
         // input sourceBandIndex from RayleighCorrectionOp is [1..12], but 8 for both B8 and B8A,
         // so we map it onto [1..13]
         if (sourceBandIndex >= 9 || targetBandName.endsWith("8A")) {
@@ -167,10 +167,10 @@ public class S2Utils {
         }
     }
 
-    private static void copyS2Bands(Product s2RescaledProduct,
-                                    Product sourceProduct,
-                                    String sourceBandName,
-                                    int s2MsiTargetResolution) {
+    private static void copyS2Band(Product s2RescaledProduct,
+                                   Product sourceProduct,
+                                   String sourceBandName,
+                                   int s2MsiTargetResolution) {
         String[] bandsToCopy;
         switch (s2MsiTargetResolution) {
             case 10:
@@ -195,95 +195,91 @@ public class S2Utils {
         }
     }
 
-    private static void downscaleS2Bands(Product s2RescaledProduct,
-                                         Product sourceProduct,
-                                         String sourceBandName,
-                                         int s2MsiTargetResolution) {
+    private static void downscaleS2Band(Product s2RescaledProduct,
+                                        Product sourceProduct,
+                                        String sourceBandName,
+                                        int s2MsiTargetResolution) {
 
-        String[] bandsToDownscale;
+        String[] bandsToRescale;
         int s2ScaleWidth;
         int s2ScaleHeight;
         switch (s2MsiTargetResolution) {
             case 10:
-                bandsToDownscale = SensorConstants.S2_BANDS_TO_DOWNSCALE_10;
+                bandsToRescale = SensorConstants.S2_BANDS_TO_DOWNSCALE_10;
                 s2ScaleWidth = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_10[0]).getRasterWidth();
                 s2ScaleHeight = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_10[0]).getRasterHeight();
                 break;
             case 20:
-                bandsToDownscale = SensorConstants.S2_BANDS_TO_DOWNSCALE_20;
+                bandsToRescale = SensorConstants.S2_BANDS_TO_DOWNSCALE_20;
                 s2ScaleWidth = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_20[0]).getRasterWidth();
                 s2ScaleHeight = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_20[0]).getRasterHeight();
                 break;
             case 60:
-                bandsToDownscale = SensorConstants.S2_BANDS_TO_DOWNSCALE_60;
+                bandsToRescale = SensorConstants.S2_BANDS_TO_DOWNSCALE_60;
                 s2ScaleWidth = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_60[0]).getRasterWidth();
                 s2ScaleHeight = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_60[0]).getRasterHeight();
                 break;
             default:
                 throw new OperatorException("Target resolution " + s2MsiTargetResolution + " not supported.");
         }
-        for (String bandToDownscale : bandsToDownscale) {
-            if (sourceBandName.equals(bandToDownscale)) {
-                Band sourceBand = sourceProduct.getBand(sourceBandName);
-                final float xScale = sourceBand.getRasterWidth() * 1.0f / s2ScaleWidth;
-                final float yScale = sourceBand.getRasterHeight() * 1.0f / s2ScaleHeight;
-                createS2ScaledImage(s2RescaledProduct, sourceBandName, xScale, yScale, sourceBand);
-            }
-        }
+        setupRescaledBand(s2RescaledProduct, sourceProduct, sourceBandName, bandsToRescale, s2ScaleWidth, s2ScaleHeight);
     }
 
-    private static void upscaleS2Bands(Product s2RescaledProduct,
-                                       Product sourceProduct,
-                                       String sourceBandName,
-                                       int s2MsiTargetResolution) {
-        String[] bandsToUpscale;
+    private static void upscaleS2Band(Product s2RescaledProduct,
+                                      Product sourceProduct,
+                                      String sourceBandName,
+                                      int s2MsiTargetResolution) {
+        String[] bandsToRescale;
         int s2ScaleWidth;
         int s2ScaleHeight;
         switch (s2MsiTargetResolution) {
             case 10:
-                bandsToUpscale = SensorConstants.S2_BANDS_TO_UPSCALE_10;
+                bandsToRescale = SensorConstants.S2_BANDS_TO_UPSCALE_10;
                 s2ScaleWidth = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_10[0]).getRasterWidth();
                 s2ScaleHeight = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_10[0]).getRasterHeight();
                 break;
             case 20:
-                bandsToUpscale = SensorConstants.S2_BANDS_TO_UPSCALE_20;
+                bandsToRescale = SensorConstants.S2_BANDS_TO_UPSCALE_20;
                 s2ScaleWidth = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_20[0]).getRasterWidth();
                 s2ScaleHeight = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_20[0]).getRasterHeight();
                 break;
             case 60:
-                bandsToUpscale = SensorConstants.S2_BANDS_TO_UPSCALE_60;
+                bandsToRescale = SensorConstants.S2_BANDS_TO_UPSCALE_60;
                 s2ScaleWidth = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_60[0]).getRasterWidth();
                 s2ScaleHeight = sourceProduct.getBand(SensorConstants.S2_BANDS_TO_COPY_60[0]).getRasterHeight();
                 break;
             default:
                 throw new OperatorException("Target resolution " + s2MsiTargetResolution + " not supported.");
         }
-        for (String bandToUpscale : bandsToUpscale) {
-            if (sourceBandName.equals(bandToUpscale)) {
+        setupRescaledBand(s2RescaledProduct, sourceProduct, sourceBandName, bandsToRescale, s2ScaleWidth, s2ScaleHeight);
+    }
+
+    private static void setupRescaledBand(Product s2RescaledProduct, Product sourceProduct, String sourceBandName, String[] bandsToRescale, int s2ScaleWidth, int s2ScaleHeight) {
+        for (String bandToRescale : bandsToRescale) {
+            if (sourceBandName.equals(bandToRescale)) {
                 Band sourceBand = sourceProduct.getBand(sourceBandName);
                 final float xScale = s2ScaleWidth * 1.0f / sourceBand.getRasterWidth();
                 final float yScale = s2ScaleHeight * 1.0f / sourceBand.getRasterHeight();
-                createS2ScaledImage(s2RescaledProduct, sourceBandName, xScale, yScale, sourceBand);
+                RenderedOp s2ScaledImage = createS2ScaledImage(xScale, yScale, sourceBand);
+
+                if (!s2RescaledProduct.containsBand(sourceBandName)) {
+                    final Band sourceBandRescaled = s2RescaledProduct.addBand(sourceBandName, sourceBand.getDataType());
+                    sourceBandRescaled.setSourceImage(s2ScaledImage);
+                    copyS2SourceBandProperties(sourceBand, sourceBandRescaled);
+                }
             }
         }
     }
 
-    private static void createS2ScaledImage(Product s2RescaledProduct, String sourceBandName, float xScale, float yScale, Band sourceBand) {
+    private static RenderedOp createS2ScaledImage(float xScale, float yScale, Band sourceBand) {
         BorderExtender extender = BorderExtender.createInstance(BorderExtender.BORDER_COPY);
         RenderingHints hints = new RenderingHints(JAI.KEY_BORDER_EXTENDER, extender);
-        RenderedOp scaledImage = ScaleDescriptor.create(sourceBand.getSourceImage(),
+        return ScaleDescriptor.create(sourceBand.getSourceImage(),
                                                         xScale,
                                                         yScale,
                                                         0.0f, 0.0f,
-//                                                        Interpolation.getInstance(Interpolation.INTERP_BILINEAR),
                                                         Interpolation.getInstance(Interpolation.INTERP_NEAREST),
                                                         hints);
-
-        if (!s2RescaledProduct.containsBand(sourceBandName)) {
-            final Band sourceBandRescaled = s2RescaledProduct.addBand(sourceBandName, sourceBand.getDataType());
-            sourceBandRescaled.setSourceImage(scaledImage);
-            copyS2SourceBandProperties(sourceBand, sourceBandRescaled);
-        }
     }
 
     private static void copyS2SourceBandProperties(Band sourceBand, Band sourceBandRescaled) {

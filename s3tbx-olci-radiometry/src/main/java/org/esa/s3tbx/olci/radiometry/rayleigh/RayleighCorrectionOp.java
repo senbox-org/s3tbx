@@ -46,12 +46,12 @@ import static org.esa.s3tbx.olci.radiometry.SensorConstants.*;
 import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
 
 /**
- * This operator performs radiometric corrections on OLCI and MERIS L1b data products.
+ * This operator performs radiometric corrections on OLCI, MERIS L1b and S2 MSI data products.
  *
  * @author Marco Peters, Muhammad Bala, Olaf Danne
  */
 @OperatorMetadata(alias = "RayleighCorrection",
-        description = "Performs radiometric corrections on OLCI and MERIS L1b data products.",
+        description = "Performs radiometric corrections on OLCI, MERIS L1b and S2 MSI data products.",
         authors = "Marco Peters, Muhammad Bala (Brockmann Consult)",
         copyright = "(c) 2016 by Brockmann Consult",
         category = "Optical/Pre-Processing",
@@ -137,7 +137,7 @@ public class RayleighCorrectionOp extends Operator {
         sensor = getSensorType(sourceProduct);
 
         if (sensor == Sensor.S2_MSI) {
-            s2RescaledProduct = S2Utils.rescaleS2SourceImages(sourceProduct, sourceBandNames, s2MsiTargetResolution);
+            s2RescaledProduct = S2Utils.getS2ProductWithRescaledSourceBands(sourceProduct, sourceBandNames, s2MsiTargetResolution);
             s2RescaledGeoCoding = sourceProduct.getBand("B5").getGeoCoding();
         }
 
@@ -156,6 +156,7 @@ public class RayleighCorrectionOp extends Operator {
         ProductUtils.copyFlagBands(productToProcess, targetProduct, true);
 
         targetProduct.setAutoGrouping(AUTO_GROUPING);
+//        setTargetProduct(s2RescaledProduct);  // test for rescaling only
         setTargetProduct(targetProduct);
     }
 
