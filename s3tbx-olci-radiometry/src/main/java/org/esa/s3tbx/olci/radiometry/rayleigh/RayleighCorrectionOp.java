@@ -37,11 +37,6 @@ import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
 
-import javax.media.jai.BorderExtender;
-import javax.media.jai.Interpolation;
-import javax.media.jai.JAI;
-import javax.media.jai.RenderedOp;
-import javax.media.jai.operator.ScaleDescriptor;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
@@ -63,25 +58,28 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
         version = "1.2")
 public class RayleighCorrectionOp extends Operator {
 
-    private static final String R_BRR_PATTERN = "rBRR_\\d{2}";
     private static final String AUTO_GROUPING = "rtoa:taur:rtoa_ng:rtoaRay:rBRR";
     private static final int WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION = 709;
     private static final String SOLAR_FLUX_BAND_PATTERN = "solar_flux_band_%d";
 
+    private static final String LATITUDE = "latitude";
     private static final String TP_LATITUDE = "TP_latitude";
+    private static final String LONGITUDE = "longitude";
     private static final String TP_LONGITUDE = "TP_longitude";
     private static final String TP_ALTITUDE = "TP_altitude";
-    private static final String[] BAND_CATEGORIES = new String[]{
+    private static final String AIRMASS = "airmass";
+    private static final String ALTITUDE_DEM = "dem_alt";
+
+    static final String[] BAND_CATEGORIES = new String[]{
             "taur_%02d",
             "rBRR_%02d",
             "rtoa_ng_%02d",
             "rtoa_%02d",
     };
-    private static final String AIRMASS = "airmass";
-    private static final String ALTITUDE_DEM = "dem_alt";
-    private static final String RTOA_PATTERN = "rtoa_\\d{2}";
-    private static final String TAUR_PATTERN = "taur_\\d{2}";
-    private static final String RTOA_NG_PATTERN = "rtoa_ng_\\d{2}";
+    static final String R_BRR_PATTERN = "rBRR_\\d{2}";
+    static final String RTOA_PATTERN = "rtoa_\\d{2}";
+    static final String TAUR_PATTERN = "taur_\\d{2}";
+    static final String RTOA_NG_PATTERN = "rtoa_ng_\\d{2}";
 
     @SourceProduct
     Product sourceProduct;
@@ -105,6 +103,11 @@ public class RayleighCorrectionOp extends Operator {
 
     @Parameter(defaultValue = "false", label = "Add air mass")
     private boolean addAirMass;
+
+    @Parameter(defaultValue = "20",
+            valueSet = {"10", "20", "60"},
+            label = "Image resolution in m in target product (S2 MSI only)")
+    private int s2MsiTargetResolution;
 
     @Parameter(defaultValue = "1013.25", label = "Sea level pressure in hPa (S2 MSI only)")
     private double s2MsiSeaLevelPressure;
@@ -134,7 +137,7 @@ public class RayleighCorrectionOp extends Operator {
         sensor = getSensorType(sourceProduct);
 
         if (sensor == Sensor.S2_MSI) {
-            s2RescaledProduct = S2Utils.rescaleS2SourceImages(sourceProduct, sourceBandNames);
+            s2RescaledProduct = S2Utils.rescaleS2SourceImages(sourceProduct, sourceBandNames, s2MsiTargetResolution);
             s2RescaledGeoCoding = sourceProduct.getBand("B5").getGeoCoding();
         }
 
@@ -181,21 +184,23 @@ public class RayleighCorrectionOp extends Operator {
                 setTargetSamples(qualityFlagsTile, targetTile, targetData);
             }
 
-            final int sourceBandIndex = getSourceBandIndex(targetBand.getName());
+            final int sourceBandIndex = getSourceBandIndex(targetBandName);
+            // note that sourceBandIndex is 8 for both S2 B8 and B8A!
             if (sourceBandIndex != -1) {
                 double[] rayleighOpticalThickness;
-                addAuxiliaryData(productToProcess, rayleighAux, targetRectangle, sourceBandIndex);
+                addAuxiliaryData(productToProcess, rayleighAux, targetRectangle, sourceBandIndex, targetBandName);
 
-//                if (targetBandName.matches(RTOA_PATTERN) && computeRtoa && !(sensor == Sensor.S2_MSI)) {
-                if (targetBandName.matches(RTOA_PATTERN) && computeRtoa) {
+//                if (targetBandName.matches(RTOA_PATTERN) && computeRtoa) {
+                if (targetBandNameMatches(targetBandName, RTOA_PATTERN) && computeRtoa) {
                     if (sensor == Sensor.S2_MSI) {
                         targetData = rayleighAux.getSourceSampleRad();
                     } else {
                         targetData = getReflectance(rayleighAux);
                     }
 
-                } else if (targetBandName.matches(TAUR_PATTERN) && computeTaur) {
-                    targetData = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
+//                } else if (targetBandName.matches(TAUR_PATTERN) && computeTaur) {
+                } else if (targetBandNameMatches(targetBandName, TAUR_PATTERN) && computeTaur) {
+                    targetData = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sensor, sourceBandIndex, targetBandName);
                 } else if (computeRBrr || computeRtoaNg) {
                     double[] reflectance;
                     if (sensor == Sensor.S2_MSI) {
@@ -207,12 +212,14 @@ public class RayleighCorrectionOp extends Operator {
                     if (Math.ceil(rayleighAux.getWaveLength()) == WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION) {
                         reflectance = waterVaporCorrection709(reflectance, targetRectangle, sensor);
                     }
-                    double[] corrOzoneRefl = getCorrectOzone(rayleighAux, reflectance, sourceBandIndex);
-                    if (targetBandName.matches(RTOA_NG_PATTERN) && computeRtoaNg) {
+                    double[] corrOzoneRefl = getCorrectOzone(rayleighAux, reflectance, sourceBandIndex, targetBandName);
+//                    if (targetBandName.matches(RTOA_NG_PATTERN) && computeRtoaNg) {
+                    if (targetBandNameMatches(targetBandName, RTOA_NG_PATTERN) && computeRtoaNg) {
                         targetData = corrOzoneRefl;
                     }
-                    if (targetBandName.matches(R_BRR_PATTERN) && computeRBrr) {
-                        rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex);
+//                    if (targetBandName.matches(R_BRR_PATTERN) && computeRBrr) {
+                    if (targetBandNameMatches(targetBandName, R_BRR_PATTERN) && computeRBrr) {
+                        rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sensor, sourceBandIndex, targetBandName);
                         targetData = getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
                     }
                 }
@@ -224,7 +231,6 @@ public class RayleighCorrectionOp extends Operator {
 
     private void setTargetSamples(Tile qualityFlagsTile, Tile targetTile, double[] targetData) {
         Object qualityFlags;
-        // todo: make this more general when we have more sensors!
         // we have no quality flag for S2
         if (qualityFlagsTile != null) {
             if (sensor == Sensor.MERIS) {
@@ -273,13 +279,25 @@ public class RayleighCorrectionOp extends Operator {
         return algorithm.getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
     }
 
-    private double[] getCorrectOzone(RayleighAux rayleighAux, double[] reflectance, int sourceBandIndex) {
-        double absorpO = absorpOzone[sourceBandIndex - 1];
+    private double[] getCorrectOzone(RayleighAux rayleighAux, double[] reflectance, int sourceBandIndex,
+                                     String targetBandName) {
+
+        final int absorpOzoneIndex = getAbsorpOzoneIndex(sourceBandIndex, targetBandName);
+
+        double absorpO = absorpOzone[absorpOzoneIndex - 1];
         double[] totalOzones = rayleighAux.getTotalOzones();
         double[] cosOZARads = rayleighAux.getCosOZARads();
         double[] cosSZARads = rayleighAux.getCosSZARads();
 
         return algorithm.getCorrOzone(reflectance, absorpO, totalOzones, cosOZARads, cosSZARads);
+    }
+
+    private int getAbsorpOzoneIndex(int sourceBandIndex, String targetBandName) {
+        if (sensor != null && sensor == Sensor.S2_MSI) {
+            return S2Utils.getS2SourceBandIndex(sourceBandIndex, targetBandName);
+        } else {
+            return sourceBandIndex;
+        }
     }
 
     private double[] getReflectance(RayleighAux rayleighAux) {
@@ -314,9 +332,12 @@ public class RayleighCorrectionOp extends Operator {
         for (String sourceBandName : sourceBandNames) {
             Band sourceBand = sourceProduct.getBand(sourceBandName);
             if (sourceBand != null) {
-                final int spectralBandIndex = sourceBand.getSpectralBandIndex();
+//                final int spectralBandIndex = sourceBand.getSpectralBandIndex();
+                final int spectralBandIndex = getSpectralBandIndex(sourceBand);
                 if (spectralBandIndex >= 0 && spectralBandIndex < sensor.getNumBands()) {
-                    Band targetBand = targetProduct.addBand(String.format(bandCategory, spectralBandIndex + 1),
+//                    final String targetBandName = String.format(bandCategory, spectralBandIndex + 1);
+                    final String targetBandName = getTargetBandName(bandCategory, sourceBand);
+                    Band targetBand = targetProduct.addBand(targetBandName,
                                                             ProductData.TYPE_FLOAT32);
                     targetBand.setNoDataValue(RayleighConstants.INVALID_VALUE);
                     targetBand.setNoDataValueUsed(true);
@@ -326,14 +347,38 @@ public class RayleighCorrectionOp extends Operator {
         }
     }
 
-    private void addAuxiliaryData(Product sourceProduct, RayleighAux rayleighAux, Rectangle rectangle, int sourceBandRefIndex) {
-        String format = String.format(sensor.getNameFormat(), sourceBandRefIndex);
-        Band band = sourceProduct.getBand(format);
-        String sourceBandName = band.getName();
-        rayleighAux.setWavelength(band.getSpectralWavelength());
+    private String getTargetBandName(String bandCategory, Band sourceBand) {
+        if (sensor == Sensor.S2_MSI) {
+            return S2Utils.getS2TargetBandName(bandCategory, sourceBand);
+        } else {
+            return String.format(bandCategory, sourceBand.getSpectralBandIndex() + 1);
+        }
+    }
 
+    private int getSpectralBandIndex(Band sourceBand) {
+        if (sensor == Sensor.S2_MSI) {
+            return S2Utils.getS2SpectralBandIndex(sourceBand);
+        } else {
+            return sourceBand.getSpectralBandIndex();
+        }
+    }
+
+    private boolean targetBandNameMatches(String targetBandName, String pattern) {
+        if (sensor == Sensor.S2_MSI) {
+            return S2Utils.targetS2BandNameMatches(targetBandName, pattern);
+        } else {
+            return targetBandName.matches(pattern);
+        }
+    }
+
+    private void addAuxiliaryData(Product sourceProduct, RayleighAux rayleighAux, Rectangle rectangle,
+                                  int sourceBandIndex, String targetBandName) {
+        String sourceBandName = getSourceBandName(sourceBandIndex, targetBandName);
+        Band band = sourceProduct.getBand(sourceBandName);
+
+        rayleighAux.setWavelength(band.getSpectralWavelength());
         if (sensor.equals(Sensor.OLCI)) {
-            rayleighAux.setSolarFluxs(getSourceTile(sourceProduct.getBand(String.format(SOLAR_FLUX_BAND_PATTERN, sourceBandRefIndex)), rectangle));
+            rayleighAux.setSolarFluxs(getSourceTile(sourceProduct.getBand(String.format(SOLAR_FLUX_BAND_PATTERN, sourceBandIndex)), rectangle));
             rayleighAux.setSourceSampleRad(getSourceTile(sourceProduct.getBand(sourceBandName), rectangle));
         } else if (sensor.equals(Sensor.MERIS)) {
             Band sourceBand = sourceProduct.getBand(sourceBandName);
@@ -360,6 +405,14 @@ public class RayleighCorrectionOp extends Operator {
 
             rayleighAux.setSolarFluxs(solarFlux);
         }
+    }
+
+    private String getSourceBandName(int sourceBandIndex, String targetBandName) {
+        String sourceBandName = String.format(sensor.getNameFormat(), sourceBandIndex);
+        if (sensor == Sensor.S2_MSI && targetBandName.endsWith("8A")) {
+            return sourceBandName.concat("A");
+        }
+        return sourceBandName;
     }
 
     private double[] fillDefaultArray(int length, double value) {
@@ -397,9 +450,17 @@ public class RayleighCorrectionOp extends Operator {
             rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(OLCI_VAA_NAME), rectangle));
             rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(OLCI_SLP_NAME), rectangle));
             rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(OLCI_OZONE_NAME), rectangle));
-            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_LATITUDE), rectangle));
-            rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(TP_LONGITUDE), rectangle));
-            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(OLCI_ALT_NAME), rectangle));
+            if (sourceProduct.getTiePointGrid(TP_LATITUDE) != null) {
+                rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_LATITUDE), rectangle));
+            } else {
+                rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(LATITUDE), rectangle));
+            }
+            if (sourceProduct.getTiePointGrid(TP_LONGITUDE) != null) {
+                rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(TP_LONGITUDE), rectangle));
+            } else {
+                rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(LONGITUDE), rectangle));
+            }
+//            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(OLCI_ALT_NAME), rectangle));
         } else if (sensor.equals(Sensor.S2_MSI)) {
             final Tile szaTile = getSourceTile(sourceProduct.getBand(S2_MSI_SZA_NAME), rectangle);
             rayleighAux.setSunZenithAngles(szaTile);

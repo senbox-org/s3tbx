@@ -80,14 +80,30 @@ public class SensorConstants {
     public static final double[] S2_SOLAR_FLUXES =
             {1913.57, 1941.63, 1822.61, 1512.79, 1425.56, 1288.32, 1163.19, 1036.39, 955.19, 813.04};
 
+    // B2, 3, 4, 8 are at 10m.
+    // B5, 6, 7, 8A are at 20m.
+    // B1, 9 are at 60m.
+    // B10-12 are currently ignored (no RC).
+
+    public static final String[] S2_10m_BANDS = {"B2", "B3", "B4", "B8"};
+    public static final String[] S2_20m_BANDS = {"B5", "B6", "B7", "B8A"};
+    public static final String[] S2_60m_BANDS = {"B1", "B9"};
     public static final String[] S2_GEOMETRY_BANDS =
             {S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
 
-    public static final String[] S2_BANDS_TO_UPSCALE =
+    public static final String[] S2_BANDS_TO_UPSCALE_10 =
+            {"B1", "B5", "B6", "B7", "B8A", "B9", S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
+    public static final String[] S2_BANDS_TO_UPSCALE_20 =
             {"B1", "B9", S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
+    public static final String[] S2_BANDS_TO_UPSCALE_60 =
+            {S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
 
-    public static final String[] S2_BANDS_TO_DOWNSCALE = {"B2", "B3", "B4", "B8"};
+    public static final String[] S2_BANDS_TO_DOWNSCALE_10 = {};
+    public static final String[] S2_BANDS_TO_DOWNSCALE_20 = {"B2", "B3", "B4", "B8"};
+    public static final String[] S2_BANDS_TO_DOWNSCALE_60 = {"B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A"};
 
-    public static final String[] S2_BANDS_TO_COPY = {"B5", "B6", "B7", "B8A"};
+    public static final String[] S2_BANDS_TO_COPY_10 = {"B2", "B3", "B4", "B8"};
+    public static final String[] S2_BANDS_TO_COPY_20 = {"B5", "B6", "B7", "B8A"};
+    public static final String[] S2_BANDS_TO_COPY_60 = {"B1", "B9"};
 
 }

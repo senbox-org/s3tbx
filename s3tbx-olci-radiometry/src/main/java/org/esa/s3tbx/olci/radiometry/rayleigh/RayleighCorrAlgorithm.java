@@ -2,6 +2,7 @@ package org.esa.s3tbx.olci.radiometry.rayleigh;
 
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Floats;
+import org.esa.s3tbx.olci.radiometry.Sensor;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.util.math.RsMathUtils;
 
@@ -221,11 +222,16 @@ public class RayleighCorrAlgorithm {
     }
 
 
-    public double[] getRayleighThickness(RayleighAux rayleighAux, double[] crossSectionSigma, int sourceBandIndex) {
+    public double[] getRayleighThickness(RayleighAux rayleighAux,
+                                         double[] crossSectionSigma,
+                                         Sensor sensor,
+                                         int sourceBandIndex,
+                                         String targetBandName) {
         double[] seaLevels = rayleighAux.getSeaLevels();
         double[] altitudes = rayleighAux.getAltitudes();
         double[] latitudes = rayleighAux.getLatitudes();
-        double sigma = crossSectionSigma[sourceBandIndex - 1];
+        final int crossSectionSigmaIndex = getCrossSectionSigmaIndex(sensor, sourceBandIndex, targetBandName);
+        double sigma = crossSectionSigma[crossSectionSigmaIndex - 1];
 
         double rayleighOpticalThickness[] = new double[altitudes.length];
         for (int i = 0; i < altitudes.length; i++) {
@@ -258,6 +264,13 @@ public class RayleighCorrAlgorithm {
         return ref;
     }
 
+    private int getCrossSectionSigmaIndex(Sensor sensor, int sourceBandIndex, String targetBandName) {
+        if (sensor != null && sensor == Sensor.S2_MSI) {
+            return S2Utils.getS2SourceBandIndex(sourceBandIndex, targetBandName);
+        } else {
+            return sourceBandIndex;
+        }
+    }
 
     private class OpticalThickness {
         RayleighAux rayleighAux;
@@ -273,7 +286,7 @@ public class RayleighCorrAlgorithm {
             double[] crossSectionSigma = getCrossSectionSigma(product, numBands, bandNamePattern);
             Map<Integer, double[]> thicknessPerBand = new HashMap<>();
             for (int bandIndex = 1; bandIndex <= numBands; bandIndex++) {
-                double[] rayleighThickness = getRayleighThickness(rayleighAux, crossSectionSigma, bandIndex);
+                double[] rayleighThickness = getRayleighThickness(rayleighAux, crossSectionSigma, null, bandIndex, null);
                 thicknessPerBand.put(bandIndex, rayleighThickness);
             }
             return thicknessPerBand;
