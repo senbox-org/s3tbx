@@ -32,7 +32,7 @@
                 <attr name="displayName" stringvalue="Rayleigh Correction"/>
                 <attr name="dialogTitle" stringvalue="Rayleigh Correction"/>
                 <attr name="operatorName" stringvalue="RayleighCorrection"/>
-                <attr name="helpId" stringvalue="RayleighCorrection"/>
+                <attr name="helpId" stringvalue="rayleighCorrection"/>
                 <attr name="targetProductNameSuffix" stringvalue="_rayleigh"/>
             </file>
 
@@ -68,12 +68,20 @@
         </folder>
     </folder>
 
+    <folder name="Services">
+        <folder name="javahelp">
+            <file name="org-esa-s3tbx-olci-radiometry-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="4600"/>
+            </file>
+        </folder>
+    </folder>
+
     <!--<folder name="Services">-->
-    <!--<folder name="javahelp">-->
-    <!--<file name="org-esa-s3tbx-olci-radiometry-helpset.xml" url="helpset.xml">-->
-    <!--<attr name="position" intvalue="4600"/>-->
-    <!--</file>-->
-    <!--</folder>-->
+        <!--<folder name="JavaHelp">-->
+            <!--<file name="org-esa-s3tbx-s3tbx-meris-cloud-helpset.xml" url="helpset.xml">-->
+                <!--<attr name="position" intvalue="4025"/>-->
+            <!--</file>-->
+        <!--</folder>-->
     <!--</folder>-->
 
 </filesystem>

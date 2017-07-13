@@ -37,6 +37,11 @@
                              target="merisRadToReflAlgorithmSpecification"/>
                 </tocitem>
 -->
+                <tocitem text="Rayleigh Correction" target="rayleighCorrection">
+                    <tocitem text="Overview" target="rayleighCorrection"/>
+                    <tocitem text="Processor Description" target="rayleighCorrectionProcessorDesc"/>
+                    <tocitem text="Algorithm Specification" target="rayleighCorrectionAlgorithmSpec"/>
+                </tocitem>
             </tocitem>
         </tocitem>
     </tocitem>

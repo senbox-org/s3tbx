@@ -1,0 +1,138 @@
+<!--
+  ~ Copyright (C) 2013 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - Rayleigh Correction Processor - Processor Description</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">SNAP Data Processors - Rayleigh Correction Processor - Processor Description</td>
+        <td class="header" align="right"><img src="images/snap_header.jpg" border=0></td>
+    </tr>
+</table>
+
+<h3>User Interfaces</h3>
+<p>
+    In the SNAP desktop application, the Rayleigh Correction processor can be invoked from the SNAP tool menu by
+    selecting
+    the <b>Rayleigh Correction</b> entry from the <b>Optical / Preprocessing</b> menu.
+</p>
+<p>
+    On the command line the Rayleigh Correction processor is
+    available by means of the Graph Processing Tool <em>gpt</em> which is located in the SNAP <em>bin</em>
+    directory. Typing <em>gpt RayleighCorrection -h</em> displays further information.
+</p>
+
+
+<h4>I/O Parameters Panel</h4>
+<p align="center"><img src="images/RayleighCorrectionIOParameters.png"
+                       alt="I/O Parameters of Rayleigh Correction Processor"></p>
+
+<h5>Source Product Group</h5>
+
+<p class="i1">
+    <b>Source product:</b>
+    Here the user specifies the source product.
+    The combo box presents a list of all products opened in SNAP.
+    The user may select one of these or, by clicking on the button next to the combo box, choose a product
+    from the file system.
+</p>
+
+<h5>Target Product Group</h5>
+
+<p class="i1">
+    <b>Name:</b>
+    Used to specify the name of the target product.
+</p>
+
+<p class="i1">
+    <b>Save as:</b>
+    Used to specify whether the target product should be saved to the file system. The
+    combo box presents a list of available file formats.
+    The text field or the button next to it allow to specify a target directory.
+</p>
+
+<p class="i1">
+    <b>Open in SNAP:</b>
+    Used to specify whether the target product should be opened in SNAP.
+    When the target product is not saved, it is opened in SNAP automatically.
+</p>
+
+<h4>Processing Parameters Panel</h4>
+<p align="center"><img src="images/RayleighCorrectionProcessingParameters.png"
+                       alt="Processing Parameters of Rayleigh Correction Processor"></p><br>
+
+<p class="i1">
+    <b>Source bands:</b> The bands in the L1b source product. Select the spectral bands to be Rayleigh corrected.
+    Multiple selection is possible. With this processor, the spectral bands 1-15 for MERIS, 1-21 for OLCI, and 1-9 for
+    S2 MSI can be Rayleigh corrected.
+</p>
+
+<p class="i1">
+    <b>Compute Rayleigh optical thickness bands:</b>
+    Rayleigh optical thickness bands are generated and written to the target product. Default value is false.
+</p>
+
+<p class="i1">
+    <b>Compute bottom of Rayleigh reflectance bands:</b>
+    Bottom of Rayleigh reflectance ('Rayleigh-corrected') bands are generated and written to the target product.
+    Default value is true.
+</p>
+
+<p class="i1">
+    <b>Compute gaseous absorption corrected TOA reflectance bands:</b>
+    Gaseous absorption corrected TOA reflectance bands are generated and written to the target product.
+    Default value is false.
+</p>
+
+<p class="i1">
+    <b>Compute TOA reflectance bands:</b>
+    TOA reflectance bands are generated and written to the target product. Default value is false.
+</p>
+
+<p class="i1">
+    <b>Add air mass:</b>
+    Air mass term is generated and written to the target product. Default value is false.
+</p>
+
+<p class="i1">
+    <b>Image resolution in m in target product (S2 MSI only):</b>
+    The unique image resolution in the target product. Applies for S2 MSI input products only. Source bands having
+    a different resolution are rescaled properly before being Rayleigh corrected. Default value is 20m.
+</p>
+
+<p class="i1">
+    <b>Sea level pressure in hPa (S2 MSI only):</b>
+    Constant sea level pressure in hPa. Applies for S2 MSI input products only. For OLCI and MERIS this information is
+    available from the tie point grids. Default value is 1013.25 hPa.
+</p>
+
+<p class="i1">
+    <b>Ozone in DU (S2 MSI only):</b>
+    Constant ozone value in DU. Applies for S2 MSI input products only. For OLCI and MERIS this information is
+    available from the tie point grids. Default value is 300 DU.
+</p>
+
+<hr>
+</body>
+</html>
+
+

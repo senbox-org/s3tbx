@@ -23,6 +23,9 @@
 
     <mapID target="SmileCorrection.Olci" url="radiometry/SmileCorrection.html"/>
     <!--<mapID target="GaseousAbsorption" url="radiometry/SmileCorrection.html"/>-->
-    <!--<mapID target="RayleighCorrection" url="radiometry/RayleighCorrection.html"/>-->
+
+    <mapID target="rayleighCorrection" url="radiometry/RayleighCorrectionOverview.html"/>
+    <mapID target="rayleighCorrectionProcessorDesc" url="radiometry/RayleighCorrectionProcessorDescription.html"/>
+    <mapID target="rayleighCorrectionAlgorithmSpec" url="radiometry/RayleighCorrectionAlgorithmSpecification.html"/>
 
 </map>
