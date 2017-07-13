@@ -19,7 +19,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <s3tbx-c2rcc.version>0.18-SNAPSHOT</s3tbx-c2rcc.version>
     </properties>
 
     <build>
@@ -102,7 +101,7 @@
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
             <artifactId>s3tbx-c2rcc</artifactId>
-            <version>${s3tbx-c2rcc.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.s3tbx</groupId>

@@ -64,7 +64,7 @@ import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.*;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.msi", version = "0.18",
+@OperatorMetadata(alias = "c2rcc.msi", version = "1.0",
         authors = "Roland Doerffer, Marco Peters, Sabine Embacher (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
