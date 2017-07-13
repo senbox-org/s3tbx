@@ -7,8 +7,6 @@ import java.util.Calendar;
 
 public class AncillaryCommons {
 
-    static final String ANC_DATA_URI = "http://oceandata.sci.gsfc.nasa.gov/cgi/getfile/";
-
     static AncDataFormat createPressureFormat(final double pressure_default) {
         return new AncDataFormat(
                 new String[]{

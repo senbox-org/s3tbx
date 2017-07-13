@@ -66,7 +66,7 @@ public class AtmosphericAuxdataBuilder {
                                                            ncepStartProduct, ncepEndProduct, "press", surfacePressure);
                 }
             } else {
-                final AncDownloader ancDownloader = new AncDownloader(AncillaryCommons.ANC_DATA_URI);
+                final AncDownloader ancDownloader = new AncDownloader();
                 final AncRepository ancRepository = new AncRepository(new File(atmosphericAuxDataPath), ancDownloader);
                 AncDataFormat ozoneFormat = AncillaryCommons.createOzoneFormat(ozone);
                 AncDataFormat pressureFormat = AncillaryCommons.createPressureFormat(surfacePressure);

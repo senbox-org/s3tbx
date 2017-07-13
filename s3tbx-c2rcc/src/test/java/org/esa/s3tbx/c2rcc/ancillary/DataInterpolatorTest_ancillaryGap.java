@@ -7,10 +7,7 @@ import org.junit.Test;
 
 import static junit.framework.Assert.*;
 
-/**
- * Created by Sabine on 03.09.2015.
- */
-public class DataInterpolatorTest_ancilaryGap {
+public class DataInterpolatorTest_ancillaryGap {
 
     private final double endTimeMJD = 25.5;
     private DataInterpolator di;
@@ -22,7 +19,7 @@ public class DataInterpolatorTest_ancilaryGap {
     public void setUp() throws Exception {
         p1 = new Product("p1", "t1", 2, 2);
         p1.addBand("ozone", ProductData.TYPE_FLOAT64).setDataElems(new double[]{3, 4, 5, 6});
-        p2 = null; // Ancilarry gap
+        p2 = null; // Ancillary gap
         startTimeMJD = 24.5;
         final double defaultValue = 15.0;
         di = new DataInterpolatorStatic(startTimeMJD, endTimeMJD, p1, p2, "ozone", defaultValue);

@@ -21,11 +21,10 @@ import java.util.List;
 
 public class AncDownloader {
 
-    //    private final String downloadUrl = "http://oceandata.sci.gsfc.nasa.gov/cgi/getfile/";
-    private final String downloadUrl;
+    private static final String DOWNLOAD_URL = "https://oceandata.sci.gsfc.nasa.gov/cgi/getfile/";
+    private static final String SEARCH_URL = "https://oceandata.sci.gsfc.nasa.gov/search/file_search.cgi";
 
-    public AncDownloader(String downloadUrl) {
-        this.downloadUrl = downloadUrl;
+    public AncDownloader() {
     }
 
     public File download(File[] destFiles) throws IOException {
@@ -35,7 +34,7 @@ public class AncDownloader {
         for (File destFile : destFiles) {
             final String fileName = destFile.getName();
             if (StringUtils.contains(downloadableFiles, fileName)) {
-                final String downloadUri = downloadUrl + fileName;
+                final String downloadUri = DOWNLOAD_URL + fileName;
                 final File downloadedFile = downloadFileTo(destFile, downloadUri);
                 if (downloadedFile.isFile()) {
                     return downloadedFile;
@@ -84,10 +83,10 @@ public class AncDownloader {
                 streamOut.close();
             }
             if (tempFile.renameTo(destFile)) {
-                SystemUtils.LOG.info("The ancilarry file '" + destFile.getAbsolutePath() + "' has been writen.");
+                SystemUtils.LOG.info("The ancillary file '" + destFile.getAbsolutePath() + "' has been writen.");
                 return destFile;
             } else {
-                SystemUtils.LOG.info("Unable to download the ancilarry file '" + destFile.getAbsolutePath() + "'.");
+                SystemUtils.LOG.info("Unable to download the ancillary file '" + destFile.getAbsolutePath() + "'.");
                 return null;
             }
         } finally {
@@ -98,7 +97,6 @@ public class AncDownloader {
     }
 
     private static String[] getDownloadableFiles(String searchPattern) throws IOException {
-        final String uri = "http://oceandata.sci.gsfc.nasa.gov/search/file_search.cgi";
         List<NameValuePair> urlParameters = new ArrayList<>();
         //        urlParameters.add(new BasicNameValuePair("subID", ""));
         urlParameters.add(new BasicNameValuePair("std_only", "1"));
@@ -117,7 +115,7 @@ public class AncDownloader {
         //        urlParameters.add(new BasicNameValuePair(".cgifields", "sensor"));
         //        urlParameters.add(new BasicNameValuePair(".cgifields", "cksum"));
 
-        final HttpPost post = new HttpPost(uri);
+        final HttpPost post = new HttpPost(SEARCH_URL);
         post.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36");
         //        post.setHeader("User-Agent", USER_AGENT);
 
@@ -128,33 +126,35 @@ public class AncDownloader {
         post.setHeader("Connection", "keep-alive");
         //        post.setHeader("Content-Length", "229");
         post.setHeader("Content-Type", "application/x-www-form-urlencoded");
-        post.setHeader("Cookie", "fsr.r=%7B%22d%22%3A90%2C%22i%22%3A%22d445cf0-83722180-13f0-4007-9efbe%22%2C%22e%22%3A1439906531011%7D; _ga=GA1.2.1089912019.1438162152");
+        post.setHeader("Cookie",
+                       "fsr.r=%7B%22d%22%3A90%2C%22i%22%3A%22d445cf0-83722180-13f0-4007-9efbe%22%2C%22e%22%3A1439906531011%7D; _ga=GA1.2.1089912019.1438162152");
         post.setHeader("Host", "oceandata.sci.gsfc.nasa.gov");
-        post.setHeader("Origin", "http://oceandata.sci.gsfc.nasa.gov");
-        post.setHeader("Referer", "http://oceandata.sci.gsfc.nasa.gov/search/file_search.cgi");
+        post.setHeader("Origin", "https://oceandata.sci.gsfc.nasa.gov");
+        post.setHeader("Referer", "https://oceandata.sci.gsfc.nasa.gov/search/file_search.cgi");
         post.setHeader("Upgrade-Insecure-Requests", "1");
 
 
         post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
-        final DefaultHttpClient client = new DefaultHttpClient();
-        HttpResponse response = client.execute(post);
-        //        System.out.println("\nSending 'POST' request to URL : " + uri);
-        //        System.out.println("Post parameters : " + post.getEntity());
-        //        System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+        try (DefaultHttpClient client = new DefaultHttpClient()) {
+            HttpResponse response = client.execute(post);
+            //        System.out.println("\nSending 'POST' request to URL : " + uri);
+            //        System.out.println("Post parameters : " + post.getEntity());
+            //        System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
 
-        final BufferedReader reader = new BufferedReader(
+            final BufferedReader reader = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));
-        List<String> filenames = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            final String trimedLine = line.trim();
-            final String lowLine = trimedLine.toLowerCase();
-            if (lowLine.startsWith("http")) {
-                final String filename = trimedLine.substring(trimedLine.lastIndexOf("/") + 1);
-                filenames.add(filename);
+            List<String> filenames = new ArrayList<>();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                final String trimedLine = line.trim();
+                final String lowLine = trimedLine.toLowerCase();
+                if (lowLine.startsWith("http")) {
+                    final String filename = trimedLine.substring(trimedLine.lastIndexOf("/") + 1);
+                    filenames.add(filename);
+                }
             }
+            return filenames.toArray(new String[filenames.size()]);
         }
-        return filenames.toArray(new String[filenames.size()]);
     }
 }
