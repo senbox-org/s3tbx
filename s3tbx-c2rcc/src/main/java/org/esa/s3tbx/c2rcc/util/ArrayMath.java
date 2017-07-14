@@ -1,10 +1,10 @@
-package org.esa.s3tbx;
-
-import static java.lang.Math.abs;
+package org.esa.s3tbx.c2rcc.util;
 
 import com.bc.ceres.core.Assert;
 
 import java.util.stream.DoubleStream;
+
+import static java.lang.Math.*;
 
 public class ArrayMath {
 
@@ -12,19 +12,11 @@ public class ArrayMath {
      * Returns an array. Same size as input. Filled with all the input values raised with
      * Euler's number <i>e</i> to the power of x[n]
      * @see Math#exp(double)
-     * @param x
-     * @return
      */
     public static double[] a_exp(double[] x) {
         return DoubleStream.of(x).map(Math::exp).toArray();
     }
 
-    /**
-     *
-     * @param x
-     * @param ind
-     * @return
-     */
     public static double[] a_ind(double[] x, int[] ind) {
         double[] y = new double[ind.length];
         for (int i = 0; i < ind.length; i++) {
@@ -36,8 +28,6 @@ public class ArrayMath {
     /**
      * Returns the smallest value of all the {@code double} values.
      * @see Math#min(double, double)
-     * @param x
-     * @return
      */
     public static double a_min(double[] x) {
         double min = Double.POSITIVE_INFINITY;
@@ -50,8 +40,6 @@ public class ArrayMath {
     /**
      * Returns the greatest value of all the {@code double} values.
      * @see Math#max(double, double)
-     * @param x
-     * @return
      */
     public static double a_max(double[] x) {
         double max = Double.NEGATIVE_INFINITY;
@@ -73,9 +61,6 @@ public class ArrayMath {
     /**
      * Returns a {@code double[]} array with quotients x[n] divided by y[n].
      * It is mandatory that both input arrays must have the same size.
-     * @param x
-     * @param y
-     * @return
      */
     public static double[] a_div(double[] x, double[] y) {
         Assert.argument(x.length == y.length);
@@ -89,8 +74,6 @@ public class ArrayMath {
     /**
      * Returns an array of log(x)
      * @see Math#log(double)
-     * @param x
-     * @return
      */
     public static double[] a_log(double[] x) {
         return DoubleStream.of(x).map(Math::log).toArray();

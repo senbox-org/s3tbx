@@ -1,6 +1,6 @@
 package org.esa.s3tbx.c2rcc.ancillary;
 
-public class AncDataFormat {
+class AncDataFormat {
 
     private final String[] filenameSuffix;
     private final String bandName;

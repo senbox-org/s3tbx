@@ -14,7 +14,7 @@ import org.esa.snap.core.util.SystemUtils;
 
 import java.io.IOException;
 
-public abstract class DataInterpolator {
+abstract class DataInterpolator {
 
     abstract double getValue(double timeMJD, double lat, double lon) throws IOException;
 

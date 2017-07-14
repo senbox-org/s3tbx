@@ -4,7 +4,7 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.Product;
 
-public class DataInterpolatorStatic extends DataInterpolator {
+class DataInterpolatorStatic extends DataInterpolator {
 
     private final double startTimeMJD;
     private final double endTimeMJD;

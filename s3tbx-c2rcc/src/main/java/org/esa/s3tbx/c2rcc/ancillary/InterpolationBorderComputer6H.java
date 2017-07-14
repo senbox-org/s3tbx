@@ -1,8 +1,8 @@
 package org.esa.s3tbx.c2rcc.ancillary;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.convertToFileNamePräfix;
+import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
 
-public class InterpolationBorderComputer6H implements InterpolationBorderComputer {
+class InterpolationBorderComputer6H implements InterpolationBorderComputer {
 
     private double startFileTimeMJD;
 

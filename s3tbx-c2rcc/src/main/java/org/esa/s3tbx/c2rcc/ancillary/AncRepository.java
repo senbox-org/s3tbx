@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AncRepository {
+class AncRepository {
 
     private final File repsitoryRoot;
     private final AncDownloader ancDownloader;

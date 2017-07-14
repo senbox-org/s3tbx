@@ -18,14 +18,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-public class AncDownloader {
+class AncDownloader {
 
     private static final String DOWNLOAD_URL = "https://oceandata.sci.gsfc.nasa.gov/cgi/getfile/";
     private static final String SEARCH_URL = "https://oceandata.sci.gsfc.nasa.gov/search/file_search.cgi";
+    private static final Logger LOGGER = SystemUtils.LOG;
 
-    public AncDownloader() {
-    }
 
     public File download(File[] destFiles) throws IOException {
         String searchPattern = extractPrefix(destFiles[0]) + "*";
@@ -56,8 +56,8 @@ public class AncDownloader {
 
         final DefaultHttpClient client = new DefaultHttpClient();
         HttpResponse response = client.execute(get);
-        SystemUtils.LOG.info("\nSending 'GET' request to URL : " + downloadUri);
-        SystemUtils.LOG.info("Response Code : " + response.getStatusLine().getStatusCode());
+        LOGGER.fine("Sending 'GET' request to URL : " + downloadUri);
+        LOGGER.fine("Response Code : " + response.getStatusLine().getStatusCode());
 
         final InputStream inputStream = response.getEntity().getContent();
         final String filename = destFile.getName();
@@ -83,10 +83,10 @@ public class AncDownloader {
                 streamOut.close();
             }
             if (tempFile.renameTo(destFile)) {
-                SystemUtils.LOG.info("The ancillary file '" + destFile.getAbsolutePath() + "' has been written.");
+                LOGGER.fine("The ancillary file '" + destFile.getAbsolutePath() + "' has been written.");
                 return destFile;
             } else {
-                SystemUtils.LOG.info("Unable to download the ancillary file '" + destFile.getAbsolutePath() + "'.");
+                LOGGER.warning("Unable to download the ancillary file '" + destFile.getAbsolutePath() + "'.");
                 return null;
             }
         } finally {

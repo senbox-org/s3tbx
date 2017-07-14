@@ -1,6 +1,6 @@
 package org.esa.s3tbx.c2rcc.ancillary;
 
-public interface InterpolationBorderComputer {
+interface InterpolationBorderComputer {
 
     void setInterpolationTimeMJD(double timeMJD);
 

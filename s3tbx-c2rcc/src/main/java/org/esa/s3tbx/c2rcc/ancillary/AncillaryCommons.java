@@ -5,7 +5,7 @@ import org.esa.snap.core.gpf.OperatorException;
 
 import java.util.Calendar;
 
-public class AncillaryCommons {
+class AncillaryCommons {
 
     static AncDataFormat createPressureFormat(final double pressure_default) {
         return new AncDataFormat(

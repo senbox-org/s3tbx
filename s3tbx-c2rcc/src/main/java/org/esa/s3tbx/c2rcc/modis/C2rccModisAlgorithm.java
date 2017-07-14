@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static java.lang.Math.*;
-import static org.esa.s3tbx.ArrayMath.*;
+import static org.esa.s3tbx.c2rcc.util.ArrayMath.*;
 
 /**
  * @author Wolfgang Schoenfeld

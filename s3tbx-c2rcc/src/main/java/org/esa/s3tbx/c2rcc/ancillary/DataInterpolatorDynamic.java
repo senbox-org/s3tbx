@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataInterpolatorDynamic extends DataInterpolator {
+class DataInterpolatorDynamic extends DataInterpolator {
 
     private final Map<Double, DataInterpolatorStatic> interpolatorMap;
     private final AncRepository ancRepository;
