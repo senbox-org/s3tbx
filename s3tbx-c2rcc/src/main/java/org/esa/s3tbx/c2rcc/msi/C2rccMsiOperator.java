@@ -51,7 +51,6 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 
 import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.*;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)

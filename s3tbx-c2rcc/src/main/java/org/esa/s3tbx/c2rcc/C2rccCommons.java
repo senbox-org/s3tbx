@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc;
 
+import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.ConstantTimeCoding;
 import org.esa.snap.core.datamodel.Product;
@@ -77,5 +78,21 @@ public class C2rccCommons {
         band.setGeophysicalNoDataValue(Double.NaN);
         band.setNoDataValueUsed(true);
         return band;
+    }
+
+    public static double fetchSurfacePressure(AtmosphericAuxdata atmosphericAuxdata, double timeMJD, int x, int y, double lat, double lon) {
+        try {
+            return atmosphericAuxdata.getSurfacePressure(timeMJD, x, y, lat, lon);
+        } catch (Exception e) {
+            throw new OperatorException("Unable to fetch surface pressure value from auxdata.", e);
+        }
+    }
+
+    public static double fetchOzone(final AtmosphericAuxdata atmosphericAuxdata, double timeMJD, int x, int y, double lat, double lon) {
+        try {
+            return atmosphericAuxdata.getOzone(timeMJD, x, y, lat, lon);
+        } catch (Exception e) {
+            throw new OperatorException("Unable to fetch ozone value from auxdata.", e);
+        }
     }
 }

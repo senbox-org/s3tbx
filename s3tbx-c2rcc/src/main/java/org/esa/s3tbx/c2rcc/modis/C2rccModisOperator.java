@@ -29,7 +29,6 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.io.IOException;
 
-import static org.esa.s3tbx.c2rcc.ancillary.AncillaryCommons.*;
 import static org.esa.s3tbx.c2rcc.modis.C2rccModisAlgorithm.*;
 import static org.esa.s3tbx.c2rcc.util.TargetProductPreparer.*;
 
@@ -272,8 +271,8 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
             double mjd = timeCoding.getMJD(pixelPos);
             GeoPos geoPos = geoCoding.getGeoPos(pixelPos, new GeoPos());
 
-            double ozone = fetchOzone(atmosphericAuxdata, mjd, x, y, geoPos.lat, geoPos.lon);
-            double atmPress = fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, geoPos.lat, geoPos.lon);
+            double ozone = C2rccCommons.fetchOzone(atmosphericAuxdata, mjd, x, y, geoPos.lat, geoPos.lon);
+            double atmPress = C2rccCommons.fetchSurfacePressure(atmosphericAuxdata, mjd, x, y, geoPos.lat, geoPos.lon);
             Result result = algorithm.processPixel(
                     toa_ref,
                     sourceSamples[SUN_ZEN_IX].getDouble(),
