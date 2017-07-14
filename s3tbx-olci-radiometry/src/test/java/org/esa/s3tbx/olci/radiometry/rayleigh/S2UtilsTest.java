@@ -103,4 +103,16 @@ public class S2UtilsTest {
         assertEquals(10, S2Utils.getS2SourceBandIndex(9, "rBRR_B9"));
         assertEquals(13, S2Utils.getS2SourceBandIndex(12, "rBRR_B12"));
     }
+
+    @Test
+    public void testGetNumBandsToRcCorrect() throws Exception {
+        String[] inputBands = new String[]{"B1", "B4", "B7", "B8A"};
+        assertEquals(4, S2Utils.getNumBandsToRcCorrect(inputBands));
+
+        inputBands = new String[]{"B7", "B8A", "B10", "B11"};
+        assertEquals(2, S2Utils.getNumBandsToRcCorrect(inputBands));
+
+        inputBands = new String[]{"B12", "B10", "B11"};
+        assertEquals(0, S2Utils.getNumBandsToRcCorrect(inputBands));
+    }
 }

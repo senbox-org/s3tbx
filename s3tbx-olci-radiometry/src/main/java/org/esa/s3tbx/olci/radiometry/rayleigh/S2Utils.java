@@ -24,12 +24,12 @@ class S2Utils {
     /**
      * Rescales S2 input source images to common resolution of 20m and returns a new product
      * containing the selected spectral bands and the geometry bands, all with the rescaled source images
-     *
+     * <p>
      * todo: this might become a separate operator for more general use in S2 processors,
      * as it avoids rescaling of the whole input product if only certain bands are needed.
      *
-     * @param sourceProduct   - the source product
-     * @param sourceBandNames - the selected input spectral S2 bands
+     * @param sourceProduct         - the source product
+     * @param sourceBandNames       - the selected input spectral S2 bands
      * @param s2MsiTargetResolution - the target resolution (10, 20 or 60m)
      * @return s2RescaledProduct
      */
@@ -153,8 +153,7 @@ class S2Utils {
      * i.e. corrects for the duplicated index '8' for bands B8 and B8A
      *
      * @param sourceBandIndex - the original source band index
-     * @param targetBandName - the target band name
-     *
+     * @param targetBandName  - the target band name
      * @return s2SourceBandIndex
      */
     static int getS2SourceBandIndex(int sourceBandIndex, String targetBandName) {
@@ -165,6 +164,26 @@ class S2Utils {
         } else {
             return sourceBandIndex;
         }
+    }
+
+    /**
+     * Returns the number of selected source bands to be Rayleigh corrected.
+     *
+     * @param sourceBandNames - the selected source band names
+     *
+     * @return number of bands to be Rayleigh corrected
+     */
+    static int getNumBandsToRcCorrect(String[] sourceBandNames) {
+        int numBandsToRcCorrect = 0;
+        for (String sourceBandName : sourceBandNames) {
+            for (String bandToRcCorrect : SensorConstants.S2_BANDS_TO_RC_CORRECT) {
+                if (sourceBandName.equals(bandToRcCorrect)) {
+                    numBandsToRcCorrect++;
+                    break;
+                }
+            }
+        }
+        return numBandsToRcCorrect;
     }
 
     private static void copyS2Band(Product s2RescaledProduct,
@@ -275,11 +294,11 @@ class S2Utils {
         BorderExtender extender = BorderExtender.createInstance(BorderExtender.BORDER_COPY);
         RenderingHints hints = new RenderingHints(JAI.KEY_BORDER_EXTENDER, extender);
         return ScaleDescriptor.create(sourceBand.getSourceImage(),
-                                                        xScale,
-                                                        yScale,
-                                                        0.0f, 0.0f,
-                                                        Interpolation.getInstance(Interpolation.INTERP_NEAREST),
-                                                        hints);
+                                      xScale,
+                                      yScale,
+                                      0.0f, 0.0f,
+                                      Interpolation.getInstance(Interpolation.INTERP_NEAREST),
+                                      hints);
     }
 
     private static void copyS2SourceBandProperties(Band sourceBand, Band sourceBandRescaled) {
@@ -293,5 +312,4 @@ class S2Utils {
         sourceBandRescaled.setSpectralBandwidth(sourceBand.getSpectralBandwidth());
         sourceBandRescaled.setSpectralBandIndex(sourceBand.getSpectralBandIndex());
     }
-
 }

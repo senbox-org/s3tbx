@@ -60,7 +60,7 @@ public class SensorConstants {
     public static final String OLCI_NAME_PATTERN = "Oa\\d+_radiance";
     public static final String OLCI_BAND_INFO_FILE_NAME = "band_info_olci.txt";
 
-    public static final int S2_MSI_NUM_BANDS = 9; // B1-B9, we skip B10-B12 for the moment
+    public static final int S2_MSI_NUM_BANDS = 10; // B1-B9 + B8A, we skip B10-B12 for the moment
     public static final String S2_MSI_SZA_NAME = "sun_zenith";
     public static final String S2_MSI_VZA_NAME = "view_zenith_mean";
     public static final String S2_MSI_SAA_NAME = "sun_azimuth";
@@ -84,12 +84,8 @@ public class SensorConstants {
     // B5, 6, 7, 8A are at 20m.
     // B1, 9 are at 60m.
     // B10-12 are currently ignored (no RC).
-
-    public static final String[] S2_10m_BANDS = {"B2", "B3", "B4", "B8"};
-    public static final String[] S2_20m_BANDS = {"B5", "B6", "B7", "B8A"};
-    public static final String[] S2_60m_BANDS = {"B1", "B9"};
-    public static final String[] S2_GEOMETRY_BANDS =
-            {S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
+    public static final String[] S2_BANDS_TO_RC_CORRECT = {"B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9"};
+    public static final String[] S2_GEOMETRY_BANDS = {S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
 
     public static final String[] S2_BANDS_TO_UPSCALE_10 =
             {"B1", "B5", "B6", "B7", "B8A", "B9", S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};

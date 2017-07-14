@@ -23,7 +23,6 @@ import org.esa.s3tbx.olci.radiometry.Sensor;
 import org.esa.s3tbx.olci.radiometry.SensorConstants;
 import org.esa.s3tbx.olci.radiometry.gasabsorption.GaseousAbsorptionAux;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.Operator;
@@ -122,7 +121,6 @@ public class RayleighCorrectionOp extends Operator {
     private double[] crossSectionSigma;
 
     private Product s2RescaledProduct;
-    private GeoCoding s2RescaledGeoCoding;
 
     private Product productToProcess;
 
@@ -137,8 +135,11 @@ public class RayleighCorrectionOp extends Operator {
         sensor = getSensorType(sourceProduct);
 
         if (sensor == Sensor.S2_MSI) {
+            if (S2Utils.getNumBandsToRcCorrect(sourceBandNames) <= 0) {
+                throw new OperatorException
+                        ("Please select spectral band(s) between B1 and B9 for S2 MSI Rayleigh Correction.");
+            }
             s2RescaledProduct = S2Utils.getS2ProductWithRescaledSourceBands(sourceProduct, sourceBandNames, s2MsiTargetResolution);
-            s2RescaledGeoCoding = sourceProduct.getBand("B5").getGeoCoding();
         }
 
         algorithm = new RayleighCorrAlgorithm(sensor.getNameFormat(), sensor.getNumBands());
@@ -474,7 +475,7 @@ public class RayleighCorrectionOp extends Operator {
             rayleighAux.setS2MsiSeaLevelsPressures(s2MsiSeaLevelPressure, rectangle);
             rayleighAux.setS2MsiTotalOzones(s2MsiOzone, rectangle);
 
-            rayleighAux.setS2MsiAngles(s2RescaledGeoCoding, szaTile, vzaTile, saaTile, vaaTile, rectangle);
+            rayleighAux.setS2MsiAngles(s2RescaledProduct.getSceneGeoCoding(), szaTile, vzaTile, saaTile, vaaTile, rectangle);
         }
 
         return rayleighAux;
