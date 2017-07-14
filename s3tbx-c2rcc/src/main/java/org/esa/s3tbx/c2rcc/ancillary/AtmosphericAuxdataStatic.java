@@ -11,13 +11,6 @@ import java.util.TimeZone;
 
 class AtmosphericAuxdataStatic implements AtmosphericAuxdata {
 
-    private static final int[] months = new int[]{
-                Calendar.JANUARY, Calendar.FEBRUARY, Calendar.MARCH,
-                Calendar.APRIL, Calendar.MAY, Calendar.JUNE,
-                Calendar.JULY, Calendar.AUGUST, Calendar.SEPTEMBER,
-                Calendar.OCTOBER, Calendar.NOVEMBER, Calendar.DECEMBER
-    };
-
     private final DataInterpolator ozoneInterpolator;
     private final DataInterpolator pressureInterpolator;
 
@@ -90,31 +83,23 @@ class AtmosphericAuxdataStatic implements AtmosphericAuxdata {
         }
         final File fileLocation = product.getFileLocation();
         final String fileName = fileLocation.getName();
-        int year = Integer.parseInt(fileName.substring(1, 5));
-        int dayInYear = Integer.parseInt(fileName.substring(5, 8));
-        int[] firstDaysOfMonths = {1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
-        if (isLeapYear(year)) {
-            firstDaysOfMonths = new int[]{1, 32, 61, 92, 122, 153, 183, 214, 245, 275, 306, 336};
-        }
-        int month = months[11];
-        int dayInMonth = dayInYear - firstDaysOfMonths[11];
-        for (int i = 1; i < firstDaysOfMonths.length; i++) {
-            int firstDayOfMonth = firstDaysOfMonths[i];
-            if (dayInYear <= firstDayOfMonth) {
-                month = months[i - 1];
-                dayInMonth = dayInYear - firstDaysOfMonths[i - 1] + 1;
-                break;
-            }
-        }
-        int hour = Integer.parseInt(fileName.substring(8, 10));
-        final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
-        calendar.set(year, month, dayInMonth, hour, 0, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        final Calendar calendar = createCalendarByFilename(fileName);
         product.setStartTime(ProductData.UTC.create(calendar.getTime(), 0));
         return product.getStartTime().getMJD();
     }
 
-    private static boolean isLeapYear(int year) {
-        return !(year % 4 != 0 || year % 400 == 0);
+    static Calendar createCalendarByFilename(String fileName) {
+        int year = Integer.parseInt(fileName.substring(1, 5));
+        int doy = Integer.parseInt(fileName.substring(5, 8));
+        int hour = Integer.parseInt(fileName.substring(8, 10));
+        final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.DAY_OF_YEAR, doy);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar;
     }
+
 }
