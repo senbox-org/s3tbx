@@ -83,7 +83,7 @@ public class AncDownloader {
                 streamOut.close();
             }
             if (tempFile.renameTo(destFile)) {
-                SystemUtils.LOG.info("The ancillary file '" + destFile.getAbsolutePath() + "' has been writen.");
+                SystemUtils.LOG.info("The ancillary file '" + destFile.getAbsolutePath() + "' has been written.");
                 return destFile;
             } else {
                 SystemUtils.LOG.info("Unable to download the ancillary file '" + destFile.getAbsolutePath() + "'.");
