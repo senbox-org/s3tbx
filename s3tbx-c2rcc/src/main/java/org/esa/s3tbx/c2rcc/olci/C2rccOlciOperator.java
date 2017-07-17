@@ -162,13 +162,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @SourceProduct(label = "OLCI L1b product", description = "OLCI L1b source product.")
     private Product sourceProduct;
 
-    @SourceProduct(description = "A second source product which is congruent to the L1b source product but contains cloud flags. " +
-            "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
-            "containing source product. Expression example: '!quality_flags.invalid && !quality_flags.land && !$cloudProduct.l2_flags.CLOUD' ",
-            optional = true,
-            label = "Product with cloud flag")
-    private Product cloudProduct;
-
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
             "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,

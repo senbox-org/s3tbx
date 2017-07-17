@@ -165,13 +165,6 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             description = "Landsat 8 source product.")
     private Product sourceProduct;
 
-    @SourceProduct(description = "A second source product which is congruent to the L1b source product but contains cloud flags. " +
-            "So the user can define a valid pixel expression referring both, the L1b and the cloud flag " +
-            "containing source product. Expression example: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN && !$cloudProduct.l2_flags.CLOUD' ",
-            optional = true,
-            label = "Product with cloud flag")
-    private Product cloudProduct;
-
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
             "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
