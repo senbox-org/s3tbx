@@ -36,10 +36,10 @@
 <h3>User Interfaces</h3>
 
 <p>
-    The BRR Processing Tool can be invoked from the VISAT tool menu by selecting
+    The BRR Processing Tool can be invoked from the SNAP tool menu by selecting
     the <b>Compute Rayleigh correction from a MERIS L1b product...</b> entry, or in batch mode by using the command line
     tool <i><code>gpt</code></i> (Graph Processing Tool) which is located
-    in the BEAM <code>bin</code> directory.
+    in the SNAP <code>bin</code> directory.
 </p>
 
 <br>
@@ -52,7 +52,7 @@
 <h4>I/O Parameters</h4>
 
 <p>
-    Selecting the <b>Compute Rayleigh correction from a MERIS L1b product...</b> entry from the VISAT tool menu pops up the
+    Selecting the <b>Compute Rayleigh correction from a MERIS L1b product...</b> entry from the SNAP tool menu pops up the
     following dialog:
 </p>
 
@@ -65,7 +65,7 @@
 <p class="i1">
     <b>MERIS_L1b:</b>
     Here the user specifies the MERIS L1b source product. The combo box presents
-    a list of all products open in VISAT. The user may select one of these
+    a list of all products open in SNAP. The user may select one of these
     or, by clicking on the button next to the combo box, choose a product
     from the file system.
 </p>
@@ -85,9 +85,9 @@
 </p>
 
 <p class="i1">
-    <b>Open in VISAT:</b>
-    Used to specify whether the target product should be opened in VISAT. When the
-    the target product is not saved, it is opened in VISAT automatically.
+    <b>Open in SNAP:</b>
+    Used to specify whether the target product should be opened in SNAP. When the
+    target product is not saved, it is opened in SNAP automatically.
 </p>
 
 
@@ -143,7 +143,7 @@
 <p class="i1">
     <b>Open Parameters...:</b>
     When this entry is selected, an 'Open File' dialog will appear.
-    Here, a BEAM GPF parameters XML file can be selected, containing
+    Here, a SNAP GPF parameters XML file can be selected, containing
     MERIS BRR processing parameters which were saved earlier.
     These parameters will be loaded and applied for an upcoming processing.
 </p>
@@ -152,7 +152,7 @@
     <b>Save Parameters...:</b>
     When this entry is selected, a 'Save File' dialog will appear.
     Here, the current set of MERIS BRR processing parameters can be saved into a
-    BEAM GPF parameters XML file for later re-usage.
+    SNAP GPF parameters XML file for later re-usage.
 </p>
 
 <p class="i1">
@@ -217,13 +217,13 @@
 <!-------- Command line --------------------------------------->
 <h3>Processing from Command Line</h3>
 
-Since the MERIS BRR Processor makes use of the BEAM graph processing framework, it can be
-used also with the 'gpt' command line tool outside BEAM-VISAT. The graph processing is invoked
+Since the MERIS BRR Processor makes use of the SNAP graph processing framework, it can be
+used also with the 'gpt' command line tool outside SNAP Desktop. The graph processing is invoked
 by the command
 <div class="itemizedlist">
     <ul type="bullet">
         <li style="list-style-type: disc">
-            ${BEAM-INSTALL-DIR}/bin/gpt
+            ${SNAP-INSTALL-DIR}/bin/gpt
         </li>
     </ul>
 </div>
@@ -232,7 +232,7 @@ To obtain general help on the graph processing, use the command
 <div class="itemizedlist">
     <ul type="bullet">
         <li style="list-style-type: disc">
-            ${BEAM-INSTALL-DIR}/bin/gpt -h
+            ${SNAP-INSTALL-DIR}/bin/gpt -h
         </li>
     </ul>
 </div>
@@ -241,7 +241,7 @@ Specific help on the MERIS BRR processor can be obtained with
 <div class="itemizedlist">
     <ul type="bullet">
         <li style="list-style-type: disc">
-            ${BEAM-INSTALL-DIR}/bin/gpt -h Meris.Brr
+            ${SNAP-INSTALL-DIR}/bin/gpt -h Meris.Brr
         </li>
     </ul>
 </div>
@@ -258,7 +258,7 @@ For example, a MERIS BRR computation could be started with
 <div class="itemizedlist">
     <ul type="bullet">
         <li style="list-style-type: disc">
-            ${BEAM-INSTALL-DIR}/bin/gpt test_BRR.xml -SmerisL1bProduct=./MER_BRR_test.dim
+            ${SNAP-INSTALL-DIR}/bin/gpt test_BRR.xml -SmerisL1bProduct=./MER_BRR_test.dim
 
         </li>
     </ul>
