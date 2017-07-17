@@ -149,7 +149,6 @@ public class C2rccOperator extends Operator {
         } else if (isMsi(sourceProduct)) {
             C2rccMsiOperator c2rccMsiOperator = new C2rccMsiOperator();
             c2rccMsiOperator.setParameterDefaultValues();
-            c2rccMsiOperator.setUseEcmwfAuxData(useEcmwfAuxData);
             configure(c2rccMsiOperator);
             targetProduct = setSourceAndGetTarget(c2rccMsiOperator);
         } else {

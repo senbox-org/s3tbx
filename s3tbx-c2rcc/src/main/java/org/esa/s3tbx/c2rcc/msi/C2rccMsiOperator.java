@@ -138,8 +138,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
     static final String RASTER_NAME_VIEW_ZENITH = "view_zenith_mean";
     static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth_mean";
-    private static final String RASTER_NAME_SEA_LEVEL_PRESSURE = "sea_level_pressure";
-    private static final String RASTER_NAME_TOTAL_OZONE = "total_ozone";
 
     private static final String STANDARD_NETS = "C2RCC-Nets";
     private static final String EXTREME_NETS = "C2X-Nets";
@@ -280,11 +278,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             label = "Derive water reflectance from path radiance and transmittance")
     private boolean deriveRwFromPathAndTransmittance;
 
-    @Parameter(defaultValue = "false", description =
-            "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
-            label = "Use ECMWF aux data of source product")
-    private boolean useEcmwfAuxData;
-
     @Parameter(defaultValue = "true", label = "Output TOA reflectances")
     private boolean outputRtoa;
 
@@ -328,10 +321,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
         this.atmosphericAuxDataPath = atmosphericAuxDataPath;
-    }
-
-    public void setUseEcmwfAuxData(boolean useEcmwfAuxData) {
-        this.useEcmwfAuxData = useEcmwfAuxData;
     }
 
     @Override
@@ -968,14 +957,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         assertSourceRaster(RASTER_NAME_VIEW_ZENITH, msgFormat);
         assertSourceRaster(RASTER_NAME_VIEW_AZIMUTH, msgFormat);
 
-        if(useEcmwfAuxData){
-            String ecmwfMsg = "For ECMWF usage a '%s' raster is required";
-            assertSourceRaster(RASTER_NAME_SEA_LEVEL_PRESSURE, ecmwfMsg);
-            assertSourceRaster(RASTER_NAME_TOTAL_OZONE, ecmwfMsg);
-        }
-
-
-
         try {
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
                 String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
@@ -1154,10 +1135,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
         auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
         auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
-        if (useEcmwfAuxData) {
-            auxdataBuilder.useAtmosphericRaster(sourceProduct.getRasterDataNode(RASTER_NAME_TOTAL_OZONE),
-                                                sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
-        }
         try {
             atmosphericAuxdata = auxdataBuilder.create();
         } catch (Exception e) {
