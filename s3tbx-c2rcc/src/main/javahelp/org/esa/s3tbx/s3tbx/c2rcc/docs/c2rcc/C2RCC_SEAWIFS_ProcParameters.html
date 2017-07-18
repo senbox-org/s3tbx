@@ -1,0 +1,66 @@
+<!--
+  ~ Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - C2RCC SeaWiFS Processing Parameters</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">C2RCC SeaWiFS Processing Parameters</td>
+        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+                src="../images/snap_header.jpg"
+                border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h3>SeaWiFS Processing Parameters</h3>
+
+<img src="images/proc_params/c2rcc_seawifs_proc_params.png" align="right"/>
+
+<ul>
+    <li><b>Valid-pixel expression</b><br>
+        The arithmetic expression defines the pixels which are valid for processing. Pixels which are not valid will be marked as no-data in the
+        target product.
+    </li>
+    <li><b>Salinity</b><br>
+        The value used as water salinity for the scene.
+    </li>
+    <li><b>Temperature</b><br>
+        The value used as water temperature for the scene.
+    </li>
+    <li><b>Ozone</b><br>
+        The value used as ozone if not provided by auxiliary data
+    </li>
+    <li><b>Air Pressure</b><br>
+        The value used as air pressure if not provided by auxiliary data
+    </li>
+    <li><b>Output AC reflectances as rrs instead of rhow</b><br>
+        Reflectance values in the target product shall be written as remote sensing reflectances and not as water leaving reflectances
+    </li>
+    <li><b>Output TOSA reflectances</b><br>
+        Can be enabled to include the TOSA reflectances in the target product.
+    </li>
+</ul>
+
+<hr>
+</body>
+</html>
