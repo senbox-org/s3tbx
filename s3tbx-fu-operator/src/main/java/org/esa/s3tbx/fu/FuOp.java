@@ -191,7 +191,7 @@ public class FuOp extends PixelOperator {
 
             autoDetectedInstrument = true;
         }
-        fuAlgo = new FuAlgoImpl(instrument);
+        fuAlgo = new FuAlgo(instrument);
         reflecBandNames = findWaveBand(sourceProduct, this.instrument.getWavelengths(), MAX_DELTA_WAVELENGTH);
         final int bandNum = reflecBandNames.length;
         if (bandNum != instrument.getWavelengths().length) {
