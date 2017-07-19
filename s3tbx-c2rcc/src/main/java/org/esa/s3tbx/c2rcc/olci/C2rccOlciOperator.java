@@ -62,7 +62,7 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
         authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
-        description = "Performs atmospheric correction and IOP retrieval with uncertainties on OLCI L1b data products.")
+        description = "Performs atmospheric correction and IOP retrieval with uncertainties on SENTINEL-3 OLCI L1B data products.")
 public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurable {
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
