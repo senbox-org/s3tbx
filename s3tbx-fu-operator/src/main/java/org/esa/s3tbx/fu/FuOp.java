@@ -191,7 +191,7 @@ public class FuOp extends PixelOperator {
 
             autoDetectedInstrument = true;
         }
-        fuAlgo = new FuAlgoFactory(instrument).create();
+        fuAlgo = new FuAlgoImpl(instrument);
         reflecBandNames = findWaveBand(sourceProduct, this.instrument.getWavelengths(), MAX_DELTA_WAVELENGTH);
         final int bandNum = reflecBandNames.length;
         if (bandNum != instrument.getWavelengths().length) {
@@ -268,7 +268,7 @@ public class FuOp extends PixelOperator {
         if (StringUtils.isNotNullAndNotEmpty(validExpression)) {
             sourceSampleConfigurer.setValidPixelMask(validExpression);
         } else {
-            final String[] validExpressions = instrument.getValidExpression();
+            final String[] validExpressions = instrument.getValidExpressions();
             for (String expression : validExpressions) {
                 boolean isCompatible = sourceProduct.isCompatibleBandArithmeticExpression(expression);
                 if (isCompatible) {

@@ -1,7 +1,5 @@
 package org.esa.s3tbx.fu;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -14,8 +12,7 @@ public class FulAlgoTest {
 
     @Test
     public void testComputeMeris() {
-        FuAlgoFactory factory = new FuAlgoFactory(Instrument.MERIS);
-        FuAlgo fuAlgo = factory.create();
+        FuAlgo fuAlgo = new FuAlgoImpl(Instrument.MERIS);
         FuResult result = fuAlgo.compute(new double[]{0.00981, 0.011, 0.01296, 0.01311, 0.01193, 0.00298, 0.0016, 0.0014, 0.00081});
 
         // Intermediate Results
@@ -35,8 +32,7 @@ public class FulAlgoTest {
 
     @Test
     public void testComputeModis() {
-        FuAlgoFactory factory = new FuAlgoFactory(Instrument.MODIS);
-        FuAlgo fuAlgo = factory.create();
+        FuAlgo fuAlgo = new FuAlgoImpl(Instrument.MODIS);
         FuResult result = fuAlgo.compute(new double[]{0.00242, 0.0031, 0.00345, 0.0039, 0.00358, 0.00059, 0.00063});
 
         // Intermediate Results
@@ -56,8 +52,7 @@ public class FulAlgoTest {
 
     @Test
     public void testComputeOlci() {
-        FuAlgoFactory factory = new FuAlgoFactory(Instrument.OLCI);
-        FuAlgo fuAlgo = factory.create();
+        FuAlgo fuAlgo = new FuAlgoImpl(Instrument.OLCI);
         FuResult result = fuAlgo.compute(new double[]{0.04376, 0.02783, 0.02534, 0.0208, 0.01462, 0.00549, 0.00041, 0.00161, 0.00164, 0.00179, 0.00153});
 
         // Intermediate Results
@@ -77,8 +72,7 @@ public class FulAlgoTest {
     
     @Test
     public void testComputeSeaWifs() {
-        FuAlgoFactory factory = new FuAlgoFactory(Instrument.SEAWIFS);
-        FuAlgo fuAlgo = factory.create();
+        FuAlgo fuAlgo = new FuAlgoImpl(Instrument.SEAWIFS);
         FuResult result = fuAlgo.compute(new double[]{0.00011,0.00074,0.00125,0.00159,0.00178,0.00034});
 
         // Intermediate Results

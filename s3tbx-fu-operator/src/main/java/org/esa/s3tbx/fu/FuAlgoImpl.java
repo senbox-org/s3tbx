@@ -18,9 +18,6 @@ package org.esa.s3tbx.fu;
 
 import com.bc.ceres.core.Assert;
 
-/**
- * @author muhammad.bc
- */
 class FuAlgoImpl implements FuAlgo {
 
     private static final double CONST_WHITE_POINT = 0.333333;
@@ -30,6 +27,15 @@ class FuAlgoImpl implements FuAlgo {
     private double[] z3Factors;
     private double[] polyCoeffs;
 
+    public FuAlgoImpl(Instrument instrument) {
+        x3Factors = instrument.getXFactors();
+        y3Factors = instrument.getYFactors();
+        z3Factors = instrument.getZFactors();
+        polyCoeffs = instrument.getPolynomCoefficients();
+    }
+
+    FuAlgoImpl() {
+    }
 
     void setPolyCoeffs(double[] polyCoeffs) {
         this.polyCoeffs = polyCoeffs;
