@@ -39,7 +39,7 @@
     processors too.<br>
     The Processing Parameters are sensor specific and are described on the following pages:
 </p>
-<ul >
+<ul>
     <li><a href="C2RCC_OLCI_ProcParameters.html"> OLCI Parameters</a></li>
     <li><a href="C2RCC_S2MSI_ProcParameters.html"> S2-MSI Parameters</a></li>
     <li><a href="C2RCC_L8_ProcParameters.html"> Landsat-8 Parameters</a></li>
@@ -49,6 +49,7 @@
     <li><a href="C2RCC_SEAWIFS_ProcParameters.html"> SeaWiFS Parameters</a></li>
     <li><a href="C2RCC_VIIRS_ProcParameters.html"> VIIRS Parameters</a></li>
 </ul>
+<p>Beside the graphical user interface, C2RCC processors can also be used from the <a href="#command_line">command line</a>.</p>
 
 <a name="menu_header"><h4>Menu</h4></a>
 <h5>File</h5>
@@ -79,7 +80,23 @@
 <b>Close:</b><br>
 <p>When this button is clicked, the processor tool window will be closed.</p>
 
-
+<a name="command_line"><h4>Command Line</h4></a>
+<p>The C2RCC is implemented as an operator for the Graph Processing Framework (GPF). Therefor it can be used also with the 'gpt' command line tool
+    outside SNAP Desktop. The processing is invoked by the command</p>
+<p style="font-family: monospace; text-indent: 3em">${SNAP-INSTALL-DIR}/bin/gpt</p>
+<p>To obtain general help on the graph processing, use the command</p>
+<p style="font-family: monospace; text-indent: 3em">${SNAP-INSTALL-DIR}/bin/gpt -h</p>
+<img src="images/cmd/C2RCC_CMD_OpList.png"/>
+<p>All names of the operators are listed, including the C2RCC operators. All C2RCC operators start with the prefix 'c2rcc.'
+</p>
+<p>Specific help on each of the operators can be obtained with</p>
+<p style="font-family: monospace; text-indent: 3em">${SNAP-INSTALL-DIR}/bin/gpt -h c2rcc.&lt;sensor_name&gt;</p>
+<p>Information on the usage and a list of all available parameters are given.</p>
+<img src="images/cmd/C2RCC_CMD_HelpDump.png"/>
+<p>This will also print a XML template which you can you use to build a graph XML file. This is useful when you want to perform multiple steps in one
+    go or if you want to persist the parameters and don't want to specify them every time on the command line.</p>
+<p>Such a graph file can the be called as follows:</p>
+<p style="font-family: monospace; text-indent: 3em">${SNAP-INSTALL-DIR}/bin/gpt graphFile.xml &lt;sourceFilePath&gt;</p>
 <hr>
 </body>
 </html>
