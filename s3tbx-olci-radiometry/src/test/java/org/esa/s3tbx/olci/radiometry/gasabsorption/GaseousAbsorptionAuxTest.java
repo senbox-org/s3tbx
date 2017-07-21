@@ -49,7 +49,7 @@ public class GaseousAbsorptionAuxTest {
     public void testGetOzoneHighAux() throws Exception {
         List<double[]> ozoneHighs = absorptionAuxII.getOzoneHighs();
         assertNotNull(ozoneHighs);
-        assertEquals(592, ozoneHighs.size());
+        assertEquals(595, ozoneHighs.size());
     }
 
 

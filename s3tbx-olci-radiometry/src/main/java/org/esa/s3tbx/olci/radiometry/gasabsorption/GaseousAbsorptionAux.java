@@ -86,19 +86,19 @@ public class GaseousAbsorptionAux {
     }
 
 
-    public double convolve(double lower, double upper, List<double[]> coeffhighres) {
+    double convolve(double lower, double upper, List<double[]> coeffhighres) {
         double[] o3absorption = coeffhighres.get(1);
         double[] O3wavelength = coeffhighres.get(0);
         int length = o3absorption.length;
         int weight = 0;
-        double totalValue = 0;
+        double totalValue = 0.0;
         for (int i = 0; i < length; i++) {
             if (O3wavelength[i] >= lower && O3wavelength[i] <= upper) {
                 weight += 1;
                 totalValue += o3absorption[i];
             }
         }
-        return totalValue / weight;
+        return weight > 0 ? (totalValue / weight) : 0.0;
     }
 
 
@@ -107,6 +107,7 @@ public class GaseousAbsorptionAux {
 
         double[] lamC;
         if (instrument.equals("MERIS")) {
+            // this is not used - why not??
             double[] absorb_ozon = new double[]{0.0002174, 0.0034448, 0.0205669, 0.0400134, 0.105446, 0.1081787, 0.0501634, 0.0349671, 0.0187495, 0.0086322, 0.0000001, 0.0084989, 0.0018944, 0.0012369, 0.000001};
             lamC = new double[]{412.5, 442.0, 490.0, 510.0, 560.0, 620.0, 665.0, 681.25, 708.75, 753.0, 761.25, 779.0, 865.0,
                     885.0, 900};
@@ -131,8 +132,10 @@ public class GaseousAbsorptionAux {
         }
         if (instrument.equals("S2_MSI")) {
             lamC = new double[]{
-                    442.0, 490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 945.0};
-            double[] lamW = new double[]{20.0, 65.0, 35.0, 30.0, 15.0, 15.0, 20.0, 115.0, 20.0, 20.0}; // http://www.gdal.org/frmt_sentinel2.html
+                    442.0, 490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 945.0,
+                    1375.0, 1610.0, 2190.0};
+            double[] lamW = new double[]{20.0, 65.0, 35.0, 30.0, 15.0, 15.0, 20.0, 115.0, 20.0, 20.0,
+                    30.0, 90.0, 180.0}; // http://www.gdal.org/frmt_sentinel2.html
 
             for (int i = 0; i < lamC.length; i++) {
                 double lower = lamC[i] - lamW[i] / 2;

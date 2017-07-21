@@ -10,6 +10,7 @@ import org.esa.snap.dataio.envisat.EnvisatConstants;
 public class SensorConstants {
 
     public static final int MERIS_NUM_BANDS = EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS;
+    public static final String[] MERIS_SPECTRAL_BAND_NAMES = EnvisatConstants.MERIS_L1B_SPECTRAL_BAND_NAMES;
     public static final String MERIS_SZA_NAME = "sun_zenith";
     public static final String MERIS_VZA_NAME = "view_zenith";
     public static final String MERIS_SAA_NAME = "sun_azimuth";
@@ -27,6 +28,7 @@ public class SensorConstants {
     public static final String MERIS_BAND_INFO_FILE_NAME = "band_info_meris.txt";
 
     public static final int MERIS_4TH_NUM_BANDS = MERIS_NUM_BANDS;
+    public static final String[] MERIS_4TH_SPECTRAL_BAND_NAMES = MERIS_SPECTRAL_BAND_NAMES;
     public static final String MERIS_4TH_SZA_NAME = "SZA";
     public static final String MERIS_4TH_VZA_NAME = "OZA";
     public static final String MERIS_4TH_SAA_NAME = "SAA";
@@ -44,6 +46,12 @@ public class SensorConstants {
     public static final String MERIS_4TH_BAND_INFO_FILE_NAME = MERIS_BAND_INFO_FILE_NAME;
 
     public static final int OLCI_NUM_BANDS = 21;
+    public final static String[] OLCI_SPECTRAL_BAND_NAMES = new String[]{
+            "Oa01_radiance", "Oa02_radiance", "Oa03_radiance", "Oa04_radiance", "Oa05_radiance",
+            "Oa06_radiance", "Oa07_radiance", "Oa08_radiance", "Oa09_radiance", "Oa10_radiance",
+            "Oa11_radiance", "Oa12_radiance", "Oa13_radiance", "Oa14_radiance", "Oa15_radiance",
+            "Oa16_radiance", "Oa17_radiance", "Oa18_radiance", "Oa19_radiance", "Oa20_radiance", "Oa21_radiance"
+    };
     public static final String OLCI_SZA_NAME = "SZA";
     public static final String OLCI_VZA_NAME = "OZA";
     public static final String OLCI_SAA_NAME = "SAA";
@@ -60,7 +68,7 @@ public class SensorConstants {
     public static final String OLCI_NAME_PATTERN = "Oa\\d+_radiance";
     public static final String OLCI_BAND_INFO_FILE_NAME = "band_info_olci.txt";
 
-    public static final int S2_MSI_NUM_BANDS = 10; // B1-B9 + B8A, we skip B10-B12 for the moment
+    public static final int S2_MSI_NUM_BANDS = 13; // B1-B9 + B8A, we do not correct B10-B12 for the moment
     public static final String S2_MSI_SZA_NAME = "sun_zenith";
     public static final String S2_MSI_VZA_NAME = "view_zenith_mean";
     public static final String S2_MSI_SAA_NAME = "sun_azimuth";
@@ -78,28 +86,28 @@ public class SensorConstants {
     public static final String S2_MSI_BAND_INFO_FILE_NAME = "band_info_S2_msi.txt";
 
     public static final double[] S2_SOLAR_FLUXES =
-            {1913.57, 1941.63, 1822.61, 1512.79, 1425.56, 1288.32, 1163.19, 1036.39, 955.19, 813.04};
+            {1913.57, 1941.63, 1822.61, 1512.79, 1425.56, 1288.32, 1163.19, 1036.39, 955.19, 813.04, 367.15, 245.59, 85.25};
 
     // B2, 3, 4, 8 are at 10m.
     // B5, 6, 7, 8A are at 20m.
     // B1, 9 are at 60m.
-    // B10-12 are currently ignored (no RC).
-    public static final String[] S2_BANDS_TO_RC_CORRECT = {"B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9"};
+    // B10-12 are currently 'dummy corrected'. Coeffficients for those wavelengths to be found.
+    public static final String[] S2_MSI_SPECTRAL_BAND_NAMES =
+            {"B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9", "B10", "B11", "B12"};
     public static final String[] S2_GEOMETRY_BANDS = {S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
 
     public static final String[] S2_BANDS_TO_UPSCALE_10 =
-            {"B1", "B5", "B6", "B7", "B8A", "B9", S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
+            {"B1", "B5", "B6", "B7", "B8A", "B9", "B10", "B11", "B12", S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
     public static final String[] S2_BANDS_TO_UPSCALE_20 =
-            {"B1", "B9", S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
+            {"B1", "B9", "B10", S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
     public static final String[] S2_BANDS_TO_UPSCALE_60 =
             {S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME};
 
     public static final String[] S2_BANDS_TO_DOWNSCALE_10 = {};
     public static final String[] S2_BANDS_TO_DOWNSCALE_20 = {"B2", "B3", "B4", "B8"};
-    public static final String[] S2_BANDS_TO_DOWNSCALE_60 = {"B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A"};
+    public static final String[] S2_BANDS_TO_DOWNSCALE_60 = {"B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B10"};
 
     public static final String[] S2_BANDS_TO_COPY_10 = {"B2", "B3", "B4", "B8"};
-    public static final String[] S2_BANDS_TO_COPY_20 = {"B5", "B6", "B7", "B8A"};
-    public static final String[] S2_BANDS_TO_COPY_60 = {"B1", "B9"};
-
+    public static final String[] S2_BANDS_TO_COPY_20 = {"B5", "B6", "B7", "B8A", "B11", "B12"};
+    public static final String[] S2_BANDS_TO_COPY_60 = {"B1", "B9", "B10"};
 }

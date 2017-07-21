@@ -16,12 +16,18 @@ import java.util.stream.IntStream;
  */
 public class RayleighCorrAlgorithm {
 
+    private Sensor sensor;
     private int numBands;
     private String bandNamePattern;
 
     public RayleighCorrAlgorithm(String bandPattern, int numBands) {
         this.numBands = numBands;
         this.bandNamePattern = bandPattern;
+    }
+
+    public RayleighCorrAlgorithm(Sensor sensor) {
+        this(sensor.getNameFormat(), sensor.getNumBands());
+        this.sensor = sensor;
     }
 
     //todo mba/* write test
@@ -45,7 +51,12 @@ public class RayleighCorrAlgorithm {
     public double[] getCrossSectionSigma(Product sourceProduct, int numBands, String getBandNamePattern) {
         double[] waveLength = new double[numBands];
         for (int i = 0; i < numBands; i++) {
-            waveLength[i] = sourceProduct.getBand(String.format(getBandNamePattern, i + 1)).getSpectralWavelength();
+            if (sensor != null && sensor == Sensor.S2_MSI) {
+                final String s2BandName = Sensor.S2_MSI.getSpectralBandNames()[i];
+                waveLength[i] = sourceProduct.getBand(s2BandName).getSpectralWavelength();
+            } else {
+                waveLength[i] = sourceProduct.getBand(String.format(getBandNamePattern, i + 1)).getSpectralWavelength();
+            }
         }
 
         return getCrossSection(waveLength);
@@ -64,9 +75,7 @@ public class RayleighCorrAlgorithm {
             double F_N2 = 1.034 + 0.000317 / Math.pow(lambdamm, 2);
             double F_O2 = 1.096 + 0.001385 / Math.pow(lambdamm, 2) + 0.0001448 / Math.pow(lambdamm, 4);
 
-//            (78.084 * F_N2 + 20.946 * F_O2 + 0.934 * 1 + C_CO2 * 1.15) / (78.084 + 20.946 + 0.934 + C_CO2)
             double F_air = (78.084 * F_N2 + 20.946 * F_O2 + 0.934 * 1 + RayleighConstants.C_CO2 * 1.15) / (78.084 + 20.946 + 0.934 + RayleighConstants.C_CO2);
-//            (8060.51 + (2480990. / (132.274 - lam ** (-2))) + (17455.7 / (39.32957 - lam ** (-2)))) / 100000000.0
             double n_1_300 = (8060.51 + (2480990.0 / (132.274 - Math.pow(lambdamm, (-2)))) + (17455.7 / (39.32957 - Math.pow(lambdamm, (-2))))) / 100000000;
             double nCO2 = n_ratio * (1 + n_1_300);
             sigma[i] = 24 * Math.pow(Math.PI, 3) * Math.pow((Math.pow(nCO2, 2) - 1), 2) / (Math.pow(lambdaWLcm, 4) * molecularDen * Math.pow((Math.pow(nCO2, 2) + 2), 2)) * F_air;
@@ -112,12 +121,11 @@ public class RayleighCorrAlgorithm {
 
         final double[] rho_BRR = new double[length];
 
-
         for (int index = 0; index < length; index++) {
 
             double corrOzone = corrOzoneRefl[index];
             if (Double.isNaN(corrOzone)) {
-                rho_BRR[index] = RayleighConstants.INVALID_VALUE;;
+                rho_BRR[index] = RayleighConstants.INVALID_VALUE;
                 continue;
             }
             if (corrOzone <= 0) {
@@ -224,14 +232,13 @@ public class RayleighCorrAlgorithm {
 
     public double[] getRayleighThickness(RayleighAux rayleighAux,
                                          double[] crossSectionSigma,
-                                         Sensor sensor,
                                          int sourceBandIndex,
                                          String targetBandName) {
         double[] seaLevels = rayleighAux.getSeaLevels();
         double[] altitudes = rayleighAux.getAltitudes();
         double[] latitudes = rayleighAux.getLatitudes();
-        final int crossSectionSigmaIndex = getCrossSectionSigmaIndex(sensor, sourceBandIndex, targetBandName);
-        double sigma = crossSectionSigma[crossSectionSigmaIndex - 1];
+        final int crossSectionSigmaIndex = getCrossSectionSigmaIndex(sourceBandIndex, targetBandName);
+        double sigma = crossSectionSigma[crossSectionSigmaIndex];
 
         double rayleighOpticalThickness[] = new double[altitudes.length];
         for (int i = 0; i < altitudes.length; i++) {
@@ -264,9 +271,9 @@ public class RayleighCorrAlgorithm {
         return ref;
     }
 
-    private int getCrossSectionSigmaIndex(Sensor sensor, int sourceBandIndex, String targetBandName) {
+    private int getCrossSectionSigmaIndex(int sourceBandIndex, String targetBandName) {
         if (sensor != null && sensor == Sensor.S2_MSI) {
-            return S2Utils.getS2SourceBandIndex(sourceBandIndex, targetBandName);
+            return S2Utils.getS2SpectralBandIndex(targetBandName);
         } else {
             return sourceBandIndex;
         }
@@ -286,7 +293,7 @@ public class RayleighCorrAlgorithm {
             double[] crossSectionSigma = getCrossSectionSigma(product, numBands, bandNamePattern);
             Map<Integer, double[]> thicknessPerBand = new HashMap<>();
             for (int bandIndex = 1; bandIndex <= numBands; bandIndex++) {
-                double[] rayleighThickness = getRayleighThickness(rayleighAux, crossSectionSigma, null, bandIndex, null);
+                double[] rayleighThickness = getRayleighThickness(rayleighAux, crossSectionSigma, bandIndex, null);
                 thicknessPerBand.put(bandIndex, rayleighThickness);
             }
             return thicknessPerBand;
