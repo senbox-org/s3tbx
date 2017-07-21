@@ -17,6 +17,7 @@ package org.esa.s3tbx.operator.cloud;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.SubProgressMonitor;
+import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.operator.cloud.internal.ProcessingNode;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
@@ -25,12 +26,12 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.jexp.ParseException;
-import org.esa.snap.core.jexp.Term;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.math.MathUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -79,11 +80,8 @@ class CloudPN extends ProcessingNode {
     private float[] centralWavelength;
     private CentralWavelengthProvider centralWavelengthProvider;
 
-    private Term validLandTerm;
-    private Term validOceanTerm;
     private String validLandExpression;
     private String validOceanExpression;
-    private Term landTerm;
 
     private Logger logger;
     private Band cloudBand;
@@ -97,6 +95,9 @@ class CloudPN extends ProcessingNode {
      * Pressure scale height to account for altitude.
      */
     private int pressScaleHeight;
+    private MultiLevelImage validLandImage;
+    private MultiLevelImage validOceanImage;
+    private MultiLevelImage landImage;
 
     public CloudPN(String auxdataDir) {
         super();
@@ -242,9 +243,9 @@ class CloudPN extends ProcessingNode {
         float[] altitudeScanLine;
         int[] detectorScanLine;
         float[][] radianceScanLine;
-        boolean[] validLandScanLine;
-        boolean[] validOceanScanLine;
-        boolean[] landScanLine;
+        int[] validLandScanLine;
+        int[] validOceanScanLine;
+        int[] landScanLine;
 
         szaScanLine = new float[frameSize];
         saaScanLine = new float[frameSize];
@@ -254,11 +255,11 @@ class CloudPN extends ProcessingNode {
         altitudeScanLine = new float[frameSize];
         detectorScanLine = new int[frameSize];
         radianceScanLine = new float[numBands][frameSize];
-        validLandScanLine = new boolean[frameSize];
-        validOceanScanLine = new boolean[frameSize];
-        landScanLine = new boolean[frameSize];
+        validLandScanLine = new int[frameSize];
+        validOceanScanLine = new int[frameSize];
+        landScanLine = new int[frameSize];
 
-        pm.beginTask("Processing frame...", 10 + frameSize);
+        pm.beginTask("Processing frame...", 9+radianceBands.length + frameSize);
         try {
             szaGrid.readPixels(frameX, frameY, frameW, frameH, szaScanLine, SubProgressMonitor.create(pm, 1));
             saaGrid.readPixels(frameX, frameY, frameW, frameH, saaScanLine, SubProgressMonitor.create(pm, 1));
@@ -281,12 +282,18 @@ class CloudPN extends ProcessingNode {
             }
             detectorBand.readPixels(frameX, frameY, frameW, frameH, detectorScanLine, SubProgressMonitor.create(pm, 1));
 
-            getSourceProduct().readBitmask(frameX, frameY, frameW, frameH, validLandTerm, validLandScanLine,
-                                           SubProgressMonitor.create(pm, 1));
-            getSourceProduct().readBitmask(frameX, frameY, frameW, frameH, validOceanTerm, validOceanScanLine,
-                                           SubProgressMonitor.create(pm, 1));
-            getSourceProduct().readBitmask(frameX, frameY, frameW, frameH, landTerm, landScanLine,
-                                           SubProgressMonitor.create(pm, 1));
+            validLandScanLine = validLandImage.getData(new Rectangle(frameX, frameY, frameW, frameH)).getSamples(frameX, frameY, frameW, frameH, 0, validLandScanLine);
+            pm.worked(1);
+//            getSourceProduct().readBitmask(frameX, frameY, frameW, frameH, validLandTerm, validLandScanLine,
+//                                           SubProgressMonitor.create(pm, 1));
+            validOceanScanLine = validOceanImage.getData(new Rectangle(frameX, frameY, frameW, frameH)).getSamples(frameX, frameY, frameW, frameH, 0, validOceanScanLine);
+            pm.worked(1);
+//            getSourceProduct().readBitmask(frameX, frameY, frameW, frameH, validOceanTerm, validOceanScanLine,
+//                                           SubProgressMonitor.create(pm, 1));
+            landScanLine = landImage.getData(new Rectangle(frameX, frameY, frameW, frameH)).getSamples(frameX, frameY, frameW, frameH, 0, landScanLine);
+            pm.worked(1);
+//            getSourceProduct().readBitmask(frameX, frameY, frameW, frameH, landTerm, landScanLine,
+//                                           SubProgressMonitor.create(pm, 1));
 
             ProductData data = getFrameData(cloudBand);
             //noinspection MismatchedReadAndWriteOfArray
@@ -301,7 +308,7 @@ class CloudPN extends ProcessingNode {
                     break;
                 }
                 flagScanLine[i] = 0;
-                if (!validLandScanLine[i] && !validOceanScanLine[i]) {
+                if (!isValid(validLandScanLine[i]) && !isValid(validOceanScanLine[i])) {
                     cloudScanLine[i] = -1;
                 } else {
                     final double aziDiff = computeAda(vaaScanLine[i], saaScanLine[i]) * MathUtils.DTOR;
@@ -315,16 +322,16 @@ class CloudPN extends ProcessingNode {
                     cloudIn[7] = calculateI(radianceScanLine[9][i], radianceBands[9].getSolarFlux(), szaScanLine[i]);
                     cloudIn[8] = calculateI(radianceScanLine[12][i], radianceBands[12].getSolarFlux(), szaScanLine[i]);
                     cloudIn[9] = (radianceScanLine[10][i] * radianceBands[9].getSolarFlux()) / (radianceScanLine[9][i] * radianceBands[10].getSolarFlux());
-                    cloudIn[10] = altitudeCorrectedPressure(pressScanLine[i], altitudeScanLine[i], landScanLine[i]);
+                    cloudIn[10] = altitudeCorrectedPressure(pressScanLine[i], altitudeScanLine[i], isValid(landScanLine[i]));
                     cloudIn[11] = centralWavelength[detectorScanLine[i]]; // central-wavelength channel 11
                     cloudIn[12] = Math.cos(szaScanLine[i] * MathUtils.DTOR);
                     cloudIn[13] = Math.cos(vzaScanLine[i] * MathUtils.DTOR);
                     cloudIn[14] = Math.cos(aziDiff) * Math.sin(vzaScanLine[i] * MathUtils.DTOR);
 
                     double cloudProbability = 0;
-                    if (validLandScanLine[i]) {
+                    if (isValid(validLandScanLine[i])) {
                         cloudProbability = landAlgo.computeCloudProbability(cloudIn);
-                    } else if (validOceanScanLine[i]) {
+                    } else if (isValid(validOceanScanLine[i])) {
                         cloudProbability = oceanAlgo.computeCloudProbability(cloudIn);
                     }
                     short cloudProbabilityScaled = (short) (cloudProbability / SCALING_FACTOR);
@@ -344,6 +351,10 @@ class CloudPN extends ProcessingNode {
             pm.done();
         }
 
+    }
+
+    private boolean isValid(int maskValue) {
+        return maskValue == 255;
     }
 
     protected double calculateI(double radiance, float sunSpectralFlux, double sunZenith) {
@@ -399,9 +410,10 @@ class CloudPN extends ProcessingNode {
             altitude = l1bProduct.getBand(EnvisatConstants.MERIS_AMORGOS_L1B_ALTIUDE_BAND_NAME);
         }
 
-        validLandTerm = l1bProduct.parseExpression(validLandExpression);
-        validOceanTerm = l1bProduct.parseExpression(validOceanExpression);
-        landTerm = l1bProduct.parseExpression("l1_flags.LAND_OCEAN");
+        validLandImage = l1bProduct.getMaskImage(validLandExpression, null);
+        validOceanImage = l1bProduct.getMaskImage(validOceanExpression, null);
+        landImage = l1bProduct.getMaskImage("l1_flags.LAND_OCEAN", null);
+
     }
 
 
@@ -416,9 +428,6 @@ class CloudPN extends ProcessingNode {
 
     private boolean isTiePoint(String name) {
         List<String> tiePointNameList = Arrays.asList(getSourceProduct().getTiePointGridNames());
-        if (tiePointNameList.contains(name)) {
-            return true;
-        }
-        return false;
+        return tiePointNameList.contains(name);
     }
 }
