@@ -13,8 +13,8 @@ import static org.junit.Assert.*;
 public class DetectInstrumentTest {
 
     @Test
-    public void testAutoDetectForMERISProduct() {
-        Product product = new Product("dummy", "mer_r", 2, 2);
+    public void testMERIS() {
+        Product product = new Product("dummy", "dummy-mer_r", 2, 2);
         product.setProductType("MER_RR__2P");
         assertEquals(Instrument.MERIS, DetectInstrument.getInstrument(product));
 
@@ -30,7 +30,7 @@ public class DetectInstrumentTest {
 
 
     @Test
-    public void testAutoDetectForOLCIProduct() {
+    public void testOLCI() {
         Product product = new Product("dummy", "dummy", 2, 2);
         product.addBand("Oa01_reflectance", ProductData.TYPE_INT8);
         product.addBand("Oa02_reflectance", ProductData.TYPE_INT8);
@@ -43,24 +43,67 @@ public class DetectInstrumentTest {
     }
 
     @Test
-    public void testAutoDetectForMODISProduct() {
-        Product product = new Product("dummy", "modis", 2, 2);
+    public void testS2MSI() {
+        Product product = new Product("dummy", "S2_MSI_Level-1C", 2, 2);
+        assertEquals(Instrument.S2_MSI, DetectInstrument.getInstrument(product));
+    }
+
+    // TODO - DISABLED SENSOR
+//    @Test
+//    public void testLandsat8() {
+//        Product l8Product = new Product("dummy", "LANDSAT_8_OLI_TIRS_L1T", 2, 2);
+//        assertEquals(Instrument.LANDSAT8, DetectInstrument.getInstrument(l8Product));
+//
+//        Product l8Class1Product = new Product("dummy", "LANDSAT_8_OLI_TIRS_L1TP", 2, 2);
+//        assertEquals(Instrument.LANDSAT8, DetectInstrument.getInstrument(l8Class1Product));
+//
+//        // TODO - What about L8 containing only OLI?
+//        Product l8OliOnlyProduct = new Product("dummy", "LANDSAT_8_OLI_L1T", 2, 2);
+//        assertEquals(Instrument.LANDSAT8, DetectInstrument.getInstrument(l8Class1Product));
+//    }
+
+    @Test
+    public void testMODIS1KM() {
+        Product product = new Product("dummy", "dummy-modis1km", 2, 2);
         MetadataElement root = product.getMetadataRoot();
-        MetadataElement dsd23 = new MetadataElement("Global_Attributes");
-        dsd23.setAttributeString("title", "HMODISA Level-2 Data");
-        root.addElement(dsd23);
+        MetadataElement globalAttributes = new MetadataElement("Global_Attributes");
+        globalAttributes.setAttributeString("title", "HMODISA Level-2 Data");
+        globalAttributes.setAttributeString("spatialResolution", "1 km");
+        root.addElement(globalAttributes);
 
         assertEquals(Instrument.MODIS, DetectInstrument.getInstrument(product));
     }
 
     @Test
-    public void testAutoDetectForSEAWIFSProduct() {
-        Product product = new Product("dummy", "seawifs", 2, 2);
+    public void testMODIS500() {
+        Product product = new Product("dummy", "dummy-modis500", 2, 2);
+        MetadataElement root = product.getMetadataRoot();
+        MetadataElement mph = new MetadataElement("MPH");
+        mph.setAttributeString("identifier_product_doi", "10.5067/MODIS/MOD09A1.006");
+        root.addElement(mph);
+
+        assertEquals(Instrument.MODIS500, DetectInstrument.getInstrument(product));
+    }
+
+    @Test
+    public void testSEAWIFS() {
+        Product product = new Product("dummy", "dummy-seawifs", 2, 2);
         MetadataElement root = product.getMetadataRoot();
         MetadataElement dsd23 = new MetadataElement("Global_Attributes");
         dsd23.setAttributeString("Title", "SeaWiFS Level-2 Data");
         root.addElement(dsd23);
 
         assertEquals(Instrument.SEAWIFS, DetectInstrument.getInstrument(product));
+    }
+
+    @Test
+    public void testCZCS() {
+        Product product = new Product("dummy", "dummy-czcs", 2, 2);
+        MetadataElement root = product.getMetadataRoot();
+        MetadataElement dsd23 = new MetadataElement("Global_Attributes");
+        dsd23.setAttributeString("Title", "CZCS Level-2 Data");
+        root.addElement(dsd23);
+
+        assertEquals(Instrument.CZCS, DetectInstrument.getInstrument(product));
     }
 }

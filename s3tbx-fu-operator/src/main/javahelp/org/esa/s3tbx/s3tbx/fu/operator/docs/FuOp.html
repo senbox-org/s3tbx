@@ -29,8 +29,7 @@
     </tr>
 </table>
 
-<p>True Colour Classification of Natural Waters with Medium-Spectral Resolution Satellites:
-    SeaWiFS, MODIS, MERIS and OLCI</p>
+<p>True Colour Classification of Natural Waters with Medium-Spectral Resolution Satellites</p>
 
 <h2>User Interface</h2>
 
@@ -69,41 +68,79 @@ target product is not saved, it is opened in the Sentinel Toolbox automatically.
 </p>
 
 <h4>Processing Parameters Panel</h4>
-<b>Copy all source bands:</b> Checking this option, will copy all the source bands to the target product.
+<p><b>Copy all source bands:</b><br>
+    Checking this option, will copy all the source bands to the target product.</p>
+<p><b>Multiply input reflectance with PI:</b><br>
+    Checking this option will multiply the reflectance with PI.</p>
+<p><b>Valid pixel expression:</b><br>
+    This expression is uses for validating pixels which will be considerd for processing, if the user did not add any
+    expression the first applicable default expression will be applied as in <a href="#default_expressions"> Default expressions</a>. If the
+    expression is set to
+    <b>TRUE</b>, then all pixels are considered to be valid. The button can be use in creating a valid express.</p>
 <br>
-<b>Multiply input reflectance with PI:</b> Checking this option will multiply the reflectance with PI.
-
-<br>
-<b>Valid expression:</b> is use in validating pixel in which the FU value will be applied to, if the user did not add any
-expression the default expression will be applied as in <a href="#valid_tab"> table 1</a>. If the expression is set to
-<b>TRUE</b> then all the pixel are consider to be valid. The button can be use in creating a valid express.
-<br>
-<br>
-<table id="valid_tab">
-    <thead>Default vaild expression.</thead>
-    <tr>
-        <td>MERIS</td>
-        <td>l2_flags.WATER", not l1p_flags.CC_LAND and not l1p_flags.CC_CLOUD, NOT l1_flags.LAND_OCEAN</td>
-    </tr>
+<p>Default valid expression</p>
+<table id="default_expressions">
     <tr>
         <td>OLCI</td>
-        <td>WQSF_lsb.WATER and not WQSF_lsb.CLOUD, LQSF_WATER</td>
+        <td>WQSF_lsb.WATER and not WQSF_lsb.CLOUD<br>
+            LQSF_WATER
+        </td>
+    </tr>
+    <tr>
+        <td>S2_MSI</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>MERIS</td>
+        <td>l2_flags.WATER<br>
+            not l1p_flags.CC_LAND and not l1p_flags.CC_CLOUD<br>
+            NOT l1_flags.LAND_OCEAN
+        </td>
     </tr>
     <tr>
         <td>MODIS</td>
         <td>not l2_flags.LAND and not l2_flags.CLDICE</td>
     </tr>
     <tr>
+        <td>MODIS500</td>
+        <td></td>
+    </tr>
+    <tr>
         <td>SEAWIFS</td>
+        <td>not l2_flags.LAND and not l2_flags.CLDICE</td>
+    </tr>
+    <tr>
+        <td>CZCS</td>
         <td>not l2_flags.LAND and not l2_flags.CLDICE</td>
     </tr>
 </table>
 
 <br>
-<br>
-<br>
+<p><b>Reflectance band name pattern:</b><br>
+    The used reflectance band names must match the given pattern. Useful, if there is more then one spectrum in the product.
+    Here a regular expression can be used.  There is a nice tutorial on <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="http://www.vogella.com/tutorials/JavaRegularExpressions/article.html">
+        <param name="text" value="vogella.com">
+    </object>.
+</p>
+<p>Example expressions:</p>
+<table>
+    <tr>
+        <td>Rrs.*</td>
+        <td>Will match any name witch starts with 'Rrs'. E.g.: Rrs_04</td>
+    </tr>
+    <tr>
+        <td>reflec_\d\d_band</td>
+        <td>Will match any name witch starts with 'reflec_' and ends with '_band'. in the middle must be two digits. E.g.: reflec_12_band</td>
+    </tr>
 
-<b>Instrument :</b> To specify which instrument reflectance to use in computing the hue angle.
+</table>
+
+<p><b>Instrument:</b><br> Allows to select which instrument specific settings shall be used, if the auto detection fails.</p>
+
+<p><b>Include intermediate results in output:</b><br>
+    Whether or not the intermediate results shall be written to the target output. The default value is "true".</p>
+
 
 <br>
 <br>

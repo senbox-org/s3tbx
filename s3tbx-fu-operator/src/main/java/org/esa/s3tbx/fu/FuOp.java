@@ -24,6 +24,7 @@ import org.esa.snap.core.datamodel.ImageInfo;
 import org.esa.snap.core.datamodel.IndexCoding;
 import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.SampleCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.datamodel.VirtualBand;
@@ -44,7 +45,7 @@ import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The {@code FuOp} performs a MERIS, MODIS, OLCI and SeaWiFS based ocean colour classification
@@ -55,16 +56,12 @@ import java.util.ArrayList;
  */
 @OperatorMetadata(
         alias = "FuClassification",
-        version = "1.0",
+        version = "1.1",
         category = "Optical/Thematic Water Processing",
         description = "Colour classification based on the discrete Forel-Ule scale.",
         authors = " H.J van der Woerd (IVM), M.R. Wernand (NIOZ), Muhammad Bala (BC), Marco Peters (BC)",
         copyright = "(c) 2016 by Brockmann Consult GmbH")
 public class FuOp extends PixelOperator {
-
-    private static final int MAX_DELTA_WAVELENGTH = 3;
-
-
 
     static Color[] FU_COLORS = new Color[]{
             new Color(0, 0, 0),
@@ -111,6 +108,10 @@ public class FuOp extends PixelOperator {
             converter = BooleanExpressionConverter.class)
     private String validExpression;
 
+    @Parameter(label = "Reflectance band name pattern", description = "The used reflectance band names must match the given pattern. " +
+                                                                      "Useful, if there is more then one spectrum in the product.")
+    private String reflectanceNamePattern;
+
     @Parameter(defaultValue = "AUTO_DETECT", description = "The instrument to compute FU for.")
     private Instrument instrument;
 
@@ -149,7 +150,11 @@ public class FuOp extends PixelOperator {
         }
 
         if (isValid) {
-            final double spectrum[] = getInputSpectrum(sourceSamples);
+            RasterDataNode[] sourceNodes = Arrays.stream(sourceSamples).map(Sample::getNode).toArray(RasterDataNode[]::new);
+            double spectrum[] = getInputSpectrum(sourceSamples);
+            spectrum = instrument.preProcess(sourceProduct, sourceNodes, spectrum);
+            spectrum = applyPiToIrradianceSpectrum(spectrum);
+
             FuResult result = fuAlgo.compute(spectrum);
             for (int i = 0; i < targetBandDefs.length; i++) {
                 BandDefinition targetBandDef = targetBandDefs[i];
@@ -163,17 +168,13 @@ public class FuOp extends PixelOperator {
     }
 
     private double[] getInputSpectrum(Sample[] sourceSamples) {
-        double[] spectrum = new double[sourceSamples.length];
-        if ((autoDetectedInstrument && instrument.isIrradiance()) || inputIsIrradianceReflectance) {
-            for (int i = 0; i < sourceSamples.length; i++) {
-                spectrum[i] = sourceSamples[i].getDouble() / Math.PI;
-            }
-        } else {
-            for (int i = 0; i < sourceSamples.length; i++) {
-                spectrum[i] = sourceSamples[i].getDouble();
-            }
-        }
+        return Arrays.stream(sourceSamples).mapToDouble(Sample::getDouble).toArray();
+    }
 
+    private double[] applyPiToIrradianceSpectrum(double[] spectrum) {
+        if ((autoDetectedInstrument && instrument.isIrradiance()) || inputIsIrradianceReflectance) {
+            return Arrays.stream(spectrum).map(v -> v / Math.PI).toArray();
+        }
         return spectrum;
     }
 
@@ -186,17 +187,13 @@ public class FuOp extends PixelOperator {
 
             if (instrument == null) {
                 throw new OperatorException("The instrument can not be automatically detected, " +
-                                                    "please select the instrument in the processing parameter.");
+                                            "please select the instrument in the processing parameter.");
             }
 
             autoDetectedInstrument = true;
         }
         fuAlgo = new FuAlgo(instrument);
-        reflecBandNames = findWaveBand(sourceProduct, this.instrument.getWavelengths(), MAX_DELTA_WAVELENGTH);
-        final int bandNum = reflecBandNames.length;
-        if (bandNum != instrument.getWavelengths().length) {
-            throw new OperatorException("Could not find all necessary wavelengths for processing the instrument " + instrument.name() + ".");
-        }
+        reflecBandNames = instrument.getReflectanceBandNames(sourceProduct, reflectanceNamePattern);
 
         targetBandDefs = BandDefinition.create(includeIntermediateResults, instrument);
     }
@@ -295,29 +292,6 @@ public class FuOp extends PixelOperator {
         }
     }
 
-    static String[] findWaveBand(Product product, double centralWavelengths[], double maxDeltaWavelength) {
-        final Band[] bands = product.getBands();
-        final ArrayList<String> band_Names = new ArrayList<>();
-        for (double centralWl : centralWavelengths) {
-            String name = null;
-            double minDelta = Double.MAX_VALUE;
-            for (Band band : bands) {
-                double bandWavelength = band.getSpectralWavelength();
-                if (bandWavelength > 0.0) {
-                    double delta = Math.abs(bandWavelength - centralWl);
-                    if (delta < minDelta && delta <= maxDeltaWavelength) {
-                        name = band.getName();
-                        minDelta = delta;
-                    }
-                }
-            }
-            if (name != null) {
-                band_Names.add(name);
-            }
-        }
-        return band_Names.toArray(new String[0]);
-    }
-
     static void attachIndexCoding(Band fuBand) {
         IndexCoding indexCoding = new IndexCoding("Forel-Ule Scale");
         ImageInfo imageInfo = createImageInfo(indexCoding);
@@ -337,6 +311,7 @@ public class FuOp extends PixelOperator {
     }
 
     public static class Spi extends OperatorSpi {
+
         public Spi() {
             super(FuOp.class);
         }

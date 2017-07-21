@@ -31,10 +31,7 @@ import javax.media.jai.operator.ConstantDescriptor;
 import java.awt.Color;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * @author Muhammad
@@ -84,61 +81,7 @@ public class FuOpTest {
         assertNotNull(fuBand.getSampleCoding());
         assertNotNull(fuBand.getIndexCoding());
     }
-
-    @Test
-    public void testGetTheBandNamsWithCloseWavelength() throws Exception {
-        Product product = new Product("dummy", "dummy", 10, 10);
-        addBand(product, "a", 500);
-        addBand(product, "a2", 504);
-        addBand(product, "a3", 506.5f);
-        addBand(product, "a4", 508);
-        addBand(product, "b", 600);
-        addBand(product, "c", 620);
-        addBand(product, "d", 700);
-        addBand(product, "e", 712);
-        addBand(product, "f", 720);
-        addBand(product, "g", 799);
-
-
-        double[] centralWavelength = {506.0, 603.0, 620.0, 704.0, 720.0, 730.0, 797.0};
-        String[] waveBand = FuOp.findWaveBand(product, centralWavelength, 5);
-        final String[] expecteds = {"a3", "b", "c", "d", "f", "g"};
-        assertArrayEquals(expecteds, waveBand);
-    }
-
-
-    @Test
-    public void testGetTheBandNamsWithTheDifferentWavelength() throws Exception {
-        Product product = new Product("dummy", "dummy", 10, 10);
-        addBand(product, "a", 500);
-        addBand(product, "b", 600);
-        addBand(product, "c", 620);
-        addBand(product, "d", 700);
-        addBand(product, "e", 712);
-        addBand(product, "f", 720);
-        addBand(product, "g", 799);
-
-
-        final double[] centralWavelength = {504.0, 602.0, 622.0, 703.0, 713.0, 723.0, 800.0};
-        final String[] waveBand = FuOp.findWaveBand(product, centralWavelength, 5);
-        final String[] expecteds = {"a", "b", "c", "d", "e", "f", "g"};
-        assertArrayEquals(expecteds, waveBand);
-    }
-
-
-    @Test
-    public void testGetTheBandCloseWavelength() throws Exception {
-        Product product = new Product("dummy", "dummy", 10, 10);
-        addBand(product, "a", 500);
-        addBand(product, "a2", 502.5f);
-        addBand(product, "b", 506);
-
-        final double[] centralWavelength = {501, 501.5, 502.0, 505.0, 622.0, 703.0, 713.0, 723.0, 800.0};
-        final String[] waveBand = FuOp.findWaveBand(product, centralWavelength, 5);
-        final String[] expecteds = {"a", "a2", "a2", "b"};
-        assertArrayEquals(expecteds, waveBand);
-    }
-
+    
     @Test
     public void testWithCoastColourLikeInput() throws Exception {
         Product radianceProduct = new Product("CoastColour_L2R", "cc-dummy", 1, 1);
@@ -179,16 +122,233 @@ public class FuOpTest {
         addBand(irradianceProduct, "reflec_13", 864.876f, 3.678e-4 * Math.PI);
 
 
-        HashMap<String, Object> irradianceParams = new HashMap<>();
-        irradianceParams.put("validExpression", "true");
-        irradianceParams.put("instrument", Instrument.MERIS);
-        irradianceParams.put("inputIsIrradianceReflectance", true);
-        Product irradianceResult = GPF.createProduct("FuClassification", irradianceParams, irradianceProduct);
-        int irradianceFuValue = irradianceResult.getBand("FU").getSampleInt(0, 0);
-        float irradianceHueValue = irradianceResult.getBand("hue_angle").getSampleFloat(0, 0);
+        HashMap<String, Object> fuParams = new HashMap<>();
+        fuParams.put("validExpression", "true");
+        fuParams.put("instrument", Instrument.MERIS);
+        fuParams.put("inputIsIrradianceReflectance", true);
+        Product fuResult = GPF.createProduct("FuClassification", fuParams, irradianceProduct);
+        int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+        float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
 
-        assertEquals(irradianceFuValue, radianceFuValue, 1.0e-6);
-        assertEquals(irradianceHueValue, radianceHueValue, 1.0e-6);
+        assertEquals(fuValue, radianceFuValue, 1.0e-6);
+        assertEquals(hueValue, radianceHueValue, 1.0e-6);
+    }
+
+    @Test
+    public void testMerisSourceProduct() throws Exception {
+        Product radianceProduct = new Product("CoastColour_L2R", "cc-dummy", 1, 1);
+        //  SNAP_MERIS.xlsx
+        addBand(radianceProduct, "reflec_1", 412.691f, 0.00981);
+        addBand(radianceProduct, "reflec_2", 442.559f, 0.011);
+        addBand(radianceProduct, "reflec_3", 489.882f, 0.01296);
+        addBand(radianceProduct, "reflec_4", 509.819f, 0.01311);
+        addBand(radianceProduct, "reflec_5", 559.694f, 0.01193);
+        addBand(radianceProduct, "reflec_6", 619.601f, 0.00298);
+        addBand(radianceProduct, "reflec_7", 664.573f, 0.0016);
+        addBand(radianceProduct, "reflec_8", 680.821f, 0.0014);
+        addBand(radianceProduct, "reflec_9", 708.329f, 0.00081);
+        HashMap<String, Object> fuParams = new HashMap<>();
+        fuParams.put("validExpression", "true");
+        fuParams.put("instrument", Instrument.MERIS);
+        Product fuResult = GPF.createProduct("FuClassification", fuParams, radianceProduct);
+
+        int radianceFuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+        float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
+        assertEquals(5, radianceFuValue);
+        assertEquals(171.02552795410156, radianceHueValue, 1e-8);
+    }
+
+
+    @Test
+    public void testModisSourceProduct_1km() throws Exception {
+        Product radianceProduct = new Product("Modis FU_Hue_Value", "dummy", 1, 1);
+        // SNAP_MODIS.xlsx
+        addBand(radianceProduct, "reflec_1", 412, 0.00242);
+        addBand(radianceProduct, "reflec_2", 443, 0.0031);
+        addBand(radianceProduct, "reflec_3", 469, 0.0);
+        addBand(radianceProduct, "reflec_4", 488, 0.00345);
+        addBand(radianceProduct, "reflec_5", 531, 0.0039);
+        addBand(radianceProduct, "reflec_6", 547, 0.0);
+        addBand(radianceProduct, "reflec_7", 555, 0.00358);
+        addBand(radianceProduct, "reflec_8", 645, 0.0);
+        addBand(radianceProduct, "reflec_9", 667, 0.00059);
+        addBand(radianceProduct, "reflec_10", 678, 0.00063);
+
+
+        HashMap<String, Object> fuParams = new HashMap<>();
+        fuParams.put("instrument", Instrument.MODIS);
+        Product fuResult = GPF.createProduct("FuClassification", fuParams, radianceProduct);
+
+        int radianceFuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+        float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
+        assertEquals(6, radianceFuValue);
+        assertEquals(162.87364196777344, radianceHueValue, 1e-8);
+
+    }
+
+    @Test
+    public void testMODIS_500() throws Exception {
+        // No validation data for this test available
+        Product modis500 = new Product("MODIS 500 FU_Hue_Value ", "modis-dummy", 1, 1);
+        // Yes, the wrong wavelength order is correct
+        addBand(modis500, "surf_refl_b01", 647, 0.0043);
+        addBand(modis500, "surf_refl_b03", 466, 0.0032);
+        addBand(modis500, "surf_refl_b04", 553, 0.00358);
+
+        HashMap<String, Object> fuParams = new HashMap<>();
+        fuParams.put("instrument", Instrument.MODIS500);
+        Product fuResult = GPF.createProduct("FuClassification", fuParams, modis500);
+
+        int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+        float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
+        assertEquals(16, fuValue);
+        assertEquals(42.41664886, hueValue, 1e-8);
+    }
+
+    @Test
+    public void testCZCS() throws Exception {
+        Product CZCS = new Product("CZCS FU_Hue_Value ", "czcs-dummy", 1, 1);
+        //  SNAP_CZCS.xlsx
+        addBand(CZCS, "reflec_1", 443, 0.015686002);
+        addBand(CZCS, "reflec_2", 520, 0.003436001);
+        addBand(CZCS, "reflec_3", 550, 0.001910001);
+        addBand(CZCS, "reflec_4", 670, 2.86E-04);
+
+        HashMap<String, Object> fuParams = new HashMap<>();
+        fuParams.put("instrument", Instrument.CZCS);
+        Product fuResult = GPF.createProduct("FuClassification", fuParams, CZCS);
+
+        int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+        float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
+        assertEquals(1, fuValue);
+        assertEquals(230.279937, hueValue, 1e-6);
+    }
+
+    @Test
+    public void testOLCISourceProduct() throws Exception {
+        Product olciProduct = new Product("OLCI FU_Hue_Value ", "cc-dummy", 1, 1);
+        //  SNAP_OLCI.xlsx
+        addBand(olciProduct, "reflec_1", 400.0f, 0.04376);
+        addBand(olciProduct, "reflec_2", 412.5f, 0.02783);
+        addBand(olciProduct, "reflec_3", 442.5f, 0.02534);
+        addBand(olciProduct, "reflec_4", 490.0f, 0.0208);
+        addBand(olciProduct, "reflec_5", 510.0f, 0.01462);
+        addBand(olciProduct, "reflec_6", 560.0f, 0.00549);
+        addBand(olciProduct, "reflec_7", 620.0f, 0.00041);
+        addBand(olciProduct, "reflec_8", 665.0f, 0.00161);
+        addBand(olciProduct, "reflec_9", 673.75f, 0.00164);
+        addBand(olciProduct, "reflec_10", 681.25f, 0.00179);
+        addBand(olciProduct, "reflec_11", 708.75f, 0.00153);
+
+        HashMap<String, Object> fuParams = new HashMap<>();
+        fuParams.put("instrument", Instrument.OLCI);
+        Product fuResult = GPF.createProduct("FuClassification", fuParams, olciProduct);
+
+        int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+        float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
+        assertEquals(2, fuValue);
+        assertEquals(221.7655029296875, hueValue, 1e-8);
+    }
+
+    @Test
+    public void testSeaWiFSSourceProduct() throws Exception {
+        Product seawifsProduct = new Product("SeaWIFS FU_Hue_Value", "cc-dummy", 1, 1);
+        //  SNAP_SEAWIFS.xlsx
+        addBand(seawifsProduct, "reflec_1", 412, 0.00011);
+        addBand(seawifsProduct, "reflec_2", 443, 0.00074);
+        addBand(seawifsProduct, "reflec_3", 490, 0.00125);
+        addBand(seawifsProduct, "reflec_4", 510, 0.00159);
+        addBand(seawifsProduct, "reflec_5", 555, 0.00178);
+        addBand(seawifsProduct, "reflec_6", 670, 0.00034);
+
+        HashMap<String, Object> fuParams = new HashMap<>();
+        fuParams.put("instrument", Instrument.SEAWIFS);
+        Product fuResult = GPF.createProduct("FuClassification", fuParams, seawifsProduct);
+
+        int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+        float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
+        assertEquals(8, fuValue);
+        assertEquals(100.09454345703125, hueValue, 1e-8);
+
+    }
+
+    // TODO - DISABLED SENSOR
+//    @Test
+//    public void testLandsat8_Radiance() throws Exception {
+//        // No validation data for this test available
+//        Product l8Radiance = new Product("L8 FU_Hue_Value ", "l8-dummy", 1, 1);
+//        addBand(l8Radiance, "coastal_aerosol", 440.0f, 271.24875);
+//        addBand(l8Radiance, "blue", 482.0f, 274.28046);
+//        addBand(l8Radiance, "green", 560.0f, 248.2791);
+//        addBand(l8Radiance, "red", 655.0f, 214.2197);
+//        MetadataElement metadataRoot = l8Radiance.getMetadataRoot();
+//        MetadataElement l1MetadataFile = new MetadataElement("L1_METADATA_FILE");
+//        MetadataElement imageAttributes = new MetadataElement("IMAGE_ATTRIBUTES");
+//        imageAttributes.addAttribute(new MetadataAttribute("SUN_AZIMUTH", ProductData.createInstance(new double[]{42}), true));
+//        imageAttributes.addAttribute(new MetadataAttribute("SUN_ELEVATION", ProductData.createInstance(new double[]{10}), true));
+//        l1MetadataFile.addElement(imageAttributes);
+//
+//        MetadataElement radiometricRescaling = new MetadataElement("RADIOMETRIC_RESCALING");
+//        for (int i = 0; i < l8Radiance.getNumBands(); i++) {
+//            radiometricRescaling.addAttribute(new MetadataAttribute(String.format("REFLECTANCE_ADD_BAND_%d", i + 1),
+//                                                                    ProductData.createInstance(new double[]{0.1}), true));
+//            radiometricRescaling.addAttribute(new MetadataAttribute(String.format("REFLECTANCE_MULT_BAND_%d", i + 1),
+//                                                                    ProductData.createInstance(new double[]{2.4}), true));
+//        }
+//
+//        l1MetadataFile.addElement(radiometricRescaling);
+//
+//        metadataRoot.addElement(l1MetadataFile);
+//
+//        HashMap<String, Object> fuParams = new HashMap<>();
+//        fuParams.put("instrument", Instrument.LANDSAT8);
+//        Product fuResult = GPF.createProduct("FuClassification", fuParams, l8Radiance);
+//
+//        int radianceFuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+//        float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
+//        assertEquals(6, radianceFuValue);
+//        assertEquals(155.99650573, radianceHueValue, 1e-8);
+//    }
+//
+//    @Test
+//    public void testLandsat8_Reflectance() throws Exception {
+//        // No validation data for this test available
+//        Product l8Reflectance = new Product("L8 FU_Hue_Value ", "l8-dummy", 1, 1);
+//        Band coastalAerosol = addBand(l8Reflectance, "coastal_aerosol", 440.0f, 0.02534);
+//        coastalAerosol.setDescription("TOA Reflectance");
+//        addBand(l8Reflectance, "blue", 482.0f, 0.0208);
+//        addBand(l8Reflectance, "green", 560.0f, 0.00549);
+//        addBand(l8Reflectance, "red", 655.0f, 0.00161);
+//
+//        HashMap<String, Object> fuParams = new HashMap<>();
+//        fuParams.put("instrument", Instrument.LANDSAT8);
+//        Product fuResult = GPF.createProduct("FuClassification", fuParams, l8Reflectance);
+//
+//        int radianceFuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+//        float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
+//        assertEquals(2, radianceFuValue);
+//        assertEquals(225.036926269, radianceHueValue, 1e-8);
+//    }
+
+    private static Band addBand(Product product, String bandName, float wavelength) {
+        Band band = new Band(bandName, ProductData.TYPE_FLOAT64, 10, 10);
+        band.setSpectralWavelength(wavelength);
+        product.addBand(band);
+        return band;
+    }
+
+    private static Band addBand(Product product, String bandName, float wavelength, double value) {
+        Band band = addBand(product, bandName, wavelength);
+        band.setSourceImage(ConstantDescriptor.create((float) band.getRasterWidth(), (float) band.getRasterHeight(),
+                new Double[]{value}, null));
+        return band;
+    }
+
+    private void assertFUColor(int fuValue, Color expectedColor) {
+        Color fuColor = FuOp.FU_COLORS[fuValue];
+        assertEquals(expectedColor.getRed(), fuColor.getRed());
+        assertEquals(expectedColor.getGreen(), fuColor.getGreen());
+        assertEquals(expectedColor.getBlue(), fuColor.getBlue());
     }
 
     @Test
@@ -216,128 +376,6 @@ public class FuOpTest {
         assertFUColor(19, new Color(175, 138, 68));
         assertFUColor(20, new Color(164, 105, 5));
         assertFUColor(21, new Color(161, 77, 4));
-
     }
 
-    @Test
-    public void testMerisSourceProduct() throws Exception {
-        Product radianceProduct = new Product("CoastColour_L2R", "cc-dummy", 1, 1);
-        //  SNAP_MERIS.xlsx
-        addBand(radianceProduct, "reflec_1", 412.691f, 0.00981);
-        addBand(radianceProduct, "reflec_2", 442.559f, 0.011);
-        addBand(radianceProduct, "reflec_3", 489.882f, 0.01296);
-        addBand(radianceProduct, "reflec_4", 509.819f, 0.01311);
-        addBand(radianceProduct, "reflec_5", 559.694f, 0.01193);
-        addBand(radianceProduct, "reflec_6", 619.601f, 0.00298);
-        addBand(radianceProduct, "reflec_7", 664.573f, 0.0016);
-        addBand(radianceProduct, "reflec_8", 680.821f, 0.0014);
-        addBand(radianceProduct, "reflec_9", 708.329f, 0.00081);
-        HashMap<String, Object> radianceParams = new HashMap<>();
-        radianceParams.put("validExpression", "true");
-        radianceParams.put("instrument", Instrument.MERIS);
-        Product radianceResult = GPF.createProduct("FuClassification", radianceParams, radianceProduct);
-
-        int radianceFuValue = radianceResult.getBand("FU").getSampleInt(0, 0);
-        float radianceHueValue = radianceResult.getBand("hue_angle").getSampleFloat(0, 0);
-        assertEquals(5, radianceFuValue);
-        assertEquals(171.02552795410156, radianceHueValue, 1e-8);
-    }
-
-
-    @Test
-    public void testModisSourceProduct() throws Exception {
-        Product radianceProduct = new Product("Modis FU_Hue_Value", "dummy", 1, 1);
-        // SNAP_MODIS.xlsx
-        addBand(radianceProduct, "reflec_1", 412, 0.00242);
-        addBand(radianceProduct, "reflec_2", 443, 0.0031);
-        addBand(radianceProduct, "reflec_3", 469, 0.0);
-        addBand(radianceProduct, "reflec_4", 488, 0.00345);
-        addBand(radianceProduct, "reflec_5", 531, 0.0039);
-        addBand(radianceProduct, "reflec_6", 547, 0.0);
-        addBand(radianceProduct, "reflec_7", 555, 0.00358);
-        addBand(radianceProduct, "reflec_8", 645, 0.0);
-        addBand(radianceProduct, "reflec_9", 667, 0.00059);
-        addBand(radianceProduct, "reflec_10", 678, 0.00063);
-
-
-        HashMap<String, Object> radianceParams = new HashMap<>();
-        radianceParams.put("instrument", Instrument.MODIS);
-        Product radianceResult = GPF.createProduct("FuClassification", radianceParams, radianceProduct);
-
-        int radianceFuValue = radianceResult.getBand("FU").getSampleInt(0, 0);
-        float radianceHueValue = radianceResult.getBand("hue_angle").getSampleFloat(0, 0);
-        assertEquals(6, radianceFuValue);
-        assertEquals(162.87364196777344, radianceHueValue, 1e-8);
-
-    }
-
-    @Test
-    public void testOLCISourceProduct() throws Exception {
-        Product radianceProduct = new Product("OLCI FU_Hue_Value ", "cc-dummy", 1, 1);
-        //  SNAP_OLCI.xlsx
-        addBand(radianceProduct, "reflec_1", 400.0f, 0.04376);
-        addBand(radianceProduct, "reflec_2", 412.5f, 0.02783);
-        addBand(radianceProduct, "reflec_3", 442.5f, 0.02534);
-        addBand(radianceProduct, "reflec_4", 490.0f, 0.0208);
-        addBand(radianceProduct, "reflec_5", 510.0f, 0.01462);
-        addBand(radianceProduct, "reflec_6", 560.0f, 0.00549);
-        addBand(radianceProduct, "reflec_7", 620.0f, 0.00041);
-        addBand(radianceProduct, "reflec_8", 665.0f, 0.00161);
-        addBand(radianceProduct, "reflec_9", 673.75f, 0.00164);
-        addBand(radianceProduct, "reflec_10", 681.25f, 0.00179);
-        addBand(radianceProduct, "reflec_11", 708.75f, 0.00153);
-
-        HashMap<String, Object> radianceParams = new HashMap<>();
-        radianceParams.put("instrument", Instrument.OLCI);
-        Product radianceResult = GPF.createProduct("FuClassification", radianceParams, radianceProduct);
-
-        int radianceFuValue = radianceResult.getBand("FU").getSampleInt(0, 0);
-        float radianceHueValue = radianceResult.getBand("hue_angle").getSampleFloat(0, 0);
-        assertEquals(2, radianceFuValue);
-        assertEquals(221.7655029296875, radianceHueValue, 1e-8);
-
-    }
-
-
-    @Test
-    public void testSeaWiFSSourceProduct() throws Exception {
-        Product radianceProduct = new Product("SeaWIFS FU_Hue_Value", "cc-dummy", 1, 1);
-        //  SNAP_SEAWIFS.xlsx
-        addBand(radianceProduct, "reflec_1", 412, 0.00011);
-        addBand(radianceProduct, "reflec_2", 443, 0.00074);
-        addBand(radianceProduct, "reflec_3", 490, 0.00125);
-        addBand(radianceProduct, "reflec_4", 510, 0.00159);
-        addBand(radianceProduct, "reflec_5", 555, 0.00178);
-        addBand(radianceProduct, "reflec_6", 670, 0.00034);
-
-        HashMap<String, Object> radianceParams = new HashMap<>();
-        radianceParams.put("instrument", Instrument.SEAWIFS);
-        Product radianceResult = GPF.createProduct("FuClassification", radianceParams, radianceProduct);
-
-        int radianceFuValue = radianceResult.getBand("FU").getSampleInt(0, 0);
-        float radianceHueValue = radianceResult.getBand("hue_angle").getSampleFloat(0, 0);
-        assertEquals(8, radianceFuValue);
-        assertEquals(100.09454345703125, radianceHueValue, 1e-8);
-
-    }
-
-    private static Band addBand(Product product, String bandName, float wavelength) {
-        Band band = new Band(bandName, ProductData.TYPE_FLOAT64, 10, 10);
-        band.setSpectralWavelength(wavelength);
-        product.addBand(band);
-        return band;
-    }
-
-    private static void addBand(Product product, String bandName, float wavelength, double value) {
-        Band band = addBand(product, bandName, wavelength);
-        band.setSourceImage(ConstantDescriptor.create((float) band.getRasterWidth(), (float) band.getRasterHeight(),
-                new Double[]{value}, null));
-    }
-
-    private void assertFUColor(int fuValue, Color expectedColor) {
-        Color fuColor = FuOp.FU_COLORS[fuValue];
-        assertEquals(expectedColor.getRed(), fuColor.getRed());
-        assertEquals(expectedColor.getGreen(), fuColor.getGreen());
-        assertEquals(expectedColor.getBlue(), fuColor.getBlue());
-    }
 }

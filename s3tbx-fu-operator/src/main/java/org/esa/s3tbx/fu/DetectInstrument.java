@@ -29,31 +29,78 @@ class DetectInstrument {
 
     private static final String GLOBAL_ATTRIBUTES = "Global_Attributes";
     private static final String SEAWIFS_TITLE = "SeaWiFS Level-2 Data";
+    private static final String CZCS_TITLE = "CZCS Level-2 Data";
     private static final String MODIS_TITLE_VALUE = "HMODISA Level-2 Data";
-    private static final String MODIS_ATTRIBUTE_TITLE = "title";
-    private static final String MERIS_TITLE_VALUE = "Title";
+    private static final String MODIS_1KM_RESOLUTION_VALUE = "1 km";
     private static final String OLCI_PRODUCT_TYPE_START = "OL_2";
     private static final String OLCI_L2_BANDNAME_PATTERN = "Oa\\d+_reflectance";
-    public static final String MERIS_L2_TYPE_PATTER = "MER_..._2P";
+    private static final String MERIS_L2_TYPE_PATTER = "MER_..._2P";
+    //TODO - DISABLED SENSOR
+//    private static final String L8_TYPE_PREFIX = "LANDSAT_8_OLI_TIRS_L1T";
 
     static Instrument getInstrument(Product product) {
         if (meris(product)) {
             return Instrument.MERIS;
-        } else if (modis(product)) {
+        } else if (modis1km(product)) {
             return Instrument.MODIS;
+        } else if (modis500m(product)) {
+            return Instrument.MODIS500;
+        } else if (s2msi(product)) {
+            return Instrument.S2_MSI;
         } else if (olci(product)) {
             return Instrument.OLCI;
+            //TODO - DISABLED SENSOR
+//        } else if (landsat8(product)) {
+//            return Instrument.LANDSAT8;
         } else if (seawifs(product)) {
             return Instrument.SEAWIFS;
+        } else if (czcs(product)) {
+            return Instrument.CZCS;
         }
         return null;
     }
 
-    private static boolean modis(Product product) {
+    //TODO - DISABLED SENSOR
+//    private static boolean landsat8(Product product) {
+//        String productType = product.getProductType();
+//        return productType.startsWith(L8_TYPE_PREFIX);
+//    }
+
+    private static boolean meris(Product product) {
+        Pattern compile = Pattern.compile(MERIS_L2_TYPE_PATTER);
+        return compile.matcher(product.getProductType()).matches();
+
+    }
+
+    private static boolean modis1km(Product product) {
         MetadataElement globalAttributes = product.getMetadataRoot().getElement(GLOBAL_ATTRIBUTES);
 
-        if (globalAttributes != null && globalAttributes.containsAttribute(MODIS_ATTRIBUTE_TITLE)) {
-            final String sensor_name = globalAttributes.getAttributeString(MODIS_ATTRIBUTE_TITLE);
+        return globalAttributes != null && isModis(globalAttributes) && hasModisResultion(globalAttributes, MODIS_1KM_RESOLUTION_VALUE);
+    }
+
+    private static boolean modis500m(Product product) {
+        MetadataElement mph = product.getMetadataRoot().getElement("MPH");
+        if(mph != null && mph.containsAttribute("identifier_product_doi")) {
+            String identDoi = mph.getAttributeString("identifier_product_doi");
+            return Pattern.matches(".*/MODIS/M[O|Y]D09A1.006", identDoi);
+        }
+        return false;
+    }
+
+    private static boolean hasModisResultion(MetadataElement globalAttributes, String modis500mResolutionValue) {
+        if (globalAttributes.containsAttribute("spatialResolution")) {
+            final String sensor_name = globalAttributes.getAttributeString("spatialResolution");
+            if (sensor_name.contains(modis500mResolutionValue)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isModis(MetadataElement globalAttributes) {
+        String attribName = "title";
+        if (globalAttributes != null && globalAttributes.containsAttribute(attribName)) {
+            final String sensor_name = globalAttributes.getAttributeString(attribName);
             if (sensor_name.contains(MODIS_TITLE_VALUE)) {
                 return true;
             }
@@ -71,11 +118,16 @@ class DetectInstrument {
         return isOLCI;
     }
 
+    private static boolean s2msi(Product product) {
+        return product.getProductType().equals("S2_MSI_Level-1C");
+    }
+
     private static boolean seawifs(Product product) {
         MetadataElement globalAttributes = product.getMetadataRoot().getElement(GLOBAL_ATTRIBUTES);
 
-        if (globalAttributes != null && globalAttributes.containsAttribute(MERIS_TITLE_VALUE)) {
-            final String title = globalAttributes.getAttributeString(MERIS_TITLE_VALUE);
+        String attribName = "Title";
+        if (globalAttributes != null && globalAttributes.containsAttribute(attribName)) {
+            final String title = globalAttributes.getAttributeString(attribName);
             if (title.equals(SEAWIFS_TITLE)) {
                 return true;
             }
@@ -84,9 +136,16 @@ class DetectInstrument {
         return false;
     }
 
-    private static boolean meris(Product product) {
-        Pattern compile = Pattern.compile(MERIS_L2_TYPE_PATTER);
-        return compile.matcher(product.getProductType()).matches();
+    private static boolean czcs(Product product) {
+        MetadataElement globalAttributes = product.getMetadataRoot().getElement(GLOBAL_ATTRIBUTES);
 
+        if (globalAttributes != null && globalAttributes.containsAttribute("Title")) {
+            final String title = globalAttributes.getAttributeString("Title");
+            if (title.equals(CZCS_TITLE)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
