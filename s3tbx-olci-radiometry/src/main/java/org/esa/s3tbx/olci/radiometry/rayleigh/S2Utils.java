@@ -1,6 +1,9 @@
 package org.esa.s3tbx.olci.radiometry.rayleigh;
 
+import org.esa.s3tbx.olci.radiometry.Sensor;
 import org.esa.s3tbx.olci.radiometry.SensorConstants;
+
+import java.util.List;
 
 /**
  * Utility class for S2 MSI Rayleigh Correction (i.e. methods for rescaling)
@@ -103,6 +106,46 @@ class S2Utils {
             }
         }
         return numBandsToRcCorrect;
+    }
+
+    /**
+     * This methos provides the S2 'true' instead of central wavelengths, considering the spectral response functions.
+     * The approach follows the CB email from 20170718
+     *
+     * @return double[] s2TrueWavelengths
+     */
+    static double[] getS2TrueWavelengths() {
+        double[] s2TrueWvls = new double[Sensor.S2_MSI.getNumBands()];
+
+        // the response functions are from https://earth.esa.int/documents/247904/685211/Sentinel-2+MSI+Spectral+Responses/
+        final S2ResponseFunctions s2ResponseFunctionAuxdata = new S2ResponseFunctions();
+        List<S2ResponseFunctions.ResponseFunction> s2RfList = s2ResponseFunctionAuxdata.getS2ResponseFunctions();
+
+        double wvlPower = 4.05;
+        double incr = 1.0;  // wvl step in nm
+        for (int i = 0; i < s2TrueWvls.length; i++) {
+            s2TrueWvls[i] = 0.0;
+            double sum = 0.0;
+            double sumRf = 0.0;
+
+            // the integrals over the RFs per band are not normalized to 1 - we have to do this first
+            for (int j = 0; j < s2RfList.size(); j++) {
+                final double rf = s2RfList.get(j).getRf(i);
+                if (rf > 0.0) {
+                    sumRf += (rf *incr);
+                }
+            }
+            for (int j = 0; j < s2RfList.size(); j++) {
+                final double wvl = s2RfList.get(j).getWvl();
+                final double rf = s2RfList.get(j).getRf(i) / sumRf;
+                if (rf > 0.0) {
+                    sum += (rf *incr * Math.pow(wvl, -wvlPower));
+                }
+            }
+            s2TrueWvls[i] = Math.pow(sum, -1./wvlPower);
+        }
+
+        return s2TrueWvls;
     }
 
 }

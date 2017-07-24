@@ -49,19 +49,31 @@ public class RayleighCorrAlgorithm {
     }
 
     public double[] getCrossSectionSigma(Product sourceProduct, int numBands, String getBandNamePattern) {
-        double[] waveLength = new double[numBands];
-        for (int i = 0; i < numBands; i++) {
-            if (sensor != null && sensor == Sensor.S2_MSI) {
-                final String s2BandName = Sensor.S2_MSI.getSpectralBandNames()[i];
-                waveLength[i] = sourceProduct.getBand(s2BandName).getSpectralWavelength();
-            } else {
+        if (sensor != null && sensor == Sensor.S2_MSI) {
+//            final String s2BandName = Sensor.S2_MSI.getSpectralBandNames()[i];
+//            waveLength[i] = sourceProduct.getBand(s2BandName).getSpectralWavelength();
+
+            // now use 'true' instead of central wavelengths instead
+            // CB/GK 20170721, following https://earth.esa.int/documents/247904/685211/Sentinel-2+MSI+Spectral+Responses/
+            return getCrossSection(S2Utils.getS2TrueWavelengths());
+        } else {
+            double[] waveLength = new double[numBands];
+            for (int i = 0; i < numBands; i++) {
                 waveLength[i] = sourceProduct.getBand(String.format(getBandNamePattern, i + 1)).getSpectralWavelength();
             }
+            return getCrossSection(waveLength);
         }
-
-        return getCrossSection(waveLength);
     }
 
+    /**
+     * This is from [1]: Bodhaine et al (1999): On Rayleigh Optical Depth Calculations
+     * http://journals.ametsoc.org/doi/pdf/10.1175/1520-0426%281999%29016%3C1854%3AORODC%3E2.0.CO%3B2
+     *
+     * @param lambdas - spectral wavelengths (should be the real ones which consider the response function,
+     *                not necessarily the central wavelengths)
+     *
+     * @return the scatttering cross sections for each wavelength
+     */
     public double[] getCrossSection(double[] lambdas) {
         double n_ratio = 1 + 0.54 * (RayleighConstants.CO2 - 0.0003);
         double molecularDen = Math.pow(RayleighConstants.Molecular_cm3, 2);
@@ -72,17 +84,25 @@ public class RayleighCorrAlgorithm {
             double lambdamm = lambdas[i] / 1000.0;
             double lambdaWLcm = lambdamm / 10000.0;
 
+            // [1], eq. (5):
             double F_N2 = 1.034 + 0.000317 / Math.pow(lambdamm, 2);
+            // [1], eq. (6):
             double F_O2 = 1.096 + 0.001385 / Math.pow(lambdamm, 2) + 0.0001448 / Math.pow(lambdamm, 4);
 
-            double F_air = (78.084 * F_N2 + 20.946 * F_O2 + 0.934 * 1 + RayleighConstants.C_CO2 * 1.15) / (78.084 + 20.946 + 0.934 + RayleighConstants.C_CO2);
-            double n_1_300 = (8060.51 + (2480990.0 / (132.274 - Math.pow(lambdamm, (-2)))) + (17455.7 / (39.32957 - Math.pow(lambdamm, (-2))))) / 100000000;
+            // [1], eqs. (4), (18):
+            double n_1_300 = (8060.51 + (2480990.0 / (132.274 - Math.pow(lambdamm, (-2)))) + (17455.7 /
+                    (39.32957 - Math.pow(lambdamm, (-2))))) / 100000000;
+            // [1], eq. (23):
+            double F_air = (78.084 * F_N2 + 20.946 * F_O2 + 0.934 * 1 + RayleighConstants.C_CO2 * 1.15) /
+                    (78.084 + 20.946 + 0.934 + RayleighConstants.C_CO2);
+
             double nCO2 = n_ratio * (1 + n_1_300);
-            sigma[i] = 24 * Math.pow(Math.PI, 3) * Math.pow((Math.pow(nCO2, 2) - 1), 2) / (Math.pow(lambdaWLcm, 4) * molecularDen * Math.pow((Math.pow(nCO2, 2) + 2), 2)) * F_air;
+            // [1], eq. (22):
+            sigma[i] = 24 * Math.pow(Math.PI, 3) * Math.pow((Math.pow(nCO2, 2) - 1), 2) / (Math.pow(lambdaWLcm, 4) *
+                    molecularDen * Math.pow((Math.pow(nCO2, 2) + 2), 2)) * F_air;
         }
         return sigma;
     }
-
 
     public double[] getCorrOzone(double[] rho_ng_ref, double absorpO, double[] ozones, double[] cosOZARads, double[] cosSZARads) {
         double[] ozoneCorrRefl = new double[rho_ng_ref.length];
