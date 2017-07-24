@@ -155,7 +155,7 @@ public class FuOpTest {
         int radianceFuValue = fuResult.getBand("FU").getSampleInt(0, 0);
         float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
         assertEquals(5, radianceFuValue);
-        assertEquals(171.02552795410156, radianceHueValue, 1e-8);
+        assertEquals(171.025528, radianceHueValue, 1e-6);
     }
 
 
@@ -182,18 +182,19 @@ public class FuOpTest {
         int radianceFuValue = fuResult.getBand("FU").getSampleInt(0, 0);
         float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
         assertEquals(6, radianceFuValue);
-        assertEquals(162.87364196777344, radianceHueValue, 1e-8);
+        assertEquals(162.873642, radianceHueValue, 1e-6);
 
     }
 
     @Test
     public void testMODIS_500() throws Exception {
-        // No validation data for this test available
         Product modis500 = new Product("MODIS 500 FU_Hue_Value ", "modis-dummy", 1, 1);
+        //  SNAP_MODIS500.xlsx - probably in the Excel sheet is an error. But it is confirmed that the results are good.
+
         // Yes, the wrong wavelength order is correct
-        addBand(modis500, "surf_refl_b01", 647, 0.0043);
-        addBand(modis500, "surf_refl_b03", 466, 0.0032);
-        addBand(modis500, "surf_refl_b04", 553, 0.00358);
+        addBand(modis500, "surf_refl_b01", 647, 0.0417);
+        addBand(modis500, "surf_refl_b03", 466, 0.0124);
+        addBand(modis500, "surf_refl_b04", 553, 0.0234);
 
         HashMap<String, Object> fuParams = new HashMap<>();
         fuParams.put("instrument", Instrument.MODIS500);
@@ -202,17 +203,17 @@ public class FuOpTest {
         int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
         float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
         assertEquals(16, fuValue);
-        assertEquals(42.41664886, hueValue, 1e-8);
+        assertEquals(44.561714, hueValue, 1e-6);
     }
 
     @Test
     public void testCZCS() throws Exception {
         Product CZCS = new Product("CZCS FU_Hue_Value ", "czcs-dummy", 1, 1);
         //  SNAP_CZCS.xlsx
-        addBand(CZCS, "reflec_1", 443, 0.015686002);
-        addBand(CZCS, "reflec_2", 520, 0.003436001);
-        addBand(CZCS, "reflec_3", 550, 0.001910001);
-        addBand(CZCS, "reflec_4", 670, 2.86E-04);
+        addBand(CZCS, "reflec_1", 443, 0.00011);
+        addBand(CZCS, "reflec_2", 520, 0.00085);
+        addBand(CZCS, "reflec_3", 550, 0.00182);
+        addBand(CZCS, "reflec_4", 670, 0.00011);
 
         HashMap<String, Object> fuParams = new HashMap<>();
         fuParams.put("instrument", Instrument.CZCS);
@@ -220,13 +221,13 @@ public class FuOpTest {
 
         int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
         float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
-        assertEquals(1, fuValue);
-        assertEquals(230.279937, hueValue, 1e-6);
+        assertEquals(12, fuValue);
+        assertEquals(64.487236, hueValue, 1e-6);
     }
 
     @Test
     public void testOLCISourceProduct() throws Exception {
-        Product olciProduct = new Product("OLCI FU_Hue_Value ", "cc-dummy", 1, 1);
+        Product olciProduct = new Product("OLCI FU_Hue_Value ", "fu-dummy", 1, 1);
         //  SNAP_OLCI.xlsx
         addBand(olciProduct, "reflec_1", 400.0f, 0.04376);
         addBand(olciProduct, "reflec_2", 412.5f, 0.02783);
@@ -247,7 +248,27 @@ public class FuOpTest {
         int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
         float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
         assertEquals(2, fuValue);
-        assertEquals(221.7655029296875, hueValue, 1e-8);
+        assertEquals(221.765503, hueValue, 1e-6);
+    }
+
+    @Test
+    public void testS2MSISourceProduct() throws Exception {
+        Product s2msiProduct = new Product("S2MSI FU_Hue_Value ", "fu-dummy", 1, 1);
+        //  SNAP_Sentinel2.xlsx
+        addBand(s2msiProduct, "B1", 443, 0.00011);
+        addBand(s2msiProduct, "B2", 490, 0.00074);
+        addBand(s2msiProduct, "B3", 560, 0.00125);
+        addBand(s2msiProduct, "B4", 665, 0.00159);
+        addBand(s2msiProduct, "B5", 705, 0.00178);
+
+        HashMap<String, Object> fuParams = new HashMap<>();
+        fuParams.put("instrument", Instrument.S2_MSI);
+        Product fuResult = GPF.createProduct("FuClassification", fuParams, s2msiProduct);
+
+        int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
+        float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
+        assertEquals(18, fuValue);
+        assertEquals(34.691898, hueValue, 1e-6);
     }
 
     @Test
