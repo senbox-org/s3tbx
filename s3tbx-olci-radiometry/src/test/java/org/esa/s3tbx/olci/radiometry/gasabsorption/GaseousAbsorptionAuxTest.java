@@ -20,7 +20,6 @@ package org.esa.s3tbx.olci.radiometry.gasabsorption;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Files;
@@ -46,7 +45,7 @@ public class GaseousAbsorptionAuxTest {
         absorptionAuxII = new GaseousAbsorptionAux();
     }
 
-    @Ignore
+    @Test
     public void testGetOzoneHighAux() throws Exception {
         List<double[]> ozoneHighs = absorptionAuxII.getOzoneHighs();
         assertNotNull(ozoneHighs);
