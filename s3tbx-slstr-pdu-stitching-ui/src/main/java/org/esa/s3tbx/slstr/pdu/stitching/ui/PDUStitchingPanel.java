@@ -3,7 +3,6 @@ package org.esa.s3tbx.slstr.pdu.stitching.ui;
 import org.esa.s3tbx.slstr.pdu.stitching.PDUStitchingOp;
 import org.esa.s3tbx.slstr.pdu.stitching.Validator;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductFilter;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.ui.AppContext;
@@ -46,6 +45,8 @@ import java.util.logging.Logger;
 class PDUStitchingPanel extends JPanel {
 
     private static final String INPUT_PRODUCT_DIR_KEY = "gpf.slstr.pdu.stitching.input.product.dir";
+    private static final String INPUT_PRODUCT_LAST_FORMAT_KEY = "gpf.slstr.pdu.stitching.input.product.lastFormat";
+    private static final String INPUT_PRODUCT_FORMAT_NAMES_KEY = "gpf.slstr.pdu.stitching.input.product.formatNames";
     private static final String NO_SOURCE_PRODUCTS_TEXT = "No Product Dissemination Units selected";
     private static final String VALID_SOURCE_PRODUCTS_TEXT = "Selection of Product Dissemination Units is valid";
     private static final String INVALID_SELECTION_TEXT = "Selection of Product Dissemination Units is invalid: ";
@@ -62,6 +63,7 @@ class PDUStitchingPanel extends JPanel {
         this.appContext = appContext;
         this.model = model;
         isReactingToChange = false;
+        appContext.getPreferences().setPropertyString(INPUT_PRODUCT_FORMAT_NAMES_KEY, "Sen3");
         setLayout(new BorderLayout());
         final JSplitPane pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, createSourceProductsPanel(), createWorldMapPanel());
         pane.setDividerLocation(0.35);
@@ -74,17 +76,13 @@ class PDUStitchingPanel extends JPanel {
     private JPanel createSourceProductsPanel() {
         sourceProductList = new SourceProductList(appContext);
         sourceProductList.setPropertyNameLastOpenInputDir(INPUT_PRODUCT_DIR_KEY);
-        sourceProductList.setPropertyNameLastOpenedFormat("Sen3");
+        sourceProductList.setPropertyNameLastOpenedFormat(INPUT_PRODUCT_LAST_FORMAT_KEY);
+        sourceProductList.setPropertyNameFormatNames(INPUT_PRODUCT_FORMAT_NAMES_KEY);
         sourceProductList.addChangeListener(new SourceListDataListener());
         sourceProductList.addSelectionListener(new SourceListSelectionListener());
         sourceProductList.setXAxis(false);
         sourceProductList.setDefaultPattern("S3A_SL_1*.SEN3");
-        sourceProductList.setProductFilter(new ProductFilter() {
-            @Override
-            public boolean accept(Product product) {
-                return SlstrL1bFileNameValidator.isValidDirectoryName(product.getName());
-            }
-        });
+        sourceProductList.setProductFilter(product -> SlstrL1bFileNameValidator.isValidDirectoryName(product.getName()));
         model.getBindingContext().bind(PDUStitchingModel.PROPERTY_SOURCE_PRODUCT_PATHS, sourceProductList);
         JComponent[] panels = sourceProductList.getComponents();
 
