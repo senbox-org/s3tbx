@@ -42,6 +42,7 @@ import java.awt.Rectangle;
         internal = true,
         authors = "Marco Peters, Muhammad Bala (Brockmann Consult)",
         copyright = "(c) 2016 by Brockmann Consult",
+        version = "1.1",
         description = "Correct the influence of atmospheric gas absorption for those OLCI channels.")
 public class GaseousAbsorptionOp extends Operator {
 

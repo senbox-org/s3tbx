@@ -20,6 +20,9 @@ package org.esa.s3tbx.olci.radiometry.gasabsorption;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.google.common.primitives.Doubles;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.OperatorSpiRegistry;
 import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.io.CsvReader;
@@ -38,9 +41,9 @@ public class GaseousAbsorptionAux {
     private List<double[]> ozoneHighs;
 
 
-    private List<double[]> coeffhighres = new ArrayList();
+    private List<double[]> coeffhighres = new ArrayList<>();
 
-    public GaseousAbsorptionAux() {
+    GaseousAbsorptionAux() {
         try {
             Path installAuxdata = installAuxdata();
             Path resolve = installAuxdata.resolve("ozone-highres.txt");
@@ -78,7 +81,10 @@ public class GaseousAbsorptionAux {
     }
 
     Path installAuxdata() throws IOException {
-        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/gaseous");
+        OperatorSpiRegistry operatorSpiRegistry = GPF.getDefaultInstance().getOperatorSpiRegistry();
+        OperatorSpi spi = operatorSpiRegistry.getOperatorSpi("GaseousAbsorption");
+        String version = "v" + spi.getOperatorDescriptor().getVersion();
+        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/gaseous/" + version);
         final Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(GaseousAbsorptionAux.class).resolve("auxdata/gaseous");
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirectory);
         resourceInstaller.install(".*", ProgressMonitor.NULL);
@@ -107,8 +113,6 @@ public class GaseousAbsorptionAux {
 
         double[] lamC;
         if (instrument.equals("MERIS")) {
-            // this is not used - why not??
-            double[] absorb_ozon = new double[]{0.0002174, 0.0034448, 0.0205669, 0.0400134, 0.105446, 0.1081787, 0.0501634, 0.0349671, 0.0187495, 0.0086322, 0.0000001, 0.0084989, 0.0018944, 0.0012369, 0.000001};
             lamC = new double[]{412.5, 442.0, 490.0, 510.0, 560.0, 620.0, 665.0, 681.25, 708.75, 753.0, 761.25, 779.0, 865.0,
                     885.0, 900};
             double[] lamW = new double[]{10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 3.075, 10.0, 20.0, 20.0, 40.0};
