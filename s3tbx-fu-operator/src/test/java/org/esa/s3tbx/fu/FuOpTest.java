@@ -136,7 +136,7 @@ public class FuOpTest {
 
     @Test
     public void testMerisSourceProduct() throws Exception {
-        Product radianceProduct = new Product("CoastColour_L2R", "cc-dummy", 1, 1);
+        Product radianceProduct = new Product("CoastColour_L2R", "fu-dummy", 1, 1);
         //  SNAP_MERIS.xlsx
         addBand(radianceProduct, "reflec_1", 412.691f, 0.00981);
         addBand(radianceProduct, "reflec_2", 442.559f, 0.011);
@@ -189,12 +189,11 @@ public class FuOpTest {
     @Test
     public void testMODIS_500() throws Exception {
         Product modis500 = new Product("MODIS 500 FU_Hue_Value ", "modis-dummy", 1, 1);
-        //  SNAP_MODIS500.xlsx - probably in the Excel sheet is an error. But it is confirmed that the results are good.
-
+        //  SNAP_MODIS500.xlsx
         // Yes, the wrong wavelength order is correct
-        addBand(modis500, "surf_refl_b01", 647, 0.0417);
+        addBand(modis500, "surf_refl_b01", 647, 0.0234);
         addBand(modis500, "surf_refl_b03", 466, 0.0124);
-        addBand(modis500, "surf_refl_b04", 553, 0.0234);
+        addBand(modis500, "surf_refl_b04", 553, 0.0417);
 
         HashMap<String, Object> fuParams = new HashMap<>();
         fuParams.put("instrument", Instrument.MODIS500);
@@ -202,8 +201,8 @@ public class FuOpTest {
 
         int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
         float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
-        assertEquals(16, fuValue);
-        assertEquals(44.561714, hueValue, 1e-6);
+        assertEquals(13, fuValue);
+        assertEquals(59.292202, hueValue, 1e-6);
     }
 
     @Test
