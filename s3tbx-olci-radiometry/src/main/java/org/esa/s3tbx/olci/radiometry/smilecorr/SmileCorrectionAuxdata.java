@@ -198,7 +198,7 @@ public class SmileCorrectionAuxdata {
     }
 
     private double[][] loadFlatAuxDataFile(final String auxFileName, final int numRows, final int numCols) throws
-            IOException {
+                                                                                                           IOException {
         double[][] tableData = new double[numRows][numCols];
         try (BufferedReader reader = openFlatAuxDataFile(auxFileName)) {
             readFlatAuxDataFile(tableData, reader);
@@ -244,8 +244,8 @@ public class SmileCorrectionAuxdata {
     static Path installAuxdata() throws IOException {
         OperatorSpiRegistry operatorSpiRegistry = GPF.getDefaultInstance().getOperatorSpiRegistry();
         OperatorSpi spi = operatorSpiRegistry.getOperatorSpi("SmileCorrection.Olci");
-        String version = spi.getOperatorDescriptor().getVersion();
-        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/smile/"+version);
+        String version = "v" + spi.getOperatorDescriptor().getVersion();
+        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/smile/" + version);
         final Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(SmileCorrectionAuxdata.class).resolve("auxdata/smile");
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirectory);
         resourceInstaller.install(".*", ProgressMonitor.NULL);
