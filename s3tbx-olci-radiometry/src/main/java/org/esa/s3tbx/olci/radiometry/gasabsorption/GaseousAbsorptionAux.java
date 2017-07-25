@@ -20,6 +20,9 @@ package org.esa.s3tbx.olci.radiometry.gasabsorption;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.google.common.primitives.Doubles;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.OperatorSpiRegistry;
 import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.io.CsvReader;
@@ -38,9 +41,9 @@ public class GaseousAbsorptionAux {
     private List<double[]> ozoneHighs;
 
 
-    private List<double[]> coeffhighres = new ArrayList();
+    private List<double[]> coeffhighres = new ArrayList<>();
 
-    public GaseousAbsorptionAux() {
+    GaseousAbsorptionAux() {
         try {
             Path installAuxdata = installAuxdata();
             Path resolve = installAuxdata.resolve("ozone-highres.txt");
@@ -78,7 +81,10 @@ public class GaseousAbsorptionAux {
     }
 
     Path installAuxdata() throws IOException {
-        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/gaseous");
+        OperatorSpiRegistry operatorSpiRegistry = GPF.getDefaultInstance().getOperatorSpiRegistry();
+        OperatorSpi spi = operatorSpiRegistry.getOperatorSpi("GaseousAbsorption");
+        String version = "v" + spi.getOperatorDescriptor().getVersion();
+        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/gaseous/" + version);
         final Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(GaseousAbsorptionAux.class).resolve("auxdata/gaseous");
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirectory);
         resourceInstaller.install(".*", ProgressMonitor.NULL);

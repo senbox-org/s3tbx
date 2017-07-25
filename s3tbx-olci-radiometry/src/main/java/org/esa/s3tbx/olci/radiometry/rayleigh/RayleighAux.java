@@ -25,10 +25,14 @@ import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils;
 import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelDescriptor;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
 import org.esa.snap.core.dataop.resamp.Resampling;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.OperatorSpiRegistry;
 import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.SystemUtils;
@@ -37,6 +41,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.awt.Rectangle;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -572,7 +577,10 @@ public class RayleighAux {
     }
 
     static Path installAuxdata() throws IOException {
-        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/rayleigh");
+        OperatorSpiRegistry operatorSpiRegistry = GPF.getDefaultInstance().getOperatorSpiRegistry();
+        OperatorSpi spi = operatorSpiRegistry.getOperatorSpi("RayleighCorrection");
+        String version = "v" + spi.getOperatorDescriptor().getVersion();
+        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/rayleigh/" + version);
         final Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(RayleighAux.class).resolve("auxdata/rayleigh");
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirectory);
         resourceInstaller.install(".*", ProgressMonitor.NULL);
@@ -608,7 +616,7 @@ public class RayleighAux {
             }
             k++;
         }
-        ArrayList<double[][][]> rayCoefficient = new ArrayList();
+        ArrayList<double[][][]> rayCoefficient = new ArrayList<>();
         rayCoefficient.add(rayCooffA);
         rayCoefficient.add(rayCooffB);
         rayCoefficient.add(rayCooffC);

@@ -249,7 +249,7 @@ public class SmileCorrectionAuxdata {
     static Path installAuxdata() throws IOException {
         OperatorSpiRegistry operatorSpiRegistry = GPF.getDefaultInstance().getOperatorSpiRegistry();
         OperatorSpi spi = operatorSpiRegistry.getOperatorSpi("SmileCorrection.Olci");
-        String version = spi.getOperatorDescriptor().getVersion();
+        String version = "v" + spi.getOperatorDescriptor().getVersion();
         Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("olci/smile/"+version);
         final Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(SmileCorrectionAuxdata.class).resolve("auxdata/smile");
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirectory);
