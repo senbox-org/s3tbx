@@ -768,7 +768,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
 
         if (outputRhown) {
-            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+            for (int i = 0; i < NORM_NN_SPECTRUM_COUNT; i++) {
                 String sourceBandName = NN_SOURCE_BAND_REFL_NAMES[i];
                 final Band band = addBand(targetProduct, "rhown_" + sourceBandName, "1", "Normalized water leaving reflectances");
                 ensureSpectralProperties(band, sourceBandName);

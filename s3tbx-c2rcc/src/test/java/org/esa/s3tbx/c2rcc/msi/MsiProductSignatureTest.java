@@ -25,7 +25,7 @@ public class MsiProductSignatureTest {
             "rrs_B" + 6, "rrs_B" + 7, "rrs_B" + 8 + "A"};
     private static final String[] EXPECTED_NORM_REFLEC_BANDS = {
             "rhown_B" + 1, "rhown_B" + 2, "rhown_B" + 3, "rhown_B" + 4, "rhown_B" + 5,
-            "rhown_B" + 6, "rhown_B" + 7, "rhown_B" + 8 + "A"};
+            "rhown_B" + 6};
     private static final String EXPECTED_IOP_APIG = "iop_apig";
     private static final String EXPECTED_IOP_ADET = "iop_adet";
     private static final String EXPECTED_IOP_AGELB = "iop_agelb";
