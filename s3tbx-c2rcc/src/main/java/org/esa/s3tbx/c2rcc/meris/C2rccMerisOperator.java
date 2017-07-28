@@ -123,19 +123,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
     private static final String PRODUCT_TYPE = "C2RCC_MERIS";
 
-    static final String[] alternativeNetDirNames = new String[]{
-            "rtosa_aann",
-            "rtosa_rw",
-            "rw_iop",
-            "iop_rw",
-            "rw_kd",
-            "iop_unciop",
-            "iop_uncsumiop_unckd",
-            "rw_rwnorm",
-            "rtosa_trans",
-            "rtosa_rpath"
-    };
-
     static final String SOURCE_RADIANCE_NAME_PREFIX = "radiance_";
     static final String RASTER_NAME_OZONE = "ozone";
     static final String RASTER_NAME_ATM_PRESS = "atm_press";
@@ -1011,7 +998,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
 
         try {
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
-                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
                 algorithm = new C2rccMerisAlgorithm(nnFilePaths, false);
             } else {
                 String[] nnFilePaths = c2rccNetSetMap.get(netSet);

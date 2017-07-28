@@ -132,19 +132,6 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
 
     private static final String PRODUCT_TYPE = "C2RCC_MERIS4";
 
-    private static final String[] alternativeNetDirNames = new String[]{
-            "rtosa_aann",
-            "rtosa_rw",
-            "rw_iop",
-            "iop_rw",
-            "rw_kd",
-            "iop_unciop",
-            "iop_uncsumiop_unckd",
-            "rw_rwnorm",
-            "rtosa_trans",
-            "rtosa_rpath"
-    };
-
     private static final String STANDARD_NETS = "C2RCC-Nets";
     private static final String EXTREME_NETS = "C2X-Nets";
     private static final Map<String, String[]> c2rccNetSetMap = new HashMap<>();
@@ -972,7 +959,7 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
 
         try {
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
-                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
                 algorithm = new C2rccMeris4Algorithm(nnFilePaths, false);
             } else {
                 String[] nnFilePaths = c2rccNetSetMap.get(netSet);

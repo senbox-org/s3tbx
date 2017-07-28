@@ -131,19 +131,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private static final String RADIANCE_BANDNAME_PATTERN = "Oa%02d_radiance";
     private static final String SOLAR_FLUX_BANDNAME_PATTERN = "solar_flux_band_%d";
 
-    private static final String[] alternativeNetDirNames = new String[]{
-            "rtosa_aann",
-            "rtosa_rw",
-            "rw_iop",
-            "iop_rw",
-            "rw_kd",
-            "iop_unciop",
-            "iop_uncsumiop_unckd",
-            "rw_rwnorm",
-            "rtosa_trans",
-            "rtosa_rpath"
-    };
-
     private static final String[] c2rccNNResourcePaths = new String[10];
 
     static {
@@ -942,7 +929,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             if (loadFromResources) {
                 nnFilePaths = c2rccNNResourcePaths;
             } else {
-                nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
+                nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
             }
             algorithm = new C2rccOlciAlgorithm(nnFilePaths, loadFromResources);
         } catch (IOException e) {

@@ -121,19 +121,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     private static final String PRODUCT_TYPE = "C2RCC_S2-MSI";
 
-    private static final String[] alternativeNetDirNames = new String[]{
-            "rtosa_aann",
-            "rtosa_rw",
-            "rw_iop",
-            "iop_rw",
-            "rw_kd",
-            "iop_unciop",
-            "iop_uncsumiop_unckd",
-            "rw_rwnorm",
-            "rtosa_trans",
-            "rtosa_rpath"
-    };
-
     static final String RASTER_NAME_SUN_ZENITH = "sun_zenith";
     static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
     static final String RASTER_NAME_VIEW_ZENITH = "view_zenith_mean";
@@ -959,7 +946,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
         try {
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
-                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), alternativeNetDirNames);
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
                 algorithm = new C2rccMsiAlgorithm(nnFilePaths, false);
             } else {
                 String[] nnFilePaths = c2rccNetSetMap.get(netSet);
