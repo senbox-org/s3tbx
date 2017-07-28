@@ -3,31 +3,20 @@ package org.esa.s3tbx.mphchl;
 import org.esa.s3tbx.olci.radiometry.SensorConstants;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class MphChlOpTest {
-    @Before
-    public void setUp() {
-        GPF.getDefaultInstance().getOperatorSpiRegistry().addOperatorSpi(new MphChlOp.Spi());
-        GPF.getDefaultInstance().getOperatorSpiRegistry().addOperatorSpi(new MphChlOlciOp.Spi());
-    }
-
-    @After
-    public void tearDown() {
-        GPF.getDefaultInstance().getOperatorSpiRegistry().removeOperatorSpi(new MphChlOp.Spi());
-        GPF.getDefaultInstance().getOperatorSpiRegistry().removeOperatorSpi(new MphChlOlciOp.Spi());
-    }
 
     @Test
     public void testOperatorMetadata() {

@@ -1,21 +1,13 @@
 package org.esa.s3tbx.mphchl;
 
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class MphChlMerisOpTest {
-    private MphChlMerisOp mphChlOp;
-
-    @Before
-    public void setUp() {
-        mphChlOp = new MphChlMerisOp();
-    }
 
     @Test
     public void testOperatorMetadata() {
@@ -32,7 +24,7 @@ public class MphChlMerisOpTest {
     @Test
     public void testConfigureSourceSample() {
         final TestSourceSampleConfigurer sampleConfigurer = new TestSourceSampleConfigurer();
-
+        MphChlMerisOp mphChlOp = new MphChlMerisOp();
         mphChlOp.configureSourceSamples(sampleConfigurer);
 
         final HashMap<Integer, String> sampleMap = sampleConfigurer.getSampleMap();

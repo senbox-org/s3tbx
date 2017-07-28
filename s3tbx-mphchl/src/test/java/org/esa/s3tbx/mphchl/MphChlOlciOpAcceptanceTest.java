@@ -25,14 +25,10 @@ public class MphChlOlciOpAcceptanceTest {
         if (!testOutDirectory.mkdirs()) {
             fail("unable to create test directory: " + testOutDirectory);
         }
-
-        GPF.getDefaultInstance().getOperatorSpiRegistry().addOperatorSpi(new MphChlOlciOp.Spi());
     }
 
     @After
     public void tearDown() {
-        GPF.getDefaultInstance().getOperatorSpiRegistry().removeOperatorSpi(new MphChlOlciOp.Spi());
-
         if (testOutDirectory != null) {
             if (!FileUtils.deleteTree(testOutDirectory)) {
                 fail("Unable to delete test directory: " + testOutDirectory);
