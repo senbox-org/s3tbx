@@ -5,7 +5,11 @@ import org.esa.s3tbx.idepix.algorithms.viirs.ViirsConstants;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.Scene;
+import org.esa.snap.core.datamodel.SceneFactory;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
@@ -21,13 +25,7 @@ public class IdepixIO {
 
     /**
      * creates a new product with the same size
-     *
-     * @param sourceProduct
-     * @param name
-     * @param type
-     * @param copyAllTiePoints
-     * @return targetProduct
-     */
+     **/
     public static Product createCompatibleTargetProduct(Product sourceProduct, String name, String type,
                                                         boolean copyAllTiePoints) {
         final int sceneWidth = sourceProduct.getSceneRasterWidth();
@@ -44,9 +42,6 @@ public class IdepixIO {
     /**
      * Copies the tie point data.
      *
-     * @param sourceProduct
-     * @param targetProduct
-     * @param copyAllTiePoints
      */
     public static void copyTiePoints(Product sourceProduct,
                                      Product targetProduct, boolean copyAllTiePoints) {
@@ -138,7 +133,7 @@ public class IdepixIO {
                 !isValidMerisProduct(inputProduct) &&
                 !isValidOlciProduct(inputProduct) &&
                 !isValidVgtProduct(inputProduct)) {
-            IdepixUtils.logErrorMessage("Input sensor must be either MERIS, AATSR, AVHRR, colocated MERIS/AATSR, MODIS/SeaWiFS, PROBA-V or VGT!");
+            IdepixUtils.logErrorMessage("Input sensor must be either Landsat-8, MERIS, AATSR, AVHRR, colocated MERIS/AATSR, MODIS/SeaWiFS, PROBA-V or VGT!");
         }
         return true;
     }
@@ -236,26 +231,27 @@ public class IdepixIO {
     }
 
     private static boolean isInputConsistent(Product sourceProduct, AlgorithmSelector algorithm) {
-        if (AlgorithmSelector.AVHRR == algorithm) {
-            return (isValidAvhrrProduct(sourceProduct));
-        } else if (AlgorithmSelector.LANDSAT8 == algorithm) {
-            return (isValidLandsat8Product(sourceProduct));
-        } else if (AlgorithmSelector.MODIS == algorithm) {
-            return (isValidModisProduct(sourceProduct));
-        } else if (AlgorithmSelector.PROBAV == algorithm) {
-            return (isValidProbavProduct(sourceProduct));
-        } else if (AlgorithmSelector.SEAWIFS == algorithm) {
-            return (isValidSeawifsProduct(sourceProduct));
-        } else if (AlgorithmSelector.VIIRS == algorithm) {
-            return (isValidViirsProduct(sourceProduct, ViirsConstants.VIIRS_SPECTRAL_BAND_NAMES));
-        } else if (AlgorithmSelector.MERIS == algorithm) {
-            return (isValidMerisProduct(sourceProduct));
-        } else if (AlgorithmSelector.OLCI == algorithm) {
-            return (isValidOlciProduct(sourceProduct));
-        } else if (AlgorithmSelector.VGT == algorithm) {
-            return (isValidVgtProduct(sourceProduct));
-        } else {
-            throw new OperatorException("Algorithm " + algorithm.toString() + " not supported.");
+        switch (algorithm) {
+            case AVHRR:
+                return (isValidAvhrrProduct(sourceProduct));
+            case LANDSAT8:
+                return (isValidLandsat8Product(sourceProduct));
+            case MODIS:
+                return (isValidModisProduct(sourceProduct));
+            case PROBAV:
+                return (isValidProbavProduct(sourceProduct));
+            case SEAWIFS:
+                return (isValidSeawifsProduct(sourceProduct));
+            case VIIRS:
+                return (isValidViirsProduct(sourceProduct, ViirsConstants.VIIRS_SPECTRAL_BAND_NAMES));
+            case MERIS:
+                return (isValidMerisProduct(sourceProduct));
+            case OLCI:
+                return (isValidOlciProduct(sourceProduct));
+            case VGT:
+                return (isValidVgtProduct(sourceProduct));
+            default:
+                throw new OperatorException("Algorithm " + algorithm.toString() + " not supported.");
         }
     }
 
