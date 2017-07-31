@@ -1,6 +1,25 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 6.0
+--------------------
+
+###New Features and Important Changes
+* **C2RCC processor integrated** - The _Case-2 Regional / CoastColour_ processor. 
+It is a processor for retrieving water constituents in coastal zones. Supports several sensors. 
+Starting from Sentinel-3 OLCI, Sentinel-2 MSI to Landsat-8 OLI and the heritage sensor MERIS. 
+Also supported are MODIS, VIIRS and SeaWiFS.
+* **Support Rayleigh Correction of S2-MSI** - The _Rayleigh Correction_ processor has been extended to support the S2-MSI data. Now it supports MERIS, 
+OLCI and MSI. 
+* **Support Rad2Refl for SLSTR** - The _Radiance-to-Reflectance_ processor can now convert also Sentinel-2 SLSTR data from radiance to reflectance.
+* **Support Landsat data from dataset 'Collection 1'** - Landsat data from the 'Collection 1 can now be read'
+* **FU Classification extended for S2-MSI, MODIS500 and CZCS** - The _FU Classification_ can now be used for the S2-MSI, CZCS and MODIS in 500 meter 
+resolution.
+
+A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
+[issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12207)
+
+
 Changes in S3TBX 5.0
 --------------------
 
