@@ -169,10 +169,11 @@ public class FlhMciOp extends PixelOperator {
     private void validateParameters() throws OperatorException {
         assertParameterBandNameValid(lowerBaselineBandName, "lowerBaselineBandName");
         assertBandValid(lowerBaselineBandName);
-        assertParameterBandNameValid(signalBandName, "signalBandName");
-        assertBandValid(signalBandName);
         assertParameterBandNameValid(upperBaselineBandName, "upperBaselineBandName");
         assertBandValid(upperBaselineBandName);
+        assertParameterBandNameValid(signalBandName, "signalBandName");
+        assertBandValid(signalBandName);
+        assertParameterBandNameValid(lineHeightBandName, "lineHeightBandName");
         if (slope) {
             assertParameterBandNameValid(slopeBandName, "slopeBandName");
         }
