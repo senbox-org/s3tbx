@@ -4,7 +4,7 @@ Sentinel-3 Toolbox Release Notes
 Changes in S3TBX 6.0
 --------------------
 
-###New Features and Important Changes
+### New Features and Important Changes
 * **C2RCC processor integrated** - The _Case-2 Regional / CoastColour_ processor. 
 It is a processor for retrieving water constituents in coastal zones. Supports several sensors. 
 Starting from Sentinel-3 OLCI, Sentinel-2 MSI to Landsat-8 OLI and the heritage sensor MERIS. 
@@ -23,7 +23,7 @@ A comprehensive list of all issues resolved in this version of the Sentinel-3 To
 Changes in S3TBX 5.0
 --------------------
 
-###New Features and Important Changes
+### New Features and Important Changes
 * **AATSR Regridding Tool**
 AATSR data is acquired with a conical scanning geometry. To display the acquisitions as a raster image the raw data is 
 transformed into a gridded L1 TOA product at a resolution of 1 km. This "gridding" modifies the exact pixel position and resolution. 
@@ -51,7 +51,7 @@ A comprehensive list of all issues resolved in this version of the Sentinel-3 To
 Changes in S3TBX 4.0
 --------------------
 
-###New Features and Important Changes
+### New Features and Important Changes
 * New colour classification based on the Forel–Ule scale has been implement for OLCI, MERIS, 
   SeaWiFS and MODIS. Thanks to Hendrik Jan van der Woerd and Marcel R. Wernand from the Royal 
   Netherlands Institute for Sea Research (NOIZ) for the algorithm and the validation. 
@@ -59,7 +59,7 @@ Changes in S3TBX 4.0
 * The fractional Land/Water Mask operator has been moved into SNAP because of its general usability.          
 
 ### Solved issues
-####Bugs
+#### Bugs
     [SIIITBX-096] - Read SLSTR L2 WCT oblique view bands
     [SIIITBX-097] - Subset of SeaDas L2 files not correct
     [SIIITBX-099] - Silent error on product type null or empty
@@ -68,13 +68,13 @@ Changes in S3TBX 4.0
     [SIIITBX-112] - Reprojecting SLSTR L1B products with tie-point geo-codings creates shifts within images
     [SIIITBX-113] - S3 SLSTR WST should not use valid mask for its geo-coding
 
-####New Feature
+#### New Feature
     [SIIITBX-114] - Integrate the colour classification based on discrete Forel–Ule scale
 
-####Task
+#### Task
     [SIIITBX-107] - Move Land/water mask operator into SNAP
 
-####Improvement
+#### Improvement
     [SIIITBX-098] - Rad2Refl operator is slow
     [SIIITBX-100] - LandsatReader should not search mtl file if it is already specified
     [SIIITBX-104] - Cloud operator should consistently use the system logger
@@ -83,7 +83,7 @@ Changes in S3TBX 4.0
 Changes in S3TBX 3.0
 --------------------
 
-###New Features and Important Changes
+### New Features and Important Changes
 * The Idepix Processor provides a pixel classification into properties such as clear/cloudy, land/water, snow, ice etc. The processing 
 options/parameters as well as the underlying classification algorithms are instrument-dependent. The Idepix Processor provided with the current 
 SNAP version supports MODIS and Landsat-8.
@@ -99,7 +99,7 @@ a mixed pixel.
 A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
 [issue tracking system](https://senbox.atlassian.net/issues/?filter=11509)
 
-#Release notes of former versions
+# Release notes of former versions
 
 * [Resolved issues in version 2.x](https://senbox.atlassian.net/issues/?filter=11508)
 * [Resolved issues in version 2.0](https://senbox.atlassian.net/issues/?filter=11507)
