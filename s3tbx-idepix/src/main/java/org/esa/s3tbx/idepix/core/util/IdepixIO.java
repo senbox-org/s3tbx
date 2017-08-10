@@ -5,11 +5,7 @@ import org.esa.s3tbx.idepix.algorithms.viirs.ViirsConstants;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.Scene;
-import org.esa.snap.core.datamodel.SceneFactory;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
@@ -326,10 +322,16 @@ public class IdepixIO {
 
     public static void addCawaBands(Product l1bProduct, Product targetProduct) {
         for (int i = 12; i <= 15; i++) {
-            final String bandname = "solar_flux_band_" + i;
-            if (!targetProduct.containsBand(bandname)) {
-                ProductUtils.copyBand(bandname, l1bProduct, targetProduct, true);
-                targetProduct.getBand(bandname).setUnit("dl");
+            final String sfBandName = "solar_flux_band_" + i;
+            if (!targetProduct.containsBand(sfBandName)) {
+                ProductUtils.copyBand(sfBandName, l1bProduct, targetProduct, true);
+                targetProduct.getBand(sfBandName).setUnit("dl");
+            }
+            final String radBandName =  Rad2ReflConstants.OLCI_RAD_BAND_NAMES[i-1];
+            if (!targetProduct.containsBand(radBandName)) {
+                ProductUtils.copyBand(radBandName, l1bProduct, targetProduct, true);
+                final String unit = l1bProduct.getBand(radBandName).getUnit();
+                targetProduct.getBand(radBandName).setUnit(unit);
             }
         }
         if (!targetProduct.containsBand("detector_index")) {

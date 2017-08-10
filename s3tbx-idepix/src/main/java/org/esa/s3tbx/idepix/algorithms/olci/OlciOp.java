@@ -21,15 +21,15 @@ import java.util.Map;
 
 /**
  * The Idepix pixel classification operator for OLCI products.
- *
+ * <p>
  * Initial implementation:
  * - pure neural net approach which uses MERIS heritage bands only
  * - no auxdata available yet (such as 'L2 auxdata' for MERIS)
- *
+ * <p>
  * Currently resulting limitations:
- *    - no cloud shadow flag
- *    - glint flag over water just taken from 'sun_glint_risk' in L1 'quality_flags' band
- *
+ * - no cloud shadow flag
+ * - glint flag over water just taken from 'sun_glint_risk' in L1 'quality_flags' band
+ * <p>
  * Advanced algorithm to be defined which makes use of more bands.
  *
  * @author olafd
@@ -78,22 +78,29 @@ public class OlciOp extends BasisOp {
     String[] reflBandsToCopy;
 
     @Parameter(defaultValue = "false",
-            label = " Write NN value to the target product.",
+            label = " Write NN value to the target product",
             description = " If applied, write NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-//    @Parameter(defaultValue = "false",
-//            label = " Write specific CAWA bands to the target product.",
-//            description = " If applied, write specific CAWA bands to the target product ")
-//    private boolean copyBandsForCawa;
-    private boolean copyBandsForCawa = false;
+    @Parameter(defaultValue = "true", label = " Compute a cloud buffer")
+    private boolean computeCloudBuffer;
+
+    @Parameter(defaultValue = "2", interval = "[0,100]",
+            description = "The width of a cloud 'safety buffer' around a pixel which was classified as cloudy.",
+            label = "Width of cloud buffer (# of pixels)")
+    private int cloudBufferWidth;
+
+    @Parameter(defaultValue = "false",
+            label = " Compute a cloud shadow (experimental option)",
+            description = " If applied, a cloud shadow is computed. " +
+                    "This requires the CTP operator (Python plugin based on CAWA) to be installed. " +
+                    "Still experimental and incomplete. ")
+    private boolean computeCloudShadow;
 
     // We only have the All NN (mp/20170324)
 //    @Parameter(defaultValue = "true",
 //            label = " Use 'all' NN instead of separate land and water NNs.",
 //            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
-//    private boolean useSchillerNNAll;
-
 //    @Parameter(defaultValue = "2.0",
 //            label = " NN cloud ambiguous lower boundary (applied on WATER)",
 //            description = " NN cloud ambiguous lower boundary (applied on WATER)")
@@ -122,15 +129,11 @@ public class OlciOp extends BasisOp {
 //    @Parameter(defaultValue = "4.6",
 //            label = " NN cloud sure/snow separation value (applied on LAND)",
 //            description = " NN cloud ambiguous cloud sure/snow separation value")
+
+
+//    private boolean useSchillerNNAll;
+
 //    double schillerLandNNCloudSureSnowSeparationValue;
-
-    @Parameter(defaultValue = "true", label = " Compute a cloud buffer")
-    private boolean computeCloudBuffer;
-
-    @Parameter(defaultValue = "2", interval = "[0,100]",
-            description = "The width of a cloud 'safety buffer' around a pixel which was classified as cloudy.",
-            label = "Width of cloud buffer (# of pixels)")
-    private int cloudBufferWidth;
 
     private Product waterClassificationProduct;
     private Product landClassificationProduct;
@@ -161,12 +164,22 @@ public class OlciOp extends BasisOp {
         computeLandCloudProduct();
         mergeLandWater();
 
-        targetProduct = mergedClassificationProduct;
+        Product olciIdepixProduct = mergedClassificationProduct;
+        olciIdepixProduct.setName(sourceProduct.getName() + "_IDEPIX");
+        olciIdepixProduct.setAutoGrouping("Oa*_radiance:Oa*_reflectance");
+        copyOutputBands(olciIdepixProduct);
+        ProductUtils.copyFlagBands(sourceProduct, olciIdepixProduct, true);   // we need the L1b flag!
 
-        targetProduct.setAutoGrouping("Oa*_radiance:Oa*_reflectance");
+        if (computeCloudShadow) {
+            Map<String, Product> ctpSourceProducts = new HashMap<>();
+            ctpSourceProducts.put("l1b", olciIdepixProduct);
+            Product ctpProduct = GPF.createProduct("py_olci_ctp_op", GPF.NO_PARAMS, ctpSourceProducts);
+            ProductUtils.copyBand("ctp", ctpProduct, olciIdepixProduct, true);
+            olciIdepixProduct.getBand("ctp").setUnit("hPa");
+            // todo: implement cloud shadow algorithm with CTP based on stuff used for MERIS
+        }
 
-        copyOutputBands();
-        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);   // we need the L1b flag!
+        targetProduct = olciIdepixProduct;
     }
 
     private void preProcess() {
@@ -239,7 +252,7 @@ public class OlciOp extends BasisOp {
                                                         mergeClassificationParameters, mergeInputProducts);
     }
 
-    private void copyOutputBands() {
+    private void copyOutputBands(Product targetProduct) {
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
         OlciUtils.setupOlciClassifBitmask(targetProduct);
         if (outputRadiance) {
@@ -248,7 +261,7 @@ public class OlciOp extends BasisOp {
         if (outputRad2Refl) {
             IdepixIO.addOlciRadiance2ReflectanceBands(rad2reflProduct, targetProduct, reflBandsToCopy);
         }
-        if (copyBandsForCawa) {
+        if (computeCloudShadow) {
             IdepixIO.addCawaBands(sourceProduct, targetProduct);
         }
     }
