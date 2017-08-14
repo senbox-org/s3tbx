@@ -155,8 +155,6 @@ public class MerisOp extends BasisOp {
 
         copyOutputBands();
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);   // we need the L1b flag!
-
-//        targetProduct = waterClassificationProduct;
     }
 
     private void preProcess() {

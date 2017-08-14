@@ -63,6 +63,7 @@ public class IdepixConstants {
     public static final int NO_DATA_VALUE = -1;
 
     public static final String NN_OUTPUT_BAND_NAME = "nn_value";
+    public static final String CTP_OUTPUT_BAND_NAME = "ctp";
 
     /**
      * The names of the VGT spectral band names.

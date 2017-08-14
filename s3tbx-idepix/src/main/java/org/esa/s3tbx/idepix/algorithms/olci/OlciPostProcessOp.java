@@ -10,6 +10,7 @@ import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
+import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.RectangleExtender;
@@ -33,7 +34,12 @@ public class OlciPostProcessOp extends Operator {
 //    @Parameter(defaultValue = "true",
 //            label = " Refine pixel classification near coastlines",
 //            description = "Refine pixel classification near coastlines. ")
-    private boolean refineClassificationNearCoastlines = true;
+    private boolean refineClassificationNearCoastlines = false; // todo: check if useful for OLCI
+
+    @Parameter(defaultValue = "false",
+            label = " Compute cloud shadow",
+            description = " Compute cloud shadow with latest 'fronts' algorithm. Requires CTP.")
+    private boolean computeCloudShadow;
 
     @SourceProduct(alias = "l1b")
     private Product l1bProduct;
@@ -44,6 +50,12 @@ public class OlciPostProcessOp extends Operator {
 
     private Band waterFractionBand;
     private Band origCloudFlagBand;
+
+    private Band ctpBand;
+    private TiePointGrid szaTPG;
+    private TiePointGrid saaTPG;
+    private Band altBand;
+
     private GeoCoding geoCoding;
 
     private RectangleExtender rectCalculator;
@@ -60,6 +72,12 @@ public class OlciPostProcessOp extends Operator {
         geoCoding = l1bProduct.getSceneGeoCoding();
 
         origCloudFlagBand = olciCloudProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME);
+
+        szaTPG = l1bProduct.getTiePointGrid("SZA");
+        saaTPG = l1bProduct.getTiePointGrid("SAA");
+        altBand = l1bProduct.getBand("altitude");
+
+        ctpBand = olciCloudProduct.getBand("ctp");
 
         int extendedWidth;
         int extendedHeight;
@@ -87,6 +105,11 @@ public class OlciPostProcessOp extends Operator {
         final Rectangle srcRectangle = rectCalculator.extend(targetRectangle);
 
         final Tile sourceFlagTile = getSourceTile(origCloudFlagBand, srcRectangle);
+        Tile szaTile = getSourceTile(szaTPG, srcRectangle);
+        Tile saaTile = getSourceTile(saaTPG, srcRectangle);
+        Tile ctpTile = getSourceTile(ctpBand, srcRectangle);
+
+        Tile altTile = getSourceTile(altBand, targetRectangle);
 
         final Tile waterFractionTile = getSourceTile(waterFractionBand, srcRectangle);
 
@@ -113,6 +136,48 @@ public class OlciPostProcessOp extends Operator {
                     }
                 }
             }
+        }
+
+        if (computeCloudShadow) {
+            CloudShadowFronts cloudShadowFronts = new CloudShadowFronts(
+                    geoCoding,
+                    srcRectangle,
+                    targetRectangle,
+                    szaTile, saaTile, ctpTile, altTile) {
+
+                @Override
+                protected boolean isCloudForShadow(int x, int y) {
+                    final boolean is_cloud_current;
+                    if (!targetTile.getRectangle().contains(x, y)) {
+                        is_cloud_current = sourceFlagTile.getSampleBit(x, y, IdepixConstants.IDEPIX_CLOUD);
+                    } else {
+                        is_cloud_current = targetTile.getSampleBit(x, y, IdepixConstants.IDEPIX_CLOUD);
+                    }
+                    if (is_cloud_current) {
+                        final boolean isNearCoastline = isNearCoastline(x, y, waterFractionTile, srcRectangle);
+                        if (!isNearCoastline) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                @Override
+                protected boolean isCloudFree(int x, int y) {
+                    return !sourceFlagTile.getSampleBit(x, y, IdepixConstants.IDEPIX_CLOUD);
+                }
+
+                @Override
+                protected boolean isSurroundedByCloud(int x, int y) {
+                    return isPixelSurrounded(x, y, sourceFlagTile, IdepixConstants.IDEPIX_CLOUD);
+                }
+
+                @Override
+                protected void setCloudShadow(int x, int y) {
+                    targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SHADOW, true);
+                }
+            };
+            cloudShadowFronts.computeCloudShadow();
         }
     }
 

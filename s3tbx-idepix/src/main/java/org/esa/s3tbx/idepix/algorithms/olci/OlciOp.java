@@ -6,7 +6,9 @@ import org.esa.s3tbx.idepix.core.util.IdepixIO;
 import org.esa.s3tbx.idepix.operators.BasisOp;
 import org.esa.s3tbx.idepix.operators.IdepixProducts;
 import org.esa.s3tbx.processor.rad2refl.Sensor;
+import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -91,10 +93,15 @@ public class OlciOp extends BasisOp {
     private int cloudBufferWidth;
 
     @Parameter(defaultValue = "false",
-            label = " Compute a cloud shadow (experimental option)",
+            label = " Compute cloud top pressure (experimental option, time consuming)",
+            description = " Compute cloud top pressure (time consuming, requires Python plugin based on CAWA). ")
+    private boolean computeCtp;
+
+    @Parameter(defaultValue = "false",
+            label = " Compute a cloud shadow (experimental option, requires cloud top pressure)",
             description = " If applied, a cloud shadow is computed. " +
-                    "This requires the CTP operator (Python plugin based on CAWA) to be installed. " +
-                    "Still experimental and incomplete. ")
+                    "This requires the cloud top pressure operator (Python plugin based on CAWA) to be installed. " +
+                    "Still experimental. ")
     private boolean computeCloudShadow;
 
     // We only have the All NN (mp/20170324)
@@ -138,6 +145,7 @@ public class OlciOp extends BasisOp {
     private Product waterClassificationProduct;
     private Product landClassificationProduct;
     private Product mergedClassificationProduct;
+    private Product postProcessingProduct;
 
     private Product rad2reflProduct;
     private Product waterMaskProduct;
@@ -154,6 +162,8 @@ public class OlciOp extends BasisOp {
             throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);
         }
 
+        computeCtp |= computeCloudShadow;
+
         outputRadiance = radianceBandsToCopy != null && radianceBandsToCopy.length > 0;
         outputRad2Refl = reflBandsToCopy != null && reflBandsToCopy.length > 0;
 
@@ -167,20 +177,65 @@ public class OlciOp extends BasisOp {
         Product olciIdepixProduct = mergedClassificationProduct;
         olciIdepixProduct.setName(sourceProduct.getName() + "_IDEPIX");
         olciIdepixProduct.setAutoGrouping("Oa*_radiance:Oa*_reflectance");
-        copyOutputBands(olciIdepixProduct);
-        ProductUtils.copyFlagBands(sourceProduct, olciIdepixProduct, true);   // we need the L1b flag!
 
-        if (computeCloudShadow) {
+        ProductUtils.copyFlagBands(sourceProduct, olciIdepixProduct, true);
+
+        if (computeCtp || computeCloudShadow) {
+            copyBandsForCtp(olciIdepixProduct);
             Map<String, Product> ctpSourceProducts = new HashMap<>();
             ctpSourceProducts.put("l1b", olciIdepixProduct);
             Product ctpProduct = GPF.createProduct("py_olci_ctp_op", GPF.NO_PARAMS, ctpSourceProducts);
             ProductUtils.copyBand("ctp", ctpProduct, olciIdepixProduct, true);
             olciIdepixProduct.getBand("ctp").setUnit("hPa");
-            // todo: implement cloud shadow algorithm with CTP based on stuff used for MERIS
+            if (computeCloudShadow) {
+                postProcess(olciIdepixProduct);
+            }
         }
 
-        targetProduct = olciIdepixProduct;
+        targetProduct = createTargetProduct(olciIdepixProduct);
+        targetProduct.setAutoGrouping(olciIdepixProduct.getAutoGrouping());
+
+        if (postProcessingProduct != null) {
+            Band cloudFlagBand = targetProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME);
+            cloudFlagBand.setSourceImage(postProcessingProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME).getSourceImage());
+        }
     }
+
+    private Product createTargetProduct(Product idepixProduct) {
+        Product targetProduct = new Product(idepixProduct.getName(),
+                                            idepixProduct.getProductType(),
+                                            idepixProduct.getSceneRasterWidth(),
+                                            idepixProduct.getSceneRasterHeight());
+
+        ProductUtils.copyMetadata(idepixProduct, targetProduct);
+        ProductUtils.copyGeoCoding(idepixProduct, targetProduct);
+        ProductUtils.copyFlagCodings(idepixProduct, targetProduct);
+        ProductUtils.copyFlagBands(idepixProduct, targetProduct, true);
+        ProductUtils.copyMasks(idepixProduct, targetProduct);
+        ProductUtils.copyTiePointGrids(idepixProduct, targetProduct);
+        targetProduct.setStartTime(idepixProduct.getStartTime());
+        targetProduct.setEndTime(idepixProduct.getEndTime());
+
+        OlciUtils.setupOlciClassifBitmask(targetProduct);
+
+        if (outputRadiance) {
+            IdepixIO.addRadianceBands(sourceProduct, targetProduct, radianceBandsToCopy);
+        }
+        if (outputRad2Refl) {
+            IdepixIO.addOlciRadiance2ReflectanceBands(rad2reflProduct, targetProduct, reflBandsToCopy);
+        }
+
+        if (outputSchillerNNValue) {
+            ProductUtils.copyBand(IdepixConstants.NN_OUTPUT_BAND_NAME, idepixProduct, targetProduct, true);
+        }
+
+        if (computeCtp) {
+            ProductUtils.copyBand(IdepixConstants.CTP_OUTPUT_BAND_NAME, idepixProduct, targetProduct, true);
+        }
+
+        return targetProduct;
+    }
+
 
     private void preProcess() {
         rad2reflProduct = IdepixProducts.computeRadiance2ReflectanceProduct(sourceProduct, Sensor.OLCI);
@@ -252,19 +307,25 @@ public class OlciOp extends BasisOp {
                                                         mergeClassificationParameters, mergeInputProducts);
     }
 
-    private void copyOutputBands(Product targetProduct) {
-        ProductUtils.copyMetadata(sourceProduct, targetProduct);
-        OlciUtils.setupOlciClassifBitmask(targetProduct);
-        if (outputRadiance) {
-            IdepixIO.addRadianceBands(sourceProduct, targetProduct, radianceBandsToCopy);
-        }
-        if (outputRad2Refl) {
-            IdepixIO.addOlciRadiance2ReflectanceBands(rad2reflProduct, targetProduct, reflBandsToCopy);
-        }
+    private void postProcess(Product olciIdepixProduct) {
+        HashMap<String, Product> input = new HashMap<>();
+        input.put("l1b", sourceProduct);
+        input.put("olciCloud", olciIdepixProduct);
+        input.put("waterMask", waterMaskProduct);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("computeCloudShadow", computeCloudShadow);
+
+        postProcessingProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciPostProcessOp.class),
+                                                  params, input);
+    }
+
+    private void copyBandsForCtp(Product targetProduct) {
         if (computeCloudShadow) {
             IdepixIO.addCawaBands(sourceProduct, targetProduct);
         }
     }
+
 
     /**
      * The Service Provider Interface (SPI) for the operator.
