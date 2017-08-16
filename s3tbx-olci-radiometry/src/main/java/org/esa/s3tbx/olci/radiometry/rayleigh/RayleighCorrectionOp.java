@@ -298,10 +298,9 @@ public class RayleighCorrectionOp extends Operator {
 
     private int getAbsorpOzoneIndex(int sourceBandIndex, String targetBandName) {
         if (sensor != null && sensor == Sensor.S2_MSI) {
-//            return S2Utils.getS2SourceBandIndex(sourceBandIndex, targetBandName);
             return S2Utils.getS2SpectralBandIndex(targetBandName);
         } else {
-            return sourceBandIndex;
+            return sourceBandIndex - 1;
         }
     }
 

@@ -295,7 +295,7 @@ public class RayleighCorrAlgorithm {
         if (sensor != null && sensor == Sensor.S2_MSI) {
             return S2Utils.getS2SpectralBandIndex(targetBandName);
         } else {
-            return sourceBandIndex;
+            return sourceBandIndex - 1;
         }
     }
 

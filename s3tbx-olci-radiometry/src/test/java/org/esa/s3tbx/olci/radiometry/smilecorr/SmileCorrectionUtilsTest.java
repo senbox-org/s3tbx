@@ -36,6 +36,7 @@ public class SmileCorrectionUtilsTest {
         assertEquals(9, SmileCorrectionUtils.getSourceBandIndex("09band"));
         assertEquals(5, SmileCorrectionUtils.getSourceBandIndex("Bla05band"));
         assertEquals(15, SmileCorrectionUtils.getSourceBandIndex("Bla15band"));
+        assertEquals(21, SmileCorrectionUtils.getSourceBandIndex("taur_21"));
     }
 
     @Test
