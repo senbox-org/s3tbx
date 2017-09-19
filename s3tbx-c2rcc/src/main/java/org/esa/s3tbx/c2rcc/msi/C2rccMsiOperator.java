@@ -921,10 +921,15 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        ensureSingleRasterSize(sourceProduct);
-        for (String sourceBandName : NN_SOURCE_BAND_REFL_NAMES) {
+        if(!"S2_MSI-Level-1C".equals(sourceProduct.getProductType())) {
+            throw new OperatorException("Source must be a resampled S2 MSI L1C product");
+        }
+
+        for (String sourceBandName : C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES) {
             assertSourceBand(sourceBandName);
         }
+
+        ensureSingleRasterSize(sourceProduct);
 
         ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30");
         if (getasse30 != null) {
