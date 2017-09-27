@@ -17,7 +17,6 @@ import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.RectangleExtender;
-import org.esa.snap.core.util.math.MathUtils;
 
 import java.awt.*;
 import java.io.IOException;
@@ -92,12 +91,12 @@ public class OlciWaterClassificationOp extends Operator {
     private Band nnOutputBand;
 
     private RectangleExtender rectExtender;
-    private CloudNNInterpreter nnInterpreter;
+    private OlciCloudNNInterpreter nnInterpreter;
 
     @Override
     public void initialize() throws OperatorException {
         readSchillerNets();
-        nnInterpreter = CloudNNInterpreter.create();
+        nnInterpreter = OlciCloudNNInterpreter.create();
         createTargetProduct();
 
         initSeaIceClassifier();

@@ -18,10 +18,7 @@
 package org.esa.s3tbx.processor.rad2refl;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -211,15 +208,15 @@ public class Rad2ReflOp extends Operator {
     private Tile[] getSzaSourceTiles(Rectangle rectangle) {
         try {
             if (sensor.equals(Sensor.MERIS) || sensor.equals(Sensor.OLCI)) {
-                TiePointGrid tiePointGrid = sourceProduct.getTiePointGrid(sensor.getSzaBandNames()[0]);
+                RasterDataNode tiePointGrid = sourceProduct.getRasterDataNode(sensor.getSzaBandNames()[0]);
                 if (tiePointGrid == null) {
                     throw new OperatorException("No Sun Zenith Angle available from source product - cannot proceed.");
                 }
                 return new Tile[]{getSourceTile(tiePointGrid, rectangle)};
             } else {
                 // SLSTR
-                final TiePointGrid szaTpgN = sourceProduct.getTiePointGrid(sensor.getSzaBandNames()[0]);
-                final TiePointGrid szaTpgO = sourceProduct.getTiePointGrid(sensor.getSzaBandNames()[1]);
+                final RasterDataNode szaTpgN = sourceProduct.getRasterDataNode(sensor.getSzaBandNames()[0]);
+                final RasterDataNode szaTpgO = sourceProduct.getRasterDataNode(sensor.getSzaBandNames()[1]);
                 if (szaTpgN != null && szaTpgO != null) {
                     final Tile sourceTileN = getSourceTile(szaTpgN, rectangle);
                     final Tile sourceTileO = getSourceTile(szaTpgO, rectangle);

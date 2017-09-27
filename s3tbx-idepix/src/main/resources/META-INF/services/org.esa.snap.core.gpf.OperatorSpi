@@ -30,6 +30,9 @@ org.esa.s3tbx.idepix.algorithms.olci.OlciLandClassificationOp$Spi
 org.esa.s3tbx.idepix.algorithms.olci.OlciWaterClassificationOp$Spi
 org.esa.s3tbx.idepix.algorithms.olci.OlciMergeLandWaterOp$Spi
 org.esa.s3tbx.idepix.algorithms.olci.OlciPostProcessOp$Spi
+org.esa.s3tbx.idepix.algorithms.olcislstr.OlciSlstrOp$Spi
+org.esa.s3tbx.idepix.algorithms.olcislstr.OlciSlstrClassificationOp$Spi
+org.esa.s3tbx.idepix.algorithms.olcislstr.OlciSlstrPostProcessOp$Spi
 org.esa.s3tbx.idepix.algorithms.vgt.VgtOp$Spi
 org.esa.s3tbx.idepix.algorithms.vgt.VgtClassificationOp$Spi
 org.esa.s3tbx.idepix.algorithms.vgt.VgtPostProcessOp$Spi

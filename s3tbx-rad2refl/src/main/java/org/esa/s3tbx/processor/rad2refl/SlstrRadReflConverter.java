@@ -40,21 +40,26 @@ public class SlstrRadReflConverter implements RadReflConverter {
 
         for (int i = 0; i < spectralInputBandNames.length; i++) {
             final String bandName = spectralInputBandNames[i];
+            final int spectralIndex = Integer.parseInt(bandName.substring(1,2)) - 1;
             final String stringToReplace = radToReflMode ? "radiance" : "reflectance";
             final String qualityElementName = bandName.replace(stringToReplace, "quality");
             final MetadataElement qualityElement = sourceProduct.getMetadataRoot().getElement(qualityElementName);
-            final MetadataElement variableAttributesElement = qualityElement.getElement("Variable_Attributes");
-            if (variableAttributesElement != null) {
-                final String solarIrradianceElementName = bandName.replace(stringToReplace, "solar_irradiance");
-                final MetadataElement solarIrradianceElement = variableAttributesElement.getElement(solarIrradianceElementName);
-                if (solarIrradianceElement != null) {
-                    final MetadataAttribute solarIrradianceValueAttribute = solarIrradianceElement.getAttribute("value");
-                    map.put(bandName, solarIrradianceValueAttribute.getData().getElemFloat());
+            if (qualityElement != null) {
+                final MetadataElement variableAttributesElement = qualityElement.getElement("Variable_Attributes");
+                if (variableAttributesElement != null) {
+                    final String solarIrradianceElementName = bandName.replace(stringToReplace, "solar_irradiance");
+                    final MetadataElement solarIrradianceElement = variableAttributesElement.getElement(solarIrradianceElementName);
+                    if (solarIrradianceElement != null) {
+                        final MetadataAttribute solarIrradianceValueAttribute = solarIrradianceElement.getAttribute("value");
+                        map.put(bandName, solarIrradianceValueAttribute.getData().getElemFloat());
+                    } else {
+                        map.put(bandName, Sensor.SLSTR_500m.getSolarFluxesDefault()[spectralIndex]);
+                    }
                 } else {
-                    map.put(bandName, Sensor.SLSTR_500m.getSolarFluxesDefault()[i]);
+                    map.put(bandName, Sensor.SLSTR_500m.getSolarFluxesDefault()[spectralIndex]);
                 }
             } else {
-                map.put(bandName, Sensor.SLSTR_500m.getSolarFluxesDefault()[i]);
+                map.put(bandName, Sensor.SLSTR_500m.getSolarFluxesDefault()[spectralIndex]);
             }
         }
         return map;

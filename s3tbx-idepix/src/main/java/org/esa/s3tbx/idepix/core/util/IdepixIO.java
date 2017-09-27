@@ -116,7 +116,7 @@ public class IdepixIO {
 
 
     public static boolean validateInputProduct(Product inputProduct, AlgorithmSelector algorithm) {
-        return isInputValid(inputProduct) && isInputConsistent(inputProduct, algorithm);
+        return isInputValid(inputProduct) && isInputConsistentWithAlgorithm(inputProduct, algorithm);
     }
 
     public static boolean isInputValid(Product inputProduct) {
@@ -128,8 +128,11 @@ public class IdepixIO {
                 !isValidViirsProduct(inputProduct, ViirsConstants.VIIRS_SPECTRAL_BAND_NAMES) &&
                 !isValidMerisProduct(inputProduct) &&
                 !isValidOlciProduct(inputProduct) &&
+                !isValidOlciSlstrSynergyProduct(inputProduct) &&
                 !isValidVgtProduct(inputProduct)) {
-            IdepixUtils.logErrorMessage("Input sensor must be either Landsat-8, MERIS, AATSR, AVHRR, colocated MERIS/AATSR, MODIS/SeaWiFS, PROBA-V or VGT!");
+            IdepixUtils.logErrorMessage("Input sensor must be either Landsat-8, MERIS, AATSR, AVHRR, " +
+                                                "OLCI, colocated OLCI/SLSTR, " +
+                                                "MODIS/SeaWiFS, PROBA-V or VGT!");
         }
         return true;
     }
@@ -145,6 +148,10 @@ public class IdepixIO {
     public static boolean isValidOlciProduct(Product product) {
 //        return product.getProductType().startsWith("S3A_OL_");  // todo: clarify
         return product.getProductType().contains("OL_1");  // new products have product type 'OL_1_ERR'
+    }
+
+    public static boolean isValidOlciSlstrSynergyProduct(Product product) {
+        return product.getName().contains("S3A_SY_1");  // todo: clarify
     }
 
     private static boolean isValidMerisIcolL1NProduct(Product product) {
@@ -226,7 +233,7 @@ public class IdepixIO {
         return product.getProductType().startsWith(IdepixConstants.SPOT_VGT_PRODUCT_TYPE_PREFIX);
     }
 
-    private static boolean isInputConsistent(Product sourceProduct, AlgorithmSelector algorithm) {
+    private static boolean isInputConsistentWithAlgorithm(Product sourceProduct, AlgorithmSelector algorithm) {
         switch (algorithm) {
             case AVHRR:
                 return (isValidAvhrrProduct(sourceProduct));
@@ -244,6 +251,8 @@ public class IdepixIO {
                 return (isValidMerisProduct(sourceProduct));
             case OLCI:
                 return (isValidOlciProduct(sourceProduct));
+            case OLCISLSTR:
+                return (isValidOlciSlstrSynergyProduct(sourceProduct));
             case VGT:
                 return (isValidVgtProduct(sourceProduct));
             default:
@@ -313,6 +322,18 @@ public class IdepixIO {
             for (String bandname : reflBandsToCopy) {
                 // e.g. Oa01_reflectance
                 if (!targetProduct.containsBand(bandname) && bandname.equals("Oa" + String.format("%02d", i) + "_reflectance")) {
+                    ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
+                    targetProduct.getBand(bandname).setUnit("dl");
+                }
+            }
+        }
+    }
+
+    public static void addSlstrRadiance2ReflectanceBands(Product rad2reflProduct, Product targetProduct, String[] reflBandsToCopy) {
+        for (int i = 1; i <= Rad2ReflConstants.SLSTR_REFL_BAND_NAMES.length; i++) {
+            for (String bandname : reflBandsToCopy) {
+                // e.g. S1_reflectance_an
+                if (!targetProduct.containsBand(bandname) && bandname.startsWith("S" + String.format("%01d", i) + "_reflectance")) {
                     ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
                     targetProduct.getBand(bandname).setUnit("dl");
                 }

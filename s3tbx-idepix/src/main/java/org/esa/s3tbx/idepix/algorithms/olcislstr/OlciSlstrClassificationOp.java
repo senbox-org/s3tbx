@@ -1,8 +1,10 @@
-package org.esa.s3tbx.idepix.algorithms.olci;
+package org.esa.s3tbx.idepix.algorithms.olcislstr;
 
 import com.bc.ceres.core.ProgressMonitor;
+import org.esa.s3tbx.idepix.algorithms.olci.OlciConstants;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
+import org.esa.s3tbx.idepix.core.util.IdepixUtils;
 import org.esa.s3tbx.idepix.core.util.SchillerNeuralNetWrapper;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
 import org.esa.snap.core.datamodel.*;
@@ -21,79 +23,88 @@ import java.io.InputStream;
 import java.util.Map;
 
 /**
- * OLCI pixel classification operator.
- * Only land pixels are classified from NN approach (following MERIS approach for BEAM Cawa algorithm).
+ * OLCI/SLSTR synergy pixel classification operator.
  *
  * @author olafd
  */
-@OperatorMetadata(alias = "Idepix.Olci.Land",
+@OperatorMetadata(alias = "Idepix.OlciSlstr.Classification",
         version = "1.0",
         internal = true,
         authors = "Olaf Danne",
         copyright = "(c) 2016 by Brockmann Consult",
-        description = "Idepix land pixel classification operator for OLCI.")
-public class OlciLandClassificationOp extends Operator {
+        description = "Idepix pixel classification operator for OLCI/SLSTR synergy.")
+public class OlciSlstrClassificationOp extends Operator {
 
     @Parameter(defaultValue = "false",
             label = " Write NN value to the target product.",
             description = " If applied, write Schiller NN value to the target product ")
     private boolean outputSchillerNNValue;
 
-    // We only have the All NN (mp/20170324)
-//    @Parameter(defaultValue = "true",
-//            label = " Use 'all' NN instead of separate land and water NNs.",
-//            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
-//    private boolean useSchillerNNAll;
-
-
     @SourceProduct(alias = "l1b", description = "The source product.")
     Product sourceProduct;
 
-    @SourceProduct(alias = "rhotoa")
-    private Product rad2reflProduct;
+    @SourceProduct(alias = "reflOlci")
+    private Product olciRad2reflProduct;
+
+    @SourceProduct(alias = "reflSlstr")
+    private Product slstrRad2reflProduct;
+
     @SourceProduct(alias = "waterMask")
     private Product waterMaskProduct;
+
+
     @TargetProduct(description = "The target product.")
     Product targetProduct;
 
     Band cloudFlagBand;
 
     private Band[] olciReflBands;
+    private Band[] slstrReflBands;
+
     private Band landWaterBand;
 
-    public static final String OLCI_ALL_NET_NAME = "11x10x4x3x2_207.9.net";
+    public static final String OLCISLSTR_ALL_NET_NAME = "11x9x6x4x3x2_57.8.net";
 
     private static final double THRESH_LAND_MINBRIGHT1 = 0.3;
-//    private static final double THRESH_LAND_MINBRIGHT2 = 0.2;
     private static final double THRESH_LAND_MINBRIGHT2 = 0.25;  // test OD 20170411
 
-    ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
-    private OlciCloudNNInterpreter nnInterpreter;
+    ThreadLocal<SchillerNeuralNetWrapper> olciSlstrAllNeuralNet;
+    private OlciSlstrCloudNNInterpreter nnInterpreter;
 
 
     @Override
     public void initialize() throws OperatorException {
         setBands();
-        nnInterpreter = OlciCloudNNInterpreter.create();
+        nnInterpreter = OlciSlstrCloudNNInterpreter.create();
         readSchillerNeuralNets();
         createTargetProduct();
-        
-        landWaterBand = waterMaskProduct.getBand("land_water_fraction");
-
     }
 
     private void readSchillerNeuralNets() {
-        InputStream olciAllIS = getClass().getResourceAsStream(OLCI_ALL_NET_NAME);
-        olciAllNeuralNet = SchillerNeuralNetWrapper.create(olciAllIS);
+        InputStream olciAllIS = getClass().getResourceAsStream(OLCISLSTR_ALL_NET_NAME);
+        olciSlstrAllNeuralNet = SchillerNeuralNetWrapper.create(olciAllIS);
     }
 
     public void setBands() {
+        // e.g. Oa07_reflectance
         olciReflBands = new Band[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
         for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
             final int suffixStart = Rad2ReflConstants.OLCI_REFL_BAND_NAMES[i].indexOf("_");
             final String reflBandname = Rad2ReflConstants.OLCI_REFL_BAND_NAMES[i].substring(0, suffixStart);
-            olciReflBands[i] = rad2reflProduct.getBand(reflBandname + "_reflectance");
+            olciReflBands[i] = olciRad2reflProduct.getBand(reflBandname + "_reflectance");
         }
+
+        // e.g. S4_reflectance_an
+        //make sure that these are all *_an bands, as the NN uses only these
+        slstrReflBands = new Band[OlciSlstrConstants.SLSTR_REFL_AN_BAND_NAMES.length];
+        for (int i = 0; i < OlciSlstrConstants.SLSTR_REFL_AN_BAND_NAMES.length; i++) {
+            final int suffixStart = OlciSlstrConstants.SLSTR_REFL_AN_BAND_NAMES[i].indexOf("_");
+            final String reflBandname = OlciSlstrConstants.SLSTR_REFL_AN_BAND_NAMES[i].substring(0, suffixStart);
+            final int length = OlciSlstrConstants.SLSTR_REFL_AN_BAND_NAMES[i].length();
+            slstrReflBands[i] = slstrRad2reflProduct.getBand(reflBandname + "_reflectance_an");
+        }
+
+        landWaterBand = waterMaskProduct.getBand("land_water_fraction");
     }
 
     void createTargetProduct() throws OperatorException {
@@ -104,7 +115,7 @@ public class OlciLandClassificationOp extends Operator {
 
         // shall be the only target band!!
         cloudFlagBand = targetProduct.addBand(IdepixConstants.CLASSIF_BAND_NAME, ProductData.TYPE_INT16);
-        FlagCoding flagCoding = OlciUtils.createOlciFlagCoding(IdepixConstants.CLASSIF_BAND_NAME);
+        FlagCoding flagCoding = OlciSlstrUtils.createOlciFlagCoding(IdepixConstants.CLASSIF_BAND_NAME);
         cloudFlagBand.setSampleCoding(flagCoding);
         targetProduct.getFlagCodingGroup().add(flagCoding);
 
@@ -116,23 +127,30 @@ public class OlciLandClassificationOp extends Operator {
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
 
         if (outputSchillerNNValue) {
-            targetProduct.addBand(IdepixConstants.NN_OUTPUT_BAND_NAME, ProductData.TYPE_FLOAT32);
+            final Band nnValueBand = targetProduct.addBand(IdepixConstants.NN_OUTPUT_BAND_NAME, ProductData.TYPE_FLOAT32);
+            nnValueBand.setNoDataValue(0.0f);
+            nnValueBand.setNoDataValueUsed(true);
         }
     }
 
 
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle rectangle, ProgressMonitor pm) throws OperatorException {
-        // MERIS variables
         final Tile waterFractionTile = getSourceTile(landWaterBand, rectangle);
 
-        final Band olciQualityFlagBand = sourceProduct.getBand(OlciConstants.OLCI_QUALITY_FLAGS_BAND_NAME);
+        final Band olciQualityFlagBand = sourceProduct.getBand(OlciSlstrConstants.OLCI_QUALITY_FLAGS_BAND_NAME);
         final Tile olciQualityFlagTile = getSourceTile(olciQualityFlagBand, rectangle);
 
         Tile[] olciReflectanceTiles = new Tile[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
         float[] olciReflectance = new float[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
         for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
             olciReflectanceTiles[i] = getSourceTile(olciReflBands[i], rectangle);
+        }
+
+        Tile[] slstrReflectanceTiles = new Tile[OlciSlstrConstants.SLSTR_REFL_AN_BAND_NAMES.length];
+        float[] slstrReflectance = new float[OlciSlstrConstants.SLSTR_REFL_AN_BAND_NAMES.length];
+        for (int i = 0; i < OlciSlstrConstants.SLSTR_REFL_AN_BAND_NAMES.length; i++) {
+            slstrReflectanceTiles[i] = getSourceTile(slstrReflBands[i], rectangle);
         }
 
         final Band cloudFlagTargetBand = targetProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME);
@@ -148,25 +166,34 @@ public class OlciLandClassificationOp extends Operator {
             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
                 checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
+                    initCloudFlag(targetTiles.get(cloudFlagTargetBand), y, x);
                     final int waterFraction = waterFractionTile.getSampleInt(x, y);
-                    initCloudFlag(olciQualityFlagTile, targetTiles.get(cloudFlagTargetBand), olciReflectance, y, x);
-                    if (!isLandPixel(x, y, olciQualityFlagTile, waterFraction)) {
-                        cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_LAND, false);
-                        cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
-                        cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
-                        if (nnTargetTile != null) {
-                            nnTargetTile.setSample(x, y, Float.NaN);
-                        }
-                    } else {
-                        // only use Schiller NN approach...
-                        for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
-                            olciReflectance[i] = olciReflectanceTiles[i].getSampleFloat(x, y);
-                        }
+                    final boolean isL1bLand = olciQualityFlagTile.getSampleBit(x, y, OlciConstants.L1_F_LAND);
+                    final boolean isLand =
+                            IdepixUtils.isLandPixel(x, y, sourceProduct.getSceneGeoCoding(), isL1bLand, waterFraction);
+                    cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_LAND, isLand);
 
-                        SchillerNeuralNetWrapper nnWrapper = olciAllNeuralNet.get();
+                    for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
+                        olciReflectance[i] = olciReflectanceTiles[i].getSampleFloat(x, y);
+                    }
+
+                    for (int i = 0; i < OlciSlstrConstants.SLSTR_REFL_AN_BAND_NAMES.length; i++) {
+                        slstrReflectance[i] = slstrReflectanceTiles[i].getSampleFloat(x, y);
+                    }
+
+                    final boolean l1Invalid = olciQualityFlagTile.getSampleBit(x, y, OlciSlstrConstants.L1_F_INVALID);
+                    boolean reflectancesValid = IdepixIO.areAllReflectancesValid(olciReflectance);
+                    reflectancesValid &= IdepixIO.areAllReflectancesValid(slstrReflectance);
+                    cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_INVALID, l1Invalid || !reflectancesValid);
+
+                    if (reflectancesValid) {
+                        SchillerNeuralNetWrapper nnWrapper = olciSlstrAllNeuralNet.get();
                         double[] inputVector = nnWrapper.getInputVector();
-                        for (int i = 0; i < inputVector.length; i++) {
+                        for (int i = 0; i < inputVector.length - 6; i++) {
                             inputVector[i] = Math.sqrt(olciReflectance[i]);
+                        }
+                        for (int i = inputVector.length - slstrReflectance.length; i < inputVector.length; i++) {
+                            inputVector[i] = Math.sqrt(slstrReflectance[i - olciReflectance.length]);
                         }
 
                         final double nnOutput = nnWrapper.getNeuralNet().calc(inputVector)[0];
@@ -177,10 +204,10 @@ public class OlciLandClassificationOp extends Operator {
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
 
-                            // CB 20170406:
-                            final boolean cloudSure = olciReflectance[2] >  THRESH_LAND_MINBRIGHT1 &&
+                            // CB 20170406: todo: needed here?
+                            final boolean cloudSure = olciReflectance[2] > THRESH_LAND_MINBRIGHT1 &&
                                     nnInterpreter.isCloudSure(nnOutput);
-                            final boolean cloudAmbiguous = olciReflectance[2] >  THRESH_LAND_MINBRIGHT2 &&
+                            final boolean cloudAmbiguous = olciReflectance[2] > THRESH_LAND_MINBRIGHT2 &&
                                     nnInterpreter.isCloudAmbiguous(nnOutput, true, false);
 
                             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);
@@ -200,36 +227,7 @@ public class OlciLandClassificationOp extends Operator {
         }
     }
 
-    private boolean isLandPixel(int x, int y, Tile olciL1bFlagTile, int waterFraction) {
-        // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
-        if (getGeoPos(x, y).lat > -58f) {
-            // values bigger than 100 indicate no data
-            if (waterFraction <= 100) {
-                // todo: this does not work if we have a PixelGeocoding. In that case, waterFraction
-                // is always 0 or 100!! (TS, OD, 20140502)
-                return waterFraction == 0;
-            } else {
-                return olciL1bFlagTile.getSampleBit(x, y, OlciConstants.L1_F_LAND);
-            }
-        } else {
-            return olciL1bFlagTile.getSampleBit(x, y, OlciConstants.L1_F_LAND);
-        }
-    }
-
-    private GeoPos getGeoPos(int x, int y) {
-        final GeoPos geoPos = new GeoPos();
-        final GeoCoding geoCoding = getSourceProduct().getSceneGeoCoding();
-        final PixelPos pixelPos = new PixelPos(x, y);
-        geoCoding.getGeoPos(pixelPos, geoPos);
-        return geoPos;
-    }
-
-    void initCloudFlag(Tile olciL1bFlagTile, Tile targetTile, float[] olciReflectances, int y, int x) {
-        // for given instrument, compute boolean pixel properties and write to cloud flag band
-        final boolean l1Invalid = olciL1bFlagTile.getSampleBit(x, y, OlciConstants.L1_F_INVALID);
-        final boolean reflectancesValid = IdepixIO.areAllReflectancesValid(olciReflectances);
-
-        targetTile.setSample(x, y, IdepixConstants.IDEPIX_INVALID, l1Invalid || !reflectancesValid);
+    void initCloudFlag(Tile targetTile, int y, int x) {
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, false);
@@ -242,7 +240,7 @@ public class OlciLandClassificationOp extends Operator {
 
     public static class Spi extends OperatorSpi {
         public Spi() {
-            super(OlciLandClassificationOp.class);
+            super(OlciSlstrClassificationOp.class);
         }
     }
 }

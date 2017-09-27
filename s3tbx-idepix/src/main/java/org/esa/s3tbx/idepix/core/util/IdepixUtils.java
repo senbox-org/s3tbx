@@ -1,6 +1,10 @@
 package org.esa.s3tbx.idepix.core.util;
 
 import org.esa.s3tbx.idepix.core.IdepixConstants;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.util.math.MathUtils;
 
@@ -114,6 +118,30 @@ public class IdepixUtils {
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_BUFFER, false);
         }
     }
+
+    public static boolean isLandPixel(int x, int y, GeoCoding geoCoding, boolean isL1Land, int waterFraction) {
+        // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
+        if (getGeoPos(geoCoding, x, y).lat > -58f) {
+            // values bigger than 100 indicate no data
+            if (waterFraction <= 100) {
+                // todo: this does not work if we have a PixelGeocoding. In that case, waterFraction
+                // is always 0 or 100!! (TS, OD, 20140502)
+                return waterFraction == 0;
+            } else {
+                return isL1Land;
+            }
+        } else {
+            return isL1Land;
+        }
+    }
+
+    public static GeoPos getGeoPos(GeoCoding geoCoding, int x, int y) {
+        final GeoPos geoPos = new GeoPos();
+        final PixelPos pixelPos = new PixelPos(x, y);
+        geoCoding.getGeoPos(pixelPos, geoPos);
+        return geoPos;
+    }
+
 
     /**
      * Computes the azimuth difference from the given

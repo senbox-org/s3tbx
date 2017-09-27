@@ -5,7 +5,7 @@ import com.bc.ceres.binding.ValueRange;
 /**
  * @author Marco Peters
  */
-public class CloudNNInterpreter {
+public class OlciCloudNNInterpreter {
 
     private static final ValueRange CLEAR_SNOW_ICE_BOUNDS = new ValueRange(0.0, 1.1, true, false);
     private static final ValueRange OPAQUE_CLOUD_BOUNDS = new ValueRange(1.1, 2.75, true, false);
@@ -18,12 +18,12 @@ public class CloudNNInterpreter {
 //    private static final ValueRange CLEAR_LAND_BOUNDS = new ValueRange(3.75, 5.3, true, false);
 //    private static final ValueRange CLEAR_WATER_BOUNDS = new ValueRange(5.3, 6.00, true, true);
 
-    private CloudNNInterpreter() {
+    private OlciCloudNNInterpreter() {
     }
 
     // Here we might add the nn as parameter to decide which valueRanges to load
-    public static CloudNNInterpreter create() {
-        return new CloudNNInterpreter();
+    public static OlciCloudNNInterpreter create() {
+        return new OlciCloudNNInterpreter();
     }
 
     // currently not used
