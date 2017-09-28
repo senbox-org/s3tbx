@@ -104,43 +104,6 @@ public class OlciOp extends BasisOp {
                     "Still experimental. ")
     private boolean computeCloudShadow;
 
-    // We only have the All NN (mp/20170324)
-//    @Parameter(defaultValue = "true",
-//            label = " Use 'all' NN instead of separate land and water NNs.",
-//            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
-//    @Parameter(defaultValue = "2.0",
-//            label = " NN cloud ambiguous lower boundary (applied on WATER)",
-//            description = " NN cloud ambiguous lower boundary (applied on WATER)")
-//    double schillerWaterNNCloudAmbiguousLowerBoundaryValue;
-//
-//    @Parameter(defaultValue = "3.7",
-//            label = " NN cloud ambiguous/sure separation value (applied on WATER)",
-//            description = " NN cloud ambiguous cloud ambiguous/sure separation value (applied on WATER)")
-//    double schillerWaterNNCloudAmbiguousSureSeparationValue;
-//
-//    @Parameter(defaultValue = "4.05",
-//            label = " NN cloud sure/snow separation value (applied on WATER)",
-//            description = " NN cloud ambiguous cloud sure/snow separation value (applied on WATER)")
-//    double schillerWaterNNCloudSureSnowSeparationValue;
-//
-//    @Parameter(defaultValue = "1.1",
-//            label = " NN cloud ambiguous lower boundary (applied on LAND)",
-//            description = " NN cloud ambiguous lower boundary (applied on LAND)")
-//    double schillerLandNNCloudAmbiguousLowerBoundaryValue;
-//
-//    @Parameter(defaultValue = "2.7",
-//            label = " NN cloud ambiguous/sure separation value (applied on LAND)",
-//            description = " NN cloud ambiguous cloud ambiguous/sure separation value")
-//    double schillerLandNNCloudAmbiguousSureSeparationValue;
-//
-//    @Parameter(defaultValue = "4.6",
-//            label = " NN cloud sure/snow separation value (applied on LAND)",
-//            description = " NN cloud ambiguous cloud sure/snow separation value")
-
-
-//    private boolean useSchillerNNAll;
-
-//    double schillerLandNNCloudSureSnowSeparationValue;
 
     private Product waterClassificationProduct;
     private Product landClassificationProduct;
@@ -170,6 +133,8 @@ public class OlciOp extends BasisOp {
         preProcess();
 
         setClassificationInputProducts();
+        // todo: do land/water classification in one single operator and get rid of the 'merge', as there are only
+        // small differences. Move 'cloud buffer' computation from MergeLandWater to PostPocess.
         computeWaterCloudProduct();
         computeLandCloudProduct();
         mergeLandWater();
@@ -251,28 +216,12 @@ public class OlciOp extends BasisOp {
         landClassificationParameters = new HashMap<>();
         landClassificationParameters.put("copyAllTiePoints", true);
         landClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
-        // We only have the All NN (mp/20170324)
-//        landClassificationParameters.put("useSchillerNNAll", true);
-//        landClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
-//                                         schillerLandNNCloudAmbiguousLowerBoundaryValue);
-//        landClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
-//                                         schillerLandNNCloudAmbiguousSureSeparationValue);
-//        landClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
-//                                         schillerLandNNCloudSureSnowSeparationValue);
     }
 
     private void setWaterClassificationParameters() {
         waterClassificationParameters = new HashMap<>();
         waterClassificationParameters.put("copyAllTiePoints", true);
         waterClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
-        // We only have the All NN (mp/20170324)
-//        waterClassificationParameters.put("useSchillerNNAll", useSchillerNNAll);
-//        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousLowerBoundaryValue",
-//                                          schillerWaterNNCloudAmbiguousLowerBoundaryValue);
-//        waterClassificationParameters.put("ccSchillerNNCloudAmbiguousSureSeparationValue",
-//                                          schillerWaterNNCloudAmbiguousSureSeparationValue);
-//        waterClassificationParameters.put("ccSchillerNNCloudSureSnowSeparationValue",
-//                                          schillerWaterNNCloudSureSnowSeparationValue);
     }
 
     private void computeWaterCloudProduct() {
@@ -311,7 +260,6 @@ public class OlciOp extends BasisOp {
         HashMap<String, Product> input = new HashMap<>();
         input.put("l1b", sourceProduct);
         input.put("olciCloud", olciIdepixProduct);
-        input.put("waterMask", waterMaskProduct);
 
         Map<String, Object> params = new HashMap<>();
         params.put("computeCloudShadow", computeCloudShadow);
