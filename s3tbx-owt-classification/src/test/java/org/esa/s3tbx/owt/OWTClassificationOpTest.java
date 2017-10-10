@@ -29,8 +29,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class OWTClassificationOpTest {
 
@@ -137,7 +136,6 @@ public class OWTClassificationOpTest {
         for (int i = 0; i < MERIS_WAVELENGTHS.length; i++) {
             Band reflecBand = product.addBand("reflec_" + (i + 1), ProductData.TYPE_FLOAT32);
             reflecBand.setSpectralWavelength(MERIS_WAVELENGTHS[i]);
-            reflecBand.setSpectralBandIndex(i);
             reflecBand.setSpectralBandwidth(10);
         }
         return product;
