@@ -45,7 +45,7 @@ import org.esa.snap.core.util.ProductUtils;
         description = "Performs an optical water type classification based on atmospherically corrected reflectances.",
         authors = "Timothy Moore (University of New Hampshire); Marco Peters, Thomas Storm (Brockmann Consult)",
         copyright = "(c) 2016 by Timothy Moore (University of New Hampshire) and Brockmann Consult",
-        version = "2.0")
+        version = "2.1")
 public class OWTClassificationOp extends PixelOperator {
 
     private static final int DOMINANT_CLASS_NO_DATA_VALUE = -1;
@@ -161,12 +161,13 @@ public class OWTClassificationOp extends PixelOperator {
 
     static String getBestBandName(String reflectancesPrefix, float wavelength, Band[] bands) {
         String bestBandName = null;
-        final double maxDistance = 10.0;
+        double maxDistance = 10.0;
         double wavelengthDist = Double.MAX_VALUE;
         for (Band band : bands) {
-            final boolean isSpectralBand = band.getSpectralBandIndex() > -1;
+            float spectralWavelength = band.getSpectralWavelength();
+            boolean isSpectralBand = spectralWavelength > 0;
             if (isSpectralBand && band.getName().startsWith(reflectancesPrefix)) {
-                final float currentWavelengthDist = Math.abs(band.getSpectralWavelength() - wavelength);
+                float currentWavelengthDist = Math.abs(spectralWavelength - wavelength);
                 if (currentWavelengthDist < wavelengthDist && currentWavelengthDist < maxDistance) {
                     wavelengthDist = currentWavelengthDist;
                     bestBandName = band.getName();
