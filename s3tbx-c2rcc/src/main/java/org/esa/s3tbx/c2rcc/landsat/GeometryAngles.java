@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc.landsat8;
+package org.esa.s3tbx.c2rcc.landsat;
 
 class GeometryAngles {
 

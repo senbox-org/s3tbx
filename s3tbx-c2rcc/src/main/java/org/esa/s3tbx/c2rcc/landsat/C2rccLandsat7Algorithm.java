@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc.landsat8;
+package org.esa.s3tbx.c2rcc.landsat;
 
 import org.esa.snap.core.nn.NNffbpAlphaTabFast;
 import org.esa.snap.core.util.BitSetter;
@@ -20,7 +20,7 @@ import static org.esa.s3tbx.c2rcc.util.ArrayMath.*;
 /**
  * @author Roland Doerffer
  */
-class C2rccLandsat8Algorithm {
+class C2rccLandsat7Algorithm {
 
     static final int IDX_rtosa_aann = 0;
     static final int IDX_rtosa_rw = 1;
@@ -103,7 +103,7 @@ class C2rccLandsat8Algorithm {
     private boolean outputUncertainties;
     private boolean deriveRwFromPathAndTransmittance;
 
-    C2rccLandsat8Algorithm(final String[] nnFilePaths, final boolean loadFromResources) throws IOException {
+    C2rccLandsat7Algorithm(final String[] nnFilePaths, final boolean loadFromResources) throws IOException {
         nnNames = new ArrayList<>();
 
         // rtosa auto NN
@@ -585,7 +585,7 @@ class C2rccLandsat8Algorithm {
         final InputStream stream;
         if (loadFromResource) {
             String name = "/auxdata/nets/" + sourcePath;
-            stream = C2rccLandsat8Algorithm.class.getResourceAsStream(name);
+            stream = C2rccLandsat7Algorithm.class.getResourceAsStream(name);
             if (stream == null) {
                 throw new IllegalStateException("resource not found: " + name);
             }
