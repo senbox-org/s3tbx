@@ -120,16 +120,16 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
 
     private static String[] standardNets = new String[10];
     static {
-        standardNets[IDX_iop_rw] = "landsat/l7_nets_20160818/iop_rw/17x97x47_79.9.net";
-        standardNets[IDX_iop_unciop] = "landsat/l7_nets_20160818/iop_unciop/17x77x37_11486.7.net";
-        standardNets[IDX_iop_uncsumiop_unckd] = "landsat/l7_nets_20160818/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        standardNets[IDX_rtosa_aann] = "landsat/l7_nets_20160818/rtosa_aann/29x7x29_56.3.net";
-        standardNets[IDX_rtosa_rpath] = "landsat/l7_nets_20160818/rtosa_rpath/31x77x57x37_2336.9.net";
-        standardNets[IDX_rtosa_rw] = "landsat/l7_nets_20160818/rtosa_rw/31x71x51x31_229436.1.net";
-        standardNets[IDX_rtosa_trans] = "landsat/l7_nets_20160818/rtosa_trans/29x75x55x35_28119.6.net";
-        standardNets[IDX_rw_iop] = "landsat/l7_nets_20160818/rw_iop/47x97x17_15723.1.net";
-        standardNets[IDX_rw_kd] = "landsat/l7_nets_20160818/rw_kd/97x77x7_268.5.net";
-        standardNets[IDX_rw_rwnorm] = "landsat/l7_nets_20160818/rw_rwnorm/27x7x27_9.7.net";
+        standardNets[IDX_iop_rw] = "landsat/l7_nets_20170917/iop_rw/77x77x77_60.8.net";
+        standardNets[IDX_iop_unciop] = "landsat/l7_nets_20170917/iop_unciop/17x77x37_11486.7.net";
+        standardNets[IDX_iop_uncsumiop_unckd] = "landsat/l7_nets_20170917/iop_uncsumiop_unckd/17x77x37_9113.1.net";
+        standardNets[IDX_rtosa_aann] = "landsat/l7_nets_20170917/rtosa_aann/31x7x31_0.7.net";
+        standardNets[IDX_rtosa_rpath] = "landsat/l7_nets_20170917/rtosa_rpath/37x37x37_1240.4.net";
+        standardNets[IDX_rtosa_rw] = "landsat/l7_nets_20170917/rtosa_rw/77x77x77x77_10078.9.net";
+        standardNets[IDX_rtosa_trans] = "landsat/l7_nets_20170917/rtosa_trans/77x77x77_15906.8.net";
+        standardNets[IDX_rw_iop] = "landsat/l7_nets_20170917/rw_iop/77x77x77_38848.9.net";
+        standardNets[IDX_rw_kd] = "landsat/l7_nets_20170917/rw_kd/77x77x77_887.1.net";
+        standardNets[IDX_rw_rwnorm] = "landsat/l7_nets_20170917/rw_rwnorm/77x77x77_99.9.net";
         c2rccNetSetMap.put(STANDARD_NETS, standardNets);
     }
 
