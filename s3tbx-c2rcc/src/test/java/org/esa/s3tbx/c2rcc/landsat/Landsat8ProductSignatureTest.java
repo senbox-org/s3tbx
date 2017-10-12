@@ -225,7 +225,7 @@ public class Landsat8ProductSignatureTest {
     }
 
     private Product createLandsat8TestProduct() throws FactoryException, TransformException {
-        Product product = new Product("test-meris", "t", 1, 1);
+        Product product = new Product("test-L8", "t", 1, 1);
         for (int i = 0; i < C2rccLandsat8Operator.L8_BAND_COUNT; i++) {
             String expression = String.valueOf(i);
             product.addBand(C2rccLandsat8Operator.EXPECTED_BANDNAMES[i], expression);
