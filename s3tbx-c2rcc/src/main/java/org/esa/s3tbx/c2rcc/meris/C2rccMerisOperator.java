@@ -236,7 +236,7 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
     private double thresholdRtosaOOS;
 
     @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances",
-            label = "Threshold AC reflecteances OOS")
+            label = "Threshold AC reflectances OOS")
     private double thresholdAcReflecOos;
 
     @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
