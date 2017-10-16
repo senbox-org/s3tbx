@@ -113,6 +113,11 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
 
     private static final int C2RCC_FLAGS_IX = OOS_RTOSA_IX + 19;
 
+    private static final int DEBUG_VIEW_AZI_IX = OOS_RTOSA_IX + 20;
+    private static final int DEBUG_VIEW_ZEN_IX = OOS_RTOSA_IX + 21;
+    private static final int DEBUG_SUN_AZI_IX = OOS_RTOSA_IX + 22;
+    private static final int DEBUG_SUN_ZEN_IX = OOS_RTOSA_IX + 23;
+
     private static final String PRODUCT_TYPE = "C2RCC_LANDSAT-7";
 
     private static final String STANDARD_NETS = "C2RCC-Nets";
@@ -206,7 +211,7 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
     private double thresholdRtosaOOS;
 
     @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances",
-            label = "Threshold AC reflecteances OOS")
+            label = "Threshold AC reflectances OOS")
     private double thresholdAcReflecOos;
 
     @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
@@ -274,6 +279,9 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
     private GeometryAnglesBuilder geometryAnglesBuilder;
     private ElevationModel elevationModel;
     private Product resampledProduct;
+
+    private boolean debug_outputAngles = true;
+
 
     @Override
     public void setAtmosphericAuxDataPath(String atmosphericAuxDataPath) {
@@ -505,6 +513,13 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
         }
 
         targetSamples[C2RCC_FLAGS_IX].set(result.flags);
+
+        if(debug_outputAngles) {
+            targetSamples[DEBUG_VIEW_AZI_IX].set(geometryAngles.view_azimuth);
+            targetSamples[DEBUG_VIEW_ZEN_IX].set(geometryAngles.view_zenith);
+            targetSamples[DEBUG_SUN_AZI_IX].set(sunAzimuth);
+            targetSamples[DEBUG_SUN_ZEN_IX].set(sunZenith);
+        }
     }
 
     @Override
@@ -797,6 +812,13 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
 
+        if(debug_outputAngles) {
+            targetProduct.addBand("debug_view_azi", ProductData.TYPE_FLOAT32);
+            targetProduct.addBand("debug_view_zen", ProductData.TYPE_FLOAT32);
+            targetProduct.addBand("debug_sun_azi", ProductData.TYPE_FLOAT32);
+            targetProduct.addBand("debug_sun_zen", ProductData.TYPE_FLOAT32);
+        }
+
         targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
@@ -891,6 +913,14 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
         }
 
         tsc.defineSample(C2RCC_FLAGS_IX, "c2rcc_flags");
+
+        if (debug_outputAngles) {
+            tsc.defineSample(DEBUG_VIEW_AZI_IX, "debug_view_azi");
+            tsc.defineSample(DEBUG_VIEW_ZEN_IX, "debug_view_zen");
+            tsc.defineSample(DEBUG_SUN_AZI_IX, "debug_sun_azi");
+            tsc.defineSample(DEBUG_SUN_ZEN_IX, "debug_sun_zen");
+        }
+
     }
 
     private void ensureSpectralProperties(Band band, int i) {
