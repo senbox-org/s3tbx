@@ -280,7 +280,7 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
     private ElevationModel elevationModel;
     private Product resampledProduct;
 
-    private boolean debug_outputAngles = true;
+    private boolean debug_outputAngles = false;
 
 
     @Override
