@@ -63,6 +63,7 @@ import static org.esa.s3tbx.c2rcc.landsat.C2rccLandsat7Algorithm.*;
  * an neural-network approach.
  */
 @OperatorMetadata(alias = "c2rcc.landsat7", version = "1.0",
+        internal = true,
         authors = "Roland Doerffer, Marco Peters (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2017 by Brockmann Consult",
