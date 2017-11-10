@@ -1,4 +1,4 @@
-package org.esa.s3tbx.c2rcc.landsat8;
+package org.esa.s3tbx.c2rcc.landsat;
 
 class GeometryAnglesBuilder {
 
@@ -7,19 +7,19 @@ class GeometryAnglesBuilder {
     private final int x_c;
     private final double zenith_wink_fak;
 
-    private final double sun_azimuth;
-    private double cos_sun_zenith;
-    private double sin_sun_zenith;
+//    private final double sun_azimuth;
+//    private double cos_sun_zenith;
+//    private double sin_sun_zenith;
 
     GeometryAnglesBuilder(int subsampling_x, int x_off, int x_c, double sun_azimuth, double sun_zenith) {
         this.subsampling_x = subsampling_x;
         this.x_off = x_off;
         this.x_c = x_c;
         this.zenith_wink_fak = 7.0 / this.x_c;
-        this.sun_azimuth = sun_azimuth;
+//        this.sun_azimuth = sun_azimuth;
         double sun_zenith_rad = Math.toRadians(sun_zenith);
-        this.cos_sun_zenith = Math.cos(sun_zenith_rad);
-        this.sin_sun_zenith = Math.sin(sun_zenith_rad);
+//        this.cos_sun_zenith = Math.cos(sun_zenith_rad);
+//        this.sin_sun_zenith = Math.sin(sun_zenith_rad);
     }
 
     GeometryAngles getGeometryAngles(double xb, double latitude) {
@@ -50,19 +50,20 @@ class GeometryAnglesBuilder {
             geomAngels.view_azimuth = beta_deg + 270;
         }
 
-        geomAngels.cos_sun = cos_sun_zenith;
-        geomAngels.sin_sun = sin_sun_zenith;
-        geomAngels.cos_view = Math.cos(Math.toRadians(geomAngels.view_zenith));
-        geomAngels.sin_view = Math.sin(Math.toRadians(geomAngels.view_zenith));
+        // duplicated - it is also computed in the algorithm part.
+//        geomAngels.cos_sun = cos_sun_zenith;
+//        geomAngels.sin_sun = sin_sun_zenith;
+//        geomAngels.cos_view = Math.cos(Math.toRadians(geomAngels.view_zenith));
+//        geomAngels.sin_view = Math.sin(Math.toRadians(geomAngels.view_zenith));
 
-        geomAngels.cos_azi_diff = Math.cos(Math.toRadians(geomAngels.view_azimuth - sun_azimuth));
-        double azi_diff_rad = Math.acos(Math.cos(Math.toRadians(geomAngels.view_azimuth - sun_azimuth)));
-        geomAngels.sin_azi_diff = Math.sin(azi_diff_rad);
-        geomAngels.azi_diff_deg = Math.toDegrees(azi_diff_rad);
-
-        geomAngels.x = geomAngels.sin_view * geomAngels.cos_azi_diff;
-        geomAngels.y = geomAngels.sin_view * geomAngels.sin_azi_diff;
-        geomAngels.z = geomAngels.cos_view;
+//        geomAngels.cos_azi_diff = Math.cos(Math.toRadians(geomAngels.view_azimuth - sun_azimuth));
+//        double azi_diff_rad = Math.acos(Math.cos(Math.toRadians(geomAngels.view_azimuth - sun_azimuth)));
+//        geomAngels.sin_azi_diff = Math.sin(azi_diff_rad);
+//        geomAngels.azi_diff_deg = Math.toDegrees(azi_diff_rad);
+//
+//        geomAngels.x = geomAngels.sin_view * geomAngels.cos_azi_diff;
+//        geomAngels.y = geomAngels.sin_view * geomAngels.sin_azi_diff;
+//        geomAngels.z = geomAngels.cos_view;
 
         return geomAngels;
     }

@@ -31,6 +31,16 @@
                 <attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>
                 <attr name="helpId" stringvalue="c2rccScientificTool"/>
             </file>
+<!--Currently still hidden-->
+            <!--<file name="org-esa-s3tbx-c2rcc-landsat7-OpAction.instance">-->
+                <!--<attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>-->
+                <!--<attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>-->
+                <!--<attr name="displayName" stringvalue="Landsat-7"/>-->
+                <!--<attr name="operatorName" stringvalue="c2rcc.landsat7"/>-->
+                <!--<attr name="dialogTitle" stringvalue="C2RCC Landsat-7 Processor"/>-->
+                <!--<attr name="targetProductNameSuffix" stringvalue="_C2RCC"/>-->
+                <!--<attr name="helpId" stringvalue="c2rccScientificTool"/>-->
+            <!--</file>-->
             <file name="org-esa-s3tbx-c2rcc-landsat8-OpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
@@ -111,6 +121,12 @@
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-msi-OpAction.instance"/>
                         <attr name="position" intvalue="2"/>
                     </file>
+                    <!--Currently still hidden-->
+                    <!--<file name="org-esa-s3tbx-c2rcc-landsat7-OpAction.shadow">-->
+                        <!--<attr name="originalFile"-->
+                              <!--stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-landsat7-OpAction.instance"/>-->
+                        <!--<attr name="position" intvalue="3"/>-->
+                    <!--</file>-->
                     <file name="org-esa-s3tbx-c2rcc-landsat8-OpAction.shadow">
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-landsat8-OpAction.instance"/>
@@ -169,6 +185,10 @@
         </file>
         <file name="org.esa.s3tbx.c2rcc.msi">
             <attr name="operatorName" stringvalue="c2rcc.msi"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+        <file name="org.esa.s3tbx.c2rcc.landsat7">
+            <attr name="operatorName" stringvalue="c2rcc.landsat7"/>
             <attr name="disableFromGraphBuilder" stringvalue="true"/>
         </file>
         <file name="org.esa.s3tbx.c2rcc.landsat8">

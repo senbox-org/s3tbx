@@ -1,8 +1,6 @@
-package org.esa.s3tbx.c2rcc.landsat8;
+package org.esa.s3tbx.c2rcc.landsat;
 
-import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
-import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
@@ -12,7 +10,6 @@ import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
-import java.awt.Color;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -21,13 +18,13 @@ import static org.junit.Assert.*;
 /**
  * @author Marco Peters
  */
-public class Landsat8ProductSignatureTest {
+public class Landsat7ProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
-            "rhow_" + 1, "rhow_" + 2, "rhow_" + 3, "rhow_" + 4, "rhow_" + 5};
+            "rhow_" + 1, "rhow_" + 2, "rhow_" + 3, "rhow_" + 4};
     private static final String[] EXPECTED_RRS_BANDS = {
-            "rrs_" + 1, "rrs_" + 2, "rrs_" + 3, "rrs_" + 4, "rrs_" + 5};
+            "rrs_" + 1, "rrs_" + 2, "rrs_" + 3, "rrs_" + 4};
     private static final String[] EXPECTED_NORM_REFLEC_BANDS = {
-            "rhown_" + 1, "rhown_" + 2, "rhown_" + 3, "rhown_" + 4, "rhown_" + 5};
+            "rhown_" + 1, "rhown_" + 2, "rhown_" + 3, "rhown_" + 4};
     private static final String EXPECTED_IOP_APIG = "iop_apig";
     private static final String EXPECTED_IOP_ADET = "iop_adet";
     private static final String EXPECTED_IOP_AGELB = "iop_agelb";
@@ -47,27 +44,27 @@ public class Landsat8ProductSignatureTest {
             "unc_bwit", "unc_adg", "unc_atot", "unc_btot"};
     private static final String[] EXPECTED_KD_UNC_BANDS = {"unc_kd489", "unc_kdmin"};
     private static final String[] EXPECTED_RTOSA_GC_BANDS = {
-            "rtosa_gc_" + 1, "rtosa_gc_" + 2, "rtosa_gc_" + 3, "rtosa_gc_" + 4, "rtosa_gc_" + 5};
+            "rtosa_gc_" + 1, "rtosa_gc_" + 2, "rtosa_gc_" + 3, "rtosa_gc_" + 4};
     private static final String[] EXPECTED_RTOSA_GCAANN_BANDS = {
-            "rtosagc_aann_" + 1, "rtosagc_aann_" + 2, "rtosagc_aann_" + 3, "rtosagc_aann_" + 4, "rtosagc_aann_" + 5};
+            "rtosagc_aann_" + 1, "rtosagc_aann_" + 2, "rtosagc_aann_" + 3, "rtosagc_aann_" + 4};
     private static final String[] EXPECTED_RTOA_BANDS = {
-            "rtoa_" + 1, "rtoa_" + 2, "rtoa_" + 3, "rtoa_" + 4, "rtoa_" + 5};
+            "rtoa_" + 1, "rtoa_" + 2, "rtoa_" + 3, "rtoa_" + 4};
     private static final String[] EXPECTED_RPATH_BANDS = {
-            "rpath_" + 1, "rpath_" + 2, "rpath_" + 3, "rpath_" + 4, "rpath_" + 5};
+            "rpath_" + 1, "rpath_" + 2, "rpath_" + 3, "rpath_" + 4};
     private static final String[] EXPECTED_TDOWN_BANDS = {
-            "tdown_" + 1, "tdown_" + 2, "tdown_" + 3, "tdown_" + 4, "tdown_" + 5};
+            "tdown_" + 1, "tdown_" + 2, "tdown_" + 3, "tdown_" + 4};
     private static final String[] EXPECTED_TUP_BANDS = {
-            "tup_" + 1, "tup_" + 2, "tup_" + 3, "tup_" + 4, "tup_" + 5};
+            "tup_" + 1, "tup_" + 2, "tup_" + 3, "tup_" + 4};
 
     private static final String EXPECTED_SOURCE_FLAGS = "flags";
     private static final String EXPECTED_C2RCC_FLAGS = "c2rcc_flags";
 
-    private static final String EXPECTED_PRODUCT_TYPE = "C2RCC_LANDSAT-8";
+    private static final String EXPECTED_PRODUCT_TYPE = "C2RCC_LANDSAT-7";
 
     @Test
     public void testProductSignature_Default() throws FactoryException, TransformException {
 
-        C2rccLandsat8Operator operator = createDefaultOperator();
+        C2rccLandsat7Operator operator = createDefaultOperator();
 
         Product targetProduct = operator.getTargetProduct();
 
@@ -77,7 +74,7 @@ public class Landsat8ProductSignatureTest {
     @Test
     public void testProductSignature_Default_Rrs() throws FactoryException, TransformException {
 
-        C2rccLandsat8Operator operator = createDefaultOperator();
+        C2rccLandsat7Operator operator = createDefaultOperator();
         operator.setOutputAsRrs(true);
         operator.setOutputOos(true);
 
@@ -91,7 +88,7 @@ public class Landsat8ProductSignatureTest {
     @Test
     public void testProductSignature_OnlyMandatory() throws FactoryException, TransformException {
 
-        C2rccLandsat8Operator operator = createDefaultOperator();
+        C2rccLandsat7Operator operator = createDefaultOperator();
         operator.setOutputRtoa(false);
         operator.setOutputUncertainties(false);
         operator.setOutputAcReflectance(false);
@@ -100,13 +97,13 @@ public class Landsat8ProductSignatureTest {
         Product targetProduct = operator.getTargetProduct();
 
         assertMandatoryBands(targetProduct);
-        assertEquals(12, targetProduct.getNumBands());
+        assertEquals(11, targetProduct.getNumBands());
     }
 
     @Test
     public void testProductSignature_DefaultWithRtosa() throws FactoryException, TransformException {
 
-        C2rccLandsat8Operator operator = createDefaultOperator();
+        C2rccLandsat7Operator operator = createDefaultOperator();
         operator.setOutputRtosa(true);
         operator.setOutputRtosaGcAann(true);
         Product targetProduct = operator.getTargetProduct();
@@ -119,7 +116,7 @@ public class Landsat8ProductSignatureTest {
     @Test
     public void testProductSignature_DefaultWithRtoa() throws FactoryException, TransformException {
 
-        C2rccLandsat8Operator operator = createDefaultOperator();
+        C2rccLandsat7Operator operator = createDefaultOperator();
         operator.setOutputRtoa(true);
         Product targetProduct = operator.getTargetProduct();
 
@@ -130,7 +127,7 @@ public class Landsat8ProductSignatureTest {
     @Test
     public void testProductSignature_DefaultWithOthers() throws FactoryException, TransformException {
 
-        C2rccLandsat8Operator operator = createDefaultOperator();
+        C2rccLandsat7Operator operator = createDefaultOperator();
         operator.setOutputRpath(true);
         operator.setOutputTdown(true);
         operator.setOutputTup(true);
@@ -148,7 +145,7 @@ public class Landsat8ProductSignatureTest {
     @Test
     public void testProductSignature_DeriveRwAlternative() throws FactoryException, TransformException {
 
-        C2rccLandsat8Operator operator = createDefaultOperator();
+        C2rccLandsat7Operator operator = createDefaultOperator();
         operator.setDeriveRwFromPathAndTransmittance(true);
 
         Product targetProduct = operator.getTargetProduct();
@@ -158,7 +155,7 @@ public class Landsat8ProductSignatureTest {
     @Test
     public void testProductSignature_DefaultWithUncertainties() throws FactoryException, TransformException {
 
-        C2rccLandsat8Operator operator = createDefaultOperator();
+        C2rccLandsat7Operator operator = createDefaultOperator();
         operator.setOutputUncertainties(true);
         Product targetProduct = operator.getTargetProduct();
 
@@ -169,7 +166,7 @@ public class Landsat8ProductSignatureTest {
     @Test
     public void testProductSignature_DefaultWithUncertaintiesAndKd() throws FactoryException, TransformException {
 
-        C2rccLandsat8Operator operator = createDefaultOperator();
+        C2rccLandsat7Operator operator = createDefaultOperator();
         operator.setOutputUncertainties(true);
         operator.setOutputKd(true);
         Product targetProduct = operator.getTargetProduct();
@@ -207,7 +204,6 @@ public class Landsat8ProductSignatureTest {
         assertBands(targetProduct, EXPECTED_IOP_BTOT);
         assertBands(targetProduct, EXPECTED_CONC_CHL);
         assertBands(targetProduct, EXPECTED_CONC_TSM);
-        assertBands(targetProduct, EXPECTED_SOURCE_FLAGS);
         assertBands(targetProduct, EXPECTED_C2RCC_FLAGS);
     }
 
@@ -217,18 +213,18 @@ public class Landsat8ProductSignatureTest {
         }
     }
 
-    private C2rccLandsat8Operator createDefaultOperator() throws FactoryException, TransformException {
-        C2rccLandsat8Operator operator = new C2rccLandsat8Operator();
+    private C2rccLandsat7Operator createDefaultOperator() throws FactoryException, TransformException {
+        C2rccLandsat7Operator operator = new C2rccLandsat7Operator();
         operator.setParameterDefaultValues();
         operator.setSourceProduct(createLandsat8TestProduct());
         return operator;
     }
 
     private Product createLandsat8TestProduct() throws FactoryException, TransformException {
-        Product product = new Product("test-meris", "t", 1, 1);
-        for (int i = 0; i < C2rccLandsat8Operator.L8_BAND_COUNT; i++) {
+        Product product = new Product("test-L7", "t", 1, 1);
+        for (int i = 0; i < C2rccLandsat7Operator.L7_BAND_COUNT; i++) {
             String expression = String.valueOf(i);
-            product.addBand(C2rccLandsat8Operator.EXPECTED_BANDNAMES[i], expression);
+            product.addBand(C2rccLandsat7Operator.EXPECTED_BANDNAMES[i], expression);
         }
         MetadataElement metadataRoot = product.getMetadataRoot();
         MetadataElement l1MetadataFile = new MetadataElement("L1_METADATA_FILE");
@@ -253,20 +249,6 @@ public class Landsat8ProductSignatureTest {
         product.setStartTime(ProductData.UTC.create(time, 0));
         product.setEndTime(ProductData.UTC.create(time, 500));
 
-        Band flagBand = product.addBand("flags", ProductData.TYPE_INT8);
-        FlagCoding l1FlagsCoding = new FlagCoding("flags");
-        l1FlagsCoding.addFlag("water_confidence_one", 1, "description");
-        l1FlagsCoding.addFlag("water_confidence_two", 2, "description");
-
-        product.getFlagCodingGroup().add(l1FlagsCoding);
-        flagBand.setSampleCoding(l1FlagsCoding);
-
-        product.addMask("water_confidence_low", "flags.water_confidence_one and not flags.water_confidence_two",
-                        "description", Color.BLUE, 0.2);
-        product.addMask("water_confidence_mid", "not flags.water_confidence_one and flags.water_confidence_two",
-                        "description", Color.BLUE, 0.2);
-        product.addMask("water_confidence_high", "flags.water_confidence_one and flags.water_confidence_two",
-                        "description", Color.BLUE, 0.2);
         product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84, 1, 1, 10, 50, 1, 1));
 
         return product;

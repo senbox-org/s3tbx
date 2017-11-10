@@ -5,5 +5,6 @@ org.esa.s3tbx.c2rcc.modis.C2rccModisOperator$Spi
 org.esa.s3tbx.c2rcc.seawifs.C2rccSeaWiFSOperator$Spi
 org.esa.s3tbx.c2rcc.olci.C2rccOlciOperator$Spi
 org.esa.s3tbx.c2rcc.msi.C2rccMsiOperator$Spi
-org.esa.s3tbx.c2rcc.landsat8.C2rccLandsat8Operator$Spi
+org.esa.s3tbx.c2rcc.landsat.C2rccLandsat7Operator$Spi
+org.esa.s3tbx.c2rcc.landsat.C2rccLandsat8Operator$Spi
 org.esa.s3tbx.c2rcc.viirs.C2rccViirsOperator$Spi
