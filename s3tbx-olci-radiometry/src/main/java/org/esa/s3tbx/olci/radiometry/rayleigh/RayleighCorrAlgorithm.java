@@ -164,6 +164,12 @@ public class RayleighCorrAlgorithm {
             double cosSZARad = cosSZARads[index];
 
             List<double[]> interpolateValues = interpolation.get(index);
+            if (interpolateValues == null || interpolateValues.size() == 0) {
+                // this might happen if we are out of range of RayleighAux data (e.g. SZA > 80deg)
+                // --> set to NaN (CB, 20171026)
+                rho_BRR[index] = RayleighConstants.INVALID_VALUE;
+                continue;
+            }
             double[] fourierSeries = fourier.get(index);
 
             double[] rho_Rm = getFourierSeries(taurVal, massAir, cosOZARad, cosSZARad, interpolateValues, fourierSeries);
