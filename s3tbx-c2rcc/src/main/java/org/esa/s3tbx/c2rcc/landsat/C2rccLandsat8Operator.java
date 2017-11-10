@@ -76,7 +76,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     // Landsat sources
     static final String[] EXPECTED_BANDNAMES = new String[]{"coastal_aerosol", "blue", "green", "red", "near_infrared"};
     static final int L8_BAND_COUNT = EXPECTED_BANDNAMES.length;
-    private static final String[] ANGEL_BANDNAMES = new String[]{"view_azimuth","view_zenith", "sun_azimuth", "sun_zenith"};
+    private static final String[] ANGEL_BANDNAMES = new String[]{"view_azimuth", "view_zenith", "sun_azimuth", "sun_zenith"};
 
 
     private static final int VALID_PIXEL_IX = L8_BAND_COUNT + 1;
@@ -303,7 +303,8 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     private ElevationModel elevationModel;
     private Product resampledProduct;
 
-    private boolean debug_outputAngles = true;
+    private boolean debug_outputAngles = false;
+    private boolean useAngleBands = false;
 
 
     @Override
@@ -447,11 +448,19 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             altitude = elevation;
         }
 
-//        GeometryAngles geometryAngles = geometryAnglesBuilder.getGeometryAngles(x, lat);
-        double viewAzimuth = sourceSamples[VALID_PIXEL_IX + 1].getDouble();
-        double viewZenith = sourceSamples[VALID_PIXEL_IX + 2].getDouble();
-        sunAzimuth = sourceSamples[VALID_PIXEL_IX + 3].getDouble();
-        sunZenith = sourceSamples[VALID_PIXEL_IX + 4].getDouble();
+        double viewAzimuth;
+        double viewZenith;
+        if (useAngleBands) {
+            viewAzimuth = sourceSamples[VALID_PIXEL_IX + 1].getDouble();
+            viewZenith = sourceSamples[VALID_PIXEL_IX + 2].getDouble();
+            sunAzimuth = sourceSamples[VALID_PIXEL_IX + 3].getDouble();
+            sunZenith = sourceSamples[VALID_PIXEL_IX + 4].getDouble();
+        } else {
+            GeometryAngles geometryAngles = geometryAnglesBuilder.getGeometryAngles(x, lat);
+            viewAzimuth = geometryAngles.view_azimuth;
+            viewZenith = geometryAngles.view_zenith;
+        }
+
         Result result = algorithm.processPixel(x, y, lat, lon,
                                                reflectances,
                                                new double[0],
@@ -560,8 +569,10 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true", resampledProduct);
         }
 
-        for (int i = 0; i < ANGEL_BANDNAMES.length; i++) {
-            sc.defineSample((VALID_PIXEL_IX + 1) + i, ANGEL_BANDNAMES[i], resampledProduct);
+        if (useAngleBands) {
+            for (int i = 0; i < ANGEL_BANDNAMES.length; i++) {
+                sc.defineSample((VALID_PIXEL_IX + 1) + i, ANGEL_BANDNAMES[i], resampledProduct);
+            }
         }
 
     }
@@ -1011,6 +1022,11 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     protected void prepareInputs() throws OperatorException {
         for (String EXPECTED_BANDNAME : EXPECTED_BANDNAMES) {
             assertSourceBand(EXPECTED_BANDNAME);
+        }
+        if (useAngleBands) {
+            for (String bandname : ANGEL_BANDNAMES) {
+                assertSourceBand(bandname);
+            }
         }
 
         MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
