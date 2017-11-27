@@ -921,15 +921,26 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Override
     protected void prepareInputs() throws OperatorException {
-        if(!"S2_MSI-Level-1C".equals(sourceProduct.getProductType())) {
-            throw new OperatorException("Source must be a resampled S2 MSI L1C product");
+        try {
+            for (String sourceBandName : C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES) {
+                assertSourceBand(sourceBandName);
+            }
+
+            String msgFormat = "Invalid source product, raster '%s' required";
+            assertSourceRaster(RASTER_NAME_SUN_ZENITH, msgFormat);
+            assertSourceRaster(RASTER_NAME_SUN_AZIMUTH, msgFormat);
+            assertSourceRaster(RASTER_NAME_VIEW_ZENITH, msgFormat);
+            assertSourceRaster(RASTER_NAME_VIEW_AZIMUTH, msgFormat);
+
+            if (sourceProduct.getSceneGeoCoding() == null) {
+                throw new OperatorException("The source product must be geo-coded.");
+            }
+
+            ensureSingleRasterSize(sourceProduct);
+        } catch (OperatorException e) {
+            throw new OperatorException("Source must be a resampled S2 MSI L1C product", e);
         }
 
-        for (String sourceBandName : C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES) {
-            assertSourceBand(sourceBandName);
-        }
-
-        ensureSingleRasterSize(sourceProduct);
 
         ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30");
         if (getasse30 != null) {
@@ -939,15 +950,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         // (mp/20160504) - SolarFlux is not used so we set it to 0
         solflux = new double[SOURCE_BAND_REFL_NAMES.length]; //getSolarFluxValues();
 
-        if (sourceProduct.getSceneGeoCoding() == null) {
-            throw new OperatorException("The source product must be geo-coded.");
-        }
 
-        String msgFormat = "Invalid source product, raster '%s' required";
-        assertSourceRaster(RASTER_NAME_SUN_ZENITH, msgFormat);
-        assertSourceRaster(RASTER_NAME_SUN_AZIMUTH, msgFormat);
-        assertSourceRaster(RASTER_NAME_VIEW_ZENITH, msgFormat);
-        assertSourceRaster(RASTER_NAME_VIEW_AZIMUTH, msgFormat);
 
         try {
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {

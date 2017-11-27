@@ -213,7 +213,7 @@ public class MsiProductSignatureTest {
     }
 
     private Product createMsiTestProduct() throws FactoryException, TransformException {
-        Product product = new Product("test-msi", "S2_MSI-Level-1C", 1, 1);
+        Product product = new Product("test-msi", "S2_MSI_Level-1C", 1, 1);
         for (String reflBandName : C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES) {
             product.addBand(reflBandName, "3863");
         }
