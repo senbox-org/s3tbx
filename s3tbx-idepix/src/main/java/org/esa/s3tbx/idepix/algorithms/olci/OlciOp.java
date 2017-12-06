@@ -123,6 +123,7 @@ public class OlciOp extends BasisOp {
     private Map<String, Product> classificationInputProducts;
     private Map<String, Object> waterClassificationParameters;
     private Map<String, Object> landClassificationParameters;
+    private Product o2corrProduct;
 
     @Override
     public void initialize() throws OperatorException {
@@ -168,9 +169,6 @@ public class OlciOp extends BasisOp {
         targetProduct.setAutoGrouping(olciIdepixProduct.getAutoGrouping());
 
         if (computeO2CorrectedTransmissions) {
-            Map<String, Product> o2corrSourceProducts = new HashMap<>();
-            o2corrSourceProducts.put("l1b", sourceProduct);
-            Product o2corrProduct = GPF.createProduct("py_o2corr_op", GPF.NO_PARAMS, o2corrSourceProducts);
             for (int i = 13; i <= 15; i++) {
                 ProductUtils.copyBand("radiance_" + i, o2corrProduct, "Oa" + i + "_radiance_o2corr",
                                       targetProduct, true);
@@ -229,18 +227,27 @@ public class OlciOp extends BasisOp {
         waterMaskParameters.put("subSamplingFactorX", IdepixConstants.OVERSAMPLING_FACTOR_X);
         waterMaskParameters.put("subSamplingFactorY", IdepixConstants.OVERSAMPLING_FACTOR_Y);
         waterMaskProduct = GPF.createProduct("LandWaterMask", waterMaskParameters, sourceProduct);
+
+        if (computeO2CorrectedTransmissions) {
+            Map<String, Product> o2corrSourceProducts = new HashMap<>();
+            o2corrSourceProducts.put("l1b", sourceProduct);
+            o2corrProduct = GPF.createProduct("py_o2corr_op", GPF.NO_PARAMS, o2corrSourceProducts);
+        }
+
     }
 
     private void setLandClassificationParameters() {
         landClassificationParameters = new HashMap<>();
         landClassificationParameters.put("copyAllTiePoints", true);
         landClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+        landClassificationParameters.put("computeO2CorrectedTransmissions", computeO2CorrectedTransmissions);
     }
 
     private void setWaterClassificationParameters() {
         waterClassificationParameters = new HashMap<>();
         waterClassificationParameters.put("copyAllTiePoints", true);
         waterClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+        waterClassificationParameters.put("computeO2CorrectedTransmissions", computeO2CorrectedTransmissions);
     }
 
     private void computeWaterCloudProduct() {
@@ -254,6 +261,7 @@ public class OlciOp extends BasisOp {
         classificationInputProducts.put("l1b", sourceProduct);
         classificationInputProducts.put("rhotoa", rad2reflProduct);
         classificationInputProducts.put("waterMask", waterMaskProduct);
+        classificationInputProducts.put("o2", o2corrProduct);
     }
 
     private void computeLandCloudProduct() {
