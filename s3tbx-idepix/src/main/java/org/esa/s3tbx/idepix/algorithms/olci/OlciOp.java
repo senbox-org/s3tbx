@@ -175,6 +175,9 @@ public class OlciOp extends BasisOp {
                 ProductUtils.copyBand("trans_" + i, o2corrProduct, "Oa" + i + "_trans_o2corr",
                                       targetProduct, true);
             }
+            ProductUtils.copyBand("trans13_baseline", olciIdepixProduct, targetProduct, true);
+            ProductUtils.copyBand("trans13_baseline_AMFcorr", olciIdepixProduct, targetProduct, true);
+            ProductUtils.copyBand("trans13_excess", olciIdepixProduct, targetProduct, true);
         }
 
         if (postProcessingProduct != null) {

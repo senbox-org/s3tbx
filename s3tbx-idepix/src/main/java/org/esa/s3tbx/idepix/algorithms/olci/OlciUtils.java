@@ -53,15 +53,15 @@ public class OlciUtils {
         final double trans13Baseline =
                 0.0000000053*altitude*altitude+0.000021002793*altitude+0.225247877059;
         double trans13BaselineAMFcorr13 = 0.0;
-        if (x <= 380) {
+        if (x >= 0 && x <= cameraBounds[0]) {
             trans13BaselineAMFcorr13 = trans13Baseline/(0.3245 * airmass);
-        } else if (x > 380 && x <= 617) {
+        } else if (x > cameraBounds[0] && x <= cameraBounds[1]) {
             trans13BaselineAMFcorr13 = trans13Baseline/(0.3319 * airmass);
-        } else if (x > 617 && x <= 808) {
+        } else if (x > cameraBounds[1] && x <= cameraBounds[2]) {
             trans13BaselineAMFcorr13 = trans13Baseline/(0.3274 * airmass);
-        } else if (x > 808 && x <= 988) {
+        } else if (x > cameraBounds[2] && x <= cameraBounds[3]) {
             trans13BaselineAMFcorr13 = trans13Baseline/(0.3345 * airmass);
-        } else if (x > 988 && x <= 1191) {
+        } else if (x > cameraBounds[3] && x < cameraBounds[4]) {
             trans13BaselineAMFcorr13 = trans13Baseline/(0.3503 * airmass);
         }
         final double trans13Excess = trans13 - trans13BaselineAMFcorr13;

@@ -151,6 +151,13 @@ public class OlciLandClassificationOp extends Operator {
         if (outputSchillerNNValue) {
             targetProduct.addBand(IdepixConstants.NN_OUTPUT_BAND_NAME, ProductData.TYPE_FLOAT32);
         }
+
+        if (computeO2CorrectedTransmissions) {
+            targetProduct.addBand("trans13_baseline", ProductData.TYPE_FLOAT32);
+            targetProduct.addBand("trans13_baseline_AMFcorr", ProductData.TYPE_FLOAT32);
+            targetProduct.addBand("trans13_excess", ProductData.TYPE_FLOAT32);
+        }
+
     }
 
 
@@ -163,11 +170,20 @@ public class OlciLandClassificationOp extends Operator {
         Tile altitudeTile = null;
         Tile szaTile = null;
         Tile ozaTile = null;
+        final Band trans13BaselineTargetBand = targetProduct.getBand("trans13_baseline");
+        final Band trans13BaselineAMFCorrTargetBand = targetProduct.getBand("trans13_baseline_AMFcorr");
+        final Band trans13ExcessTargetBand = targetProduct.getBand("trans13_excess");
+        Tile trans13BaselineTargetTile = null;
+        Tile trans13BaselineAMFCorrTargetTile = null;
+        Tile trans13ExcessTargetTile = null;
         if (computeO2CorrectedTransmissions) {
             trans13Tile = getSourceTile(trans13Band, rectangle);
             altitudeTile = getSourceTile(altitudeBand, rectangle);
             szaTile = getSourceTile(szaTpg, rectangle);
             ozaTile = getSourceTile(ozaTpg, rectangle);
+            trans13BaselineTargetTile = targetTiles.get(trans13BaselineTargetBand);
+            trans13BaselineAMFCorrTargetTile = targetTiles.get(trans13BaselineAMFCorrTargetBand);
+            trans13ExcessTargetTile = targetTiles.get(trans13ExcessTargetBand);
         }
 
         final Band olciQualityFlagBand = sourceProduct.getBand(OlciConstants.OLCI_QUALITY_FLAGS_BAND_NAME);
@@ -235,9 +251,14 @@ public class OlciLandClassificationOp extends Operator {
                                 final boolean isBright =
                                         olciQualityFlagTile.getSampleBit(x, y, OlciConstants.L1_F_BRIGHT);
 
-                                final boolean isO2Cloud = OlciUtils.isO2Cloud(cameraBounds, x, trans13, altitude, sza, oza, isBright);
+                                final O2Correction o2Corr =
+                                        O2Correction.computeO2CorrectionTerms(cameraBounds, x, trans13, altitude,
+                                                                              sza, oza, isBright);
 
-                                cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, isO2Cloud);
+                                cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, o2Corr.isO2Cloud());
+                                trans13BaselineTargetTile.setSample(x, y, o2Corr.getTrans13Baseline());
+                                trans13BaselineAMFCorrTargetTile.setSample(x, y, o2Corr.getTrans13BaselineAmfCorr());
+                                trans13ExcessTargetTile.setSample(x, y, o2Corr.getTrans13Excess());
 
                             } else {
                                 cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);

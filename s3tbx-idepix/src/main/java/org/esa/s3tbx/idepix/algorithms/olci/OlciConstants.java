@@ -15,6 +15,6 @@ public class OlciConstants {
 
     public static final String OLCI_QUALITY_FLAGS_BAND_NAME = "quality_flags";
 
-    public static final int[] CAMERA_BOUNDS_FR = {1586, 2532, 3297, 4019};
-    public static final int[] CAMERA_BOUNDS_RR = {617, 808, 988, 1191};
+    public static final int[] CAMERA_BOUNDS_FR = {1586, 2532, 3297, 4019, 4865};
+    public static final int[] CAMERA_BOUNDS_RR = {380, 617, 808, 988, 1191};
 }

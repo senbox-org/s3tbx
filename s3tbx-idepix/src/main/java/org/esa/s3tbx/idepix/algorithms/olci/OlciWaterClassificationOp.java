@@ -170,6 +170,12 @@ public class OlciWaterClassificationOp extends Operator {
             nnOutputBand = targetProduct.addBand(IdepixConstants.NN_OUTPUT_BAND_NAME,
                                                  ProductData.TYPE_FLOAT32);
         }
+
+        if (computeO2CorrectedTransmissions) {
+            targetProduct.addBand("trans13_baseline", ProductData.TYPE_FLOAT32);
+            targetProduct.addBand("trans13_baseline_AMFcorr", ProductData.TYPE_FLOAT32);
+            targetProduct.addBand("trans13_excess", ProductData.TYPE_FLOAT32);
+        }
     }
 
     @Override
@@ -194,6 +200,9 @@ public class OlciWaterClassificationOp extends Operator {
             Tile altitudeTile = null;
             Tile szaTile = null;
             Tile ozaTile = null;
+            Band trans13BaselineTargetBand = targetProduct.getBand("trans13_baseline");
+            Band trans13BaselineAMFCorrTargetBand = targetProduct.getBand("trans13_baseline_AMFcorr");
+            Band trans13ExcessTargetBand = targetProduct.getBand("trans13_excess");
             if (computeO2CorrectedTransmissions) {
                 trans13Tile = getSourceTile(trans13Band, sourceRectangle);
                 altitudeTile = getSourceTile(altitudeBand, sourceRectangle);
@@ -214,7 +223,8 @@ public class OlciWaterClassificationOp extends Operator {
                                 targetTile.setSample(x, y, Float.NaN);
                             }
                         } else {
-                            if (band == cloudFlagBand) {
+                            if (band == cloudFlagBand || band == trans13BaselineTargetBand ||
+                                    band == trans13BaselineAMFCorrTargetBand || band == trans13ExcessTargetBand) {
                                 boolean isO2Cloud = false;
                                 if (computeO2CorrectedTransmissions) {
                                     final double trans13 = trans13Tile.getSampleDouble(x, y);
@@ -223,8 +233,20 @@ public class OlciWaterClassificationOp extends Operator {
                                     final double oza = ozaTile.getSampleDouble(x, y);
                                     final boolean isBright =
                                             l1FlagsTile.getSampleBit(x, y, OlciConstants.L1_F_BRIGHT);
-                                    isO2Cloud = OlciUtils.isO2Cloud(cameraBounds, x, trans13, altitude, sza, oza, isBright);
-                                    classifyCloud(x, y, l1FlagsTile, rhoToaTiles, targetTile, waterFraction, true, isO2Cloud);
+
+                                    final O2Correction o2Corr =
+                                            O2Correction.computeO2CorrectionTerms(cameraBounds, x, trans13, altitude,
+                                                                                  sza, oza, isBright);
+                                    if (band == cloudFlagBand) {
+                                        classifyCloud(x, y, l1FlagsTile, rhoToaTiles, targetTile, waterFraction, true,
+                                                      o2Corr.isO2Cloud());
+                                    } else if (band == trans13BaselineTargetBand) {
+                                        targetTile.setSample(x, y, o2Corr.getTrans13Baseline());
+                                    } else if (band == trans13BaselineAMFCorrTargetBand) {
+                                        targetTile.setSample(x, y, o2Corr.getTrans13BaselineAmfCorr());
+                                    } else if (band == trans13ExcessTargetBand) {
+                                        targetTile.setSample(x, y, o2Corr.getTrans13Excess());
+                                    }
                                 }
                                 classifyCloud(x, y, l1FlagsTile, rhoToaTiles, targetTile, waterFraction);
                             }

@@ -48,16 +48,27 @@ public class OlciMergeLandWaterOp extends Operator {
     private Product waterClassifProduct;
 
     private Band waterClassifBand;
+
     private Band landClassifBand;
     private Band landNNBand;
     private Band waterNNBand;
-
     private Band mergedClassifBand;
-    private Band mergedNNBand;
 
+    private Band landTrans13BaselineBand;
+    private Band waterTrans13BaselineBand;
+    private Band mergedTrans13BaselineBand;
+    private Band landTrans13BaselineAmfcorrBand;
+    private Band waterTrans13BaselineAmfcorrBand;
+    private Band mergedTrans13BaselineAmfcorrBand;
+    private Band landTrans13ExcessBand;
+    private Band waterTrans13ExcessBand;
+    private Band mergedTrans13ExcessBand;
+
+    private Band mergedNNBand;
     private RectangleExtender rectCalculator;
 
     private boolean hasNNOutput;
+    private boolean computeO2CorrectedTransmissions;
 
     @Override
     public void initialize() throws OperatorException {
@@ -74,10 +85,23 @@ public class OlciMergeLandWaterOp extends Operator {
 
         hasNNOutput = landClassifProduct.containsBand(IdepixConstants.NN_OUTPUT_BAND_NAME) &&
                 waterClassifProduct.containsBand(IdepixConstants.NN_OUTPUT_BAND_NAME);
+        computeO2CorrectedTransmissions = landClassifProduct.containsBand("trans13_baseline") &&
+                waterClassifProduct.containsBand("trans13_baseline");
         if (hasNNOutput) {
             landNNBand = landClassifProduct.getBand(IdepixConstants.NN_OUTPUT_BAND_NAME);
             waterNNBand = waterClassifProduct.getBand(IdepixConstants.NN_OUTPUT_BAND_NAME);
             mergedNNBand = mergedClassifProduct.addBand(IdepixConstants.NN_OUTPUT_BAND_NAME, ProductData.TYPE_FLOAT32);
+        }
+        if (computeO2CorrectedTransmissions) {
+            landTrans13BaselineBand = landClassifProduct.getBand("trans13_baseline");
+            waterTrans13BaselineBand = waterClassifProduct.getBand("trans13_baseline");
+            mergedTrans13BaselineBand = mergedClassifProduct.addBand("trans13_baseline", ProductData.TYPE_FLOAT32);
+            landTrans13BaselineAmfcorrBand = landClassifProduct.getBand("trans13_baseline_AMFcorr");
+            waterTrans13BaselineAmfcorrBand = waterClassifProduct.getBand("trans13_baseline_AMFcorr");
+            mergedTrans13BaselineAmfcorrBand = mergedClassifProduct.addBand("trans13_baseline_AMFcorr", ProductData.TYPE_FLOAT32);
+            landTrans13ExcessBand = landClassifProduct.getBand("trans13_excess");
+            waterTrans13ExcessBand = waterClassifProduct.getBand("trans13_excess");
+            mergedTrans13ExcessBand = mergedClassifProduct.addBand("trans13_excess", ProductData.TYPE_FLOAT32);
         }
 
         setTargetProduct(mergedClassifProduct);
@@ -101,6 +125,21 @@ public class OlciMergeLandWaterOp extends Operator {
         if (hasNNOutput) {
             waterNNTile = getSourceTile(waterNNBand, rectangle);
             landNNTile = getSourceTile(landNNBand, rectangle);
+        }
+
+        Tile waterTrans13BaselineTile = null;
+        Tile landTrans13BaselineTile = null;
+        Tile waterTrans13BaselineAmfcorrTile = null;
+        Tile landTrans13BaselineAmfcorrTile = null;
+        Tile waterTrans13ExcessTile = null;
+        Tile landTrans13ExcessTile = null;
+        if (computeO2CorrectedTransmissions) {
+            waterTrans13BaselineTile = getSourceTile(waterTrans13BaselineBand, rectangle);
+            landTrans13BaselineTile = getSourceTile(landTrans13BaselineBand, rectangle);
+            waterTrans13BaselineAmfcorrTile = getSourceTile(waterTrans13BaselineAmfcorrBand, rectangle);
+            landTrans13BaselineAmfcorrTile = getSourceTile(landTrans13BaselineAmfcorrBand, rectangle);
+            waterTrans13ExcessTile = getSourceTile(waterTrans13ExcessBand, rectangle);
+            landTrans13ExcessTile = getSourceTile(landTrans13ExcessBand, rectangle);
         }
 
         Rectangle extendedRectangle = null;
@@ -149,6 +188,27 @@ public class OlciMergeLandWaterOp extends Operator {
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                     boolean isLand = landClassifTile.getSampleBit(x, y, IdepixConstants.IDEPIX_LAND);
                     final float sample = isLand ? landNNTile.getSampleFloat(x, y) : waterNNTile.getSampleFloat(x, y);
+                    targetTile.setSample(x, y, sample);
+                }
+            }
+        } else if (computeO2CorrectedTransmissions &&
+                (targetBand == mergedTrans13BaselineBand || targetBand == mergedTrans13BaselineAmfcorrBand ||
+                        targetBand == mergedTrans13ExcessBand)) {
+            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                checkForCancellation();
+                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
+                    boolean isLand = landClassifTile.getSampleBit(x, y, IdepixConstants.IDEPIX_LAND);
+                    float sample;
+                    if (targetBand == mergedTrans13BaselineBand) {
+                        sample = isLand ? landTrans13BaselineTile.getSampleFloat(x, y) :
+                                waterTrans13BaselineTile.getSampleFloat(x, y);
+                    } else if (targetBand == mergedTrans13BaselineAmfcorrBand) {
+                        sample = isLand ? landTrans13BaselineAmfcorrTile.getSampleFloat(x, y) :
+                                waterTrans13BaselineAmfcorrTile.getSampleFloat(x, y);
+                    } else {
+                        sample = isLand ? landTrans13ExcessTile.getSampleFloat(x, y) :
+                                waterTrans13ExcessTile.getSampleFloat(x, y);
+                    }
                     targetTile.setSample(x, y, sample);
                 }
             }
