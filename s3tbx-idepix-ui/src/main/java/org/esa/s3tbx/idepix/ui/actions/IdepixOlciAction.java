@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
 @ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixOlciAction")
 @ActionRegistration(displayName = "#CTL_IdepixOlciAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 0)
-@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 0)
+@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...) [DEVEL]", position = 0)
 @NbBundle.Messages({"CTL_IdepixOlciAction_Text=Sentinel-3 OLCI"})
 public class IdepixOlciAction extends AbstractSnapAction {
 
@@ -51,7 +51,7 @@ public class IdepixOlciAction extends AbstractSnapAction {
         final DefaultSingleTargetProductDialog dialog =
                 new DefaultSingleTargetProductDialog(opMetadata.alias(),
                                                      getAppContext(),
-                                                     "Idepix (Sentinel-3 OLCI mode)",
+                                                     "Idepix (Sentinel-3 OLCI mode) [DEVEL]",
                                                      HELP_ID);
 
         dialog.setTargetProductNameSuffix("_IDEPIX");

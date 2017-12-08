@@ -135,6 +135,7 @@ public class IdepixUtils {
         }
     }
 
+
     public static GeoPos getGeoPos(GeoCoding geoCoding, int x, int y) {
         final GeoPos geoPos = new GeoPos();
         final PixelPos pixelPos = new PixelPos(x, y);
