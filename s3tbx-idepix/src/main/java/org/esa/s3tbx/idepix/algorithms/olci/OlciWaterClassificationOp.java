@@ -63,24 +63,13 @@ public class OlciWaterClassificationOp extends Operator {
 //            description = " If applied, 'all' NN instead of separate land and water NNs is used. ")
 //    private boolean useSchillerNNAll;
 
-    @Parameter(defaultValue = "false",
-            label = " Compute and write O2 corrected transmissions (experimental option)",
-            description = " Computes and writes O2 corrected transmissions at bands 13-15 " +
-                    "(experimental option, requires additional plugin)")
-    private boolean computeO2CorrectedTransmissions;
 
-
-
-    @SourceProduct(alias = "l1b", description = "The source product.")
-    Product sourceProduct;
-
+    @SourceProduct(alias = "l1b")
+    private Product l1bProduct;
     @SourceProduct(alias = "rhotoa")
     private Product rhoToaProduct;
     @SourceProduct(alias = "waterMask")
     private Product waterMaskProduct;
-
-    @SourceProduct(alias = "o2", optional = true)
-    private Product o2Product;
 
     @SuppressWarnings({"FieldCanBeLocal"})
     @TargetProduct
@@ -101,13 +90,6 @@ public class OlciWaterClassificationOp extends Operator {
     private Band landWaterBand;
     private Band nnOutputBand;
 
-    private Band trans13Band;
-    private Band altitudeBand;
-    private TiePointGrid szaTpg;
-    private TiePointGrid ozaTpg;
-
-    private int[] cameraBounds;
-
     private RectangleExtender rectExtender;
     private OlciCloudNNInterpreter nnInterpreter;
 
@@ -121,23 +103,8 @@ public class OlciWaterClassificationOp extends Operator {
 
         landWaterBand = waterMaskProduct.getBand("land_water_fraction");
 
-        if (computeO2CorrectedTransmissions) {
-            trans13Band = o2Product.getBand("trans_13");
-            altitudeBand = sourceProduct.getBand("altitude");
-            szaTpg = sourceProduct.getTiePointGrid("SZA");
-            ozaTpg = sourceProduct.getTiePointGrid("OZA");
-        }
-
-        if (sourceProduct.getName().contains("_EFR") || sourceProduct.getProductType().contains("_EFR")) {
-            cameraBounds = OlciConstants.CAMERA_BOUNDS_FR;
-        } else if (sourceProduct.getName().contains("_ERR") || sourceProduct.getProductType().contains("_ERR")) {
-            cameraBounds = OlciConstants.CAMERA_BOUNDS_RR;
-        } else {
-            throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);
-        }
-
-        rectExtender = new RectangleExtender(new Rectangle(sourceProduct.getSceneRasterWidth(),
-                                                           sourceProduct.getSceneRasterHeight()), 1, 1);
+        rectExtender = new RectangleExtender(new Rectangle(l1bProduct.getSceneRasterWidth(),
+                                                           l1bProduct.getSceneRasterHeight()), 1, 1);
     }
 
     private void readSchillerNets() {
@@ -159,7 +126,7 @@ public class OlciWaterClassificationOp extends Operator {
     }
 
     private void createTargetProduct() {
-        targetProduct = IdepixIO.createCompatibleTargetProduct(sourceProduct, "MER", "MER_L2", true);
+        targetProduct = IdepixIO.createCompatibleTargetProduct(l1bProduct, "MER", "MER_L2", true);
 
         cloudFlagBand = targetProduct.addBand(IdepixConstants.CLASSIF_BAND_NAME, ProductData.TYPE_INT16);
         FlagCoding flagCoding = OlciUtils.createOlciFlagCoding(IdepixConstants.CLASSIF_BAND_NAME);
@@ -169,12 +136,6 @@ public class OlciWaterClassificationOp extends Operator {
         if (outputSchillerNNValue) {
             nnOutputBand = targetProduct.addBand(IdepixConstants.NN_OUTPUT_BAND_NAME,
                                                  ProductData.TYPE_FLOAT32);
-        }
-
-        if (computeO2CorrectedTransmissions) {
-            targetProduct.addBand("trans13_baseline", ProductData.TYPE_FLOAT32);
-            targetProduct.addBand("trans13_baseline_AMFcorr", ProductData.TYPE_FLOAT32);
-            targetProduct.addBand("trans13_excess", ProductData.TYPE_FLOAT32);
         }
     }
 
@@ -192,23 +153,9 @@ public class OlciWaterClassificationOp extends Operator {
                 rhoToaTiles[i] = getSourceTile(rhoToaBand, sourceRectangle);
             }
 
-            Tile l1FlagsTile = getSourceTile(sourceProduct.getBand(OlciConstants.OLCI_QUALITY_FLAGS_BAND_NAME),
+            Tile l1FlagsTile = getSourceTile(l1bProduct.getBand(OlciConstants.OLCI_QUALITY_FLAGS_BAND_NAME),
                                              sourceRectangle);
             Tile waterFractionTile = getSourceTile(landWaterBand, sourceRectangle);
-
-            Tile trans13Tile = null;
-            Tile altitudeTile = null;
-            Tile szaTile = null;
-            Tile ozaTile = null;
-            Band trans13BaselineTargetBand = targetProduct.getBand("trans13_baseline");
-            Band trans13BaselineAMFCorrTargetBand = targetProduct.getBand("trans13_baseline_AMFcorr");
-            Band trans13ExcessTargetBand = targetProduct.getBand("trans13_excess");
-            if (computeO2CorrectedTransmissions) {
-                trans13Tile = getSourceTile(trans13Band, sourceRectangle);
-                altitudeTile = getSourceTile(altitudeBand, sourceRectangle);
-                szaTile = getSourceTile(szaTpg, sourceRectangle);
-                ozaTile = getSourceTile(ozaTpg, sourceRectangle);
-            }
 
             for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
                 checkForCancellation();
@@ -223,31 +170,7 @@ public class OlciWaterClassificationOp extends Operator {
                                 targetTile.setSample(x, y, Float.NaN);
                             }
                         } else {
-                            if (band == cloudFlagBand || band == trans13BaselineTargetBand ||
-                                    band == trans13BaselineAMFCorrTargetBand || band == trans13ExcessTargetBand) {
-                                boolean isO2Cloud = false;
-                                if (computeO2CorrectedTransmissions) {
-                                    final double trans13 = trans13Tile.getSampleDouble(x, y);
-                                    final double altitude = altitudeTile.getSampleDouble(x, y);
-                                    final double sza = szaTile.getSampleDouble(x, y);
-                                    final double oza = ozaTile.getSampleDouble(x, y);
-                                    final boolean isBright =
-                                            l1FlagsTile.getSampleBit(x, y, OlciConstants.L1_F_BRIGHT);
-
-                                    final O2Correction o2Corr =
-                                            O2Correction.computeO2CorrectionTerms(cameraBounds, x, trans13, altitude,
-                                                                                  sza, oza, isBright);
-                                    if (band == cloudFlagBand) {
-                                        classifyCloud(x, y, l1FlagsTile, rhoToaTiles, targetTile, waterFraction, true,
-                                                      o2Corr.isO2Cloud());
-                                    } else if (band == trans13BaselineTargetBand) {
-                                        targetTile.setSample(x, y, o2Corr.getTrans13Baseline());
-                                    } else if (band == trans13BaselineAMFCorrTargetBand) {
-                                        targetTile.setSample(x, y, o2Corr.getTrans13BaselineAmfCorr());
-                                    } else if (band == trans13ExcessTargetBand) {
-                                        targetTile.setSample(x, y, o2Corr.getTrans13Excess());
-                                    }
-                                }
+                            if (band == cloudFlagBand) {
                                 classifyCloud(x, y, l1FlagsTile, rhoToaTiles, targetTile, waterFraction);
                             }
                             if (outputSchillerNNValue && band == nnOutputBand) {
@@ -293,13 +216,7 @@ public class OlciWaterClassificationOp extends Operator {
         return getGeoPos(x, y).lat > -58f && waterFraction <= 100 && waterFraction < 100 && waterFraction > 0;
     }
 
-    private void classifyCloud(int x, int y, Tile l1FlagsTile, Tile[] rhoToaTiles, Tile targetTile,
-                               int waterFraction) {
-         classifyCloud(x, y, l1FlagsTile, rhoToaTiles, targetTile, waterFraction, false, false);
-    }
-
-    private void classifyCloud(int x, int y, Tile l1FlagsTile, Tile[] rhoToaTiles, Tile targetTile,
-                               int waterFraction, boolean computeO2CorrectedTransmissions, boolean isO2Cloud) {
+    private void classifyCloud(int x, int y, Tile l1FlagsTile, Tile[] rhoToaTiles, Tile targetTile, int waterFraction) {
 
         final boolean isCoastline = isCoastlinePixel(x, y, waterFraction);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_COASTLINE, isCoastline);
@@ -319,28 +236,21 @@ public class OlciWaterClassificationOp extends Operator {
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
 
-            if (computeO2CorrectedTransmissions) {
-                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, isO2Cloud);
-                if (checkForSeaIce && nnInterpreter.isSnowIce(nnOutput)) {
-                    targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, true);
-                }
-            } else {
-                final boolean isGlint = isGlintPixel(x, y, l1FlagsTile);
-                // CB 20170406:
-                final boolean cloudSure = rhoToaTiles[16].getSampleFloat(x, y) > THRESH_WATER_MINBRIGHT1 &&
-                        nnInterpreter.isCloudSure(nnOutput);
-                final boolean cloudAmbiguous = rhoToaTiles[16].getSampleFloat(x, y) > THRESH_WATER_MINBRIGHT2 &&
-                        nnInterpreter.isCloudAmbiguous(nnOutput, false, isGlint);
+            final boolean isGlint = isGlintPixel(x, y, l1FlagsTile);
+            // CB 20170406:
+            final boolean cloudSure = rhoToaTiles[16].getSampleFloat(x, y) > THRESH_WATER_MINBRIGHT1 &&
+                    nnInterpreter.isCloudSure(nnOutput);
+            final boolean cloudAmbiguous = rhoToaTiles[16].getSampleFloat(x, y) > THRESH_WATER_MINBRIGHT2 &&
+                    nnInterpreter.isCloudAmbiguous(nnOutput, false, isGlint);
 
-                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);
-                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, cloudSure);
-                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, cloudAmbiguous || cloudSure);
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, cloudAmbiguous);
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, cloudSure);
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, cloudAmbiguous || cloudSure);
 
-                if (checkForSeaIce && nnInterpreter.isSnowIce(nnOutput)) {
-                    targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, true);
-                    targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
-                    targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
-                }
+            if (checkForSeaIce && nnInterpreter.isSnowIce(nnOutput)) {
+                targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, true);
+                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
+                targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
             }
         }
     }

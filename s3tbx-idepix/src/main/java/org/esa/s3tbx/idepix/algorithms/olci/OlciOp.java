@@ -8,6 +8,7 @@ import org.esa.s3tbx.idepix.operators.IdepixProducts;
 import org.esa.s3tbx.processor.rad2refl.Sensor;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -86,22 +87,16 @@ public class OlciOp extends BasisOp {
     @Parameter(defaultValue = "true", label = " Compute a cloud buffer")
     private boolean computeCloudBuffer;
 
-    @Parameter(defaultValue = "false",
-            label = " Compute and write O2 corrected transmissions (experimental option)",
-            description = " Computes and writes O2 corrected transmissions at bands 13-15 " +
-                    "(experimental option, requires additional plugin)")
-    private boolean computeO2CorrectedTransmissions;
-
     @Parameter(defaultValue = "2", interval = "[0,100]",
             description = "The width of a cloud 'safety buffer' around a pixel which was classified as cloudy.",
             label = "Width of cloud buffer (# of pixels)")
     private int cloudBufferWidth;
 
-    //    @Parameter(defaultValue = "false",
+//    @Parameter(defaultValue = "false",
 //            label = " Compute cloud top pressure (experimental option, time consuming)",
 //            description = " Compute cloud top pressure (time consuming, requires Python plugin based on CAWA). ")
 //    private boolean computeCtp;
-    private boolean computeCtp = false;   // for the moment!
+    private boolean computeCtp = false;       // experimental option, further develop in branch
 
 //    @Parameter(defaultValue = "false",
 //            label = " Compute a cloud shadow (experimental option, requires cloud top pressure)",
@@ -109,7 +104,7 @@ public class OlciOp extends BasisOp {
 //                    "This requires the cloud top pressure operator (Python plugin based on CAWA) to be installed. " +
 //                    "Still experimental. ")
 //    private boolean computeCloudShadow;
-    private boolean computeCloudShadow = false;   // for the moment!
+    private boolean computeCloudShadow = false;    // experimental option, further develop in branch
 
 
     private Product waterClassificationProduct;
@@ -123,7 +118,6 @@ public class OlciOp extends BasisOp {
     private Map<String, Product> classificationInputProducts;
     private Map<String, Object> waterClassificationParameters;
     private Map<String, Object> landClassificationParameters;
-    private Product o2corrProduct;
 
     @Override
     public void initialize() throws OperatorException {
@@ -167,18 +161,6 @@ public class OlciOp extends BasisOp {
 
         targetProduct = createTargetProduct(olciIdepixProduct);
         targetProduct.setAutoGrouping(olciIdepixProduct.getAutoGrouping());
-
-        if (computeO2CorrectedTransmissions) {
-            for (int i = 13; i <= 15; i++) {
-                ProductUtils.copyBand("radiance_" + i, o2corrProduct, "Oa" + i + "_radiance_o2corr",
-                                      targetProduct, true);
-                ProductUtils.copyBand("trans_" + i, o2corrProduct, "Oa" + i + "_trans_o2corr",
-                                      targetProduct, true);
-            }
-            ProductUtils.copyBand("trans13_baseline", olciIdepixProduct, targetProduct, true);
-            ProductUtils.copyBand("trans13_baseline_AMFcorr", olciIdepixProduct, targetProduct, true);
-            ProductUtils.copyBand("trans13_excess", olciIdepixProduct, targetProduct, true);
-        }
 
         if (postProcessingProduct != null) {
             Band cloudFlagBand = targetProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME);
@@ -230,27 +212,18 @@ public class OlciOp extends BasisOp {
         waterMaskParameters.put("subSamplingFactorX", IdepixConstants.OVERSAMPLING_FACTOR_X);
         waterMaskParameters.put("subSamplingFactorY", IdepixConstants.OVERSAMPLING_FACTOR_Y);
         waterMaskProduct = GPF.createProduct("LandWaterMask", waterMaskParameters, sourceProduct);
-
-        if (computeO2CorrectedTransmissions) {
-            Map<String, Product> o2corrSourceProducts = new HashMap<>();
-            o2corrSourceProducts.put("l1b", sourceProduct);
-            o2corrProduct = GPF.createProduct("py_o2corr_op", GPF.NO_PARAMS, o2corrSourceProducts);
-        }
-
     }
 
     private void setLandClassificationParameters() {
         landClassificationParameters = new HashMap<>();
         landClassificationParameters.put("copyAllTiePoints", true);
         landClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
-        landClassificationParameters.put("computeO2CorrectedTransmissions", computeO2CorrectedTransmissions);
     }
 
     private void setWaterClassificationParameters() {
         waterClassificationParameters = new HashMap<>();
         waterClassificationParameters.put("copyAllTiePoints", true);
         waterClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
-        waterClassificationParameters.put("computeO2CorrectedTransmissions", computeO2CorrectedTransmissions);
     }
 
     private void computeWaterCloudProduct() {
@@ -264,7 +237,6 @@ public class OlciOp extends BasisOp {
         classificationInputProducts.put("l1b", sourceProduct);
         classificationInputProducts.put("rhotoa", rad2reflProduct);
         classificationInputProducts.put("waterMask", waterMaskProduct);
-        classificationInputProducts.put("o2", o2corrProduct);
     }
 
     private void computeLandCloudProduct() {
