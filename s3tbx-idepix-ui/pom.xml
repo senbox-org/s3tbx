@@ -19,11 +19,12 @@
     <parent>
         <groupId>org.esa.s3tbx</groupId>
         <artifactId>s3tbx</artifactId>
-        <version>6.0.1-SNAPSHOT</version>
+        <version>6.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>s3tbx-idepix-ui</artifactId>
     <packaging>nbm</packaging>
+    <version>6.0.2-SNAPSHOT</version>
 
     <name>Idepix GUI</name>
     <description>The GUI for the Idepix Processor.</description>

@@ -97,6 +97,11 @@ public class OlciOp extends BasisOp {
             label = "Width of cloud buffer (# of pixels)")
     private int cloudBufferWidth;
 
+    @Parameter(defaultValue = "false",
+            label = " Disable validation of input product",
+            description = "If set, the input product is not validated (no product type check etc).")
+    private boolean disableInputProductValidation;
+
     //    @Parameter(defaultValue = "false",
 //            label = " Compute cloud top pressure (experimental option, time consuming)",
 //            description = " Compute cloud top pressure (time consuming, requires Python plugin based on CAWA). ")
@@ -128,9 +133,11 @@ public class OlciOp extends BasisOp {
     @Override
     public void initialize() throws OperatorException {
 
-        final boolean inputProductIsValid = IdepixIO.validateInputProduct(sourceProduct, AlgorithmSelector.OLCI);
-        if (!inputProductIsValid) {
-            throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);
+        if (!disableInputProductValidation) {
+            final boolean inputProductIsValid = IdepixIO.validateInputProduct(sourceProduct, AlgorithmSelector.OLCI);
+            if (!inputProductIsValid) {
+                throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);
+            }
         }
 
         computeCtp |= computeCloudShadow;
