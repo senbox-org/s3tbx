@@ -11,7 +11,8 @@
 
     <artifactId>s3tbx-idepix</artifactId>
     <packaging>nbm</packaging>
-    <version>6.0.2-SNAPSHOT</version>
+    <!--<version>6.0.2-SNAPSHOT</version>-->
+    <version>6.0.2.11</version>
 
     <name>Idepix</name>
     <description>Generic classification of pixels (cloud, snow, ice, land, water) originating from optical sensors.</description>

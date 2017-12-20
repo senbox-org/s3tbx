@@ -128,14 +128,13 @@ public class OlciClassificationOp extends Operator {
             altitudeBand = sourceProduct.getBand("altitude");
             szaTpg = sourceProduct.getTiePointGrid("SZA");
             ozaTpg = sourceProduct.getTiePointGrid("OZA");
-        }
-
-        if (sourceProduct.getName().contains("_EFR") || sourceProduct.getProductType().contains("_EFR")) {
-            cameraBounds = OlciConstants.CAMERA_BOUNDS_FR;
-        } else if (sourceProduct.getName().contains("_ERR") || sourceProduct.getProductType().contains("_ERR")) {
-            cameraBounds = OlciConstants.CAMERA_BOUNDS_RR;
-        } else {
-            throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);
+            if (sourceProduct.getName().contains("_EFR") || sourceProduct.getProductType().contains("_EFR")) {
+                cameraBounds = OlciConstants.CAMERA_BOUNDS_FR;
+            } else if (sourceProduct.getName().contains("_ERR") || sourceProduct.getProductType().contains("_ERR")) {
+                cameraBounds = OlciConstants.CAMERA_BOUNDS_RR;
+            } else {
+                throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);
+            }
         }
     }
 
@@ -220,7 +219,6 @@ public class OlciClassificationOp extends Operator {
         final Tile olciQualityFlagTile = getSourceTile(olciQualityFlagBand, rectangle);
 
         Tile[] olciReflectanceTiles = new Tile[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
-        float[] olciReflectance = new float[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
         for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
             olciReflectanceTiles[i] = getSourceTile(olciReflBands[i], rectangle);
         }
@@ -237,12 +235,11 @@ public class OlciClassificationOp extends Operator {
                 checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                     final int waterFraction = waterFractionTile.getSampleInt(x, y);
-                    initCloudFlag(olciQualityFlagTile, targetTiles.get(cloudFlagTargetBand), olciReflectance, y, x);
+                    initCloudFlag(olciQualityFlagTile, targetTiles.get(cloudFlagTargetBand), olciReflectanceTiles, y, x);
                     if (isOlciLandPixel(x, y, olciQualityFlagTile, waterFraction)) {
-                        // only use Schiller NN approach...
                         classifyOverLand(trans13Tile, altitudeTile, szaTile, ozaTile,
                                          trans13BaselineTargetTile, trans13BaselineAMFCorrTargetTile, trans13ExcessTargetTile,
-                                         olciQualityFlagTile, olciReflectanceTiles, olciReflectance, cloudFlagTargetTile,
+                                         olciQualityFlagTile, olciReflectanceTiles, cloudFlagTargetTile,
                                          nnTargetTile, y, x);
                     } else {
                         classifyOverWater(trans13Tile, altitudeTile, szaTile, ozaTile,
@@ -288,15 +285,16 @@ public class OlciClassificationOp extends Operator {
     private void classifyOverLand(Tile trans13Tile, Tile altitudeTile, Tile szaTile, Tile ozaTile,
                                   Tile trans13BaselineTargetTile, Tile trans13BaselineAMFCorrTargetTile,
                                   Tile trans13ExcessTargetTile, Tile olciQualityFlagTile, Tile[] olciReflectanceTiles,
-                                  float[] olciReflectance, Tile cloudFlagTargetTile, Tile nnTargetTile, int y, int x) {
+                                  Tile cloudFlagTargetTile, Tile nnTargetTile, int y, int x) {
+        float[] olciReflectances = new float[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
         for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
-            olciReflectance[i] = olciReflectanceTiles[i].getSampleFloat(x, y);
+            olciReflectances[i] = olciReflectanceTiles[i].getSampleFloat(x, y);
         }
 
         SchillerNeuralNetWrapper nnWrapper = olciAllNeuralNet.get();
         double[] inputVector = nnWrapper.getInputVector();
         for (int i = 0; i < inputVector.length; i++) {
-            inputVector[i] = Math.sqrt(olciReflectance[i]);
+            inputVector[i] = Math.sqrt(olciReflectances[i]);
         }
 
         final double nnOutput = nnWrapper.getNeuralNet().calc(inputVector)[0];
@@ -308,9 +306,9 @@ public class OlciClassificationOp extends Operator {
             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
 
             // CB 20170406:
-            final boolean cloudSure = olciReflectance[2] > THRESH_LAND_MINBRIGHT1 &&
+            final boolean cloudSure = olciReflectances[2] > THRESH_LAND_MINBRIGHT1 &&
                     nnInterpreter.isCloudSure(nnOutput);
-            final boolean cloudAmbiguous = olciReflectance[2] > THRESH_LAND_MINBRIGHT2 &&
+            final boolean cloudAmbiguous = olciReflectances[2] > THRESH_LAND_MINBRIGHT2 &&
                     nnInterpreter.isCloudAmbiguous(nnOutput, true, false);
 
             if (computeO2CorrectedTransmissions) {
@@ -336,6 +334,7 @@ public class OlciClassificationOp extends Operator {
                 cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, cloudAmbiguous || cloudSure);
             }
             cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, nnInterpreter.isSnowIce(nnOutput));
+            cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_LAND, true);
         }
 
         if (nnTargetTile != null) {
@@ -384,6 +383,7 @@ public class OlciClassificationOp extends Operator {
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
             targetTile.setSample(x, y, IdepixConstants.IDEPIX_SNOW_ICE, false);
+            targetTile.setSample(x, y, IdepixConstants.IDEPIX_LAND, false);
 
             if (computeO2CorrectedTransmissions) {
                 targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, isO2Cloud);
@@ -465,12 +465,21 @@ public class OlciClassificationOp extends Operator {
         return geoPos;
     }
 
-    void initCloudFlag(Tile olciL1bFlagTile, Tile targetTile, float[] olciReflectances, int y, int x) {
+    void initCloudFlag(Tile olciL1bFlagTile, Tile targetTile, Tile[] olciReflectanceTiles, int y, int x) {
         // for given instrument, compute boolean pixel properties and write to cloud flag band
+        if (x == 2450 && (y == 499 || y == 500 || y == 501)) {
+            System.out.println("x,y = " + x + "," + y);
+        }
+        float[] olciReflectances = new float[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
+        for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
+            olciReflectances[i] = olciReflectanceTiles[i].getSampleFloat(x, y);
+        }
+
         final boolean l1Invalid = olciL1bFlagTile.getSampleBit(x, y, OlciConstants.L1_F_INVALID);
         final boolean reflectancesValid = IdepixIO.areAllReflectancesValid(olciReflectances);
 
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_INVALID, l1Invalid || !reflectancesValid);
+//        targetTile.setSample(x, y, IdepixConstants.IDEPIX_INVALID, l1Invalid);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, false);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SURE, false);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, false);
@@ -478,7 +487,7 @@ public class OlciClassificationOp extends Operator {
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_BUFFER, false);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD_SHADOW, false);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_COASTLINE, false);
-        targetTile.setSample(x, y, IdepixConstants.IDEPIX_LAND, true);   // already checked
+        targetTile.setSample(x, y, IdepixConstants.IDEPIX_LAND, false);
     }
 
     public static class Spi extends OperatorSpi {

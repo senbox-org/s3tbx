@@ -1,6 +1,7 @@
 package org.esa.s3tbx.idepix.core.util;
 
 
+import org.esa.s3tbx.idepix.algorithms.olci.OlciUtils;
 import org.esa.s3tbx.idepix.algorithms.viirs.ViirsConstants;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
@@ -147,7 +148,8 @@ public class IdepixIO {
 
     public static boolean isValidOlciProduct(Product product) {
 //        return product.getProductType().startsWith("S3A_OL_");  // todo: clarify
-        return product.getProductType().contains("OL_1");  // new products have product type 'OL_1_ERR'
+//        return product.getProductType().contains("OL_1");  // new products have product type 'OL_1_ERR'
+        return OlciUtils.areAllRequiredL1bBandsAvailable(product);  // as discussed Dec. 2017
     }
 
     public static boolean isValidOlciSlstrSynergyProduct(Product product) {

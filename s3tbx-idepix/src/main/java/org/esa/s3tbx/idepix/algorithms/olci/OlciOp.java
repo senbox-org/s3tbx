@@ -97,18 +97,13 @@ public class OlciOp extends BasisOp {
             label = "Width of cloud buffer (# of pixels)")
     private int cloudBufferWidth;
 
-    @Parameter(defaultValue = "false",
-            label = " Disable validation of input product",
-            description = "If set, the input product is not validated (no product type check etc).")
-    private boolean disableInputProductValidation;
-
     //    @Parameter(defaultValue = "false",
 //            label = " Compute cloud top pressure (experimental option, time consuming)",
 //            description = " Compute cloud top pressure (time consuming, requires Python plugin based on CAWA). ")
 //    private boolean computeCtp;
     private boolean computeCtp = false;   // for the moment!
 
-//    @Parameter(defaultValue = "false",
+    //    @Parameter(defaultValue = "false",
 //            label = " Compute a cloud shadow (experimental option, requires cloud top pressure)",
 //            description = " If applied, a cloud shadow is computed. " +
 //                    "This requires the cloud top pressure operator (Python plugin based on CAWA) to be installed. " +
@@ -117,6 +112,7 @@ public class OlciOp extends BasisOp {
     private boolean computeCloudShadow = false;   // for the moment!
 
 
+    private Product classificationProduct;
     private Product waterClassificationProduct;
     private Product landClassificationProduct;
     private Product mergedClassificationProduct;
@@ -128,16 +124,15 @@ public class OlciOp extends BasisOp {
     private Map<String, Product> classificationInputProducts;
     private Map<String, Object> waterClassificationParameters;
     private Map<String, Object> landClassificationParameters;
+    private Map<String, Object> classificationParameters;
     private Product o2corrProduct;
 
     @Override
     public void initialize() throws OperatorException {
 
-        if (!disableInputProductValidation) {
-            final boolean inputProductIsValid = IdepixIO.validateInputProduct(sourceProduct, AlgorithmSelector.OLCI);
-            if (!inputProductIsValid) {
-                throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);
-            }
+        final boolean inputProductIsValid = IdepixIO.validateInputProduct(sourceProduct, AlgorithmSelector.OLCI);
+        if (!inputProductIsValid) {
+            throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);
         }
 
         computeCtp |= computeCloudShadow;
@@ -150,24 +145,28 @@ public class OlciOp extends BasisOp {
         setClassificationInputProducts();
         // todo: do land/water classification in one single operator and get rid of the 'merge', as there are only
         // small differences. Move 'cloud buffer' computation from MergeLandWater to PostPocess.
-        computeWaterCloudProduct();
-        computeLandCloudProduct();
-        mergeLandWater();
+        computeCloudProduct();
+//        computeWaterCloudProduct();
+//        computeLandCloudProduct();
+//        mergeLandWater();
+//        Product olciIdepixProduct = mergedClassificationProduct;
 
-        Product olciIdepixProduct = mergedClassificationProduct;
+        Product olciIdepixProduct = classificationProduct;
         olciIdepixProduct.setName(sourceProduct.getName() + "_IDEPIX");
         olciIdepixProduct.setAutoGrouping("Oa*_radiance:Oa*_reflectance");
 
         ProductUtils.copyFlagBands(sourceProduct, olciIdepixProduct, true);
 
-        if (computeCtp || computeCloudShadow) {
-            copyBandsForCtp(olciIdepixProduct);
-            Map<String, Product> ctpSourceProducts = new HashMap<>();
-            ctpSourceProducts.put("l1b", olciIdepixProduct);
-            Product ctpProduct = GPF.createProduct("py_olci_ctp_op", GPF.NO_PARAMS, ctpSourceProducts);
-            ProductUtils.copyBand("ctp", ctpProduct, olciIdepixProduct, true);
-            olciIdepixProduct.getBand("ctp").setUnit("hPa");
-            if (computeCloudShadow) {
+        if (computeCtp || computeCloudBuffer || computeCloudShadow) {
+            if (computeCtp || computeCloudShadow) {
+                copyBandsForCtp(olciIdepixProduct);
+                Map<String, Product> ctpSourceProducts = new HashMap<>();
+                ctpSourceProducts.put("l1b", olciIdepixProduct);
+                Product ctpProduct = GPF.createProduct("py_olci_ctp_op", GPF.NO_PARAMS, ctpSourceProducts);
+                ProductUtils.copyBand("ctp", ctpProduct, olciIdepixProduct, true);
+                olciIdepixProduct.getBand("ctp").setUnit("hPa");
+            }
+            if (computeCloudBuffer || computeCloudShadow) {
                 postProcess(olciIdepixProduct);
             }
         }
@@ -246,24 +245,57 @@ public class OlciOp extends BasisOp {
 
     }
 
-    private void setLandClassificationParameters() {
-        landClassificationParameters = new HashMap<>();
-        landClassificationParameters.put("copyAllTiePoints", true);
-        landClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
-        landClassificationParameters.put("computeO2CorrectedTransmissions", computeO2CorrectedTransmissions);
+    private void setClassificationParameters() {
+        classificationParameters = new HashMap<>();
+        classificationParameters.put("copyAllTiePoints", true);
+        classificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+        classificationParameters.put("computeO2CorrectedTransmissions", computeO2CorrectedTransmissions);
     }
 
-    private void setWaterClassificationParameters() {
-        waterClassificationParameters = new HashMap<>();
-        waterClassificationParameters.put("copyAllTiePoints", true);
-        waterClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
-        waterClassificationParameters.put("computeO2CorrectedTransmissions", computeO2CorrectedTransmissions);
-    }
+//    private void setLandClassificationParameters() {
+//        landClassificationParameters = new HashMap<>();
+//        landClassificationParameters.put("copyAllTiePoints", true);
+//        landClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+//        landClassificationParameters.put("computeO2CorrectedTransmissions", computeO2CorrectedTransmissions);
+//    }
+//
+//    private void setWaterClassificationParameters() {
+//        waterClassificationParameters = new HashMap<>();
+//        waterClassificationParameters.put("copyAllTiePoints", true);
+//        waterClassificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+//        waterClassificationParameters.put("computeO2CorrectedTransmissions", computeO2CorrectedTransmissions);
+//    }
+//
+//    private void computeWaterCloudProduct() {
+//        setWaterClassificationParameters();
+//        waterClassificationProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciWaterClassificationOp.class),
+//                                                       waterClassificationParameters, classificationInputProducts);
+//    }
+//
+//
+//    private void computeLandCloudProduct() {
+//        setLandClassificationParameters();
+//        landClassificationProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciLandClassificationOp.class),
+//                                                      landClassificationParameters, classificationInputProducts);
+//    }
+//
+//    private void mergeLandWater() {
+//        Map<String, Product> mergeInputProducts = new HashMap<>();
+//        mergeInputProducts.put("landClassif", landClassificationProduct);
+//        mergeInputProducts.put("waterClassif", waterClassificationProduct);
+//
+//        Map<String, Object> mergeClassificationParameters = new HashMap<>();
+//        mergeClassificationParameters.put("copyAllTiePoints", true);
+//        mergeClassificationParameters.put("computeCloudBuffer", computeCloudBuffer);
+//        mergeClassificationParameters.put("cloudBufferWidth", cloudBufferWidth);
+//        mergedClassificationProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciMergeLandWaterOp.class),
+//                                                        mergeClassificationParameters, mergeInputProducts);
+//    }
 
-    private void computeWaterCloudProduct() {
-        setWaterClassificationParameters();
-        waterClassificationProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciWaterClassificationOp.class),
-                                                       waterClassificationParameters, classificationInputProducts);
+    private void computeCloudProduct() {
+        setClassificationParameters();
+        classificationProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciClassificationOp.class),
+                                                  classificationParameters, classificationInputProducts);
     }
 
     private void setClassificationInputProducts() {
@@ -274,31 +306,13 @@ public class OlciOp extends BasisOp {
         classificationInputProducts.put("o2", o2corrProduct);
     }
 
-    private void computeLandCloudProduct() {
-        setLandClassificationParameters();
-        landClassificationProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciLandClassificationOp.class),
-                                                      landClassificationParameters, classificationInputProducts);
-    }
-
-    private void mergeLandWater() {
-        Map<String, Product> mergeInputProducts = new HashMap<>();
-        mergeInputProducts.put("landClassif", landClassificationProduct);
-        mergeInputProducts.put("waterClassif", waterClassificationProduct);
-
-        Map<String, Object> mergeClassificationParameters = new HashMap<>();
-        mergeClassificationParameters.put("copyAllTiePoints", true);
-        mergeClassificationParameters.put("computeCloudBuffer", computeCloudBuffer);
-        mergeClassificationParameters.put("cloudBufferWidth", cloudBufferWidth);
-        mergedClassificationProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciMergeLandWaterOp.class),
-                                                        mergeClassificationParameters, mergeInputProducts);
-    }
-
     private void postProcess(Product olciIdepixProduct) {
         HashMap<String, Product> input = new HashMap<>();
         input.put("l1b", sourceProduct);
         input.put("olciCloud", olciIdepixProduct);
 
         Map<String, Object> params = new HashMap<>();
+        params.put("computeCloudBuffer", computeCloudBuffer);
         params.put("computeCloudShadow", computeCloudShadow);
 
         postProcessingProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciPostProcessOp.class),
