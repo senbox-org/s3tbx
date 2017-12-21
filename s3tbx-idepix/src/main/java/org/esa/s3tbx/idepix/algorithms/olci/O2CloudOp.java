@@ -8,6 +8,7 @@ import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
+import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
@@ -28,7 +29,7 @@ import java.util.Map;
         authors = "Olaf Danne",
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Operator providing cloud flag derived from O2 correction quantities.")
-public class O2CloudOperator extends Operator {
+public class O2CloudOp extends Operator {
 
     @SourceProduct(alias = "l1b", description = "The source product.")
     Product sourceProduct;
@@ -97,7 +98,7 @@ public class O2CloudOperator extends Operator {
                             O2Correction.computeO2CorrectionTerms(cameraBounds, x, trans13, altitude,
                                                                   sza, oza, isBright);
 
-                    o2CloudTargetTile.setSample(x, y, IdepixConstants.IDEPIX_CLOUD, o2Corr.isO2Cloud());
+                    o2CloudTargetTile.setSample(x, y, o2Corr.isO2Cloud() ? 1 : 0);
                     trans13BaselineTargetTile.setSample(x, y, o2Corr.getTrans13Baseline());
                     trans13BaselineAMFCorrTargetTile.setSample(x, y, o2Corr.getTrans13BaselineAmfCorr());
                     trans13ExcessTargetTile.setSample(x, y, o2Corr.getTrans13Excess());
@@ -128,5 +129,14 @@ public class O2CloudOperator extends Operator {
         targetProduct.addBand("o2_cloud", ProductData.TYPE_INT8);
     }
 
+    /**
+     * The Service Provider Interface (SPI) for the operator.
+     * It provides operator meta-data and is a factory for new operator instances.
+     */
+    public static class Spi extends OperatorSpi {
 
+        public Spi() {
+            super(O2CloudOp.class);
+        }
+    }
 }
