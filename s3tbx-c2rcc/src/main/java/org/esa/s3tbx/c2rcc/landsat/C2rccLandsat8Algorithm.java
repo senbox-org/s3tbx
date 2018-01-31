@@ -90,7 +90,7 @@ class C2rccLandsat8Algorithm {
     private double log_threshfak_oor = 0.02; // == ~1.02, for log variables
     private double thresh_absd_log_rtosa; // threshold for rtosa_oos (max abs log difference)
     private double thresh_rwlogslope;  // threshold for rwa_oos
-    private double thresh_cloudTransD;
+    private double thresh_cloudTransD; // Threshold for cloud flag on transmittance down @865
 
     private boolean outputRtosaGcAann;
     private boolean outputRpath;
@@ -353,7 +353,7 @@ class C2rccLandsat8Algorithm {
             transu_nn = new double[0];
             double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
             // cloud flag test @865
-            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[7] < thresh_cloudTransD);
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[4] < thresh_cloudTransD);
             if (outputTdown || deriveRwFromPathAndTransmittance) {
                 transd_nn = Arrays.copyOfRange(trans_nn, 0, r_tosa_ur.length);
             }
