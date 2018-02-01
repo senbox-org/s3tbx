@@ -55,7 +55,7 @@ class C2rccLandsat7Algorithm {
     static final int FLAG_INDEX_KDMIN_AT_MAX = 19;
     static final int FLAG_INDEX_VALID_PE = 31;
 
-    private static final int IDX_TRANSD865 = 4;
+    private static final int IDX_TRANSD835 = 3;
 
     static float[] DEFAULT_WAVELENGTH = new float[]{440, 480, 560, 655, 865};
 
@@ -353,8 +353,9 @@ class C2rccLandsat7Algorithm {
             transd_nn = new double[0];
             transu_nn = new double[0];
             double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
-            // cloud flag test @865
-            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[IDX_TRANSD865] < thresh_cloudTransD);
+            // cloud flag test @835
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[IDX_TRANSD835] < thresh_cloudTransD);
+
             if (outputTdown || deriveRwFromPathAndTransmittance) {
                 transd_nn = Arrays.copyOfRange(trans_nn, 0, r_tosa_ur.length);
             }
