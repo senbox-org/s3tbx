@@ -55,6 +55,8 @@ class C2rccLandsat8Algorithm {
     static final int FLAG_INDEX_KDMIN_AT_MAX = 19;
     static final int FLAG_INDEX_VALID_PE = 31;
 
+    private static final int IDX_TRANSD865 = 4;
+
 
     static float[] DEFAULT_WAVELENGTH = new float[]{440, 480, 560, 655, 865};
 
@@ -349,11 +351,11 @@ class C2rccLandsat8Algorithm {
             }
 
             // (9.4.5) NN compute transmittance from rtosa
-            transd_nn = new double[0];
-            transu_nn = new double[0];
             double[] trans_nn = nn_rtosa_trans.get().calc(nn_in);
             // cloud flag test @865
-            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[4] < thresh_cloudTransD);
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_CLOUD, trans_nn[IDX_TRANSD865] < thresh_cloudTransD);
+            transd_nn = new double[0];
+            transu_nn = new double[0];
             if (outputTdown || deriveRwFromPathAndTransmittance) {
                 transd_nn = Arrays.copyOfRange(trans_nn, 0, r_tosa_ur.length);
             }
@@ -432,11 +434,6 @@ class C2rccLandsat8Algorithm {
             double adg_nn1 = ad_nn1 + ag_nn1;
             double atot_nn1 = adg_nn1 + ap_nn1;
             double btot_nn1 = bp_nn1 + bw_nn1;
-
-            // compute concentrations
-            // todo Roland fragen ... CHLfaktor wirklich 21.o oder 20.0 ?
-//        double chl_nn1 = 21.0 * pow(ap_nn1, 1.04);
-//        double tsm_nn1 = btot_nn1 * 1.73;
 
             // (9.5.4) check if log_IOPs out of range
             mi = nn_rw_iop.get().getOutmin();
