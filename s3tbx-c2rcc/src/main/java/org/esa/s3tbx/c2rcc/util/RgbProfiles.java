@@ -56,9 +56,9 @@ public class RgbProfiles {
 
     public static void installLandsat7RgbProfiles() {
         installRgbProfiles("C2RCC_LANDSAT-7",
-                           "%1$s_4",
                            "%1$s_3",
-                           "%1$s_2"
+                           "%1$s_2",
+                           "%1$s_1"
         );
     }
 
