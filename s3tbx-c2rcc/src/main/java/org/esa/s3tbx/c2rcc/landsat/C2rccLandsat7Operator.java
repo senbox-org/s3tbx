@@ -250,6 +250,7 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
             label = "Threshold AC reflectances OOS")
     private double thresholdAcReflecOos;
 
+    // todo mp20180201 - Should be renamed to *835
     @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
             label = "Threshold for cloud flag on transmittance down @865")
     private double thresholdCloudTDown865;
