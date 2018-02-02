@@ -215,10 +215,9 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
             label = "Threshold AC reflectances OOS")
     private double thresholdAcReflecOos;
 
-    // todo mp20180201 - Should be renamed to *835
-    @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
-            label = "Threshold for cloud flag on transmittance down @865")
-    private double thresholdCloudTDown865;
+    @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @835",
+            label = "Threshold for cloud flag on transmittance down @835")
+    private double thresholdCloudTDown835;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
                              "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
@@ -1037,7 +1036,7 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
         algorithm.setSalinity(salinity);
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
         algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
-        algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
+        algorithm.setThresh_cloudTransD(thresholdCloudTDown835);
 
         algorithm.setOutputRtosaGcAann(outputRtosaGcAann);
         algorithm.setOutputRpath(outputRpath);
