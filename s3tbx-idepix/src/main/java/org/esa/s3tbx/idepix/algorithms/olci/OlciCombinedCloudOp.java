@@ -16,8 +16,7 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import java.awt.*;
 
 /**
- * Operator used to consolidate Idepix classification flag for OLCI:
- * - coastline refinement
+ * Operator providing 'combined cloud' for OLCI (request DM/JM). Experimental.
  *
  * @author olafd
  */
@@ -26,7 +25,7 @@ import java.awt.*;
         internal = true,
         authors = "Olaf Danne",
         copyright = "(c) 2018 by Brockmann Consult",
-        description = "Applies combined cloud approach (JM/DM).")
+        description = "Operator providing 'combined cloud' for OLCI (request DM/JM). Experimental.")
 public class OlciCombinedCloudOp extends Operator {
 
     @SourceProduct(alias = "rad2refl")
