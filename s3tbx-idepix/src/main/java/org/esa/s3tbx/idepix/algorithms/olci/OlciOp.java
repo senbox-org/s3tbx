@@ -109,9 +109,17 @@ public class OlciOp extends BasisOp {
                     "Still experimental. ")
     private boolean computeCloudShadow;
 
+    @Parameter(defaultValue = "false",
+            label = " Compute 'combined cloud' band  (experimental option, following DM/JM)",
+            description = " Compute 'combined cloud' band  (experimental option, following DM/JM). " +
+                    "Requires nn_value, reflectance bands 2-8 and 17! ")
+    private boolean computeCombinedCloud;
+
+
 
     private Product classificationProduct;
     private Product postProcessingProduct;
+    private Product combinedCloudProduct;
 
     private Product rad2reflProduct;
     private Product waterMaskProduct;
@@ -159,6 +167,10 @@ public class OlciOp extends BasisOp {
             }
         }
 
+        if (computeCombinedCloud) {
+            processCombinedCloud(olciIdepixProduct);
+        }
+
         targetProduct = createTargetProduct(olciIdepixProduct);
         targetProduct.setAutoGrouping(olciIdepixProduct.getAutoGrouping());
 
@@ -178,6 +190,9 @@ public class OlciOp extends BasisOp {
         if (postProcessingProduct != null) {
             Band cloudFlagBand = targetProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME);
             cloudFlagBand.setSourceImage(postProcessingProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME).getSourceImage());
+        }
+        if (combinedCloudProduct!= null) {
+            ProductUtils.copyBand(OlciConstants.OLCI_COMBINED_CLOUD_BAND_NAME, combinedCloudProduct, targetProduct, true);
         }
     }
 
@@ -268,6 +283,17 @@ public class OlciOp extends BasisOp {
         params.put("computeCloudShadow", computeCloudShadow);
 
         postProcessingProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciPostProcessOp.class),
+                                                  params, input);
+    }
+
+    private void processCombinedCloud(Product olciIdepixProduct) {
+        HashMap<String, Product> input = new HashMap<>();
+        input.put("rad2refl", rad2reflProduct);
+        input.put("olciCloud", olciIdepixProduct);
+
+        Map<String, Object> params = new HashMap<>();
+
+        combinedCloudProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciCombinedCloudOp.class),
                                                   params, input);
     }
 

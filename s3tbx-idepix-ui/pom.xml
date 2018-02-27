@@ -27,8 +27,8 @@
     <!--<version>6.0.2-SNAPSHOT</version>-->
     <version>6.0.2.1</version>
 
-    <name>Idepix GUI</name>
-    <description>The GUI for the Idepix Processor.</description>
+    <name>Idepix GUI(DEVEL)</name>
+    <description>The GUI for the Idepix Processor ('idepix_devel' plugin).</description>
 
     <dependencies>
         <dependency>

@@ -14,8 +14,8 @@
     <!--<version>6.0.2-SNAPSHOT</version>-->
     <version>6.0.2.18</version>
 
-    <name>Idepix</name>
-    <description>Generic classification of pixels (cloud, snow, ice, land, water) originating from optical sensors.</description>
+    <name>Idepix (DEVEL)</name>
+    <description>Generic classification of pixels (cloud, snow, ice, land, water) originating from optical sensors ('idepix_devel' plugin).</description>
 
     <dependencies>
         <dependency>

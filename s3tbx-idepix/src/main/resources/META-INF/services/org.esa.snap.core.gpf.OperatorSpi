@@ -28,6 +28,7 @@ org.esa.s3tbx.idepix.algorithms.meris.MerisPostProcessOp$Spi
 org.esa.s3tbx.idepix.algorithms.olci.OlciOp$Spi
 org.esa.s3tbx.idepix.algorithms.olci.OlciClassificationOp$Spi
 org.esa.s3tbx.idepix.algorithms.olci.OlciPostProcessOp$Spi
+org.esa.s3tbx.idepix.algorithms.olci.OlciCombinedCloudOp$Spi
 org.esa.s3tbx.idepix.algorithms.olci.O2CloudOp$Spi
 org.esa.s3tbx.idepix.algorithms.olcislstr.OlciSlstrOp$Spi
 org.esa.s3tbx.idepix.algorithms.olcislstr.OlciSlstrClassificationOp$Spi
