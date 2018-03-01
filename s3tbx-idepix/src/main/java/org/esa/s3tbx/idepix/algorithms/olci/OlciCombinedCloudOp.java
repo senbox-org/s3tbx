@@ -89,7 +89,7 @@ public class OlciCombinedCloudOp extends Operator {
 
                 final boolean cloud_1 = isIdepixCloud && ndvi < 0.1 && ndvi > 0.0 && meanReflVis > 0.2;
                 final boolean cloud_2 = isIdepixCloud && isIdepixLand;
-                final boolean cloud_3 = isIdepixCloud && ndvi > 0;
+                final boolean cloud_3 = isIdepixCloud && ndvi < 0.0;
                 final boolean cloud_4 = isFreshInlandWater &&
                         ((meanReflVis > 0.2 && nnValue < 5.3) ||
                                 (meanReflVis > 0.25 && nnValue > 5.3));
