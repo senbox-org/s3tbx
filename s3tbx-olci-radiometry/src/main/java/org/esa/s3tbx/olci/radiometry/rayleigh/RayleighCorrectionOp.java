@@ -434,50 +434,50 @@ public class RayleighCorrectionOp extends Operator {
     private RayleighAux createAuxiliary(Product sourceProduct, Sensor sensor, Rectangle rectangle) {
         RayleighAux rayleighAux = new RayleighAux();
         if (sensor.equals(Sensor.MERIS)) {
-            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_SAA_NAME), rectangle));
-            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_SZA_NAME), rectangle));
-            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_VZA_NAME), rectangle));
-            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_VAA_NAME), rectangle));
-            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(MERIS_SLP_NAME), rectangle));
-            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(MERIS_OZONE_NAME), rectangle));
-            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(MERIS_LAT_NAME), rectangle));
-            rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(MERIS_LON_NAME), rectangle));
-            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getTiePointGrid(ALTITUDE_DEM), rectangle));
+            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(MERIS_SAA_NAME), rectangle));
+            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getRasterDataNode(MERIS_SZA_NAME), rectangle));
+            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getRasterDataNode(MERIS_VZA_NAME), rectangle));
+            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(MERIS_VAA_NAME), rectangle));
+            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getRasterDataNode(MERIS_SLP_NAME), rectangle));
+            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getRasterDataNode(MERIS_OZONE_NAME), rectangle));
+            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getRasterDataNode(MERIS_LAT_NAME), rectangle));
+            rayleighAux.setLongitude(getSourceTile(sourceProduct.getRasterDataNode(MERIS_LON_NAME), rectangle));
+            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getRasterDataNode(ALTITUDE_DEM), rectangle));
         } else if (sensor.equals(Sensor.MERIS_4TH)) {
-            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_SAA_NAME), rectangle));
-            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_SZA_NAME), rectangle));
-            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_VZA_NAME), rectangle));
-            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_VAA_NAME), rectangle));
-            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_SLP_NAME), rectangle));
-            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(MERIS_4TH_OZONE_NAME), rectangle));
-            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_LATITUDE), rectangle));
-            rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(TP_LONGITUDE), rectangle));
-            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_ALTITUDE), rectangle));
+            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(MERIS_4TH_SAA_NAME), rectangle));
+            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getRasterDataNode(MERIS_4TH_SZA_NAME), rectangle));
+            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getRasterDataNode(MERIS_4TH_VZA_NAME), rectangle));
+            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(MERIS_4TH_VAA_NAME), rectangle));
+            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getRasterDataNode(MERIS_4TH_SLP_NAME), rectangle));
+            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getRasterDataNode(MERIS_4TH_OZONE_NAME), rectangle));
+            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getRasterDataNode(TP_LATITUDE), rectangle));
+            rayleighAux.setLongitude(getSourceTile(sourceProduct.getRasterDataNode(TP_LONGITUDE), rectangle));
+            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getRasterDataNode(TP_ALTITUDE), rectangle));
         } else if (sensor.equals(Sensor.OLCI)) {
-            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(OLCI_SZA_NAME), rectangle));
-            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(OLCI_VZA_NAME), rectangle));
-            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(OLCI_SAA_NAME), rectangle));
-            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(OLCI_VAA_NAME), rectangle));
-            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(OLCI_SLP_NAME), rectangle));
-            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(OLCI_OZONE_NAME), rectangle));
+            rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getRasterDataNode(OLCI_SZA_NAME), rectangle));
+            rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getRasterDataNode(OLCI_VZA_NAME), rectangle));
+            rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(OLCI_SAA_NAME), rectangle));
+            rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(OLCI_VAA_NAME), rectangle));
+            rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getRasterDataNode(OLCI_SLP_NAME), rectangle));
+            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getRasterDataNode(OLCI_OZONE_NAME), rectangle));
             if (sourceProduct.getTiePointGrid(TP_LATITUDE) != null) {
-                rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(TP_LATITUDE), rectangle));
+                rayleighAux.setLatitudes(getSourceTile(sourceProduct.getRasterDataNode(TP_LATITUDE), rectangle));
             } else {
-                rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(LATITUDE), rectangle));
+                rayleighAux.setLatitudes(getSourceTile(sourceProduct.getRasterDataNode(LATITUDE), rectangle));
             }
             if (sourceProduct.getTiePointGrid(TP_LONGITUDE) != null) {
-                rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(TP_LONGITUDE), rectangle));
+                rayleighAux.setLongitude(getSourceTile(sourceProduct.getRasterDataNode(TP_LONGITUDE), rectangle));
             } else {
-                rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(LONGITUDE), rectangle));
+                rayleighAux.setLongitude(getSourceTile(sourceProduct.getRasterDataNode(LONGITUDE), rectangle));
             }
         } else if (sensor.equals(Sensor.S2_MSI)) {
-            final Tile szaTile = getSourceTile(sourceProduct.getBand(S2_MSI_SZA_NAME), rectangle);
+            final Tile szaTile = getSourceTile(sourceProduct.getRasterDataNode(S2_MSI_SZA_NAME), rectangle);
             rayleighAux.setSunZenithAngles(szaTile);
-            final Tile vzaTile = getSourceTile(sourceProduct.getBand(S2_MSI_VZA_NAME), rectangle);
+            final Tile vzaTile = getSourceTile(sourceProduct.getRasterDataNode(S2_MSI_VZA_NAME), rectangle);
             rayleighAux.setViewZenithAngles(vzaTile);
-            final Tile saaTile = getSourceTile(sourceProduct.getBand(S2_MSI_SAA_NAME), rectangle);
+            final Tile saaTile = getSourceTile(sourceProduct.getRasterDataNode(S2_MSI_SAA_NAME), rectangle);
             rayleighAux.setSunAzimuthAngles(saaTile);
-            final Tile vaaTile = getSourceTile(sourceProduct.getBand(S2_MSI_VAA_NAME), rectangle);
+            final Tile vaaTile = getSourceTile(sourceProduct.getRasterDataNode(S2_MSI_VAA_NAME), rectangle);
             rayleighAux.setViewAzimuthAngles(vaaTile);
             rayleighAux.setS2MsiSeaLevelsPressures(s2MsiSeaLevelPressure, rectangle);
             rayleighAux.setS2MsiTotalOzones(s2MsiOzone, rectangle);
