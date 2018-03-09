@@ -87,10 +87,15 @@ public class OlciOp extends BasisOp {
     private boolean computeCloudBuffer;
 
     @Parameter(defaultValue = "false",
-            label = " Compute additional 'o2_cloud' flag using O2 corrected transmissions (experimental option)",
-            description = " Computes and writes an additional 'o2_cloud' flag using O2 corrected transmissions at " +
-                    "bands 13-15 (experimental option, requires additional plugin)")
-    private boolean applyO2CorrectedTransmissions;
+            label = " Compute additional 'o2_cloud' flag using O2 corrected band13 transmission (experimental option)",
+            description = " Computes and writes an additional 'o2_cloud' flag using O2 corrected transmission at " +
+                    "band 13 (experimental option, requires additional plugin)")
+    private boolean applyO2CorrectedTransmission;
+
+    @Parameter(defaultValue = "v3", valueSet = {"v3", "v1"},
+            label = " Version of O2 Correction processor (if applied)",
+            description = "Version of O2 Correction processor (if applied)")
+    private String o2CorrectionVersion;
 
     @Parameter(defaultValue = "2", interval = "[0,100]",
             description = "The width of a cloud 'safety buffer' around a pixel which was classified as cloudy.",
@@ -174,12 +179,18 @@ public class OlciOp extends BasisOp {
         targetProduct = createTargetProduct(olciIdepixProduct);
         targetProduct.setAutoGrouping(olciIdepixProduct.getAutoGrouping());
 
-        if (applyO2CorrectedTransmissions) {
-            for (int i = 13; i <= 15; i++) {
-                ProductUtils.copyBand("radiance_" + i, o2CorrProduct, "Oa" + i + "_radiance_o2corr",
-                                      targetProduct, true);
-                ProductUtils.copyBand("trans_" + i, o2CorrProduct, "Oa" + i + "_trans_o2corr",
-                                      targetProduct, true);
+        if (applyO2CorrectedTransmission) {
+            if (o2CorrectionVersion.equals("v1")) {
+                for (int i = 13; i <= 15; i++) {
+                    ProductUtils.copyBand("radiance_" + i, o2CorrProduct, "Oa" + i + "_radiance_o2corr",
+                                          targetProduct, true);
+                    ProductUtils.copyBand("trans_" + i, o2CorrProduct, "Oa" + i + "_trans_o2corr",
+                                          targetProduct, true);
+                }
+            } else {
+                ProductUtils.copyBand("trans_13", o2CorrProduct, targetProduct, true);
+                ProductUtils.copyBand("press_13", o2CorrProduct, targetProduct, true);
+                ProductUtils.copyBand("surface_13", o2CorrProduct, targetProduct, true);
             }
             ProductUtils.copyBand("o2_cloud", o2CloudProduct, targetProduct, true);
             ProductUtils.copyBand("trans13_baseline", o2CloudProduct, targetProduct, true);
@@ -241,10 +252,11 @@ public class OlciOp extends BasisOp {
         waterMaskParameters.put("subSamplingFactorY", IdepixConstants.OVERSAMPLING_FACTOR_Y);
         waterMaskProduct = GPF.createProduct("LandWaterMask", waterMaskParameters, sourceProduct);
 
-        if (applyO2CorrectedTransmissions) {
+        if (applyO2CorrectedTransmission) {
             Map<String, Product> o2corrSourceProducts = new HashMap<>();
             o2corrSourceProducts.put("l1b", sourceProduct);
-            o2CorrProduct = GPF.createProduct("py_o2corr_op", GPF.NO_PARAMS, o2corrSourceProducts);
+            final String o2CorrOpName = o2CorrectionVersion.equals("v1") ? "py_o2corr_op" : "py_o2corr_v3_op";
+            o2CorrProduct = GPF.createProduct(o2CorrOpName, GPF.NO_PARAMS, o2corrSourceProducts);
 
             Map<String, Product> o2CloudSourceProducts = new HashMap<>();
             o2CloudSourceProducts.put("l1b", sourceProduct);
