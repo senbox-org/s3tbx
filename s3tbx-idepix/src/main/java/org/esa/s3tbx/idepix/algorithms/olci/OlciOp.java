@@ -8,6 +8,8 @@ import org.esa.s3tbx.idepix.operators.IdepixProducts;
 import org.esa.s3tbx.processor.rad2refl.Sensor;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.VirtualBand;
 import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -121,7 +123,6 @@ public class OlciOp extends BasisOp {
     private boolean computeCombinedCloud;
 
 
-
     private Product classificationProduct;
     private Product postProcessingProduct;
     private Product combinedCloudProduct;
@@ -192,6 +193,9 @@ public class OlciOp extends BasisOp {
                 ProductUtils.copyBand("press_13", o2CorrProduct, targetProduct, true);
                 ProductUtils.copyBand("surface_13", o2CorrProduct, targetProduct, true);
             }
+            ProductUtils.copyBand("altitude", sourceProduct, targetProduct, true);
+            addSurfacePressureBand();
+
             ProductUtils.copyBand("o2_cloud", o2CloudProduct, targetProduct, true);
             ProductUtils.copyBand("trans13_baseline", o2CloudProduct, targetProduct, true);
             ProductUtils.copyBand("trans13_baseline_AMFcorr", o2CloudProduct, targetProduct, true);
@@ -202,7 +206,7 @@ public class OlciOp extends BasisOp {
             Band cloudFlagBand = targetProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME);
             cloudFlagBand.setSourceImage(postProcessingProduct.getBand(IdepixConstants.CLASSIF_BAND_NAME).getSourceImage());
         }
-        if (combinedCloudProduct!= null) {
+        if (combinedCloudProduct != null) {
             ProductUtils.copyBand(OlciConstants.OLCI_COMBINED_CLOUD_BAND_NAME, combinedCloudProduct, targetProduct, true);
         }
     }
@@ -306,13 +310,26 @@ public class OlciOp extends BasisOp {
         Map<String, Object> params = new HashMap<>();
 
         combinedCloudProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciCombinedCloudOp.class),
-                                                  params, input);
+                                                 params, input);
     }
 
     private void copyBandsForCtp(Product targetProduct) {
         IdepixIO.addCawaBands(sourceProduct, targetProduct);
     }
 
+    private void addSurfacePressureBand() {
+        String presExpr = "(1013.25 * exp(-altitude/8400))";
+        final Band surfPresBand = new VirtualBand("surface_pressure",
+                                                  ProductData.TYPE_FLOAT32,
+                                                  targetProduct.getSceneRasterWidth(),
+                                                  targetProduct.getSceneRasterHeight(),
+                                                  presExpr);
+        surfPresBand.setDescription("estimated sea level pressure (p0=1013.25hPa, hScale=8.4km)");
+        surfPresBand.setNoDataValue(0);
+        surfPresBand.setNoDataValueUsed(true);
+        surfPresBand.setUnit("hPa");
+        targetProduct.addBand(surfPresBand);
+    }
 
     /**
      * The Service Provider Interface (SPI) for the operator.
