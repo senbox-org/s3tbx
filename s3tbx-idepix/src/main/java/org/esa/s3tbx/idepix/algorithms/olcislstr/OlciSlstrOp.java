@@ -29,6 +29,7 @@ import java.util.Map;
         category = "Optical/Pre-Processing",
         version = "1.0",
         authors = "Olaf Danne",
+        internal = true,
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Pixel identification and classification for OLCI/SLSTR synergy products.")
 public class OlciSlstrOp extends BasisOp {

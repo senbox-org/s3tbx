@@ -31,10 +31,10 @@ import java.awt.event.ActionEvent;
  *
  * @author Olaf Danne
  */
-@ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixOlciSlstrAction")
-@ActionRegistration(displayName = "#CTL_IdepixOlciSlstrAction_Text")
-@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 0)
-@NbBundle.Messages({"CTL_IdepixOlciSlstrAction_Text=Sentinel-3 OLCI/SLSTR Synergy"})
+//@ActionID(category = "Processing", id = "org.esa.s3tbx.idepix.ui.actions.IdepixOlciSlstrAction")
+//@ActionRegistration(displayName = "#CTL_IdepixOlciSlstrAction_Text")
+//@ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 0)
+//@NbBundle.Messages({"CTL_IdepixOlciSlstrAction_Text=Sentinel-3 OLCI/SLSTR Synergy"})
 public class IdepixOlciSlstrAction extends AbstractSnapAction {
 
     private static final String HELP_ID = "idepixTool";
