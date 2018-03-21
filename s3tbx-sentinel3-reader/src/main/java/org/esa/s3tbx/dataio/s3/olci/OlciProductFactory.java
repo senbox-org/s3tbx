@@ -105,8 +105,7 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final Band latBand = targetProduct.getBand("latitude");
         final Band lonBand = targetProduct.getBand("longitude");
         if (latBand != null && lonBand != null) {
-            targetProduct.setSceneGeoCoding(
-                    GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, getValidExpression(), 5));
+            targetProduct.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
         }
     }
 
