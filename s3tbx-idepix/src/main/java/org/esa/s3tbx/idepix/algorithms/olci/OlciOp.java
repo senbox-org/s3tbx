@@ -91,7 +91,7 @@ public class OlciOp extends BasisOp {
     @Parameter(defaultValue = "false",
             label = " Compute additional 'o2_cloud' flag using O2 corrected band13 transmission (experimental option)",
             description = " Computes and writes an additional 'o2_cloud' flag using O2 corrected transmission at " +
-                    "band 13 (experimental option, requires additional plugin)")
+                    "band 13 (experimental option, requires additional plugin and reflectance bands 2-8, 17, 21)")
     private boolean applyO2CorrectedTransmission;
 
     @Parameter(defaultValue = "v3", valueSet = {"v3", "v1"},
@@ -188,18 +188,18 @@ public class OlciOp extends BasisOp {
                     ProductUtils.copyBand("trans_" + i, o2CorrProduct, "Oa" + i + "_trans_o2corr",
                                           targetProduct, true);
                 }
+                ProductUtils.copyBand("o2_cloud", o2CloudProduct, targetProduct, true);
+                ProductUtils.copyBand("trans13_baseline", o2CloudProduct, targetProduct, true);
+                ProductUtils.copyBand("trans13_baseline_AMFcorr", o2CloudProduct, targetProduct, true);
+                ProductUtils.copyBand("trans13_excess", o2CloudProduct, targetProduct, true);
             } else {
                 ProductUtils.copyBand("trans_13", o2CorrProduct, targetProduct, true);
                 ProductUtils.copyBand("press_13", o2CorrProduct, targetProduct, true);
                 ProductUtils.copyBand("surface_13", o2CorrProduct, targetProduct, true);
+                ProductUtils.copyBand("altitude", sourceProduct, targetProduct, true);
+                addSurfacePressureBand();
+                addCloudOverSnowBand();
             }
-            ProductUtils.copyBand("altitude", sourceProduct, targetProduct, true);
-            addSurfacePressureBand();
-
-            ProductUtils.copyBand("o2_cloud", o2CloudProduct, targetProduct, true);
-            ProductUtils.copyBand("trans13_baseline", o2CloudProduct, targetProduct, true);
-            ProductUtils.copyBand("trans13_baseline_AMFcorr", o2CloudProduct, targetProduct, true);
-            ProductUtils.copyBand("trans13_excess", o2CloudProduct, targetProduct, true);
         }
 
         if (postProcessingProduct != null) {
@@ -328,6 +328,20 @@ public class OlciOp extends BasisOp {
         surfPresBand.setNoDataValue(0);
         surfPresBand.setNoDataValueUsed(true);
         surfPresBand.setUnit("hPa");
+        targetProduct.addBand(surfPresBand);
+    }
+
+    private void addCloudOverSnowBand() {
+        String expr = "pixel_classif_flags.IDEPIX_LAND && Oa21_reflectance > 0.5 && surface_13 - trans_13 < 0.01";
+        final Band surfPresBand = new VirtualBand("cloud_over_snow",
+                                                  ProductData.TYPE_FLOAT32,
+                                                  targetProduct.getSceneRasterWidth(),
+                                                  targetProduct.getSceneRasterHeight(),
+                                                  expr);
+        surfPresBand.setDescription("Pixel identified as likely cloud over a snow/ice surface");
+        surfPresBand.setNoDataValue(0);
+        surfPresBand.setNoDataValueUsed(true);
+        surfPresBand.setUnit("dl");
         targetProduct.addBand(surfPresBand);
     }
 
