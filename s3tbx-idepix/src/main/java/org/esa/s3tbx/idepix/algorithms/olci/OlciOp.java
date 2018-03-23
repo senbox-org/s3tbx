@@ -91,7 +91,7 @@ public class OlciOp extends BasisOp {
     @Parameter(defaultValue = "false",
             label = " Compute additional 'o2_cloud' flag using O2 corrected band13 transmission (experimental option)",
             description = " Computes and writes an additional 'o2_cloud' flag using O2 corrected transmission at " +
-                    "band 13 (experimental option, requires additional plugin and reflectance bands 2-8, 17, 21)")
+                    "band 13 (experimental option, requires additional plugin and reflectance band 21)")
     private boolean applyO2CorrectedTransmission;
 
     @Parameter(defaultValue = "v3", valueSet = {"v3", "v1"},
@@ -262,10 +262,12 @@ public class OlciOp extends BasisOp {
             final String o2CorrOpName = o2CorrectionVersion.equals("v1") ? "py_o2corr_op" : "py_o2corr_v3_op";
             o2CorrProduct = GPF.createProduct(o2CorrOpName, GPF.NO_PARAMS, o2corrSourceProducts);
 
-            Map<String, Product> o2CloudSourceProducts = new HashMap<>();
-            o2CloudSourceProducts.put("l1b", sourceProduct);
-            o2CloudSourceProducts.put("o2", o2CorrProduct);
-            o2CloudProduct = GPF.createProduct("Idepix.Olci.O2cloud", GPF.NO_PARAMS, o2CloudSourceProducts);
+            if (o2CorrectionVersion.equals("v1")) {
+                Map<String, Product> o2CloudSourceProducts = new HashMap<>();
+                o2CloudSourceProducts.put("l1b", sourceProduct);
+                o2CloudSourceProducts.put("o2", o2CorrProduct);
+                o2CloudProduct = GPF.createProduct("Idepix.Olci.O2cloud", GPF.NO_PARAMS, o2CloudSourceProducts);
+            }
         }
 
     }
