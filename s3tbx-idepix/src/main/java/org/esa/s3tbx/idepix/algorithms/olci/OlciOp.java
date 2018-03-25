@@ -44,10 +44,17 @@ import java.util.Map;
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Pixel identification and classification for OLCI.")
 public class OlciOp extends BasisOp {
+
     @SourceProduct(alias = "sourceProduct",
             label = "OLCI L1b product",
             description = "The OLCI L1b source product.")
     private Product sourceProduct;
+
+    @SourceProduct(alias = "demProduct",
+            optional = true,
+            label = "DEM product for O2 correction",
+            description = "The OLCI L1b source product.")
+    private Product demProduct;
 
     @TargetProduct(description = "The target product.")
     private Product targetProduct;
@@ -89,8 +96,8 @@ public class OlciOp extends BasisOp {
     private boolean computeCloudBuffer;
 
     @Parameter(defaultValue = "false",
-            label = " Compute additional 'o2_cloud' flag using O2 corrected band13 transmission (experimental option)",
-            description = " Computes and writes an additional 'o2_cloud' flag using O2 corrected transmission at " +
+            label = " Compute binary mask 'cloud_over_snow' using O2 corrected band13 transmission (experimental option)",
+            description = " Computes and writes a binary mask 'cloud_over_snow' using O2 corrected transmission at " +
                     "band 13 (experimental option, requires additional plugin and reflectance band 21)")
     private boolean applyO2CorrectedTransmission;
 
@@ -259,6 +266,9 @@ public class OlciOp extends BasisOp {
         if (applyO2CorrectedTransmission) {
             Map<String, Product> o2corrSourceProducts = new HashMap<>();
             o2corrSourceProducts.put("l1b", sourceProduct);
+            if (demProduct != null) {
+                o2corrSourceProducts.put("DEM", demProduct);
+            }
             final String o2CorrOpName = o2CorrectionVersion.equals("v1") ? "py_o2corr_op" : "py_o2corr_v3_op";
             o2CorrProduct = GPF.createProduct(o2CorrOpName, GPF.NO_PARAMS, o2corrSourceProducts);
 
