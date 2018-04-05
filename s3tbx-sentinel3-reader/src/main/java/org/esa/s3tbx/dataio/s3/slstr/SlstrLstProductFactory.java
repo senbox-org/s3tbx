@@ -22,10 +22,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGeoCoding;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 public class SlstrLstProductFactory extends SlstrProductFactory {
@@ -36,18 +33,23 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
 
     @Override
     protected List<String> getFileNames(Manifest manifest) {
-        final File directory = getInputFileParentDirectory();
-        final String[] fileNames = directory.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".nc");
+        return manifest.getFileNames("");
+    }
+
+    @Override
+    protected Product findMasterProduct() {
+        final List<Product> productList = getOpenProductList();
+        Product masterProduct = new Product("dummy", "type", 1, 1);
+        for (Product product : productList) {
+            int masterSize = masterProduct.getSceneRasterWidth() * masterProduct.getSceneRasterHeight();
+            int productSize = product.getSceneRasterWidth() * product.getSceneRasterHeight();
+            if (productSize > masterSize &&
+                    !product.getName().endsWith("tn") &&
+                    !product.getName().endsWith("tx")) {
+                masterProduct = product;
             }
-        });
-        //todo read from manifest as soon as it contains all files
-//        final List<String> fileNames = new ArrayList<String>();
-//        fileNames.addAll(manifest.getFileNames(new String[0]));
-        // TODO - time data are provided in a 64-bit variable, so we currently don't use them
-        return Arrays.asList(fileNames);
+        }
+        return masterProduct;
     }
 
     @Override
