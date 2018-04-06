@@ -61,13 +61,13 @@
 		<dependency>
             <groupId>org.esa.s3tbx</groupId>
             <artifactId>s3tbx-olci-radiometry</artifactId>
-            <version>${snap.version}</version>
+            <version>${s3tbx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-envisat-reader</artifactId>
-            <version>${snap.version}</version>
+            <version>${s3tbx.version}</version>
         </dependency>
 
         <dependency>
