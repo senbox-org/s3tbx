@@ -63,8 +63,6 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     public final static String SLSTR_L1B_CUSTOM_CALIBRATION = "s3tbx.reader.slstrl1b.applyCustomCalibration";
     public final static String SLSTR_L1B_CALIBRATION_PATTERN = "s3tbx.reader.slstrl1b.ID.calibration.TYPE";
 
-    private final static String[] BAND_IDENTIFIERS = {"F1", "F2", "S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9"};
-
     //todo read all these as metadata - tf 20160401
     // --> included Sn_quality_*.nc products to access solar irradiances - od 20170630
     private final static String[] EXCLUDED_IDS = new String[]{
@@ -188,11 +186,11 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             if (applyCustomCalibration()) {
                 final double calibrationOffset = getCalibrationOffset(sourceBandNameStart);
                 if (!Double.isNaN(calibrationOffset)) {
-                    targetNode.setScalingOffset(targetNode.getScalingOffset() * calibrationOffset);
+                    targetNode.setScalingOffset(calibrationOffset);
                 }
                 final double calibrationFactor = getCalibrationFactor(sourceBandNameStart);
                 if (!Double.isNaN(calibrationFactor)) {
-                    targetNode.setScalingFactor(targetNode.getScalingFactor() * calibrationFactor);
+                    targetNode.setScalingFactor(calibrationFactor);
                 }
             }
         }
