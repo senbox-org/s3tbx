@@ -96,8 +96,6 @@ public class AvhrrOp extends BasisOp {
         Map<String, Object> aacCloudClassificationParameters = new HashMap<>(1);
         aacCloudClassificationParameters.put("aacCopyRadiances", aacCopyRadiances);
         aacCloudClassificationParameters.put("aacCloudBufferWidth", cloudBufferWidth);
-//        aacCloudClassificationParameters.put("wmResolution", 50);
-//        aacCloudClassificationParameters.put("aacUseWaterMaskFraction", true);
         aacCloudClassificationParameters.put("avhrracSchillerNNCloudAmbiguousLowerBoundaryValue",
                                              avhrracSchillerNNCloudAmbiguousLowerBoundaryValue);
         aacCloudClassificationParameters.put("avhrracSchillerNNCloudAmbiguousSureSeparationValue",
@@ -110,7 +108,7 @@ public class AvhrrOp extends BasisOp {
 
 
     private void processAvhrrAc() {
-        AbstractAvhrrClassificationOp acClassificationOp = new AvhrrUSGSClassificationOp();
+        AvhrrUSGSClassificationOp acClassificationOp = new AvhrrUSGSClassificationOp();
 
         acClassificationOp.setParameterDefaultValues();
         for (String key : aacCloudClassificationParameters.keySet()) {

@@ -3,6 +3,7 @@ package org.esa.s3tbx.idepix.algorithms.meris;
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
+import org.esa.s3tbx.idepix.core.util.IdepixUtils;
 import org.esa.s3tbx.idepix.core.util.SchillerNeuralNetWrapper;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
 import org.esa.snap.core.datamodel.*;
@@ -212,7 +213,7 @@ public class MerisLandClassificationOp extends Operator {
 
     private boolean isLandPixel(int x, int y, Tile merisL1bFlagTile, int waterFraction) {
         // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
-        if (getGeoPos(x, y).lat > -58f) {
+        if ( IdepixUtils.getGeoPos(sourceProduct.getSceneGeoCoding(), x, y).lat > -58f) {
             // values bigger than 100 indicate no data
             if (waterFraction <= 100) {
                 // todo: this does not work if we have a PixelGeocoding. In that case, waterFraction
@@ -224,14 +225,6 @@ public class MerisLandClassificationOp extends Operator {
         } else {
             return merisL1bFlagTile.getSampleBit(x, y, MerisConstants.L1_F_LAND);
         }
-    }
-
-    private GeoPos getGeoPos(int x, int y) {
-        final GeoPos geoPos = new GeoPos();
-        final GeoCoding geoCoding = getSourceProduct().getSceneGeoCoding();
-        final PixelPos pixelPos = new PixelPos(x, y);
-        geoCoding.getGeoPos(pixelPos, geoPos);
-        return geoPos;
     }
 
     void initCloudFlag(Tile merisL1bFlagTile, Tile targetTile, float[] merisReflectances, int y, int x) {

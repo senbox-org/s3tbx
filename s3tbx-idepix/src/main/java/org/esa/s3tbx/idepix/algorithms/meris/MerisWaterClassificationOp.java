@@ -232,7 +232,7 @@ public class MerisWaterClassificationOp extends Operator {
 
     private boolean isLandPixel(int x, int y, Tile l1FlagsTile, int waterFraction) {
         // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
-        if (getGeoPos(x, y).lat > -58f) {
+        if (IdepixUtils.getGeoPos(getSourceProduct().getSceneGeoCoding(), x, y).lat > -58f) {
             // values bigger than 100 indicate no data
             if (waterFraction <= 100) {
                 // todo: this does not work if we have a PixelGeocoding. In that case, waterFraction
@@ -251,7 +251,8 @@ public class MerisWaterClassificationOp extends Operator {
         // values bigger than 100 indicate no data
         // todo: this does not work if we have a PixelGeocoding. In that case, waterFraction
         // is always 0 or 100!! (TS, OD, 20140502)
-        return getGeoPos(x, y).lat > -58f && waterFraction <= 100 && waterFraction < 100 && waterFraction > 0;
+        return IdepixUtils.getGeoPos(getSourceProduct().getSceneGeoCoding(), x, y).lat > -58f &&
+                waterFraction <= 100 && waterFraction < 100 && waterFraction > 0;
     }
 
     private void classifyCloud(int x, int y, Tile[] rhoToaTiles, Tile winduTile, Tile windvTile,
@@ -267,7 +268,7 @@ public class MerisWaterClassificationOp extends Operator {
         boolean checkForSeaIce = false;
         if (!isCoastline) {
             // over water
-            final GeoPos geoPos = getGeoPos(x, y);
+            final GeoPos geoPos = IdepixUtils.getGeoPos(getSourceProduct().getSceneGeoCoding(), x, y);
             checkForSeaIce = ignoreSeaIceClimatology || isPixelClassifiedAsSeaice(geoPos);
             // glint makes sense only if we have no sea ice
             is_glint_risk = is_glint_risk && !isPixelClassifiedAsSeaice(geoPos);
@@ -384,14 +385,6 @@ public class MerisWaterClassificationOp extends Operator {
             }
         }
         return false;
-    }
-
-    private GeoPos getGeoPos(int x, int y) {
-        final GeoPos geoPos = new GeoPos();
-        final GeoCoding geoCoding = getSourceProduct().getSceneGeoCoding();
-        final PixelPos pixelPos = new PixelPos(x, y);
-        geoCoding.getGeoPos(pixelPos, geoPos);
-        return geoPos;
     }
 
     private double azimuth(double x, double y) {

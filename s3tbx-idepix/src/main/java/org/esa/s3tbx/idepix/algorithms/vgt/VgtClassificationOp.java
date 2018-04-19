@@ -400,15 +400,8 @@ public class VgtClassificationOp extends Operator {
         // values bigger than 100 indicate no data
         // todo: this does not work if we have a PixelGeocoding. In that case, waterFraction
         // is always 0 or 100!! (TS, OD, 20140502)
-        return getGeoPos(x, y).lat > -58f && waterFraction <= 100 && waterFraction < 100 && waterFraction > 0;
-    }
-
-    private GeoPos getGeoPos(int x, int y) {
-        final GeoPos geoPos = new GeoPos();
-        final GeoCoding geoCoding = getSourceProduct().getSceneGeoCoding();
-        final PixelPos pixelPos = new PixelPos(x, y);
-        geoCoding.getGeoPos(pixelPos, geoPos);
-        return geoPos;
+        return IdepixUtils.getGeoPos(sourceProduct.getSceneGeoCoding(), x, y).lat > -58f &&
+                waterFraction <= 100 && waterFraction < 100 && waterFraction > 0;
     }
 
     private void checkVgtReflectanceQuality(float[] vgtReflectance, Tile smFlagTile, int x, int y) {

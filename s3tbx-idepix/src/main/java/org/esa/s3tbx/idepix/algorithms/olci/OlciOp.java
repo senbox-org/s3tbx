@@ -135,7 +135,7 @@ public class OlciOp extends BasisOp {
     private Product combinedCloudProduct;
 
     private Product rad2reflProduct;
-    private Product waterMaskProduct;
+//    private Product waterMaskProduct;
 
     private Map<String, Product> classificationInputProducts;
     private Map<String, Object> classificationParameters;
@@ -257,12 +257,6 @@ public class OlciOp extends BasisOp {
     private void preProcess() {
         rad2reflProduct = IdepixProducts.computeRadiance2ReflectanceProduct(sourceProduct, Sensor.OLCI);
 
-        HashMap<String, Object> waterMaskParameters = new HashMap<>();
-        waterMaskParameters.put("resolution", IdepixConstants.LAND_WATER_MASK_RESOLUTION);
-        waterMaskParameters.put("subSamplingFactorX", IdepixConstants.OVERSAMPLING_FACTOR_X);
-        waterMaskParameters.put("subSamplingFactorY", IdepixConstants.OVERSAMPLING_FACTOR_Y);
-        waterMaskProduct = GPF.createProduct("LandWaterMask", waterMaskParameters, sourceProduct);
-
         if (applyO2CorrectedTransmission) {
             Map<String, Product> o2corrSourceProducts = new HashMap<>();
             o2corrSourceProducts.put("l1b", sourceProduct);
@@ -298,7 +292,6 @@ public class OlciOp extends BasisOp {
         classificationInputProducts = new HashMap<>();
         classificationInputProducts.put("l1b", sourceProduct);
         classificationInputProducts.put("rhotoa", rad2reflProduct);
-        classificationInputProducts.put("waterMask", waterMaskProduct);
     }
 
     private void postProcess(Product olciIdepixProduct) {

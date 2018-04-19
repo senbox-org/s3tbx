@@ -464,6 +464,14 @@ public class RayleighAux {
         this.totalOzones = sourceTile.getSamplesDouble(); 
     }
 
+    public void setOlciTotalOzones(Tile sourceTile) {
+        this.totalOzones = new double[sourceTile.getRectangle().width * sourceTile.getRectangle().height];
+        final double[] samplesOzone = sourceTile.getSamplesDouble();
+        for (int i = 0; i < samplesOzone.length; i++) {
+            this.totalOzones[i] = samplesOzone[i] / 2.144e-5;   // convert from kg/m2 to DU
+        }
+    }
+
     public double[] getSolarFluxs() {
         return solarFluxs;
     }

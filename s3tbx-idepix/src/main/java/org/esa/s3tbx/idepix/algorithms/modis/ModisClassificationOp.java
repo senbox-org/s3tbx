@@ -1,6 +1,7 @@
 package org.esa.s3tbx.idepix.algorithms.modis;
 
 import org.esa.s3tbx.idepix.core.IdepixConstants;
+import org.esa.s3tbx.idepix.core.util.IdepixUtils;
 import org.esa.s3tbx.idepix.core.util.SchillerNeuralNetWrapper;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.OperatorException;
@@ -221,7 +222,7 @@ public class ModisClassificationOp extends PixelOperator {
         }
         modisAlgorithm.setRefl(reflectance);
         // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
-        if (getGeoPos(x, y).lat > -58f) {
+        if ( IdepixUtils.getGeoPos(getSourceProduct().getSceneGeoCoding(), x, y).lat > -58f) {
             waterFraction =
                     sourceSamples[ModisConstants.MODIS_SRC_RAD_OFFSET + ModisConstants.MODIS_L1B_NUM_SPECTRAL_BANDS + 1].getFloat();
         }
@@ -269,15 +270,6 @@ public class ModisClassificationOp extends PixelOperator {
 
         return modisAlgorithm;
     }
-
-    private GeoPos getGeoPos(int x, int y) {
-        final GeoPos geoPos = new GeoPos();
-        final GeoCoding geoCoding = reflProduct.getSceneGeoCoding();
-        final PixelPos pixelPos = new PixelPos(x, y);
-        geoCoding.getGeoPos(pixelPos, geoPos);
-        return geoPos;
-    }
-
 
     /**
      * The Service Provider Interface (SPI) for the operator.

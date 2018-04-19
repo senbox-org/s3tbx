@@ -1,8 +1,10 @@
 package org.esa.s3tbx.idepix.algorithms.avhrr;
 
 import org.esa.s3tbx.idepix.core.IdepixConstants;
+import org.esa.s3tbx.idepix.core.util.IdepixUtils;
 import org.esa.s3tbx.idepix.core.util.SchillerNeuralNetWrapper;
 import org.esa.s3tbx.idepix.core.util.SunPosition;
+import org.esa.s3tbx.idepix.core.util.SunPositionCalculator;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelDescriptor;
@@ -20,6 +22,7 @@ import org.esa.snap.core.util.math.RsMathUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 /**
  * Basic operator for GlobAlbedo pixel classification
@@ -33,7 +36,7 @@ import java.io.InputStream;
         authors = "Olaf Danne",
         copyright = "(c) 2016 by Brockmann Consult",
         description = "Basic operator for pixel classification from AVHRR L1b data.")
-public class AvhrrUSGSClassificationOp extends AbstractAvhrrClassificationOp {
+public class AvhrrUSGSClassificationOp extends PixelOperator {
 
     @SourceProduct(alias = "aacl1b", description = "The source product.")
     Product sourceProduct;
@@ -44,22 +47,52 @@ public class AvhrrUSGSClassificationOp extends AbstractAvhrrClassificationOp {
     @TargetProduct(description = "The target product.")
     Product targetProduct;
 
+
+    @Parameter(defaultValue = "false", label = " Copy input radiance bands (with albedo1/2 converted)")
+    private boolean aacCopyRadiances = false;
+
+    @Parameter(defaultValue = "2", label = " Width of cloud buffer (# of pixels)")
+    private int aacCloudBufferWidth;
+
+    @Parameter(defaultValue = "50", valueSet = {"50", "150"}, label = " Resolution of used land-water mask in m/pixel",
+            description = "Resolution in m/pixel")
+    private int wmResolution;
+
+    @Parameter(defaultValue = "true", label = " Consider water mask fraction")
+    private boolean aacUseWaterMaskFraction = true;
+
     @Parameter(defaultValue = "2.15",
             label = " Schiller NN cloud ambiguous lower boundary ",
             description = " Schiller NN cloud ambiguous lower boundary ")
-    double avhrracSchillerNNCloudAmbiguousLowerBoundaryValue;
+    private double avhrracSchillerNNCloudAmbiguousLowerBoundaryValue;
 
     @Parameter(defaultValue = "3.45",
             label = " Schiller NN cloud ambiguous/sure separation value ",
             description = " Schiller NN cloud ambiguous cloud ambiguous/sure separation value ")
-    double avhrracSchillerNNCloudAmbiguousSureSeparationValue;
+    private double avhrracSchillerNNCloudAmbiguousSureSeparationValue;
 
     @Parameter(defaultValue = "4.45",
             label = " Schiller NN cloud sure/snow separation value ",
             description = " Schiller NN cloud ambiguous cloud sure/snow separation value ")
-    double avhrracSchillerNNCloudSureSnowSeparationValue;
+    private double avhrracSchillerNNCloudSureSnowSeparationValue;
 
-    ElevationModel getasseElevationModel;
+
+    private ElevationModel getasseElevationModel;
+
+    private static final int ALBEDO_TO_RADIANCE = 0;
+    private static final int RADIANCE_TO_ALBEDO = 1;
+
+    private static final String AVHRRAC_NET_NAME = "6x3_114.1.net";
+
+    private ThreadLocal<SchillerNeuralNetWrapper> avhrracNeuralNet;
+
+    private AvhrrAuxdata.Line2ViewZenithTable vzaTable;
+    private AvhrrAuxdata.Rad2BTTable rad2BTTable;
+
+    private SunPosition sunPosition;
+
+    private String noaaId;
+
 
     @Override
     public void prepareInputs() throws OperatorException {
@@ -91,289 +124,11 @@ public class AvhrrUSGSClassificationOp extends AbstractAvhrrClassificationOp {
         getasseElevationModel = demDescriptor.createDem(Resampling.BILINEAR_INTERPOLATION);
     }
 
-    static double computeRelativeAzimuth(double vaaRad, double saaRad) {
-        return correctRelAzimuthRange(vaaRad, saaRad);
-    }
-
-    static double[] computeAzimuthAngles(double sza, double vza,
-                                         GeoPos satPosition,
-                                         GeoPos pointPosition,
-                                         SunPosition sunPosition) {
-
-        final double latPoint = pointPosition.getLat();
-        final double lonPoint = pointPosition.getLon();
-
-        final double latSat = satPosition.getLat();
-        final double lonSat = satPosition.getLon();
-
-        final double latPointRad = latPoint * MathUtils.DTOR;
-        final double lonPointRad = lonPoint * MathUtils.DTOR;
-        final double latSatRad = latSat * MathUtils.DTOR;
-        final double lonSatRad = lonSat * MathUtils.DTOR;
-
-        final double latSunRad = sunPosition.getLat() * MathUtils.DTOR;
-        final double lonSunRad = sunPosition.getLon() * MathUtils.DTOR;
-        final double greatCirclePointToSatRad = computeGreatCircleFromPointToSat(latPointRad, lonPointRad, latSatRad, lonSatRad);
-
-        double vaaRad;
-        if (Math.abs(vza) >= 0.09 && greatCirclePointToSatRad > 0.0) {
-            vaaRad = computeVaa(latPointRad, lonPointRad, latSatRad, lonSatRad, greatCirclePointToSatRad);
-        } else {
-            vaaRad = 0.0;
-        }
-
-        final double saaRad = computeSaa(sza, latPointRad, lonPointRad, latSunRad, lonSunRad);
-
-        return new double[]{saaRad, vaaRad, greatCirclePointToSatRad};
-    }
-
-    static double correctRelAzimuthRange(double vaaRad, double saaRad) {
-        double relAzimuth = saaRad - vaaRad;
-        if (relAzimuth < -Math.PI) {
-            relAzimuth += 2.0 * Math.PI;
-        } else if (relAzimuth > Math.PI) {
-            relAzimuth -= 2.0 * Math.PI;
-        }
-        return Math.abs(relAzimuth);
-    }
-
-    static double computeGreatCircleFromPointToSat(double latPointRad, double lonPointRad, double latSatRad, double lonSatRad) {
-        // http://mathworld.wolfram.com/GreatCircle.html, eq. (5):
-        final double greatCirclePointToSat = 0.001 * RsMathUtils.MEAN_EARTH_RADIUS *
-                Math.acos(Math.cos(latPointRad) * Math.cos(latSatRad) * Math.cos(lonPointRad - lonSatRad) +
-                        Math.sin(latPointRad) * Math.sin(latSatRad));
-
-        //        return 2.0 * Math.PI * greatCirclePointToSat / (0.001 * RsMathUtils.MEAN_EARTH_RADIUS);
-        return greatCirclePointToSat / (0.001 * RsMathUtils.MEAN_EARTH_RADIUS);
-    }
-
-    static double computeSaa(double sza, double latPointRad, double lonPointRad, double latSunRad, double lonSunRad) {
-        double arg = (Math.sin(latSunRad) - Math.sin(latPointRad) * Math.cos(sza * MathUtils.DTOR)) /
-                (Math.cos(latPointRad) * Math.sin(sza * MathUtils.DTOR));
-        arg = Math.min(Math.max(arg, -1.0), 1.0);    // keep in range [-1.0, 1.0]
-        double saaRad = Math.acos(arg);
-        if (Math.sin(lonSunRad - lonPointRad) < 0.0) {
-            saaRad = 2.0 * Math.PI - saaRad;
-        }
-        return saaRad;
-    }
-
-    static double computeVaa(double latPointRad, double lonPointRad, double latSatRad, double lonSatRad,
-                             double greatCirclePointToSatRad) {
-        double arg = (Math.sin(latSatRad) - Math.sin(latPointRad) * Math.cos(greatCirclePointToSatRad)) /
-                (Math.cos(latPointRad) * Math.sin(greatCirclePointToSatRad));
-        arg = Math.min(Math.max(arg, -1.0), 1.0);    // keep in range [-1.0, 1.0]
-        double vaaRad = Math.acos(arg);
-        if (Math.sin(lonSatRad - lonPointRad) < 0.0) {
-            vaaRad = 2.0 * Math.PI - vaaRad;
-        }
-
-        return vaaRad;
-    }
-
-    void readSchillerNets() {
-        try (InputStream is = getClass().getResourceAsStream(AVHRRAC_NET_NAME)) {
-            avhrracNeuralNet = SchillerNeuralNetWrapper.create(is);
-        } catch (IOException e) {
-            throw new OperatorException("Cannot read Schiller neural nets: " + e.getMessage());
-        }
-    }
-
-    GeoPos computeSatPosition(int y) {
-        return getGeoPos(sourceProduct.getSceneRasterWidth() / 2, y);    // LAC_NADIR = 1024.5
-    }
-
     @Override
-    void runAvhrrAcAlgorithm(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
-        AvhrrAlgorithm aacAlgorithm = new AvhrrAlgorithm();
-        aacAlgorithm.setNoaaId(noaaId);
-        aacAlgorithm.setDistanceCorr(getDistanceCorr());
-
-        final double sza = sourceSamples[AvhrrConstants.SRC_USGS_SZA].getDouble();
-        final double latitude = sourceSamples[AvhrrConstants.SRC_USGS_LAT].getDouble();
-        final double longitude = sourceSamples[AvhrrConstants.SRC_USGS_LON].getDouble();
-        aacAlgorithm.setLatitude(latitude);
-        aacAlgorithm.setLongitude(longitude);
-        aacAlgorithm.setSza(sza);
-        double vza = Math.abs(vzaTable.getVza(x));  // !!!
-
-        final GeoPos satPosition = computeSatPosition(y);
-        final GeoPos pointPosition = getGeoPos(x, y);
-
-        final double[] azimuthAngles = computeAzimuthAngles(sza, vza, satPosition, pointPosition, sunPosition);
-        final double saaRad = azimuthAngles[0];
-        final double vaaRad = azimuthAngles[1];
-        final double relAzi = computeRelativeAzimuth(saaRad, vaaRad) * MathUtils.RTOD;
-        final double altitude = computeGetasseAltitude(x, y);
-
-        double[] avhrrRadiance = new double[AvhrrConstants.AVHRR_AC_RADIANCE_BAND_NAMES.length];
-        final double albedo1 = sourceSamples[AvhrrConstants.SRC_USGS_ALBEDO_1].getDouble();             // %
-        final double albedo2 = sourceSamples[AvhrrConstants.SRC_USGS_ALBEDO_2].getDouble();             // %
-
-        // GK, 20150325: convert albedo1, 2 to 'normalized' albedo:
-        // norm_albedo_i = albedo_i / (d^2_sun * cos(theta_sun))    , effect is a few % only
-        final double d = getDistanceCorr() * Math.cos(sza * MathUtils.DTOR);
-        final double albedo1Norm = albedo1 / d;
-        final double albedo2Norm = albedo2 / d;
-
-        int targetSamplesIndex;
-        if (albedo1 >= 0.0 && albedo2 >= 0.0 && !AvhrrAcUtils.anglesInvalid(sza, vza, azimuthAngles[0], azimuthAngles[1])) {
-
-            avhrrRadiance[0] = convertBetweenAlbedoAndRadiance(albedo1, sza, ALBEDO_TO_RADIANCE, 0);
-            avhrrRadiance[1] = convertBetweenAlbedoAndRadiance(albedo2, sza, ALBEDO_TO_RADIANCE, 1);
-            avhrrRadiance[2] = sourceSamples[AvhrrConstants.SRC_USGS_RADIANCE_3].getDouble();           // mW*cm/(m^2*sr)
-            avhrrRadiance[3] = sourceSamples[AvhrrConstants.SRC_USGS_RADIANCE_4].getDouble();           // mW*cm/(m^2*sr)
-            avhrrRadiance[4] = sourceSamples[AvhrrConstants.SRC_USGS_RADIANCE_5].getDouble();           // mW*cm/(m^2*sr)
-            aacAlgorithm.setRadiance(avhrrRadiance);
-
-            float waterFraction = Float.NaN;
-            // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
-            if (getGeoPos(x, y).lat > -58f) {
-                waterFraction = sourceSamples[AvhrrConstants.SRC_USGS_WATERFRACTION].getFloat();
-            }
-
-            SchillerNeuralNetWrapper nnWrapper = avhrracNeuralNet.get();
-            double[] inputVector = nnWrapper.getInputVector();
-            inputVector[0] = sza;
-            inputVector[1] = vza;
-            inputVector[2] = relAzi;
-            inputVector[3] = Math.sqrt(avhrrRadiance[0]);
-            inputVector[4] = Math.sqrt(avhrrRadiance[1]);
-            inputVector[5] = Math.sqrt(avhrrRadiance[3]);
-            inputVector[6] = Math.sqrt(avhrrRadiance[4]);
-            aacAlgorithm.setRadiance(avhrrRadiance);
-            aacAlgorithm.setWaterFraction(waterFraction);
-
-            double[] nnOutput = nnWrapper.getNeuralNet().calc(inputVector);
-
-            aacAlgorithm.setNnOutput(nnOutput);
-            aacAlgorithm.setAmbiguousLowerBoundaryValue(avhrracSchillerNNCloudAmbiguousLowerBoundaryValue);
-            aacAlgorithm.setAmbiguousSureSeparationValue(avhrracSchillerNNCloudAmbiguousSureSeparationValue);
-            aacAlgorithm.setSureSnowSeparationValue(avhrracSchillerNNCloudSureSnowSeparationValue);
-
-            aacAlgorithm.setReflCh1(albedo1Norm / 100.0); // on [0,1]        --> put here albedo_norm now!!
-            aacAlgorithm.setReflCh2(albedo2Norm / 100.0); // on [0,1]
-
-//            final double btCh3 = AvhrrAcUtils.convertRadianceToBtOld(avhrrRadiance[2], 3) - 273.15;     // !! todo: K or C, make uniform!
-//            final double btCh3 = AvhrrAcUtils.convertRadianceToBtOld(avhrrRadiance[2], 3);     // GK,MB 20151102: use K everywhere!!
-            final double btCh3 = AvhrrAcUtils.convertRadianceToBt(noaaId, rad2BTTable, avhrrRadiance[2], 3, waterFraction);     // GK,MB 20151102: use K everywhere!!
-//            aacAlgorithm.setBtCh3(btCh3 + 273.15);
-            aacAlgorithm.setBtCh3(btCh3);
-//            final double btCh4 = AvhrrAcUtils.convertRadianceToBtOld(avhrrRadiance[3], 4);
-            final double btCh4 = AvhrrAcUtils.convertRadianceToBt(noaaId, rad2BTTable, avhrrRadiance[3], 4, waterFraction);
-            aacAlgorithm.setBtCh4(btCh4);
-//            final double btCh5 = AvhrrAcUtils.convertRadianceToBtOld(avhrrRadiance[4], 5);
-            final double btCh5 = AvhrrAcUtils.convertRadianceToBt(noaaId, rad2BTTable, avhrrRadiance[4], 5, waterFraction);
-            aacAlgorithm.setBtCh5(btCh5);
-            aacAlgorithm.setElevation(altitude);
-
-            final double albedo3 = calculateReflectancePartChannel3b(avhrrRadiance[2], btCh4, btCh5, sza);
-            aacAlgorithm.setReflCh3(albedo3); // on [0,1]
-
-            setClassifFlag(targetSamples, aacAlgorithm);
-            targetSamplesIndex = 1;
-            targetSamples[targetSamplesIndex++].set(vza);
-            targetSamples[targetSamplesIndex++].set(sza);
-            targetSamples[targetSamplesIndex++].set(vaaRad * MathUtils.RTOD);
-            targetSamples[targetSamplesIndex++].set(saaRad * MathUtils.RTOD);
-            targetSamples[targetSamplesIndex++].set(relAzi);
-            targetSamples[targetSamplesIndex++].set(altitude);
-            targetSamples[targetSamplesIndex++].set(btCh3);
-            targetSamples[targetSamplesIndex++].set(btCh4);
-            targetSamples[targetSamplesIndex++].set(btCh5);
-            targetSamples[targetSamplesIndex++].set(albedo1Norm/100.);     // GK, 20150326
-            targetSamples[targetSamplesIndex++].set(albedo2Norm/100.);
-            targetSamples[targetSamplesIndex++].set(albedo3);
-
-        } else {
-            targetSamplesIndex = 0;
-            targetSamples[targetSamplesIndex++].set(IdepixConstants.IDEPIX_INVALID, true);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            targetSamples[targetSamplesIndex++].set(Float.NaN);
-            avhrrRadiance[0] = Float.NaN;
-            avhrrRadiance[1] = Float.NaN;
-        }
-
-        if (aacCopyRadiances) {
-//            for (int i = 0; i < AvhrrAcConstants.AVHRR_AC_RADIANCE_BAND_NAMES.length; i++) {
-            for (int i = 2; i < AvhrrConstants.AVHRR_AC_RADIANCE_BAND_NAMES.length; i++) {
-                // do just radiances 3-5
-                targetSamples[targetSamplesIndex + (i-2)].set(avhrrRadiance[i]);
-            }
-        }
+    protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
+        runAvhrrAcAlgorithm(x, y, sourceSamples, targetSamples);
     }
 
-    private double computeGetasseAltitude(float x, float y)  {
-        final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
-        GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
-        double altitude;
-        try {
-            altitude = getasseElevationModel.getElevation(geoPos);
-        } catch (Exception e) {
-            // todo
-            e.printStackTrace();
-            altitude = 0.0;
-        }
-        return altitude;
-    }
-
-    @Override
-    void setClassifFlag(WritableSample[] targetSamples, AvhrrAlgorithm algorithm) {
-        targetSamples[0].set(IdepixConstants.IDEPIX_INVALID, algorithm.isInvalid());
-        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD, algorithm.isCloud());
-        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, algorithm.isCloudAmbiguous());
-        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD_SURE, algorithm.isCloudSure());
-        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD_BUFFER, algorithm.isCloudBuffer());
-        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD_SHADOW, algorithm.isCloudShadow());
-        targetSamples[0].set(IdepixConstants.IDEPIX_SNOW_ICE, algorithm.isSnowIce());
-        targetSamples[0].set(IdepixConstants.IDEPIX_COASTLINE, algorithm.isCoastline());
-        targetSamples[0].set(IdepixConstants.IDEPIX_LAND, algorithm.isLand());
-    }
-
-    @Override
-    String getProductDatestring() {
-        // provides datestring as DDMMYY !!!
-        final int productNameStartIndex = sourceProduct.getName().indexOf("ao");
-        // allow names such as subset_of_ao11060992103109_120417.dim
-        return sourceProduct.getName().substring(productNameStartIndex + 4, productNameStartIndex + 10);
-    }
-
-    @Override
-    void setNoaaId() {
-        // ao11060992103109_120417.l1b
-        final int productNameStartIndex = sourceProduct.getName().indexOf("ao");
-        noaaId =  sourceProduct.getName().substring(productNameStartIndex + 2, productNameStartIndex + 4);
-    }
-
-    @Override
-    protected void configureSourceSamples(SourceSampleConfigurer sampleConfigurer) throws OperatorException {
-        int index = 0;
-        sampleConfigurer.defineSample(index++, "sun_zenith");
-        sampleConfigurer.defineSample(index++, "latitude");
-        sampleConfigurer.defineSample(index++, "longitude");
-        for (int i = 0; i < 2; i++) {
-            sampleConfigurer.defineSample(index++, AvhrrConstants.AVHRR_AC_ALBEDO_BAND_NAMES[i]);
-        }
-        for (int i = 0; i < 3; i++) {
-            sampleConfigurer.defineSample(index++, AvhrrConstants.AVHRR_AC_RADIANCE_BAND_NAMES[i + 2]);
-        }
-
-        // BEAM: todo reactivate this once we have our SRTM mask in SNAP
-        sampleConfigurer.defineSample(index, IdepixConstants.LAND_WATER_FRACTION_BAND_NAME, waterMaskProduct);
-
-        // meanwhile use the 'Land-Sea-Mask' operator by Array (Jun Lu, Luis Veci):
-//        sampleConfigurer.defineSample(index, AvhrrConstants.AVHRR_AC_ALBEDO_1_BAND_NAME, waterMaskProduct);
-    }
 
     @Override
     protected void configureTargetSamples(TargetSampleConfigurer sampleConfigurer) throws OperatorException {
@@ -499,6 +254,392 @@ public class AvhrrUSGSClassificationOp extends AbstractAvhrrClassificationOp {
             }
         }
     }
+
+    @Override
+    protected void configureSourceSamples(SourceSampleConfigurer sampleConfigurer) throws OperatorException {
+        int index = 0;
+        sampleConfigurer.defineSample(index++, "sun_zenith");
+        sampleConfigurer.defineSample(index++, "latitude");
+        sampleConfigurer.defineSample(index++, "longitude");
+        for (int i = 0; i < 2; i++) {
+            sampleConfigurer.defineSample(index++, AvhrrConstants.AVHRR_AC_ALBEDO_BAND_NAMES[i]);
+        }
+        for (int i = 0; i < 3; i++) {
+            sampleConfigurer.defineSample(index++, AvhrrConstants.AVHRR_AC_RADIANCE_BAND_NAMES[i + 2]);
+        }
+
+        sampleConfigurer.defineSample(index, IdepixConstants.LAND_WATER_FRACTION_BAND_NAME, waterMaskProduct);
+    }
+
+    private static double computeRelativeAzimuth(double vaaRad, double saaRad) {
+        return correctRelAzimuthRange(vaaRad, saaRad);
+    }
+
+    private static double[] computeAzimuthAngles(double sza, double vza,
+                                                 GeoPos satPosition,
+                                                 GeoPos pointPosition,
+                                                 SunPosition sunPosition) {
+
+        final double latPoint = pointPosition.getLat();
+        final double lonPoint = pointPosition.getLon();
+
+        final double latSat = satPosition.getLat();
+        final double lonSat = satPosition.getLon();
+
+        final double latPointRad = latPoint * MathUtils.DTOR;
+        final double lonPointRad = lonPoint * MathUtils.DTOR;
+        final double latSatRad = latSat * MathUtils.DTOR;
+        final double lonSatRad = lonSat * MathUtils.DTOR;
+
+        final double latSunRad = sunPosition.getLat() * MathUtils.DTOR;
+        final double lonSunRad = sunPosition.getLon() * MathUtils.DTOR;
+        final double greatCirclePointToSatRad = computeGreatCircleFromPointToSat(latPointRad, lonPointRad, latSatRad, lonSatRad);
+
+        double vaaRad;
+        if (Math.abs(vza) >= 0.09 && greatCirclePointToSatRad > 0.0) {
+            vaaRad = computeVaa(latPointRad, lonPointRad, latSatRad, lonSatRad, greatCirclePointToSatRad);
+        } else {
+            vaaRad = 0.0;
+        }
+
+        final double saaRad = computeSaa(sza, latPointRad, lonPointRad, latSunRad, lonSunRad);
+
+        return new double[]{saaRad, vaaRad, greatCirclePointToSatRad};
+    }
+
+    private static double correctRelAzimuthRange(double vaaRad, double saaRad) {
+        double relAzimuth = saaRad - vaaRad;
+        if (relAzimuth < -Math.PI) {
+            relAzimuth += 2.0 * Math.PI;
+        } else if (relAzimuth > Math.PI) {
+            relAzimuth -= 2.0 * Math.PI;
+        }
+        return Math.abs(relAzimuth);
+    }
+
+    private static double computeGreatCircleFromPointToSat(double latPointRad, double lonPointRad, double latSatRad, double lonSatRad) {
+        // http://mathworld.wolfram.com/GreatCircle.html, eq. (5):
+        final double greatCirclePointToSat = 0.001 * RsMathUtils.MEAN_EARTH_RADIUS *
+                Math.acos(Math.cos(latPointRad) * Math.cos(latSatRad) * Math.cos(lonPointRad - lonSatRad) +
+                        Math.sin(latPointRad) * Math.sin(latSatRad));
+
+        //        return 2.0 * Math.PI * greatCirclePointToSat / (0.001 * RsMathUtils.MEAN_EARTH_RADIUS);
+        return greatCirclePointToSat / (0.001 * RsMathUtils.MEAN_EARTH_RADIUS);
+    }
+
+    private static double computeSaa(double sza, double latPointRad, double lonPointRad, double latSunRad, double lonSunRad) {
+        double arg = (Math.sin(latSunRad) - Math.sin(latPointRad) * Math.cos(sza * MathUtils.DTOR)) /
+                (Math.cos(latPointRad) * Math.sin(sza * MathUtils.DTOR));
+        arg = Math.min(Math.max(arg, -1.0), 1.0);    // keep in range [-1.0, 1.0]
+        double saaRad = Math.acos(arg);
+        if (Math.sin(lonSunRad - lonPointRad) < 0.0) {
+            saaRad = 2.0 * Math.PI - saaRad;
+        }
+        return saaRad;
+    }
+
+    private static double computeVaa(double latPointRad, double lonPointRad, double latSatRad, double lonSatRad,
+                                     double greatCirclePointToSatRad) {
+        double arg = (Math.sin(latSatRad) - Math.sin(latPointRad) * Math.cos(greatCirclePointToSatRad)) /
+                (Math.cos(latPointRad) * Math.sin(greatCirclePointToSatRad));
+        arg = Math.min(Math.max(arg, -1.0), 1.0);    // keep in range [-1.0, 1.0]
+        double vaaRad = Math.acos(arg);
+        if (Math.sin(lonSatRad - lonPointRad) < 0.0) {
+            vaaRad = 2.0 * Math.PI - vaaRad;
+        }
+
+        return vaaRad;
+    }
+
+    private void runAvhrrAcAlgorithm(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
+        AvhrrAlgorithm aacAlgorithm = new AvhrrAlgorithm();
+        aacAlgorithm.setNoaaId(noaaId);
+        aacAlgorithm.setDistanceCorr(getDistanceCorr());
+
+        final double sza = sourceSamples[AvhrrConstants.SRC_USGS_SZA].getDouble();
+        final double latitude = sourceSamples[AvhrrConstants.SRC_USGS_LAT].getDouble();
+        final double longitude = sourceSamples[AvhrrConstants.SRC_USGS_LON].getDouble();
+        aacAlgorithm.setLatitude(latitude);
+        aacAlgorithm.setLongitude(longitude);
+        aacAlgorithm.setSza(sza);
+        double vza = Math.abs(vzaTable.getVza(x));  // !!!
+
+        final GeoPos satPosition = computeSatPosition(y);
+        final GeoPos pointPosition = IdepixUtils.getGeoPos(sourceProduct.getSceneGeoCoding(), x, y);
+
+        final double[] azimuthAngles = computeAzimuthAngles(sza, vza, satPosition, pointPosition, sunPosition);
+        final double saaRad = azimuthAngles[0];
+        final double vaaRad = azimuthAngles[1];
+        final double relAzi = computeRelativeAzimuth(saaRad, vaaRad) * MathUtils.RTOD;
+        final double altitude = computeGetasseAltitude(x, y);
+
+        double[] avhrrRadiance = new double[AvhrrConstants.AVHRR_AC_RADIANCE_BAND_NAMES.length];
+        final double albedo1 = sourceSamples[AvhrrConstants.SRC_USGS_ALBEDO_1].getDouble();             // %
+        final double albedo2 = sourceSamples[AvhrrConstants.SRC_USGS_ALBEDO_2].getDouble();             // %
+
+        // GK, 20150325: convert albedo1, 2 to 'normalized' albedo:
+        // norm_albedo_i = albedo_i / (d^2_sun * cos(theta_sun))    , effect is a few % only
+        final double d = getDistanceCorr() * Math.cos(sza * MathUtils.DTOR);
+        final double albedo1Norm = albedo1 / d;
+        final double albedo2Norm = albedo2 / d;
+
+        int targetSamplesIndex;
+        if (albedo1 >= 0.0 && albedo2 >= 0.0 && !AvhrrAcUtils.anglesInvalid(sza, vza, azimuthAngles[0], azimuthAngles[1])) {
+
+            avhrrRadiance[0] = convertBetweenAlbedoAndRadiance(albedo1, sza, ALBEDO_TO_RADIANCE, 0);
+            avhrrRadiance[1] = convertBetweenAlbedoAndRadiance(albedo2, sza, ALBEDO_TO_RADIANCE, 1);
+            avhrrRadiance[2] = sourceSamples[AvhrrConstants.SRC_USGS_RADIANCE_3].getDouble();           // mW*cm/(m^2*sr)
+            avhrrRadiance[3] = sourceSamples[AvhrrConstants.SRC_USGS_RADIANCE_4].getDouble();           // mW*cm/(m^2*sr)
+            avhrrRadiance[4] = sourceSamples[AvhrrConstants.SRC_USGS_RADIANCE_5].getDouble();           // mW*cm/(m^2*sr)
+            aacAlgorithm.setRadiance(avhrrRadiance);
+
+            float waterFraction = Float.NaN;
+            // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
+            if (IdepixUtils.getGeoPos(sourceProduct.getSceneGeoCoding(), x, y).lat > -58f) {
+                waterFraction = sourceSamples[AvhrrConstants.SRC_USGS_WATERFRACTION].getFloat();
+            }
+
+            SchillerNeuralNetWrapper nnWrapper = avhrracNeuralNet.get();
+            double[] inputVector = nnWrapper.getInputVector();
+            inputVector[0] = sza;
+            inputVector[1] = vza;
+            inputVector[2] = relAzi;
+            inputVector[3] = Math.sqrt(avhrrRadiance[0]);
+            inputVector[4] = Math.sqrt(avhrrRadiance[1]);
+            inputVector[5] = Math.sqrt(avhrrRadiance[3]);
+            inputVector[6] = Math.sqrt(avhrrRadiance[4]);
+            aacAlgorithm.setRadiance(avhrrRadiance);
+            aacAlgorithm.setWaterFraction(waterFraction);
+
+            double[] nnOutput = nnWrapper.getNeuralNet().calc(inputVector);
+
+            aacAlgorithm.setNnOutput(nnOutput);
+            aacAlgorithm.setAmbiguousLowerBoundaryValue(avhrracSchillerNNCloudAmbiguousLowerBoundaryValue);
+            aacAlgorithm.setAmbiguousSureSeparationValue(avhrracSchillerNNCloudAmbiguousSureSeparationValue);
+            aacAlgorithm.setSureSnowSeparationValue(avhrracSchillerNNCloudSureSnowSeparationValue);
+
+            aacAlgorithm.setReflCh1(albedo1Norm / 100.0); // on [0,1]        --> put here albedo_norm now!!
+            aacAlgorithm.setReflCh2(albedo2Norm / 100.0); // on [0,1]
+
+            final double btCh3 = AvhrrAcUtils.convertRadianceToBt(noaaId, rad2BTTable, avhrrRadiance[2], 3, waterFraction);     // GK,MB 20151102: use K everywhere!!
+            aacAlgorithm.setBtCh3(btCh3);
+            final double btCh4 = AvhrrAcUtils.convertRadianceToBt(noaaId, rad2BTTable, avhrrRadiance[3], 4, waterFraction);
+            aacAlgorithm.setBtCh4(btCh4);
+            final double btCh5 = AvhrrAcUtils.convertRadianceToBt(noaaId, rad2BTTable, avhrrRadiance[4], 5, waterFraction);
+            aacAlgorithm.setBtCh5(btCh5);
+            aacAlgorithm.setElevation(altitude);
+
+            final double albedo3 = calculateReflectancePartChannel3b(avhrrRadiance[2], btCh4, btCh5, sza);
+            aacAlgorithm.setReflCh3(albedo3); // on [0,1]
+
+            setClassifFlag(targetSamples, aacAlgorithm);
+            targetSamplesIndex = 1;
+            targetSamples[targetSamplesIndex++].set(vza);
+            targetSamples[targetSamplesIndex++].set(sza);
+            targetSamples[targetSamplesIndex++].set(vaaRad * MathUtils.RTOD);
+            targetSamples[targetSamplesIndex++].set(saaRad * MathUtils.RTOD);
+            targetSamples[targetSamplesIndex++].set(relAzi);
+            targetSamples[targetSamplesIndex++].set(altitude);
+            targetSamples[targetSamplesIndex++].set(btCh3);
+            targetSamples[targetSamplesIndex++].set(btCh4);
+            targetSamples[targetSamplesIndex++].set(btCh5);
+            targetSamples[targetSamplesIndex++].set(albedo1Norm/100.);     // GK, 20150326
+            targetSamples[targetSamplesIndex++].set(albedo2Norm/100.);
+            targetSamples[targetSamplesIndex++].set(albedo3);
+
+        } else {
+            targetSamplesIndex = 0;
+            targetSamples[targetSamplesIndex++].set(IdepixConstants.IDEPIX_INVALID, true);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            targetSamples[targetSamplesIndex++].set(Float.NaN);
+            avhrrRadiance[0] = Float.NaN;
+            avhrrRadiance[1] = Float.NaN;
+        }
+
+        if (aacCopyRadiances) {
+            for (int i = 2; i < AvhrrConstants.AVHRR_AC_RADIANCE_BAND_NAMES.length; i++) {
+                // do just radiances 3-5
+                targetSamples[targetSamplesIndex + (i-2)].set(avhrrRadiance[i]);
+            }
+        }
+    }
+
+    private double computeGetasseAltitude(float x, float y)  {
+        final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
+        GeoPos geoPos = sourceProduct.getSceneGeoCoding().getGeoPos(pixelPos, null);
+        double altitude;
+        try {
+            altitude = getasseElevationModel.getElevation(geoPos);
+        } catch (Exception e) {
+            // todo
+            e.printStackTrace();
+            altitude = 0.0;
+        }
+        return altitude;
+    }
+
+    private void setClassifFlag(WritableSample[] targetSamples, AvhrrAlgorithm algorithm) {
+        targetSamples[0].set(IdepixConstants.IDEPIX_INVALID, algorithm.isInvalid());
+        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD, algorithm.isCloud());
+        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD_AMBIGUOUS, algorithm.isCloudAmbiguous());
+        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD_SURE, algorithm.isCloudSure());
+        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD_BUFFER, algorithm.isCloudBuffer());
+        targetSamples[0].set(IdepixConstants.IDEPIX_CLOUD_SHADOW, algorithm.isCloudShadow());
+        targetSamples[0].set(IdepixConstants.IDEPIX_SNOW_ICE, algorithm.isSnowIce());
+        targetSamples[0].set(IdepixConstants.IDEPIX_COASTLINE, algorithm.isCoastline());
+        targetSamples[0].set(IdepixConstants.IDEPIX_LAND, algorithm.isLand());
+    }
+
+    private String getProductDatestring() {
+        // provides datestring as DDMMYY !!!
+        final int productNameStartIndex = sourceProduct.getName().indexOf("ao");
+        // allow names such as subset_of_ao11060992103109_120417.dim
+        return sourceProduct.getName().substring(productNameStartIndex + 4, productNameStartIndex + 10);
+    }
+
+    private void setNoaaId() {
+        // ao11060992103109_120417.l1b
+        final int productNameStartIndex = sourceProduct.getName().indexOf("ao");
+        noaaId =  sourceProduct.getName().substring(productNameStartIndex + 2, productNameStartIndex + 4);
+    }
+
+    private void readSchillerNets() {
+        try (InputStream is = getClass().getResourceAsStream(AVHRRAC_NET_NAME)) {
+            avhrracNeuralNet = SchillerNeuralNetWrapper.create(is);
+        } catch (IOException e) {
+            throw new OperatorException("Cannot read Schiller neural nets: " + e.getMessage());
+        }
+    }
+
+    private GeoPos computeSatPosition(int y) {
+        return IdepixUtils.getGeoPos(sourceProduct.getSceneGeoCoding(), sourceProduct.getSceneRasterWidth() / 2, y);
+    }
+
+    private void computeSunPosition() {
+        final Calendar calendar = AvhrrAcUtils.getProductDateAsCalendar(getProductDatestring());
+        sunPosition = SunPositionCalculator.calculate(calendar);
+    }
+
+    private int getDoy() {
+        return IdepixUtils.getDoyFromYYMMDD(getProductDatestring());
+    }
+
+    private double getDistanceCorr() {
+        return 1.0 + 0.033 * Math.cos(2.0 * Math.PI * getDoy() / 365.0);
+    }
+
+    private double calculateReflectancePartChannel3b(double radianceCh3b, double btCh4, double btch5, double sza) {
+        // follows GK formula
+        int sensorId;
+        double frequenz;
+        double t_3b_B0;
+        double r_3b_em;
+        double b_0_3b;
+        double emissivity_3b;
+        double result;
+        // different central wave numbers for AVHRR Channel3b correspond to the temperature ranges & to NOAA11 and NOAA14
+        // NOAA 11: 180-225	2663.500, 225-275	2668.150, 275-320	2671.400, 270-310	2670.96
+        // NOAA 14: 190-230	2638.652, 230-270	2642.807, 270-310	2645.899, 290-330	2647.169
+
+        switch (noaaId) {
+            case "11":
+                // NOAA 11
+                sensorId = 0;
+                frequenz=0;
+                break;
+            case "14":
+                // NOAA 14
+                sensorId = 0;
+                frequenz=0;
+                break;
+            default:
+                throw new OperatorException("Cannot parse source product name " + sourceProduct.getName() + " properly.");
+        }
+
+        if ((btCh4 - btch5) > 1.) {
+            t_3b_B0 = AvhrrConstants.A0[sensorId]
+                    + AvhrrConstants.B0[sensorId] * btCh4
+                    + AvhrrConstants.C0[sensorId] * (btCh4 - btch5);
+        } else {
+            t_3b_B0 = btCh4;
+        }
+
+        if (btCh4  > 0.) {
+            r_3b_em = (AvhrrConstants.c1 * Math.pow(frequenz, 3))
+                    /(Math.exp((AvhrrConstants.c2 * frequenz)/
+                                       ((t_3b_B0- AvhrrConstants.a1_3b[sensorId])/(AvhrrConstants.a2_3b[sensorId])))-1.);
+        } else {
+            r_3b_em = 0;
+        }
+
+        if (btCh4  > 0.) {
+            emissivity_3b = radianceCh3b/r_3b_em;
+        } else {
+            emissivity_3b = 0;
+        }
+
+        if (sza  < 90. && r_3b_em > 0. && radianceCh3b > 0.) {
+            b_0_3b = 1000.0 * AvhrrConstants.SOLAR_3b/ AvhrrConstants.EW_3b[sensorId];
+            result = Math.PI * (radianceCh3b - r_3b_em)/
+                    (b_0_3b * Math.cos(sza * MathUtils.DTOR) * getDistanceCorr() - Math.PI * r_3b_em );
+        } else  if (sza  > 90. && emissivity_3b > 0.) {
+            result = 1. - emissivity_3b;
+        } else {
+            result = Double.NaN;
+        }
+        return result;
+    }
+
+    private double convertBetweenAlbedoAndRadiance(double input, double sza, int mode, int bandIndex) {
+        // follows GK formula
+        float[] integrSolarSpectralIrrad = new float[2];     // F
+        float[] spectralResponseWidth = new float[2];        // W
+        switch (noaaId) {
+            case "11":
+                // NOAA 11
+                integrSolarSpectralIrrad[0] = 184.1f;
+                integrSolarSpectralIrrad[1] = 241.1f;
+                spectralResponseWidth[0] = 0.1130f;
+                spectralResponseWidth[1] = 0.229f;
+                break;
+            case "14":
+                // NOAA 14
+                integrSolarSpectralIrrad[0] = 221.42f;
+                integrSolarSpectralIrrad[1] = 252.29f;
+                spectralResponseWidth[0] = 0.136f;
+                spectralResponseWidth[1] = 0.245f;
+                break;
+            default:
+                throw new OperatorException("Cannot parse source product name " + sourceProduct.getName() + " properly.");
+        }
+
+        // GK: R=A (F/(100 PI W)  technical Albedo A  and  A_corr = R (100 PI W / (F * cos(sun_zenith) * abstandkorrektur))
+        final double conversionFactor = integrSolarSpectralIrrad[bandIndex] /
+                (100.0 * Math.PI * spectralResponseWidth[bandIndex]);
+        double result;
+        //input technical albedo output radiance
+        if (mode == ALBEDO_TO_RADIANCE) {
+            result = input * conversionFactor;
+            // input radiance output corrected albedo => albedo_corr= technical_albedo/(cos(sun_zenith) * abstandkorrektur)
+        } else if (mode == RADIANCE_TO_ALBEDO) {
+            result = input / (conversionFactor * Math.cos(sza * MathUtils.DTOR) * getDistanceCorr());
+        } else {
+            throw new IllegalArgumentException("wrong mode " + mode + " for albedo/radiance conversion");
+        }
+        return result;
+
+    }
+
 
     /**
      * The Service Provider Interface (SPI) for the operator.

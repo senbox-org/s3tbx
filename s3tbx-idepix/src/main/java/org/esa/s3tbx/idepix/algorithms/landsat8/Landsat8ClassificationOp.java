@@ -3,6 +3,7 @@ package org.esa.s3tbx.idepix.algorithms.landsat8;
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
+import org.esa.s3tbx.idepix.core.util.IdepixUtils;
 import org.esa.s3tbx.idepix.core.util.SchillerNeuralNetWrapper;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
@@ -336,7 +337,7 @@ public class Landsat8ClassificationOp extends Operator {
 
     private boolean isLandPixelSrtmBeam(int x, int y, Tile l8FlagTile, int waterFraction) {
         // this uses the SRTM Land/Water mask as implemented as BEAM plugin
-        if (getGeoPos(x, y).lat > WATER_MASK_SOUTH_BOUND) {
+        if ( IdepixUtils.getGeoPos(sourceProduct.getSceneGeoCoding(), x, y).lat > WATER_MASK_SOUTH_BOUND) {
             // values bigger than 100 indicate no data
             if (waterFraction <= 100) {
                 // todo: this does not work if we have a PixelGeocoding. In that case, waterFraction
@@ -348,14 +349,6 @@ public class Landsat8ClassificationOp extends Operator {
         } else {
             return !l8FlagTile.getSampleBit(x, y, L8_F_WATER_CONFIDENCE_HIGH);  // todo
         }
-    }
-
-    private GeoPos getGeoPos(int x, int y) {
-        final GeoPos geoPos = new GeoPos();
-        final GeoCoding geoCoding = getSourceProduct().getSceneGeoCoding();
-        final PixelPos pixelPos = new PixelPos(x, y);
-        geoCoding.getGeoPos(pixelPos, geoPos);
-        return geoPos;
     }
 
     private void setCloudFlag(Tile targetTile, int x, int y, Landsat8Algorithm l8Algorithm) {

@@ -5,6 +5,7 @@ import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.seaice.SeaIceClassification;
 import org.esa.s3tbx.idepix.core.seaice.SeaIceClassifier;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
+import org.esa.s3tbx.idepix.core.util.IdepixUtils;
 import org.esa.s3tbx.idepix.core.util.SchillerNeuralNetWrapper;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
 import org.esa.snap.core.datamodel.*;
@@ -68,18 +69,14 @@ public class OlciClassificationOp extends Operator {
 
     @SourceProduct(alias = "rhotoa")
     private Product rad2reflProduct;
-    @SourceProduct(alias = "waterMask")
-    private Product waterMaskProduct;
 
     @TargetProduct(description = "The target product.")
     Product targetProduct;
 
-    Band cloudFlagBand;
 
     private Band[] olciReflBands;
-    private Band landWaterBand;
 
-    public static final String OLCI_ALL_NET_NAME = "11x10x4x3x2_207.9.net";
+    private static final String OLCI_ALL_NET_NAME = "11x10x4x3x2_207.9.net";
 
     private static final double THRESH_LAND_MINBRIGHT1 = 0.3;
     private static final double THRESH_LAND_MINBRIGHT2 = 0.25;  // test OD 20170411
@@ -87,7 +84,7 @@ public class OlciClassificationOp extends Operator {
     private static final double THRESH_WATER_MINBRIGHT1 = 0.2;
     private static final double THRESH_WATER_MINBRIGHT2 = 0.08; // CB 20170411
 
-    ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
+    private ThreadLocal<SchillerNeuralNetWrapper> olciAllNeuralNet;
 
     private OlciCloudNNInterpreter nnInterpreter;
     private SeaIceClassifier seaIceClassifier;
@@ -103,8 +100,6 @@ public class OlciClassificationOp extends Operator {
         createTargetProduct();
 
         initSeaIceClassifier();
-
-        landWaterBand = waterMaskProduct.getBand("land_water_fraction");
     }
 
     private void readSchillerNeuralNets() {
@@ -122,7 +117,7 @@ public class OlciClassificationOp extends Operator {
         }
     }
 
-    public void setBands() {
+    private void setBands() {
         olciReflBands = new Band[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
         for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
             final int suffixStart = Rad2ReflConstants.OLCI_REFL_BAND_NAMES[i].indexOf("_");
@@ -131,13 +126,13 @@ public class OlciClassificationOp extends Operator {
         }
     }
 
-    void createTargetProduct() throws OperatorException {
+    private void createTargetProduct() throws OperatorException {
         int sceneWidth = sourceProduct.getSceneRasterWidth();
         int sceneHeight = sourceProduct.getSceneRasterHeight();
 
         targetProduct = new Product(sourceProduct.getName(), sourceProduct.getProductType(), sceneWidth, sceneHeight);
 
-        cloudFlagBand = targetProduct.addBand(IdepixConstants.CLASSIF_BAND_NAME, ProductData.TYPE_INT16);
+        final Band cloudFlagBand = targetProduct.addBand(IdepixConstants.CLASSIF_BAND_NAME, ProductData.TYPE_INT16);
         FlagCoding flagCoding = OlciUtils.createOlciFlagCoding(IdepixConstants.CLASSIF_BAND_NAME);
         cloudFlagBand.setSampleCoding(flagCoding);
         targetProduct.getFlagCodingGroup().add(flagCoding);
@@ -156,7 +151,6 @@ public class OlciClassificationOp extends Operator {
 
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle rectangle, ProgressMonitor pm) throws OperatorException {
-        final Tile waterFractionTile = getSourceTile(landWaterBand, rectangle);
         final Band olciQualityFlagBand = sourceProduct.getBand(OlciConstants.OLCI_QUALITY_FLAGS_BAND_NAME);
         final Tile olciQualityFlagTile = getSourceTile(olciQualityFlagBand, rectangle);
 
@@ -176,15 +170,15 @@ public class OlciClassificationOp extends Operator {
             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
                 checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
-                    final int waterFraction = waterFractionTile.getSampleInt(x, y);
                     initCloudFlag(olciQualityFlagTile, targetTiles.get(cloudFlagTargetBand), olciReflectanceTiles, y, x);
                     final boolean isBright = olciQualityFlagTile.getSampleBit(x, y, OlciConstants.L1_F_BRIGHT);
                     cloudFlagTargetTile.setSample(x, y, IdepixConstants.IDEPIX_BRIGHT, isBright);
-                    if (isOlciLandPixel(x, y, olciQualityFlagTile, waterFraction)) {
+                    final boolean isLand = isOlciLandPixel(x, y, olciQualityFlagTile);
+                    if (isLand) {
                         classifyOverLand(olciReflectanceTiles, cloudFlagTargetTile, nnTargetTile, y, x);
                     } else {
                         classifyOverWater(olciQualityFlagTile, olciReflectanceTiles,
-                                          cloudFlagTargetTile, nnTargetTile, y, x, waterFraction);
+                                          cloudFlagTargetTile, nnTargetTile, y, x);
                     }
                 }
             }
@@ -194,8 +188,8 @@ public class OlciClassificationOp extends Operator {
     }
 
     private void classifyOverWater(Tile olciQualityFlagTile, Tile[] olciReflectanceTiles,
-                                   Tile cloudFlagTargetTile, Tile nnTargetTile, int y, int x, int waterFraction) {
-        classifyCloud(x, y, olciQualityFlagTile, olciReflectanceTiles, cloudFlagTargetTile, waterFraction);
+                                   Tile cloudFlagTargetTile, Tile nnTargetTile, int y, int x) {
+        classifyCloud(x, y, olciQualityFlagTile, olciReflectanceTiles, cloudFlagTargetTile);
         if (outputSchillerNNValue) {
             final double[] nnOutput = getOlciNNOutput(x, y, olciReflectanceTiles);
             nnTargetTile.setSample(x, y, nnOutput[0]);
@@ -241,32 +235,20 @@ public class OlciClassificationOp extends Operator {
         }
     }
 
-    private boolean isOlciLandPixel(int x, int y, Tile olciL1bFlagTile, int waterFraction) {
-        // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
-        if (getGeoPos(x, y).lat > -58f) {
-            // values bigger than 100 indicate no data
-            if (waterFraction <= 100) {
-                // todo: this does not work if we have a PixelGeocoding. In that case, waterFraction
-                // is always 0 or 100!! (TS, OD, 20140502)
-                return waterFraction == 0;
-            } else {
-                return olciL1bFlagTile.getSampleBit(x, y, OlciConstants.L1_F_LAND);
-            }
-        } else {
-            return olciL1bFlagTile.getSampleBit(x, y, OlciConstants.L1_F_LAND);
-        }
+    private boolean isOlciLandPixel(int x, int y, Tile olciL1bFlagTile) {
+        // no longer use SRTM land mask, instead use improved L1b flag (KS on OC-CCI request, April 2018)
+        return olciL1bFlagTile.getSampleBit(x, y, OlciConstants.L1_F_LAND);
     }
 
-    private void classifyCloud(int x, int y, Tile l1FlagsTile, Tile[] rhoToaTiles, Tile targetTile,
-                               int waterFraction) {
+    private void classifyCloud(int x, int y, Tile l1FlagsTile, Tile[] rhoToaTiles, Tile targetTile) {
 
-        final boolean isCoastline = isCoastlinePixel(x, y, waterFraction);
+        final boolean isCoastline = l1FlagsTile.getSampleBit(x, y, OlciConstants.L1_F_COASTLINE);
         targetTile.setSample(x, y, IdepixConstants.IDEPIX_COASTLINE, isCoastline);
 
         boolean checkForSeaIce = false;
         if (!isCoastline) {
             // over water
-            final GeoPos geoPos = getGeoPos(x, y);
+            final GeoPos geoPos = IdepixUtils.getGeoPos(getSourceProduct().getSceneGeoCoding(), x, y);
 
             checkForSeaIce = ignoreSeaIceClimatology || isPixelClassifiedAsSeaice(geoPos);
         }
@@ -336,23 +318,7 @@ public class OlciClassificationOp extends Operator {
         return l1FlagsTile.getSampleBit(x, y, OlciConstants.L1_F_GLINT);
     }
 
-    private boolean isCoastlinePixel(int x, int y, int waterFraction) {
-        // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
-        // values bigger than 100 indicate no data
-        // todo: this does not work if we have a PixelGeocoding. In that case, waterFraction
-        // is always 0 or 100!! (TS, OD, 20140502)
-        return getGeoPos(x, y).lat > -58f && waterFraction <= 100 && waterFraction < 100 && waterFraction > 0;
-    }
-
-    private GeoPos getGeoPos(int x, int y) {
-        final GeoPos geoPos = new GeoPos();
-        final GeoCoding geoCoding = getSourceProduct().getSceneGeoCoding();
-        final PixelPos pixelPos = new PixelPos(x, y);
-        geoCoding.getGeoPos(pixelPos, geoPos);
-        return geoPos;
-    }
-
-    void initCloudFlag(Tile olciL1bFlagTile, Tile targetTile, Tile[] olciReflectanceTiles, int y, int x) {
+    private void initCloudFlag(Tile olciL1bFlagTile, Tile targetTile, Tile[] olciReflectanceTiles, int y, int x) {
         // for given instrument, compute boolean pixel properties and write to cloud flag band
         float[] olciReflectances = new float[Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length];
         for (int i = 0; i < Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {

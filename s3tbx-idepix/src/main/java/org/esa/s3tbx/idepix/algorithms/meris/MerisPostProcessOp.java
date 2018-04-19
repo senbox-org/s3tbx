@@ -4,6 +4,7 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.idepix.algorithms.CloudShadowFronts;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
+import org.esa.s3tbx.idepix.core.util.IdepixUtils;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
@@ -190,7 +191,7 @@ public class MerisPostProcessOp extends Operator {
     private boolean isCoastlinePixel(int x, int y, Tile waterFractionTile) {
         boolean isCoastline = false;
         // the water mask ends at 59 Degree south, stop earlier to avoid artefacts
-        if (getGeoPos(x, y).lat > -58f) {
+        if ( IdepixUtils.getGeoPos(getSourceProduct().getSceneGeoCoding(), x, y).lat > -58f) {
             final int waterFraction = waterFractionTile.getSampleInt(x, y);
             // values bigger than 100 indicate no data
             if (waterFraction <= 100) {
@@ -200,13 +201,6 @@ public class MerisPostProcessOp extends Operator {
             }
         }
         return isCoastline;
-    }
-
-    private GeoPos getGeoPos(int x, int y) {
-        final GeoPos geoPos = new GeoPos();
-        final PixelPos pixelPos = new PixelPos(x, y);
-        geoCoding.getGeoPos(pixelPos, geoPos);
-        return geoPos;
     }
 
     private boolean isNearCoastline(int x, int y, Tile waterFractionTile, Rectangle rectangle) {
