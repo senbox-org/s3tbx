@@ -57,7 +57,6 @@ public class OlciPostProcessOp extends Operator {
     @SourceProduct(alias = "olciCloud")
     private Product olciCloudProduct;
 
-    private Band waterFractionBand;
     private Band origCloudFlagBand;
 
     private Band ctpBand;

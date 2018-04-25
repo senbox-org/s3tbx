@@ -91,11 +91,18 @@ public class OlciOp extends BasisOp {
             label = "Width of cloud buffer (# of pixels)")
     private int cloudBufferWidth;
 
+    @Parameter(defaultValue = "false",
+            label = " Use SRTM Land/Water mask",
+            description = "If selected, SRTM Land/Water mask is used instead of L1b land flag. " +
+                    "Slower, but in general more precise.")
+    private boolean useSrtmLandWaterMask;
+
 
     private Product classificationProduct;
     private Product postProcessingProduct;
 
     private Product rad2reflProduct;
+    private Product waterMaskProduct;
 
     private Map<String, Product> classificationInputProducts;
     private Map<String, Object> classificationParameters;
@@ -169,12 +176,21 @@ public class OlciOp extends BasisOp {
 
     private void preProcess() {
         rad2reflProduct = IdepixProducts.computeRadiance2ReflectanceProduct(sourceProduct, Sensor.OLCI);
+
+        if (useSrtmLandWaterMask) {
+            HashMap<String, Object> waterMaskParameters = new HashMap<>();
+            waterMaskParameters.put("resolution", IdepixConstants.LAND_WATER_MASK_RESOLUTION);
+            waterMaskParameters.put("subSamplingFactorX", IdepixConstants.OVERSAMPLING_FACTOR_X);
+            waterMaskParameters.put("subSamplingFactorY", IdepixConstants.OVERSAMPLING_FACTOR_Y);
+            waterMaskProduct = GPF.createProduct("LandWaterMask", waterMaskParameters, sourceProduct);
+        }
     }
 
     private void setClassificationParameters() {
         classificationParameters = new HashMap<>();
         classificationParameters.put("copyAllTiePoints", true);
         classificationParameters.put("outputSchillerNNValue", outputSchillerNNValue);
+        classificationParameters.put("useSrtmLandWaterMask", useSrtmLandWaterMask);
     }
 
     private void computeCloudProduct() {
@@ -187,6 +203,7 @@ public class OlciOp extends BasisOp {
         classificationInputProducts = new HashMap<>();
         classificationInputProducts.put("l1b", sourceProduct);
         classificationInputProducts.put("rhotoa", rad2reflProduct);
+        classificationInputProducts.put("waterMask", waterMaskProduct);
     }
 
     private void postProcess(Product olciIdepixProduct) {
@@ -196,6 +213,7 @@ public class OlciOp extends BasisOp {
 
         Map<String, Object> params = new HashMap<>();
         params.put("computeCloudBuffer", computeCloudBuffer);
+        params.put("cloudBufferWidth", cloudBufferWidth);
 
         postProcessingProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(OlciPostProcessOp.class),
                                                   params, input);
