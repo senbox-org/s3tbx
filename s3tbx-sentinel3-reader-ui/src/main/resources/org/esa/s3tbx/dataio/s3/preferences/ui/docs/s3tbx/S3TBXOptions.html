@@ -1,0 +1,115 @@
+<!--
+  ~ Copyright (C) 2015 CS SI
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>Sentinel Toolbox Help - Performance parameters</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Performance parameters</td>
+
+        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg" border=0></a></td>
+    </tr>
+</table>
+
+<h3>S3TBX Options</h3>
+
+<p>
+
+</p>
+
+<!--<img src="images/snap-smart-configurator-ui-preferences.jpg" border=0/>-->
+
+<h4><a name="systemParameters">Sentinel-3 Readers</a></h4>
+
+<ul>
+    <li><b>Read Sentinel-3 SLSTR L1B products with per-pixel geo-codings instead of using tie-points</b><br>
+        Sentinel-3 SLSTR L1B products contain tie point grids and, for each of the eight different grid types,
+        per-pixel geo-codings.
+        Spatial locations per pixel can be derived from both, however, the result might vary slightly.
+        When using tie-point geo-coding, the product is opened quicker and the pixel locations are more similar across
+        different grids, using per-pixel geo-codings will lead to more precise results.
+    </li>
+    <li><b>Load orphan pixels of Sentinel-3 SLSTR L1B products</b><br>
+        If selected, orphaned SLSTR L1B pixels will be read as extra bands.
+        In the product explorer, they are found in the *orphan* subfolder.
+    </li>
+    <li><b>Read Sentinel-3 SLSTR L1B product with custom calibration</b><br>
+        This option provides a way to set scaling factors and offsets to SLSTR L1B bands.
+        When switched on, the S3TBX will consider factors and offsets given in the s3tbx.properties file.
+        This file is located in the .snap-folder in the user's home directory (if not, simply create it).
+        Factors and offsets can be given for bands with wavelength information, starting with either the prefix
+        F1, F2, S1, S2, S3, S4, S5, S6, S7, S8, or S9.<br>
+        To set a factor, add a line like this:<br><br>
+
+        s3tbx.reader.slstrl1b.xx.calibration.factor = 2.0<br><br>
+
+        where xx is to be replaced by f1, f2, s1, s2, s3, s4, s5, s6, s7, s8, or s9 (mind the lowercase).
+        Likewise, offsets are set like this:<br><br>
+
+        s3tbx.reader.slstrl1b.xx.calibration.offset = 0.5<br><br>
+
+        Factors and offsets will be assigned to each band starting with the prefix.<br>
+        Note that possibly pre-existing scaling factors or offsets will be removed.
+    </li>
+    <li><b>Read Sentinel-3 SLSTR L2C products with per-pixel geo-codings instead of using tie-points</b><br>
+        Sentinel-3 SLSTR L2C products contain tie point grids and, for each of the two different grid types,
+        per-pixel geo-codings.
+        Spatial locations per pixel can be derived from both, however, the result might vary slightly.
+        When using tie-point geo-coding, the product is opened quicker and the pixel locations are more similar across
+        the different grids, using per-pixel geo-codings will lead to more precise results.
+    </li>
+    <li><b>Read Sentinel-3 OLCI products with per-pixel geo-coding instead of using tie-points</b><br>
+        Sentinel-3 OLCI products contain tie point grids and a per-pixel geo-coding.
+        Spatial locations per pixel can be derived from both, however, the result might vary slightly.
+        When using tie-point geo-coding, the product is opened quicker,
+        using the per-pixel geo-coding will lead to more precise results.
+    </li>
+    <li><b>Read Sentinel-3 OLCI L1 product with custom calibration</b><br>
+        This option provides a way to set scaling factors and offsets to OLCI L1 bands.
+        When switched on, the S3TBX will consider factors and offsets given in the s3tbx.properties file.
+        This file is located in the .snap-folder in the user's home directory (if not, simply create it).
+        Factors and offsets can be given for bands with wavelength information, starting with one of the prefixes
+        Oa01 up to Oa21.<br>
+        To set a factor, add a line like this:<br><br>
+
+        s3tbx.reader.olcil1.xxxx.calibration.factor = 2.0<br><br>
+
+        where xxxxx is to be replaced by any prefix between oa01 and oa21 (mind the lowercase).
+        Likewise, offsets are set like this:<br><br>
+
+        s3tbx.reader.olcil1.xx.calibration.offset = 0.5<br><br>
+
+        Factors and offsets will be assigned to each band starting with the prefix.<br>
+        Note that possibly pre-existing scaling factors or offsets will be removed.
+    </li>
+    <li><b>Read ENVISAT MERIS products in SAFE format with per-pixel geo-coding instead of using tie-points</b><br>
+        ENVISAT MERIS products in SAFE format contain tie point grids and a per-pixel geo-coding.
+        Spatial locations per pixel can be derived from both, however, the result might vary slightly.
+        When using tie-point geo-coding, the product is opened quicker,
+        using the per-pixel geo-coding will lead to more precise results.
+    </li>
+</ul>
+
+
+</body>
+</html>
