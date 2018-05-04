@@ -61,7 +61,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     public final static String SLSTR_L1B_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl1b.pixelGeoCodings";
     public final static String SLSTR_L1B_LOAD_ORPHAN_PIXELS = "s3tbx.reader.slstrl1b.loadOrphanPixels";
     public final static String SLSTR_L1B_CUSTOM_CALIBRATION = "s3tbx.reader.slstrl1b.applyCustomCalibration";
-    public final static String SLSTR_L1B_CALIBRATION_PATTERN = "s3tbx.reader.slstrl1b.ID.calibration.TYPE";
+    private final static String SLSTR_L1B_CALIBRATION_PATTERN = "s3tbx.reader.slstrl1b.ID.calibration.TYPE";
 
     //todo read all these as metadata - tf 20160401
     // --> included Sn_quality_*.nc products to access solar irradiances - od 20170630
