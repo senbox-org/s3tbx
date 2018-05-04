@@ -135,6 +135,7 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
                 targetBand.setSpectralBandIndex(getBandindex(cutName));
                 targetBand.setSpectralWavelength(getWavelength(cutName));
                 targetBand.setSpectralBandwidth(getBandwidth(cutName));
+                applyCustomCalibration(targetBand);
             }
         }
         // convert log10 scaled variables int concentrations and also their error bands
@@ -162,6 +163,10 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
                 targetNode.setValidPixelExpression(getValidExpression());
             }
         }
+    }
+
+    protected void applyCustomCalibration(Band targetBand) {
+        //empty implementation
     }
 
     protected abstract String getValidExpression();
