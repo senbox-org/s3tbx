@@ -25,9 +25,12 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Performance parameters</td>
+            Performance parameters
+        </td>
 
-        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg" border=0></a></td>
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+                src="../images/snap_header.jpg" border=0></a></td>
     </tr>
 </table>
 
@@ -41,6 +44,7 @@
 
 <h4><a name="systemParameters">Sentinel-3 Readers</a></h4>
 
+<h5>SLSTR</h5>
 <ul>
     <li><b>Read Sentinel-3 SLSTR L1B products with per-pixel geo-codings instead of using tie-points</b><br>
         Sentinel-3 SLSTR L1B products contain tie point grids and, for each of the eight different grid types,
@@ -55,8 +59,8 @@
     </li>
     <li><b>Read Sentinel-3 SLSTR L1B product with custom calibration</b><br>
         This option provides a way to set scaling factors and offsets to SLSTR L1B bands.
-        When switched on, the S3TBX will consider factors and offsets given in the s3tbx.properties file.
-        This file is located in the .snap-folder in the user's home directory (if not, simply create it).
+        When switched on, the S3TBX will consider factors and offsets given in the <i><b>s3tbx.properties</b></i> file.
+        This file is located in the <i><b>etc</b></i> directory within the <i><b>.snap</b></i> folder in the user's home directory (if not, simply create it).
         Factors and offsets can be given for bands with wavelength information, starting with either the prefix
         F1, F2, S1, S2, S3, S4, S5, S6, S7, S8, or S9.<br>
         To set a factor, add a line like this:<br><br>
@@ -78,6 +82,9 @@
         When using tie-point geo-coding, the product is opened quicker and the pixel locations are more similar across
         the different grids, using per-pixel geo-codings will lead to more precise results.
     </li>
+</ul>
+<h5>OLCI</h5>
+<ul>
     <li><b>Read Sentinel-3 OLCI products with per-pixel geo-coding instead of using tie-points</b><br>
         Sentinel-3 OLCI products contain tie point grids and a per-pixel geo-coding.
         Spatial locations per pixel can be derived from both, however, the result might vary slightly.
@@ -86,22 +93,25 @@
     </li>
     <li><b>Read Sentinel-3 OLCI L1 product with custom calibration</b><br>
         This option provides a way to set scaling factors and offsets to OLCI L1 bands.
-        When switched on, the S3TBX will consider factors and offsets given in the s3tbx.properties file.
-        This file is located in the .snap-folder in the user's home directory (if not, simply create it).
+        When switched on, the S3TBX will consider factors and offsets given in the <i><b>s3tbx.properties</b></i> file.
+        This file is located in the <i><b>etc</b></i> directory within the <i><b>.snap</b></i> folder in the user's home directory (if not, simply create it).
         Factors and offsets can be given for bands with wavelength information, starting with one of the prefixes
         Oa01 up to Oa21.<br>
         To set a factor, add a line like this:<br><br>
 
         s3tbx.reader.olcil1.xxxx.calibration.factor = 2.0<br><br>
 
-        where xxxxx is to be replaced by any prefix between oa01 and oa21 (mind the lowercase).
+        where xxxx is to be replaced by any prefix between oa01 and oa21 (mind the lowercase).
         Likewise, offsets are set like this:<br><br>
 
-        s3tbx.reader.olcil1.xx.calibration.offset = 0.5<br><br>
+        s3tbx.reader.olcil1.xxxx.calibration.offset = 0.5<br><br>
 
         Factors and offsets will be assigned to each band starting with the prefix.<br>
         Note that possibly pre-existing scaling factors or offsets will be removed.
     </li>
+</ul>
+<h5>MERIS</h5>
+<ul>
     <li><b>Read ENVISAT MERIS products in SAFE format with per-pixel geo-coding instead of using tie-points</b><br>
         ENVISAT MERIS products in SAFE format contain tie point grids and a per-pixel geo-coding.
         Spatial locations per pixel can be derived from both, however, the result might vary slightly.

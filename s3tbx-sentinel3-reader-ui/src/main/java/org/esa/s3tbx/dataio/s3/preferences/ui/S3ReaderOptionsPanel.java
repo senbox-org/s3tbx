@@ -16,6 +16,7 @@ import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -44,71 +45,87 @@ final class S3ReaderOptionsPanel extends javax.swing.JPanel {
     private void initComponents() {
         slstrL1BPixelGeocodingsCheckBox = new JCheckBox();
         Mnemonics.setLocalizedText(slstrL1BPixelGeocodingsCheckBox,
-                NbBundle.getMessage(S3ReaderOptionsPanel.class,
-                        "S3TBXReaderOptionsPanel.slstrL1BPixelGeocodingsCheckBox.text")); // NOI18N
+                                   NbBundle.getMessage(S3ReaderOptionsPanel.class,
+                                                       "S3TBXReaderOptionsPanel.slstrL1BPixelGeocodingsCheckBox.text")); // NOI18N
         slstrL1BOrphanPixelsCheckBox = new JCheckBox();
         Mnemonics.setLocalizedText(slstrL1BOrphanPixelsCheckBox,
-                NbBundle.getMessage(S3ReaderOptionsPanel.class,
-                        "S3TBXReaderOptionsPanel.slstrL1BOrphanPixelsCheckBox.text")); // NOI18N
+                                   NbBundle.getMessage(S3ReaderOptionsPanel.class,
+                                                       "S3TBXReaderOptionsPanel.slstrL1BOrphanPixelsCheckBox.text")); // NOI18N
         slstrL1BCalibrationCheckBox = new JCheckBox();
         Mnemonics.setLocalizedText(slstrL1BCalibrationCheckBox,
-                NbBundle.getMessage(S3ReaderOptionsPanel.class,
-                        "S3TBXReaderOptionsPanel.slstrL1BCalibrationFactorCheckBox.text")); // NOI18N
+                                   NbBundle.getMessage(S3ReaderOptionsPanel.class,
+                                                       "S3TBXReaderOptionsPanel.slstrL1BCalibrationFactorCheckBox.text")); // NOI18N
         slstrL2SSTPixelGeocodingsCheckBox = new JCheckBox();
         Mnemonics.setLocalizedText(slstrL2SSTPixelGeocodingsCheckBox,
-                NbBundle.getMessage(S3ReaderOptionsPanel.class,
-                        "S3TBXReaderOptionsPanel.slstrL2SSTPixelGeocodingsCheckBox.text")); // NOI18N
+                                   NbBundle.getMessage(S3ReaderOptionsPanel.class,
+                                                       "S3TBXReaderOptionsPanel.slstrL2SSTPixelGeocodingsCheckBox.text")); // NOI18N
         olciPixelGeocodingsCheckBox = new JCheckBox();
         Mnemonics.setLocalizedText(olciPixelGeocodingsCheckBox,
-                NbBundle.getMessage(S3ReaderOptionsPanel.class,
-                        "S3TBXReaderOptionsPanel.olciPixelGeocodingsCheckBox.text")); // NOI18N
+                                   NbBundle.getMessage(S3ReaderOptionsPanel.class,
+                                                       "S3TBXReaderOptionsPanel.olciPixelGeocodingsCheckBox.text")); // NOI18N
         olciL1CalibrationCheckBox = new JCheckBox();
         Mnemonics.setLocalizedText(olciL1CalibrationCheckBox,
-                NbBundle.getMessage(S3ReaderOptionsPanel.class,
-                        "S3TBXReaderOptionsPanel.olciL1CalibrationCheckBox.text")); // NOI18N
+                                   NbBundle.getMessage(S3ReaderOptionsPanel.class,
+                                                       "S3TBXReaderOptionsPanel.olciL1CalibrationCheckBox.text")); // NOI18N
         merisPixelGeocodingsCheckBox = new JCheckBox();
         Mnemonics.setLocalizedText(merisPixelGeocodingsCheckBox,
-                NbBundle.getMessage(S3ReaderOptionsPanel.class,
-                        "S3TBXReaderOptionsPanel.merisPixelGeocodingsCheckBox.text")); // NOI18N
+                                   NbBundle.getMessage(S3ReaderOptionsPanel.class,
+                                                       "S3TBXReaderOptionsPanel.merisPixelGeocodingsCheckBox.text")); // NOI18N
+
+        JLabel slstrLabel = new JLabel("SLSTR");
+        JLabel olciLabel = new JLabel("OLCI");
+        JLabel merisLabel = new JLabel("MERIS");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(slstrL1BPixelGeocodingsCheckBox)
-                                        .addGap(0, 512, Short.MAX_VALUE)
-                                        .addComponent(slstrL1BOrphanPixelsCheckBox)
-                                        .addGap(0, 512, Short.MAX_VALUE)
-                                        .addComponent(slstrL1BCalibrationCheckBox)
-                                        .addGap(0, 512, Short.MAX_VALUE)
-                                        .addComponent(slstrL2SSTPixelGeocodingsCheckBox)
-                                        .addGap(0, 512, Short.MAX_VALUE)
-                                        .addComponent(olciPixelGeocodingsCheckBox)
-                                        .addGap(0, 512, Short.MAX_VALUE)
-                                        .addComponent(olciL1CalibrationCheckBox)
-                                        .addGap(0, 512, Short.MAX_VALUE)
-                                        .addComponent(merisPixelGeocodingsCheckBox))
-                                .addContainerGap())
+                                          .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                            .addComponent(slstrLabel)
+                                                            .addGap(0, 512, Short.MAX_VALUE)
+                                                            .addComponent(slstrL1BPixelGeocodingsCheckBox)
+                                                            .addGap(0, 512, Short.MAX_VALUE)
+                                                            .addComponent(slstrL1BOrphanPixelsCheckBox)
+                                                            .addGap(0, 512, Short.MAX_VALUE)
+                                                            .addComponent(slstrL1BCalibrationCheckBox)
+                                                            .addGap(0, 512, Short.MAX_VALUE)
+                                                            .addComponent(slstrL2SSTPixelGeocodingsCheckBox)
+                                                            .addGap(0, 512, Short.MAX_VALUE)
+                                                            .addComponent(olciLabel)
+                                                            .addGap(0, 512, Short.MAX_VALUE)
+                                                            .addComponent(olciPixelGeocodingsCheckBox)
+                                                            .addGap(0, 512, Short.MAX_VALUE)
+                                                            .addComponent(olciL1CalibrationCheckBox)
+                                                            .addGap(0, 512, Short.MAX_VALUE)
+                                                            .addComponent(merisLabel)
+                                                            .addGap(0, 512, Short.MAX_VALUE)
+                                                            .addComponent(merisPixelGeocodingsCheckBox))
+                                          .addContainerGap())
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(slstrL1BPixelGeocodingsCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(slstrL1BOrphanPixelsCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(slstrL1BCalibrationCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(slstrL2SSTPixelGeocodingsCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(olciPixelGeocodingsCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(olciL1CalibrationCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(merisPixelGeocodingsCheckBox)
-                                .addContainerGap())
+                                          .addComponent(slstrLabel)
+                                          .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                          .addComponent(slstrL1BPixelGeocodingsCheckBox)
+                                          .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                          .addComponent(slstrL1BOrphanPixelsCheckBox)
+                                          .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                          .addComponent(slstrL1BCalibrationCheckBox)
+                                          .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                          .addComponent(slstrL2SSTPixelGeocodingsCheckBox)
+                                          .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                          .addComponent(olciLabel)
+                                          .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                          .addComponent(olciPixelGeocodingsCheckBox)
+                                          .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                          .addComponent(olciL1CalibrationCheckBox)
+                                          .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                          .addComponent(merisLabel)
+                                          .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                          .addComponent(merisPixelGeocodingsCheckBox)
+                                          .addContainerGap())
         );
     }
 
@@ -133,13 +150,13 @@ final class S3ReaderOptionsPanel extends javax.swing.JPanel {
     void store() {
         final Preferences preferences = Config.instance("s3tbx").load().preferences();
         preferences.putBoolean(SlstrLevel1ProductFactory.SLSTR_L1B_USE_PIXELGEOCODINGS,
-                slstrL1BPixelGeocodingsCheckBox.isSelected());
+                               slstrL1BPixelGeocodingsCheckBox.isSelected());
         preferences.putBoolean(SlstrLevel1ProductFactory.SLSTR_L1B_LOAD_ORPHAN_PIXELS,
-                slstrL1BOrphanPixelsCheckBox.isSelected());
+                               slstrL1BOrphanPixelsCheckBox.isSelected());
         preferences.putBoolean(SlstrLevel1ProductFactory.SLSTR_L1B_CUSTOM_CALIBRATION,
-                slstrL1BCalibrationCheckBox.isSelected());
+                               slstrL1BCalibrationCheckBox.isSelected());
         preferences.putBoolean(SlstrSstProductFactory.SLSTR_L2_SST_USE_PIXELGEOCODINGS,
-                slstrL2SSTPixelGeocodingsCheckBox.isSelected());
+                               slstrL2SSTPixelGeocodingsCheckBox.isSelected());
         preferences.putBoolean(OlciProductFactory.OLCI_USE_PIXELGEOCODING, olciPixelGeocodingsCheckBox.isSelected());
         preferences.putBoolean(OlciLevel1ProductFactory.OLCI_L1_CUSTOM_CALIBRATION, olciL1CalibrationCheckBox.isSelected());
         preferences.putBoolean(MerisProductFactory.MERIS_SAFE_USE_PIXELGEOCODING, merisPixelGeocodingsCheckBox.isSelected());
