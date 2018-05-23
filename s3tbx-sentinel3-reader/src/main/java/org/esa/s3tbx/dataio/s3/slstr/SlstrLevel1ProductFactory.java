@@ -61,7 +61,12 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     public final static String SLSTR_L1B_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl1b.pixelGeoCodings";
     public final static String SLSTR_L1B_LOAD_ORPHAN_PIXELS = "s3tbx.reader.slstrl1b.loadOrphanPixels";
     public final static String SLSTR_L1B_CUSTOM_CALIBRATION = "s3tbx.reader.slstrl1b.applyCustomCalibration";
+    public final static String SLSTR_L1B_S3MPC_CALIBRATION = "s3tbx.reader.slstrl1b.applyS3MPCCalibration";
     private final static String SLSTR_L1B_CALIBRATION_PATTERN = "s3tbx.reader.slstrl1b.ID.calibration.TYPE";
+    private final static double SLSTR_L1B_S3MPC_S5_NADIR_ADJUSTMENT_FACTOR = 1.12;
+    private final static double SLSTR_L1B_S3MPC_S6_NADIR_ADJUSTMENT_FACTOR = 1.2;
+    private final static double SLSTR_L1B_S3MPC_S5_OBLIQUE_ADJUSTMENT_FACTOR = 1.15;
+    private final static double SLSTR_L1B_S3MPC_S6_OBLIQUE_ADJUSTMENT_FACTOR = 1.26;
 
     //todo read all these as metadata - tf 20160401
     // --> included Sn_quality_*.nc products to access solar irradiances - od 20170630
@@ -183,30 +188,73 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             ((Band) targetNode).setSpectralWavelength(nameToWavelengthMap.get(sourceBandNameStart));
             ((Band) targetNode).setSpectralBandIndex(nameToIndexMap.get(sourceBandNameStart));
             ((Band) targetNode).setSpectralBandwidth(nameToBandwidthMap.get(sourceBandNameStart));
-            if (applyCustomCalibration()) {
-                final double calibrationOffset = getCalibrationOffset(sourceBandNameStart);
-                if (!Double.isNaN(calibrationOffset)) {
-                    targetNode.setScalingOffset(calibrationOffset);
-                }
-                final double calibrationFactor = getCalibrationFactor(sourceBandNameStart);
-                if (!Double.isNaN(calibrationFactor)) {
-                    targetNode.setScalingFactor(calibrationFactor);
-                }
-            }
+            applyFactorAndOffset(targetNode);
         }
         configureDescription(sourceBand, targetNode);
     }
 
-    private double getCalibrationOffset(String sourceBandNameStart) {
+    private void applyFactorAndOffset(RasterDataNode targetNode) {
+        double scalingOffset = targetNode.getScalingOffset();
+        double scalingFactor = targetNode.getScalingFactor();
+        double adjustmentFactor = 1.0;
+        if (applyCustomCalibration()) {
+            final double calibrationOffset = getCalibrationOffset(targetNode.getName());
+            if (!Double.isNaN(calibrationOffset)) {
+                scalingOffset = calibrationOffset;
+            }
+            final double calibrationFactor = getCalibrationFactor(targetNode.getName());
+            if (!Double.isNaN(calibrationFactor)) {
+                scalingFactor = calibrationFactor;
+            }
+            final double calibrationAdjustmentFactor = getCalibrationAdjustmentFactor(targetNode.getName());
+            if (!Double.isNaN(calibrationAdjustmentFactor)) {
+                adjustmentFactor = calibrationAdjustmentFactor;
+            }
+        }
+        if (applyS3MPCCalibration()) {
+            double s3mpcAdjustmentFactor = getS3MPCAdjustmentFactor(targetNode.getName());
+            if (!Double.isNaN(s3mpcAdjustmentFactor)) {
+                adjustmentFactor = s3mpcAdjustmentFactor;
+            }
+        }
+        targetNode.setScalingOffset(scalingOffset * adjustmentFactor);
+        targetNode.setScalingFactor(scalingFactor * adjustmentFactor);
+    }
+
+    private double getCalibrationOffset(String sourceBandName) {
         String calibrationOffsetPropertyName =
-                SLSTR_L1B_CALIBRATION_PATTERN.replace("ID", sourceBandNameStart.toLowerCase()).replace("TYPE", "offset");
+                SLSTR_L1B_CALIBRATION_PATTERN.replace("ID", sourceBandName.toLowerCase()).replace("TYPE", "offset");
         return Config.instance("s3tbx").load().preferences().getDouble(calibrationOffsetPropertyName, Double.NaN);
     }
 
-    private double getCalibrationFactor(String sourceBandNameStart) {
+    private double getCalibrationFactor(String sourceBandName) {
         String calibrationFactorPropertyName =
-                SLSTR_L1B_CALIBRATION_PATTERN.replace("ID", sourceBandNameStart.toLowerCase()).replace("TYPE", "factor");
+                SLSTR_L1B_CALIBRATION_PATTERN.replace("ID", sourceBandName.toLowerCase()).replace("TYPE", "factor");
         return Config.instance("s3tbx").load().preferences().getDouble(calibrationFactorPropertyName, Double.NaN);
+    }
+
+    private double getCalibrationAdjustmentFactor(String sourceBandName) {
+        String calibrationFactorPropertyName =
+                SLSTR_L1B_CALIBRATION_PATTERN.replace("ID", sourceBandName.toLowerCase()).
+                        replace("TYPE", "adjustment_factor");
+        return Config.instance("s3tbx").load().preferences().getDouble(calibrationFactorPropertyName, Double.NaN);
+    }
+
+    private double getS3MPCAdjustmentFactor(String sourceBandName) {
+        if (sourceBandName.toLowerCase().startsWith("s5_radiance")) {
+            if (sourceBandName.toLowerCase().endsWith("n")) {
+                return SLSTR_L1B_S3MPC_S5_NADIR_ADJUSTMENT_FACTOR;
+            } else if (sourceBandName.toLowerCase().endsWith("o")) {
+                return SLSTR_L1B_S3MPC_S5_OBLIQUE_ADJUSTMENT_FACTOR;
+            }
+        } else if (sourceBandName.toLowerCase().startsWith("s6_radiance")) {
+            if (sourceBandName.toLowerCase().endsWith("n")) {
+                return SLSTR_L1B_S3MPC_S6_NADIR_ADJUSTMENT_FACTOR;
+            } else if (sourceBandName.toLowerCase().endsWith("o")) {
+                return SLSTR_L1B_S3MPC_S6_OBLIQUE_ADJUSTMENT_FACTOR;
+            }
+        }
+        return Double.NaN;
     }
 
     protected void configureDescription(Band sourceBand, RasterDataNode targetNode) {
@@ -383,6 +431,10 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
     private boolean applyCustomCalibration() {
         return Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_CUSTOM_CALIBRATION, false);
+    }
+
+    private boolean applyS3MPCCalibration() {
+        return Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_S3MPC_CALIBRATION, true);
     }
 
     protected void loadOrphanPixelBands(Product targetProduct, final Product sourceProduct) throws IOException {

@@ -58,22 +58,42 @@
         In the product explorer, they are found in the *orphan* subfolder.
     </li>
     <li><b>Read Sentinel-3 SLSTR L1B product with custom calibration</b><br>
-        This option provides a way to set scaling factors and offsets to SLSTR L1B bands.
+        This option provides a way to set scaling factors, offsets, and adjustment factors to SLSTR L1B bands.
+        The three values will be combined like this:<br><br>
+
+        value = ((raw_value * factor) + offset) * adjustment_factor
+
         When switched on, the S3TBX will consider factors and offsets given in the <i><b>s3tbx.properties</b></i> file.
-        This file is located in the <i><b>etc</b></i> directory within the <i><b>.snap</b></i> folder in the user's home directory (if not, simply create it).
-        Factors and offsets can be given for bands with wavelength information, starting with either the prefix
-        F1, F2, S1, S2, S3, S4, S5, S6, S7, S8, or S9.<br>
+        This file is located in the <i><b>etc</b></i> directory within the <i><b>.snap</b></i> folder in the user's
+        home directory (if not, simply create it).
+        Factors and offsets can be set to each band.<br>
         To set a factor, add a line like this:<br><br>
 
         s3tbx.reader.slstrl1b.xx.calibration.factor = 2.0<br><br>
 
-        where xx is to be replaced by f1, f2, s1, s2, s3, s4, s5, s6, s7, s8, or s9 (mind the lowercase).
+        where xx is to be replaced by any bandname in lowercase.
         Likewise, offsets are set like this:<br><br>
 
         s3tbx.reader.slstrl1b.xx.calibration.offset = 0.5<br><br>
 
-        Factors and offsets will be assigned to each band starting with the prefix.<br>
+        and adjustment factors like this:<br><br>
+
+        s3tbx.reader.slstrl1b.xx.calibration.adjustment_factor = 1.2<br><br>
+
+        Factors and offsets will be assigned to the specified band.<br>
         Note that possibly pre-existing scaling factors or offsets will be removed.
+    </li>
+    <li><b>Apply S3MPC recommendation to adjust SLSTR L1B S5 and S6 radiometric calibration</b><br>
+        When this option is set, the bands S5 and S6 from a SLSTR L1B product are calibrated
+        with the following adjustment factors:
+        <ul>
+            <li>S5 for Nadir View: 1.12</li>
+            <li>S6 for Nadir View: 1.2</li>
+            <li>S5 for Oblique View: 1.15</li>
+            <li>S6 for Oblique View: 1.26</li>
+        </ul>
+        These values are the adjustment factors recommended by the S3MPC.
+        To use other factors, uncheck this box and define others using SLSTR L1B custom calibration.
     </li>
     <li><b>Read Sentinel-3 SLSTR L2C products with per-pixel geo-codings instead of using tie-points</b><br>
         Sentinel-3 SLSTR L2C products contain tie point grids and, for each of the two different grid types,
