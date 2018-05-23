@@ -52,27 +52,26 @@ public class OlciLevel1ProductFactory extends OlciProductFactory {
         return Config.instance("s3tbx").load().preferences().getBoolean(OLCI_L1_CUSTOM_CALIBRATION, false);
     }
 
-    private double getCalibrationOffset(String bandNameStart) {
+    private double getCalibrationOffset(String bandName) {
         String calibrationOffsetPropertyName =
-                OLCI_L1_CALIBRATION_PATTERN.replace("ID", bandNameStart.toLowerCase()).replace("TYPE", "offset");
+                OLCI_L1_CALIBRATION_PATTERN.replace("ID", bandName.toLowerCase()).replace("TYPE", "offset");
         return Config.instance("s3tbx").load().preferences().getDouble(calibrationOffsetPropertyName, Double.NaN);
     }
 
-    private double getCalibrationFactor(String bandNameStart) {
+    private double getCalibrationFactor(String bandName) {
         String calibrationFactorPropertyName =
-                OLCI_L1_CALIBRATION_PATTERN.replace("ID", bandNameStart.toLowerCase()).replace("TYPE", "factor");
+                OLCI_L1_CALIBRATION_PATTERN.replace("ID", bandName.toLowerCase()).replace("TYPE", "factor");
         return Config.instance("s3tbx").load().preferences().getDouble(calibrationFactorPropertyName, Double.NaN);
     }
 
     @Override
     protected void applyCustomCalibration(Band targetBand) {
         if (applyCustomCalibration()) {
-            String bandNameStart = targetBand.getName().substring(0, 4);
-            final double calibrationOffset = getCalibrationOffset(bandNameStart);
+            final double calibrationOffset = getCalibrationOffset(targetBand.getName());
             if (!Double.isNaN(calibrationOffset)) {
                 targetBand.setScalingOffset(calibrationOffset);
             }
-            final double calibrationFactor = getCalibrationFactor(bandNameStart);
+            final double calibrationFactor = getCalibrationFactor(targetBand.getName());
             if (!Double.isNaN(calibrationFactor)) {
                 targetBand.setScalingFactor(calibrationFactor);
             }

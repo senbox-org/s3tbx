@@ -115,18 +115,16 @@
         This option provides a way to set scaling factors and offsets to OLCI L1 bands.
         When switched on, the S3TBX will consider factors and offsets given in the <i><b>s3tbx.properties</b></i> file.
         This file is located in the <i><b>etc</b></i> directory within the <i><b>.snap</b></i> folder in the user's home directory (if not, simply create it).
-        Factors and offsets can be given for bands with wavelength information, starting with one of the prefixes
-        Oa01 up to Oa21.<br>
+        Factors and offsets can be set to any band.<br>
         To set a factor, add a line like this:<br><br>
 
-        s3tbx.reader.olcil1.xxxx.calibration.factor = 2.0<br><br>
+        s3tbx.reader.olcil1.xx.calibration.factor = 2.0<br><br>
 
-        where xxxx is to be replaced by any prefix between oa01 and oa21 (mind the lowercase).
+        where xx is to be replaced by the name of the band in lowercase.
         Likewise, offsets are set like this:<br><br>
 
-        s3tbx.reader.olcil1.xxxx.calibration.offset = 0.5<br><br>
+        s3tbx.reader.olcil1.xx.calibration.offset = 0.5<br><br>
 
-        Factors and offsets will be assigned to each band starting with the prefix.<br>
         Note that possibly pre-existing scaling factors or offsets will be removed.
     </li>
 </ul>
