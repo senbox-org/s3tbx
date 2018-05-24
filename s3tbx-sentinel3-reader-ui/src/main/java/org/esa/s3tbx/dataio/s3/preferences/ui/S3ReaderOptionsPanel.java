@@ -148,7 +148,7 @@ final class S3ReaderOptionsPanel extends javax.swing.JPanel {
         slstrL1BCalibrationCheckBox.setSelected(
                 preferences.getBoolean(SlstrLevel1ProductFactory.SLSTR_L1B_CUSTOM_CALIBRATION, false));
         slstrL1BS3MPCRecommendationCheckBox.setSelected(
-                preferences.getBoolean(SlstrLevel1ProductFactory.SLSTR_L1B_S3MPC_CALIBRATION, true));
+                preferences.getBoolean(SlstrLevel1ProductFactory.SLSTR_L1B_S3MPC_CALIBRATION, false));
         slstrL2SSTPixelGeocodingsCheckBox.setSelected(
                 preferences.getBoolean(SlstrSstProductFactory.SLSTR_L2_SST_USE_PIXELGEOCODINGS, false));
         olciPixelGeocodingsCheckBox.setSelected(
