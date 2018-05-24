@@ -61,30 +61,29 @@
         This option provides a way to set scaling factors, offsets, and adjustment factors to SLSTR L1B bands.
         The three values will be combined like this:<br><br>
 
-        value = ((raw_value * factor) + offset) * adjustment_factor
+        <p><code>value = ((raw_value * factor) + offset) * adjustment_factor</code></p>
 
-        When switched on, the S3TBX will consider factors and offsets given in the <i><b>s3tbx.properties</b></i> file.
-        This file is located in the <i><b>etc</b></i> directory within the <i><b>.snap</b></i> folder in the user's
-        home directory (if not, simply create it).
+        When switched on, the S3TBX will consider factors, offsets and adjustment factors given in the <i><b>s3tbx.properties</b></i> file.<br/>
+        <i><b>Please see the note below on where to find this file.</b></i><br><br>
         Factors and offsets can be set to each band.<br>
         To set a factor, add a line like this:<br><br>
 
-        s3tbx.reader.slstrl1b.xx.calibration.factor = 2.0<br><br>
+        <p><code>s3tbx.reader.slstrl1b.<b>xx</b>.calibration.factor = 2.0</code></p>
 
-        where xx is to be replaced by any bandname in lowercase.
-        Likewise, offsets are set like this:<br><br>
+        Likewise, offsets are set like this:<br>
 
-        s3tbx.reader.slstrl1b.xx.calibration.offset = 0.5<br><br>
+        <p><code>s3tbx.reader.slstrl1b.xx.calibration.offset = 0.5</code></p>
 
-        and adjustment factors like this:<br><br>
+        and adjustment factors like this:<br>
 
-        s3tbx.reader.slstrl1b.xx.calibration.adjustment_factor = 1.2<br><br>
+        <p><code>s3tbx.reader.slstrl1b.xx.calibration.adjustment_factor = 1.2</code></p>
 
-        Factors and offsets will be assigned to the specified band.<br>
-        Note that possibly pre-existing scaling factors or offsets will be removed.
+        Where <b>xx</b> is to be replaced by any bandname in lowercase.
+
+        Note that possibly pre-existing scaling factors or offsets, defined by the Sentinel-3 product will be replaced.
     </li>
     <li><b>Apply S3MPC recommendation to adjust SLSTR L1B S5 and S6 radiometric calibration</b><br>
-        When this option is set, the bands S5 and S6 from a SLSTR L1B product are calibrated
+        When this option is set, the bands S5 and S6 from a SLSTR L1B product are re-calibrated
         with the following adjustment factors:
         <ul>
             <li>S5 for Nadir View: 1.12</li>
@@ -113,19 +112,19 @@
     </li>
     <li><b>Read Sentinel-3 OLCI L1 product with custom calibration</b><br>
         This option provides a way to set scaling factors and offsets to OLCI L1 bands.
-        When switched on, the S3TBX will consider factors and offsets given in the <i><b>s3tbx.properties</b></i> file.
-        This file is located in the <i><b>etc</b></i> directory within the <i><b>.snap</b></i> folder in the user's home directory (if not, simply create it).
+        When switched on, the S3TBX will consider factors and offsets given in the <i><b>s3tbx.properties</b></i> file.<br>
+        <i><b>Please see the note below on where to find this file.</b></i><br><br>
         Factors and offsets can be set to any band.<br>
         To set a factor, add a line like this:<br><br>
 
-        s3tbx.reader.olcil1.xx.calibration.factor = 2.0<br><br>
+        <p><code>s3tbx.reader.olcil1.xx.calibration.factor = 2.0</code></p>
 
         where xx is to be replaced by the name of the band in lowercase.
         Likewise, offsets are set like this:<br><br>
 
-        s3tbx.reader.olcil1.xx.calibration.offset = 0.5<br><br>
+        <p><code>s3tbx.reader.olcil1.xx.calibration.offset = 0.5</code></p>
 
-        Note that possibly pre-existing scaling factors or offsets will be removed.
+        Note that possibly pre-existing scaling factors or offsets, defined by the Sentinel-3 product will be replaced.
     </li>
 </ul>
 <h5>MERIS</h5>
@@ -137,6 +136,45 @@
         using the per-pixel geo-coding will lead to more precise results.
     </li>
 </ul>
+
+<h4><b>NOTE:</b> s3tbx.properties file</h4>
+<p>The <i><b>s3tbx.properties</b></i> file let's users specify special properties for the Sentinel-3 Toolbox. There are two locations where this file
+    can be defined. At both places, if the file does not yet exist it can simply be created as a plain text
+    file.
+</p>
+<p>One is located within the SNAP installation directory in the <i><b>etc</b></i> folder and defines the properties for the installed SNAP instance.
+    Here you need usually admin right to modify the file.<br>
+    The other is located in the <i><b>.snap/etc</b></i> folder within the user's home directory.
+    The second, in the user directory defines the settings per user and overrules the ones in the installation directory.
+</p>
+<p>Depending on the operating system and your settings the <i><b>.snap</b></i> folder might not be visible to you.
+    You can do the following to make it visible:
+</p>
+<table>
+    <thead>
+    <tr>
+        <th>OS</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tr>
+        <td>Windows</td>
+        <td>Nothing to do. The directory is visible by default.</td>
+    </tr>
+    <tr>
+        <td>Linux</td>
+        <td>On the command line you nee to type <code>ls -la</code> to see the directory. In a file explorer like the one of Ubuntu you need to make
+            sure that in the settings the display of hidden files is enabled.
+        </td>
+    </tr>
+    <tr>
+        <td>Mac</td>
+        <td>Since macOS Sierra (10.12) you can press <code>&lt;CMD&gt; + &lt;SHIFT&gt; + &lt;.&gt;</code> in finder to make the directory visible.
+            Prior this version you can nivagate to the user directory and then press <code>&lt;CMD&gt; + &lt;SHIFT&gt; + &lt;G&gt;</code>. This brings
+            up an input dialog where you can enter the folder name <i><b>.snap</b></i>. On enter you will be navigated to this directory.
+        </td>
+    </tr>
+</table>
 
 
 </body>
