@@ -27,6 +27,7 @@ import org.esa.snap.core.gpf.pointop.Sample;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
+import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.core.image.VirtualBandOpImage;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.StringUtils;
@@ -35,6 +36,7 @@ import org.esa.snap.dataio.envisat.EnvisatConstants;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.operator.ConstantDescriptor;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.Raster;
 import java.io.IOException;
 import java.util.Arrays;
@@ -52,7 +54,7 @@ public class WaterProcessorOp extends PixelOperator {
     private float[] solarFlux;
 
     private Band[] inputBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
-    private Raster validMaskData;
+    private VirtualBandOpImage invalidOpImage;
 
     @SourceProduct(label = "Source product",
             description = "The MERIS L1b or L1P source product used for the processing.")
@@ -121,8 +123,17 @@ public class WaterProcessorOp extends PixelOperator {
         if (checkWhetherSuspectIsValid) {
             checkWhetherSuspectIsValid();
         }
-        final PlanarImage validMaskImage = createValidMaskImage(sourceProduct, expression);
-        validMaskData = validMaskImage.getData();
+        invalidOpImage = VirtualBandOpImage.builder(expression, sourceProduct)
+                .dataType(ProductData.TYPE_FLOAT32)
+                .fillValue(0.0f)
+                .tileSize(sourceProduct.getPreferredTileSize())
+                .mask(false)
+                .level(ResolutionLevel.MAXRES)
+                .create();
+    }
+
+    boolean isSampleValid(int x, int y) {
+        return invalidOpImage == null || invalidOpImage.getData(new Rectangle(x, y, 1, 1)).getSample(x, y, 0) != 0;
     }
 
     @Override
@@ -255,8 +266,7 @@ public class WaterProcessorOp extends PixelOperator {
 
         // Exclude pixels from processing if the following l1flags mask becomes true
 //        not quality_flags_sun_glint_risk and not quality_flags_bright and not quality_flags_invalid
-//
-        if (validMaskData.getSample(xpos, ypos, 0) == 0) {
+        if (! isSampleValid(xpos, ypos)) {
             resultFlags[x] = WaterProcessorOpConstant.RESULT_ERROR_VALUES[0];
         }
 
