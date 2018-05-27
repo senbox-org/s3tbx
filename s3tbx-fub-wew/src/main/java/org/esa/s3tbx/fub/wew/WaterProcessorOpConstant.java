@@ -107,6 +107,7 @@ class WaterProcessorOpConstant {
     public static final int SOURCE_SAMPLE_INDEX_MERID_WIND = 21;
     public static final int SOURCE_SAMPLE_INDEX_ATM_PRESS = 22;
     public static final int SOURCE_SAMPLE_INDEX_OZONE = 23;
+    public static final int SOURCE_SAMPLE_VALID_MASK = 24;
     static final String SUSPECT_FLAG_NAME = "l1_flags.SUSPECT";
     static final String SUSPECT_EXPRESSION_TERM = "and not " + SUSPECT_FLAG_NAME;
     static final String result_flags_name = "result_flags";
