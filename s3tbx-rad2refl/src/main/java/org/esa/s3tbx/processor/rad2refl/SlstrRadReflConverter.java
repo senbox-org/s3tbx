@@ -20,7 +20,7 @@ public class SlstrRadReflConverter implements RadReflConverter {
 
     private String conversionMode;
 
-    public SlstrRadReflConverter(String conversionMode) {
+    SlstrRadReflConverter(String conversionMode) {
         this.conversionMode = conversionMode;
     }
 
@@ -38,9 +38,8 @@ public class SlstrRadReflConverter implements RadReflConverter {
                                                                  boolean radToReflMode) {
         Map<String, Float> map = new HashMap<>();
 
-        for (int i = 0; i < spectralInputBandNames.length; i++) {
-            final String bandName = spectralInputBandNames[i];
-            final int spectralIndex = Integer.parseInt(bandName.substring(1,2)) - 1;
+        for (final String bandName : spectralInputBandNames) {
+            final int spectralIndex = Integer.parseInt(bandName.substring(1, 2)) - 1;
             final String stringToReplace = radToReflMode ? "radiance" : "reflectance";
             final String qualityElementName = bandName.replace(stringToReplace, "quality");
             final MetadataElement qualityElement = sourceProduct.getMetadataRoot().getElement(qualityElementName);

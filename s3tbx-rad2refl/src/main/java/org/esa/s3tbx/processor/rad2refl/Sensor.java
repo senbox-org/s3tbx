@@ -1,13 +1,12 @@
 package org.esa.s3tbx.processor.rad2refl;
 
+import static org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants.*;
+
 /**
  * Enumeration for sensors supported in radiance/reflectance conversion.
  *
  * @author olafd
  */
-
-import static org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants.*;
-
 public enum Sensor {
 
     MERIS("MERIS", MERIS_NUM_SPECTRAL_BANDS, MERIS_RAD_BAND_NAMES, MERIS_REFL_BAND_NAMES,
