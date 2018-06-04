@@ -11,7 +11,7 @@ public class OlciRadReflConverter implements RadReflConverter {
 
     private String conversionMode;
 
-    public OlciRadReflConverter(String conversionMode) {
+    OlciRadReflConverter(String conversionMode) {
         this.conversionMode = conversionMode;
     }
 

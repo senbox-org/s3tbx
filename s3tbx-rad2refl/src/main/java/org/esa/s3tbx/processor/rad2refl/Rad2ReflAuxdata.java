@@ -25,14 +25,6 @@ public class Rad2ReflAuxdata {
     private double[][/*15*/] detectorSunSpectralFluxes;
     private final Path auxdataDir;
 
-    private Rad2ReflAuxdata(Path auxdataDir,
-                                   final String detectorSunSpectralFluxesFilename,
-                                   final int numRows,
-                                   final int numCols) throws IOException {
-        this.auxdataDir = auxdataDir;
-        loadDetectorData(detectorSunSpectralFluxesFilename, numRows, numCols);
-    }
-
     public static Rad2ReflAuxdata loadMERISAuxdata(String productType) throws IOException {
         final Path auxdataDir = installAuxdata();
 
@@ -45,49 +37,30 @@ public class Rad2ReflAuxdata {
         }
     }
 
+    private Rad2ReflAuxdata(Path auxdataDir,
+                            final String detectorSunSpectralFluxesFilename,
+                            final int numRows,
+                            final int numCols) throws IOException {
+        this.auxdataDir = auxdataDir;
+        loadDetectorData(detectorSunSpectralFluxesFilename, numRows, numCols);
+    }
+
     public double[][] getDetectorSunSpectralFluxes() {
         return detectorSunSpectralFluxes;
     }
 
-    public static Rad2ReflAuxdata loadRRAuxdata(Path auxdataDir) throws IOException {
+    private static Rad2ReflAuxdata loadRRAuxdata(Path auxdataDir) throws IOException {
         return new Rad2ReflAuxdata(auxdataDir,
                                           SUN_SPECTRAL_FLUX_RR_FILENAME,
                                           NUM_DETECTORS_RR,
                                           EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS);
     }
 
-    public static Rad2ReflAuxdata loadFRAuxdata(Path auxdataDir) throws IOException {
+    private static Rad2ReflAuxdata loadFRAuxdata(Path auxdataDir) throws IOException {
         return new Rad2ReflAuxdata(auxdataDir,
                                           SUN_SPECTRAL_FLUX_FR_FILENAME,
                                           NUM_DETECTORS_FR,
                                           EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS);
-    }
-
-    private void loadDetectorData(final String detectorSunSpectralFluxesFilename,
-                                  final int numRows,
-                                  final int numCols) throws IOException {
-        detectorSunSpectralFluxes = loadFlatAuxDataFile(detectorSunSpectralFluxesFilename, numRows, numCols);
-    }
-
-    private double[][] loadFlatAuxDataFile(final String auxFileName, final int numRows, final int numCols) throws
-            IOException {
-        double[][] tableData = new double[numRows][numCols];
-        IOException ioError = null;
-        try (BufferedReader reader = openFlatAuxDataFile(auxFileName)) {
-            readFlatAuxDataFile(tableData, reader);
-        } catch (IOException e) {
-            ioError = e;
-        }
-        if (ioError != null) {
-            throw ioError;
-        }
-        return tableData;
-    }
-
-    private BufferedReader openFlatAuxDataFile(String fileName) throws IOException {
-        assert fileName != null;
-        assert fileName.length() > 0;
-        return Files.newBufferedReader(auxdataDir.resolve(fileName));
     }
 
     private static void readFlatAuxDataFile(double[][] xrWLs, BufferedReader reader) throws IOException {
@@ -115,11 +88,38 @@ public class Rad2ReflAuxdata {
         }
     }
 
-    static Path installAuxdata() throws IOException {
+    private static Path installAuxdata() throws IOException {
         Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("meris/rad2refl");
         final Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(Rad2ReflAuxdata.class).resolve("auxdata/rad2refl");
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirectory);
         resourceInstaller.install(".*", ProgressMonitor.NULL);
         return auxdataDirectory;
+    }
+
+    private void loadDetectorData(final String detectorSunSpectralFluxesFilename,
+                                  final int numRows,
+                                  final int numCols) throws IOException {
+        detectorSunSpectralFluxes = loadFlatAuxDataFile(detectorSunSpectralFluxesFilename, numRows, numCols);
+    }
+
+    private double[][] loadFlatAuxDataFile(final String auxFileName, final int numRows, final int numCols) throws
+            IOException {
+        double[][] tableData = new double[numRows][numCols];
+        IOException ioError = null;
+        try (BufferedReader reader = openFlatAuxDataFile(auxFileName)) {
+            readFlatAuxDataFile(tableData, reader);
+        } catch (IOException e) {
+            ioError = e;
+        }
+        if (ioError != null) {
+            throw ioError;
+        }
+        return tableData;
+    }
+
+    private BufferedReader openFlatAuxDataFile(String fileName) throws IOException {
+        assert fileName != null;
+        assert fileName.length() > 0;
+        return Files.newBufferedReader(auxdataDir.resolve(fileName));
     }
 }
