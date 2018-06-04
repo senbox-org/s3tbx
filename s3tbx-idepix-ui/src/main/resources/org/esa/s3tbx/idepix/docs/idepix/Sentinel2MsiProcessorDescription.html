@@ -33,12 +33,11 @@
     </tr>
 </table>
 
-<!--todo: complete-->
 <h3>Processor Description</h3>
 
 <h4>I/O Parameters Tab</h4>
 
-<p align="center"><img src="images/IdepixPathsLandsat8.png"></p>
+<p align="center"><img src="images/IdepixPathsMsi.png"></p>
 
 <h5>Source Product Group</h5>
 
@@ -49,17 +48,31 @@
     open a data product currently not opened in the Sentinel Toolbox.
 </p>
 
-<h5>Supported Landsat-8 OLI Source Products</h5>
-The following Landsat-8 OLI source products are supported for Idepix classification:
+<h5>Supported Sentinel-2 MSI Source Products</h5>
+The following Sentinel-2 MSI source products are basically supported for Idepix classification:
 <ul>
     <li>
-        Ls8ppprrrYYYYDDDGGGVV_MTL.txt:<br>
-        Landsat-8 OLI Level 1 T- Terrain Corrected products (30/15m), for detailed product description and
-        file naming convention see USGS Landsat Product Handbook, section4
-        (http://landsat.usgs.gov/l8handbook_section4.php).
+        S2A_*_MSIL1C_*.SAFE:<br>
+        Sentinel-2 MSI Level-1C products (60/20/10m resolution).
+        For a detailed product description see the Sentinel-2 MSI L1C Technical Guide
+        (https://sentinel.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-1c-processing).
     </li>
 </ul>
 
+<p>
+    <b>NOTE: </b> The pixel classification for Sentinel-2 MSI will NOT accept the above source products 'as they are'
+    because the source bands have different spatial resolutions.
+    Before applying IdePix, the source products need to resampled to a common resolution using the Resampling
+    processor (Raster --> Geometric Operations --> Resampling). See the help documentation of the Resampling
+    processor for more details.
+</p>
+
+<p>
+    If the source product has not been properly resampled before applying IdePix, the error message shown below will
+    be displayed.
+</p>
+
+<p align="center"><img src="images/MsiResamplingErrorMessage.png"></p>
 
 <h5>Target Product Group</h5>
 
@@ -82,27 +95,13 @@ The following Landsat-8 OLI source products are supported for Idepix classificat
 
 <h3>The Processing Parameters</h3>
 
+<p align="center"><img src="images/IdepixParameterMsi.png"></p>
 
-<p>
-    <b>NOTE: </b> The pixel classification for Landsat-8 OLI, i.e. all the cloud tests, work on TOA reflectances rather than
-    radiances. As the Landsat-8 OLI product reader by default interprets the spectral band values as radiances, a
-    specific property must be set to read the data as reflectances before using Idepix:
+<p class="i1">
+    <b>Write TOA reflectances to the target product: </b><br>
+    If set, all TOA reflectance bands from the source product are written to target product.
+    The default value is 'true'.
 </p>
-<ul>
-    <li>
-        if not present, create a file 's3tbx.properties' in the folder [USER_HOME]/.snap/etc
-    </li>
-    <li>
-        in this file 's3tbx.properties' add the entry
-        <ul>
-            <li>
-                s3tbx.landsat.readAs=reflectance
-            </li>
-        </ul>
-    </li>
-</ul>
-
-<p align="center"><img src="images/IdepixParameterLandsat8.png"></p>
 
 <p class="i1">
     <b>Width of cloud buffer (# of pixels): </b><br>
@@ -209,7 +208,7 @@ The Idepix classification result is written into the target product as a flag ba
 This band holds integer values which for Landsat-8 OLI follow the flag coding shown below.
 
 <p align="center">
-    <img src="images/Landsat8FlagCoding.png" border="0">
+    <img src="images/MFlagCoding.png" border="0">
 </p>
 <br>
 
@@ -217,7 +216,7 @@ The target product also provides a corresponding flag mask to visualize the pixe
 SNAP Mask Manager:
 
 <p align="center">
-    <img src="images/Landsat8MaskManager.png" border="0">
+    <img src="images/MMaskManager.png" border="0">
 </p>
 
 
