@@ -104,111 +104,50 @@ The following Sentinel-2 MSI source products are basically supported for Idepix 
 </p>
 
 <p class="i1">
-    <b>Width of cloud buffer (# of pixels): </b><br>
-    The width of the cloud buffer in # of pixels. The default value is 1.
+    <b>Write feature values to the target product: </b><br>
+    If set, various feature values computed for the final pixel classification are written to target product.
+    See algorthm description for more details. The default value is 'false'.
 </p>
 
 <p class="i1">
-    <b>Refine pixel classification near coastlines (time consuming!): </b><br>
-    If set, the pixel classification near coastlines is refined using a spatial filtering.
-    This improves distinction of clouds and bright beaches. Note that this is a time consuming operation
-    for Landsat-8 OLI products, as this filtering also considers neighbourhood pixels of the pixel being
-    classified. The default value is 'false'.
+    <b>Compute mountain shadow: </b><br>
+    If set, a mountain shadow flag is computed. The default value is 'true'.
 </p>
 
 <p class="i1">
-    <b>Neural Net to be applied: </b><br>
-    Specifies the neural net which is applied for the pixel classification. The user can select between a
-    standard neural net ('ALL') suitable for most conditions, and various other neural nets for certain conditions,
-    i.e. if land or water is dominant in the given scene. The neural nets with the suffix '_USE_THERMAL'
-    explicitly use the thermal infrared bands at 10895nm and 12005nm as input. The default neural net is 'ALL'.
+    <b>Compute cloud shadow: </b><br>
+    If set, a cloud shadow flag is computed. The default value is 'false'.
 </p>
 
 <p class="i1">
-    <b>NN cloud ambiguous lower boundary: </b><br>
-    The boundary of the neural network output value where pixels are regarded as either clear (NN output lower
-    than boundary) or 'cloud ambiguous' (NN output higher than boundary). The output value of the neural network
-    (floating point number on the interval [0.0, 5.0]) is written to the target product in a band 'nnResult'.
-    Providing the NN cloud ambiguous lower boundary as user option allows a fine tuning of the pixel classification
-    under certain conditions. The default value is 1.95.
-</p>
-
-<p class="i1">
-    <b>NN cloud ambiguous/sure separation value: </b><br>
-    The boundary of the neural network output value where pixels are regarded as either 'cloud ambiguous' (NN output
-    lower
-    than boundary) or 'cloud sure' (NN output higher than boundary). The output value of the neural network
-    (floating point number on the interval [0.0, 5.0]) is written to the target product in a band 'nnResult'.
-    Providing the NN cloud ambiguous/sure separation value as user option allows a fine tuning of the pixel
-    classification
-    under certain conditions. The default value is 3.45.
-</p>
-
-<p class="i1">
-    <b>NN cloud sure /snow separation value: </b><br>
-    The boundary of the neural network output value where pixels are regarded as either 'cloud sure' (NN output lower
-    than boundary) or 'snow' (NN output higher than boundary). The output value of the neural network
-    (floating point number on the interval [0.0, 5.0]) is written to the target product in a band 'nnResult'.
-    Providing the NN cloud sure / snow separation value as user option allows a fine tuning of the pixel classification
-    under certain conditions. The default value is 4.3.
-</p>
-
-<p class="i1">
-    <b>Apply SHIMEZ cloud test: </b><br>
-    If set, the SHIMEZ cloud test (see algorithm specification for details) is applied for the cloud classification
-    in addition to the neural network. The default value is 'true'.
-</p>
-
-<p class="i1">
-    <b>Threshold A for SHIMEZ cloud test: </b><br>
-    The threshold A in the SHIMEZ cloud test (see algorithm specification for details). The default value is 0.1.
-</p>
-
-<p class="i1">
-    <b>Threshold B for SHIMEZ cloud test: </b><br>
-    The threshold B in the SHIMEZ cloud test (see algorithm specification for details). The default value is 0.25.
-</p>
-
-<p class="i1">
-    <b>Apply HOT cloud test: </b><br>
-    If set, the HOT cloud test (see algorithm specification for details) is applied for the cloud classification
-    in addition to the neural network. The default value is 'false'.
-</p>
-
-<p class="i1">
-    <b>Threshold A for HOT cloud test: </b><br>
-    The threshold A in the HOT cloud test (see algorithm specification for details). The default value is 0.1.
-</p>
-
-<p class="i1">
-    <b>Apply CLOST cloud test: </b><br>
-    If set, the CLOST cloud test (see algorithm specification for details) is applied for the cloud classification
-    in addition to the neural network. The default value is 'false'.
-</p>
-
-<p class="i1">
-    <b>Threshold A for CLOST cloud test: </b><br>
-    The threshold A in the CLOST cloud test (see algorithm specification for details). The default value is 0.001.
-</p>
-
-<p class="i1">
-    <b>Apply OTSU cloud test: </b><br>
-    If set, the OTSU cloud test (see algorithm specification for details) is applied for the cloud classification
-    in addition to the neural network. The default value is 'false'.
-</p>
-
-<p class="i1">
-    <b>Write source bands to the target product: </b><br>
-    If set, all bands from the source product are written to target product.
+    <b>Compute a cloud buffer: </b><br>
+    If set, a cloud buffer of certain width is computed around pixels classified as 'cloud sure'.
     The default value is 'true'.
+</p>
+
+<p class="i1">
+    <b>Compute a cloud buffer also for cloud ambiguous pixels: </b><br>
+    If set, a cloud buffer is also computed around pixels classified as 'cloud ambiguous'.
+    The default value is 'true'.
+</p>
+
+<p class="i1">
+<b>Width of cloud buffer (# of pixels): </b><br>
+If a cloud buffer is computed, the buffer width (in # of pixels around the cloudy reference pixel) can be specified.
+The default value is '2'.
+</p>
+
+<p class="i1">
+    <b>Digital Elevation Model: </b><br>
+    The name of the Digital Elevation Model to be used. The default is 'SRTM 3Sec'.
 </p>
 
 <h3>The Processing Result</h3>
 The Idepix classification result is written into the target product as a flag band named 'pixel_classif_flags'.
-This band holds integer values which for Landsat-8 OLI follow the flag coding shown below.
+This band holds integer values which for Sentinel-2 MSI follow the flag coding shown below.
 
 <p align="center">
-    <img src="images/MFlagCoding.png" border="0">
+    <img src="images/MsiFlagCoding.png" border="0">
 </p>
 <br>
 
@@ -216,7 +155,7 @@ The target product also provides a corresponding flag mask to visualize the pixe
 SNAP Mask Manager:
 
 <p align="center">
-    <img src="images/MMaskManager.png" border="0">
+    <img src="images/MsiMaskManager.png" border="0">
 </p>
 
 
