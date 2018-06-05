@@ -25,7 +25,6 @@ import java.util.Map;
  */
 @OperatorMetadata(alias = "Idepix.Spot.Vegetation",
         category = "Optical/Pre-Processing",
-        internal = true, // todo: remove when activated
         version = "1.0",
         authors = "Olaf Danne",
         copyright = "(c) 2016 by Brockmann Consult",

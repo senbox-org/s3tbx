@@ -30,19 +30,19 @@ import java.util.Map;
 public class ProbaVOp extends BasisOp {
 
     @Parameter(defaultValue = "false",
-            label = " Write TOA Reflectances to the target product",
-            description = " Write TOA Reflectances to the target product")
+            label = " Write TOA reflectances to the target product",
+            description = " Write TOA reflectances to the target product")
     private boolean copyToaReflectances = false;
-
-    @Parameter(defaultValue = "false",
-            label = " Write Feature Values to the target product",
-            description = " Write all Feature Values to the target product")
-    private boolean copyFeatureValues = false;
 
     @Parameter(defaultValue = "false",
             label = " Write input annotation bands to the target product",
             description = " Write input annotation bands to the target product")
     private boolean copyAnnotations;
+
+    @Parameter(defaultValue = "false",
+            label = " Write feature values to the target product",
+            description = " Write all feature values to the target product")
+    private boolean copyFeatureValues = false;
 
     @Parameter(defaultValue = "false",
             label = " Apply NN for cloud classification",
@@ -73,7 +73,7 @@ public class ProbaVOp extends BasisOp {
     private int cloudBufferWidth;
 
     @Parameter(defaultValue = "false",
-            label = " Use land-water flag from L1b product instead",
+            label = " Use land-water flag from L1b product instead of SRTM mask",
             description = "Use land-water flag from L1b product instead of SRTM mask")
     private boolean useL1bLandWaterFlag;
 
