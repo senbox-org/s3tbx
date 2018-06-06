@@ -25,26 +25,6 @@ import java.io.InputStream;
         internal = true)
 public class SeaWifsClassificationOp extends PixelOperator {
 
-    @Parameter(defaultValue = "false",
-            label = " Radiance bands",
-            description = "Write TOA radiance bands to target product.")
-    private boolean outputRadiance = false;
-
-    @Parameter(defaultValue = "true",
-            label = " Reflectance bands",
-            description = "Write TOA reflectance bands to target product.")
-    private boolean outputReflectance = true;
-
-    @Parameter(defaultValue = "true",
-            label = " Geometry bands",
-            description = "Write geometry bands to target product.")
-    private boolean outputGeometry = true;
-
-    @Parameter(defaultValue = "true",
-            label = " Debug bands",
-            description = "Write further useful bands to target product.")
-    private boolean outputDebug = true;
-
     @Parameter(defaultValue = "L_", valueSet = {"L_", "Lt_", "rhot_"}, label = " Prefix of input spectral bands.",
             description = "Prefix of input radiance or reflectance bands")
     private String radianceBandPrefix;
@@ -180,14 +160,7 @@ public class SeaWifsClassificationOp extends PixelOperator {
         neuralNetOutput = seawifsNeuralNet.get().getNeuralNet().calc(seawifsNeuralNetInput);
 
         occciAlgorithm.setNnOutput(neuralNetOutput);
-        targetSamples[3].set(neuralNetOutput[0]);
-
-        // SeaWiFS reflectances output:
-        if (outputReflectance) {
-            for (int i = 0; i < SeaWifsConstants.SEAWIFS_L1B_NUM_SPECTRAL_BANDS; i++) {
-                targetSamples[4 + i].set(reflectance[i]);
-            }
-        }
+        targetSamples[1].set(neuralNetOutput[0]);
 
         return occciAlgorithm;
     }

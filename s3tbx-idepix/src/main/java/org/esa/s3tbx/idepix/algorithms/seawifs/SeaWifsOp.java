@@ -30,29 +30,10 @@ import java.util.Map;
         description = "Pixel identification and classification for SeaWiFS.")
 public class SeaWifsOp extends BasisOp {
 
-    @Parameter(defaultValue = "false",
-            label = " Radiance bands",
-            description = "Write TOA radiance bands to target product.")
-    private boolean outputRadiance = false;
-
     @Parameter(defaultValue = "true",
-            label = " Reflectance bands",
-            description = "Write TOA reflectance bands to target product.")
-    private boolean outputReflectance = true;
-
-    @Parameter(defaultValue = "true",
-            label = " Geometry bands",
-            description = "Write geometry bands to target product.")
-    private boolean outputGeometry = true;
-
-    @Parameter(defaultValue = "true",
-            label = " Debug bands",
-            description = "Write further useful bands to target product.")
-    private boolean outputDebug = true;
-
-    @Parameter(defaultValue = "L_", valueSet = {"L_", "Lt_", "rhot_"}, label = " Prefix of input spectral bands.",
-            description = "Prefix of input radiance or reflectance bands")
-    private String radianceBandPrefix;
+            label = " Write TOA radiances/reflectance bands to target product",
+            description = "Write TOA radiances/reflectance bands to target product.")
+    private boolean outputRadRefl = true;
 
     @Parameter(defaultValue = "1", label = " Width of cloud buffer (# of pixels)")
     private int cloudBufferWidth;
@@ -61,14 +42,16 @@ public class SeaWifsOp extends BasisOp {
             description = "Resolution in m/pixel")
     private int waterMaskResolution;
 
-
     @SourceProduct(alias = "sourceProduct", label = "Name (SeaWiFS L1b product)", description = "The source product.")
     private Product sourceProduct;
 
 
     private Product waterMaskProduct;
     private Product classifProduct;
+
     private Map<String, Object> waterClassificationParameters;
+
+    private String radianceBandPrefix;
 
     @Override
     public void initialize() throws OperatorException {
@@ -78,6 +61,7 @@ public class SeaWifsOp extends BasisOp {
             throw new OperatorException(IdepixConstants.INPUT_INCONSISTENCY_ERROR_MESSAGE);
         }
 
+        radianceBandPrefix = sourceProduct.getName().endsWith(".L1C") ? "rhot_" : "Lt_";
         processSeawifs(createSeawifsClassificationParameters());
     }
 
@@ -123,22 +107,17 @@ public class SeaWifsOp extends BasisOp {
     }
 
     private Map<String, Object> createSeawifsClassificationParameters() {
-        Map<String, Object> occciCloudClassificationParameters = new HashMap<>(1);
-        occciCloudClassificationParameters.put("cloudBufferWidth", cloudBufferWidth);
-        occciCloudClassificationParameters.put("wmResolution", waterMaskResolution);
+        Map<String, Object> seawifsClassificationParameters = new HashMap<>(1);
+        seawifsClassificationParameters.put("cloudBufferWidth", cloudBufferWidth);
+        seawifsClassificationParameters.put("wmResolution", waterMaskResolution);
+        seawifsClassificationParameters.put("radianceBandPrefix", radianceBandPrefix);
 
-        return occciCloudClassificationParameters;
+        return seawifsClassificationParameters;
     }
 
     private void addBandsToTargetProduct(Product targetProduct) {
-        if (outputRadiance) {
-            IdepixIO.copySourceBands(sourceProduct, targetProduct, "Lt_");
-        }
-        if (outputReflectance) {
-            IdepixIO.copySourceBands(classifProduct, targetProduct, "_refl");
-        }
-        if (outputDebug) {
-            IdepixIO.copySourceBands(classifProduct, targetProduct, "_value");
+        if (outputRadRefl) {
+            IdepixIO.copySourceBands(sourceProduct, targetProduct, radianceBandPrefix);
         }
     }
 
