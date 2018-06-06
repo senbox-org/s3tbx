@@ -33,8 +33,89 @@
     </tr>
 </table>
 
-<!--todo: complete-->
-to be completed
+<h3>Processor Description</h3>
+
+<h4>I/O Parameters Tab</h4>
+
+<p align="center"><img src="images/ViirsPaths.png"></p>
+
+<h5>Source Product Group</h5>
+
+<p class="i1">
+    <b>Name: </b>
+    Used to select the spectral source product. The source product shall
+    contain spectral bands providing a source spectrum at each pixel. Use the <b>...</b> button to
+    open a data product currently not opened in the Sentinel Toolbox.
+</p>
+
+<h5>Supported Suomi NPP VIIRS Source Products</h5>
+The following Suomi NPP VIIRS source products are supported for Idepix classification:
+<ul>
+    <li>
+        S*.L1C:<br>
+        VIIRS L1C product
+    </li>
+</ul>
+For more detailed information on data product definitions and format specifications see the relevant OceanColour
+web pages at:<br>
+
+https://oceancolor.gsfc.nasa.gov/docs/products/ and https://oceancolor.gsfc.nasa.gov/docs/format/.
+
+
+<h5>Target Product Group</h5>
+
+<p class="i1">
+    <b>Name:</b>
+    Used to specify the name of the target product.
+</p>
+
+<p class="i1">
+    <b>Save to:</b>
+    Used to specify whether the target product should be saved to the file system. The
+    combo box presents a list of file formats.
+</p>
+
+<p class="i1">
+    <b>Open in SNAP:</b>
+    Used to specify whether the target product should be opened in the Sentinel Toolbox.
+    When the target product is not saved, it is opened in the Sentinel Toolbox automatically.
+</p>
+
+<h3>The Processing Parameters</h3>
+
+<p class="i1">
+    <b>Write TOA reflectances to the target product: </b><br>
+    If set, all TOA reflectance bands from the source product are written to target product. The default value is 'true'.
+</p>
+
+<p class="i1">
+    <b>Width of cloud buffer (# of pixels): </b><br>
+    If a cloud buffer is computed, the buffer width (in # of pixels around the cloudy reference pixel) can be specified.
+    The default value is '1'.
+</p>
+
+<p class="i1">
+    <b>Resolution of used land-water mask in m/pixel: </b><br>
+    The resolution of the underlying SRTM (Shuttle Radar Topography Mission) land-water mask
+    in metres per pixel. The default value is '50'.
+</p>
+
+<h3>The Processing Result</h3>
+The Idepix classification result is written into the target product as a flag band named 'pixel_classif_flags'.
+This band holds integer values which for Suomi NPP VIIRS follow the flag coding shown below.
+
+<p align="center">
+    <img src="images/ViirsFlagCoding.png" border="0">
+</p>
+<br>
+
+The target product also provides a corresponding flag mask to visualize the pixel classification through the
+SNAP Mask Manager:
+
+<p align="center">
+    <img src="images/ViirsMaskManager.png" border="0">
+</p>
+
 
 <hr>
 </body>
