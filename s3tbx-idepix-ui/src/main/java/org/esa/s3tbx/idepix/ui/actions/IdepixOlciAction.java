@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
 @NbBundle.Messages({"CTL_IdepixOlciAction_Text=Sentinel-3 OLCI"})
 public class IdepixOlciAction extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixOlciAction() {
         putValue(Action.SHORT_DESCRIPTION, "Performs pixel classification on a OLCI data product.");

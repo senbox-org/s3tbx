@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
 @NbBundle.Messages({"CTL_IdepixViirsAction_Text=Suomi NPP VIIRS"})
 public class IdepixViirsAction extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixViirsAction() {
         putValue(Action.SHORT_DESCRIPTION, "Performs pixel classification on a VIIRS data product.");

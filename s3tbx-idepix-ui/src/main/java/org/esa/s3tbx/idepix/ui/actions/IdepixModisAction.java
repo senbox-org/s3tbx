@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
 @NbBundle.Messages({"CTL_IdepixModisAction_Text=Terra/Aqua MODIS"})
 public class IdepixModisAction extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixModisAction() {
         putValue(Action.SHORT_DESCRIPTION, "Performs pixel classification on a MODIS data product.");
