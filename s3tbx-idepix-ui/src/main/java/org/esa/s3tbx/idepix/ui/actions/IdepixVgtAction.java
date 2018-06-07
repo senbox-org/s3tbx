@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
 @NbBundle.Messages({"CTL_IdepixVgtAction_Text=SPOT Vegetation"})
 public class IdepixVgtAction extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixVgtAction() {
         putValue(Action.SHORT_DESCRIPTION, "Performs pixel classification on a SPOT Vegetation data product.");
