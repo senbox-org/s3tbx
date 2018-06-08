@@ -20,7 +20,121 @@
 </table>
 
 <!--todo: complete-->
-to be completed
+<h3>Algorithm Specification</h3>
+
+<h4>Neural network classification</h4>
+
+<p>
+    The Idepix classification algorithm for Sentinel-3 OLCI is based on a neural network approach. A common neural net
+    is used for both land and water pixels.
+    As input for the neural net, the square roots of the OLCI TOA reflectances (obtained from an internal
+    radiance-to-reflectance conversion) in all 21 bands are used. <br> <br>
+
+    As output, the neural net finally provides per pixel one of the properties 'cloud sure',
+    'cloud ambiguous', 'cloud' (which means sure OR ambiguous) ,  or 'snow/ice'.
+
+<h4>Additional properties</h4>
+<p>
+    The following additional pixel properties are provided from the classification:
+<ul>
+    <li>
+        'cloud_buffer': For pixels identified as cloudy, a cloud buffer of specified width can be set by the user to finally obtain a more
+        conservative cloud mask. This is done in a post-processing step after the cloud classification has been applied
+        on the full image. The cloud buffer algorithm works on pixel wondows of size (2N+1) x (2N+1) with N = cloud buffer
+        width. Note that the cloud buffer is only applied on cloud-free pixels, i.e. cloudy pixels are not flagged as cloud
+        buffer of cloudy neighbour pixels.
+        The cloud buffer procedure is described in a bit more detail in the CCI Land Cover ATBD [1].
+    </li>
+    <li>
+        'land': the pixel is located over land
+    </li>
+    <li>
+        'coastline': the pixel is a coastline pixel
+    </li>
+</ul>
+
+By default, the 'land' and 'coastline' pixels are identified from the land flag included in the
+quality flags which come with the L1b product. Optionally, the SRTM (Shuttle Radar Topography Mission) land/water
+mask[2] can be applied instead.
+The latter is a fractional mask:
+<ul>
+    <li>
+        water fraction = 0 : 'land'
+    </li>
+    <li>
+        water fraction &gt; 0 and  water fraction  &lt; 100: 'coastline'
+    </li>
+    <li>
+        water fraction = 100: 'water'
+    </li>
+</ul>
+
+<h4>Final classification flags</h4>
+<p>
+    In summary, from the algorithm steps outlined above, the following final classification flags are provided for
+    Sentinel-3 OLCI:
+<ul>
+    <li>
+        'INVALID' (input invalid or no classification possible)
+    </li>
+    <li>
+        'CLOUD' (which means either CLOUD_AMBIGUOUS or CLOUD_SURE)
+    </li>
+    <li>
+        'CLOUD_AMBIGUOUS'
+    </li>
+    <li>
+        'CLOUD_SURE'
+    </li>
+    <li>
+        'CLOUD_BUFFER'
+    </li>
+    <li>
+        'SNOW_ICE'
+    </li>
+    <li>
+        'COASTLINE'
+    </li>
+    <li>
+        'LAND'
+    </li>
+</ul>
+
+<h4>Known issues</h4>
+<p>
+    The following pixel properties are currently NOT provided for MERIS:
+<ul>
+    <li>
+        'BRIGHT'
+    </li>
+    <li>
+        'WHITE'
+    </li>
+    <li>
+        'CLOUD_SHADOW'
+    </li>
+    <li>
+        'MIXED_PIXEL'
+    </li>
+</ul>
+
+<h3>References</h3>
+
+<p class="i1">
+    <b>[1]</b>
+    CCI Land Cover ATBD. Algorithm Theoretical Basis Document: Pre-Processing Year 3.
+    Version 1.1, 21 August 2017.
+    <br><br>
+
+    <b>[2]</b>
+    Farr, T. G., et al., The Shuttle Radar Topography Mission, Rev. Geophys., 45, RG2004,
+    doi:10.1029/2005RG000183. (2007)
+    <br><br>
+
+</p>
+<br>
+
+
 
 <hr>
 </body>

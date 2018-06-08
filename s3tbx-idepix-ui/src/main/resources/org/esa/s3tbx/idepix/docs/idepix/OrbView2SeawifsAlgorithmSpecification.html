@@ -19,8 +19,122 @@
     </tr>
 </table>
 
-<!--todo: complete-->
-to be completed
+<h3>Algorithm Specification</h3>
+
+<h4>Neural network classification</h4>
+
+<p>
+    The Idepix classification algorithm for OrbView-2 SeaWiFS is based on a neural network approach.
+    A common neural net is used for both land and water pixels.
+    As input for the neural net, the square roots of the SeaWiFS TOA reflectances in the 4 bands
+    at 412nm, 443nm, 490nm, 510nm, 555nm, 670nm, 765nm and 865nm are used. <br> <br>
+
+    As output, the neural net finally provides per <b>water</b> pixel one of the properties 'cloud sure',
+    'cloud ambiguous', 'cloud' (which means sure OR ambiguous). Over land, no cloud classification
+    is provided. Also, no snow/ice classification is provided anywhere.
+
+<h4>Additional properties</h4>
+<p>
+    The following additional pixel properties are provided from the classification:
+<ul>
+    <li>
+        'cloud_buffer': For pixels identified as cloudy, a cloud buffer of specified width can be set by the user to finally obtain a more
+        conservative cloud mask. This is done in a post-processing step after the cloud classification has been applied
+        on the full image. The cloud buffer algorithm works on pixel windows of size (2N+1) x (2N+1) with N = cloud buffer
+        width. Note that the cloud buffer is only applied on cloud-free pixels, i.e. cloudy pixels are not flagged as cloud
+        buffer of cloudy neighbour pixels.
+        The cloud buffer procedure is described in a bit more detail in the CCI Land Cover ATBD [1].
+    </li>
+    <li>
+        'land': the pixel is located over land
+    </li>
+    <li>
+        'water': the pixel is located over water
+    </li>
+    <li>
+        'coastline': the pixel is a coastline pixel
+    </li>
+</ul>
+
+The 'land' and 'coastline' pixels are identified from an SRTM (Shuttle Radar Topography Mission) land/water mask [2].
+This is a fractional mask:
+<ul>
+    <li>
+        water fraction = 0 : 'land'
+    </li>
+    <li>
+        water fraction &gt; 0 and  water fraction  &lt; 100: 'coastline'
+    </li>
+    <li>
+        water fraction = 100: 'water'
+    </li>
+</ul>
+
+<h4>Final classification flags</h4>
+<p>
+    In summary, from the algorithm steps outlined above, the following final classification flags are provided for
+    OrbView-2 SeaWiFS:
+<ul>
+    <li>
+        'INVALID' (input invalid or no classification possible)
+    </li>
+    <li>
+        'CLOUD' (which means either CLOUD_AMBIGUOUS or CLOUD_SURE), over water only
+    </li>
+    <li>
+        'CLOUD_AMBIGUOUS', over water only
+    </li>
+    <li>
+        'CLOUD_SURE', over water only
+    </li>
+    <li>
+        'CLOUD_BUFFER'
+    </li>
+    <li>
+        'COASTLINE'
+    </li>
+    <li>
+        'LAND'
+    </li>
+</ul>
+
+<h4>Known issues</h4>
+<p>
+    The following pixel properties are currently NOT provided for OrbView-2 SeaWiFS:
+<ul>
+    <li>
+        'CLOUD', 'CLOUD_AMBIGUOUS', 'CLOUD_SURE' over land
+    </li>
+    <li>
+        'SNOW_ICE'
+    </li>
+    <li>
+        'CLOUD_SHADOW'
+    </li>
+    <li>
+        'GLINT_RISK'
+    </li>
+    <li>
+        'MIXED_PIXEL'
+    </li>
+</ul>
+
+<h3>References</h3>
+
+<p class="i1">
+
+    <b>[1]</b>
+    CCI Land Cover ATBD. Algorithm Theoretical Basis Document: Pre-Processing Year 3.
+    Version 1.1, 21 August 2017.
+    <br><br>
+
+    <b>[2]</b>
+    Farr, T. G., et al., The Shuttle Radar Topography Mission, Rev. Geophys., 45, RG2004,
+    doi:10.1029/2005RG000183. (2007)
+    <br><br>
+
+</p>
+<br>
 
 <hr>
 </body>
