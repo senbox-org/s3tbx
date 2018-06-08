@@ -19,8 +19,137 @@
     </tr>
 </table>
 
-<!--todo: complete-->
-to be completed
+<h3>Algorithm Specification</h3>
+
+<h4>Neural network classification</h4>
+
+<p>
+    The Idepix classification algorithm for Envisat MERIS is based on a neural network approach. Separate neural nets
+    are used for land and water pixels.
+    As input for the neural nets, the square roots of the MERIS TOA reflectances (obtained from an internal
+    radiance-to-reflectance conversion) in all 15 bands are used.
+
+As output, the neural net finally provides per pixel one of the properties 'cloud sure',
+'cloud ambiguous', 'cloud' (which means sure OR ambiguous) ,  or 'snow/ice'.
+
+<h4>Additional properties</h4>
+<p>
+    The following additional pixel properties are provided from the classification:
+<ul>
+    <li>
+        'cloud_buffer': For pixels identified as cloudy, a cloud buffer of specified width can be set by the user to finally obtain a more
+        conservative cloud mask. This is done in a post-processing step after the cloud classification has been applied
+        on the full image. The cloud buffer algorithm works on pixel windows of size (2N+1) x (2N+1) with N = cloud buffer
+        width. Note that the cloud buffer is only applied on cloud-free pixels, i.e. cloudy pixels are not flagged as cloud
+        buffer of cloudy neighbour pixels.
+        The cloud buffer procedure is described in a bit more detail in the CCI Land Cover ATBD [1].
+    </li>
+    <li>
+        'cloud_shadow': For pixels identified as CLOUD, a cloud shadow algorithm can be optionally applied. This algorithm determines
+        the shadow from cloudy pixels by simple geometric calculations using the sun zenith angle and the cloud top
+        pressure, which in return is obtained from another neural network approach which was developed by
+        Free University of Berlin. The cloud shadow procedure is described in more detail in the CCI Land Cover ATBD [1].
+    </li>
+    <li>
+        'land': the pixel is located over land
+    </li>
+    <li>
+        'coastline': the pixel is a coastline pixel
+    </li>
+    <li>
+        'glint risk': the pixel is a water pixel and has a risk for sun glint. The glint risk is estimated
+        from the sun angles and the horizontal and meridional wind components, which are all included in the MERIS
+        tie point grids.
+    </li>
+</ul>
+
+The 'land' and 'coastline' pixels are identified from an SRTM (Shuttle Radar Topography Mission) land/water mask [2].
+This is a fractional mask:
+<ul>
+    <li>
+        water fraction = 0 : 'land'
+    </li>
+    <li>
+        water fraction &gt; 0 and  water fraction  &lt; 100: 'coastline'
+    </li>
+    <li>
+        water fraction = 100: 'water'
+    </li>
+</ul>
+
+<h4>Final classification flags</h4>
+<p>
+    In summary, from the algorithm steps outlined above, the following final classification flags are provided for
+    Envisat MERIS:
+<ul>
+    <li>
+        'INVALID' (input invalid or no classification possible)
+    </li>
+    <li>
+        'CLOUD' (which means either CLOUD_AMBIGUOUS or CLOUD_SURE)
+    </li>
+    <li>
+        'CLOUD_AMBIGUOUS'
+    </li>
+    <li>
+        'CLOUD_SURE'
+    </li>
+    <li>
+        'CLOUD_BUFFER'
+    </li>
+    <li>
+        'CLOUD_SHADOW'
+    </li>
+    <li>
+        'SNOW_ICE'
+    </li>
+    <li>
+        'COASTLINE'
+    </li>
+    <li>
+        'LAND'
+    </li>
+    <li>
+        'GLINT'
+    </li>
+</ul>
+
+<h4>Known issues</h4>
+<p>
+    The geometrical determination of a cloud shadow is known to be difficult, as the cloud height (retrieved
+    from the cloud top pressure) needs to be known rather precisely.
+    Therefore, the cloud shadow results may sometimes be poor.
+</p>
+<p>
+    The following pixel properties are currently NOT provided for MERIS:
+<ul>
+    <li>
+        'BRIGHT'
+    </li>
+    <li>
+        'WHITE'
+    </li>
+    <li>
+        'MIXED_PIXEL'
+    </li>
+</ul>
+
+<h3>References</h3>
+
+<p class="i1">
+    <b>[1]</b>
+    CCI Land Cover ATBD. Algorithm Theoretical Basis Document: Pre-Processing Year 3.
+    Version 1.1, 21 August 2017.
+    <br><br>
+    
+    <b>[2]</b>
+    Farr, T. G., et al., The Shuttle Radar Topography Mission, Rev. Geophys., 45, RG2004,
+    doi:10.1029/2005RG000183. (2007)
+    <br><br>
+
+</p>
+<br>
+
 
 <hr>
 </body>

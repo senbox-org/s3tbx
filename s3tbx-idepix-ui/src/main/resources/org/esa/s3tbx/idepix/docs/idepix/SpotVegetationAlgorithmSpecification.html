@@ -19,8 +19,159 @@
     </tr>
 </table>
 
-<!--todo: complete-->
-to be completed
+<h3>Algorithm Specification</h3>
+
+<h4>Neural network classification</h4>
+
+<p>
+    The Idepix classification algorithm for SPOT Vegetation is based on a combination of a neural network approach
+    and a 'feature extraction and classification' scheme which was originally developed in the frame of the
+    ESA DUE GlobAlbedo project. It is described in detail in the project ATBD [1].
+    A common neural net
+    is used for both land and water pixels.
+    As input for the neural net, the square roots of the SPOT Vegetation TOA reflectances in the 4 bands
+    at 450nm, 645nm, 835nm and 1670nm are used.  <br> <br>
+
+    As output, the neural net finally provides per pixel one of the properties 'cloud sure',
+    'cloud ambiguous', 'cloud' (which means sure OR ambiguous) ,  or 'snow/ice'.
+
+<h4>Additional properties</h4>
+<p>
+    The following additional pixel properties are provided from the classification:
+<ul>
+    <li>
+        'cloud_buffer': For pixels identified as cloudy, a cloud buffer of specified width can be set by the user to finally obtain a more
+        conservative cloud mask. This is done in a post-processing step after the cloud classification has been applied
+        on the full image. The cloud buffer algorithm works on pixel windows of size (2N+1) x (2N+1) with N = cloud buffer
+        width. Note that the cloud buffer is only applied on cloud-free pixels, i.e. cloudy pixels are not flagged as cloud
+        buffer of cloudy neighbour pixels.
+        The cloud buffer procedure is described in a bit more detail in the CCI Land Cover ATBD [2].
+    </li>
+    <li>
+        'bright':
+        The brightness classification is obtained from the 'feature extraction and classification' scheme.
+        A bright spectrum means that the intensity of the spectral curve (related to the albedo) should present relatively
+        high values. Therefore, cloud brightness is calculated for each pixel as the integral of spectrum, and differs from
+        the average of the spectral channels since it takes into account the distribution of the energy along the spectrum.
+    </li>
+    <li>
+        'white':
+        The whiteness classification is obtained from the 'feature extraction and classification' scheme.
+        A white spectrum means that the spectral signature must be flat along the spectrum. The first derivative of the
+        spectral curve should present low values, but noise and calibration errors may reduce the accuracy in the estimation
+        of the spectrum flatness when computing the spectral derivative in channels with similar wavelengths.
+    </li>
+    <li>
+        'land': the pixel is located over land
+    </li>
+    <li>
+        'water': the pixel is located over water
+    </li>
+    <li>
+        'clear land': the pixel is clear and located over land. Here, the identification as 'clear' is obtained
+        from a radiometric test within the feature extraction approach.
+    </li>
+    <li>
+        'clear water': the pixel is clear and located over water. Here, the identification as 'clear' is obtained
+        from a radiometric test within the feature extraction approach.
+    </li>
+    <li>
+        'coastline': the pixel is a coastline pixel
+    </li>
+</ul>
+
+The 'land' and 'coastline' pixels are identified from an SRTM (Shuttle Radar Topography Mission) land/water mask [3].
+This is a fractional mask:
+<ul>
+    <li>
+        water fraction = 0 : 'land'
+    </li>
+    <li>
+        water fraction &gt; 0 and  water fraction  &lt; 100: 'coastline'
+    </li>
+    <li>
+        water fraction = 100: 'water'
+    </li>
+</ul>
+
+<h4>Final classification flags</h4>
+<p>
+    In summary, from the algorithm steps outlined above, the following final classification flags are provided for
+    SPOT Vegetation:
+<ul>
+    <li>
+        'INVALID' (input invalid or no classification possible)
+    </li>
+    <li>
+        'CLOUD' (which means either CLOUD_AMBIGUOUS or CLOUD_SURE)
+    </li>
+    <li>
+        'CLOUD_AMBIGUOUS'
+    </li>
+    <li>
+        'CLOUD_SURE'
+    </li>
+    <li>
+        'CLOUD_BUFFER'
+    </li>
+    <li>
+        'CLOUD_SHADOW'
+    </li>
+    <li>
+        'SNOW_ICE'
+    </li>
+    <li>
+        'COASTLINE'
+    </li>
+    <li>
+        'LAND'
+    </li>
+    <li>
+        'WATER'
+    </li>
+    <li>
+        'CLEAR_LAND'
+    </li>
+    <li>
+        'CLEAR_WATER'
+    </li>
+</ul>
+
+<h4>Known issues</h4>
+<p>
+    The following pixel properties are currently NOT provided for SPOT Vegetation:
+<ul>
+    <li>
+        'CLOUD_SHADOW'
+    </li>
+    <li>
+        'GLINT_RISK'
+    </li>
+    <li>
+        'MIXED_PIXEL'
+    </li>
+</ul>
+
+<h3>References</h3>
+
+<p class="i1">
+    <b>[1]</b>
+    ESA DUE GlobAlbedo ATBD. Algorithm Theoretical Basis Document, Section A: Pixel Classification.
+    Version 4.12, 7 July 2013.
+    <br><br>
+
+    <b>[2]</b>
+    CCI Land Cover ATBD. Algorithm Theoretical Basis Document: Pre-Processing Year 3.
+    Version 1.1, 21 August 2017.
+    <br><br>
+
+    <b>[3]</b>
+    Farr, T. G., et al., The Shuttle Radar Topography Mission, Rev. Geophys., 45, RG2004,
+    doi:10.1029/2005RG000183. (2007)
+    <br><br>
+
+</p>
+<br>
 
 <hr>
 </body>
