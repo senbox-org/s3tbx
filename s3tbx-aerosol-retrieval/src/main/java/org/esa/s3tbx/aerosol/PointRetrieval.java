@@ -18,7 +18,7 @@ import org.esa.s3tbx.aerosol.math.Function;
  * 
  * @author akheckel
  */
-class PointRetrieval {
+public class PointRetrieval {
 
     private final Function brentFitFct;
 

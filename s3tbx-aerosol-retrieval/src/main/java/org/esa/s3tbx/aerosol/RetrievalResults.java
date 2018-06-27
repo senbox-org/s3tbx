@@ -9,7 +9,7 @@ package org.esa.s3tbx.aerosol;
  *
  * @author akheckel
  */
-class RetrievalResults {
+public class RetrievalResults {
     private final boolean retrievalFailed;
     private final float optAOT;
     private final float optErr;
