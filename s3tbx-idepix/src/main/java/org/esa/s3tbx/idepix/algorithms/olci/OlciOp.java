@@ -2,10 +2,8 @@ package org.esa.s3tbx.idepix.algorithms.olci;
 
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
-import org.esa.s3tbx.idepix.core.util.IdepixIO;
 import org.esa.s3tbx.idepix.core.operators.BasisOp;
-import org.esa.s3tbx.idepix.core.operators.IdepixProducts;
-import org.esa.s3tbx.processor.rad2refl.Sensor;
+import org.esa.s3tbx.idepix.core.util.IdepixIO;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.GPF;
@@ -175,7 +173,7 @@ public class OlciOp extends BasisOp {
 
 
     private void preProcess() {
-        rad2reflProduct = IdepixProducts.computeRadiance2ReflectanceProduct(sourceProduct, Sensor.OLCI);
+        rad2reflProduct = OlciUtils.computeRadiance2ReflectanceProduct(sourceProduct);
 
         if (useSrtmLandWaterMask) {
             HashMap<String, Object> waterMaskParameters = new HashMap<>();

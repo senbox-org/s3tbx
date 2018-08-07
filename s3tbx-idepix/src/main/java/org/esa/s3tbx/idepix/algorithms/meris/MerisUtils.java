@@ -3,12 +3,18 @@ package org.esa.s3tbx.idepix.algorithms.meris;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.IdepixFlagCoding;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
+import org.esa.s3tbx.processor.rad2refl.Rad2ReflOp;
+import org.esa.s3tbx.processor.rad2refl.Sensor;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.core.util.ProductUtils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -68,5 +74,15 @@ public class MerisUtils {
         }
     }
 
+    public static Product computeRadiance2ReflectanceProduct(Product sourceProduct) {
+        Map<String, Object> params = new HashMap<>(2);
+        params.put("sensor", Sensor.MERIS);
+        params.put("copyNonSpectralBands", false);
+        return GPF.createProduct(OperatorSpi.getOperatorAlias(Rad2ReflOp.class), params, sourceProduct);
+    }
+
+    public static Product computeCloudTopPressureProduct(Product sourceProduct) {
+        return GPF.createProduct("Meris.CloudTopPressureOp", GPF.NO_PARAMS, sourceProduct);
+    }
 
 }

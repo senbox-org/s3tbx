@@ -4,7 +4,6 @@ import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
 import org.esa.s3tbx.idepix.core.operators.BasisOp;
-import org.esa.s3tbx.idepix.core.operators.IdepixProducts;
 import org.esa.s3tbx.processor.rad2refl.Sensor;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -192,8 +191,8 @@ public class OlciSlstrOp extends BasisOp {
     }
 
     private void preProcess() {
-        olciRad2reflProduct = IdepixProducts.computeRadiance2ReflectanceProduct(sourceProduct, Sensor.OLCI);
-        slstrRad2reflProduct = IdepixProducts.computeRadiance2ReflectanceProduct(sourceProduct, Sensor.SLSTR_500m);
+        olciRad2reflProduct = OlciSlstrUtils.computeRadiance2ReflectanceProduct(sourceProduct, Sensor.OLCI);
+        slstrRad2reflProduct = OlciSlstrUtils.computeRadiance2ReflectanceProduct(sourceProduct, Sensor.SLSTR_500m);
 
         HashMap<String, Object> waterMaskParameters = new HashMap<>();
         waterMaskParameters.put("resolution", IdepixConstants.LAND_WATER_MASK_RESOLUTION);
