@@ -23,10 +23,6 @@ package org.esa.s3tbx.idepix.core.seaice;
  */
 public class SeaIceClassification {
 
-    /**
-     * The mean sea ice value.
-     */
-    public final double mean;
 
     /**
      * The minimum sea ice value.
@@ -39,9 +35,14 @@ public class SeaIceClassification {
     public final double max;
 
     /**
+     * The mean sea ice value.
+     */
+    private final double mean;
+
+    /**
      * The standard deviation from the mean value.
      */
-    public final double standardDeviation;
+    private final double standardDeviation;
 
     private SeaIceClassification(double mean, double min, double max, double standardDeviation) {
         this.mean = mean;

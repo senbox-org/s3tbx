@@ -1,4 +1,4 @@
-package org.esa.s3tbx.idepix.operators;
+package org.esa.s3tbx.idepix.core.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.idepix.algorithms.seawifs.SeaWifsUtils;

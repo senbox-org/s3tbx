@@ -1,4 +1,4 @@
-package org.esa.s3tbx.idepix.operators;
+package org.esa.s3tbx.idepix.core.operators;
 
 import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.Product;

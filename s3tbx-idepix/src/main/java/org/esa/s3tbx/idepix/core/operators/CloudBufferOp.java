@@ -1,9 +1,7 @@
-package org.esa.s3tbx.idepix.operators;
+package org.esa.s3tbx.idepix.core.operators;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.s3tbx.idepix.algorithms.CloudBuffer;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
-import org.esa.s3tbx.idepix.core.util.IdepixIO;
 import org.esa.s3tbx.idepix.core.util.IdepixUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;

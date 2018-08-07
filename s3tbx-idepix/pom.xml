@@ -13,7 +13,8 @@
     <packaging>nbm</packaging>
 
     <name>Idepix</name>
-    <description>Generic classification of pixels (cloud, snow, ice, land, water) originating from optical sensors.</description>
+    <description>Generic classification of pixels (cloud, snow, ice, land, water) originating from optical sensors.
+    </description>
 
     <dependencies>
         <dependency>
@@ -66,52 +67,31 @@
             <artifactId>snap-unmix</artifactId>
             <version>${snap.version}</version>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.esa.s3tbx</groupId>-->
-            <!--<artifactId>s3tbx-meris-brr</artifactId>-->
-            <!--<version>${snap.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.esa.s3tbx</groupId>-->
-            <!--<artifactId>s3tbx-meris-sdr</artifactId>-->
-            <!--<version>${snap.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.esa.s3tbx</groupId>-->
-            <!--<artifactId>s3tbx-meris-l2auxdata</artifactId>-->
-            <!--<version>${snap.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.esa.s3tbx</groupId>-->
-            <!--<artifactId>s3tbx-meris-ops</artifactId>-->
-            <!--<version>${snap.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-watermask</artifactId>
             <version>${snap.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.s3tbx</groupId>
-            <artifactId>s3tbx-rad2refl</artifactId>
-            <version>${s3tbx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.s3tbx</groupId>
-            <artifactId>s3tbx-meris-l2auxdata</artifactId>
-            <version>${s3tbx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.s3tbx</groupId>
-            <artifactId>s3tbx-meris-sdr</artifactId>
-            <version>${s3tbx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+
+        <!-- todo: these dependencies to org.esa.s3tbx should be removed after sensor-specific 'algorithms'
+        have been extracted into separate plugins -->
+        <dependency>
+            <groupId>org.esa.s3tbx</groupId>
+            <artifactId>s3tbx-meris-l2auxdata</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.esa.s3tbx</groupId>
+            <artifactId>s3tbx-rad2refl</artifactId>
+            <version>${s3tbx.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -123,7 +103,7 @@
                     <publicPackages>
                         <publicPackage>org.esa.s3tbx.idepix.algorithms.*</publicPackage>
                         <publicPackage>org.esa.s3tbx.idepix.core.*</publicPackage>
-                        <publicPackage>org.esa.s3tbx.idepix.operators.*</publicPackage>
+                        <publicPackage>org.esa.s3tbx.idepix.core.operators.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

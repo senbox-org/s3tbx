@@ -3,8 +3,8 @@ package org.esa.s3tbx.idepix.algorithms.olci;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
-import org.esa.s3tbx.idepix.operators.BasisOp;
-import org.esa.s3tbx.idepix.operators.IdepixProducts;
+import org.esa.s3tbx.idepix.core.operators.BasisOp;
+import org.esa.s3tbx.idepix.core.operators.IdepixProducts;
 import org.esa.s3tbx.processor.rad2refl.Sensor;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -163,7 +163,7 @@ public class OlciOp extends BasisOp {
             IdepixIO.addRadianceBands(sourceProduct, targetProduct, radianceBandsToCopy);
         }
         if (outputRad2Refl) {
-            IdepixIO.addOlciRadiance2ReflectanceBands(rad2reflProduct, targetProduct, reflBandsToCopy);
+            OlciUtils.addOlciRadiance2ReflectanceBands(rad2reflProduct, targetProduct, reflBandsToCopy);
         }
 
         if (outputSchillerNNValue) {

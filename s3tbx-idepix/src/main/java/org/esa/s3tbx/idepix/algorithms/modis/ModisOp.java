@@ -3,7 +3,7 @@ package org.esa.s3tbx.idepix.algorithms.modis;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
-import org.esa.s3tbx.idepix.operators.BasisOp;
+import org.esa.s3tbx.idepix.core.operators.BasisOp;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.GPF;

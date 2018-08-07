@@ -14,7 +14,7 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
-package org.esa.s3tbx.idepix.algorithms;
+package org.esa.s3tbx.idepix.core;
 
 
 import org.esa.s3tbx.idepix.core.util.Bresenham;

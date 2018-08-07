@@ -1,12 +1,10 @@
-package org.esa.s3tbx.idepix.operators;
+package org.esa.s3tbx.idepix.core.operators;
 
-import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflOp;
 import org.esa.s3tbx.processor.rad2refl.Sensor;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.gpf.OperatorSpi;
-import org.esa.snap.core.util.ProductUtils;
 
 import java.util.HashMap;
 import java.util.Map;

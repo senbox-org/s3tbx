@@ -1,4 +1,4 @@
-package org.esa.s3tbx.idepix.operators;
+package org.esa.s3tbx.idepix.core.operators;
 
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;

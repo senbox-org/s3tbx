@@ -3,8 +3,8 @@ package org.esa.s3tbx.idepix.algorithms.olcislstr;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
-import org.esa.s3tbx.idepix.operators.BasisOp;
-import org.esa.s3tbx.idepix.operators.IdepixProducts;
+import org.esa.s3tbx.idepix.core.operators.BasisOp;
+import org.esa.s3tbx.idepix.core.operators.IdepixProducts;
 import org.esa.s3tbx.processor.rad2refl.Sensor;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -173,7 +173,7 @@ public class OlciSlstrOp extends BasisOp {
         }
 
         if (outputOlciRad2Refl) {
-            IdepixIO.addOlciRadiance2ReflectanceBands(olciRad2reflProduct, targetProduct, olciReflBandsToCopy);
+            OlciSlstrUtils.addOlciRadiance2ReflectanceBands(olciRad2reflProduct, targetProduct, olciReflBandsToCopy);
         }
 
         if (outputSlstrRadiance) {
@@ -181,7 +181,7 @@ public class OlciSlstrOp extends BasisOp {
         }
 
         if (outputSlstrRad2Refl) {
-            IdepixIO.addSlstrRadiance2ReflectanceBands(slstrRad2reflProduct, targetProduct, slstrReflBandsToCopy);
+            OlciSlstrUtils.addSlstrRadiance2ReflectanceBands(slstrRad2reflProduct, targetProduct, slstrReflBandsToCopy);
         }
 
         if (outputSchillerNNValue) {

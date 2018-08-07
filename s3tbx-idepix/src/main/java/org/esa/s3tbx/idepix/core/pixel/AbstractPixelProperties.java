@@ -24,8 +24,8 @@ package org.esa.s3tbx.idepix.core.pixel;
  */
 public abstract class AbstractPixelProperties implements PixelProperties {
 
-    public boolean isWater;
-    public boolean usel1bLandWaterFlag;
+    protected boolean isWater;
+    protected boolean usel1bLandWaterFlag;
 
     @Override
     public boolean isWater() {

@@ -4,7 +4,6 @@ package org.esa.s3tbx.idepix.core.util;
 import org.esa.s3tbx.idepix.algorithms.viirs.ViirsConstants;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
-import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.util.ProductUtils;
@@ -300,77 +299,5 @@ public class IdepixIO {
         }
     }
 
-    public static void addMerisRadiance2ReflectanceBands(Product rad2reflProduct, Product targetProduct, String[] reflBandsToCopy) {
-        for (int i = 1; i <= Rad2ReflConstants.MERIS_REFL_BAND_NAMES.length; i++) {
-            for (String bandname : reflBandsToCopy) {
-                // e.g. Oa01_reflectance
-                if (!targetProduct.containsBand(bandname) &&
-                        bandname.startsWith(Rad2ReflConstants.MERIS_AUTOGROUPING_REFL_STRING) &&
-                        bandname.endsWith("_" + String.valueOf(i))) {
-                    ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
-                    targetProduct.getBand(bandname).setUnit("dl");
-                }
-            }
-        }
-    }
 
-    public static void addOlciRadiance2ReflectanceBands(Product rad2reflProduct, Product targetProduct, String[] reflBandsToCopy) {
-        for (int i = 1; i <= Rad2ReflConstants.OLCI_REFL_BAND_NAMES.length; i++) {
-            for (String bandname : reflBandsToCopy) {
-                // e.g. Oa01_reflectance
-                if (!targetProduct.containsBand(bandname) && bandname.equals("Oa" + String.format("%02d", i) + "_reflectance")) {
-                    ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
-                    targetProduct.getBand(bandname).setUnit("dl");
-                }
-            }
-        }
-    }
-
-    public static void addSlstrRadiance2ReflectanceBands(Product rad2reflProduct, Product targetProduct, String[] reflBandsToCopy) {
-        for (int i = 1; i <= Rad2ReflConstants.SLSTR_REFL_BAND_NAMES.length; i++) {
-            for (String bandname : reflBandsToCopy) {
-                // e.g. S1_reflectance_an
-                if (!targetProduct.containsBand(bandname) && bandname.startsWith("S" + String.format("%01d", i) + "_reflectance")) {
-                    ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
-                    targetProduct.getBand(bandname).setUnit("dl");
-                }
-            }
-        }
-    }
-
-    public static void addCawaBands(Product l1bProduct, Product targetProduct) {
-        for (int i = 12; i <= 15; i++) {
-            final String sfBandName = "solar_flux_band_" + i;
-            if (!targetProduct.containsBand(sfBandName)) {
-                ProductUtils.copyBand(sfBandName, l1bProduct, targetProduct, true);
-                targetProduct.getBand(sfBandName).setUnit("dl");
-            }
-            final String radBandName =  Rad2ReflConstants.OLCI_RAD_BAND_NAMES[i-1];
-            if (!targetProduct.containsBand(radBandName)) {
-                ProductUtils.copyBand(radBandName, l1bProduct, targetProduct, true);
-                final String unit = l1bProduct.getBand(radBandName).getUnit();
-                targetProduct.getBand(radBandName).setUnit(unit);
-            }
-        }
-        if (!targetProduct.containsBand("detector_index")) {
-            ProductUtils.copyBand("detector_index", l1bProduct, targetProduct, true);
-            targetProduct.getBand("detector_index").setUnit("dl");
-        }
-        if (!targetProduct.containsBand("lambda0_band_13")) {
-            ProductUtils.copyBand("lambda0_band_13", l1bProduct, targetProduct, true);
-            targetProduct.getBand("lambda0_band_13").setUnit("nm");
-        }
-        if (!targetProduct.containsBand("latitude")) {
-            ProductUtils.copyBand("latitude", l1bProduct, targetProduct, true);
-            targetProduct.getBand("latitude").setUnit("deg");
-        }
-        if (!targetProduct.containsBand("longitude")) {
-            ProductUtils.copyBand("longitude", l1bProduct, targetProduct, true);
-            targetProduct.getBand("longitude").setUnit("deg");
-        }
-        if (!targetProduct.containsBand("altitude")) {
-            ProductUtils.copyBand("altitude", l1bProduct, targetProduct, true);
-            targetProduct.getBand("altitude").setUnit("m");
-        }
-    }
 }

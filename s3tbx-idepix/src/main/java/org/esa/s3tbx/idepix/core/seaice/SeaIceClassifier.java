@@ -72,7 +72,7 @@ public class SeaIceClassifier {
         return SeaIceClassification.create(mean, min, max, stdDev);
     }
 
-    double[] getEntry(double lat, double lon) {
+    private double[] getEntry(double lat, double lon) {
         int latIndex = (int) lat;
         if (latIndex == 180) {
             // latitude of 180 is a valid value, but value range in map is 0..179
@@ -89,7 +89,7 @@ public class SeaIceClassifier {
         return map[latIndex][lonIndex];
     }
 
-    static void validateParameters(double lat, double lon) {
+    private static void validateParameters(double lat, double lon) {
         if (lat > 180 || lat < 0) {
             throw new IllegalArgumentException("lat must be >= 0 and <= 180, was '" + lat + "'.");
         }

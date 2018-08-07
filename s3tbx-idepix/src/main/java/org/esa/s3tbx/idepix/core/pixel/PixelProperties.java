@@ -45,13 +45,6 @@ interface PixelProperties {
     boolean isClearSnow();
 
     /**
-     * returns a boolean indicating if a pixel is a sea ice pixel
-     *
-     * @return isSeaIce
-     */
-    boolean isSeaIce();
-
-    /**
      * returns a boolean indicating if a pixel is over land
      *
      * @return isLand
@@ -87,25 +80,11 @@ interface PixelProperties {
     boolean isWhite();
 
     /**
-     * returns a boolean indicating if a pixel likely contains vegetation
-     *
-     * @return isVegRisk
-     */
-    boolean isVegRisk();
-
-    /**
      * returns a boolean indicating if a pixel has sun glint risk
      *
      * @return isGlintRisk
      */
     boolean isGlintRisk();
-
-    /**
-     * returns a boolean indicating if a pixel reflectance surface is at high altitude
-     *
-     * @return isHigh
-     */
-    boolean isHigh();
 
     /**
      * returns a boolean indicating if a pixel is invalid

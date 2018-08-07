@@ -1,4 +1,4 @@
-package org.esa.s3tbx.idepix.algorithms;
+package org.esa.s3tbx.idepix.core;
 
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;

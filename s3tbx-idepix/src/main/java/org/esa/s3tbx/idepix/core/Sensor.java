@@ -1,4 +1,4 @@
-package org.esa.s3tbx.idepix.algorithms;
+package org.esa.s3tbx.idepix.core;
 
 /**
  * Idepix sensor enumeration
