@@ -34,7 +34,7 @@
 <p>
     The optical water type classification (OWT) tool is an adaptation of a spectral based optical pre-classification
     scheme (Moore et al., 2001) that calculates clusters from in-situ spectra. These spectra have been collected by
-    different users from all over the world (University of New Hampshire and NASA’s SeaBass in USA and CEDEX in Spain)
+    different users from all over the world (University of New Hampshire and NASA's SeaBass in USA and CEDEX in Spain)
     and by partners and advisors of the EU- GLaSS and the ESA DUE CoastColour projects. The tool assigns the water type
     class that corresponds to the best match between the remotely sensed and the in situ spectrum. Moore et al. (2001,
     2014) designed a fuzzy logic spectral classification scheme that was adapted for coastal waters and lakes. In situ
@@ -67,7 +67,8 @@
             with a maximum of 16 classes and represents a wide range of coastal water conditions. These conditions
             are not unique to any particular region. The clusters are representations of averaged conditions
             governed by the optical properties of the water column. The last 8 classes are combined into one during
-            the processing, therefore the result has only 9 different classes.
+            the processing, therefore the result has only 9 different classes. <br>
+            This type needs the following wavelengths: 410, 443, 490, 510, 555
         </p></td>
         <td><img src="images/OWT_TYPE_COASTAL_Spectra.png" border=0></td>
     <tr>
@@ -83,7 +84,8 @@
             found in the same clusters. The OWTs show a pattern of increasing absorption in the blue/green for low
             red/NIR features (classes 1 through 3), followed by increasing peak magnitude at 555 nm (classes 4
             through 7). OWTs 1 through 5 show increasing chlorophyll-a concentrations, while OWTs 6 and 7 have lower
-            mean chlorophyll-a values.
+            mean chlorophyll-a values. <br>
+            This type needs the following wavelengths: 412, 443, 490, 510, 560, 620, 665, 680, 709, 754
         </p></td>
         <td><img src="images/OWT_TYPE_INLAND_Spectra.png" border=0></td>
     </tr>
@@ -94,14 +96,15 @@
     </tr>
     <tr>
         <td><p>
-                This type is intended for the use with lakes and was developed in the frame of the EU-GLaSS project. The
-                in situ reflectance used to train the fuzzy classifier come exclusively from lake waters, which marks
-                the distance with the INLAND option. The water composition of the lakes has a higher mix and includes
-                many CDOM samples from Finnish lakes. Only 5 clusters are considered as the optimal number of classes.
-                The classes are sorted purely on remote sensing reflectance distribution and are representations of
-                optical conditions governed by the total absorption and scattering properties (IOPs). The wavelength
-                dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to higher
-                turbid waters due to the increase in the sediment load.
+            This type is intended for the use with lakes and was developed in the frame of the EU-GLaSS project. The
+            in situ reflectance used to train the fuzzy classifier come exclusively from lake waters, which marks
+            the distance with the INLAND option. The water composition of the lakes has a higher mix and includes
+            many CDOM samples from Finnish lakes. Only 5 clusters are considered as the optimal number of classes.
+            The classes are sorted purely on remote sensing reflectance distribution and are representations of
+            optical conditions governed by the total absorption and scattering properties (IOPs). The wavelength
+            dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to higher
+            turbid waters due to the increase in the sediment load. <br>
+            This type needs the following wavelengths: 442.6, 489.9, 509.8, 559.7, 619.6, 664.6, 680.8, 708.3, 753.4
             </p></td>
         <td><img src="images/OWT_TYPE_GLASS_5C_Spectra.png" border=0></td>
     <tr>
@@ -111,15 +114,16 @@
     </tr>
     <tr>
         <td><p>
-                This type is intended for the use with lakes and was developed in the frame of the EU-GLaSS project. The
-                in situ reflectance used to train the fuzzy classifier come exclusively from lake waters, which marks
-                the distance with the INLAND option. The water composition of the lakes has a higher mix and includes
-                many CDOM samples from Finnish lakes. Here 6 clusters are considered as the optimal number of classes.
-                The classes are sorted purely on remote sensing reflectance distribution and are representations of
-                optical conditions governed by the total absorption and scattering properties (IOPs). The wavelength
-                dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to higher
-                turbid waters due to the increase in the sediment load.
-            </p></td>
+            This type is intended for the use with lakes and was developed in the frame of the EU-GLaSS project. The
+            in situ reflectance used to train the fuzzy classifier come exclusively from lake waters, which marks
+            the distance with the INLAND option. The water composition of the lakes has a higher mix and includes
+            many CDOM samples from Finnish lakes. Here 6 clusters are considered as the optimal number of classes.
+            The classes are sorted purely on remote sensing reflectance distribution and are representations of
+            optical conditions governed by the total absorption and scattering properties (IOPs). The wavelength
+            dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to higher
+            turbid waters due to the increase in the sediment load. <br>
+            This type needs the following wavelengths: 442.6, 489.9, 509.8, 559.7, 619.6, 664.6, 680.8, 708.3, 753.4
+        </p></td>
         <td><img src="images/OWT_TYPE_GLASS_6C_Spectra.png" border=0></td>
     </tr>
     <tr>
@@ -139,7 +143,8 @@
                 dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to higher
                 turbid waters due to the increase in the sediment load. The normalised classification shows different
                 results than the 6C because the reflectance values were normalised integrating the area under the curve.
-                This removes magnitude effects and focuses more on the spectral shape.
+                This removes magnitude effects and focuses more on the spectral shape. <br>
+                This type needs the following wavelengths: 442.6, 489.9, 509.8, 559.7, 619.6, 664.6, 680.8, 708.3, 753.4
             </p></td>
         <td><img src="images/OWT_TYPE_GLASS_6C_NORMALISED_Spectra.png" border=0></td>
     </tr>
