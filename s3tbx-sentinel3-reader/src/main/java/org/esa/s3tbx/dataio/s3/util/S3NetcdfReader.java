@@ -219,7 +219,7 @@ public class S3NetcdfReader extends AbstractProductReader {
     private static int getRasterDataType(Variable variable) {
         int rasterDataType = DataTypeUtils.getRasterDataType(variable);
         if (rasterDataType == -1 && variable.getDataType() == DataType.LONG) {
-            rasterDataType = variable.isUnsigned() ? ProductData.TYPE_UINT32 : ProductData.TYPE_INT32;
+            rasterDataType = variable.getDataType().isUnsigned() ? ProductData.TYPE_UINT32 : ProductData.TYPE_INT32;
         }
         return rasterDataType;
     }

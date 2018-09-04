@@ -135,7 +135,7 @@ public class SpotVgtProductReader extends AbstractProductReader {
                 Variable variable = findPixelDataVariable(netcdfFile);
                 if (isPotentialPixelDataVariable(variable)) {
                     DataType netCdfDataType = variable.getDataType();
-                    int bandDataType = convertNetcdfTypeToProductDataType(netCdfDataType, variable.isUnsigned());
+                    int bandDataType = convertNetcdfTypeToProductDataType(netCdfDataType, variable.getDataType().isUnsigned());
                     if (bandDataType != ProductData.TYPE_UNDEFINED) {
                         String bandName = getBandName(logVolFileName);
                         BandInfo bandInfo = getBandInfo(bandName);
