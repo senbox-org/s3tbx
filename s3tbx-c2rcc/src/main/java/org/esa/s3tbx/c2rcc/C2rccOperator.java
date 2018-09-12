@@ -92,7 +92,7 @@ public class C2rccOperator extends Operator {
     private double ozone;
 
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure",
-            description = "The value used as air pressure if not provided by auxiliary data")
+            description = "The surface air pressure if not provided by auxiliary data")
     private double press;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +

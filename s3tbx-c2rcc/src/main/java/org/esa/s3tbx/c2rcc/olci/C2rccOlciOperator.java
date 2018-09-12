@@ -192,7 +192,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private double ozone;
 
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure",
-            description = "The value used as air pressure if not provided by auxiliary data")
+            description = "The surface air pressure if not provided by auxiliary data")
     private double press;
 
     @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")

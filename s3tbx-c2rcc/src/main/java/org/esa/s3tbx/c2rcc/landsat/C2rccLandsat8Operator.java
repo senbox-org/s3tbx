@@ -204,7 +204,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     private double ozone;
 
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure",
-            description = "The value used as air pressure if not provided by auxiliary data")
+            description = "The surface air pressure if not provided by auxiliary data")
     private double press;
 
     @Parameter(defaultValue = "0", unit = "m", interval = "(0, 8500)", label = "Elevation",
