@@ -1,0 +1,36 @@
+<filesystem>
+
+    <folder name="Actions">
+        <folder name="Operators">
+            <file name="org-esa-s3tbx-PpeOpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="Ppe Operator"/>
+                <attr name="dialogTitle" stringvalue="Ppe Operator"/>
+                <attr name="operatorName" stringvalue="PpeOperator"/>
+                <attr name="helpId" stringvalue="PpeTool"/>
+                <attr name="targetProductNameSuffix" stringvalue="_Ppe"/>
+            </file>
+        </folder>
+    </folder>
+
+    <folder name="Menu">
+        <folder name="Optical">
+            <folder name="Preprocessing">
+                <file name="org-esa-s3tbx-PpeOpAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Operators/org-esa-s3tbx-PpeOpAction.instance"/>
+                    <attr name="position" intvalue="10010"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+
+    <folder name="Services">
+        <folder name="javahelp">
+            <file name="org-esa-s3tbx-PpeOp-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="4610"/>
+            </file>
+        </folder>
+    </folder>
+
+</filesystem>
