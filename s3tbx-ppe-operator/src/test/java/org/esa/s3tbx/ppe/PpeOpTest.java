@@ -15,10 +15,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
+
 public class PpeOpTest {
 
     private static final float[] MERIS_WAVELENGTHS = new float[]{412, 442, 490, 510, 560, 620, 665, 681, 709, 754, 761, 779, 865, 885, 900};
-    private String TESTFILENAME ="ppetest.nc";
+    private String TESTFILENAME ="ppetest.dim";
 
     @Test
     public void testPpeOp()  {
@@ -88,6 +89,7 @@ public class PpeOpTest {
     public void getPixelListTest() throws IOException {
         String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
         Product sourceProduct = ProductIO.readProduct(testFilePath);
+
 
         RasterDataNode rasterDataNode = sourceProduct.getRasterDataNode("Oa11_radiance");
         Rectangle expectedRect = new Rectangle(0, 0, 20, 20);

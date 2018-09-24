@@ -19,10 +19,8 @@ package org.esa.s3tbx.ppe;
 
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -33,8 +31,10 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.engine_utilities.util.ProductFunctions;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -81,11 +81,12 @@ public class PpeOp extends Operator {
         else {
             sourceTile = getSourceTile(sourceProduct.getRasterDataNode(targetBand.getName().replace("_ppe_flag","")), targetRectangle);
         }
+        Tile landTile=getSourceTile(sourceProduct.getRasterDataNode("quality_flags_land"), targetRectangle);
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
             checkForCancellation();
             for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
                 double pixel = sourceTile.getSampleDouble(x, y);
-                if ( pixel>0) {
+                if ( pixel>0  && (landTile.getSampleBoolean(x,y)==false)) {
                     double[] pixelList = getPixelList(x, y, sourceTile);
                     double median = getMedian(pixelList);
                     double MAD = getMAD(pixelList);
@@ -97,13 +98,18 @@ public class PpeOp extends Operator {
                     }
                 }
                 else {
-                    targetTile.setSample(x, y, pixel);
+                    if (!targetBand.getName().toLowerCase().contains("_ppe_flag")) {
+                        targetTile.setSample(x, y, pixel);
+                    }
+                    else{
+                        targetTile.setSample(x, y, 0);
+                    }
                 }
             }
         }
     }
 
-    private void createTargetProduct() {
+    private void createTargetProduct()  {
         targetProduct = new Product(sourceProduct.getName(), sourceProduct.getProductType(), sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
 
         for (Band band : sourceProduct.getBands()) {
