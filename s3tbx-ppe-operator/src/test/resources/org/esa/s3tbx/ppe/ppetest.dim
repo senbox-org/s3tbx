@@ -1,0 +1,3316 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dimap_Document name="ppetest.dim">
+    <Metadata_Id>
+        <METADATA_FORMAT version="2.12.1">DIMAP</METADATA_FORMAT>
+        <METADATA_PROFILE>BEAM-DATAMODEL-V1</METADATA_PROFILE>
+    </Metadata_Id>
+    <Dataset_Id>
+        <DATASET_SERIES>BEAM-PRODUCT</DATASET_SERIES>
+        <DATASET_NAME>ppetest</DATASET_NAME>
+    </Dataset_Id>
+    <Dataset_Use>
+        <DATASET_COMMENTS>SENTINEL-3 OLCI Level 1 Earth Observation Full Resolution Product</DATASET_COMMENTS>
+        <DATASET_AUTO_GROUPING>Oa*_radiance:Oa*_radiance_err:atmospheric_temperature_profile:lambda0:FWHM:solar_flux</DATASET_AUTO_GROUPING>
+    </Dataset_Use>
+    <Production>
+        <DATASET_PRODUCER_NAME />
+        <PRODUCT_TYPE>OL_1_EFR</PRODUCT_TYPE>
+        <PRODUCT_SCENE_RASTER_START_TIME>08-JAN-2018 12:59:43.506412</PRODUCT_SCENE_RASTER_START_TIME>
+        <PRODUCT_SCENE_RASTER_STOP_TIME>08-JAN-2018 12:59:44.342598</PRODUCT_SCENE_RASTER_STOP_TIME>
+    </Production>
+    <Coordinate_Reference_System>
+        <Horizontal_CS>
+            <HORIZONTAL_CS_TYPE>GEOGRAPHIC</HORIZONTAL_CS_TYPE>
+            <Geographic_CS>
+                <Horizontal_Datum>
+                    <HORIZONTAL_DATUM_NAME>WGS-84</HORIZONTAL_DATUM_NAME>
+                    <Ellipsoid>
+                        <ELLIPSOID_NAME>WGS-84</ELLIPSOID_NAME>
+                        <Ellipsoid_Parameters>
+                            <ELLIPSOID_MAJ_AXIS unit="M">6378137.0</ELLIPSOID_MAJ_AXIS>
+                            <ELLIPSOID_MIN_AXIS unit="M">6356752.3</ELLIPSOID_MIN_AXIS>
+                        </Ellipsoid_Parameters>
+                    </Ellipsoid>
+                </Horizontal_Datum>
+            </Geographic_CS>
+        </Horizontal_CS>
+    </Coordinate_Reference_System>
+    <Geoposition>
+        <Geoposition_Points>
+            <TIE_POINT_GRID_NAME_LAT>TP_latitude</TIE_POINT_GRID_NAME_LAT>
+            <TIE_POINT_GRID_NAME_LON>TP_longitude</TIE_POINT_GRID_NAME_LON>
+        </Geoposition_Points>
+    </Geoposition>
+    <Flag_Coding name="quality_flags">
+        <Flag>
+            <Flag_Name>land</Flag_Name>
+            <Flag_Index>-2147483648</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>coastline</Flag_Name>
+            <Flag_Index>1073741824</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>fresh_inland_water</Flag_Name>
+            <Flag_Index>536870912</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>tidal_region</Flag_Name>
+            <Flag_Index>268435456</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>bright</Flag_Name>
+            <Flag_Index>134217728</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>straylight_risk</Flag_Name>
+            <Flag_Index>67108864</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>invalid</Flag_Name>
+            <Flag_Index>33554432</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>cosmetic</Flag_Name>
+            <Flag_Index>16777216</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>duplicated</Flag_Name>
+            <Flag_Index>8388608</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>sun_glint_risk</Flag_Name>
+            <Flag_Index>4194304</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>dubious</Flag_Name>
+            <Flag_Index>2097152</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa01</Flag_Name>
+            <Flag_Index>1048576</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa02</Flag_Name>
+            <Flag_Index>524288</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa03</Flag_Name>
+            <Flag_Index>262144</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa04</Flag_Name>
+            <Flag_Index>131072</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa05</Flag_Name>
+            <Flag_Index>65536</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa06</Flag_Name>
+            <Flag_Index>32768</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa07</Flag_Name>
+            <Flag_Index>16384</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa08</Flag_Name>
+            <Flag_Index>8192</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa09</Flag_Name>
+            <Flag_Index>4096</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa10</Flag_Name>
+            <Flag_Index>2048</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa11</Flag_Name>
+            <Flag_Index>1024</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa12</Flag_Name>
+            <Flag_Index>512</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa13</Flag_Name>
+            <Flag_Index>256</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa14</Flag_Name>
+            <Flag_Index>128</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa15</Flag_Name>
+            <Flag_Index>64</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa16</Flag_Name>
+            <Flag_Index>32</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa17</Flag_Name>
+            <Flag_Index>16</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa18</Flag_Name>
+            <Flag_Index>8</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa19</Flag_Name>
+            <Flag_Index>4</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa20</Flag_Name>
+            <Flag_Index>2</Flag_Index>
+            <Flag_description />
+        </Flag>
+        <Flag>
+            <Flag_Name>saturated_Oa21</Flag_Name>
+            <Flag_Index>1</Flag_Index>
+            <Flag_description />
+        </Flag>
+    </Flag_Coding>
+    <Raster_Dimensions>
+        <NCOLS>20</NCOLS>
+        <NROWS>20</NROWS>
+        <NBANDS>92</NBANDS>
+    </Raster_Dimensions>
+    <Data_Access>
+        <DATA_FILE_FORMAT>ENVI</DATA_FILE_FORMAT>
+        <DATA_FILE_FORMAT_DESC>ENVI File Format</DATA_FILE_FORMAT_DESC>
+        <DATA_FILE_ORGANISATION>BAND_SEPARATE</DATA_FILE_ORGANISATION>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa01_radiance.hdr" />
+            <BAND_INDEX>0</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa02_radiance.hdr" />
+            <BAND_INDEX>1</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa03_radiance.hdr" />
+            <BAND_INDEX>2</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa04_radiance.hdr" />
+            <BAND_INDEX>3</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa05_radiance.hdr" />
+            <BAND_INDEX>4</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa06_radiance.hdr" />
+            <BAND_INDEX>5</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa07_radiance.hdr" />
+            <BAND_INDEX>6</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa08_radiance.hdr" />
+            <BAND_INDEX>7</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa09_radiance.hdr" />
+            <BAND_INDEX>8</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa10_radiance.hdr" />
+            <BAND_INDEX>9</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa11_radiance.hdr" />
+            <BAND_INDEX>10</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa12_radiance.hdr" />
+            <BAND_INDEX>11</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa13_radiance.hdr" />
+            <BAND_INDEX>12</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa14_radiance.hdr" />
+            <BAND_INDEX>13</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa15_radiance.hdr" />
+            <BAND_INDEX>14</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa16_radiance.hdr" />
+            <BAND_INDEX>15</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa17_radiance.hdr" />
+            <BAND_INDEX>16</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa18_radiance.hdr" />
+            <BAND_INDEX>17</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa19_radiance.hdr" />
+            <BAND_INDEX>18</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa20_radiance.hdr" />
+            <BAND_INDEX>19</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/Oa21_radiance.hdr" />
+            <BAND_INDEX>20</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/altitude.hdr" />
+            <BAND_INDEX>21</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/latitude.hdr" />
+            <BAND_INDEX>22</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/longitude.hdr" />
+            <BAND_INDEX>23</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/detector_index.hdr" />
+            <BAND_INDEX>24</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_1.hdr" />
+            <BAND_INDEX>25</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_2.hdr" />
+            <BAND_INDEX>26</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_3.hdr" />
+            <BAND_INDEX>27</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_4.hdr" />
+            <BAND_INDEX>28</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_5.hdr" />
+            <BAND_INDEX>29</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_6.hdr" />
+            <BAND_INDEX>30</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_7.hdr" />
+            <BAND_INDEX>31</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_8.hdr" />
+            <BAND_INDEX>32</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_9.hdr" />
+            <BAND_INDEX>33</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_10.hdr" />
+            <BAND_INDEX>34</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_11.hdr" />
+            <BAND_INDEX>35</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_12.hdr" />
+            <BAND_INDEX>36</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_13.hdr" />
+            <BAND_INDEX>37</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_14.hdr" />
+            <BAND_INDEX>38</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_15.hdr" />
+            <BAND_INDEX>39</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_16.hdr" />
+            <BAND_INDEX>40</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_17.hdr" />
+            <BAND_INDEX>41</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_18.hdr" />
+            <BAND_INDEX>42</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_19.hdr" />
+            <BAND_INDEX>43</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_20.hdr" />
+            <BAND_INDEX>44</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/FWHM_band_21.hdr" />
+            <BAND_INDEX>45</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/frame_offset.hdr" />
+            <BAND_INDEX>46</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_1.hdr" />
+            <BAND_INDEX>47</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_2.hdr" />
+            <BAND_INDEX>48</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_3.hdr" />
+            <BAND_INDEX>49</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_4.hdr" />
+            <BAND_INDEX>50</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_5.hdr" />
+            <BAND_INDEX>51</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_6.hdr" />
+            <BAND_INDEX>52</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_7.hdr" />
+            <BAND_INDEX>53</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_8.hdr" />
+            <BAND_INDEX>54</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_9.hdr" />
+            <BAND_INDEX>55</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_10.hdr" />
+            <BAND_INDEX>56</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_11.hdr" />
+            <BAND_INDEX>57</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_12.hdr" />
+            <BAND_INDEX>58</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_13.hdr" />
+            <BAND_INDEX>59</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_14.hdr" />
+            <BAND_INDEX>60</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_15.hdr" />
+            <BAND_INDEX>61</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_16.hdr" />
+            <BAND_INDEX>62</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_17.hdr" />
+            <BAND_INDEX>63</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_18.hdr" />
+            <BAND_INDEX>64</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_19.hdr" />
+            <BAND_INDEX>65</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_20.hdr" />
+            <BAND_INDEX>66</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lambda0_band_21.hdr" />
+            <BAND_INDEX>67</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_1.hdr" />
+            <BAND_INDEX>68</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_2.hdr" />
+            <BAND_INDEX>69</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_3.hdr" />
+            <BAND_INDEX>70</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_4.hdr" />
+            <BAND_INDEX>71</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_5.hdr" />
+            <BAND_INDEX>72</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_6.hdr" />
+            <BAND_INDEX>73</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_7.hdr" />
+            <BAND_INDEX>74</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_8.hdr" />
+            <BAND_INDEX>75</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_9.hdr" />
+            <BAND_INDEX>76</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_10.hdr" />
+            <BAND_INDEX>77</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_11.hdr" />
+            <BAND_INDEX>78</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_12.hdr" />
+            <BAND_INDEX>79</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_13.hdr" />
+            <BAND_INDEX>80</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_14.hdr" />
+            <BAND_INDEX>81</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_15.hdr" />
+            <BAND_INDEX>82</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_16.hdr" />
+            <BAND_INDEX>83</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_17.hdr" />
+            <BAND_INDEX>84</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_18.hdr" />
+            <BAND_INDEX>85</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_19.hdr" />
+            <BAND_INDEX>86</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_20.hdr" />
+            <BAND_INDEX>87</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/solar_flux_band_21.hdr" />
+            <BAND_INDEX>88</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/quality_flags.hdr" />
+            <BAND_INDEX>89</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lat.hdr" />
+            <BAND_INDEX>90</BAND_INDEX>
+        </Data_File>
+        <Data_File>
+            <DATA_FILE_PATH href="ppetest.data/lon.hdr" />
+            <BAND_INDEX>91</BAND_INDEX>
+        </Data_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/TP_latitude.hdr" />
+            <TIE_POINT_GRID_INDEX>0</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/TP_longitude.hdr" />
+            <TIE_POINT_GRID_INDEX>1</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/OAA.hdr" />
+            <TIE_POINT_GRID_INDEX>2</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/OZA.hdr" />
+            <TIE_POINT_GRID_INDEX>3</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/SAA.hdr" />
+            <TIE_POINT_GRID_INDEX>4</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/SZA.hdr" />
+            <TIE_POINT_GRID_INDEX>5</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_1.hdr" />
+            <TIE_POINT_GRID_INDEX>6</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_2.hdr" />
+            <TIE_POINT_GRID_INDEX>7</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_3.hdr" />
+            <TIE_POINT_GRID_INDEX>8</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_4.hdr" />
+            <TIE_POINT_GRID_INDEX>9</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_5.hdr" />
+            <TIE_POINT_GRID_INDEX>10</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_6.hdr" />
+            <TIE_POINT_GRID_INDEX>11</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_7.hdr" />
+            <TIE_POINT_GRID_INDEX>12</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_8.hdr" />
+            <TIE_POINT_GRID_INDEX>13</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_9.hdr" />
+            <TIE_POINT_GRID_INDEX>14</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_10.hdr" />
+            <TIE_POINT_GRID_INDEX>15</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_11.hdr" />
+            <TIE_POINT_GRID_INDEX>16</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_12.hdr" />
+            <TIE_POINT_GRID_INDEX>17</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_13.hdr" />
+            <TIE_POINT_GRID_INDEX>18</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_14.hdr" />
+            <TIE_POINT_GRID_INDEX>19</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_15.hdr" />
+            <TIE_POINT_GRID_INDEX>20</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_16.hdr" />
+            <TIE_POINT_GRID_INDEX>21</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_17.hdr" />
+            <TIE_POINT_GRID_INDEX>22</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_18.hdr" />
+            <TIE_POINT_GRID_INDEX>23</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_19.hdr" />
+            <TIE_POINT_GRID_INDEX>24</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_20.hdr" />
+            <TIE_POINT_GRID_INDEX>25</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_21.hdr" />
+            <TIE_POINT_GRID_INDEX>26</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_22.hdr" />
+            <TIE_POINT_GRID_INDEX>27</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_23.hdr" />
+            <TIE_POINT_GRID_INDEX>28</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_24.hdr" />
+            <TIE_POINT_GRID_INDEX>29</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/atmospheric_temperature_profile_pressure_level_25.hdr" />
+            <TIE_POINT_GRID_INDEX>30</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/horizontal_wind_vector_1.hdr" />
+            <TIE_POINT_GRID_INDEX>31</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/horizontal_wind_vector_2.hdr" />
+            <TIE_POINT_GRID_INDEX>32</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/humidity.hdr" />
+            <TIE_POINT_GRID_INDEX>33</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/sea_level_pressure.hdr" />
+            <TIE_POINT_GRID_INDEX>34</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/total_columnar_water_vapour.hdr" />
+            <TIE_POINT_GRID_INDEX>35</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+        <Tie_Point_Grid_File>
+            <TIE_POINT_GRID_FILE_PATH href="ppetest.data/tie_point_grids/total_ozone.hdr" />
+            <TIE_POINT_GRID_INDEX>36</TIE_POINT_GRID_INDEX>
+        </Tie_Point_Grid_File>
+    </Data_Access>
+    <Tie_Point_Grids>
+        <NUM_TIE_POINT_GRIDS>37</NUM_TIE_POINT_GRIDS>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>0</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>TP_latitude</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>1</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>TP_longitude</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>2</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>OAA</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>3</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>OZA</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>4</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>SAA</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>5</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>SZA</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>6</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_1</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>7</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_2</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>8</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_3</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>9</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_4</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>10</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_5</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>11</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_6</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>12</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_7</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>13</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_8</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>14</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_9</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>15</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_10</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>16</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_11</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>17</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_12</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>18</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_13</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>19</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_14</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>20</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_15</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>21</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_16</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>22</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_17</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>23</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_18</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>24</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_19</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>25</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_20</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>26</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_21</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>27</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_22</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>28</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_23</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>29</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_24</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>30</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>atmospheric_temperature_profile_pressure_level_25</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>31</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>horizontal_wind_vector_1</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>32</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>horizontal_wind_vector_2</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>33</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>humidity</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>34</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>sea_level_pressure</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>35</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>total_columnar_water_vapour</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+        <Tie_Point_Grid_Info>
+            <TIE_POINT_GRID_INDEX>36</TIE_POINT_GRID_INDEX>
+            <TIE_POINT_DESCRIPTION />
+            <PHYSICAL_UNIT />
+            <TIE_POINT_GRID_NAME>total_ozone</TIE_POINT_GRID_NAME>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <NCOLS>3</NCOLS>
+            <NROWS>22</NROWS>
+            <OFFSET_X>-34.0</OFFSET_X>
+            <OFFSET_Y>-0.0</OFFSET_Y>
+            <STEP_X>64.0</STEP_X>
+            <STEP_Y>1.0</STEP_Y>
+            <CYCLIC>false</CYCLIC>
+        </Tie_Point_Grid_Info>
+    </Tie_Point_Grids>
+    <Masks>
+        <Mask type="Maths">
+            <NAME value="quality_flags_land" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.land" />
+            <COLOR red="0" green="127" blue="63" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.land" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_coastline" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.coastline" />
+            <COLOR red="255" green="0" blue="0" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.coastline" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_fresh_inland_water" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.fresh_inland_water" />
+            <COLOR red="0" green="127" blue="63" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.fresh_inland_water" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_tidal_region" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.tidal_region" />
+            <COLOR red="0" green="0" blue="255" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.tidal_region" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_bright" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.bright" />
+            <COLOR red="0" green="255" blue="0" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.bright" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_straylight_risk" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.straylight_risk" />
+            <COLOR red="0" green="255" blue="255" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.straylight_risk" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_invalid" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.invalid" />
+            <COLOR red="255" green="0" blue="255" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.invalid" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_cosmetic" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.cosmetic" />
+            <COLOR red="255" green="255" blue="0" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.cosmetic" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_duplicated" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.duplicated" />
+            <COLOR red="0" green="0" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.duplicated" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_sun_glint_risk" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.sun_glint_risk" />
+            <COLOR red="0" green="127" blue="0" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.sun_glint_risk" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_dubious" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.dubious" />
+            <COLOR red="0" green="127" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.dubious" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa01" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa01" />
+            <COLOR red="0" green="255" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa01" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa02" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa02" />
+            <COLOR red="127" green="0" blue="0" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa02" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa03" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa03" />
+            <COLOR red="127" green="0" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa03" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa04" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa04" />
+            <COLOR red="127" green="0" blue="255" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa04" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa05" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa05" />
+            <COLOR red="127" green="127" blue="0" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa05" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa06" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa06" />
+            <COLOR red="127" green="127" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa06" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa07" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa07" />
+            <COLOR red="127" green="127" blue="255" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa07" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa08" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa08" />
+            <COLOR red="127" green="255" blue="0" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa08" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa09" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa09" />
+            <COLOR red="127" green="255" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa09" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa10" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa10" />
+            <COLOR red="127" green="255" blue="255" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa10" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa11" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa11" />
+            <COLOR red="255" green="0" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa11" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa12" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa12" />
+            <COLOR red="255" green="127" blue="0" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa12" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa13" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa13" />
+            <COLOR red="255" green="127" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa13" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa14" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa14" />
+            <COLOR red="255" green="127" blue="255" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa14" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa15" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa15" />
+            <COLOR red="255" green="255" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa15" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa16" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa16" />
+            <COLOR red="0" green="0" blue="63" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa16" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa17" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa17" />
+            <COLOR red="0" green="63" blue="0" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa17" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa18" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa18" />
+            <COLOR red="0" green="63" blue="63" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa18" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa19" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa19" />
+            <COLOR red="0" green="63" blue="127" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa19" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa20" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa20" />
+            <COLOR red="0" green="63" blue="191" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa20" />
+        </Mask>
+        <Mask type="Maths">
+            <NAME value="quality_flags_saturated_Oa21" />
+            <MASK_RASTER_WIDTH value="20" />
+            <MASK_RASTER_HEIGHT value="20" />
+            <DESCRIPTION value="quality_flags.saturated_Oa21" />
+            <COLOR red="0" green="127" blue="191" alpha="255" />
+            <TRANSPARENCY value="0.5" />
+            <EXPRESSION value="quality_flags.saturated_Oa21" />
+        </Mask>
+    </Masks>
+    <Image_Interpretation>
+        <Spectral_Band_Info>
+            <BAND_INDEX>0</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa01</BAND_DESCRIPTION>
+            <BAND_NAME>Oa01_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>0</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>400.0</BAND_WAVELEN>
+            <BANDWIDTH>15.0</BANDWIDTH>
+            <SCALING_FACTOR>0.013946459628641605</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>1</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa02</BAND_DESCRIPTION>
+            <BAND_NAME>Oa02_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>1</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>412.5</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.013387260027229786</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>2</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa03</BAND_DESCRIPTION>
+            <BAND_NAME>Oa03_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>2</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>442.5</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.012148120440542698</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>3</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa04</BAND_DESCRIPTION>
+            <BAND_NAME>Oa04_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>3</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>490.0</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.011519820429384708</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>4</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa05</BAND_DESCRIPTION>
+            <BAND_NAME>Oa05_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>4</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>510.0</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.010095260106027126</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>5</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa06</BAND_DESCRIPTION>
+            <BAND_NAME>Oa06_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>5</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>560.0</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.012353800237178802</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>6</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa07</BAND_DESCRIPTION>
+            <BAND_NAME>Oa07_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>6</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>620.0</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.008791609667241573</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>7</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa08</BAND_DESCRIPTION>
+            <BAND_NAME>Oa08_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>7</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>665.0</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.008765390142798424</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>8</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa09</BAND_DESCRIPTION>
+            <BAND_NAME>Oa09_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>8</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>673.75</BAND_WAVELEN>
+            <BANDWIDTH>7.5</BANDWIDTH>
+            <SCALING_FACTOR>0.009510300122201443</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>9</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa10</BAND_DESCRIPTION>
+            <BAND_NAME>Oa10_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>9</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>681.25</BAND_WAVELEN>
+            <BANDWIDTH>7.5</BANDWIDTH>
+            <SCALING_FACTOR>0.007733779959380627</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>10</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa11</BAND_DESCRIPTION>
+            <BAND_NAME>Oa11_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>10</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>708.75</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.006755230017006397</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>11</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa12</BAND_DESCRIPTION>
+            <BAND_NAME>Oa12_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>11</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>753.75</BAND_WAVELEN>
+            <BANDWIDTH>7.5</BANDWIDTH>
+            <SCALING_FACTOR>0.007199599873274565</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>12</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa13</BAND_DESCRIPTION>
+            <BAND_NAME>Oa13_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>12</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>761.25</BAND_WAVELEN>
+            <BANDWIDTH>2.5</BANDWIDTH>
+            <SCALING_FACTOR>0.007496839854866266</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>13</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa14</BAND_DESCRIPTION>
+            <BAND_NAME>Oa14_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>13</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>764.375</BAND_WAVELEN>
+            <BANDWIDTH>3.75</BANDWIDTH>
+            <SCALING_FACTOR>0.008651199750602245</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>14</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa15</BAND_DESCRIPTION>
+            <BAND_NAME>Oa15_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>14</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>767.5</BAND_WAVELEN>
+            <BANDWIDTH>2.5</BANDWIDTH>
+            <SCALING_FACTOR>0.005267790053039789</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>15</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa16</BAND_DESCRIPTION>
+            <BAND_NAME>Oa16_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>15</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>778.75</BAND_WAVELEN>
+            <BANDWIDTH>15.0</BANDWIDTH>
+            <SCALING_FACTOR>0.005302669946104288</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>16</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa17</BAND_DESCRIPTION>
+            <BAND_NAME>Oa17_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>16</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>865.0</BAND_WAVELEN>
+            <BANDWIDTH>20.0</BANDWIDTH>
+            <SCALING_FACTOR>0.004930039867758751</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>17</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa18</BAND_DESCRIPTION>
+            <BAND_NAME>Oa18_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>17</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>885.0</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.0054996199905872345</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>18</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa19</BAND_DESCRIPTION>
+            <BAND_NAME>Oa19_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>18</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>900.0</BAND_WAVELEN>
+            <BANDWIDTH>10.0</BANDWIDTH>
+            <SCALING_FACTOR>0.005028469953685999</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>19</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa20</BAND_DESCRIPTION>
+            <BAND_NAME>Oa20_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>19</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>940.0</BAND_WAVELEN>
+            <BANDWIDTH>20.0</BANDWIDTH>
+            <SCALING_FACTOR>0.003263779915869236</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>20</BAND_INDEX>
+            <BAND_DESCRIPTION>TOA radiance for OLCI acquisition band Oa21</BAND_DESCRIPTION>
+            <BAND_NAME>Oa21_radiance</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint16</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.sr-1.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <SPECTRAL_BAND_INDEX>20</SPECTRAL_BAND_INDEX>
+            <BAND_WAVELEN>1020.0</BAND_WAVELEN>
+            <BANDWIDTH>40.0</BANDWIDTH>
+            <SCALING_FACTOR>0.0032411799766123295</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>65535.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>21</BAND_INDEX>
+            <BAND_DESCRIPTION>DEM corrected altitude</BAND_DESCRIPTION>
+            <BAND_NAME>altitude</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>int16</DATA_TYPE>
+            <PHYSICAL_UNIT>m</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-32768.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>22</BAND_INDEX>
+            <BAND_DESCRIPTION>DEM corrected latitude</BAND_DESCRIPTION>
+            <BAND_NAME>latitude</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>int32</DATA_TYPE>
+            <PHYSICAL_UNIT>degrees_north</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0E-6</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-2.147483648E9</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>23</BAND_INDEX>
+            <BAND_DESCRIPTION>DEM corrected longitude</BAND_DESCRIPTION>
+            <BAND_NAME>longitude</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>int32</DATA_TYPE>
+            <PHYSICAL_UNIT>degrees_east</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0E-6</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-2.147483648E9</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>24</BAND_INDEX>
+            <BAND_DESCRIPTION>Detector index</BAND_DESCRIPTION>
+            <BAND_NAME>detector_index</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>int16</DATA_TYPE>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>25</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_1</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>26</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_2</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>27</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_3</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>28</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_4</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>29</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_5</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>30</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_6</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>31</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_7</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>32</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_8</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>33</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_9</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>34</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_10</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>35</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_11</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>36</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_12</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>37</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_13</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>38</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_14</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>39</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_15</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>40</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_16</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>41</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_17</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>42</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_18</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>43</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_19</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>44</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_20</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>45</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI bandwidth (Full Widths at Half Maximum)</BAND_DESCRIPTION>
+            <BAND_NAME>FWHM_band_21</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>46</BAND_INDEX>
+            <BAND_DESCRIPTION>Re-sampling along-track frame offset</BAND_DESCRIPTION>
+            <BAND_NAME>frame_offset</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>int16</DATA_TYPE>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-32768.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>47</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_1</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>48</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_2</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>49</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_3</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>50</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_4</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>51</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_5</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>52</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_6</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>53</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_7</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>54</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_8</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>55</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_9</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>56</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_10</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>57</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_11</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>58</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_12</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>59</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_13</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>60</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_14</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>61</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_15</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>62</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_16</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>63</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_17</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>64</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_18</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>65</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_19</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>66</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_20</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>67</BAND_INDEX>
+            <BAND_DESCRIPTION>OLCI characterised central wavelength</BAND_DESCRIPTION>
+            <BAND_NAME>lambda0_band_21</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>nm</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>68</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_1</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>69</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_2</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>70</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_3</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>71</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_4</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>72</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_5</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>73</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_6</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>74</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_7</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>75</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_8</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>76</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_9</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>77</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_10</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>78</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_11</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>79</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_12</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>80</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_13</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>81</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_14</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>82</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_15</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>83</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_16</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>84</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_17</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>85</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_18</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>86</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_19</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>87</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_20</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>88</BAND_INDEX>
+            <BAND_DESCRIPTION>In-band solar irradiance, seasonally corrected</BAND_DESCRIPTION>
+            <BAND_NAME>solar_flux_band_21</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float32</DATA_TYPE>
+            <PHYSICAL_UNIT>mW.m-2.nm-1</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>true</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>-1.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>89</BAND_INDEX>
+            <BAND_DESCRIPTION>Classification and quality flags</BAND_DESCRIPTION>
+            <BAND_NAME>quality_flags</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>uint32</DATA_TYPE>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <FLAG_CODING_NAME>quality_flags</FLAG_CODING_NAME>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>false</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>0.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>90</BAND_INDEX>
+            <BAND_DESCRIPTION>latitude coordinate</BAND_DESCRIPTION>
+            <BAND_NAME>lat</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float64</DATA_TYPE>
+            <PHYSICAL_UNIT>degrees_north</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>false</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>0.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+        <Spectral_Band_Info>
+            <BAND_INDEX>91</BAND_INDEX>
+            <BAND_DESCRIPTION>longitude coordinate</BAND_DESCRIPTION>
+            <BAND_NAME>lon</BAND_NAME>
+            <BAND_RASTER_WIDTH>20</BAND_RASTER_WIDTH>
+            <BAND_RASTER_HEIGHT>20</BAND_RASTER_HEIGHT>
+            <DATA_TYPE>float64</DATA_TYPE>
+            <PHYSICAL_UNIT>degrees_east</PHYSICAL_UNIT>
+            <SOLAR_FLUX>0.0</SOLAR_FLUX>
+            <BAND_WAVELEN>0.0</BAND_WAVELEN>
+            <BANDWIDTH>0.0</BANDWIDTH>
+            <SCALING_FACTOR>1.0</SCALING_FACTOR>
+            <SCALING_OFFSET>0.0</SCALING_OFFSET>
+            <LOG10_SCALED>false</LOG10_SCALED>
+            <NO_DATA_VALUE_USED>false</NO_DATA_VALUE_USED>
+            <NO_DATA_VALUE>0.0</NO_DATA_VALUE>
+        </Spectral_Band_Info>
+    </Image_Interpretation>
+    <Dataset_Sources>
+        <MDElem name="metadata">
+            <MDElem name="history">
+                <MDElem name="SubsetInfo">
+                    <MDATTR name="SourceProduct.name" type="ascii">testcase</MDATTR>
+                    <MDATTR name="SubSampling.x" type="int32" mode="rw">1</MDATTR>
+                    <MDATTR name="SubSampling.y" type="int32" mode="rw">1</MDATTR>
+                    <MDATTR name="SubRegion.x" type="int32" mode="rw">146</MDATTR>
+                    <MDATTR name="SubRegion.y" type="int32" mode="rw">476</MDATTR>
+                    <MDATTR name="SubRegion.width" type="int32" mode="rw">20</MDATTR>
+                    <MDATTR name="SubRegion.height" type="int32" mode="rw">20</MDATTR>
+                    <MDATTR name="ProductNodeName.1" type="ascii">TP_latitude</MDATTR>
+                    <MDATTR name="ProductNodeName.2" type="ascii">TP_longitude</MDATTR>
+                    <MDATTR name="ProductNodeName.3" type="ascii">OAA</MDATTR>
+                    <MDATTR name="ProductNodeName.4" type="ascii">OZA</MDATTR>
+                    <MDATTR name="ProductNodeName.5" type="ascii">SAA</MDATTR>
+                    <MDATTR name="ProductNodeName.6" type="ascii">SZA</MDATTR>
+                    <MDATTR name="ProductNodeName.7" type="ascii">atmospheric_temperature_profile_pressure_level_1</MDATTR>
+                    <MDATTR name="ProductNodeName.8" type="ascii">atmospheric_temperature_profile_pressure_level_2</MDATTR>
+                    <MDATTR name="ProductNodeName.9" type="ascii">atmospheric_temperature_profile_pressure_level_3</MDATTR>
+                    <MDATTR name="ProductNodeName.10" type="ascii">atmospheric_temperature_profile_pressure_level_4</MDATTR>
+                    <MDATTR name="ProductNodeName.11" type="ascii">atmospheric_temperature_profile_pressure_level_5</MDATTR>
+                    <MDATTR name="ProductNodeName.12" type="ascii">atmospheric_temperature_profile_pressure_level_6</MDATTR>
+                    <MDATTR name="ProductNodeName.13" type="ascii">atmospheric_temperature_profile_pressure_level_7</MDATTR>
+                    <MDATTR name="ProductNodeName.14" type="ascii">atmospheric_temperature_profile_pressure_level_8</MDATTR>
+                    <MDATTR name="ProductNodeName.15" type="ascii">atmospheric_temperature_profile_pressure_level_9</MDATTR>
+                    <MDATTR name="ProductNodeName.16" type="ascii">atmospheric_temperature_profile_pressure_level_10</MDATTR>
+                    <MDATTR name="ProductNodeName.17" type="ascii">atmospheric_temperature_profile_pressure_level_11</MDATTR>
+                    <MDATTR name="ProductNodeName.18" type="ascii">atmospheric_temperature_profile_pressure_level_12</MDATTR>
+                    <MDATTR name="ProductNodeName.19" type="ascii">atmospheric_temperature_profile_pressure_level_13</MDATTR>
+                    <MDATTR name="ProductNodeName.20" type="ascii">atmospheric_temperature_profile_pressure_level_14</MDATTR>
+                    <MDATTR name="ProductNodeName.21" type="ascii">atmospheric_temperature_profile_pressure_level_15</MDATTR>
+                    <MDATTR name="ProductNodeName.22" type="ascii">atmospheric_temperature_profile_pressure_level_16</MDATTR>
+                    <MDATTR name="ProductNodeName.23" type="ascii">atmospheric_temperature_profile_pressure_level_17</MDATTR>
+                    <MDATTR name="ProductNodeName.24" type="ascii">atmospheric_temperature_profile_pressure_level_18</MDATTR>
+                    <MDATTR name="ProductNodeName.25" type="ascii">atmospheric_temperature_profile_pressure_level_19</MDATTR>
+                    <MDATTR name="ProductNodeName.26" type="ascii">atmospheric_temperature_profile_pressure_level_20</MDATTR>
+                    <MDATTR name="ProductNodeName.27" type="ascii">atmospheric_temperature_profile_pressure_level_21</MDATTR>
+                    <MDATTR name="ProductNodeName.28" type="ascii">atmospheric_temperature_profile_pressure_level_22</MDATTR>
+                    <MDATTR name="ProductNodeName.29" type="ascii">atmospheric_temperature_profile_pressure_level_23</MDATTR>
+                    <MDATTR name="ProductNodeName.30" type="ascii">atmospheric_temperature_profile_pressure_level_24</MDATTR>
+                    <MDATTR name="ProductNodeName.31" type="ascii">atmospheric_temperature_profile_pressure_level_25</MDATTR>
+                    <MDATTR name="ProductNodeName.32" type="ascii">horizontal_wind_vector_1</MDATTR>
+                    <MDATTR name="ProductNodeName.33" type="ascii">horizontal_wind_vector_2</MDATTR>
+                    <MDATTR name="ProductNodeName.34" type="ascii">humidity</MDATTR>
+                    <MDATTR name="ProductNodeName.35" type="ascii">sea_level_pressure</MDATTR>
+                    <MDATTR name="ProductNodeName.36" type="ascii">total_columnar_water_vapour</MDATTR>
+                    <MDATTR name="ProductNodeName.37" type="ascii">total_ozone</MDATTR>
+                    <MDATTR name="ProductNodeName.38" type="ascii">Oa01_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.39" type="ascii">Oa02_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.40" type="ascii">Oa03_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.41" type="ascii">Oa04_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.42" type="ascii">Oa05_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.43" type="ascii">Oa06_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.44" type="ascii">Oa07_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.45" type="ascii">Oa08_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.46" type="ascii">Oa09_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.47" type="ascii">Oa10_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.48" type="ascii">Oa11_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.49" type="ascii">Oa12_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.50" type="ascii">Oa13_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.51" type="ascii">Oa14_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.52" type="ascii">Oa15_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.53" type="ascii">Oa16_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.54" type="ascii">Oa17_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.55" type="ascii">Oa18_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.56" type="ascii">Oa19_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.57" type="ascii">Oa20_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.58" type="ascii">Oa21_radiance</MDATTR>
+                    <MDATTR name="ProductNodeName.59" type="ascii">altitude</MDATTR>
+                    <MDATTR name="ProductNodeName.60" type="ascii">latitude</MDATTR>
+                    <MDATTR name="ProductNodeName.61" type="ascii">longitude</MDATTR>
+                    <MDATTR name="ProductNodeName.62" type="ascii">detector_index</MDATTR>
+                    <MDATTR name="ProductNodeName.63" type="ascii">FWHM_band_1</MDATTR>
+                    <MDATTR name="ProductNodeName.64" type="ascii">FWHM_band_2</MDATTR>
+                    <MDATTR name="ProductNodeName.65" type="ascii">FWHM_band_3</MDATTR>
+                    <MDATTR name="ProductNodeName.66" type="ascii">FWHM_band_4</MDATTR>
+                    <MDATTR name="ProductNodeName.67" type="ascii">FWHM_band_5</MDATTR>
+                    <MDATTR name="ProductNodeName.68" type="ascii">FWHM_band_6</MDATTR>
+                    <MDATTR name="ProductNodeName.69" type="ascii">FWHM_band_7</MDATTR>
+                    <MDATTR name="ProductNodeName.70" type="ascii">FWHM_band_8</MDATTR>
+                    <MDATTR name="ProductNodeName.71" type="ascii">FWHM_band_9</MDATTR>
+                    <MDATTR name="ProductNodeName.72" type="ascii">FWHM_band_10</MDATTR>
+                    <MDATTR name="ProductNodeName.73" type="ascii">FWHM_band_11</MDATTR>
+                    <MDATTR name="ProductNodeName.74" type="ascii">FWHM_band_12</MDATTR>
+                    <MDATTR name="ProductNodeName.75" type="ascii">FWHM_band_13</MDATTR>
+                    <MDATTR name="ProductNodeName.76" type="ascii">FWHM_band_14</MDATTR>
+                    <MDATTR name="ProductNodeName.77" type="ascii">FWHM_band_15</MDATTR>
+                    <MDATTR name="ProductNodeName.78" type="ascii">FWHM_band_16</MDATTR>
+                    <MDATTR name="ProductNodeName.79" type="ascii">FWHM_band_17</MDATTR>
+                    <MDATTR name="ProductNodeName.80" type="ascii">FWHM_band_18</MDATTR>
+                    <MDATTR name="ProductNodeName.81" type="ascii">FWHM_band_19</MDATTR>
+                    <MDATTR name="ProductNodeName.82" type="ascii">FWHM_band_20</MDATTR>
+                    <MDATTR name="ProductNodeName.83" type="ascii">FWHM_band_21</MDATTR>
+                    <MDATTR name="ProductNodeName.84" type="ascii">frame_offset</MDATTR>
+                    <MDATTR name="ProductNodeName.85" type="ascii">lambda0_band_1</MDATTR>
+                    <MDATTR name="ProductNodeName.86" type="ascii">lambda0_band_2</MDATTR>
+                    <MDATTR name="ProductNodeName.87" type="ascii">lambda0_band_3</MDATTR>
+                    <MDATTR name="ProductNodeName.88" type="ascii">lambda0_band_4</MDATTR>
+                    <MDATTR name="ProductNodeName.89" type="ascii">lambda0_band_5</MDATTR>
+                    <MDATTR name="ProductNodeName.90" type="ascii">lambda0_band_6</MDATTR>
+                    <MDATTR name="ProductNodeName.91" type="ascii">lambda0_band_7</MDATTR>
+                    <MDATTR name="ProductNodeName.92" type="ascii">lambda0_band_8</MDATTR>
+                    <MDATTR name="ProductNodeName.93" type="ascii">lambda0_band_9</MDATTR>
+                    <MDATTR name="ProductNodeName.94" type="ascii">lambda0_band_10</MDATTR>
+                    <MDATTR name="ProductNodeName.95" type="ascii">lambda0_band_11</MDATTR>
+                    <MDATTR name="ProductNodeName.96" type="ascii">lambda0_band_12</MDATTR>
+                    <MDATTR name="ProductNodeName.97" type="ascii">lambda0_band_13</MDATTR>
+                    <MDATTR name="ProductNodeName.98" type="ascii">lambda0_band_14</MDATTR>
+                    <MDATTR name="ProductNodeName.99" type="ascii">lambda0_band_15</MDATTR>
+                    <MDATTR name="ProductNodeName.100" type="ascii">lambda0_band_16</MDATTR>
+                    <MDATTR name="ProductNodeName.101" type="ascii">lambda0_band_17</MDATTR>
+                    <MDATTR name="ProductNodeName.102" type="ascii">lambda0_band_18</MDATTR>
+                    <MDATTR name="ProductNodeName.103" type="ascii">lambda0_band_19</MDATTR>
+                    <MDATTR name="ProductNodeName.104" type="ascii">lambda0_band_20</MDATTR>
+                    <MDATTR name="ProductNodeName.105" type="ascii">lambda0_band_21</MDATTR>
+                    <MDATTR name="ProductNodeName.106" type="ascii">solar_flux_band_1</MDATTR>
+                    <MDATTR name="ProductNodeName.107" type="ascii">solar_flux_band_2</MDATTR>
+                    <MDATTR name="ProductNodeName.108" type="ascii">solar_flux_band_3</MDATTR>
+                    <MDATTR name="ProductNodeName.109" type="ascii">solar_flux_band_4</MDATTR>
+                    <MDATTR name="ProductNodeName.110" type="ascii">solar_flux_band_5</MDATTR>
+                    <MDATTR name="ProductNodeName.111" type="ascii">solar_flux_band_6</MDATTR>
+                    <MDATTR name="ProductNodeName.112" type="ascii">solar_flux_band_7</MDATTR>
+                    <MDATTR name="ProductNodeName.113" type="ascii">solar_flux_band_8</MDATTR>
+                    <MDATTR name="ProductNodeName.114" type="ascii">solar_flux_band_9</MDATTR>
+                    <MDATTR name="ProductNodeName.115" type="ascii">solar_flux_band_10</MDATTR>
+                    <MDATTR name="ProductNodeName.116" type="ascii">solar_flux_band_11</MDATTR>
+                    <MDATTR name="ProductNodeName.117" type="ascii">solar_flux_band_12</MDATTR>
+                    <MDATTR name="ProductNodeName.118" type="ascii">solar_flux_band_13</MDATTR>
+                    <MDATTR name="ProductNodeName.119" type="ascii">solar_flux_band_14</MDATTR>
+                    <MDATTR name="ProductNodeName.120" type="ascii">solar_flux_band_15</MDATTR>
+                    <MDATTR name="ProductNodeName.121" type="ascii">solar_flux_band_16</MDATTR>
+                    <MDATTR name="ProductNodeName.122" type="ascii">solar_flux_band_17</MDATTR>
+                    <MDATTR name="ProductNodeName.123" type="ascii">solar_flux_band_18</MDATTR>
+                    <MDATTR name="ProductNodeName.124" type="ascii">solar_flux_band_19</MDATTR>
+                    <MDATTR name="ProductNodeName.125" type="ascii">solar_flux_band_20</MDATTR>
+                    <MDATTR name="ProductNodeName.126" type="ascii">solar_flux_band_21</MDATTR>
+                    <MDATTR name="ProductNodeName.127" type="ascii">quality_flags</MDATTR>
+                    <MDATTR name="ProductNodeName.128" type="ascii">lat</MDATTR>
+                    <MDATTR name="ProductNodeName.129" type="ascii">lon</MDATTR>
+                </MDElem>
+            </MDElem>
+            <MDElem name="Processing_Graph">
+                <MDElem name="node.0">
+                    <MDATTR name="id" type="ascii" mode="rw">Subset$165FC87CB00</MDATTR>
+                    <MDATTR name="operator" type="ascii" mode="rw">Subset</MDATTR>
+                    <MDATTR name="moduleName" type="ascii" mode="rw">SNAP Graph Processing Framework (GPF)</MDATTR>
+                    <MDATTR name="moduleVersion" type="ascii" mode="rw">6.0.4</MDATTR>
+                    <MDATTR name="purpose" type="ascii" mode="rw">Create a spatial and/or spectral subset of a data product.</MDATTR>
+                    <MDATTR name="authors" type="ascii" mode="rw">Marco Zuehlke, Norman Fomferra, Marco Peters</MDATTR>
+                    <MDATTR name="version" type="ascii" mode="rw">1.2</MDATTR>
+                    <MDATTR name="copyright" type="ascii" mode="rw">(c) 2011 by Brockmann Consult</MDATTR>
+                    <MDATTR name="processingTime" type="ascii" mode="rw">2018-09-21T14:28:02.436Z</MDATTR>
+                    <MDElem name="sources">
+                        <MDATTR name="sourceProduct.1" type="ascii" mode="rw">file:/home/roman/third/test/ppe-test/testcase.nc</MDATTR>
+                    </MDElem>
+                    <MDElem name="parameters">
+                        <MDATTR name="fullSwath" type="ascii">false</MDATTR>
+                        <MDATTR name="subSamplingY" type="ascii">1</MDATTR>
+                        <MDATTR name="subSamplingX" type="ascii">1</MDATTR>
+                        <MDATTR name="copyMetadata" type="ascii">false</MDATTR>
+                        <MDATTR name="region" type="ascii">146,476,20,20</MDATTR>
+                    </MDElem>
+                </MDElem>
+                <MDElem name="node.1">
+                    <MDATTR name="id" type="ascii" mode="rw">Write$165FC87CB30</MDATTR>
+                    <MDATTR name="operator" type="ascii" mode="rw">Write</MDATTR>
+                    <MDATTR name="moduleName" type="ascii" mode="rw">SNAP Graph Processing Framework (GPF)</MDATTR>
+                    <MDATTR name="moduleVersion" type="ascii" mode="rw">6.0.4</MDATTR>
+                    <MDATTR name="purpose" type="ascii" mode="rw">Writes a data product to a file.</MDATTR>
+                    <MDATTR name="authors" type="ascii" mode="rw">Marco Zuehlke, Norman Fomferra</MDATTR>
+                    <MDATTR name="version" type="ascii" mode="rw">1.3</MDATTR>
+                    <MDATTR name="copyright" type="ascii" mode="rw">(c) 2010 by Brockmann Consult</MDATTR>
+                    <MDATTR name="processingTime" type="ascii" mode="rw">2018-09-21T14:28:02.482Z</MDATTR>
+                    <MDElem name="sources">
+                        <MDATTR name="sourceProduct" type="ascii" mode="rw">product:Subset_testcase</MDATTR>
+                    </MDElem>
+                    <MDElem name="parameters">
+                        <MDATTR name="writeEntireTileRows" type="ascii">true</MDATTR>
+                        <MDATTR name="file" type="ascii">ppetest.dim</MDATTR>
+                        <MDATTR name="deleteOutputOnFailure" type="ascii">true</MDATTR>
+                        <MDATTR name="formatName" type="ascii">BEAM-DIMAP</MDATTR>
+                        <MDATTR name="clearCacheAfterRowWrite" type="ascii">false</MDATTR>
+                    </MDElem>
+                </MDElem>
+            </MDElem>
+        </MDElem>
+    </Dataset_Sources>
+</Dimap_Document>

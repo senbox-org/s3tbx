@@ -34,8 +34,6 @@ public class PpeOpTest {
         assertTrue(targetProduct.containsBand("anotherBand"));
         assertTrue(!targetProduct.containsBand("anotherBand_ppe_flag"));
         assertTrue(targetProduct.getBand("radiance3_ppe_flag").isFlagBand());
-        FlagCoding flagCoding = targetProduct.getBand("radiance3_ppe_flag").getFlagCoding();
-        assertEquals(2, flagCoding.getFlagNames().length);
     }
 
     @Test

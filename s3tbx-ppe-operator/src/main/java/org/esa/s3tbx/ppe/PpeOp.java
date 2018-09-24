@@ -112,6 +112,11 @@ public class PpeOp extends Operator {
     private void createTargetProduct()  {
         targetProduct = new Product(sourceProduct.getName(), sourceProduct.getProductType(), sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
 
+        final FlagCoding flagCoding = new FlagCoding("ppe_applied");
+        flagCoding.setDescription("PPE proccesor flag");
+        flagCoding.addFlag("PPE applied",1,"PPE applied");
+        targetProduct.getFlagCodingGroup().add(flagCoding);
+
         for (Band band : sourceProduct.getBands()) {
             if (band.getName().toLowerCase().contains("radiance") && (band.getSpectralWavelength()!=0.0f)){
                 ProductUtils.copyBand(band.getName(), sourceProduct, targetProduct, false);
@@ -119,17 +124,11 @@ public class PpeOp extends Operator {
                     SystemUtils.LOG.warning("The units of "+band.getName()+" are not mW.m-2.sr-1.nm-1. Changing cut-off parameter is suggested.");
                 }
                 Band ppeBand = new Band(band.getName()+"_ppe_flag", ProductData.TYPE_INT8,sourceProduct.getSceneRasterWidth(),sourceProduct.getSceneRasterHeight());
-                final FlagCoding flagCoding = new FlagCoding("ppe_applied");
-                flagCoding.setDescription("PPE proccesor flag");
-                flagCoding.addFlag("PPE applied",1,"PPE applied");
-                flagCoding.addFlag("PPE not applied",0,"PPE not applied");
                 ppeBand.setSampleCoding(flagCoding);
-                targetProduct.getFlagCodingGroup().add(flagCoding);
                 targetProduct.addBand(ppeBand);
             }
             else{
                 ProductUtils.copyBand(band.getName(), sourceProduct, targetProduct, true);
-
             }
         }
 
