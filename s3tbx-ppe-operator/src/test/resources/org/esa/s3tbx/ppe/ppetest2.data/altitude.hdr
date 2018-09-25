@@ -1,0 +1,13 @@
+ENVI
+description = {DEM corrected altitude - Unit: m}
+samples = 40
+lines = 40
+bands = 1
+header offset = 0
+file type = ENVI Standard
+data type = 2
+interleave = bsq
+byte order = 1
+band names = { altitude }
+data gain values = {1.0}
+data offset values = {0.0}

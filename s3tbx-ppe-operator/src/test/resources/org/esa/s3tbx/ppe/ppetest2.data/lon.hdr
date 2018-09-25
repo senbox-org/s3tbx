@@ -1,0 +1,13 @@
+ENVI
+description = {longitude coordinate - Unit: degrees_east}
+samples = 40
+lines = 40
+bands = 1
+header offset = 0
+file type = ENVI Standard
+data type = 5
+interleave = bsq
+byte order = 1
+band names = { lon }
+data gain values = {1.0}
+data offset values = {0.0}

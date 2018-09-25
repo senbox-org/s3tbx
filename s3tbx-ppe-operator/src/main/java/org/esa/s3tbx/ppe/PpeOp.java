@@ -119,8 +119,8 @@ public class PpeOp extends Operator {
         targetProduct = new Product(sourceProduct.getName(), sourceProduct.getProductType(), sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
 
         final FlagCoding flagCoding = new FlagCoding("ppe_applied");
-        flagCoding.setDescription("PPE proccesor flag");
         flagCoding.addFlag("PPE applied",1,"PPE applied");
+        flagCoding.setDescription("PPE proccesor flag");
         targetProduct.getFlagCodingGroup().add(flagCoding);
 
         for (Band band : sourceProduct.getBands()) {
@@ -131,6 +131,7 @@ public class PpeOp extends Operator {
                 }
                 Band ppeBand = new Band(band.getName()+"_ppe_flag", ProductData.TYPE_INT8,sourceProduct.getSceneRasterWidth(),sourceProduct.getSceneRasterHeight());
                 ppeBand.setSampleCoding(flagCoding);
+
                 targetProduct.addBand(ppeBand);
             }
             else{

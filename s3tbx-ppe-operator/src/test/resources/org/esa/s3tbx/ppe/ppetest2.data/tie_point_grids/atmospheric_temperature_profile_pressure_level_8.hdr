@@ -1,0 +1,13 @@
+ENVI
+description = {SENTINEL-3 OLCI Level 1 Earth Observation Full Resolution Product - Unit: 1}
+samples = 3
+lines = 42
+bands = 1
+header offset = 0
+file type = ENVI Standard
+data type = 4
+interleave = bsq
+byte order = 1
+band names = { atmospheric_temperature_profile_pressure_level_8 }
+data gain values = {1.0}
+data offset values = {0.0}

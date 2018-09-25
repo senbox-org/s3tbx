@@ -20,6 +20,7 @@ public class PpeOpTest {
 
     private static final float[] MERIS_WAVELENGTHS = new float[]{412, 442, 490, 510, 560, 620, 665, 681, 709, 754, 761, 779, 865, 885, 900};
     private String TESTFILENAME ="ppetest.dim";
+    private String TESTFILENAME2 ="ppetest2.dim";
 
     @Test
     public void testPpeOp()  {
@@ -34,6 +35,7 @@ public class PpeOpTest {
         assertTrue(targetProduct.containsBand("anotherBand"));
         assertTrue(!targetProduct.containsBand("anotherBand_ppe_flag"));
         assertTrue(targetProduct.getBand("radiance3_ppe_flag").isFlagBand());
+        assertEquals("radiance1_ppe_flag.PPE applied",targetProduct.getAllFlagNames()[0]);
     }
 
     @Test
@@ -129,6 +131,31 @@ public class PpeOpTest {
         assertEquals(1, result.getBand("Oa10_radiance_ppe_flag").getPixelDouble(6, 9), 1e-5);
         assertEquals(1, result.getBand("Oa10_radiance_ppe_flag").getPixelDouble(18, 6), 1e-5);
         assertEquals(0, result.getBand("Oa10_radiance_ppe_flag").getPixelDouble(19, 19), 1e-5);
+
+    }
+
+    @Test
+    public void testLandTransform() throws IOException {
+        Operator ppeOp = new PpeOp();
+        String testFilePath = PpeOpTest.class.getResource("ppetest2.dim").getFile();
+        Product product = ProductIO.readProduct(testFilePath);
+        ppeOp.setSourceProduct(product);
+        ppeOp.setParameterDefaultValues();
+        Product result = ppeOp.getTargetProduct();
+        result.getBand("Oa10_radiance").readRasterDataFully();
+        result.getBand("Oa01_radiance").readRasterDataFully();
+        result.getBand("Oa01_radiance_ppe_flag").readRasterDataFully();
+
+        assertEquals(40, result.getSceneRasterHeight());
+        assertEquals(40, result.getSceneRasterWidth());
+
+        assertEquals(53.10787, result.getBand("Oa10_radiance").getPixelDouble(5, 8), 1e-5);
+        assertEquals(53.10787, result.getBand("Oa10_radiance").getPixelDouble(6, 8), 1e-5);
+        assertEquals(52.96093, result.getBand("Oa10_radiance").getPixelDouble(5, 7), 1e-5);
+        assertEquals(76.95656, result.getBand("Oa01_radiance").getPixelDouble(26, 0), 1e-5);
+        assertEquals(1, result.getBand("Oa01_radiance_ppe_flag").getPixelDouble(26, 0), 1e-5);
+        assertEquals(1, result.getBand("Oa01_radiance_ppe_flag").getPixelDouble(27, 0), 1e-5);
+        assertEquals(0, result.getBand("Oa01_radiance_ppe_flag").getPixelDouble(25, 0), 1e-5);
 
     }
 
