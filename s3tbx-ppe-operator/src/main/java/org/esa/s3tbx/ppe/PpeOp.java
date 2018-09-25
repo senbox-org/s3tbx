@@ -31,6 +31,7 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import org.esa.snap.engine_utilities.util.ProductFunctions;
 
 import java.awt.*;
@@ -51,6 +52,10 @@ import java.util.Arrays;
 
 public class PpeOp extends Operator {
 
+
+    private static final String VALID_PIXEL_EXPRESSION = "not quality_flags_land";
+
+
     @SourceProduct(alias = "source", description = "The source product")
     private Product sourceProduct;
 
@@ -65,9 +70,22 @@ public class PpeOp extends Operator {
             description = "Multiplier of Median Absolute Deviation used for the threshold.")
     private double numberOfMAD;
 
+    @Parameter(label = "Valid pixel expression", description = "An expression to filter which pixel are considered.",
+            converter = BooleanExpressionConverter.class,defaultValue = VALID_PIXEL_EXPRESSION)
+    private String validExpression;
+
+
+    Mask validPixelMask;
 
     @Override
     public void initialize() throws OperatorException {
+        validPixelMask = Mask.BandMathsType.create("__valid_pixel_mask", null,
+                getSourceProduct().getSceneRasterWidth(),
+                getSourceProduct().getSceneRasterHeight(),
+                validExpression,
+                Color.GREEN, 0.0);
+        validPixelMask.setOwner(getSourceProduct());
+
         createTargetProduct();
     }
 
@@ -76,33 +94,21 @@ public class PpeOp extends Operator {
         Rectangle targetRectangle = targetTile.getRectangle();
         Tile sourceTile;
         if (!targetBand.getName().toLowerCase().contains("_ppe_flag")) {
+            Tile flagTile = getSourceTile(targetProduct.getRasterDataNode(targetBand.getName()+"_ppe_flag"), targetRectangle);
             sourceTile = getSourceTile(sourceProduct.getRasterDataNode(targetBand.getName()), targetRectangle);
-        }
-        else {
-            sourceTile = getSourceTile(sourceProduct.getRasterDataNode(targetBand.getName().replace("_ppe_flag","")), targetRectangle);
-        }
-        Tile landTile=getSourceTile(sourceProduct.getRasterDataNode("quality_flags_land"), targetRectangle);
-        for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
-            checkForCancellation();
-            for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
-                double pixel = sourceTile.getSampleDouble(x, y);
-                if ( pixel>0  && (landTile.getSampleBoolean(x,y)==false)) {
-                    double[] pixelList = getPixelList(x, y, sourceTile);
-                    double median = getMedian(pixelList);
-                    double MAD = getMAD(pixelList);
-
-                    if (!targetBand.getName().toLowerCase().contains("_ppe_flag")) {
+            Tile landTile=getSourceTile(validPixelMask, targetRectangle);
+            for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+                checkForCancellation();
+                for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+                    double pixel = sourceTile.getSampleDouble(x, y);
+                    if (pixel > 0 && (landTile.getSampleBoolean(x, y) == true)) {
+                        double[] pixelList = getPixelList(x, y, sourceTile);
+                        double median = getMedian(pixelList);
+                        double MAD = getMAD(pixelList);
                         setBandTile(x, y, median, MAD, sourceTile, targetTile);
+                        setFlagBandTile(x, y, median, MAD, sourceTile, flagTile);
                     } else {
-                        setFlagBandTile(x, y, median, MAD, sourceTile, targetTile);
-                    }
-                }
-                else {
-                    if (!targetBand.getName().toLowerCase().contains("_ppe_flag")) {
-                        targetTile.setSample(x, y, pixel);
-                    }
-                    else{
-                        targetTile.setSample(x, y, 0);
+                            targetTile.setSample(x, y, pixel);
                     }
                 }
             }
@@ -154,9 +160,6 @@ public class PpeOp extends Operator {
         double pixel = sourceTile.getSampleDouble(x, y);
         if (Math.abs(pixel - median) > cutOff && Math.abs(pixel - median) > (numberOfMAD * MAD)) {
             targetTile.setSample(x, y, 1);
-        }
-        else{
-            targetTile.setSample(x, y, 0);
         }
     }
 
