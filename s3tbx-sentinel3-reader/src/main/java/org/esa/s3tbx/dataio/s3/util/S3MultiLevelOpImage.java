@@ -5,6 +5,7 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.dataio.netcdf.util.AbstractNetcdfMultiLevelImage;
+import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 
 import java.awt.Dimension;
@@ -34,6 +35,16 @@ public class S3MultiLevelOpImage extends AbstractNetcdfMultiLevelImage {
         this.dimensionIndexes = dimensionIndexes;
         this.xIndex  = xIndex;
         this.yIndex = yIndex;
+        for (Attribute attribute : variable.getAttributes()) {
+            if (attribute.getFullName().equals("_ChunkSize")) {
+                int tileHeight = attribute.getNumericValue(yIndex).intValue();
+                int tileWidth = attribute.getNumericValue(xIndex).intValue();
+                int dataBufferType = ImageManager.getDataBufferType(rasterDataNode.getDataType());
+                setImageLayout(ImageManager.createSingleBandedImageLayout(dataBufferType, rasterDataNode.getRasterWidth(),
+                        rasterDataNode.getRasterHeight(), tileWidth, tileHeight));
+                break;
+            }
+        }
     }
 
     public S3MultiLevelOpImage(RasterDataNode rasterDataNode, Variable variable,
