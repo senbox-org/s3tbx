@@ -1,6 +1,9 @@
 package org.esa.s3tbx.slstr.pdu.stitching;
 
+import com.bc.ceres.core.ProgressMonitor;
+import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.util.ArrayUtils;
 import org.esa.snap.core.util.io.FileUtils;
@@ -10,7 +13,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +28,7 @@ import static org.junit.Assert.fail;
  */
 public class PDUStitchingOpTest {
 
-    public static String EXPECTED_STITCHED_FILE_NAME_PATTERN =
+    public static final String EXPECTED_STITCHED_FILE_NAME_PATTERN =
             "S3A_SL_1_RBT____20130707T153252_20130707T154752_2[0-9]{7}T[0-9]{6}_0299_158_182______SVL_O_NR_001.SEN3";
 
     File targetDirectory;
@@ -50,9 +52,10 @@ public class PDUStitchingOpTest {
 
     @Test
     @Ignore("takes a few seconds")
-    public void testOperator() throws IOException {
+    public void testOperator() {
         Map<String, Object> parameterMap = new HashMap<>();
         parameterMap.put("targetDir", targetDirectory);
+        Map<String, Product> sourceProductMap = new HashMap<>();
         String[] productPaths = new String[3];
         productPaths[0]= getResource(TestUtils.FIRST_FILE_NAME).getAbsolutePath();
         productPaths[1] = getResource(TestUtils.SECOND_FILE_NAME).getAbsolutePath();
@@ -61,23 +64,28 @@ public class PDUStitchingOpTest {
 
         assertEquals(0, targetDirectory.list().length);
 
-        GPF.createProduct("PduStitchingOp", parameterMap);
+        Operator stitchingOperator = GPF.getDefaultInstance().createOperator("PduStitching", parameterMap,
+                sourceProductMap, null);
+        stitchingOperator.execute(ProgressMonitor.NULL);
 
         assertProductHasBeenCreated();
     }
 
     @Test
     @Ignore("takes a few seconds")
-    public void testOperator_wildcards() throws IOException {
+    public void testOperator_wildcards() {
         Map<String, Object> parameterMap = new HashMap<>();
+        Map<String, Product> sourceProductMap = new HashMap<>();
         parameterMap.put("targetDir", targetDirectory);
         String[] productPaths = new String[1];
-        productPaths[0] = PDUStitchingOpTest.class.getResource("").getFile() + "*/xfdumanifest.xml" ;
+        productPaths[0] = PDUStitchingOpTest.class.getResource("").getFile() + "S*/xfdumanifest.xml" ;
         parameterMap.put("sourceProductPaths", productPaths);
 
         assertEquals(0, targetDirectory.list().length);
 
-        GPF.createProduct("PduStitchingOp", parameterMap);
+        Operator stitchingOperator = GPF.getDefaultInstance().createOperator("PduStitching", parameterMap,
+                sourceProductMap, null);
+        stitchingOperator.execute(ProgressMonitor.NULL);
 
         assertProductHasBeenCreated();
     }
@@ -90,7 +98,7 @@ public class PDUStitchingOpTest {
         assert(pattern.matcher(stitchedProducts[0].getName()).matches());
         final String[] productContents = stitchedProducts[0].list();
         assertNotNull(productContents);
-        assertEquals(3, productContents.length);
+        assertEquals(4, productContents.length);
         assert(ArrayUtils.isMemberOf("F1_BT_io.nc", productContents));
         assert(ArrayUtils.isMemberOf("met_tx.nc", productContents));
         assert(ArrayUtils.isMemberOf("viscal.nc", productContents));
