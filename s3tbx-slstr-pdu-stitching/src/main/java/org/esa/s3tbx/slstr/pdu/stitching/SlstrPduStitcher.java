@@ -118,7 +118,9 @@ public class SlstrPduStitcher {
         pm.beginTask("Stitching SLSTR L1B Product Dissemination Units", ncFileNames.size() + 1);
         for (int i = 0; i < ncFileNames.size(); i++) {
             final String ncFileName = ncFileNames.get(i);
-            pm.setSubTaskName(MessageFormat.format("Stitching %s", ncFileName));
+            String[] splitFileName = ncFileName.split("/");
+            final String displayFileName = splitFileName[splitFileName.length - 1];
+            pm.setSubTaskName(MessageFormat.format("Stitching ''{0}''", displayFileName));
             List<File> ncFiles = new ArrayList<>();
             List<ImageSize> imageSizeList = new ArrayList<>();
             String id = ncFileName.substring(ncFileName.length() - 5, ncFileName.length() - 3);
@@ -145,7 +147,7 @@ public class SlstrPduStitcher {
             if (ncFiles.size() > 0) {
                 final File[] ncFilesArray = ncFiles.toArray(new File[ncFiles.size()]);
                 final ImageSize[] imageSizeArray = imageSizeList.toArray(new ImageSize[imageSizeList.size()]);
-                logger.log(Level.INFO, "Stitch " + ncFileName);
+                logger.log(Level.INFO, "Stitch " + displayFileName);
                 NcFileStitcher.stitchNcFiles(ncFileName, stitchedProductFileParentDirectory, now,
                                              ncFilesArray, targetImageSize, imageSizeArray);
                 productSize += new File(stitchedProductFileParentDirectory, ncFileName).length();
@@ -155,7 +157,7 @@ public class SlstrPduStitcher {
         pm.setSubTaskName("Stitching manifest");
         logger.log(Level.INFO, "Stitch manifest");
         final File manifestFile = createManifestFile(slstrProductFiles, stitchedProductFileParentDirectory, now, productSize);
-        pm.done();
+//        pm.done();
         return manifestFile;
     }
 
