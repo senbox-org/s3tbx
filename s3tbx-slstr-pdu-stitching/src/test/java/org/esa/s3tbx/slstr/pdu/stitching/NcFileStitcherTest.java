@@ -198,19 +198,25 @@ public class NcFileStitcherTest {
         assertEquals(DataType.SHORT, variables.get(0).getDataType());
         assertEquals("rows columns", variables.get(0).getDimensionsString());
         final List<Attribute> F1_BT_io_attributes = variables.get(0).getAttributes();
-        assertEquals("standard_name", F1_BT_io_attributes.get(0).getFullName());
-        assertEquals("toa_brightness_temperature", F1_BT_io_attributes.get(0).getStringValue());
-        assertEquals("long_name", F1_BT_io_attributes.get(1).getFullName());
+        assertEquals("_ChunkSize", F1_BT_io_attributes.get(0).getFullName());
+        Array chunkLengths = F1_BT_io_attributes.get(0).getValues();
+        assertEquals(1, chunkLengths.getShape().length);
+        assertEquals(2, chunkLengths.getShape()[0]);
+        assertEquals(600, chunkLengths.getInt(0));
+        assertEquals(450, chunkLengths.getInt(1));
+        assertEquals("standard_name", F1_BT_io_attributes.get(1).getFullName());
+        assertEquals("toa_brightness_temperature", F1_BT_io_attributes.get(1).getStringValue());
+        assertEquals("long_name", F1_BT_io_attributes.get(2).getFullName());
         assertEquals("Gridded pixel brightness temperature for channel F1 (1km TIR grid, oblique view)",
-                     F1_BT_io_attributes.get(1).getStringValue());
-        assertEquals("units", F1_BT_io_attributes.get(2).getFullName());
-        assertEquals("K", F1_BT_io_attributes.get(2).getStringValue());
-        assertEquals("_FillValue", F1_BT_io_attributes.get(3).getFullName());
-        assertEquals((short) -32768, F1_BT_io_attributes.get(3).getNumericValue());
-        assertEquals("scale_factor", F1_BT_io_attributes.get(4).getFullName());
-        assertEquals(0.01, F1_BT_io_attributes.get(4).getNumericValue());
-        assertEquals("add_offset", F1_BT_io_attributes.get(5).getFullName());
-        assertEquals(283.73, F1_BT_io_attributes.get(5).getNumericValue());
+                     F1_BT_io_attributes.get(2).getStringValue());
+        assertEquals("units", F1_BT_io_attributes.get(3).getFullName());
+        assertEquals("K", F1_BT_io_attributes.get(3).getStringValue());
+        assertEquals("_FillValue", F1_BT_io_attributes.get(4).getFullName());
+        assertEquals((short) -32768, F1_BT_io_attributes.get(4).getNumericValue());
+        assertEquals("scale_factor", F1_BT_io_attributes.get(5).getFullName());
+        assertEquals(0.01, F1_BT_io_attributes.get(5).getNumericValue());
+        assertEquals("add_offset", F1_BT_io_attributes.get(6).getFullName());
+        assertEquals(283.73, F1_BT_io_attributes.get(6).getNumericValue());
 
         assertEquals("F1_exception_io", variables.get(1).getFullName());
         assertEquals("F1_BT_orphan_io", variables.get(2).getFullName());
@@ -220,11 +226,17 @@ public class NcFileStitcherTest {
         assertEquals(true, variables.get(3).isUnsigned());
         assertEquals("rows orphan_pixels", variables.get(3).getDimensionsString());
         final List<Attribute> F1_exception_orphan_io_attributes = variables.get(3).getAttributes();
-        assertEquals("standard_name", F1_exception_orphan_io_attributes.get(0).getFullName());
-        assertEquals("toa_brightness_temperature_status_flag", F1_exception_orphan_io_attributes.get(0).getStringValue());
-        assertEquals("flag_masks", F1_exception_orphan_io_attributes.get(1).getFullName());
-        assertEquals(true, F1_exception_orphan_io_attributes.get(1).isArray());
-        final Array F1_exception_orphan_io_values = F1_exception_orphan_io_attributes.get(1).getValues();
+        assertEquals("_ChunkSize", F1_exception_orphan_io_attributes.get(0).getFullName());
+        chunkLengths = F1_exception_orphan_io_attributes.get(0).getValues();
+        assertEquals(1, chunkLengths.getShape().length);
+        assertEquals(2, chunkLengths.getShape()[0]);
+        assertEquals(600, chunkLengths.getInt(0));
+        assertEquals(112, chunkLengths.getInt(1));
+        assertEquals("standard_name", F1_exception_orphan_io_attributes.get(1).getFullName());
+        assertEquals("toa_brightness_temperature_status_flag", F1_exception_orphan_io_attributes.get(1).getStringValue());
+        assertEquals("flag_masks", F1_exception_orphan_io_attributes.get(2).getFullName());
+        assertEquals(true, F1_exception_orphan_io_attributes.get(2).isArray());
+        final Array F1_exception_orphan_io_values = F1_exception_orphan_io_attributes.get(2).getValues();
         assertEquals(8, F1_exception_orphan_io_values.getSize());
         assertEquals(true, F1_exception_orphan_io_values.isUnsigned());
         assertEquals((byte) 1, F1_exception_orphan_io_values.getByte(0));
@@ -235,11 +247,11 @@ public class NcFileStitcherTest {
         assertEquals((byte) 32, F1_exception_orphan_io_values.getByte(5));
         assertEquals((byte) 64, F1_exception_orphan_io_values.getByte(6));
         assertEquals((byte) 128, F1_exception_orphan_io_values.getByte(7));
-        assertEquals("flag_meanings", F1_exception_orphan_io_attributes.get(2).getFullName());
+        assertEquals("flag_meanings", F1_exception_orphan_io_attributes.get(3).getFullName());
         assertEquals("ISP_absent pixel_absent not_decompressed no_signal saturation invalid_radiance no_parameters unfilled_pixel",
-                     F1_exception_orphan_io_attributes.get(2).getStringValue());
-        assertEquals("_FillValue", F1_exception_orphan_io_attributes.get(3).getFullName());
-        assertEquals((byte) -128, F1_exception_orphan_io_attributes.get(3).getNumericValue());
+                     F1_exception_orphan_io_attributes.get(3).getStringValue());
+        assertEquals("_FillValue", F1_exception_orphan_io_attributes.get(4).getFullName());
+        assertEquals((byte) -128, F1_exception_orphan_io_attributes.get(4).getNumericValue());
 
         List<Variable> inputFileVariables = new ArrayList<>();
         for (int i = 0; i < 1; i++) {
@@ -268,7 +280,7 @@ public class NcFileStitcherTest {
     @Test
     public void testSetGlobalAttributes() throws IOException {
         final File file = new File(targetDirectory, "something.nc");
-        final NFileWriteable netcdfWriteable = NWritableFactory.create(file.getAbsolutePath(), "netcdf4");
+        SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
         List<Attribute>[] attributeLists = new List[2];
         attributeLists[0] = new ArrayList<>();
         attributeLists[0].add(new Attribute("xyz", "yz"));
@@ -317,15 +329,15 @@ public class NcFileStitcherTest {
         List<Variable>[] variableLists = new ArrayList[2];
 
         final File inputFile1 = new File(targetDirectory, "input_1.nc");
-        final NFileWriteable inputWriteable1 = NWritableFactory.create(inputFile1.getAbsolutePath(), "netcdf4");
+        SlstrNFileWritable inputWriteable1 = SlstrNFileWritable.create(inputFile1.getAbsolutePath());
         inputWriteable1.addDimension("rows", 5);
         inputWriteable1.addDimension("columns", 7);
         inputWriteable1.addDimension("the_twilight_zone", 12);
-        final NVariable abVariable1 = inputWriteable1.addVariable("ab", DataType.BYTE, true, null, "rows columns");
-        final NVariable cdVariable1 = inputWriteable1.addVariable("cd", DataType.LONG, false, null, "columns the_twilight_zone");
+        final SlstrN4Variable abVariable1 = inputWriteable1.addVariable("ab", DataType.BYTE, true, null, "rows columns");
+        final SlstrN4Variable cdVariable1 = inputWriteable1.addVariable("cd", DataType.LONG, false, null, "columns the_twilight_zone");
         inputWriteable1.create();
-        abVariable1.writeFully(new ArrayByte(new int[]{5, 7}));
-        cdVariable1.writeFully(new ArrayLong(new int[]{7, 12}));
+        abVariable1.writeFullyInSections(new ArrayByte(new int[]{5, 7}));
+        cdVariable1.writeFullyInSections(new ArrayLong(new int[]{7, 12}));
         inputWriteable1.close();
         final NetcdfFile inputnc1 = NetcdfFileOpener.open(inputFile1);
         assertNotNull(inputnc1);
@@ -351,7 +363,7 @@ public class NcFileStitcherTest {
         inputnc2.close();
 
         final File file = new File(targetDirectory, "something.nc");
-        final NFileWriteable netcdfWriteable = NWritableFactory.create(file.getAbsolutePath(), "netcdf4");
+        SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
         ImageSize targetImageSize = new ImageSize("id", 10, 20, 10, 20);
         NcFileStitcher.setDimensions(netcdfWriteable, dimensionLists, targetImageSize, variableLists);
         netcdfWriteable.create();
@@ -410,7 +422,7 @@ public class NcFileStitcherTest {
         inputnc2.close();
 
         final File file = new File(targetDirectory, "something.nc");
-        final NFileWriteable netcdfWriteable = NWritableFactory.create(file.getAbsolutePath(), "netcdf4");
+        SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
         netcdfWriteable.create();
         ImageSize targetImageSize = new ImageSize("id", 10, 20, 10, 20);
         try {
@@ -463,7 +475,7 @@ public class NcFileStitcherTest {
         variableLists[1] = inputnc2.getVariables();
 
         final File file = new File(targetDirectory, "something.nc");
-        final NFileWriteable netcdfWriteable = NWritableFactory.create(file.getAbsolutePath(), "netcdf4");
+        SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
         netcdfWriteable.create();
         ImageSize targetImageSize = new ImageSize("id", 10, 20, 10, 20);
         try {
