@@ -25,7 +25,7 @@ class OrbitReferenceMerger extends AbstractElementMerger {
     private void mergeNodes(NodeList fromNodes, Element toParent, Document toDocument) {
         for (int j = 0; j < fromNodes.getLength(); j++) {
             final Node child = fromNodes.item(j);
-            if (!(child instanceof TextImpl)) {
+            if (!(child.getNodeType() == Node.TEXT_NODE)) {
                 final Element childElement = toDocument.createElement(child.getNodeName());
                 if (!child.getTextContent().contains("\n")) {
                     final String textContent = child.getTextContent();

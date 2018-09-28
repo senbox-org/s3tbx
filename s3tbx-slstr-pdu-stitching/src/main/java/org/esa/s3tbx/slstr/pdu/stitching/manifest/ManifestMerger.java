@@ -1,7 +1,5 @@
 package org.esa.s3tbx.slstr.pdu.stitching.manifest;
 
-import com.sun.org.apache.xerces.internal.dom.DeferredTextImpl;
-import com.sun.org.apache.xerces.internal.dom.TextImpl;
 import org.esa.s3tbx.slstr.pdu.stitching.ImageSize;
 import org.esa.s3tbx.slstr.pdu.stitching.ImageSizeHandler;
 import org.esa.s3tbx.slstr.pdu.stitching.PDUStitchingException;
@@ -151,11 +149,11 @@ public class ManifestMerger {
             for (int j = 0; j < fromParents.size(); j++) {
                 for (int i = 0; i < childNodeLists[j].getLength(); i++) {
                     final Node child = childNodeLists[j].item(i);
-                    if (!(child instanceof TextImpl) || !child.getTextContent().contains("\n")) {
+                    if (!(child.getNodeType() == Node.TEXT_NODE) || !child.getTextContent().contains("\n")) {
                         if (!hasIdenticalChild(toParent, child)) {
                             final String nodeValue = child.getNodeValue();
                             List<Node> childNodes = collectChildNodes(child, childNodeLists, j);
-                            if (child instanceof DeferredTextImpl) {
+                            if (child.getNodeType() == Node.TEXT_NODE) {
                                 final String textContent = child.getTextContent();
                                 final Text textNode = toDocument.createTextNode(textContent);
                                 toParent.appendChild(textNode);

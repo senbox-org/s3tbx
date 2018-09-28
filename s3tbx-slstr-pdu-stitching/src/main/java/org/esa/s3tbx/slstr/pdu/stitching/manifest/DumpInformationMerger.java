@@ -1,6 +1,5 @@
 package org.esa.s3tbx.slstr.pdu.stitching.manifest;
 
-import com.sun.org.apache.xerces.internal.dom.TextImpl;
 import org.esa.s3tbx.slstr.pdu.stitching.PDUStitchingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,7 +23,7 @@ class DumpInformationMerger extends AbstractElementMerger {
             final NodeList origChildNodes = fromParent.getChildNodes();
             for (int j = 0; j < origChildNodes.getLength(); j++) {
                 final Node origChild = origChildNodes.item(j);
-                if (!(origChild instanceof TextImpl) && !origChild.getTextContent().contains("\n")) {
+                if (!(origChild.getNodeType() == Node.TEXT_NODE) && !origChild.getTextContent().contains("\n")) {
                     final Element dumpChildElement = toDocument.createElement(origChild.getNodeName());
                     final String textContent = origChild.getTextContent();
                     final Text textNode = toDocument.createTextNode(textContent);
