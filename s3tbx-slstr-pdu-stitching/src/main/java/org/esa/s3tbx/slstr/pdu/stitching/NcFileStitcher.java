@@ -1,9 +1,6 @@
 package org.esa.s3tbx.slstr.pdu.stitching;
 
 import com.bc.ceres.binding.converters.DateFormatConverter;
-import org.esa.snap.dataio.netcdf.nc.NFileWriteable;
-import org.esa.snap.dataio.netcdf.nc.NVariable;
-import org.esa.snap.dataio.netcdf.nc.NWritableFactory;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.ma2.Array;
 import ucar.ma2.IndexIterator;
@@ -42,14 +39,14 @@ class NcFileStitcher {
             variables[i] = inputFiles[i].getVariables();
         }
         final File file = new File(targetDirectory, fileName);
-        final NFileWriteable netcdfWriteable = NWritableFactory.create(file.getAbsolutePath(), "netcdf4");
+        final SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
         setGlobalAttributes(netcdfWriteable, globalAttributes, targetDirectory.getName(), creationDate);
         setDimensions(netcdfWriteable, dimensions, targetImageSize, variables);
         final Map<String, Array> variableToArrayMap =
                 defineVariables(netcdfWriteable, variables, targetImageSize, imageSizes);
         netcdfWriteable.create();
         for (String variableName : variableToArrayMap.keySet()) {
-            netcdfWriteable.findVariable(variableName).writeFully(variableToArrayMap.get(variableName));
+            netcdfWriteable.findVariable(variableName).writeFullyInSections(variableToArrayMap.get(variableName));
         }
         netcdfWriteable.close();
         for (NetcdfFile inputFile : inputFiles) {
@@ -58,7 +55,7 @@ class NcFileStitcher {
         return file;
     }
 
-    private static Map<String, Array> defineVariables(NFileWriteable netcdfWriteable, List<Variable>[] variableLists,
+    private static Map<String, Array> defineVariables(SlstrNFileWritable netcdfWriteable, List<Variable>[] variableLists,
                                                       ImageSize targetImageSize, ImageSize[] imageSizes)
             throws PDUStitchingException, IOException {
         Map<String, Array> variableToArray = new HashMap<>();
@@ -71,7 +68,7 @@ class NcFileStitcher {
                 if (!namesOfAddedVariables.contains(variableName) && variable.getDimensions().size() > 0) {
                     checkWhetherVariableHasSameDimensionsAcrossFiles(i, variable, variableLists);
                     addVariableToWritable(netcdfWriteable, variable);
-                    final NVariable nVariable = netcdfWriteable.findVariable(variableName);
+                    final SlstrN4Variable nVariable = netcdfWriteable.findVariable(variableName);
                     final int indexOfRowDimension = getIndexOfRowDimension(variable.getDimensions());
                     if (indexOfRowDimension < 0) {
                         variableToArray.put(variableName, getValidArrayFromVariable(variable));
@@ -111,13 +108,13 @@ class NcFileStitcher {
         return variable.read();
     }
 
-    private static void addVariableToWritable(NFileWriteable netcdfWriteable, Variable variable) throws IOException {
+    private static void addVariableToWritable(SlstrNFileWritable netcdfWriteable, Variable variable) throws IOException {
         if (variable.getDataType().isString()) {
             netcdfWriteable.addVariable(variable.getFullName(), variable.getDataType(), variable.isUnsigned(),
-                                        null, variable.getDimensionsString(), 0);
+                    null, variable.getDimensionsString(), 0);
         } else {
             netcdfWriteable.addVariable(variable.getFullName(), variable.getDataType(), variable.isUnsigned(),
-                                        null, variable.getDimensionsString());
+                    null, variable.getDimensionsString());
         }
     }
 
@@ -165,12 +162,17 @@ class NcFileStitcher {
         return nVariableArray;
     }
 
-    private static void addVariableAttributes(NVariable nVariable, Variable variable, int variableIndex,
+    private static void addVariableAttributes(SlstrN4Variable nVariable, Variable variable, int variableIndex,
                                               List<Variable>[] variableLists) throws IOException {
         final String variableName = variable.getFullName();
         final List<Attribute> variableAttributes = variable.getAttributes();
+        Attribute chunkSizeAttribute = new Attribute("_ChunkSize", Array.factory(nVariable.getChunkLengths()));
+        addAttributeToNVariable(nVariable, chunkSizeAttribute);
         if (variableIndex < variableLists.length) {
             for (final Attribute variableAttribute : variableAttributes) {
+                if (variableAttribute.getFullName().equals("_ChunkSize")) {
+                    continue;
+                }
                 for (int k = variableIndex; k < variableLists.length; k++) {
                     final Variable otherVariable = getVariableFromList(variableName, variableLists[k]);
                     if (otherVariable != null) {
@@ -215,15 +217,15 @@ class NcFileStitcher {
         return indexOfRowDimension;
     }
 
-    private static void addAttributeToNVariable(NVariable nVariable, Attribute referenceAttribute, int index) throws IOException {
+    private static void addAttributeToNVariable(SlstrN4Variable nVariable, Attribute referenceAttribute, int index) throws IOException {
         addAttributeToNVariable(nVariable, referenceAttribute.getFullName() + "_" + index, referenceAttribute);
     }
 
-    private static void addAttributeToNVariable(NVariable nVariable, Attribute referenceAttribute) throws IOException {
+    private static void addAttributeToNVariable(SlstrN4Variable nVariable, Attribute referenceAttribute) throws IOException {
         addAttributeToNVariable(nVariable, referenceAttribute.getFullName(), referenceAttribute);
     }
 
-    private static void addAttributeToNVariable(NVariable nVariable, String name, Attribute referenceAttribute) throws IOException {
+    private static void addAttributeToNVariable(SlstrN4Variable nVariable, String name, Attribute referenceAttribute) throws IOException {
         if (referenceAttribute.isArray()) {
             nVariable.addAttribute(name, referenceAttribute.getValues());
         } else if (referenceAttribute.isString()) {
@@ -298,7 +300,7 @@ class NcFileStitcher {
         return size;
     }
 
-    static void setDimensions(NFileWriteable nFileWriteable, List<Dimension>[] dimensionLists,
+    static void setDimensions(SlstrNFileWritable nFileWriteable, List<Dimension>[] dimensionLists,
                               ImageSize targetImageSize, List<Variable>[] variableLists)
             throws PDUStitchingException, IOException {
         List<String> namesOfAddedDimensions = new ArrayList<>();
@@ -359,7 +361,7 @@ class NcFileStitcher {
         }
     }
 
-    static void setGlobalAttributes(NFileWriteable nFileWriteable, List<Attribute>[] globalAttributeLists,
+    static void setGlobalAttributes(SlstrNFileWritable nFileWriteable, List<Attribute>[] globalAttributeLists,
                                     String parentDirectoryName, Date creationDate) throws IOException {
         final DateFormatConverter globalAttributesDateFormatConverter =
                 new DateFormatConverter(new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"));
