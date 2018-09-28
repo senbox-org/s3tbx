@@ -18,7 +18,10 @@
 package org.esa.s3tbx.processor.rad2refl;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -161,7 +164,7 @@ public class Rad2ReflOp extends Operator {
                 checkForCancellation();
                 for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                     if (isInvalid.getSample(x, y, 0) != 0) {
-                        targetTile.setSample(x, y, Float.NaN);
+                        targetTile.setSample(x, y, Rad2ReflConstants.RAD_TO_REFL_NODATA);
                     } else {
                         float solarFlux = Float.NaN;
                         float sza = Float.NaN;
@@ -187,7 +190,8 @@ public class Rad2ReflOp extends Operator {
 
                         final float spectralValueToConvert = spectralBandToConvertTile.getSampleFloat(x, y);
                         final float spectralValueConverted = converter.convert(spectralValueToConvert, sza, solarFlux);
-                        targetTile.setSample(x, y, spectralValueConverted);
+                        targetTile.setSample(x, y, Float.isNaN(spectralValueConverted) ?
+                                Rad2ReflConstants.RAD_TO_REFL_NODATA : spectralValueConverted);
                     }
                 }
             }
@@ -283,7 +287,7 @@ public class Rad2ReflOp extends Operator {
         return targetProduct;
     }
 
-    private Band createRadianceBand(Band sourceBand, String targetBandName) {
+    private void createRadianceBand(Band sourceBand, String targetBandName) {
         Band targetBand = new Band(targetBandName, ProductData.TYPE_FLOAT32,
                                    sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
 
@@ -297,11 +301,9 @@ public class Rad2ReflOp extends Operator {
         targetBand.setSpectralBandIndex(sourceBand.getSpectralBandIndex());
         targetBand.setSpectralWavelength(sourceBand.getSpectralWavelength());
         targetBand.setSpectralBandwidth(sourceBand.getSpectralBandwidth());
-
-        return targetBand;
     }
 
-    private Band createReflectanceBand(Band sourceBand, String targetBandName) {
+    private void createReflectanceBand(Band sourceBand, String targetBandName) {
 //        Band targetBand = new Band(targetBandName, ProductData.TYPE_FLOAT32,
 //                                   sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
 //        targetBand.setScalingFactor(1);
@@ -312,18 +314,16 @@ public class Rad2ReflOp extends Operator {
         Band targetBand = new Band(targetBandName, ProductData.TYPE_INT16,
                                    sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
         targetProduct.addBand(targetBand);
-        ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
+        ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
         targetBand.setDescription(Rad2ReflConstants.RAD_TO_REFL_DESCR);
         targetBand.setUnit(Rad2ReflConstants.REFL_UNIT);
+        targetBand.setNoDataValueUsed(true);
         final double scalingFactor = 1. / 10000.0f;
         targetBand.setScalingFactor(scalingFactor);
-        targetBand.setNoDataValue(Float.NaN);
-        targetBand.setNoDataValueUsed(true);
+        targetBand.setGeophysicalNoDataValue(Rad2ReflConstants.RAD_TO_REFL_NODATA);
         targetBand.setSpectralBandIndex(sourceBand.getSpectralBandIndex());
         targetBand.setSpectralWavelength(sourceBand.getSpectralWavelength());
         targetBand.setSpectralBandwidth(sourceBand.getSpectralBandwidth());
-
-        return targetBand;
     }
 
     private boolean isRadToReflMode() {

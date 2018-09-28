@@ -35,10 +35,10 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(displayName = "#CTL_IdepixProbavAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 200)
 @ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 300)
-@NbBundle.Messages({"CTL_IdepixProbavAction_Text=PROBA-V Vegetation"})
+@NbBundle.Messages({"CTL_IdepixProbavAction_Text=PROBA-V"})
 public class IdepixProbavAction extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixProbavAction() {
         putValue(Action.SHORT_DESCRIPTION, "Performs pixel classification on a PROBA-V data product.");
@@ -49,7 +49,7 @@ public class IdepixProbavAction extends AbstractSnapAction {
         final OperatorMetadata opMetadata = ProbaVOp.class.getAnnotation(OperatorMetadata.class);
         final IdepixDefaultDialog dialog = new IdepixDefaultDialog(opMetadata.alias(),
                                                                    getAppContext(),
-                                                                   "Idepix (PROBA-V Vegetation mode)",
+                                                                   "Idepix (PROBA-V mode)",
                                                                    HELP_ID,
                                                                    "_idepix");
         dialog.getJDialog().pack();

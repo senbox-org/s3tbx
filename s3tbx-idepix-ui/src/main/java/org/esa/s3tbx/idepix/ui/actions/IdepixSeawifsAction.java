@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 @NbBundle.Messages({"CTL_IdepixSeawifsAction_Text=OrbView-2 SeaWiFS"})
 public class IdepixSeawifsAction extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixSeawifsAction() {
         putValue(Action.SHORT_DESCRIPTION, "Performs pixel classification on a SeaWiFS data product.");

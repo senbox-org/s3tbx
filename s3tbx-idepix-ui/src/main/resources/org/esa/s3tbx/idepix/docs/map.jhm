@@ -20,13 +20,12 @@
         "http://java.sun.com/products/javahelp/map_2_0.dtd">
 
 <map version="2.0">
-    <mapID target="idepixTool" url="idepix/IdepixTool.html"/>
+    <mapID target="idepixS3Tool" url="idepix/IdepixS3Tool.html"/>
 
-    <mapID target="idepixProcessorDesc" url="idepix/IdepixProcessorDescription.html"/>
-    <mapID target="idepixAlgorithmSpec" url="idepix/IdepixAlgorithmSpecification.html"/>
-    <mapID target="idepixCommandLine" url="idepix/IdepixCommandLine.html"/>
+    <mapID target="idepixProcessorDesc" url="idepix/IdepixS3ProcessorDescription.html"/>
+    <mapID target="idepixAlgorithmSpec" url="idepix/IdepixS3AlgorithmSpecification.html"/>
+    <mapID target="idepixCommandLine" url="idepix/IdepixS3CommandLine.html"/>
 
-    <mapID target="sentinel2MsiProcessorDesc" url="idepix/Sentinel2MsiProcessorDescription.html"/>
     <mapID target="sentinel3OlciProcessorDesc" url="idepix/Sentinel3OlciProcessorDescription.html"/>
     <mapID target="envisatMerisProcessorDesc" url="idepix/EnvisatMerisProcessorDescription.html"/>
     <mapID target="landsat8OliProcessorDesc" url="idepix/Landsat8OliProcessorDescription.html"/>
@@ -36,7 +35,6 @@
     <mapID target="orbview2SeawifsProcessorDesc" url="idepix/OrbView2SeawifsProcessorDescription.html"/>
     <mapID target="suominppViirsProcessorDesc" url="idepix/SuomiNppViirsProcessorDescription.html"/>
 
-    <mapID target="sentinel2MsiAlgorithmSpec" url="idepix/Sentinel2MsiAlgorithmSpecification.html"/>
     <mapID target="sentinel3OlciAlgorithmSpec" url="idepix/Sentinel3OlciAlgorithmSpecification.html"/>
     <mapID target="envisatMerisAlgorithmSpec" url="idepix/EnvisatMerisAlgorithmSpecification.html"/>
     <mapID target="landsat8OliAlgorithmSpec" url="idepix/Landsat8OliAlgorithmSpecification.html"/>

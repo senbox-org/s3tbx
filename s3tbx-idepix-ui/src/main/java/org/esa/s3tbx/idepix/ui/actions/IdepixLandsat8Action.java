@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
 @NbBundle.Messages({"CTL_IdepixLandsat8Action_Text=Landsat-8 OLI"})
 public class IdepixLandsat8Action extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixLandsat8Action() {
         setHelpId("idepix");

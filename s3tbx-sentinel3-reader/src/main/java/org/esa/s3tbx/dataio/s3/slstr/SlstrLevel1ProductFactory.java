@@ -434,7 +434,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     }
 
     private boolean applyS3MPCCalibration() {
-        return Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_S3MPC_CALIBRATION, true);
+        return Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_S3MPC_CALIBRATION, false);
     }
 
     protected void loadOrphanPixelBands(Product targetProduct, final Product sourceProduct) throws IOException {

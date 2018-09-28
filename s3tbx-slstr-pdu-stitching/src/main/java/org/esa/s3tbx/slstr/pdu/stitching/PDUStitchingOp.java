@@ -74,7 +74,7 @@ public class PDUStitchingOp extends Operator {
         try {
             SlstrPduStitcher.createStitchedSlstrL1BFile(targetDir, files, pm);
         } catch (Exception e) {
-            throw new OperatorException(e.getMessage());
+            throw new OperatorException(e.getMessage(), e);
         }
     }
 

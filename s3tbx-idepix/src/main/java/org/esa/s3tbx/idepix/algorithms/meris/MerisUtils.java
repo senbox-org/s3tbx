@@ -2,11 +2,19 @@ package org.esa.s3tbx.idepix.algorithms.meris;
 
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.IdepixFlagCoding;
+import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
+import org.esa.s3tbx.processor.rad2refl.Rad2ReflOp;
+import org.esa.s3tbx.processor.rad2refl.Sensor;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.util.BitSetter;
+import org.esa.snap.core.util.ProductUtils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -50,6 +58,31 @@ public class MerisUtils {
                                          IdepixFlagCoding.getRandomColour(r), 0.5f);
         classifProduct.getMaskGroup().add(index, mask);
 
+    }
+
+    public static void addMerisRadiance2ReflectanceBands(Product rad2reflProduct, Product targetProduct, String[] reflBandsToCopy) {
+        for (int i = 1; i <= Rad2ReflConstants.MERIS_REFL_BAND_NAMES.length; i++) {
+            for (String bandname : reflBandsToCopy) {
+                // e.g. Oa01_reflectance
+                if (!targetProduct.containsBand(bandname) &&
+                        bandname.startsWith(Rad2ReflConstants.MERIS_AUTOGROUPING_REFL_STRING) &&
+                        bandname.endsWith("_" + String.valueOf(i))) {
+                    ProductUtils.copyBand(bandname, rad2reflProduct, targetProduct, true);
+                    targetProduct.getBand(bandname).setUnit("dl");
+                }
+            }
+        }
+    }
+
+    public static Product computeRadiance2ReflectanceProduct(Product sourceProduct) {
+        Map<String, Object> params = new HashMap<>(2);
+        params.put("sensor", Sensor.MERIS);
+        params.put("copyNonSpectralBands", false);
+        return GPF.createProduct(OperatorSpi.getOperatorAlias(Rad2ReflOp.class), params, sourceProduct);
+    }
+
+    public static Product computeCloudTopPressureProduct(Product sourceProduct) {
+        return GPF.createProduct("Meris.CloudTopPressureOp", GPF.NO_PARAMS, sourceProduct);
     }
 
 }

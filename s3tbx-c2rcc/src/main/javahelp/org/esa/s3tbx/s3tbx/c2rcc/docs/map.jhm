@@ -8,5 +8,6 @@
     <mapID target="c2rccScientificTool" url="c2rcc/C2RCCTool.html"/>
     <mapID target="c2rccAlgorithmSpec" url="c2rcc/C2RCCAlgorithmSpecification.html"/>
     <mapID target="c2rccProcessorDesc" url="c2rcc/C2RCCProcessorDescription.html"/>
+    <mapID target="c2rccIOParameters" url="c2rcc/C2RCCIOParameters.html"/>
 
 </map>

@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.esa.s3tbx.fub.wew.WaterProcessorOpConstant.*;
+
 @OperatorMetadata(alias = "FUB.Water", authors = "Thomas Schroeder, Michael Schaale",
         copyright = "Institute for Space Sciences (WeW), Freie Universitaet Berlin",
         category = "Optical/Thematic Water Processing",
@@ -52,7 +54,6 @@ public class WaterProcessorOp extends PixelOperator {
     private float[] solarFlux;
 
     private Band[] inputBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
-    private Raster validMaskData;
 
     @SourceProduct(label = "Source product",
             description = "The MERIS L1b or L1P source product used for the processing.")
@@ -121,8 +122,6 @@ public class WaterProcessorOp extends PixelOperator {
         if (checkWhetherSuspectIsValid) {
             checkWhetherSuspectIsValid();
         }
-        final PlanarImage validMaskImage = createValidMaskImage(sourceProduct, expression);
-        validMaskData = validMaskImage.getData();
     }
 
     @Override
@@ -131,6 +130,7 @@ public class WaterProcessorOp extends PixelOperator {
         for (int i = 0; i < sourceRasterNames.length; i++) {
             sampleConfigurer.defineSample(i, sourceRasterNames[i]);
         }
+        sampleConfigurer.defineComputedSample(SOURCE_SAMPLE_VALID_MASK, ProductData.TYPE_INT8, expression);
     }
 
     @Override
@@ -247,6 +247,7 @@ public class WaterProcessorOp extends PixelOperator {
         float mw = sourceSamples[WaterProcessorOpConstant.SOURCE_SAMPLE_INDEX_MERID_WIND].getFloat();
         float press = sourceSamples[WaterProcessorOpConstant.SOURCE_SAMPLE_INDEX_ATM_PRESS].getFloat();
         float o3 = sourceSamples[WaterProcessorOpConstant.SOURCE_SAMPLE_INDEX_OZONE].getFloat();
+        boolean valid = sourceSamples[WaterProcessorOpConstant.SOURCE_SAMPLE_VALID_MASK].getBoolean();
 
         final int x = 0;
 
@@ -256,7 +257,7 @@ public class WaterProcessorOp extends PixelOperator {
         // Exclude pixels from processing if the following l1flags mask becomes true
 //        not quality_flags_sun_glint_risk and not quality_flags_bright and not quality_flags_invalid
 //
-        if (validMaskData.getSample(xpos, ypos, 0) == 0) {
+        if (!valid) {
             resultFlags[x] = WaterProcessorOpConstant.RESULT_ERROR_VALUES[0];
         }
 

@@ -11,7 +11,7 @@ public class MerisRadReflConverter implements RadReflConverter {
 
     private String conversionMode;
 
-    public MerisRadReflConverter(String conversionMode) {
+    MerisRadReflConverter(String conversionMode) {
         this.conversionMode = conversionMode;
     }
 

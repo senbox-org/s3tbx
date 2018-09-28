@@ -459,7 +459,7 @@ public class RayleighCorrectionOp extends Operator {
             rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(OLCI_SAA_NAME), rectangle));
             rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(OLCI_VAA_NAME), rectangle));
             rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getRasterDataNode(OLCI_SLP_NAME), rectangle));
-            rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getRasterDataNode(OLCI_OZONE_NAME), rectangle));
+            rayleighAux.setOlciTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(OLCI_OZONE_NAME), rectangle));
             if (sourceProduct.getTiePointGrid(TP_LATITUDE) != null) {
                 rayleighAux.setLatitudes(getSourceTile(sourceProduct.getRasterDataNode(TP_LATITUDE), rectangle));
             } else {

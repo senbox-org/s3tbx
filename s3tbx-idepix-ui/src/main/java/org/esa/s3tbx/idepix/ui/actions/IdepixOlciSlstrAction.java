@@ -37,7 +37,7 @@ import java.awt.event.ActionEvent;
 //@NbBundle.Messages({"CTL_IdepixOlciSlstrAction_Text=Sentinel-3 OLCI/SLSTR Synergy"})
 public class IdepixOlciSlstrAction extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixOlciSlstrAction() {
         putValue(Action.SHORT_DESCRIPTION, "Performs pixel classification on a OLCI/SLSTR synergy data product.");

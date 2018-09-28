@@ -24,9 +24,8 @@
         <tocitem text="Optical">
             <tocitem text="Pre-Processing">
                 <tocitem text="Masking">
-                    <tocitem text="Idepix Classification of Pixels" target="idepixTool">
+                    <tocitem text="Idepix Classification of Pixels (Sentinel-3 and other platforms)" target="idepixS3Tool">
                         <tocitem text="Idepix Processor Descriptions" target="idepixProcessorDesc">
-                            <tocitem text="Sentinel-2 MSI" target="sentinel2MsiProcessorDesc"/>
                             <tocitem text="Sentinel-3 OLCI" target="sentinel3OlciProcessorDesc"/>
                             <tocitem text="Envisat MERIS" target="envisatMerisProcessorDesc"/>
                             <tocitem text="Landsat-8 OLI" target="landsat8OliProcessorDesc"/>
@@ -37,7 +36,6 @@
                             <tocitem text="Suomi NPP VIIRS" target="suominppViirsProcessorDesc"/>
                         </tocitem>
                         <tocitem text="Idepix Algorithm Specifications" target="idepixAlgorithmSpec">
-                            <tocitem text="Sentinel-2 MSI" target="sentinel2MsiAlgorithmSpec"/>
                             <tocitem text="Sentinel-3 OLCI" target="sentinel3OlciAlgorithmSpec"/>
                             <tocitem text="Envisat MERIS" target="envisatMerisAlgorithmSpec"/>
                             <tocitem text="Landsat-8 OLI" target="landsat8OliAlgorithmSpec"/>

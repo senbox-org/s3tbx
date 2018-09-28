@@ -1,7 +1,7 @@
 package org.esa.s3tbx.idepix.algorithms.meris;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.s3tbx.idepix.algorithms.CloudShadowFronts;
+import org.esa.s3tbx.idepix.core.CloudShadowFronts;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
 import org.esa.snap.core.datamodel.*;

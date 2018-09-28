@@ -35,13 +35,13 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(displayName = "#CTL_IdepixVgtAction_Text")
 //@ActionReference(path = "Menu/Optical/Preprocessing/IdePix Pixel Classification", position = 200)
 @ActionReference(path = "Menu/Optical/Preprocessing/Masking/IdePix (Clouds, Land, Water, ...)", position = 800)
-@NbBundle.Messages({"CTL_IdepixVgtAction_Text=SPOT VGT"})
+@NbBundle.Messages({"CTL_IdepixVgtAction_Text=SPOT Vegetation"})
 public class IdepixVgtAction extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixVgtAction() {
-        putValue(Action.SHORT_DESCRIPTION, "Performs pixel classification on a VGT data product.");
+        putValue(Action.SHORT_DESCRIPTION, "Performs pixel classification on a SPOT Vegetation data product.");
     }
 
     @Override
@@ -49,7 +49,7 @@ public class IdepixVgtAction extends AbstractSnapAction {
         final OperatorMetadata opMetadata = VgtOp.class.getAnnotation(OperatorMetadata.class);
         final IdepixDefaultDialog dialog = new IdepixDefaultDialog(opMetadata.alias(),
                                                                    getAppContext(),
-                                                                   "Idepix (SPOT VGT mode)",
+                                                                   "Idepix (SPOT Vegetation mode)",
                                                                    HELP_ID,
                                                                    "_idepix");
         dialog.getJDialog().pack();

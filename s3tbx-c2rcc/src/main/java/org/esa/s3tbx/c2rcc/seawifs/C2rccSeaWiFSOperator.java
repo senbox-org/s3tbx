@@ -141,8 +141,8 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
             description = "The value used as ozone if not provided by auxiliary data")
     private double ozone;
 
-    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure",
-            description = "The value used as air pressure if not provided by auxiliary data")
+    @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure at Sea Level",
+            description = "The surface air pressure at sea level if not provided by auxiliary data")
     private double press;
 
     @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or tomsomiStartProduct, " +

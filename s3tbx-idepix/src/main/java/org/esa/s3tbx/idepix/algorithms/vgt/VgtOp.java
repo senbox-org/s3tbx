@@ -3,7 +3,7 @@ package org.esa.s3tbx.idepix.algorithms.vgt;
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
-import org.esa.s3tbx.idepix.operators.BasisOp;
+import org.esa.s3tbx.idepix.core.operators.BasisOp;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.GPF;
@@ -25,7 +25,6 @@ import java.util.Map;
  */
 @OperatorMetadata(alias = "Idepix.Spot.Vegetation",
         category = "Optical/Pre-Processing",
-        internal = true, // todo: remove when activated
         version = "1.0",
         authors = "Olaf Danne",
         copyright = "(c) 2016 by Brockmann Consult",

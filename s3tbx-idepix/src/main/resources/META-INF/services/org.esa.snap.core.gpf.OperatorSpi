@@ -36,5 +36,5 @@ org.esa.s3tbx.idepix.algorithms.olcislstr.OlciSlstrPostProcessOp$Spi
 org.esa.s3tbx.idepix.algorithms.vgt.VgtOp$Spi
 org.esa.s3tbx.idepix.algorithms.vgt.VgtClassificationOp$Spi
 org.esa.s3tbx.idepix.algorithms.vgt.VgtPostProcessOp$Spi
-org.esa.s3tbx.idepix.operators.CloudBufferOp$Spi
-org.esa.s3tbx.idepix.operators.IdepixPostProcessingOp$Spi
+org.esa.s3tbx.idepix.core.operators.CloudBufferOp$Spi
+org.esa.s3tbx.idepix.core.operators.IdepixPostProcessingOp$Spi

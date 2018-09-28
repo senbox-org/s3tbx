@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
 //@NbBundle.Messages({"CTL_IdepixAvhrrAction_Text=Avhrr"})
 public class IdepixAvhrrAction extends AbstractSnapAction {
 
-    private static final String HELP_ID = "idepixTool";
+    private static final String HELP_ID = "idepixS3Tool";
 
     public IdepixAvhrrAction() {
         // todo: activate when ready to publish

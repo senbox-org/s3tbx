@@ -32,7 +32,7 @@
 <h3>User Interface</h3>
 <p>
     The OWT Classification processor can be invoked from the SNAP tool menu by selecting
-    the <b>MERIS OWT Classification</b> command from the <b>Processing / Thematic Water Processing</b> menu. On the
+    the <b>OWT Classification</b> command from the <b>Processing / Thematic Water Processing</b> menu. On the
     command line the OWT Classification processor is
     available by means of the Graph Processing Tool <code>gpt</code> which is located in the SNAP <code>bin</code>
     directory. Typing <code>gpt OWTClassification -h</code> displays further information.
@@ -46,8 +46,8 @@
 
 <p class="i1">
     <b>Source product:</b>
-    Here the user specifies the source product.
-    The combo box presents a list of all products opened in the SNAP.
+    Specify the source product. Any atmospherically corrected water spectra should work if it contains the wavelength necessary for the selected OWT-Type.
+    The combo box presents a list of all products opened in SNAP.
     The user may select one of these or, by clicking on the button next to the combo box, choose a product
     from the file system.
 </p>
@@ -78,16 +78,18 @@
 <p class="i1">
     <b>OWT Type:</b> Select one of the available types from the predefined list.
     For a description of the types see the <a href="OwtAlgorithmSpecification.html">Algorithm Specification</a>
+    The OWT type defines which wavelengths are needed. The the maximum distance to the requested wavelength is 10 nm.
 </p>
 
 <p class="i1">
     <b>Reflectances prefix:</b>
-    Specifies the prefix of the reflectance bands which are used for processing.
+    Specifies the prefix of the reflectance bands which are used for processing. Only bands starting with this prefix will be considered as spectrum provider.
 </p>
 
 <p class="i1">
     <b>Input reflectance is:</b>
     Specifies if the input reflectance is either radiance reflectances or irradiance reflectances (ESA compatible).
+    For OLCI or MERIS chose IRRADIANCE_REFLECTANCES for MODIS use RADIANCE_REFLECTANCES.
 </p>
 
 <p class="i1">

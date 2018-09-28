@@ -2,11 +2,9 @@ package org.esa.s3tbx.idepix.algorithms.meris;
 
 import org.esa.s3tbx.idepix.core.AlgorithmSelector;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
+import org.esa.s3tbx.idepix.core.operators.BasisOp;
+import org.esa.s3tbx.idepix.core.operators.CloudBufferOp;
 import org.esa.s3tbx.idepix.core.util.IdepixIO;
-import org.esa.s3tbx.idepix.operators.BasisOp;
-import org.esa.s3tbx.idepix.operators.CloudBufferOp;
-import org.esa.s3tbx.idepix.operators.IdepixProducts;
-import org.esa.s3tbx.processor.rad2refl.Sensor;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.GPF;
@@ -158,8 +156,8 @@ public class MerisOp extends BasisOp {
     }
 
     private void preProcess() {
-        rad2reflProduct = IdepixProducts.computeRadiance2ReflectanceProduct(sourceProduct, Sensor.MERIS);
-        ctpProduct = IdepixProducts.computeCloudTopPressureProduct(sourceProduct);
+        rad2reflProduct = MerisUtils.computeRadiance2ReflectanceProduct(sourceProduct);
+        ctpProduct = MerisUtils.computeCloudTopPressureProduct(sourceProduct);
 
         HashMap<String, Object> waterMaskParameters = new HashMap<>();
         waterMaskParameters.put("resolution", IdepixConstants.LAND_WATER_MASK_RESOLUTION);
@@ -255,7 +253,7 @@ public class MerisOp extends BasisOp {
             IdepixIO.addRadianceBands(sourceProduct, targetProduct, radianceBandsToCopy);
         }
         if (outputRad2Refl) {
-            IdepixIO.addMerisRadiance2ReflectanceBands(rad2reflProduct, targetProduct, reflBandsToCopy);
+            MerisUtils.addMerisRadiance2ReflectanceBands(rad2reflProduct, targetProduct, reflBandsToCopy);
         }
     }
 

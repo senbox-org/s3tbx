@@ -23,7 +23,6 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.IndexCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.gpf.OperatorCancelException;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -101,7 +100,7 @@ public class OWTClassificationOp extends PixelOperator {
         final Band[] bands = sourceProduct.getBands();
         String bestBandName = getBestBandName(reflectancesPrefix, wavelength, bands);
         if (bestBandName == null) {
-            throw new OperatorCancelException(
+            throw new OperatorException(
                     String.format("Not able to find band with prefix '%s' and wavelength '%4.3f'.",
                                   reflectancesPrefix, wavelength)
             );

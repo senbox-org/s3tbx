@@ -26,11 +26,6 @@ import java.io.InputStream;
 public class ViirsClassificationOp extends PixelOperator {
 
     @Parameter(defaultValue = "true",
-            label = " RhoTOA bands (VIIRS)",
-            description = "Write RhoTOA bands to target product (VIIRS).")
-    private boolean outputViirsRhoToa = true;
-
-    @Parameter(defaultValue = "true",
             label = " Debug bands",
             description = "Write further useful bands to target product.")
     private boolean outputDebug = true;
@@ -94,8 +89,10 @@ public class ViirsClassificationOp extends PixelOperator {
         if (outputDebug) {
             sampleConfigurer.defineSample(1, ViirsConstants.BRIGHTNESS_BAND_NAME);
             sampleConfigurer.defineSample(2, ViirsConstants.NDSI_BAND_NAME);
+            sampleConfigurer.defineSample(3, IdepixConstants.NN_OUTPUT_BAND_NAME);
+        } else {
+            sampleConfigurer.defineSample(1, IdepixConstants.NN_OUTPUT_BAND_NAME);
         }
-        sampleConfigurer.defineSample(3, IdepixConstants.NN_OUTPUT_BAND_NAME);
     }
 
     @Override

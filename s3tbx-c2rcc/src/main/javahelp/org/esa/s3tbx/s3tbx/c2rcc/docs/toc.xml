@@ -13,6 +13,7 @@
                 <tocitem text="C2RCC Processor" target="c2rccScientificTool">
                     <tocitem text="Algorithm Specification" target="c2rccAlgorithmSpec"/>
                     <tocitem text="Processor Description" target="c2rccProcessorDesc"/>
+                    <tocitem text="IO Parameters" target="c2rccIOParameters"/>
                 </tocitem>
             </tocitem>
         </tocitem>

@@ -31,13 +31,14 @@ import java.util.Map;
 public class ViirsOp extends Operator{
 
     @Parameter(defaultValue = "true",
-            label = " RhoTOA bands (VIIRS)",
-            description = "Write RhoTOA bands to target product (VIIRS).")
+            label = " Write TOA reflectances to the target product",
+            description = "Write TOA reflectances to the target product.")
     private boolean outputViirsRhoToa = true;
 
-    @Parameter(defaultValue = "true",
-            label = " Debug bands",
-            description = "Write further useful bands to target product.")
+//    @Parameter(defaultValue = "true",
+//            label = " Debug bands",
+//            description = "Write further useful bands to target product.")
+//    private boolean outputDebug = true;
     private boolean outputDebug = true;
 
     @Parameter(defaultValue = "1", label = " Width of cloud buffer (# of pixels)")
@@ -110,7 +111,6 @@ public class ViirsOp extends Operator{
         viirsCloudClassificationParameters.put("cloudBufferWidth", cloudBufferWidth);
         viirsCloudClassificationParameters.put("waterMaskResolution", waterMaskResolution);
         viirsCloudClassificationParameters.put("outputDebug", outputDebug);
-        viirsCloudClassificationParameters.put("outputViirsRhoToa", outputViirsRhoToa);
 
         return viirsCloudClassificationParameters;
     }

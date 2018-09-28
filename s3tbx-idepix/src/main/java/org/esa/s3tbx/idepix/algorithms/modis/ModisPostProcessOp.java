@@ -2,7 +2,7 @@ package org.esa.s3tbx.idepix.algorithms.modis;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.idepix.core.IdepixConstants;
-import org.esa.s3tbx.idepix.operators.BasisOp;
+import org.esa.s3tbx.idepix.core.operators.BasisOp;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.Product;

@@ -33,8 +33,156 @@
     </tr>
 </table>
 
-<!--todo: complete-->
-to be completed
+<h3>Processor Description</h3>
+
+<h4>I/O Parameters Tab</h4>
+
+<p align="center"><img src="images/VgtPaths.png"></p>
+
+<h5>Source Product Group</h5>
+
+<p class="i1">
+    <b>Name: </b>
+    Used to select the spectral source product. The source product shall
+    contain spectral bands providing a source spectrum at each pixel. Use the <b>...</b> button to
+    open a data product currently not opened in the Sentinel Toolbox.
+</p>
+
+<h5>Supported SPOT Vegetation Source Products</h5>
+The following SPOT Vegetation source products are supported for Idepix classification:
+<ul>
+    <li>
+        VGT_P_*:<br>
+        'Physical' SPOT VEGETATION L1 TOA products.
+    </li>
+    <li>
+        VGT_S1_*:<br>
+        SPOT VEGETATION L1 TOA 1-day Synthesis products.
+    </li>
+    <li>
+        VGT_S10_*:<br>
+        SPOT VEGETATION L1 TOA 10-day Synthesis products.
+    </li>
+</ul>
+For more details on these products and file name conventions
+see the User  Guide  of  the  SPOT/VEGETATION  data, Collection  3
+(http://www.vgt.vito.be/pages/SPOT_VGT_PUM_v1.0.pdf).
+
+
+<h5>Target Product Group</h5>
+
+<p class="i1">
+    <b>Name:</b>
+    Used to specify the name of the target product.
+</p>
+
+<p class="i1">
+    <b>Save to:</b>
+    Used to specify whether the target product should be saved to the file system. The
+    combo box presents a list of file formats.
+</p>
+
+<p class="i1">
+    <b>Open in SNAP:</b>
+    Used to specify whether the target product should be opened in the Sentinel Toolbox.
+    When the target product is not saved, it is opened in the Sentinel Toolbox automatically.
+</p>
+
+<h3>The Processing Parameters</h3>
+
+<p align="center"><img src="images/VgtParameters.png"></p>
+
+<p class="i1">
+    <b>Write TOA reflectances to the target product: </b><br>
+    If set, all TOA reflectance bands from the source product are written to target product.
+    The default value is 'true'.
+</p>
+
+<p class="i1">
+    <b>Write input annotation bands to the target product: </b><br>
+    If set, all annotation bands from the source product are written to target product.
+    The default value is 'false'.
+</p>
+
+<p class="i1">
+    <b> Write feature values to the target product: </b><br>
+    If set, various feature values computed for the final pixel classification are written to target product.
+    See algorthm description for more details. The default value is 'false'.
+</p>
+
+<p class="i1">
+    <b> Write NN value to the target product: </b><br>
+    If set, the output value of the neural network
+    (floating point number on the interval [0.0, 5.0]) is written to the target product.
+    The default value is 'false'.
+</p>
+
+<p class="i1">
+    <b>NN cloud ambiguous lower boundary: </b><br>
+    The boundary of the neural network output value where pixels are regarded as either clear (NN output lower
+    than boundary) or 'cloud ambiguous' (NN output higher than boundary).
+    Providing the NN cloud ambiguous lower boundary as user option allows a fine tuning of the pixel classification
+    under certain conditions. The default value is 1.1.
+</p>
+
+<p class="i1">
+    <b>NN cloud ambiguous/sure separation value: </b><br>
+    The boundary of the neural network output value where pixels are regarded as either 'cloud ambiguous' (NN output
+    lower
+    than boundary) or 'cloud sure' (NN output higher than boundary).
+    Providing the NN cloud ambiguous/sure separation value as user option allows a fine tuning of the pixel
+    classification
+    under certain conditions. The default value is 2.7.
+</p>
+
+<p class="i1">
+    <b>NN cloud sure/snow separation value: </b><br>
+    The boundary of the neural network output value where pixels are regarded as either 'cloud sure' (NN output lower
+    than boundary) or 'snow' (NN output higher than boundary).
+    Providing the NN cloud sure / snow separation value as user option allows a fine tuning of the pixel classification
+    under certain conditions. The default value is 4.6.
+</p>
+
+<p class="i1">
+    <b>Compute a cloud buffer: </b><br>
+    If set, a cloud buffer of certain width is computed around pixels classified as 'cloud sure'.
+    The default value is 'true'.
+</p>
+
+<p class="i1">
+    <b>Width of cloud buffer (# of pixels): </b><br>
+    If a cloud buffer is computed, the buffer width (in # of pixels around the cloudy reference pixel) can be specified.
+    The default value is '2'.
+</p>
+
+<p class="i1">
+    <b>Resolution of used land-water mask in m/pixel: </b><br>
+    The resolution of the underlying SRTM (Shuttle Radar Topography Mission) land-water mask
+    in metres per pixel. The default value is '50'.
+</p>
+
+<p class="i1">
+    <b>Use land-water flag from L1 product instead: </b><br>
+    If set, the land-water flag from the L1 source product is used instead of the SRTM-based mask.
+    The default value is 'false'.
+</p>
+
+<h3>The Processing Result</h3>
+The Idepix classification result is written into the target product as a flag band named 'pixel_classif_flags'.
+This band holds integer values which for SPOT Vegetation follow the flag coding shown below.
+
+<p align="center">
+    <img src="images/VgtFlagCoding.png" border="0">
+</p>
+<br>
+
+The target product also provides a corresponding flag mask to visualize the pixel classification through the
+SNAP Mask Manager:
+
+<p align="center">
+    <img src="images/VgtMaskManager.png" border="0">
+</p>
+
 
 <hr>
 </body>
