@@ -84,9 +84,11 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
 
     @Override
     protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
-        //todo use sensible values as soon as they are provided
-        int subSamplingX = 1;
+        //todo extract values from metadata file as soon as they are provided
+        int subSamplingX = 16;
         int subSamplingY = 1;
-        return copyBandAsTiePointGrid(sourceBand, targetProduct, subSamplingX, subSamplingY, 0.0f, 0.0f);
+        float offsetX = -26.0f;
+        float offsetY = 0.0f;
+        return copyBandAsTiePointGrid(sourceBand, targetProduct, subSamplingX, subSamplingY, offsetX, offsetY);
     }
 }
