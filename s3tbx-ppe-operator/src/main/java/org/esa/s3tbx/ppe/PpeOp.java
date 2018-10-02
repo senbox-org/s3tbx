@@ -59,11 +59,11 @@ public class PpeOp extends Operator {
     @TargetProduct()
     private Product targetProduct;
 
-    @Parameter(defaultValue = "0.7",
+    @Parameter(label =  "Filtering cut-off, [mW.m-2.sr-1.nm-1]",defaultValue = "0.7",
             description = "Minimum threshold to differentiate with the neighboring pixels in [mW.m-2.sr-1.nm-1]")
     private double cutOff;
 
-    @Parameter(defaultValue = "10",
+    @Parameter(label =  "Filtering cut-off, number of Median Absolute Deviation",defaultValue = "10",
             description = "Multiplier of Median Absolute Deviation used for the threshold.")
     private double numberOfMAD;
 

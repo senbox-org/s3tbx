@@ -68,79 +68,24 @@ target product is not saved, it is opened in the Sentinel Toolbox automatically.
 </p>
 
 <h4>Processing Parameters Panel</h4>
-<p><b>Copy all source bands:</b><br>
-    Checking this option, will copy all the source bands to the target product.</p>
-<p><b>Multiply input reflectance with PI:</b><br>
-    Checking this option will multiply the reflectance with PI.</p>
+<p><b>Filtering cut-off, [mW.m-2.sr-1.nm-1]:</b><br>
+    Pixel will be filtered if it deviates from its neighbors mediane by more than this number. Default value=0.7 [mW.m-2.sr-1.nm-1]</p>
+</p>
+<p><b>Filtering cut-off, number of Median Absolute Deviation:</b><br>
+    Pixel will be filtered if it deviates from its neighbors mediane by more than this number times Mediane Absolute Deviation. Default value=10</p>
+</p>
+
+<br>
+<p><b>Band keyword:</b><br>
+    Band or bands which should be filtered have to have this keyword in bandname.
+</p>
+
 <p><b>Valid pixel expression:</b><br>
     This expression is uses for validating pixels which will be considerd for processing, if the user did not add any
-    expression the first applicable default expression will be applied as in <a href="#default_expressions"> Default expressions</a>. If the
+    expression only the water pixels will be filtered. If the
     expression is set to
     <b>TRUE</b>, then all pixels are considered to be valid. The button can be use in creating a valid express.</p>
 <br>
-<p>Default valid expression</p>
-<table id="default_expressions">
-    <tr>
-        <td>OLCI</td>
-        <td>WQSF_lsb.WATER and not WQSF_lsb.CLOUD<br>
-            LQSF_WATER
-        </td>
-    </tr>
-    <tr>
-        <td>S2_MSI</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>MERIS</td>
-        <td>l2_flags.WATER<br>
-            not l1p_flags.CC_LAND and not l1p_flags.CC_CLOUD<br>
-            NOT l1_flags.LAND_OCEAN
-        </td>
-    </tr>
-    <tr>
-        <td>MODIS</td>
-        <td>not l2_flags.LAND and not l2_flags.CLDICE</td>
-    </tr>
-    <tr>
-        <td>MODIS500</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>SEAWIFS</td>
-        <td>not l2_flags.LAND and not l2_flags.CLDICE</td>
-    </tr>
-    <tr>
-        <td>CZCS</td>
-        <td>not l2_flags.LAND and not l2_flags.CLDICE</td>
-    </tr>
-</table>
-
-<br>
-<p><b>Reflectance band name pattern:</b><br>
-    The used reflectance band names must match the given pattern. Useful, if there is more then one spectrum in the product.
-    Here a regular expression can be used.  There is a nice tutorial on <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
-        <param name="content" value="http://www.vogella.com/tutorials/JavaRegularExpressions/article.html">
-        <param name="text" value="vogella.com">
-    </object>.
-</p>
-<p>Example expressions:</p>
-<table>
-    <tr>
-        <td>Rrs.*</td>
-        <td>Will match any name witch starts with 'Rrs'. E.g.: Rrs_04</td>
-    </tr>
-    <tr>
-        <td>reflec_\d\d_band</td>
-        <td>Will match any name witch starts with 'reflec_' and ends with '_band'. in the middle must be two digits. E.g.: reflec_12_band</td>
-    </tr>
-
-</table>
-
-<p><b>Instrument:</b><br> Allows to select which instrument specific settings shall be used, if the auto detection fails.</p>
-
-<p><b>Include intermediate results in output:</b><br>
-    Whether or not the intermediate results shall be written to the target output. The default value is "true".</p>
-
 
 <br>
 <br>
