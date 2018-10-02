@@ -30,50 +30,18 @@
 </table>
 
 <h3>Introduction</h3>
-<p>This algorithm is used for deriving the hue angle and FU (Forel-Ule) value from remote sensing reflectance. The data is used
-    with the a weighted linear sum of the remote sensing reflectance in which visual bands plus a correction term
-    for the specific band-setting of each instrument. The algorithm is validated by a set of 603 hyperspectral
-    measurements from inland, coastal and near-ocean waters.
+<p> This algorithm is used for filtering noise produced by PPE (Prompt Particle Events). By default filtering is applied only over water.
+Filter is applied to every single pixel separately, checking the difference between a pixel and its nearest four vertical neighbors.
+ If the difference is higher than a threshold, the value of the pixel is replaced by the median of the pixel and its neighboring pixels.
+
     The processor supports the the following sensors:</p>
 <ul>
     <li>Sentinel-3 OLCI Level2 W(F/R)R</li>
-    <li>Sentinel-2 MSI L1C</li>
-    <li>MERIS L2</li>
-    <li>MODIS (1km LAC OC), MODIS-500 (M[O|Y]D09)</li>
-    <li>SeaWiFS</li>
-    <li>CZCS</li>
 </ul>
 <p>The algorithm is described in the following articles which are available online.</p>
 
 <dl>
-    <dt>Extending the derivation of the hue angle to more instruments.</dt>
-    <dd>
-        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
-            <param name="content" value="http://www.mdpi.com/2072-4292/10/2/180">
-            <param name="text" value="Van der Woerd, H.J., Wernand, M.R, 2018.
-                   Hue-Angle Product for Low to Medium Spatial Resolution Optical Satellite Sensors (http://dx.doi.org/10.3390/rs10020180)">
-        </object>
-    </dd>
 
-    <dt>The derivation of the hue angle for the instruments SeaWiFS, MODIS, MERIS and OLCI are described in:</dt>
-    <dd>
-        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
-            <param name="content" value="http://www.mdpi.com/1424-8220/15/10/25663">
-            <param name="text" value="Van der Woerd, H.J., Wernand, M.R., 2015. True colour classification of natural
-    waters with medium-spectral resolution satellites: SeaWiFS, MODIS, MERIS and OLCI. Sensors 15, 25663-25680. doi:
-    10.3339/s151025663 (Open Access)">
-        </object>
-    </dd>
-
-    <dt>The conversion of the hue angle to the Forel-Ule number and the corresponding colour legend is based on:</dt>
-    <dd>
-        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
-            <param name="content" value="http://www.jeos.org/index.php/jeos_rp/article/view/13057">
-            <param name="text" value="Novoa, S., Wernand, M.R, Van der Woerd, H.J., 2013. The Forel-Ule scale revisited
-    spectrally: preparation protocols, transmission measurements and chromaticity. JEOS RP 8, 13057.
-    DOI: http://dx.doi.org/10.2971/jeos.2013.13057 (Open Access)">
-        </object>
-    </dd>
 
     <dt>This algorithm connects satellite ocean colour observations to historical in-situ colour observations:</dt>
     <dd>

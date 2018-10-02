@@ -19,7 +19,6 @@ package org.esa.s3tbx.ppe;
 
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
@@ -32,10 +31,8 @@ import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
-import org.esa.snap.engine_utilities.util.ProductFunctions;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -46,7 +43,7 @@ import java.util.Arrays;
         alias = "PpeOperator",
         version = "1.1",
         category = "Optical/Preprocessing",
-        description = "",
+        description = "Performs Prompt Particle Event (PPE) filtering",
         authors = " ",
         copyright = "(c) 2018 by Brockmann Consult GmbH")
 
@@ -73,6 +70,10 @@ public class PpeOp extends Operator {
     @Parameter(label = "Valid pixel expression", description = "An expression to filter which pixel are considered.",
             converter = BooleanExpressionConverter.class,defaultValue = VALID_PIXEL_EXPRESSION)
     private String validExpression;
+
+    @Parameter(label = "Band keyword", description = "An expression which has to be part of band name(s). Case insensitive.",
+            converter = BooleanExpressionConverter.class,defaultValue = "radiance")
+    private String bandKeyword;
 
 
     Mask validPixelMask;
@@ -124,7 +125,7 @@ public class PpeOp extends Operator {
         targetProduct.getFlagCodingGroup().add(flagCoding);
 
         for (Band band : sourceProduct.getBands()) {
-            if (band.getName().toLowerCase().contains("radiance") && (band.getSpectralWavelength()!=0.0f)){
+            if (band.getName().toLowerCase().contains(bandKeyword.toLowerCase()) && (band.getSpectralWavelength()!=0.0f)){
                 ProductUtils.copyBand(band.getName(), sourceProduct, targetProduct, false);
                 if (!"mW.m-2.sr-1.nm-1".equals(band.getUnit())){
                     SystemUtils.LOG.warning("The units of "+band.getName()+" are not mW.m-2.sr-1.nm-1. Changing cut-off parameter is suggested.");
