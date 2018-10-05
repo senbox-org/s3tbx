@@ -214,9 +214,11 @@ public class IdepixIO {
             }
         }
 
-//        e.g. V2012024230521.L1C
+        // e.g. V2012024230521.L1C
+        // 20181005: PML requested L1C_SNPP.nc as valid extension
         return (product.getName().matches("V[0-9]{13}.(?i)(L1C)") ||
                 product.getName().matches("V[0-9]{13}.(?i)(L1C.nc)") ||
+                product.getName().matches("V[0-9]{13}.(?i)(L1C_SNPP.nc)") ||
                 product.getName().matches("V[0-9]{13}.(?i)(L2)") ||
                 product.getName().matches("V[0-9]{13}.(?i)(L2.nc)"));
     }

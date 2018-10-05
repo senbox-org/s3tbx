@@ -25,10 +25,10 @@ import java.io.InputStream;
         internal = true)
 public class ViirsClassificationOp extends PixelOperator {
 
-    @Parameter(defaultValue = "true",
+    @Parameter(defaultValue = "false",
             label = " Debug bands",
             description = "Write further useful bands to target product.")
-    private boolean outputDebug = true;
+    private boolean outputDebug = false;
 
     @Parameter(defaultValue = "1", label = " Width of cloud buffer (# of pixels)")
     private int cloudBufferWidth;
