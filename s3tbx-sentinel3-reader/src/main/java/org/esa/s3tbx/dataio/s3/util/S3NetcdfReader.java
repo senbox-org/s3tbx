@@ -55,6 +55,10 @@ public class S3NetcdfReader extends AbstractProductReader {
         File inputFile = getInputFile();
         netcdfFile = NetcdfFileOpener.open(inputFile);
 
+        if (netcdfFile == null) {
+            throw new IOException(String.format("Not able to read file '%s'. Might be corrupted.", inputFile));
+        }
+
         final String productType = readProductType();
         int productWidth = getWidth();
         int productHeight = getHeight();
