@@ -6,6 +6,7 @@ package org.esa.s3tbx.dataio.landsat.geotiff;
 class LandsatTypeInfo {
 
     private static final String COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)";
+    private static final String ESA_COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)_(MTI|KIS)";
     private static final String L4_FILENAME_REGEX = "LT4\\d{13}\\w{3}\\d{2}";
     private static final String L5_FILENAME_REGEX = "LT5\\d{13}\\w{3}\\d{2}";
     private static final String L7_FILENAME_REGEX = "LE7\\d{13}\\w{3}\\d{2}";
@@ -72,6 +73,13 @@ class LandsatTypeInfo {
             boolean matchesFileNamepattern(String filename) {
                 return filename.matches(L8_FILENAME_REGEX + "_MTL" + getTxtExtension()) ||
                        filename.matches(L8_FILENAME_REGEX + getCompressionExtension());
+            }
+        },
+        ESA_LANDSAT_COLLECTION {
+            @Override
+            boolean matchesFileNamepattern(String filename) {
+                return filename.matches(ESA_COLLECTION_FILENAME_REGEX + "_MTL" + getTxtExtension()) ||
+                        filename.matches(ESA_COLLECTION_FILENAME_REGEX + getCompressionExtension());
             }
         };
 
