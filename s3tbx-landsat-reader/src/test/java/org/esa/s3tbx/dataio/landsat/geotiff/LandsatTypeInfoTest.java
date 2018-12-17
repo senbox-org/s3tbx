@@ -48,6 +48,15 @@ public class LandsatTypeInfoTest {
     }
 
     @Test
+    public void testIsESALandsatCollection() throws Exception {
+        assertTrue(LandsatTypeInfo.isESALandsatCollection("LC08_L1TP_201040_20181019_20181019_01_RT_MTI_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isESALandsatCollection("LC08_L1GT_209019_20180504_20180504_01_RT_KIS_MTL.txt"));
+        assertTrue(LandsatTypeInfo.isESALandsatCollection("LC08_L1TP_204030_20180226_20180226_01_RT_MTI_MTL.txt"));
+
+        assertFalse(LandsatTypeInfo.isESALandsatCollection("LC08_L1TP_194028_20160622_20170323_01_T1_MTL.txt"));
+    }
+
+    @Test
     public void testIsLandsatMSSFilename() throws Exception {
         assertTrue(LandsatTypeInfo.isMss("LM11870291976166ESA00_MTL.txt"));
         assertTrue(LandsatTypeInfo.isMss("LM32170241982254XXX01_MTL.txt"));
