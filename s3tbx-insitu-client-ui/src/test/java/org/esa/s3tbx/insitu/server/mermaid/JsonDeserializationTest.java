@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.esa.s3tbx.insitu.server.InsituObservation;
 import org.esa.s3tbx.insitu.server.InsituResponse;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -13,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import static org.junit.Assert.*;
@@ -24,9 +27,21 @@ import static org.junit.Assert.*;
 public class JsonDeserializationTest {
 
     private Gson gson;
+    private static Locale defaultLocale;
+
+    @BeforeClass
+    public static void setUpClass() {
+        defaultLocale = Locale.getDefault();
+        Locale.setDefault(Locale.ENGLISH);
+    }
+
+    @AfterClass
+    public void tearDown() {
+        Locale.setDefault(defaultLocale);
+    }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         final GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new UtcDateTypeAdapter());
         gson = gsonBuilder.create();
