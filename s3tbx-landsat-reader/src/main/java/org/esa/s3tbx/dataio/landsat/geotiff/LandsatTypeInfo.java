@@ -103,6 +103,10 @@ class LandsatTypeInfo {
         return LandsatType.LANDSAT_COLLECTION.matchesFileNamepattern(fileName);
     }
 
+    static boolean isESALandsatCollection(String fileName) {
+        return LandsatType.ESA_LANDSAT_COLLECTION.matchesFileNamepattern(fileName);
+    }
+
     static boolean isMss(String fileName) {
         return LandsatType.LANDSAT_MSS.matchesFileNamepattern(fileName);
     }
