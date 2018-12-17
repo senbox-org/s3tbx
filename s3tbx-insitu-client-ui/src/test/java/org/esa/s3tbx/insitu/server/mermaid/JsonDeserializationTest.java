@@ -36,7 +36,7 @@ public class JsonDeserializationTest {
     }
 
     @AfterClass
-    public void tearDown() {
+    public static void tearDown() {
         Locale.setDefault(defaultLocale);
     }
 
