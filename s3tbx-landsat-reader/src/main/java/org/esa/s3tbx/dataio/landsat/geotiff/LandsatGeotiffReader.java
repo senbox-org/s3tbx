@@ -72,6 +72,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
     private final Resolution targetResolution;
 
     private LandsatMetadata landsatMetadata;
+    private LandsatQA landsatQA;
     private List<Product> bandProducts;
     private VirtualDir virtualDir;
     private String basePath;
@@ -91,6 +92,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
 
         File mtlFile = getMtlFile();
         landsatMetadata = LandsatMetadataFactory.create(mtlFile);
+        landsatQA = LandsatQAFactory.create(mtlFile);
         // todo - retrieving the product dimension needs a revision
         Dimension productDim;
         switch (targetResolution) {
@@ -206,7 +208,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                         }
                     }
                 }
-            } else if (attributeName.equals(landsatMetadata.getQualityBandNameKey())) {
+            } else if (attributeName.equals(landsatMetadata.getQualityBandNameKey()) && landsatQA != null) {
                 String fileName = metadataAttribute.getData().getElemString();
                 File bandFile = virtualDir.getFile(basePath + fileName);
                 ProductReader productReader = plugIn.createReaderInstance();
@@ -221,7 +223,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                     band.setNoDataValueUsed(true);
                     band.setDescription("Quality Band");
 
-                    FlagCoding flagCoding = createFlagCoding(bandName);
+                    FlagCoding flagCoding = landsatQA.createFlagCoding(bandName);
                     band.setSampleCoding(flagCoding);
                     product.getFlagCodingGroup().add(flagCoding);
                     List<Mask> masks;
@@ -231,9 +233,9 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                         if (dimension == null) {
                             dimension = landsatMetadata.getThermalDim();
                         }
-                        masks = createMasks(dimension != null ? dimension : product.getSceneRasterSize());
+                        masks = landsatQA.createMasks(dimension != null ? dimension : product.getSceneRasterSize());
                     } else {
-                        masks = createMasks(product.getSceneRasterSize());
+                        masks = landsatQA.createMasks(product.getSceneRasterSize());
                     }
                     for (Mask mask : masks) {
                         product.getMaskGroup().add(mask);
@@ -316,7 +318,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
         }
     }
 
-    private List<Mask> createMasks(Dimension size) {
+   /* private List<Mask> createMasks(Dimension size) {
         ArrayList<Mask> masks = new ArrayList<>();
         final int width = size.width;
         final int height = size.height;
@@ -340,15 +342,15 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                                             ColorIterator.next(),
                                             0.5));
         masks.addAll(createConfidenceMasks("water_confidence", "Water confidence", width, height));
-        masks.addAll(createConfidenceMasks("vegetation_confidence", "Vegetation confidence", width, height));
+        //masks.addAll(createConfidenceMasks("vegetation_confidence", "Vegetation confidence", width, height));
         masks.addAll(createConfidenceMasks("snow_ice_confidence", "Snow/ice confidence", width, height));
         masks.addAll(createConfidenceMasks("cirrus_confidence", "Cirrus confidence", width, height));
         masks.addAll(createConfidenceMasks("cloud_confidence", "Cloud confidence", width, height));
 
         return masks;
-    }
+    }*/
 
-    private List<Mask> createConfidenceMasks(String flagMaskBaseName, String descriptionBaseName, int width, int height) {
+    /*private List<Mask> createConfidenceMasks(String flagMaskBaseName, String descriptionBaseName, int width, int height) {
         List<Mask> masks = new ArrayList<>();
         masks.add(Mask.BandMathsType.create(flagMaskBaseName + "_low",
                                             descriptionBaseName + " 0-35%",
@@ -369,9 +371,9 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                                             ColorIterator.next(),
                                             0.5));
         return masks;
-    }
+    }*/
 
-    private FlagCoding createFlagCoding(String bandName) {
+    /*private FlagCoding createFlagCoding(String bandName) {
         FlagCoding flagCoding = new FlagCoding(bandName);
         flagCoding.addFlag("designated_fill", 1, "Designated Fill");
         flagCoding.addFlag("dropped_frame", 2, "Dropped Frame");
@@ -381,8 +383,8 @@ public class LandsatGeotiffReader extends AbstractProductReader {
         flagCoding.addFlag("water_confidence_two", 32, "Water confidence bit two");
         flagCoding.addFlag("reserved_2_one", 64, "Reserved for a future 2-bit class artifact designation");
         flagCoding.addFlag("reserved_2_two", 128, "Reserved for a future 2-bit class artifact designation");
-        flagCoding.addFlag("vegetation_confidence_one", 256, "Vegetation confidence bit one");
-        flagCoding.addFlag("vegetation_confidence_two", 512, "Vegetation confidence bit two");
+        flagCoding.addFlag("reserved_3_one", 256, "Vegetation confidence bit one");
+        flagCoding.addFlag("reserved_3_two", 512, "Vegetation confidence bit two");
         flagCoding.addFlag("snow_ice_confidence_one", 1024, "Snow/ice confidence bit one");
         flagCoding.addFlag("snow_ice_confidence_two", 2048, "Snow/ice confidence bit two");
         flagCoding.addFlag("cirrus_confidence_one", 4096, "Cirrus confidence bit one");
@@ -390,7 +392,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
         flagCoding.addFlag("cloud_confidence_one", 16384, "Cloud confidence bit one");
         flagCoding.addFlag("cloud_confidence_two", 32768, "Cloud confidence bit two");
         return flagCoding;
-    }
+    }*/
 
     @Override
     protected void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight, int sourceStepX, int sourceStepY,
