@@ -6,6 +6,8 @@ A toolbox for the OLCI and SLSTR instruments on board of ESA's Sentinel-3 satell
 [![Build Status](https://travis-ci.org/senbox-org/s3tbx.svg?branch=master)](https://travis-ci.org/senbox-org/s3tbx)
 [![Coverity Scan Status](https://scan.coverity.com/projects/7247/badge.svg)](https://scan.coverity.com/projects/senbox-org-s3tbx)
 
+The project page of SNAP and the sentinel toolboxes can be found at http://step.esa.int. There you will find a tutorial about the usage of the application, a forum where you can ask questions and lots of other interesting things.
+
 Building S3TBX from the source
 ------------------------------
 
