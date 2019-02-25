@@ -287,37 +287,37 @@ class KlmTypes {
 
         return COMPOUND("DataRecord",
                         // SCAN LINE INFORMATION
-                        MEMBER("SCANLINE_NUMBER", USHORT),
-                        MEMBER("SCANLINE_YEAR", USHORT),
-                        MEMBER("SCANLINE_DAY_OF_YEAR", USHORT),
-                        MEMBER("SATELLITE _CLOCK_DRIFT_DELTA", SHORT),
-                        MEMBER("SCANLINE_UTC_TIME_OF_DAY", UINT),
-                        MEMBER("SCANLINE_BIT_FIELD", USHORT),
-                        FILL_MEMBER(10),
+                        MEMBER("SCANLINE_NUMBER", USHORT),                      // 0
+                        MEMBER("SCANLINE_YEAR", USHORT),                        // 2
+                        MEMBER("SCANLINE_DAY_OF_YEAR", USHORT),                 // 4
+                        MEMBER("SATELLITE_CLOCK_DRIFT_DELTA", SHORT),           // 6
+                        MEMBER("SCANLINE_UTC_TIME_OF_DAY", UINT),               // 8
+                        MEMBER("SCANLINE_BIT_FIELD", USHORT),                   // 12
+                        FILL_MEMBER(10),                                        // 14
                         // QUALITY INDICATORS
-                        MEMBER("QUALITY_INDICATOR_BIT_FIELD", UINT),
-                        MEMBER("SCANLINE_QUALITY_FLAGS", UINT),
-                        MEMBER("CALIBRATION_QUALITY_FLAGS_3B", USHORT),
-                        MEMBER("CALIBRATION_QUALITY_FLAGS_4", USHORT),
-                        MEMBER("CALIBRATION_QUALITY_FLAGS_5", USHORT),
-                        MEMBER("COUNT_OF_BIT_ERRORS_IN_FRAME_SYNC", USHORT),
-                        FILL_MEMBER(8),
+                        MEMBER("QUALITY_INDICATOR_BIT_FIELD", UINT),            // 24
+                        MEMBER("SCANLINE_QUALITY_FLAGS", UINT),                 // 28
+                        MEMBER("CALIBRATION_QUALITY_FLAGS_3B", USHORT),         // 32
+                        MEMBER("CALIBRATION_QUALITY_FLAGS_4", USHORT),          // 34
+                        MEMBER("CALIBRATION_QUALITY_FLAGS_5", USHORT),          // 36
+                        MEMBER("COUNT_OF_BIT_ERRORS_IN_FRAME_SYNC", USHORT),    // 38
+                        FILL_MEMBER(8),                                         // 40
                         // CALIBRATION COEFFICIENTS
-                        MEMBER("CALIBRATION_COEFFICIENTS", SEQUENCE(INT, AvhrrConstants.CALIB_COEFF_LENGTH)),
-                        FILL_MEMBER(12),
+                        MEMBER("CALIBRATION_COEFFICIENTS", SEQUENCE(INT, AvhrrConstants.CALIB_COEFF_LENGTH)), // 48
+                        FILL_MEMBER(12),                                        // 300
                         // NAVIGATION
-                        MEMBER("NAVIGATION_STATUS_BIT_FIELD", UINT),
-                        MEMBER("TIP_EULER_ANGLES_TIME", UINT),
-                        MEMBER("TIP_EULER_ANGLES", SEQUENCE(SHORT, 3)),
-                        MEMBER("SPACECRAFT_ALTITUDE", USHORT),
-                        MEMBER("ANGULAR_RELATIONSHIPS", SEQUENCE(SHORT, 153)),
-                        FILL_MEMBER(6),
-                        MEMBER("EARTH_LOCATION", SEQUENCE(INT, 102)),
-                        FILL_MEMBER(8),
+                        MEMBER("NAVIGATION_STATUS_BIT_FIELD", UINT),            // 312
+                        MEMBER("TIP_EULER_ANGLES_TIME", UINT),                  // 316
+                        MEMBER("TIP_EULER_ANGLES", SEQUENCE(SHORT, 3)),         // 320
+                        MEMBER("SPACECRAFT_ALTITUDE", USHORT),                  // 326
+                        MEMBER("ANGULAR_RELATIONSHIPS", SEQUENCE(SHORT, 153)),  // 328
+                        FILL_MEMBER(6),                                         // 634
+                        MEMBER("EARTH_LOCATION", SEQUENCE(INT, 102)),           // 640
+                        FILL_MEMBER(8),                                         // 1048
                         // HRPT MINOR FRAME TELEMETRY
-                        FILL_MEMBER(208),
+                        FILL_MEMBER(208),                                       // 1056
                         // AVHRR SENSOR DATA
-                        MEMBER("AVHRR_SENSOR_DATA",
+                        MEMBER("AVHRR_SENSOR_DATA",                             // 1264
                                SEQUENCE(productFormat.getElementType(), productFormat.getElementCount())),
                         FILL_MEMBER(8),
                         // DIGITAL B TELEMETRY
