@@ -1,19 +1,19 @@
 package org.esa.s3tbx.dataio.s3.aatsr;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import com.sun.medialib.mlib.mediaLibImageInterpTable;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.SampleCoding;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Sabine on 20.02.2017.
@@ -26,15 +26,15 @@ public class AatsrS3NetcdfReaderTest {
     private Variable variable;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         reader = new AatsrS3NetcdfReader();
-        product = new Product("p", "t", 44, 22);
+//        Path productFile = new Product("p", "t", 44, 22);
         synthetic = true;
         variable = mock(Variable.class);
     }
 
     @Test
-    public void addVariableAsBand_DataType_CHAR() throws Exception {
+    public void addVariableAsBand_DataType_CHAR() {
         //preparation
         when(variable.getDataType()).thenReturn(DataType.CHAR);
         when(variable.getDescription()).thenReturn("v-description");
