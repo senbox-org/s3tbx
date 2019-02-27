@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<espa_metadata version="2.0"
+xmlns="http://espa.cr.usgs.gov/v2"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://espa.cr.usgs.gov/v2 http://espa.cr.usgs.gov/schema/espa_internal_metadata_v2_0.xsd">
+
+    <global_metadata>
+        <data_provider>USGS/EROS</data_provider>
+        <satellite>LANDSAT_8</satellite>
+        <instrument>OLI_TIRS</instrument>
+        <acquisition_date>2018-10-11</acquisition_date>
+        <scene_center_time>16:43:05.1409880Z</scene_center_time>
+        <level1_production_date>2018-10-11T19:24:14Z</level1_production_date>
+        <solar_angles zenith="45.100056" azimuth="154.439682" units="degrees"/>
+        <earth_sun_distance>0.998272</earth_sun_distance>
+        <wrs system="2" path="24" row="36"/>
+        <product_id>LC08_L1TP_024036_20181011_20181011_01_RT</product_id>
+        <lpgs_metadata_file>LC08_L1TP_024036_20181011_20181011_01_RT_MTL.txt</lpgs_metadata_file>
+        <corner location="UL" latitude="35.662000" longitude="-93.293890"/>
+        <corner location="LR" latitude="33.538320" longitude="-90.818060"/>
+        <bounding_coordinates>
+            <west>-93.294054</west>
+            <east>-90.762174</east>
+            <north>35.662493</north>
+            <south>33.538184</south>
+        </bounding_coordinates>
+        <projection_information projection="UTM" datum="WGS84" units="meters">
+            <corner_point location="UL" x="473400.000000" y="3946500.000000"/>
+            <corner_point location="LR" x="702600.000000" y="3713100.000000"/>
+            <grid_origin>CENTER</grid_origin>
+            <utm_proj_params>
+                <zone_code>15</zone_code>
+            </utm_proj_params>
+        </projection_information>
+        <orientation_angle>0.000000</orientation_angle>
+    </global_metadata>
+
+    <bands>
+        <band product="level2_qa" source="level1" name="pixel_qa" category="qa" data_type="UINT16" nlines="7781" nsamps="7641" fill_value="1">
+            <short_name>LC08PQA</short_name>
+            <long_name>level-2 pixel quality band</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_pixel_qa.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>quality/feature classification</data_units>
+            <bitmap_description>
+                <bit num="0">fill</bit>
+                <bit num="1">clear</bit>
+                <bit num="2">water</bit>
+                <bit num="3">cloud shadow</bit>
+                <bit num="4">snow</bit>
+                <bit num="5">cloud</bit>
+                <bit num="6">cloud confidence</bit>
+                <bit num="7">cloud confidence</bit>
+                <bit num="8">cirrus confidence</bit>
+                <bit num="9">cirrus confidence</bit>
+                <bit num="10">terrain occlusion</bit>
+                <bit num="11">unused</bit>
+                <bit num="12">unused</bit>
+                <bit num="13">unused</bit>
+                <bit num="14">unused</bit>
+                <bit num="15">unused</bit>
+            </bitmap_description>
+            <app_version>generate_pixel_qa_1.7.0</app_version>
+            <production_date>2018-10-17T19:22:52Z</production_date>
+        </band>
+        <band product="toa_refl" source="level1" name="radsat_qa" category="qa" data_type="UINT16" nlines="7781" nsamps="7641" fill_value="1">
+            <short_name>LC08RADSAT</short_name>
+            <long_name>saturation mask</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_radsat_qa.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>bitmap</data_units>
+            <bitmap_description>
+                <bit num="0">Data Fill Flag (0 = valid data, 1 = invalid data)</bit>
+                <bit num="1">Band 1 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="2">Band 2 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="3">Band 3 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="4">Band 4 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="5">Band 5 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="6">Band 6 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="7">Band 7 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="8">N/A</bit>
+                <bit num="9">Band 9 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="10">Band 10 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="11">Band 11 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+            </bitmap_description>
+            <app_version>LaSRC_1.4.0</app_version>
+            <production_date>2018-10-17T19:25:03Z</production_date>
+        </band>
+        <band product="sr_refl" name="sr_band1" category="image" data_type="INT16" nlines="7781" nsamps="7641" fill_value="-9999" scale_factor="0.000100">
+            <short_name>LC08SR</short_name>
+            <long_name>band 1 surface reflectance</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_sr_band1.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LaSRC_1.4.0</app_version>
+            <production_date>2018-10-17T19:26:18Z</production_date>
+        </band>
+        <band product="sr_refl" name="sr_band2" category="image" data_type="INT16" nlines="7781" nsamps="7641" fill_value="-9999" scale_factor="0.000100">
+            <short_name>LC08SR</short_name>
+            <long_name>band 2 surface reflectance</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_sr_band2.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LaSRC_1.4.0</app_version>
+            <production_date>2018-10-17T19:26:18Z</production_date>
+        </band>
+        <band product="sr_refl" name="sr_band3" category="image" data_type="INT16" nlines="7781" nsamps="7641" fill_value="-9999" scale_factor="0.000100">
+            <short_name>LC08SR</short_name>
+            <long_name>band 3 surface reflectance</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_sr_band3.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LaSRC_1.4.0</app_version>
+            <production_date>2018-10-17T19:26:18Z</production_date>
+        </band>
+        <band product="sr_refl" name="sr_band4" category="image" data_type="INT16" nlines="7781" nsamps="7641" fill_value="-9999" scale_factor="0.000100">
+            <short_name>LC08SR</short_name>
+            <long_name>band 4 surface reflectance</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_sr_band4.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LaSRC_1.4.0</app_version>
+            <production_date>2018-10-17T19:26:18Z</production_date>
+        </band>
+        <band product="sr_refl" name="sr_band5" category="image" data_type="INT16" nlines="7781" nsamps="7641" fill_value="-9999" scale_factor="0.000100">
+            <short_name>LC08SR</short_name>
+            <long_name>band 5 surface reflectance</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_sr_band5.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LaSRC_1.4.0</app_version>
+            <production_date>2018-10-17T19:26:18Z</production_date>
+        </band>
+        <band product="sr_refl" name="sr_band6" category="image" data_type="INT16" nlines="7781" nsamps="7641" fill_value="-9999" scale_factor="0.000100">
+            <short_name>LC08SR</short_name>
+            <long_name>band 6 surface reflectance</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_sr_band6.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LaSRC_1.4.0</app_version>
+            <production_date>2018-10-17T19:26:18Z</production_date>
+        </band>
+        <band product="sr_refl" name="sr_band7" category="image" data_type="INT16" nlines="7781" nsamps="7641" fill_value="-9999" scale_factor="0.000100">
+            <short_name>LC08SR</short_name>
+            <long_name>band 7 surface reflectance</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_sr_band7.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LaSRC_1.4.0</app_version>
+            <production_date>2018-10-17T19:26:18Z</production_date>
+        </band>
+        <band product="sr_refl" name="sr_aerosol" category="qa" data_type="UINT8" nlines="7781" nsamps="7641" fill_value="1">
+            <short_name>LC08AERO</short_name>
+            <long_name>surface reflectance aerosol mask</long_name>
+            <file_name>LC08_L1TP_024036_20181011_20181011_01_RT_sr_aerosol.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>quality/feature classification</data_units>
+            <bitmap_description>
+                <bit num="0">fill</bit>
+                <bit num="1">valid aerosol retrieval (center pixel of NxN window)</bit>
+                <bit num="2">water pixel (or water pixel was used in the fill-the-window interpolation)</bit>
+                <bit num="3">cloud or cirrus</bit>
+                <bit num="4">cloud shadow</bit>
+                <bit num="5">non-center window pixel for which aerosol was interpolated from surrounding NxN center pixels</bit>
+                <bit num="6">aerosol level</bit>
+                <bit num="7">aerosol level</bit>
+            </bitmap_description>
+            <app_version>LaSRC_1.4.0</app_version>
+            <production_date>2018-10-17T19:26:18Z</production_date>
+        </band>
+    </bands>
+</espa_metadata>
