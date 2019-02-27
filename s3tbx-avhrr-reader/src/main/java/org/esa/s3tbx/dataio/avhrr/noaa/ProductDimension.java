@@ -20,7 +20,7 @@ package org.esa.s3tbx.dataio.avhrr.noaa;
  * Differentiates between the different product dimensions (HRPT and GAC)
  */
 enum ProductDimension {
-    HRPT(2001, 2048, 512, 25, 40),
+    HRPT(2001, 2048, 512, 24, 40),
     GAC(401, 409, 104, 5, 8);
 
     private final int productWidth;
