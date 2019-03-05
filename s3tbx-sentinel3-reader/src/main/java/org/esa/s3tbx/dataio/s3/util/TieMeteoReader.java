@@ -7,6 +7,7 @@ import org.esa.snap.core.datamodel.ProductData;
 import ucar.nc2.Variable;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * @author Tonio Fincke
@@ -27,8 +28,7 @@ class TieMeteoReader extends S3NetcdfReader {
     protected void addVariableMetadata(Variable variable, Product product) {
         super.addVariableMetadata(variable, product);
         if (variable.getFullName().equals("atmospheric_temperature_profile")) {
-            final MetadataElement atmosphericTemperatureProfileElement =
-                    product.getMetadataRoot().getElement("Variable_Attributes").getElement("atmospheric_temperature_profile");
+            final MetadataElement variableElement = new MetadataElement(variable.getFullName());
             try {
                 final Variable referencePressureLevelVariable =
                         getNetcdfFile().findVariable("reference_pressure_level");
@@ -38,10 +38,11 @@ class TieMeteoReader extends S3NetcdfReader {
                         new MetadataAttribute("reference_pressure_level", referencePressureLevelData, true);
                 referencePressureLevelAttribute.setUnit(referencePressureLevelVariable.getUnitsString());
                 referencePressureLevelAttribute.setDescription(referencePressureLevelVariable.getDescription());
-                atmosphericTemperatureProfileElement.addAttribute(referencePressureLevelAttribute);
+                variableElement.addAttribute(referencePressureLevelAttribute);
+                product.getMetadataRoot().getElement("Variable_Attributes").addElement(variableElement);
             } catch (IOException e) {
-                e.printStackTrace();
-            }
+                Logger logger = Logger.getLogger(this.getClass().getName());
+                logger.warning("Could not read variable " + variable.getFullName());            }
         }
     }
 
