@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
-import java.awt.Color;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -255,18 +254,12 @@ public class Landsat8ProductSignatureTest {
 
         Band flagBand = product.addBand("flags", ProductData.TYPE_INT8);
         FlagCoding l1FlagsCoding = new FlagCoding("flags");
-        l1FlagsCoding.addFlag("water_confidence_one", 1, "description");
-        l1FlagsCoding.addFlag("water_confidence_two", 2, "description");
+        l1FlagsCoding.addFlag("terrain_occlusion", 2, "description");
+        l1FlagsCoding.addFlag("cloud", 16, "description");
 
         product.getFlagCodingGroup().add(l1FlagsCoding);
         flagBand.setSampleCoding(l1FlagsCoding);
 
-        product.addMask("water_confidence_low", "flags.water_confidence_one and not flags.water_confidence_two",
-                        "description", Color.BLUE, 0.2);
-        product.addMask("water_confidence_mid", "not flags.water_confidence_one and flags.water_confidence_two",
-                        "description", Color.BLUE, 0.2);
-        product.addMask("water_confidence_high", "flags.water_confidence_one and flags.water_confidence_two",
-                        "description", Color.BLUE, 0.2);
         product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84, 1, 1, 10, 50, 1, 1));
 
         return product;

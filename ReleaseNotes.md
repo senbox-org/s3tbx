@@ -4,6 +4,7 @@ Sentinel-3 Toolbox Release Notes
 Changes in S3TBX 6.0.6
 --------------------
 
+* [SIIITBX-234] Update C2RCC according to changed Landsat-8 flags
 * [SIIITBX-227] Support for Landsat products processed by ESA
 * [SIIITBX-226] AVHRR-FRAC reader geocoding is incorrect
 * [SIIITBX-223] Rayleigh operator states it needs S2 L1b but actually it is L1C
