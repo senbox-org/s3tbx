@@ -1,279 +1,116 @@
 {
   "id": "LT82270322013068LGN01",
-  "decodeQualification": "intended",
+  "decodeQualification": "INTENDED",
   "expectedContent": {
     "sceneWidth": 7381,
     "sceneHeight": 7711,
     "startTime": "09-MAR-2013 13:39:28.793000",
     "endTime": "09-MAR-2013 13:39:28.793000",
-    "metadata": [
-      {
-        "path": "L1_METADATA_FILE/METADATA_FILE_INFO/ORIGIN",
-        "value": "Image courtesy of the U.S. Geological Survey"
-      },
-      {
-        "path": "L1_METADATA_FILE/RADIOMETRIC_RESCALING/RADIANCE_ADD_BAND_10",
-        "value": "0.1"
-      }
-    ],
-    "flagCodings": [
-      {
-        "name": "flags",
-        "samples": [
-          {
-            "name": "designated_fill",
-            "value": 1,
-            "description": "Designated Fill"
-          },
-          {
-            "name": "dropped_frame",
-            "value": 2,
-            "description": "Dropped Frame"
-          },
-          {
-            "name": "terrain_occlusion",
-            "value": 4,
-            "description": "Terrain Occlusion"
-          },
-          {
-            "name": "reserved_1",
-            "value": 8,
-            "description": "Reserved for a future 1-bit class artifact designation"
-          },
-          {
-            "name": "water_confidence_one",
-            "value": 16,
-            "description": "Water confidence bit one"
-          },
-          {
-            "name": "water_confidence_two",
-            "value": 32,
-            "description": "Water confidence bit two"
-          },
-          {
-            "name": "reserved_2_one",
-            "value": 64,
-            "description": "Reserved for a future 2-bit class artifact designation"
-          },
-          {
-            "name": "reserved_2_two",
-            "value": 128,
-            "description": "Reserved for a future 2-bit class artifact designation"
-          },
-          {
-            "name": "vegetation_confidence_one",
-            "value": 256,
-            "description": "Vegetation confidence bit one"
-          },
-          {
-            "name": "vegetation_confidence_two",
-            "value": 512,
-            "description": "Vegetation confidence bit two"
-          },
-          {
-            "name": "snow_ice_confidence_one",
-            "value": 1024,
-            "description": "Snow/ice confidence bit one"
-          },
-          {
-            "name": "snow_ice_confidence_two",
-            "value": 2048,
-            "description": "Snow/ice confidence bit two"
-          },
-          {
-            "name": "cirrus_confidence_one",
-            "value": 4096,
-            "description": "Cirrus confidence bit one"
-          },
-          {
-            "name": "cirrus_confidence_two",
-            "value": 8192,
-            "description": "Cirrus confidence bit two"
-          },
-          {
-            "name": "cloud_confidence_one",
-            "value": 16384,
-            "description": "Cloud confidence bit one"
-          },
-          {
-            "name": "cloud_confidence_two",
-            "value": 32768,
-            "description": "Cloud confidence bit two"
-          }
-        ]
-      }
-    ],
-    "masks": [
-      {
-        "name": "designated_fill",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,0,0",
-        "description": "Designated Fill"
-      },
-      {
-        "name": "dropped_frame",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,0,0",
-        "description": "Dropped Frame"
-      },
-      {
-        "name": "terrain_occlusion",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,0,0",
-        "description": "Terrain Occlusion"
-      },
-      {
-        "name": "water_confidence_low",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,255",
-        "description": "Water confidence 0-35%"
-      },
-      {
-        "name": "water_confidence_mid",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,178",
-        "description": "Water confidence 36-64%"
-      },
-      {
-        "name": "water_confidence_high",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,124",
-        "description": "Water confidence 65-100%"
-      },
-      {
-        "name": "vegetation_confidence_low",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,255,0",
-        "description": "Vegetation confidence 0-35%"
-      },
-      {
-        "name": "vegetation_confidence_mid",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,178,0",
-        "description": "Vegetation confidence 36-64%"
-      },
-      {
-        "name": "vegetation_confidence_high",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,124,0",
-        "description": "Vegetation confidence 65-100%"
-      },
-      {
-        "name": "snow_ice_confidence_low",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,255,0",
-        "description": "Snow/ice confidence 0-35%"
-      },
-      {
-        "name": "snow_ice_confidence_mid",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,178,0",
-        "description": "Snow/ice confidence 36-64%"
-      },
-      {
-        "name": "snow_ice_confidence_high",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,124,0",
-        "description": "Snow/ice confidence 65-100%"
-      },
-      {
-        "name": "cirrus_confidence_low",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,0,255",
-        "description": "Cirrus confidence 0-35%"
-      },
-      {
-        "name": "cirrus_confidence_mid",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,0,178",
-        "description": "Cirrus confidence 36-64%"
-      },
-      {
-        "name": "cirrus_confidence_high",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,0,124",
-        "description": "Cirrus confidence 65-100%"
-      },
-      {
-        "name": "cloud_confidence_low",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,175,175",
-        "description": "Cloud confidence 0-35%"
-      },
-      {
-        "name": "cloud_confidence_mid",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,122,122",
-        "description": "Cloud confidence 36-64%"
-      },
-      {
-        "name": "cloud_confidence_high",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,85,85",
-        "description": "Cloud confidence 65-100%"
-      }
-    ],
     "geoCoding": {
       "coordinates": [
         {
-          "x": 5470.9146,
-          "y": 3706.8333,
-          "lat": 40.36958095,
-          "lon": -44.05166084
+          "x": 3183.0,
+          "y": 4145.0,
+          "lat": 40.25495765471336,
+          "lon": -44.86036212856048
         },
         {
-          "x": 78.96875,
-          "y": 0.98333335,
-          "lat": 41.37088573,
-          "lon": -45.97150615
+          "x": 5479.0,
+          "y": 5003.0,
+          "lat": 40.019271230509325,
+          "lon": -44.05368611416177
         }
       ],
-      "reverseAccuracy": 0.02
+      "reverseAccuracy": 3.019522409886122E-10
     },
     "bands": [
       {
         "name": "thermal_infrared_(tirs)_1",
         "description": "Thermal Infrared Sensor (TIRS) 1",
+        "bandWidth": 7381,
+        "bandHeight": 7711,
         "geophysicalUnit": "W/(m^2*sr*µm)",
         "noDataValue": "0.1",
+        "noDataValueUsed": "true",
         "spectralWavelength": "10895.0",
         "spectralBandwidth": "590.0",
         "expectedPixels": [
           {
-            "x": "2678",
-            "y": "2012",
-            "value": "5.149427"
+            "x": 385,
+            "y": 1373,
+            "value": "NaN"
           },
           {
-            "x": "191",
-            "y": "5196",
-            "value": "NaN"
+            "x": 5056,
+            "y": 6558,
+            "value": 5.6122947
           }
         ]
       },
       {
         "name": "thermal_infrared_(tirs)_2",
         "description": "TIRS 2",
+        "bandWidth": 7381,
+        "bandHeight": 7711,
         "geophysicalUnit": "W/(m^2*sr*µm)",
         "noDataValue": "0.1",
+        "noDataValueUsed": "true",
         "spectralWavelength": "12005.0",
         "spectralBandwidth": "1010.0",
         "expectedPixels": [
           {
-            "x": "5691",
-            "y": "4953",
-            "value": "5.296141"
+            "x": 2147,
+            "y": 1980,
+            "value": 4.7330146
           },
           {
-            "x": "6258",
-            "y": "895",
-            "value": "NaN"
+            "x": 4506,
+            "y": 2816,
+            "value": 4.3236194
           }
         ]
+      }
+    ],
+    "metadata": [
+      {
+        "path": "L1_METADATA_FILE/RADIOMETRIC_RESCALING/RADIANCE_ADD_BAND_10",
+        "value": "0.1"
       },
       {
-        "name": "flags",
-        "description": "Quality Band"
+        "path": "L1_METADATA_FILE/PRODUCT_METADATA/CORNER_LL_PROJECTION_X_PRODUCT",
+        "value": "416400.0"
+      },
+      {
+        "path": "L1_METADATA_FILE/PROJECTION_PARAMETERS/ORIENTATION",
+        "value": "NORTH_UP"
+      },
+      {
+        "path": "L1_METADATA_FILE/METADATA_FILE_INFO/LANDSAT_SCENE_ID",
+        "value": "LT82270322013068LGN01"
+      },
+      {
+        "path": "L1_METADATA_FILE/MIN_MAX_PIXEL_VALUE/QUANTIZE_CAL_MAX_BAND_11",
+        "value": "65535"
+      },
+      {
+        "path": "L1_METADATA_FILE/PRODUCT_METADATA/CORNER_LR_LAT_PRODUCT",
+        "value": "39.28031"
+      },
+      {
+        "path": "L1_METADATA_FILE/METADATA_FILE_INFO/FILE_DATE",
+        "value": "2013-06-24T18:04:20Z"
+      },
+      {
+        "path": "L1_METADATA_FILE/METADATA_FILE_INFO/LANDSAT_SCENE_ID",
+        "value": "LT82270322013068LGN01"
+      },
+      {
+        "path": "L1_METADATA_FILE/MIN_MAX_PIXEL_VALUE/QUANTIZE_CAL_MAX_BAND_11",
+        "value": "65535"
+      },
+      {
+        "path": "L1_METADATA_FILE/MIN_MAX_RADIANCE/RADIANCE_MAXIMUM_BAND_11",
+        "value": "22.0018"
       }
     ]
   }
