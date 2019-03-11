@@ -68,14 +68,14 @@
             "description": "Reserved for a future 2-bit class artifact designation"
           },
           {
-            "name": "vegetation_confidence_one",
+            "name": "reserved_3_one",
             "value": 256,
-            "description": "Vegetation confidence bit one"
+            "description": "Reserved for a future 2-bit class artifact designation"
           },
           {
-            "name": "vegetation_confidence_two",
+            "name": "reserved_3_two",
             "value": 512,
-            "description": "Vegetation confidence bit two"
+            "description": "Reserved for a future 2-bit class artifact designation"
           },
           {
             "name": "snow_ice_confidence_one",
@@ -391,109 +391,91 @@
       {
         "name": "designated_fill",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,0,0",
+        "color": "255,175,175",
         "description": "Designated Fill"
       },
       {
         "name": "dropped_frame",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,0,0",
+        "color": "178,122,122",
         "description": "Dropped Frame"
       },
       {
         "name": "terrain_occlusion",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,0,0",
+        "color": "124,85,85",
         "description": "Terrain Occlusion"
       },
       {
         "name": "water_confidence_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,255",
+        "color": "255,0,0",
         "description": "Water confidence 0-35%"
       },
       {
         "name": "water_confidence_mid",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,178",
+        "color": "178,0,0",
         "description": "Water confidence 36-64%"
       },
       {
         "name": "water_confidence_high",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,124",
+        "color": "124,0,0",
         "description": "Water confidence 65-100%"
-      },
-      {
-        "name": "vegetation_confidence_low",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,255,0",
-        "description": "Vegetation confidence 0-35%"
-      },
-      {
-        "name": "vegetation_confidence_mid",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,178,0",
-        "description": "Vegetation confidence 36-64%"
-      },
-      {
-        "name": "vegetation_confidence_high",
-        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,124,0",
-        "description": "Vegetation confidence 65-100%"
       },
       {
         "name": "snow_ice_confidence_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,255,0",
+        "color": "0,0,255",
         "description": "Snow/ice confidence 0-35%"
       },
       {
         "name": "snow_ice_confidence_mid",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,178,0",
+        "color": "0,0,178",
         "description": "Snow/ice confidence 36-64%"
       },
       {
         "name": "snow_ice_confidence_high",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,124,0",
+        "color": "0,0,124",
         "description": "Snow/ice confidence 65-100%"
       },
       {
         "name": "cirrus_confidence_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,0,255",
+        "color": "0,255,0",
         "description": "Cirrus confidence 0-35%"
       },
       {
         "name": "cirrus_confidence_mid",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,0,178",
+        "color": "0,178,0",
         "description": "Cirrus confidence 36-64%"
       },
       {
         "name": "cirrus_confidence_high",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,0,124",
+        "color": "0,124,0",
         "description": "Cirrus confidence 65-100%"
       },
       {
         "name": "cloud_confidence_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,175,175",
+        "color": "255,255,0",
         "description": "Cloud confidence 0-35%"
       },
       {
         "name": "cloud_confidence_mid",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,122,122",
+        "color": "178,178,0",
         "description": "Cloud confidence 36-64%"
       },
       {
         "name": "cloud_confidence_high",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,85,85",
+        "color": "124,124,0",
         "description": "Cloud confidence 65-100%"
       }
     ],
