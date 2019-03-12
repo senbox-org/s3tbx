@@ -11,17 +11,17 @@
                 {
                     "x": 863.0,
                     "y": 2559.0,
-                    "lat": 19.36149514,
-                    "lon":-157.457677551
+                    "lat": 19.36149514168501,
+                    "lon": -157.45767755177314
                 },
                 {
                     "x": 1485.0,
                     "y": 3089.0,
-                    "lat": 14.955871,
-                    "lon": -151.21632
+                    "lat": 14.955871831178664,
+                    "lon": -151.21631956960908
                 }
             ],
-            "reverseAccuracy": 21.872437
+            "reverseAccuracy": 0.22
         },
         "flagCodings": [
             {
@@ -95,7 +95,7 @@
                     {
                         "x": 1221,
                         "y": 1739,
-                        "value": 13.696749
+                        "value": 13.69675
                     }
                 ]
             },
@@ -133,7 +133,7 @@
                     {
                         "x": 1038,
                         "y": 4349,
-                        "value": 2.1539547
+                        "value": 2.1539538
                     }
                 ]
             },
@@ -161,6 +161,8 @@
             {
                 "name": "radiance_1",
                 "description": "Spectral radiance for channel 1",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "mW / (m^2 sr nm)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -170,18 +172,20 @@
                     {
                         "x": 681,
                         "y": 4282,
-                        "value": 27.4192
+                        "value": 27.975525
                     },
                     {
                         "x": 19,
                         "y": 2241,
-                        "value": 71.92518
+                        "value": 82.217186
                     }
                 ]
             },
             {
                 "name": "radiance_2",
                 "description": "Spectral radiance for channel 2",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "mW / (m^2 sr nm)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -191,18 +195,20 @@
                     {
                         "x": 655,
                         "y": 938,
-                        "value": 50.153633
+                        "value": 51.521824
                     },
                     {
                         "x": 546,
                         "y": 205,
-                        "value": 5.58974
+                        "value": 5.0033727
                     }
                 ]
             },
             {
                 "name": "radiance_3a",
                 "description": "Zero-filled placeholder for radiance_3a, no data available",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "-",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -224,6 +230,8 @@
             {
                 "name": "radiance_3b",
                 "description": "Earth scene radiance for channel 3b",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "mW / (m^2 sr cm^-1)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -238,13 +246,15 @@
                     {
                         "x": 642,
                         "y": 3440,
-                        "value": 0.58803403
+                        "value": 0.574279
                     }
                 ]
             },
             {
                 "name": "radiance_4",
                 "description": "Earth scene radiance for channel 4",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "mW / (m^2 sr cm^-1)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -254,18 +264,20 @@
                     {
                         "x": 716,
                         "y": 2372,
-                        "value": 104.83114
+                        "value": 105.01697
                     },
                     {
                         "x": 806,
                         "y": 2105,
-                        "value": 86.07862
+                        "value": 82.26162
                     }
                 ]
             },
             {
                 "name": "radiance_5",
                 "description": "Earth scene radiance for channel 5",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "mW / (m^2 sr cm^-1)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -275,7 +287,7 @@
                     {
                         "x": 1149,
                         "y": 437,
-                        "value": 95.64781
+                        "value": 95.84796
                     },
                     {
                         "x": 1291,
@@ -287,6 +299,8 @@
             {
                 "name": "reflec_1",
                 "description": "Reflectance factor for channel 1",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "%",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -296,18 +310,20 @@
                     {
                         "x": 1951,
                         "y": 1748,
-                        "value": 27.2861
+                        "value": 25.2828
                     },
                     {
                         "x": 1901,
                         "y": 4505,
-                        "value": 4.06142
+                        "value": 4.11311
                     }
                 ]
             },
             {
                 "name": "reflec_2",
                 "description": "Reflectance factor for channel 2",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "%",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -317,18 +333,20 @@
                     {
                         "x": 221,
                         "y": 2151,
-                        "value": 35.302
+                        "value": 27.64485
                     },
                     {
                         "x": 1142,
                         "y": 2677,
-                        "value": 41.439
+                        "value": 41.9805
                     }
                 ]
             },
             {
                 "name": "reflec_3a",
                 "description": "Zero-filled placeholder for reflec_3a, no data available",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "-",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -350,6 +368,8 @@
             {
                 "name": "temp_3b",
                 "description": "Blackbody temperature for channel 3b",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "K",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -359,18 +379,20 @@
                     {
                         "x": 28,
                         "y": 2021,
-                        "value": 296.2704
+                        "value": 295.93292
                     },
                     {
                         "x": 140,
                         "y": 4726,
-                        "value": 301.9197
+                        "value": 301.8282
                     }
                 ]
             },
             {
                 "name": "temp_4",
                 "description": "Blackbody temperature for channel 4",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "K",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -385,13 +407,15 @@
                     {
                         "x": 1607,
                         "y": 3506,
-                        "value": 274.6665
+                        "value": 274.2581
                     }
                 ]
             },
             {
                 "name": "temp_5",
                 "description": "Blackbody temperature for channel 5",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "geophysicalUnit": "K",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -401,17 +425,19 @@
                     {
                         "x": 1669,
                         "y": 4501,
-                        "value": 291.94324
+                        "value": 291.8209
                     },
                     {
                         "x": 497,
                         "y": 2531,
-                        "value": 293.2908
+                        "value": 292.80545
                     }
                 ]
             },
             {
                 "name": "flags",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "noDataValue": "0.0",
                 "noDataValueUsed": "false",
                 "spectralWavelength": "0.0",
@@ -431,6 +457,8 @@
             },
             {
                 "name": "cloudFlag",
+                "bandWidth": 2001,
+                "bandHeight": 4761,
                 "noDataValue": "0.0",
                 "noDataValueUsed": "false",
                 "spectralWavelength": "0.0",
@@ -509,12 +537,44 @@
         ],
         "metadata": [
             {
-                "path": "ARCHIVE_RETRIEVAL_SYSTEM_HEADER/ORDER_ID/ORDER_CREATION_YEAR",
-                "value": "2007"
+                "path": "ARCHIVE_RETRIEVAL_SYSTEM_HEADER/DATA_SET_SUMMARY/FIRST_LONGITUDE",
+                "value": "-138"
             },
             {
                 "path": "HeaderRecord/NAVIGATION/RIGHT_ASCENSION_OF_THE_ASCENDING_NODE",
                 "value": "273.68932"
+            },
+            {
+                "path": "HeaderRecord/DATA_SET_QUALITY_INDICATORS/RECORD_NUMBER_OF_STATUS_CHANGE",
+                "value": "4768"
+            },
+            {
+                "path": "ARCHIVE_RETRIEVAL_SYSTEM_HEADER/DATA_SET_SUMMARY/LAST_LONGITUDE",
+                "value": "+179"
+            },
+            {
+                "path": "HeaderRecord/FILE_IDENTIFICATION/DATA_SET_NAME",
+                "value": "NSS.HRPT.NN.D06334.S2347.E0000.B0788990.EB"
+            },
+            {
+                "path": "ARCHIVE_RETRIEVAL_SYSTEM_HEADER/DATA_SELECTION_CRITERIA/ENDING_LONGITUDE",
+                "value": "ALL"
+            },
+            {
+                "path": "ARCHIVE_RETRIEVAL_SYSTEM_HEADER/DATA_SELECTION_CRITERIA/BEGINNIG_LONGITUDE",
+                "value": "ALL"
+            },
+            {
+                "path": "HeaderRecord/NAVIGATION/ARGUMENT_OF_PERIGEE",
+                "value": "84.39452"
+            },
+            {
+                "path": "HeaderRecord/DATA_SET_QUALITY_INDICATORS/TIME_SEQUENCE_ERROR",
+                "value": "0"
+            },
+            {
+                "path": "HeaderRecord/FILE_IDENTIFICATION/YEAR_OF_LAST_CPIDS_UPDATE",
+                "value": "2006"
             }
         ]
     }
