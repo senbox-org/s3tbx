@@ -73,45 +73,42 @@ target product is not saved, it is opened in the Sentinel Toolbox automatically.
 <p><b>Multiply input reflectance with PI:</b><br>
     Checking this option will multiply the reflectance with PI.</p>
 <p><b>Valid pixel expression:</b><br>
-    This expression is uses for validating pixels which will be considerd for processing, if the user did not add any
-    expression the first applicable default expression will be applied as in <a href="#default_expressions"> Default expressions</a>. If the
+    This expression is used to validate pixels. Only valid pixels will be considerd for processing. If no expression is specified
+    the first applicable expression for the input product will be applied as in <a href="#valid_expressions"> Valid expressions</a>. If the
     expression is set to
-    <b>TRUE</b>, then all pixels are considered to be valid. The button can be use in creating a valid express.</p>
+    <b>TRUE</b>, then all pixels are considered to be valid. The ellipsis-button can be used to create a valid expression.</p>
 <br>
-<p>Default valid expression</p>
-<table id="default_expressions">
+<p>Default valid expressions</p>
+<table id="valid_expressions">
     <tr>
-        <td>OLCI</td>
-        <td>WQSF_lsb.WATER and not WQSF_lsb.CLOUD<br>
-            LQSF_WATER
+        <td rowspan="2">OLCI</td>
+        <td>WQSF_lsb.WATER and not WQSF_lsb.CLOUD
         </td>
+    </tr>
+    <tr>
+        <td>LQSF_WATER</td>
     </tr>
     <tr>
         <td>S2_MSI</td>
-        <td></td>
+        <td>TRUE</td>
     </tr>
     <tr>
-        <td>MERIS</td>
-        <td>l2_flags.WATER<br>
-            not l1p_flags.CC_LAND and not l1p_flags.CC_CLOUD<br>
-            NOT l1_flags.LAND_OCEAN
-        </td>
+        <td rowspan="3">MERIS</td>
+        <td>l2_flags.WATER</td>
     </tr>
     <tr>
-        <td>MODIS</td>
+        <td>not l1p_flags.CC_LAND and not l1p_flags.CC_CLOUD</td>
+    </tr>
+    <tr>
+        <td>NOT l1_flags.LAND_OCEAN</td>
+    </tr>
+    <tr>
+        <td>MODIS, SEAWIFS, CZCS</td>
         <td>not l2_flags.LAND and not l2_flags.CLDICE</td>
     </tr>
     <tr>
         <td>MODIS500</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>SEAWIFS</td>
-        <td>not l2_flags.LAND and not l2_flags.CLDICE</td>
-    </tr>
-    <tr>
-        <td>CZCS</td>
-        <td>not l2_flags.LAND and not l2_flags.CLDICE</td>
+        <td>TRUE</td>
     </tr>
 </table>
 
