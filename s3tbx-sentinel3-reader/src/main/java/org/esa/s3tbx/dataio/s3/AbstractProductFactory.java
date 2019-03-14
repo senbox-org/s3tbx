@@ -97,6 +97,15 @@ public abstract class AbstractProductFactory implements ProductFactory {
         targetProduct.getMetadataRoot().addElement(manifest.getMetadata());
         processProductSpecificMetadata(manifest.getMetadata().getElement("metadataSection"));
 
+        for (final Product p : openProductList) {
+            MetadataElement root = targetProduct.getMetadataRoot();
+            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
+                if (!root.containsElement(element.getDisplayName())) {
+                    root.addElement(element.createDeepClone());
+                }
+            }
+        }
+
         addDataNodes(masterProduct, targetProduct);
         addSpecialVariables(masterProduct, targetProduct);
         setMasks(targetProduct);
