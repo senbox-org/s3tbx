@@ -1,6 +1,6 @@
 {
-    "id": "LC08_L1TP_024036_20181011_20181011_01_RT_-_Level_2",
-    "decodeQualification": "UNABLE",
+    "id": "LC08_L1TP_024036_20181011_20181011_01_RT-uncompressed",
+    "decodeQualification": "INTENDED",
     "expectedContent": {
         "sceneWidth": 7641,
         "sceneHeight": 7781,
@@ -428,217 +428,217 @@
             {
                 "name": "Fill",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,175,175",
+                "color": "255,0,0",
                 "description": "Fill"
             },
             {
                 "name": "Clear",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,122,122",
+                "color": "178,0,0",
                 "description": "Clear"
             },
             {
                 "name": "Water",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,85,85",
+                "color": "124,0,0",
                 "description": "Water"
             },
             {
                 "name": "Cloud_Shadow",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,0,0",
+                "color": "0,0,255",
                 "description": "Cloud Shadow"
             },
             {
                 "name": "Snow",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,0,0",
+                "color": "0,0,178",
                 "description": "Snow"
             },
             {
                 "name": "Cloud",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,0,0",
+                "color": "0,0,124",
                 "description": "Cloud"
             },
             {
                 "name": "Cloud_Confidence_None",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,0,255",
+                "color": "0,255,0",
                 "description": "Cloud Confidence None"
             },
             {
                 "name": "Cloud_Confidence_Low",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,0,178",
+                "color": "0,178,0",
                 "description": "Cloud Confidence Low"
             },
             {
                 "name": "Cloud_Confidence_Medium",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,0,124",
+                "color": "0,124,0",
                 "description": "Cloud Confidence Medium"
             },
             {
                 "name": "Cloud_Confidence_High",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,255,0",
+                "color": "255,255,0",
                 "description": "Cloud Confidence High"
             },
             {
                 "name": "Cirrus_Confidence_None",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,178,0",
+                "color": "178,178,0",
                 "description": "Cirrus Confidence None"
             },
             {
                 "name": "Cirrus_Confidence_Low",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,124,0",
+                "color": "124,124,0",
                 "description": "Cirrus Confidence Low"
             },
             {
                 "name": "Cirrus_Confidence_Medium",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,255,0",
+                "color": "255,0,255",
                 "description": "Cirrus Confidence Medium"
             },
             {
                 "name": "Cirrus_Confidence_High",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,178,0",
+                "color": "178,0,178",
                 "description": "Cirrus Confidence High"
             },
             {
                 "name": "Terrain_Oclusion",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,124,0",
+                "color": "124,0,124",
                 "description": "Terrain Oclusion"
             },
             {
                 "name": "No saturation",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,124,0",
+                "color": "255,0,0",
                 "description": "No bands contain saturation"
             },
             {
                 "name": "Band 1 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,0,255",
+                "color": "178,0,0",
                 "description": "Band 1 saturated"
             },
             {
                 "name": "Band 2 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,0,178",
+                "color": "124,0,0",
                 "description": "Band 2 saturated"
             },
             {
                 "name": "Band 3 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,0,124",
+                "color": "0,0,255",
                 "description": "Band 3 saturated"
             },
             {
                 "name": "Band 4 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,175,175",
+                "color": "0,0,178",
                 "description": "Band 4 saturated"
             },
             {
                 "name": "Band 5 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,122,122",
+                "color": "0,0,124",
                 "description": "Band 5 saturated"
             },
             {
                 "name": "Band 6 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,85,85",
+                "color": "0,255,0",
                 "description": "Band 6 saturated"
             },
             {
                 "name": "Band 7 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,0,0",
+                "color": "0,178,0",
                 "description": "Band 7 saturated"
             },
             {
                 "name": "Band 9 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,0,0",
+                "color": "0,124,0",
                 "description": "Band 9 saturated"
             },
             {
                 "name": "Band 10 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,0,0",
+                "color": "255,255,0",
                 "description": "Band 10 saturated"
             },
             {
                 "name": "Band 11 saturated",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,0,255",
+                "color": "178,178,0",
                 "description": "Band 11 saturated"
             },
             {
                 "name": "Aerosol_Fill",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,178,0",
+                "color": "255,0,0",
                 "description": "Fill"
             },
             {
                 "name": "Aerosol_Valid",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,124,0",
+                "color": "178,0,0",
                 "description": "Valid aerosol retrieval"
             },
             {
                 "name": "Aerosol_Water",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,0,255",
+                "color": "124,0,0",
                 "description": "water pixel"
             },
             {
                 "name": "Aerosol_cloud_cirrus",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,0,178",
+                "color": "0,0,255",
                 "description": "cloud/cirrus"
             },
             {
                 "name": "Aerosol_cloud_shadow",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,0,124",
+                "color": "0,0,178",
                 "description": "cloud shadow"
             },
             {
                 "name": "Aerosol_non_center",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,175,175",
+                "color": "0,0,124",
                 "description": "non-center window pixel for which aerosol was interpolated from surrounding NxN center pixels"
             },
             {
                 "name": "aerosol_level_climatology",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,122,122",
+                "color": "0,255,0",
                 "description": "Aerosol level climatology"
             },
             {
                 "name": "aerosol_level_low",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,85,85",
+                "color": "0,178,0",
                 "description": "Aerosol level low"
             },
             {
                 "name": "aerosol_level_medium",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,0,0",
+                "color": "0,124,0",
                 "description": "Aerosol level medium"
             },
             {
                 "name": "aerosol_level_high",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,0,0",
+                "color": "255,255,0",
                 "description": "Aerosol level high"
             }
         ],
