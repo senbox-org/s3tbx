@@ -26,8 +26,8 @@ public class CollectionOLILandsatQATest {
 
     @Test
     public void testConsistentMaskColors() throws IOException {
-        File file1 = new File("Y:\\testdata\\sensors_platforms\\LANDSAT\\LANDSAT_8_OLI_TIRS\\geotiff\\LC81970222013122LGN01\\LC81970222013122LGN01_MTL.txt");
-        File file2 = new File("Y:\\testdata\\sensors_platforms\\LANDSAT\\LANDSAT_8_OLI_TIRS\\geotiff\\LC81960222013195LGN00\\LC81960222013195LGN00_MTL.txt");
+        File file1 = new File("D:\\Produits_S2\\sensors_platforms\\LANDSAT\\LANDSAT_8_OLI_TIRS\\geotiff\\LC81970222013122LGN01\\LC81970222013122LGN01_MTL.txt");
+        File file2 = new File("D:\\Produits_S2\\sensors_platforms\\LANDSAT\\LANDSAT_8_OLI_TIRS\\geotiff\\LC81960222013195LGN00\\LC81960222013195LGN00_MTL.txt");
 
         Assume.assumeTrue(file1.exists());
         Assume.assumeTrue(file2.exists());

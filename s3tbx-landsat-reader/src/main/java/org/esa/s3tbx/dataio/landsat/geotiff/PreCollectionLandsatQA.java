@@ -43,19 +43,19 @@ public class PreCollectionLandsatQA extends AbstractLandsatQA {
                                             "Designated Fill",
                                             width, height,
                                             "flags.designated_fill",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("dropped_frame",
                                             "Dropped Frame",
                                             width, height,
                                             "flags.dropped_frame",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("terrain_occlusion",
                                             "Terrain Occlusion",
                                             width, height,
                                             "flags.terrain_occlusion",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.addAll(createDefaultConfidenceMasks("water_confidence", "Water confidence", width, height));
         masks.addAll(createDefaultConfidenceMasks("snow_ice_confidence", "Snow/ice confidence", width, height));

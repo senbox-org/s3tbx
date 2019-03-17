@@ -13,65 +13,67 @@ import java.util.List;
  */
 abstract class AbstractLandsatQA implements LandsatQA {
 
-    public AbstractLandsatQA() {
+    protected final LandsatColorIterator colorIterator;
 
+    public AbstractLandsatQA() {
+        colorIterator = new LandsatColorIterator();
     }
 
 
-    protected static List<Mask> createDefaultConfidenceMasks(String flagMaskBaseName, String descriptionBaseName, int width, int height) {
+    protected List<Mask> createDefaultConfidenceMasks(String flagMaskBaseName, String descriptionBaseName, int width, int height) {
         List<Mask> masks = new ArrayList<>();
         masks.add(Mask.BandMathsType.create(flagMaskBaseName + "_low",
                                             descriptionBaseName + " 0-35%",
                                             width, height,
                                             "flags." + flagMaskBaseName + "_one and not flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create(flagMaskBaseName + "_mid",
                                             descriptionBaseName + " 36-64%",
                                             width, height,
                                             "not flags." + flagMaskBaseName + "_one and flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create(flagMaskBaseName + "_high",
                                             descriptionBaseName + " 65-100%",
                                             width, height,
                                             "flags." + flagMaskBaseName + "_one and flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         return masks;
     }
 
-    protected static List<Mask> createDefaultRadiometricSaturationMasks(String flagMaskBaseName, String descriptionBaseName, int width, int height) {
+    protected List<Mask> createDefaultRadiometricSaturationMasks(String flagMaskBaseName, String descriptionBaseName, int width, int height) {
         List<Mask> masks = new ArrayList<>();
         masks.add(Mask.BandMathsType.create("No saturation",
                                             "No bands contain saturation",
                                             width, height,
                                             "not flags." + flagMaskBaseName + "_one and not flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
 
         masks.add(Mask.BandMathsType.create("1-2 contain saturation",
                                             "1-2 contain saturation",
                                             width, height,
                                             "flags." + flagMaskBaseName + "_one and not flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("3-4 contain saturation",
                                             "3-4 contain saturation",
                                             width, height,
                                             "not flags." + flagMaskBaseName + "_one and flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("5 or more bands contain saturation",
                                             "5 or more bands contain saturation",
                                             width, height,
                                             "flags." + flagMaskBaseName + "_one and flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         return masks;
     }
 
-    protected static class ColorIterator {
+    /*protected static class ColorIterator {
 
         static ArrayList<Color> colors;
         static Iterator<Color> colorIterator;
@@ -105,5 +107,5 @@ abstract class AbstractLandsatQA implements LandsatQA {
             }
             return colorIterator.next();
         }
-    }
+    }*/
 }

@@ -11,6 +11,7 @@ import java.util.List;
  * Created by obarrile on 02/01/2019.
  */
 public class CollectionOLILandsatQA extends AbstractLandsatQA {
+
     @Override
     public FlagCoding createFlagCoding(String bandName) {
         FlagCoding flagCoding = new FlagCoding(bandName);
@@ -40,19 +41,19 @@ public class CollectionOLILandsatQA extends AbstractLandsatQA {
                                             "Designated Fill",
                                             width, height,
                                             "flags.designated_fill",
-                                            AbstractLandsatQA.ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("terrain_occlusion",
                                             "Terrain Occlusion",
                                             width, height,
                                             "flags.terrain_occlusion",
-                                            AbstractLandsatQA.ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("cloud",
                                             "Cloud",
                                             width, height,
                                             "flags.cloud",
-                                            AbstractLandsatQA.ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.addAll(createDefaultRadiometricSaturationMasks("radiometric_saturation", "Radiometric saturation", width, height));
         masks.addAll(createDefaultConfidenceMasks("snow_ice_confidence", "Snow/ice confidence", width, height));
