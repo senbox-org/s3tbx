@@ -1,0 +1,688 @@
+{
+    "id": "LC08_L1TP_024036_20181011_20181011_01_RT-uncompressed",
+    "decodeQualification": "INTENDED",
+    "expectedContent": {
+        "sceneWidth": 7641,
+        "sceneHeight": 7781,
+        "startTime": "11-OCT-2018 16:43:05.140000",
+        "endTime": "11-OCT-2018 16:43:05.140000",
+        "geoCoding": {
+            "coordinates": [
+                {
+                    "x": 3295.0,
+                    "y": 4182.0,
+                    "lat": 34.52864623122319,
+                    "lon": -92.21289376954346
+                },
+                {
+                    "x": 5673.0,
+                    "y": 5049.0,
+                    "lat": 34.2866853810594,
+                    "lon": -91.44009107264122
+                }
+            ],
+            "reverseAccuracy": 4.500179784372449E-9
+        },
+        "flagCodings": [
+            {
+                "name": "pixel_qa",
+                "samples": [
+                    {
+                        "name": "fill",
+                        "value": 1,
+                        "description": "Fill"
+                    },
+                    {
+                        "name": "clear",
+                        "value": 2,
+                        "description": "Clear"
+                    },
+                    {
+                        "name": "water",
+                        "value": 4,
+                        "description": "Water"
+                    },
+                    {
+                        "name": "cloud_shadow",
+                        "value": 8,
+                        "description": "Cloud Shadow"
+                    },
+                    {
+                        "name": "snow",
+                        "value": 16,
+                        "description": "Snow"
+                    },
+                    {
+                        "name": "cloud",
+                        "value": 32,
+                        "description": "Cloud"
+                    },
+                    {
+                        "name": "cloud_confidence_one",
+                        "value": 64,
+                        "description": "Cloud confidence bit one"
+                    },
+                    {
+                        "name": "cloud_confidence_two",
+                        "value": 128,
+                        "description": "Cloud confidence bit two"
+                    },
+                    {
+                        "name": "cirrus_confidence_one",
+                        "value": 256,
+                        "description": "Cirrus confidence bit one"
+                    },
+                    {
+                        "name": "cirrus_confidence_two",
+                        "value": 512,
+                        "description": "Cirrus confidence bit two"
+                    },
+                    {
+                        "name": "terrain_oclusion",
+                        "value": 1024,
+                        "description": "Terrain Occlusion"
+                    }
+                ]
+            },
+            {
+                "name": "saturation",
+                "samples": [
+                    {
+                        "name": "data_fill_flag",
+                        "value": 1,
+                        "description": "Designated Fill"
+                    },
+                    {
+                        "name": "Band1_saturated",
+                        "value": 2,
+                        "description": "Band 1 Data Saturation Flag"
+                    },
+                    {
+                        "name": "Band2_saturated",
+                        "value": 4,
+                        "description": "Band 2 Data Saturation Flag"
+                    },
+                    {
+                        "name": "Band3_saturated",
+                        "value": 8,
+                        "description": "Band 3 Data Saturation Fla "
+                    },
+                    {
+                        "name": "Band4_saturated",
+                        "value": 16,
+                        "description": "Band 4 Data Saturation Flag"
+                    },
+                    {
+                        "name": "Band5_saturated",
+                        "value": 32,
+                        "description": "Band 5 Data Saturation Flag"
+                    },
+                    {
+                        "name": "Band6_saturated",
+                        "value": 64,
+                        "description": "Band 6 Data Saturation Flag"
+                    },
+                    {
+                        "name": "Band7_saturated",
+                        "value": 128,
+                        "description": "Band 7 Data Saturation Flag"
+                    },
+                    {
+                        "name": "Band8_saturated",
+                        "value": 256,
+                        "description": "N/A"
+                    },
+                    {
+                        "name": "Band9_saturated",
+                        "value": 512,
+                        "description": "Band 9 Data Saturation Flag"
+                    },
+                    {
+                        "name": "Band10_saturated",
+                        "value": 1024,
+                        "description": "Band 10 Data Saturation Flag"
+                    },
+                    {
+                        "name": "Band11_saturated",
+                        "value": 2048,
+                        "description": "Band 11 Data Saturation Flag"
+                    }
+                ]
+            },
+            {
+                "name": "aerosol_flags",
+                "samples": [
+                    {
+                        "name": "fill",
+                        "value": 1,
+                        "description": "Fill"
+                    },
+                    {
+                        "name": "valid_aerosol_retrieval",
+                        "value": 2,
+                        "description": "valid aerosol retrieval (center pixel of NxN window)"
+                    },
+                    {
+                        "name": "water",
+                        "value": 4,
+                        "description": "water pixel (or water pixel was used in the fill-the-window interpolation)"
+                    },
+                    {
+                        "name": "cloud_cirrus",
+                        "value": 8,
+                        "description": "Cloud or cirrus"
+                    },
+                    {
+                        "name": "cloud_shadow",
+                        "value": 16,
+                        "description": "Cloud Shadow"
+                    },
+                    {
+                        "name": "non_center",
+                        "value": 32,
+                        "description": "non-center window pixel for which aerosol was interpolated from surrounding NxN center pixels"
+                    },
+                    {
+                        "name": "aerosol_level_one",
+                        "value": 64,
+                        "description": "Aerosol level bit one"
+                    },
+                    {
+                        "name": "aerosol_level_two",
+                        "value": 128,
+                        "description": "Aerosol level bit two"
+                    }
+                ]
+            }
+        ],
+        "bands": [
+            {
+                "name": "pixel_qa",
+                "description": "Quality Band",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "noDataValue": "0.0",
+                "noDataValueUsed": "false",
+                "spectralWavelength": "0.0",
+                "spectralBandwidth": "0.0",
+                "expectedPixels": [
+                    {
+                        "x": 398,
+                        "y": 1386,
+                        "value": 1.0
+                    },
+                    {
+                        "x": 5234,
+                        "y": 6618,
+                        "value": 322.0
+                    }
+                ]
+            },
+            {
+                "name": "saturation",
+                "description": "Saturation Band",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "noDataValue": "0.0",
+                "noDataValueUsed": "false",
+                "spectralWavelength": "0.0",
+                "spectralBandwidth": "0.0",
+                "expectedPixels": [
+                    {
+                        "x": 2222,
+                        "y": 1998,
+                        "value": 0.0
+                    },
+                    {
+                        "x": 4664,
+                        "y": 2842,
+                        "value": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "sr_band1",
+                "description": "band 1 surface reflectance",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "geophysicalUnit": " ",
+                "noDataValue": "0.0",
+                "noDataValueUsed": "true",
+                "spectralWavelength": "440.0",
+                "spectralBandwidth": "20.0",
+                "expectedPixels": [
+                    {
+                        "x": 4202,
+                        "y": 5799,
+                        "value": 0.0085
+                    },
+                    {
+                        "x": 4648,
+                        "y": 7224,
+                        "value": 0.0133
+                    }
+                ]
+            },
+            {
+                "name": "sr_band2",
+                "description": "band 2 surface reflectance",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "geophysicalUnit": " ",
+                "noDataValue": "0.0",
+                "noDataValueUsed": "true",
+                "spectralWavelength": "480.0",
+                "spectralBandwidth": "60.0",
+                "expectedPixels": [
+                    {
+                        "x": 1209,
+                        "y": 5182,
+                        "value": 0.0125
+                    },
+                    {
+                        "x": 3966,
+                        "y": 7108,
+                        "value": 0.0243
+                    }
+                ]
+            },
+            {
+                "name": "sr_band3",
+                "description": "band 3 surface reflectance",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "geophysicalUnit": " ",
+                "noDataValue": "0.0",
+                "noDataValueUsed": "true",
+                "spectralWavelength": "560.0",
+                "spectralBandwidth": "60.0",
+                "expectedPixels": [
+                    {
+                        "x": 5777,
+                        "y": 3770,
+                        "value": 0.0598
+                    },
+                    {
+                        "x": 7264,
+                        "y": 3780,
+                        "value": -0.9999
+                    }
+                ]
+            },
+            {
+                "name": "sr_band4",
+                "description": "band 4 surface reflectance",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "geophysicalUnit": " ",
+                "noDataValue": "0.0",
+                "noDataValueUsed": "true",
+                "spectralWavelength": "655.0",
+                "spectralBandwidth": "30.0",
+                "expectedPixels": [
+                    {
+                        "x": 2601,
+                        "y": 6998,
+                        "value": -0.9999
+                    },
+                    {
+                        "x": 76,
+                        "y": 3663,
+                        "value": -0.9999
+                    }
+                ]
+            },
+            {
+                "name": "sr_band5",
+                "description": "band 5 surface reflectance",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "geophysicalUnit": " ",
+                "noDataValue": "0.0",
+                "noDataValueUsed": "true",
+                "spectralWavelength": "865.0",
+                "spectralBandwidth": "30.0",
+                "expectedPixels": [
+                    {
+                        "x": 2501,
+                        "y": 1533,
+                        "value": 0.204
+                    },
+                    {
+                        "x": 2087,
+                        "y": 336,
+                        "value": 0.2662
+                    }
+                ]
+            },
+            {
+                "name": "sr_band6",
+                "description": "band 6 surface reflectance",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "geophysicalUnit": " ",
+                "noDataValue": "0.0",
+                "noDataValueUsed": "true",
+                "spectralWavelength": "1610.0",
+                "spectralBandwidth": "80.0",
+                "expectedPixels": [
+                    {
+                        "x": 7423,
+                        "y": 4705,
+                        "value": -0.9999
+                    },
+                    {
+                        "x": 4373,
+                        "y": 5577,
+                        "value": 0.0897
+                    }
+                ]
+            },
+            {
+                "name": "sr_band7",
+                "description": "band 7 surface reflectance",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "geophysicalUnit": " ",
+                "noDataValue": "0.0",
+                "noDataValueUsed": "true",
+                "spectralWavelength": "2200.0",
+                "spectralBandwidth": "180.0",
+                "expectedPixels": [
+                    {
+                        "x": 1772,
+                        "y": 3871,
+                        "value": 0.1138
+                    },
+                    {
+                        "x": 2453,
+                        "y": 5622,
+                        "value": 0.0943
+                    }
+                ]
+            },
+            {
+                "name": "aerosol_flags",
+                "description": "Aerosol Mask",
+                "bandWidth": 7641,
+                "bandHeight": 7781,
+                "noDataValue": "0.0",
+                "noDataValueUsed": "false",
+                "spectralWavelength": "0.0",
+                "spectralBandwidth": "0.0",
+                "expectedPixels": [
+                    {
+                        "x": 2736,
+                        "y": 3876,
+                        "value": 96.0
+                    },
+                    {
+                        "x": 3078,
+                        "y": 3441,
+                        "value": 96.0
+                    }
+                ]
+            }
+        ],
+        "masks": [
+            {
+                "name": "Fill",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "255,0,0",
+                "description": "Fill"
+            },
+            {
+                "name": "Clear",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "178,0,0",
+                "description": "Clear"
+            },
+            {
+                "name": "Water",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "124,0,0",
+                "description": "Water"
+            },
+            {
+                "name": "Cloud_Shadow",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,0,255",
+                "description": "Cloud Shadow"
+            },
+            {
+                "name": "Snow",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,0,178",
+                "description": "Snow"
+            },
+            {
+                "name": "Cloud",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,0,124",
+                "description": "Cloud"
+            },
+            {
+                "name": "Cloud_Confidence_None",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,255,0",
+                "description": "Cloud Confidence None"
+            },
+            {
+                "name": "Cloud_Confidence_Low",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,178,0",
+                "description": "Cloud Confidence Low"
+            },
+            {
+                "name": "Cloud_Confidence_Medium",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,124,0",
+                "description": "Cloud Confidence Medium"
+            },
+            {
+                "name": "Cloud_Confidence_High",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "255,255,0",
+                "description": "Cloud Confidence High"
+            },
+            {
+                "name": "Cirrus_Confidence_None",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "178,178,0",
+                "description": "Cirrus Confidence None"
+            },
+            {
+                "name": "Cirrus_Confidence_Low",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "124,124,0",
+                "description": "Cirrus Confidence Low"
+            },
+            {
+                "name": "Cirrus_Confidence_Medium",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "255,0,255",
+                "description": "Cirrus Confidence Medium"
+            },
+            {
+                "name": "Cirrus_Confidence_High",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "178,0,178",
+                "description": "Cirrus Confidence High"
+            },
+            {
+                "name": "Terrain_Oclusion",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "124,0,124",
+                "description": "Terrain Oclusion"
+            },
+            {
+                "name": "No saturation",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "255,0,0",
+                "description": "No bands contain saturation"
+            },
+            {
+                "name": "Band 1 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "178,0,0",
+                "description": "Band 1 saturated"
+            },
+            {
+                "name": "Band 2 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "124,0,0",
+                "description": "Band 2 saturated"
+            },
+            {
+                "name": "Band 3 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,0,255",
+                "description": "Band 3 saturated"
+            },
+            {
+                "name": "Band 4 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,0,178",
+                "description": "Band 4 saturated"
+            },
+            {
+                "name": "Band 5 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,0,124",
+                "description": "Band 5 saturated"
+            },
+            {
+                "name": "Band 6 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,255,0",
+                "description": "Band 6 saturated"
+            },
+            {
+                "name": "Band 7 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,178,0",
+                "description": "Band 7 saturated"
+            },
+            {
+                "name": "Band 9 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,124,0",
+                "description": "Band 9 saturated"
+            },
+            {
+                "name": "Band 10 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "255,255,0",
+                "description": "Band 10 saturated"
+            },
+            {
+                "name": "Band 11 saturated",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "178,178,0",
+                "description": "Band 11 saturated"
+            },
+            {
+                "name": "Aerosol_Fill",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "255,0,0",
+                "description": "Fill"
+            },
+            {
+                "name": "Aerosol_Valid",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "178,0,0",
+                "description": "Valid aerosol retrieval"
+            },
+            {
+                "name": "Aerosol_Water",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "124,0,0",
+                "description": "water pixel"
+            },
+            {
+                "name": "Aerosol_cloud_cirrus",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,0,255",
+                "description": "cloud/cirrus"
+            },
+            {
+                "name": "Aerosol_cloud_shadow",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,0,178",
+                "description": "cloud shadow"
+            },
+            {
+                "name": "Aerosol_non_center",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,0,124",
+                "description": "non-center window pixel for which aerosol was interpolated from surrounding NxN center pixels"
+            },
+            {
+                "name": "aerosol_level_climatology",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,255,0",
+                "description": "Aerosol level climatology"
+            },
+            {
+                "name": "aerosol_level_low",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,178,0",
+                "description": "Aerosol level low"
+            },
+            {
+                "name": "aerosol_level_medium",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "0,124,0",
+                "description": "Aerosol level medium"
+            },
+            {
+                "name": "aerosol_level_high",
+                "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+                "color": "255,255,0",
+                "description": "Aerosol level high"
+            }
+        ],
+        "metadata": [
+            {
+                "path": "Metadata/global_metadata/corner[2]/location",
+                "value": "LR"
+            },
+            {
+                "path": "Metadata/global_metadata/projection_information/utm_proj_params/zone_code",
+                "value": "15"
+            },
+            {
+                "path": "Metadata/bands/band[6]/valid_range/max",
+                "value": "16000.000000"
+            },
+            {
+                "path": "Metadata/bands/band/pixel_size/x",
+                "value": "30"
+            },
+            {
+                "path": "Metadata/global_metadata/bounding_coordinates/south",
+                "value": "33.538184"
+            },
+            {
+                "path": "Metadata/bands/band[10]/pixel_size/y",
+                "value": "30"
+            },
+            {
+                "path": "Metadata/global_metadata/corner[2]/location",
+                "value": "LR"
+            },
+            {
+                "path": "Metadata/bands/band/bitmap_description/bit[2]",
+                "value": "clear"
+            },
+            {
+                "path": "Metadata/global_metadata/bounding_coordinates/east",
+                "value": "-90.762174"
+            },
+            {
+                "path": "Metadata/bands/band[7]/valid_range/min",
+                "value": "-2000.000000"
+            }
+        ]
+    }
+}

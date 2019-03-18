@@ -48,6 +48,8 @@ public class PDUStitchingOp extends Operator {
             "If no target directory is given, the product will be written to the user directory.")
     private File targetDir;
 
+    private File[] files;
+
     @Override
     public void initialize() throws OperatorException {
         setDummyTargetProduct();
@@ -58,15 +60,19 @@ public class PDUStitchingOp extends Operator {
         final Set<File> filesByProduct = getSourceProductsFileSet(sourceProducts);
         final Set<File> filesByPath = getSourceProductsPathFileSet(sourceProductPaths, getLogger());
         filesByPath.addAll(filesByProduct);
-        final File[] files = filesByPath.toArray(new File[filesByPath.size()]);
+        files = filesByPath.toArray(new File[filesByPath.size()]);
         if (files.length == 0) {
             throw new OperatorException("No PDUs to be stitched could be found.");
         }
         if (targetDir == null || StringUtils.isNullOrEmpty(targetDir.getAbsolutePath())) {
             targetDir = new File(SystemUtils.getUserHomeDir().getPath());
         }
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
         try {
-            SlstrPduStitcher.createStitchedSlstrL1BFile(targetDir, files, ProgressMonitor.NULL);
+            SlstrPduStitcher.createStitchedSlstrL1BFile(targetDir, files, pm);
         } catch (Exception e) {
             throw new OperatorException(e.getMessage(), e);
         }

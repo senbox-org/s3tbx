@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author Tonio Fincke
@@ -54,6 +55,10 @@ public class S3NetcdfReader extends AbstractProductReader {
     protected Product readProductNodesImpl() throws IOException {
         File inputFile = getInputFile();
         netcdfFile = NetcdfFileOpener.open(inputFile);
+
+        if (netcdfFile == null) {
+            throw new IOException(String.format("Not able to read file '%s'. Might be corrupted.", inputFile));
+        }
 
         final String productType = readProductType();
         int productWidth = getWidth();
@@ -484,54 +489,57 @@ public class S3NetcdfReader extends AbstractProductReader {
     }
 
     protected void addVariableMetadata(Variable variable, Product product) {
-        final MetadataElement variableElement = new MetadataElement(variable.getFullName());
-        final List<Attribute> attributes = variable.getAttributes();
-        for (Attribute attribute : attributes) {
-            if (attribute.getFullName().equals("flag_meanings")) {
-                final String[] flagMeanings = attribute.getStringValue().split(" ");
-                for (int i = 0; i < flagMeanings.length; i++) {
-                    String flagMeaning = flagMeanings[i];
-                    final ProductData attributeData = ProductData.createInstance(flagMeaning);
-                    final MetadataAttribute metadataAttribute =
-                            new MetadataAttribute(attribute.getFullName() + "." + i, attributeData, true);
-                    variableElement.addAttribute(metadataAttribute);
-                }
-            } else {
-                if (attribute.getValues() != null) {
-                    final ProductData attributeData = getAttributeData(attribute);
-                    final MetadataAttribute metadataAttribute = new MetadataAttribute(attribute.getFullName(), attributeData, true);
-                    variableElement.addAttribute(metadataAttribute);
-                }
-            }
-        }
         List<Dimension> variableDimensions = variable.getDimensions();
         if (variableDimensions.size() == 1) {
-            try {
-                Object data = variable.read().copyTo1DJavaArray();
-                MetadataAttribute variableAttribute = null;
-                if (data instanceof float[]) {
-                    variableAttribute = new MetadataAttribute("value", ProductData.createInstance((float[]) data), true);
-                } else if (data instanceof double[]) {
-                    variableAttribute = new MetadataAttribute("value", ProductData.createInstance((double[]) data), true);
-                } else if (data instanceof byte[]) {
-                    variableAttribute = new MetadataAttribute("value", ProductData.createInstance((byte[]) data), true);
-                } else if (data instanceof short[]) {
-                    variableAttribute = new MetadataAttribute("value", ProductData.createInstance((short[]) data), true);
-                } else if (data instanceof int[]) {
-                    variableAttribute = new MetadataAttribute("value", ProductData.createInstance((int[]) data), true);
-                } else if (data instanceof long[]) {
-                    variableAttribute = new MetadataAttribute("value", ProductData.createInstance((long[]) data), true);
+            final MetadataElement variableElement = new MetadataElement(variable.getFullName());
+            final List<Attribute> attributes = variable.getAttributes();
+            for (Attribute attribute : attributes) {
+                if (attribute.getFullName().equals("flag_meanings")) {
+                    final String[] flagMeanings = attribute.getStringValue().split(" ");
+                    for (int i = 0; i < flagMeanings.length; i++) {
+                        String flagMeaning = flagMeanings[i];
+                        final ProductData attributeData = ProductData.createInstance(flagMeaning);
+                        final MetadataAttribute metadataAttribute =
+                                new MetadataAttribute(attribute.getFullName() + "." + i, attributeData, true);
+                        variableElement.addAttribute(metadataAttribute);
+                    }
+                } else {
+                    if (attribute.getValues() != null) {
+                        final ProductData attributeData = getAttributeData(attribute);
+                        final MetadataAttribute metadataAttribute = new MetadataAttribute(attribute.getFullName(), attributeData, true);
+                        variableElement.addAttribute(metadataAttribute);
+                    }
                 }
-                if (variableAttribute != null) {
-                    variableAttribute.setUnit(variable.getUnitsString());
-                    variableAttribute.setDescription(variable.getDescription());
-                    variableElement.addAttribute(variableAttribute);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            if (variable.getDataType() != DataType.STRING) {
+                try {
+                    Object data = variable.read().copyTo1DJavaArray();
+                    MetadataAttribute variableAttribute = null;
+                    if (data instanceof float[]) {
+                        variableAttribute = new MetadataAttribute("value", ProductData.createInstance((float[]) data), true);
+                    } else if (data instanceof double[]) {
+                        variableAttribute = new MetadataAttribute("value", ProductData.createInstance((double[]) data), true);
+                    } else if (data instanceof byte[]) {
+                        variableAttribute = new MetadataAttribute("value", ProductData.createInstance((byte[]) data), true);
+                    } else if (data instanceof short[]) {
+                        variableAttribute = new MetadataAttribute("value", ProductData.createInstance((short[]) data), true);
+                    } else if (data instanceof int[]) {
+                        variableAttribute = new MetadataAttribute("value", ProductData.createInstance((int[]) data), true);
+                    } else if (data instanceof long[]) {
+                        variableAttribute = new MetadataAttribute("value", ProductData.createInstance((long[]) data), true);
+                    }
+                    if (variableAttribute != null) {
+                        variableAttribute.setUnit(variable.getUnitsString());
+                        variableAttribute.setDescription(variable.getDescription());
+                        variableElement.addAttribute(variableAttribute);
+                    }
+                } catch (IOException e) {
+                    Logger logger = Logger.getLogger(this.getClass().getName());
+                    logger.severe("Could not read variable " + variable.getFullName());
+                }
+            }
+            product.getMetadataRoot().getElement("Variable_Attributes").addElement(variableElement);
         }
-        product.getMetadataRoot().getElement("Variable_Attributes").addElement(variableElement);
     }
 
     private int getProductDataType(Attribute attribute) {

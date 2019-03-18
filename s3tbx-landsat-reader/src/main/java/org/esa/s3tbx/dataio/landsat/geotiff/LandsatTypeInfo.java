@@ -3,9 +3,10 @@ package org.esa.s3tbx.dataio.landsat.geotiff;
 /**
  * @author Marco Peters
  */
-class LandsatTypeInfo {
+public class LandsatTypeInfo {
 
     private static final String COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)";
+    private static final String ESA_COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)_(MTI|KIS)";
     private static final String L4_FILENAME_REGEX = "LT4\\d{13}\\w{3}\\d{2}";
     private static final String L5_FILENAME_REGEX = "LT5\\d{13}\\w{3}\\d{2}";
     private static final String L7_FILENAME_REGEX = "LE7\\d{13}\\w{3}\\d{2}";
@@ -15,6 +16,9 @@ class LandsatTypeInfo {
     private static final String L5LEGACY_FILENAME_REGEX_2 = "L5\\d{6}_\\d{11}";
     private static final String L7LEGACY_FILENAME_REGEX_1 = "LE7\\d{13}\\w{3}\\d{2}";
     private static final String L7LEGACY_FILENAME_REGEX_2 = "L7\\d{7}_\\d{11}";
+
+    private static final String LANDSAT_LEVEL2_FILENAME_REGEX = "L[COTEM]\\d{2}\\d{16}(T1|T2|RT)-SC\\d{14}";
+    private static final String LANDSAT_LEVEL2_METADATA_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)";
 
     private enum LandsatType {
         LANDSAT_COLLECTION {
@@ -73,10 +77,30 @@ class LandsatTypeInfo {
                 return filename.matches(L8_FILENAME_REGEX + "_MTL" + getTxtExtension()) ||
                        filename.matches(L8_FILENAME_REGEX + getCompressionExtension());
             }
+        },
+        ESA_LANDSAT_COLLECTION {
+            @Override
+            boolean matchesFileNamepattern(String filename) {
+                return filename.matches(ESA_COLLECTION_FILENAME_REGEX + "_MTL" + getTxtExtension()) ||
+                        filename.matches(ESA_COLLECTION_FILENAME_REGEX + getCompressionExtension());
+            }
         };
 
         abstract boolean matchesFileNamepattern(String filename);
     }
+
+    private enum LandsatL2Type {
+        LANDSAT_LEVEL2 {
+            @Override
+            boolean matchesFileNamepattern(String filename) {
+                return filename.matches(LANDSAT_LEVEL2_METADATA_FILENAME_REGEX + getXmlExtension()) ||
+                        filename.matches(LANDSAT_LEVEL2_FILENAME_REGEX + getCompressionExtension());
+            }
+        };
+
+        abstract boolean matchesFileNamepattern(String filename);
+    }
+
 
 
     private LandsatTypeInfo() {
@@ -91,8 +115,21 @@ class LandsatTypeInfo {
         return false;
     }
 
+    public static boolean isLandsatL2(String fileName) {
+        for (LandsatL2Type type : LandsatL2Type.values()) {
+            if (type.matchesFileNamepattern(fileName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     static boolean isLandsatCollection(String fileName) {
         return LandsatType.LANDSAT_COLLECTION.matchesFileNamepattern(fileName);
+    }
+
+    static boolean isESALandsatCollection(String fileName) {
+        return LandsatType.ESA_LANDSAT_COLLECTION.matchesFileNamepattern(fileName);
     }
 
     static boolean isMss(String fileName) {
@@ -123,6 +160,9 @@ class LandsatTypeInfo {
         return LandsatType.LANDSAT8.matchesFileNamepattern(fileName);
     }
 
+    public static boolean isLandsatLevel2(String fileName) {
+        return LandsatL2Type.LANDSAT_LEVEL2.matchesFileNamepattern(fileName);
+    }
 
     private static String getCompressionExtension() {
         return "\\.(tar\\.gz|tgz|tar\\.bz|tbz|tar\\.bz2|tbz2|zip|ZIP)";
@@ -130,6 +170,10 @@ class LandsatTypeInfo {
 
     private static String getTxtExtension() {
         return "\\.(txt|TXT)";
+    }
+
+    private static String getXmlExtension() {
+        return "\\.(xml|XML)";
     }
 
 }

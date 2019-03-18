@@ -9,7 +9,9 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author Tonio Fincke
@@ -73,8 +75,7 @@ class InstrumentDataReader extends S3NetcdfReader {
         if (variable.getRank() == 2 && variable.getDimension(0).getFullName().equals("bands")) {
             try {
                 final String variableName = variable.getFullName();
-                final MetadataElement variableElement =
-                        product.getMetadataRoot().getElement("Variable_Attributes").getElement(variableName);
+                final MetadataElement variableElement = new MetadataElement(variable.getFullName());
                 final float[][] contentMatrix = (float[][]) variable.read().copyToNDJavaArray();
                 final int length = contentMatrix.length;
 
@@ -87,8 +88,10 @@ class InstrumentDataReader extends S3NetcdfReader {
                     xElement.addAttribute(covarianceAttribute);
                     variableElement.addElement(xElement);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                product.getMetadataRoot().getElement("Variable_Attributes").addElement(variableElement);
+            } catch (IOException e) {
+                Logger logger = Logger.getLogger(this.getClass().getName());
+                logger.warning("Could not read variable " + variable.getFullName());
             }
         }
     }

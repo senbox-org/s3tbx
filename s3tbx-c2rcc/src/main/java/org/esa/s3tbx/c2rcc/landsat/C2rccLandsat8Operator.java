@@ -62,7 +62,7 @@ import static org.esa.s3tbx.c2rcc.landsat.C2rccLandsat8Algorithm.*;
  * Computes AC-reflectances and IOPs from MERIS L1b data products using
  * an neural-network approach.
  */
-@OperatorMetadata(alias = "c2rcc.landsat8", version = "1.1",
+@OperatorMetadata(alias = "c2rcc.landsat8", version = "1.2",
         authors = "Roland Doerffer, Marco Peters (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
@@ -185,7 +185,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     private Product ncepEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
-            defaultValue = "water_confidence_mid || water_confidence_high",
+            defaultValue = "",
             description = "Defines the pixels which are valid for processing",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;

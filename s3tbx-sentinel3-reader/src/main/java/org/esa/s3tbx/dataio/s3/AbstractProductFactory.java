@@ -96,17 +96,14 @@ public abstract class AbstractProductFactory implements ProductFactory {
         }
         targetProduct.getMetadataRoot().addElement(manifest.getMetadata());
         processProductSpecificMetadata(manifest.getMetadata().getElement("metadataSection"));
+
         for (final Product p : openProductList) {
-            final MetadataElement productAttributes = new MetadataElement(p.getName());
-            final MetadataElement datasetAttributes = new MetadataElement("Dataset_Attributes");
-            final MetadataElement variableAttributes = new MetadataElement("Variable_Attributes");
-            ProductUtils.copyMetadata(p.getMetadataRoot().getElement("Global_Attributes"), datasetAttributes);
+            MetadataElement root = targetProduct.getMetadataRoot();
             for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
-                variableAttributes.addElement(element.createDeepClone());
+                if (!root.containsElement(element.getDisplayName())) {
+                    root.addElement(element.createDeepClone());
+                }
             }
-            productAttributes.addElement(datasetAttributes);
-            productAttributes.addElement(variableAttributes);
-            targetProduct.getMetadataRoot().addElement(productAttributes);
         }
 
         addDataNodes(masterProduct, targetProduct);
@@ -119,7 +116,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         }
         setSceneTransforms(targetProduct);
         setBandGeoCodings(targetProduct);
-        final Product[] sourceProducts = openProductList.toArray(new Product[openProductList.size()]);
+        final Product[] sourceProducts = openProductList.toArray(new Product[0]);
         setAutoGrouping(sourceProducts, targetProduct);
 
         return targetProduct;
@@ -416,15 +413,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
         if (openProductList.isEmpty()) {
             throw new IOException("Could not find or read any valid products.");
         }
-    }
-
-    private boolean isProfileNode(String targetNodeName) {
-        for (String suffixForSeparatingDimension : separatingDimensions) {
-            if (targetNodeName.contains("_" + suffixForSeparatingDimension + "_")) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private Manifest createManifest(File file) throws IOException {

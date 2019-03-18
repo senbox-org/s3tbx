@@ -1,0 +1,24 @@
+{
+  "testProducts": [
+    {
+      "id": "LC08_L1TP_024036_20181011_20181011_01_RT-uncompressed",
+      "relativePath": "sensors_platforms/LANDSAT/LANDSAT_L2/LC08_L1TP_024036_20181011_20181011_01_RT/LC08_L1TP_024036_20181011_20181011_01_RT.xml",
+      "description": "Landsat 8 L2 GeoTIFF Test product uncompressed"
+    },
+    {
+      "id": "LC080270332018121901T1",
+      "relativePath": "sensors_platforms/LANDSAT/LANDSAT_L2/LC080270332018121901T1-SC20190129000900.tar.gz",
+      "description": "Landsat 8 L2 GeoTIFF Test product tar.gz"
+    },
+    {
+      "id": "LT05_L1TP_168055_19960625_20181219_01_T1",
+      "relativePath": "sensors_platforms/LANDSAT/LANDSAT_L2/LT05_L1TP_168055_19960625_20181219_01_T1/LT05_L1TP_168055_19960625_20181219_01_T1.xml",
+      "description": "Landsat 5 L2 GeoTIFF Test product uncompressed"
+    },
+    {
+      "id": "LE07_L1TP_028032_20181218_20190113_01_T1",
+      "relativePath": "sensors_platforms/LANDSAT/LANDSAT_L2/LE07_L1TP_028032_20181218_20190113_01_T1/LE07_L1TP_028032_20181218_20190113_01_T1.xml",
+      "description": "Landsat 7 L2 GeoTIFF Test product uncompressed"
+    }
+  ]
+}

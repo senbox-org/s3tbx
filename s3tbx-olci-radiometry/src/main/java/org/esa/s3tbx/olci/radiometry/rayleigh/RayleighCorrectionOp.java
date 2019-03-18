@@ -50,7 +50,7 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
  * @author Marco Peters, Muhammad Bala, Olaf Danne
  */
 @OperatorMetadata(alias = "RayleighCorrection",
-        description = "Performs radiometric corrections on OLCI, MERIS L1b and S2 MSI data products.",
+        description = "Performs radiometric corrections on OLCI, MERIS L1B and S2 MSI L1C data products.",
         authors = "Marco Peters, Muhammad Bala, Olaf Danne (Brockmann Consult)",
         copyright = "(c) 2016 by Brockmann Consult",
         category = "Optical/Pre-Processing",
@@ -80,7 +80,7 @@ public class RayleighCorrectionOp extends Operator {
     static final String TAUR_PATTERN = "taur_\\d{2}";
     static final String RTOA_NG_PATTERN = "rtoa_ng_\\d{2}";
 
-    @SourceProduct(label = "OLCI, MERIS or S2 MSI L1b product")
+    @SourceProduct(label = "OLCI, MERIS or S2 MSI L1C product")
     Product sourceProduct;
 
 

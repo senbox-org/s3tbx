@@ -1,6 +1,55 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 6.0.6
+--------------------
+
+* [SIIITBX-234] Update C2RCC according to changed Landsat-8 flags
+* [SIIITBX-227] Support for Landsat products processed by ESA
+* [SIIITBX-226] AVHRR-FRAC reader geocoding is incorrect
+* [SIIITBX-223] Rayleigh operator states it needs S2 L1b but actually it is L1C
+* [SIIITBX-206] S3 products shall not contain NetCDF metadata elements
+* [SIIITBX-192] Not able to create subset from SLSTR L2 data
+
+
+Changes in S3TBX 6.0.5
+--------------------
+
+* [SIIITBX-228] Reference the ATBD for MERIS 4th reprocessing in the help
+* [SIIITBX-195] Make user options for Idepix VIIRS more convenient
+* [SIIITBX-193] SLSTR Stitching operator does not work from command line
+
+
+Changes in S3TBX 6.0.4
+--------------------
+
+* [SIIITBX-185] Rad2Refl produces NaN if radiance is zero
+* [SIIITBX-184] FUB Water shall not retrieve full input image if only subset is requested
+
+
+Changes in S3TBX 6.0.3
+--------------------
+
+* [SIIITBX-230] SLSTR calibration factors shall only be applied if enabled
+* [SIIITBX-229] Update help regarding s3tbx.properties file
+
+
+Changes in S3TBX 6.0.2
+--------------------
+
+**Not released**
+
+
+Changes in S3TBX 6.0.1
+--------------------
+
+* [SIIITBX-182] Allow setting calibration factors for Sentinel-3 L1B
+* [SIIITBX-180] In certain circumstances the tie-points and bands are swapped in SLSTR L2 LST data
+* [SIIITBX-178] OLCI PixelGeoCoding might give invalid pixel positions on request although latitude and longitude bands contain valid data
+* [SIIITBX-175] Add reference to new remote sensing article
+* [SIIITBX-174] C2RCC: Default value 'Threshold rtosa OOS' should be set to 0.05
+* [SIIITBX-173] C2RCC: For Landsat8 and Landsat7 the threshold for cloud test is used with wrong transmittance wavelength
+
 Changes in S3TBX 6.0
 --------------------
 
