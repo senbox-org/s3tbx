@@ -32,19 +32,19 @@ public class CollectionMSSLandsatQA extends AbstractLandsatQA {
                                             "Designated Fill",
                                             width, height,
                                             "flags.designated_fill",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("dropped_frame",
                                             "Dropped Frame",
                                             width, height,
                                             "flags.dropped_frame",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("cloud",
                                             "Cloud",
                                             width, height,
                                             "flags.cloud",
-                                            ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.addAll(createDefaultRadiometricSaturationMasks("radiometric_saturation", "Radiometric saturation", width, height));
 

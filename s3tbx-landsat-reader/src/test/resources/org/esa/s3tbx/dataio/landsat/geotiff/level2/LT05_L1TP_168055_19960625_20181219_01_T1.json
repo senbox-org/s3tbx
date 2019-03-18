@@ -1,6 +1,6 @@
 {
-    "id": "LT05_L1TP_168055_19960625_20181219_01_T1_-_Level_2",
-    "decodeQualification": "UNABLE",
+    "id": "LT05_L1TP_168055_19960625_20181219_01_T1",
+    "decodeQualification": "INTENDED",
     "expectedContent": {
         "sceneWidth": 7761,
         "sceneHeight": 6991,
@@ -316,97 +316,97 @@
             {
                 "name": "Fill",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,0,0",
+                "color": "255,0,0",
                 "description": "Fill"
             },
             {
                 "name": "Clear",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,0,255",
+                "color": "178,0,0",
                 "description": "Clear"
             },
             {
                 "name": "Water",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,0,178",
+                "color": "124,0,0",
                 "description": "Water"
             },
             {
                 "name": "Cloud_Shadow",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,0,124",
+                "color": "0,0,255",
                 "description": "Cloud Shadow"
             },
             {
                 "name": "Snow",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,255,0",
+                "color": "0,0,178",
                 "description": "Snow"
             },
             {
                 "name": "Cloud",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,178,0",
+                "color": "0,0,124",
                 "description": "Cloud"
             },
             {
                 "name": "Cloud_Confidence_None",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "0,124,0",
+                "color": "0,255,0",
                 "description": "Cloud Confidence None"
             },
             {
                 "name": "Cloud_Confidence_Low",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,255,0",
+                "color": "0,178,0",
                 "description": "Cloud Confidence Low"
             },
             {
                 "name": "Cloud_Confidence_Medium",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,178,0",
+                "color": "0,124,0",
                 "description": "Cloud Confidence Medium"
             },
             {
                 "name": "Cloud_Confidence_High",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,124,0",
+                "color": "255,255,0",
                 "description": "Cloud Confidence High"
             },
             {
                 "name": "cloud_qa_DDV",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,0,255",
+                "color": "255,0,0",
                 "description": "Dense dark vegetation"
             },
             {
                 "name": "cloud_qa_Cloud",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,0,178",
+                "color": "178,0,0",
                 "description": "Cloud"
             },
             {
                 "name": "cloud_qa_cloud_shadow",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,0,124",
+                "color": "124,0,0",
                 "description": "Cloud shadow"
             },
             {
                 "name": "cloud_qa_adjacent_cloud",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "255,175,175",
+                "color": "0,0,255",
                 "description": "Adjacent to cloud"
             },
             {
                 "name": "cloud_qa_snow",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "178,122,122",
+                "color": "0,0,178",
                 "description": "Snow"
             },
             {
                 "name": "cloud_qa_land_water",
                 "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-                "color": "124,85,85",
+                "color": "0,0,124",
                 "description": "Land/water"
             }
         ],
