@@ -38,19 +38,19 @@ public class CollectionTMLandsatQA extends AbstractLandsatQA {
                                             "Designated Fill",
                                             width, height,
                                             "flags.designated_fill",
-                                            AbstractLandsatQA.ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("dropped_frame",
                                             "Dropped Frame",
                                             width, height,
                                             "flags.dropped_frame",
-                                            AbstractLandsatQA.ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.add(Mask.BandMathsType.create("cloud",
                                             "Cloud",
                                             width, height,
                                             "flags.cloud",
-                                            AbstractLandsatQA.ColorIterator.next(),
+                                            colorIterator.next(),
                                             0.5));
         masks.addAll(createDefaultRadiometricSaturationMasks("radiometric_saturation", "Radiometric saturation", width, height));
         masks.addAll(createDefaultConfidenceMasks("snow_ice_confidence", "Snow/ice confidence", width, height));
