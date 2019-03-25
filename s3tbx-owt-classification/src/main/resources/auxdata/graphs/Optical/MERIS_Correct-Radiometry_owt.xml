@@ -1,0 +1,62 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file/>
+    </parameters>
+  </node>
+  <node id="Meris.CorrectRadiometry">
+    <operator>Meris.CorrectRadiometry</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <doCalibration>true</doCalibration>
+      <sourceRacFile/>
+      <targetRacFile/>
+      <doSmile>true</doSmile>
+      <doEqualization>true</doEqualization>
+      <reproVersion>AUTO_DETECT</reproVersion>
+      <doRadToRefl>true</doRadToRefl>
+    </parameters>
+  </node>
+  <node id="OWTClassification">
+    <operator>OWTClassification</operator>
+    <sources>
+      <sourceProduct refid="Meris.CorrectRadiometry"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <owtType>COASTAL</owtType>
+      <reflectancesPrefix>reflec</reflectancesPrefix>
+      <inputReflectanceIs>RADIANCE_REFLECTANCES</inputReflectanceIs>
+      <writeInputReflectances>true</writeInputReflectances>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="OWTClassification"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file/>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="Read">
+      <displayPosition x="16.0" y="165.0"/>
+    </node>
+    <node id="Meris.CorrectRadiometry">
+      <displayPosition x="126.0" y="165.0"/>
+    </node>
+    <node id="OWTClassification">
+      <displayPosition x="321.0" y="165.0"/>
+    </node>
+    <node id="Write">
+      <displayPosition x="478.0" y="165.0"/>
+    </node>
+  </applicationData>
+</graph>

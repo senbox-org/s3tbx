@@ -1,0 +1,65 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file/>
+      <formatName>Sen3</formatName>
+    </parameters>
+  </node>
+  <node id="Rad2Refl">
+    <operator>Rad2Refl</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <sensor>OLCI</sensor>
+      <conversionMode>RAD_TO_REFL</conversionMode>
+      <copyTiePointGrids>true</copyTiePointGrids>
+      <copyFlagBandsAndMasks>false</copyFlagBandsAndMasks>
+      <copyNonSpectralBands>false</copyNonSpectralBands>
+    </parameters>
+  </node>
+  <node id="Subset">
+    <operator>Subset</operator>
+    <sources>
+      <sourceProduct refid="Rad2Refl"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <sourceBands/>
+      <region/>
+      <geoRegion/>
+      <subSamplingX>1</subSamplingX>
+      <subSamplingY>1</subSamplingY>
+      <fullSwath>false</fullSwath>
+      <tiePointGridNames/>
+      <copyMetadata>true</copyMetadata>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file/>
+      <formatName>NetCDF4-BEAM</formatName>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="Read">
+      <displayPosition x="17.0" y="134.0"/>
+    </node>
+    <node id="Rad2Refl">
+      <displayPosition x="168.0" y="134.0"/>
+    </node>
+    <node id="Subset">
+      <displayPosition x="317.0" y="134.0"/>
+    </node>
+    <node id="Write">
+      <displayPosition x="455.0" y="134.0"/>
+    </node>
+  </applicationData>
+</graph>

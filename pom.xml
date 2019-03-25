@@ -194,6 +194,12 @@
 
             <dependency>
                 <groupId>org.esa.snap</groupId>
+                <artifactId>snap-engine-utilities</artifactId>
+                <version>${snap.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.esa.snap</groupId>
                 <artifactId>snap-ui</artifactId>
                 <version>${snap.version}</version>
             </dependency>
