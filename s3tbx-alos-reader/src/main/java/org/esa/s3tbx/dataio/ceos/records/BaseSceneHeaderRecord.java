@@ -21,6 +21,7 @@ import org.esa.s3tbx.dataio.ceos.IllegalCeosFormatException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 public abstract class BaseSceneHeaderRecord extends BaseRecord {
 
@@ -285,7 +286,7 @@ public abstract class BaseSceneHeaderRecord extends BaseRecord {
     }
 
     public Calendar getDateImageWasTaken() {
-        final Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         final int days = Integer.parseInt(_dateImageWasTaken.substring(0, 2));
         final int month = (Integer) MONTH_TABLE.get(_dateImageWasTaken.substring(2, 5));
         final int year = Integer.parseInt(_dateImageWasTaken.substring(5, 7)) + YEAR_OFFSET;
