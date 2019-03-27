@@ -4,8 +4,8 @@
     "expectedContent": {
         "sceneWidth": 1200,
         "sceneHeight": 1200,
-        "startTime": "29-APR-2012 22:00:00.000000",
-        "endTime": "07-MAY-2012 21:59:59.000000",
+        "startTime": "30-APR-2012 00:00:00.000000",
+        "endTime": "07-MAY-2012 23:59:59.000000",
         "geoCoding": {
             "coordinates": [
                 {

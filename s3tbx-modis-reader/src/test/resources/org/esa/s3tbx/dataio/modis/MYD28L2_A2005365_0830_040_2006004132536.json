@@ -4,8 +4,8 @@
     "expectedContent": {
         "sceneWidth": 1354,
         "sceneHeight": 2030,
-        "startTime": "31-DEC-2005 07:30:00.000000",
-        "endTime": "31-DEC-2005 07:35:00.000000",
+        "startTime": "31-DEC-2005 08:30:00.000000",
+        "endTime": "31-DEC-2005 08:35:00.000000",
         "bands": [
             {
                 "name": "sst",
