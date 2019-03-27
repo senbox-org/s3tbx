@@ -4,8 +4,8 @@
     "expectedContent": {
         "sceneWidth": 1354,
         "sceneHeight": 2030,
-        "startTime": "04-JUL-2001 06:30:00.000000",
-        "endTime": "04-JUL-2001 06:35:00.000000",
+        "startTime": "04-JUL-2001 08:30:00.000000",
+        "endTime": "04-JUL-2001 08:35:00.000000",
         "bands": [
             {
                 "name": "sst",

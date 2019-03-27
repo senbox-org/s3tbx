@@ -4,8 +4,8 @@
     "expectedContent": {
         "sceneWidth": 1354,
         "sceneHeight": 2030,
-        "startTime": "03-DEC-2000 17:10:00.000000",
-        "endTime": "03-DEC-2000 17:15:00.000000",
+        "startTime": "03-DEC-2000 18:10:00.000000",
+        "endTime": "03-DEC-2000 18:15:00.000000",
         "bands": [
             {
                 "name": "nLw_412",

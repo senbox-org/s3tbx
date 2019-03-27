@@ -4,8 +4,8 @@
     "expectedContent": {
         "sceneWidth": 1354,
         "sceneHeight": 2030,
-        "startTime": "15-MAR-2002 15:50:00.000000",
-        "endTime": "15-MAR-2002 15:55:00.000000",
+        "startTime": "15-MAR-2002 16:50:00.000000",
+        "endTime": "15-MAR-2002 16:55:00.000000",
         "bands": [
             {
                 "name": "chlor_a_2",
