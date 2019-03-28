@@ -1,6 +1,14 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Display-Category: Sentinel-3 Toolbox
-OpenIDE-Module-Specification-Version: ${s3tbx.nbmSpecVersion}
+OpenIDE-Module-Specification-Version: ${s3tbx.majorVersion}.${s3tbx.minorVersion}.${s3tbx.incrementalVersion}
 OpenIDE-Module-Layer: org/esa/s3tbx/layer.xml
 AutoUpdate-Show-In-Client: true
 AutoUpdate-Essential-Module: false
+OpenIDE-Module-Long-Description: <p>The Sentinel-3 Toolbox is a SNAP extension dedicated to the exploitation of Sentinel-3 OLCI/SLSTR data and
+ data of other optical, medium resolution sensors.</p>
+ <p>The changes for this version can be viewed in our
+ <a href="https://senbox.atlassian.net/issues/?filter=-4&jql=project%20%3D%20SIIITBX%20AND%20fixVersion%20%3D%20${s3tbx.majorVersion}.${s3tbx.minorVersion}.${s3tbx.incrementalVersion}">issue tracker</a></p>
+ <p><b>Vendor:</b> Brockmann Consult GmbH
+ <p><b>Contact address:</b> Max-Planck-Str. 2, 21502 Geesthacht (Germany)</p>
+ <p><b>Copyright:</b> (C) 2019 by Brockmann Consult GmbH</p>
+ <p><b>License:</b> http://www.gnu.org/licenses/gpl.html</p>
