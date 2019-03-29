@@ -439,6 +439,16 @@
                                 <versionString>${s3tbx.version}</versionString>
                             </configuration>
                         </execution>
+                        <execution>
+                            <id>build-date</id>
+                            <goals>
+                                <goal>timestamp-property</goal>
+                            </goals>
+                            <configuration>
+                                <name>s3tbx.buildDate</name>
+                                <pattern>yyyy-MM-dd</pattern>
+                            </configuration>
+                        </execution>
                     </executions>
                 </plugin>
 

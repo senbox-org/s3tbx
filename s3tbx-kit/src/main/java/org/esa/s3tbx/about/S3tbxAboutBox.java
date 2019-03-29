@@ -5,6 +5,7 @@
  */
 package org.esa.s3tbx.about;
 
+import com.bc.ceres.core.runtime.Version;
 import org.esa.snap.rcp.about.AboutBox;
 import org.esa.snap.rcp.util.BrowserUtils;
 import org.openide.modules.ModuleInfo;
@@ -43,7 +44,9 @@ public class S3tbxAboutBox extends JPanel {
         final ModuleInfo moduleInfo = Modules.getDefault().ownerOf(S3tbxAboutBox.class);
         panel.add(new JLabel("<html><b>Sentinel-3 Toolbox (S3TBX) version " + moduleInfo.getImplementationVersion() + "</b>", SwingConstants.RIGHT));
 
-        String changelogUrl = releaseNotesUrlString + moduleInfo.getSpecificationVersion().toString();
+        Version specVersion = Version.parseVersion(moduleInfo.getSpecificationVersion().toString());
+        String versionString = String.format("%s.%s.%s", specVersion.getMajor(), specVersion.getMinor(), specVersion.getMicro());
+        String changelogUrl = releaseNotesUrlString + versionString;
         final JLabel releaseNoteLabel = new JLabel("<html><a href=\"" + changelogUrl + "\">Release Notes</a>", SwingConstants.RIGHT);
         releaseNoteLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         releaseNoteLabel.addMouseListener(new BrowserUtils.URLClickAdaptor(changelogUrl));
