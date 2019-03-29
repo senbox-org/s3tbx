@@ -13,4 +13,4 @@ OpenIDE-Module-Long-Description: The Sentinel-3 Toolbox is a SNAP extension dedi
  <b>Contact address:</b> Max-Planck-Str. 2, 21502 Geesthacht (Germany)<br/>
  <b>Copyright:</b> (C) 2019 by Brockmann Consult GmbH<br/>
  <b>License:</b> http://www.gnu.org/licenses/gpl.html</p>
- <p align="right"></p>
+
