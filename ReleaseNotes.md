@@ -5,7 +5,10 @@ Changes in S3TBX 6.0.6
 --------------------
 
 * [SIIITBX-241] Sensing time for MODIS L2 depends on local time zone
-* [SIIITBX-240] Sensing time for Alos/Prism is not correct 
+* [SIIITBX-240] Sensing time for Alos/Prism is not correct
+* [SIIITBX-239] Module updates shall come with release notes / changelog
+* [SIIITBX-237] Release module update S3TBX 6.0.6
+* [SIIITBX-236] New S3 VG1 data can't be read 
 * [SIIITBX-235] Update Landsat8 reader tests according to flag changes
 * [SIIITBX-234] Update C2RCC according to changed Landsat-8 flags
 * [SIIITBX-232] Cannot read SYN VG1 products
