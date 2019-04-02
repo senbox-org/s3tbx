@@ -1,9 +1,9 @@
 {
     "testProducts": [
         {
-             "id": "MOD021KM_A2012144_0045_005_2012144075646",
+            "id": "MOD021KM_A2012144_0045_005_2012144075646",
              "relativePath": "problems/180_meridian/MOD021KM.A2012144.0045.005.2012144075646.hdf",
-             "description": "HDF4_Version: 4.2.1 (NCSA HDF Version 4.2 Release 1-post3, January 27, 2006)"
+            "description": "HDF4_Version: 4.2.1 (NCSA HDF Version 4.2 Release 1-post3, January 27, 2006)"
         },
         {
             "id": "MOD02QKM_A2012151_0255_005_2012151095153_modis",
