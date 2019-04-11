@@ -175,7 +175,8 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
         int start = findStart(0);
         // if not found try end of line
         if (start == -1) {
-            start = findStart(latGrid.getRasterWidth() - 1);
+//            start = findStart(latGrid.getRasterWidth() - 1);
+            start = findStart(latGrid.getGridWidth() - 1);
         }
 
         if(start == -1) {       // did not find an overlap
