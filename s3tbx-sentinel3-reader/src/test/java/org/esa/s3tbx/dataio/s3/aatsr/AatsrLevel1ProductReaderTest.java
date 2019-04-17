@@ -83,6 +83,8 @@ public class AatsrLevel1ProductReaderTest {
         MetadataElement generalProductInformation = product.getMetadataRoot().getElement("Manifest").getElement("metadataSection").getElement("generalProductInformation");
         MetadataAttribute productSize = generalProductInformation.getAttribute("productSize");
 
+        assertEquals("ENV_AT_1_RBT", product.getProductType());
+
         assertNotNull(generalProductInformation);
         assertNotNull(productSize);
         assertEquals("1134201405", productSize.getData().getElemString());
@@ -119,6 +121,7 @@ public class AatsrLevel1ProductReaderTest {
         MetadataElement qualityInformation = product.getMetadataRoot().getElement("Manifest").getElement("metadataSection").getElement("qualityInformation");
         MetadataAttribute degradationFlags = qualityInformation.getElement("extension").getElement("productQuality").getAttribute("degradationFlags");
 
+        assertEquals("ER1_AT_1_RBT", product.getProductType());
         assertNotNull(qualityInformation);
         assertNotNull(degradationFlags);
         assertEquals("NON_NOMINAL_INPUT", degradationFlags.getData().getElemString());
@@ -154,6 +157,7 @@ public class AatsrLevel1ProductReaderTest {
         MetadataElement qualityInformation = product.getMetadataRoot().getElement("Manifest").getElement("metadataSection").getElement("qualityInformation");
         MetadataAttribute onlineQualityCheck = qualityInformation.getElement("extension").getElement("productQuality").getAttribute("onlineQualityCheck");
 
+        assertEquals("ER2_AT_1_RBT", product.getProductType());
         assertNotNull(qualityInformation);
         assertNotNull(onlineQualityCheck);
         assertEquals("PASSED", onlineQualityCheck.getData().getElemString());

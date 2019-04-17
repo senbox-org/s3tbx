@@ -6,7 +6,8 @@ import org.esa.s3tbx.dataio.s3.util.MetTxReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.TiePointGeoCoding;
+import org.esa.snap.core.datamodel.TiePointGrid;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +15,14 @@ import java.util.List;
 
 /**
  * @author Sabine Embacher
+ * @author Thomas Storm
  */
 public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     private Product masterProduct;
-    private Manifest manifest;
+
+    private static final int SUB_SAMPLING = 16;
+    private static final double FILL_VALUE = -1.0E9;
 
     // todo ideas+ implement valid Expression
 //    private final static String validExpression = "!quality_flags.invalid";
@@ -29,7 +33,6 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     @Override
     protected List<String> getFileNames(Manifest manifest) {
-        this.manifest = manifest;
         final List<String> fileNames = manifest.getFileNames(new String[0]);
         fileNames.sort(String::compareTo);
         return fileNames;
@@ -58,15 +61,6 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         }
         masterProduct = findMasterProduct(getOpenProductList());
         return masterProduct;
-    }
-
-    @Override
-    protected RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset, double sourceTrackOffset, short[] sourceResolutions) {
-        if (sourceBand.getRasterHeight() > 1) {
-            return super.copyTiePointGrid(sourceBand, targetProduct, sourceStartOffset, sourceTrackOffset, sourceResolutions);  //Todo change body of created method. Use File | Settings | File Templates to change
-        }
-        // todo ideas+
-        return null;
     }
 
     @Override
@@ -99,6 +93,55 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
                                       "elevation:latitude:longitude:" +
                                       "specific_humidity:temperature_profile:" +
                                       bandGrouping);
+    }
+
+    @Override
+    protected void setGeoCoding(Product targetProduct) {
+        TiePointGrid latGrid = null;
+        TiePointGrid lonGrid = null;
+        for (final TiePointGrid grid : targetProduct.getTiePointGrids()) {
+            if (latGrid == null && grid.getName().endsWith("latitude_tx")) {
+                latGrid = grid;
+            }
+            if (lonGrid == null && grid.getName().endsWith("longitude_tx")) {
+                lonGrid = grid;
+            }
+        }
+
+        if (latGrid == null || lonGrid == null) {
+            getLogger().warning("Unable to construct geo-coding: tie-point grids are null");
+            return;
+        }
+
+        TiePointGrid fixedLatGrid = getFixedGrid(latGrid);
+        TiePointGrid fixedLonGrid = getFixedGrid(lonGrid);
+
+        targetProduct.getTiePointGridGroup().remove(latGrid);
+        targetProduct.getTiePointGridGroup().remove(lonGrid);
+        targetProduct.getTiePointGridGroup().add(fixedLatGrid);
+        targetProduct.getTiePointGridGroup().add(fixedLonGrid);
+
+        targetProduct.setSceneGeoCoding(new TiePointGeoCoding(fixedLatGrid, fixedLonGrid));
+
+    }
+
+    private static TiePointGrid getFixedGrid(TiePointGrid grid) {
+        int firstFillIndex = -1;
+        int gridWidth = grid.getGridWidth();
+        float[] originalTiePoints = grid.getTiePoints();
+        for (int i = 0; i < originalTiePoints.length; i++) {
+            if (originalTiePoints[i] == FILL_VALUE) {
+                firstFillIndex = i;
+                break;
+            }
+        }
+        int line = firstFillIndex / grid.getGridWidth();
+        int newHeight = line - 1;
+
+        float[] tiePoints = new float[gridWidth * newHeight];
+        System.arraycopy(originalTiePoints, 0, tiePoints, 0, tiePoints.length);
+        return new TiePointGrid(grid.getName(), gridWidth, newHeight, grid.getOffsetX(), grid.getOffsetY(), SUB_SAMPLING, SUB_SAMPLING, tiePoints, true);
+
     }
 
     static Product findMasterProduct(List<Product> openProductList) {
