@@ -5,7 +5,7 @@ import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.util.BitSetter;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Random;
 
 /**
@@ -69,7 +69,7 @@ public class IdepixFlagCoding {
         int w = classifProduct.getSceneRasterWidth();
         int h = classifProduct.getSceneRasterHeight();
         Mask mask;
-        Random r = new Random();
+        Random r = new Random(1234567);
 
         mask = Mask.BandMathsType.create("IDEPIX_INVALID", IdepixConstants.IDEPIX_INVALID_DESCR_TEXT, w, h,
                                          "pixel_classif_flags.IDEPIX_INVALID",
