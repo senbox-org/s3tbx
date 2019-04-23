@@ -1,6 +1,5 @@
 package org.esa.s3tbx.idepix.algorithms.probav;
 
-import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.IdepixFlagCoding;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Mask;
@@ -47,7 +46,7 @@ public class ProbaVUtils {
         int w = classifProduct.getSceneRasterWidth();
         int h = classifProduct.getSceneRasterHeight();
         Mask mask;
-        Random r = new Random();
+        Random r = new Random(124567);
 
         mask = Mask.BandMathsType.create("IDEPIX_WATER", ProbaVConstants.IDEPIX_WATER_DESCR_TEXT, w, h,
                                          "pixel_classif_flags.IDEPIX_WATER",

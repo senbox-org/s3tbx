@@ -42,7 +42,7 @@ public class ViirsUtils {
         int w = classifProduct.getSceneRasterWidth();
         int h = classifProduct.getSceneRasterHeight();
         Mask mask;
-        Random r = new Random();
+        Random r = new Random(124567);
 
         mask = Mask.BandMathsType.create("IDEPIX_MIXED_PIXEL", ViirsConstants.IDEPIX_MIXED_PIXEL_DESCR_TEXT, w, h,
                                          "pixel_classif_flags.IDEPIX_MIXED_PIXEL",

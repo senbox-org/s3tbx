@@ -9,7 +9,7 @@ import org.esa.snap.core.datamodel.Stx;
 import org.esa.snap.core.util.BitSetter;
 
 import javax.media.jai.Histogram;
-import java.awt.*;
+import java.awt.Color;
 import java.util.Random;
 
 /**
@@ -62,7 +62,7 @@ public class Landsat8Utils {
         int w = classifProduct.getSceneRasterWidth();
         int h = classifProduct.getSceneRasterHeight();
         Mask mask;
-        Random r = new Random();
+        Random r = new Random(124567);
 
         // SHIMEZ
         mask = Mask.BandMathsType.create("IDEPIX_CLOUD_SHIMEZ",

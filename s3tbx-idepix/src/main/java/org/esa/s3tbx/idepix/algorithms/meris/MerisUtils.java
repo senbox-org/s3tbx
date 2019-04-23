@@ -1,6 +1,5 @@
 package org.esa.s3tbx.idepix.algorithms.meris;
 
-import org.esa.s3tbx.idepix.core.IdepixConstants;
 import org.esa.s3tbx.idepix.core.IdepixFlagCoding;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflConstants;
 import org.esa.s3tbx.processor.rad2refl.Rad2ReflOp;
@@ -51,7 +50,7 @@ public class MerisUtils {
         int w = classifProduct.getSceneRasterWidth();
         int h = classifProduct.getSceneRasterHeight();
         Mask mask;
-        Random r = new Random();
+        Random r = new Random(124567);
 
         mask = Mask.BandMathsType.create("IDEPIX_GLINT_RISK", MerisConstants.IDEPIX_GLINT_RISK_DESCR_TEXT, w, h,
                                          "pixel_classif_flags.IDEPIX_GLINT_RISK",
