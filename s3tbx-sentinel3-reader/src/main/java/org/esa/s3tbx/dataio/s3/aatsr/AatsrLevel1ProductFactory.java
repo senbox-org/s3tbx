@@ -21,7 +21,6 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     private Product masterProduct;
 
-    private static final int SUB_SAMPLING = 16;
     private static final double FILL_VALUE = -1.0E9;
 
     // todo ideas+ implement valid Expression
@@ -108,24 +107,67 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
             }
         }
 
-        if (latGrid == null || lonGrid == null) {
-            getLogger().warning("Unable to construct geo-coding: tie-point grids are null");
-            return;
-        }
-
-        TiePointGrid fixedLatGrid = getFixedGrid(latGrid);
-        TiePointGrid fixedLonGrid = getFixedGrid(lonGrid);
-
-        targetProduct.getTiePointGridGroup().remove(latGrid);
-        targetProduct.getTiePointGridGroup().remove(lonGrid);
-        targetProduct.getTiePointGridGroup().add(fixedLatGrid);
-        targetProduct.getTiePointGridGroup().add(fixedLonGrid);
-
-        targetProduct.setSceneGeoCoding(new TiePointGeoCoding(fixedLatGrid, fixedLonGrid));
-
+        targetProduct.setSceneGeoCoding(new TiePointGeoCoding(latGrid, lonGrid));
     }
 
-    private static TiePointGrid getFixedGrid(TiePointGrid grid) {
+    @Override
+    protected void fixTiePointGrids(Product targetProduct) {
+
+        String[] ANGLE_NAMES = new String[]{
+                "sat_azimuth_tn",
+                "sat_path_tn",
+                "sat_zenith_tn",
+                "solar_azimuth_tn",
+                "solar_path_tn",
+                "solar_zenith_tn",
+                "sat_azimuth_to",
+                "sat_path_to",
+                "sat_zenith_to",
+                "solar_azimuth_to",
+                "solar_path_to",
+                "solar_zenith_to",
+        };
+
+        for (TiePointGrid grid : targetProduct.getTiePointGrids()) {
+            for (String angleName : ANGLE_NAMES) {
+                if (grid.getName().equals(angleName)) {
+                    TiePointGrid fixedGrid = getFixedAngleGrid(grid);
+                    targetProduct.getTiePointGridGroup().remove(grid);
+                    targetProduct.getTiePointGridGroup().add(fixedGrid);
+                }
+            }
+        }
+
+        TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
+        TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
+
+        TiePointGrid fixedLatGrid = getFixedLatLonGrid(latGrid);
+        targetProduct.getTiePointGridGroup().remove(latGrid);
+        targetProduct.getTiePointGridGroup().add(fixedLatGrid);
+
+        TiePointGrid fixedLonGrid = getFixedLatLonGrid(lonGrid);
+        targetProduct.getTiePointGridGroup().remove(lonGrid);
+        targetProduct.getTiePointGridGroup().add(fixedLonGrid);
+    }
+
+    private TiePointGrid getFixedAngleGrid(TiePointGrid grid) {
+        // first, remove filled pixels at the end
+        TiePointGrid endFixedGrid = getFixedLatLonGrid(grid);
+        int gridWidth = grid.getGridWidth() - 5;
+        int gridHeight = grid.getGridHeight();
+
+        // second, copy values which are not fill value (everything apart from first 2 and last 3)
+        float[] originalTiePoints = endFixedGrid.getTiePoints();
+        float[] tiePoints = new float[gridWidth * gridHeight];
+
+        for (int y = 0; y < grid.getGridHeight(); y++) {
+            System.arraycopy(originalTiePoints, 2 + grid.getGridWidth() * y, tiePoints, gridWidth, gridWidth - 1);
+        }
+
+        return new TiePointGrid(grid.getName(), gridWidth, gridHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
+    }
+
+    private static TiePointGrid getFixedLatLonGrid(TiePointGrid grid) {
         int firstFillIndex = -1;
         int gridWidth = grid.getGridWidth();
         float[] originalTiePoints = grid.getTiePoints();
@@ -140,8 +182,20 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
         float[] tiePoints = new float[gridWidth * newHeight];
         System.arraycopy(originalTiePoints, 0, tiePoints, 0, tiePoints.length);
-        return new TiePointGrid(grid.getName(), gridWidth, newHeight, grid.getOffsetX(), grid.getOffsetY(), SUB_SAMPLING, SUB_SAMPLING, tiePoints, true);
+        return new TiePointGrid(grid.getName(), gridWidth, newHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
 
+    }
+
+    protected short[] getResolutions(String gridIndex) {
+        short[] resolutions;
+        if (gridIndex.startsWith("i")) {
+            resolutions = new short[]{1000, 1000};
+        } else if (gridIndex.startsWith("t")) {
+            resolutions = new short[]{16000, 16000};
+        } else {
+            resolutions = new short[]{500, 500};
+        }
+        return resolutions;
     }
 
     static Product findMasterProduct(List<Product> openProductList) {
