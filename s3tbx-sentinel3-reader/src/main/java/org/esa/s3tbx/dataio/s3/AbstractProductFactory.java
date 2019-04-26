@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -112,6 +112,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         setTimes(targetProduct);
         setUncertaintyBands(targetProduct);
         if (targetProduct.getSceneGeoCoding() == null) {
+            fixTiePointGrids(targetProduct);
             setGeoCoding(targetProduct);
         }
         setSceneTransforms(targetProduct);
@@ -171,6 +172,10 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected void setBandGeoCodings(Product targetProduct) throws IOException {
+    }
+
+    protected void fixTiePointGrids(Product targetProduct) {
+
     }
 
     protected void setUncertaintyBands(Product product) {

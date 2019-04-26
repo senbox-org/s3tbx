@@ -1,0 +1,6 @@
+# In order to run the test for AATSR in Sentinel-3 format:
+# o copy the data from \\bcserver2\EOData\related\IDEAS\AATSR4RP\Final_test_products to some local testdata path
+# o change the value below accordingly
+# o rename this file to testdata.properties
+
+testdataPath = <local testdata path>

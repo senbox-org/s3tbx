@@ -1,13 +1,12 @@
 package org.esa.s3tbx.dataio.s3.aatsr;
 
-import static org.junit.Assert.*;
-
 import org.esa.snap.core.datamodel.Product;
-import org.junit.*;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Sabine on 20.02.2017.
@@ -24,13 +23,6 @@ public class AatsrLevel1ProductFactoryTest {
     @Test
     public void testGetProductSpecificMetadataElementName() throws Exception {
         assertEquals("atsrProductInformation", factory.getProductSpecificMetadataElementName());
-    }
-
-    @Test
-    public void testCopyTiePointGrid() throws Exception {
-        // todo ideas+
-        // What should we do with tie point data of height one ?
-        
     }
 
     @Test
