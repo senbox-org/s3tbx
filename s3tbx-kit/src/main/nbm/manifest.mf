@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Display-Category: Sentinel-3 Toolbox
 OpenIDE-Module-Specification-Version: ${s3tbx.nbmSpecVersion}
+OpenIDE-Module-Implementation-Version: ${s3tbx.nbmImplVersion}
 OpenIDE-Module-Layer: org/esa/s3tbx/layer.xml
 AutoUpdate-Show-In-Client: true
 AutoUpdate-Essential-Module: false

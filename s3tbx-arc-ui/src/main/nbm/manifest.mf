@@ -4,4 +4,5 @@ AutoUpdate-Essential-Module: false
 OpenIDE-Module-Java-Dependencies: Java > 1.8
 OpenIDE-Module-Display-Category: Sentinel-3 Toolbox
 OpenIDE-Module-Specification-Version: ${s3tbx.nbmSpecVersion}
+OpenIDE-Module-Implementation-Version: ${s3tbx.nbmImplVersion}
 OpenIDE-Module-Requires: org.netbeans.api.javahelp.Help
