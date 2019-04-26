@@ -6,7 +6,8 @@ import org.esa.s3tbx.dataio.s3.util.MetTxReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.TiePointGeoCoding;
+import org.esa.snap.core.datamodel.TiePointGrid;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +15,14 @@ import java.util.List;
 
 /**
  * @author Sabine Embacher
+ * @author Thomas Storm
  */
 public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     private Product masterProduct;
-    private Manifest manifest;
+
+    public static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
+    private static final double FILL_VALUE = -1.0E9;
 
     // todo ideas+ implement valid Expression
 //    private final static String validExpression = "!quality_flags.invalid";
@@ -29,7 +33,6 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     @Override
     protected List<String> getFileNames(Manifest manifest) {
-        this.manifest = manifest;
         final List<String> fileNames = manifest.getFileNames(new String[0]);
         fileNames.sort(String::compareTo);
         return fileNames;
@@ -58,15 +61,6 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         }
         masterProduct = findMasterProduct(getOpenProductList());
         return masterProduct;
-    }
-
-    @Override
-    protected RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset, double sourceTrackOffset, short[] sourceResolutions) {
-        if (sourceBand.getRasterHeight() > 1) {
-            return super.copyTiePointGrid(sourceBand, targetProduct, sourceStartOffset, sourceTrackOffset, sourceResolutions);  //Todo change body of created method. Use File | Settings | File Templates to change
-        }
-        // todo ideas+
-        return null;
     }
 
     @Override
@@ -99,6 +93,127 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
                                       "elevation:latitude:longitude:" +
                                       "specific_humidity:temperature_profile:" +
                                       bandGrouping);
+    }
+
+    @Override
+    protected void setGeoCoding(Product targetProduct) {
+        TiePointGrid latGrid = null;
+        TiePointGrid lonGrid = null;
+        for (final TiePointGrid grid : targetProduct.getTiePointGrids()) {
+            if (latGrid == null && grid.getName().endsWith("latitude_tx")) {
+                latGrid = grid;
+            }
+            if (lonGrid == null && grid.getName().endsWith("longitude_tx")) {
+                lonGrid = grid;
+            }
+        }
+
+        targetProduct.setSceneGeoCoding(new TiePointGeoCoding(latGrid, lonGrid));
+    }
+
+    @Override
+    protected void fixTiePointGrids(Product targetProduct) {
+
+        String[] ANGLE_NAMES = new String[]{
+                "sat_azimuth_tn",
+                "sat_path_tn",
+                "sat_zenith_tn",
+                "solar_azimuth_tn",
+                "solar_path_tn",
+                "solar_zenith_tn",
+                "sat_azimuth_to",
+                "sat_path_to",
+                "sat_zenith_to",
+                "solar_azimuth_to",
+                "solar_path_to",
+                "solar_zenith_to",
+        };
+
+        for (TiePointGrid grid : targetProduct.getTiePointGrids()) {
+            for (String angleName : ANGLE_NAMES) {
+                if (grid.getName().equals(angleName)) {
+                    TiePointGrid fixedGrid = getFixedAngleGrid(grid);
+                    targetProduct.getTiePointGridGroup().remove(grid);
+                    targetProduct.getTiePointGridGroup().add(fixedGrid);
+                }
+            }
+        }
+
+        TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
+        TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
+
+        TiePointGrid fixedLatGrid = getFixedLatLonGrid(latGrid, false);
+        targetProduct.getTiePointGridGroup().remove(latGrid);
+        targetProduct.getTiePointGridGroup().add(fixedLatGrid);
+
+        TiePointGrid fixedLonGrid = getFixedLatLonGrid(lonGrid, false);
+        targetProduct.getTiePointGridGroup().remove(lonGrid);
+        targetProduct.getTiePointGridGroup().add(fixedLonGrid);
+    }
+
+    private TiePointGrid getFixedAngleGrid(TiePointGrid grid) {
+        // first, remove filled pixels at the end
+        TiePointGrid endFixedGrid = getFixedLatLonGrid(grid, true);
+        int gridWidth = endFixedGrid.getGridWidth() - 5;
+        int gridHeight = endFixedGrid.getGridHeight() - 1;
+
+        // second, copy values which are not fill value (everything apart from first 2 and last 3)
+        float[] originalTiePoints = endFixedGrid.getTiePoints();
+        float[] tiePoints = new float[gridWidth * gridHeight];
+
+        for (int y = 0; y < gridHeight; y++) {
+            System.arraycopy(originalTiePoints, 2 + endFixedGrid.getGridWidth() * y, tiePoints, gridWidth * y, gridWidth);
+        }
+
+        return new TiePointGrid(grid.getName(), gridWidth, gridHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
+    }
+
+    private static TiePointGrid getFixedLatLonGrid(TiePointGrid grid, boolean isAngle) {
+        int firstFillIndex = -1;
+        int gridWidth = grid.getGridWidth();
+        float[] originalTiePoints = grid.getTiePoints();
+        for (int i = 0; i < originalTiePoints.length - 6; i++) {
+            if (isAngle) {
+                // check if 6 times fill value in a column: then cut at the end.
+                if (Math.abs(originalTiePoints[i] - ANGLE_FILL_VALUE) < 1E-2
+                        && Math.abs(originalTiePoints[i + 1] - ANGLE_FILL_VALUE) < 1E-2
+                        && Math.abs(originalTiePoints[i + 2] - ANGLE_FILL_VALUE) < 1E-2
+                        && Math.abs(originalTiePoints[i + 3] - ANGLE_FILL_VALUE) < 1E-2
+                        && Math.abs(originalTiePoints[i + 4] - ANGLE_FILL_VALUE) < 1E-2
+                        && Math.abs(originalTiePoints[i + 5] - ANGLE_FILL_VALUE) < 1E-2) {
+                    firstFillIndex = i;
+                    break;
+                }
+            } else {
+                if (originalTiePoints[i] == FILL_VALUE) {
+                    firstFillIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (firstFillIndex == -1) {
+            return grid;
+        } else {
+            int line = firstFillIndex / grid.getGridWidth();
+            int newHeight = line - 1;
+
+            float[] tiePoints = new float[gridWidth * newHeight];
+            System.arraycopy(originalTiePoints, 0, tiePoints, 0, tiePoints.length);
+            return new TiePointGrid(grid.getName(), gridWidth, newHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
+        }
+    }
+
+    protected short[] getResolutions(String gridIndex) {
+        short[] resolutions;
+        if (gridIndex.startsWith("i")) {
+            resolutions = new short[]{1000, 1000};
+        } else if (gridIndex.startsWith("t")) {
+            resolutions = new short[]{16000, 16000};
+        } else {
+            resolutions = new short[]{500, 500};
+        }
+        return resolutions;
     }
 
     static Product findMasterProduct(List<Product> openProductList) {
