@@ -58,10 +58,10 @@ public class AatsrLevel1ProductReaderTest {
 
     @Test
     public void testReadProductNodesImpl_Env() throws IOException, ParseException {
-        Path testFile = getTestFile(testdataPath, TEST_FILENAME_ENV);
         if (skipTests) {
             return;
         }
+        Path testFile = getTestFile(testdataPath, TEST_FILENAME_ENV);
         Product product = reader.readProductNodes(testFile.toFile(), null);
         testForBandsPresence(product);
 
@@ -93,10 +93,10 @@ public class AatsrLevel1ProductReaderTest {
 
     @Test
     public void testReadProductNodesImpl_Er1() throws IOException, ParseException {
-        Path testFile = getTestFile(testdataPath, TEST_FILENAME_ER1);
         if (skipTests) {
             return;
         }
+        Path testFile = getTestFile(testdataPath, TEST_FILENAME_ER1);
         Product product = reader.readProductNodes(testFile.toFile(), null);
         testForBandsPresence(product);
 
@@ -129,10 +129,10 @@ public class AatsrLevel1ProductReaderTest {
 
     @Test
     public void testReadProductNodesImpl_Er2() throws IOException, ParseException {
-        Path testFile = getTestFile(testdataPath, TEST_FILENAME_ER2);
         if (skipTests) {
             return;
         }
+        Path testFile = getTestFile(testdataPath, TEST_FILENAME_ER2);
         Product product = reader.readProductNodes(testFile.toFile(), null);
         testForBandsPresence(product);
 
