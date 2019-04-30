@@ -167,6 +167,7 @@ public class PpeOp extends Operator {
         ProductUtils.copyMasks(sourceProduct, targetProduct);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
+        targetProduct.setAutoGrouping(sourceProduct.getAutoGrouping().toString());
     }
 
     private void setBandTile(int x, int y, double median, double mad, double reflecValue, Tile targetTile) {
