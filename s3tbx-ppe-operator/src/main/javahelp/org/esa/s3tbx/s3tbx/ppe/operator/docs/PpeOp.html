@@ -1,0 +1,88 @@
+<!--
+  ~ Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>PPE Filtering</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">PPE Filtering Processor</td>
+        <td class="header" align="right"><img src="images/snap_header.jpg" border=0></td>
+    </tr>
+</table>
+
+<h2>User Interface</h2>
+
+PPE Filtering can be invoked in the Sentinel Toolbox from tool menu by selecting
+<b>Optical -> Preprocessing -> OLCI PPE Filtering</b>.
+
+<br>
+<p align="center">
+    <img src="images/IOParameters.png" align="center">
+</p>
+
+<h4>Source Product Group</h4>
+
+<b>Source product:</b> Here the user specifies the source product reflectance. The combo box presents a list of all products opened
+in the Sentinel Toolbox. The user may select one of these or, by clicking on the button next to the combo box, choose a product
+from the file system.
+<br>
+
+<h4>Target Product Group</h4>
+<b>Name:</b> to specify the name of the target product.
+<br>
+<br>
+
+<b>Save as:</b> checkbox to specify whether the target product should be saved to the file system. The combo box presents a
+list of available file formats. The text field or the button next to it allow to specify a target directory.
+<br>
+<br>
+
+<b>Open in SNAP:</b> Used to specify whether the target product should be opened in the Sentinel Toolbox. When the
+target product is not saved, it is opened in the Sentinel Toolbox automatically.
+
+<p></p>
+
+<p align="center">
+    <img src="images/ProcessParameters.png" align="center">
+</p>
+
+<h4>Processing Parameters Panel</h4>
+<p><b>Filtering cut-off:</b><br>
+    Pixel will be filtered if it deviates from its neighbors median by more than this number. Default value=0.7</p>
+
+<p><b>Number of MAD:</b><br>
+    Pixel will be filtered if it deviates from its neighbors median by more than this number times Median Absolute Deviation. Default value=10</p>
+
+
+<p><b>Valid pixel expression:</b><br>
+    This expression is uses for validating pixels which will be considerd for processing, if the user did not add any
+    expression only the water pixels will be filtered. If the
+    expression is set to
+    <b>TRUE</b>, then all pixels are considered to be valid. The button can be use in creating a valid express.</p>
+<br>
+
+<br>
+<br>
+<br>
+<hr>
+</body>
+</html>
