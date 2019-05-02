@@ -1,12 +1,14 @@
 package org.esa.s3tbx.dataio.s3.util;
 
 import org.esa.snap.core.datamodel.Product;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 /**
  * @author Tonio Fincke
@@ -31,4 +33,13 @@ public class S3NetcdfReaderTest {
         assertEquals(266, product.getSceneRasterHeight());
     }
 
+    @Test
+    public void testCreateUniqueNames() {
+        String[] inputNames = {"abc", "duplicate", "def", "twin", "ghj", "duplicate", "duplicate", "twin"};
+
+        String[] actualNames = S3NetcdfReader.createUniqueNames(inputNames);
+        String[] expectedNames = {"abc", "duplicate_1", "def", "twin_1", "ghj", "duplicate_2", "duplicate_3", "twin_2"};
+
+        Assert.assertArrayEquals(expectedNames, actualNames);
+    }
 }

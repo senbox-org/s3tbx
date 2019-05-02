@@ -323,9 +323,10 @@ public class S3NetcdfReader extends AbstractProductReader {
     private static void addSamples(SampleCoding sampleCoding, Attribute sampleMeanings, Attribute sampleValues,
                                    boolean msb) {
         final String[] meanings = getSampleMeanings(sampleMeanings);
-        final int sampleCount = Math.min(meanings.length, sampleValues.getLength());
+        String[] uniqueNames = createUniqueNames(meanings);
+        final int sampleCount = Math.min(uniqueNames.length, sampleValues.getLength());
         for (int i = 0; i < sampleCount; i++) {
-            final String sampleName = replaceNonWordCharacters(meanings[i]);
+            final String sampleName = replaceNonWordCharacters(uniqueNames[i]);
             switch (sampleValues.getDataType()) {
                 case BYTE:
                     sampleCoding.addSample(sampleName,
@@ -360,9 +361,10 @@ public class S3NetcdfReader extends AbstractProductReader {
     private static void addSamples(SampleCoding sampleCoding, Attribute sampleMeanings, Attribute sampleValues,
                                    Attribute sampleMasks, boolean msb) {
         final String[] meanings = getSampleMeanings(sampleMeanings);
-        final int sampleCount = Math.min(meanings.length, sampleMasks.getLength());
+        String[] uniqueNames = createUniqueNames(meanings);
+        final int sampleCount = Math.min(uniqueNames.length, sampleMasks.getLength());
         for (int i = 0; i < sampleCount; i++) {
-            final String sampleName = replaceNonWordCharacters(meanings[i]);
+            final String sampleName = replaceNonWordCharacters(uniqueNames[i]);
             switch (sampleMasks.getDataType()) {
                 case BYTE:
                     int[] byteValues = {
@@ -427,6 +429,30 @@ public class S3NetcdfReader extends AbstractProductReader {
                     break;
             }
         }
+    }
+
+    static String[] createUniqueNames(String[] names) {
+        List<String> nameList = new ArrayList<>();
+        List<String> duplicated = new ArrayList<>();
+        String[] clonedNames = names.clone();
+        for (String name : clonedNames) {
+            if (!nameList.contains(name)) {
+                nameList.add(name);
+            } else {
+                // duplicated
+                duplicated.add(name);
+            }
+        }
+        for (String duplicatedName : duplicated) {
+            int index = 1;
+            for (int i = 0; i < clonedNames.length; i++) {
+                if (clonedNames[i].equals(duplicatedName)) {
+                    clonedNames[i] = duplicatedName + "_" + index++;
+                }
+            }
+        }
+        return clonedNames;
+
     }
 
     private static String[] getSampleMeanings(Attribute sampleMeanings) {
