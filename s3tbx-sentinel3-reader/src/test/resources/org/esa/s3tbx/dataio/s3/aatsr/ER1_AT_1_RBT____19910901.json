@@ -1,5 +1,5 @@
 {
-  "id": "ER1_AT_1_RBT____19910901T061936_19910901T080223_20180928T124040_6167_014_005______TPZ_R_NT_004_SEN3",
+  "id": "ER1_AT_1_RBT____19910901",
   "decodeQualification": "INTENDED",
   "expectedContent": {
     "sceneWidth": 512,
@@ -550,7 +550,7 @@
             "value": 1
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_1",
             "value": 2
           },
           {
@@ -562,11 +562,11 @@
             "value": 8
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_2",
             "value": 16
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_3",
             "value": 32
           },
           {
@@ -602,11 +602,11 @@
             "value": 8192
           },
           {
-            "name": "spare",
+            "name": "spare_1",
             "value": 16384
           },
           {
-            "name": "spare",
+            "name": "spare_2",
             "value": 32768
           }
         ]
@@ -631,15 +631,15 @@
             "value": 8
           },
           {
-            "name": "spare",
+            "name": "spare_1",
             "value": 16
           },
           {
-            "name": "spare",
+            "name": "spare_2",
             "value": 32
           },
           {
-            "name": "spare",
+            "name": "spare_3",
             "value": 64
           },
           {
@@ -652,19 +652,19 @@
         "name": "pointing_in",
         "samples": [
           {
-            "name": "not_implemented",
+            "name": "not_implemented_1",
             "value": 1
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_2",
             "value": 2
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_3",
             "value": 4
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_4",
             "value": 8
           },
           {
@@ -672,11 +672,11 @@
             "value": 16
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_5",
             "value": 32
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_6",
             "value": 64
           },
           {
@@ -762,7 +762,7 @@
             "value": 1
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_1",
             "value": 2
           },
           {
@@ -774,11 +774,11 @@
             "value": 8
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_2",
             "value": 16
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_3",
             "value": 32
           },
           {
@@ -814,11 +814,11 @@
             "value": 8192
           },
           {
-            "name": "spare",
+            "name": "spare_1",
             "value": 16384
           },
           {
-            "name": "spare",
+            "name": "spare_2",
             "value": 32768
           }
         ]
@@ -843,15 +843,15 @@
             "value": 8
           },
           {
-            "name": "spare",
+            "name": "spare_1",
             "value": 16
           },
           {
-            "name": "spare",
+            "name": "spare_2",
             "value": 32
           },
           {
-            "name": "spare",
+            "name": "spare_3",
             "value": 64
           },
           {
@@ -864,19 +864,19 @@
         "name": "pointing_io",
         "samples": [
           {
-            "name": "not_implemented",
+            "name": "not_implemented_1",
             "value": 1
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_2",
             "value": 2
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_3",
             "value": 4
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_4",
             "value": 8
           },
           {
@@ -884,11 +884,11 @@
             "value": 16
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_5",
             "value": 32
           },
           {
-            "name": "not_implemented",
+            "name": "not_implemented_6",
             "value": 64
           },
           {
@@ -5671,10 +5671,10 @@
         "description": "cloud_in.visible"
       },
       {
-        "name": "cloud_in_not_implemented",
+        "name": "cloud_in_not_implemented_1",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "255,191,255",
-        "description": "cloud_in.not_implemented"
+        "description": "cloud_in.not_implemented_1"
       },
       {
         "name": "cloud_in_1_6_small_histogram",
@@ -5689,16 +5689,16 @@
         "description": "cloud_in.1_6_large_histogram"
       },
       {
-        "name": "cloud_in_not_implemented",
+        "name": "cloud_in_not_implemented_2",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "0,0,31",
-        "description": "cloud_in.not_implemented"
+        "description": "cloud_in.not_implemented_2"
       },
       {
-        "name": "cloud_in_not_implemented",
+        "name": "cloud_in_not_implemented_3",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "0,0,95",
-        "description": "cloud_in.not_implemented"
+        "description": "cloud_in.not_implemented_3"
       },
       {
         "name": "cloud_in_11_spatial_coherence",
@@ -5749,81 +5749,111 @@
         "description": "cloud_in.11_12_thermal_histogram"
       },
       {
-        "name": "bayes_in_single_low",
+        "name": "cloud_in_spare_1",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "0,31,159",
+        "description": "cloud_in.spare_1"
+      },
+      {
+        "name": "cloud_in_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,191",
+        "description": "cloud_in.spare_2"
+      },
+      {
+        "name": "bayes_in_single_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,223",
         "description": "bayes_in.single_low"
       },
       {
         "name": "bayes_in_single_moderate",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,31,191",
+        "color": "0,31,255",
         "description": "bayes_in.single_moderate"
       },
       {
         "name": "bayes_in_dual_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,31,223",
+        "color": "0,63,31",
         "description": "bayes_in.dual_low"
       },
       {
         "name": "bayes_in_dual_moderate",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,31,255",
+        "color": "0,63,95",
         "description": "bayes_in.dual_moderate"
+      },
+      {
+        "name": "bayes_in_spare_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,159",
+        "description": "bayes_in.spare_1"
+      },
+      {
+        "name": "bayes_in_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,223",
+        "description": "bayes_in.spare_2"
+      },
+      {
+        "name": "bayes_in_spare_3",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,0",
+        "description": "bayes_in.spare_3"
       },
       {
         "name": "bayes_in_no_bayesian_probabilities_available",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,63,31",
+        "color": "0,95,31",
         "description": "bayes_in.no_bayesian_probabilities_available"
       },
       {
-        "name": "pointing_in_not_implemented",
+        "name": "pointing_in_not_implemented_1",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,63,95",
-        "description": "pointing_in.not_implemented"
+        "color": "0,95,63",
+        "description": "pointing_in.not_implemented_1"
       },
       {
-        "name": "pointing_in_not_implemented",
+        "name": "pointing_in_not_implemented_2",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,63,159",
-        "description": "pointing_in.not_implemented"
+        "color": "0,95,95",
+        "description": "pointing_in.not_implemented_2"
       },
       {
-        "name": "pointing_in_not_implemented",
+        "name": "pointing_in_not_implemented_3",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,63,223",
-        "description": "pointing_in.not_implemented"
+        "color": "0,95,127",
+        "description": "pointing_in.not_implemented_3"
       },
       {
-        "name": "pointing_in_not_implemented",
+        "name": "pointing_in_not_implemented_4",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,95,0",
-        "description": "pointing_in.not_implemented"
+        "color": "0,95,159",
+        "description": "pointing_in.not_implemented_4"
       },
       {
         "name": "pointing_in_ScanMirrorIntegratedError",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,95,31",
+        "color": "0,95,191",
         "description": "pointing_in.ScanMirrorIntegratedError"
       },
       {
-        "name": "pointing_in_not_implemented",
+        "name": "pointing_in_not_implemented_5",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,95,63",
-        "description": "pointing_in.not_implemented"
+        "color": "0,95,223",
+        "description": "pointing_in.not_implemented_5"
       },
       {
-        "name": "pointing_in_not_implemented",
+        "name": "pointing_in_not_implemented_6",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,95,95",
-        "description": "pointing_in.not_implemented"
+        "color": "0,95,255",
+        "description": "pointing_in.not_implemented_6"
       },
       {
         "name": "pointing_in_Platform_Mode",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,95,127",
+        "color": "0,127,31",
         "description": "pointing_in.Platform_Mode"
       },
       {
@@ -5841,7 +5871,7 @@
       {
         "name": "confidence_in_tidal",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,95,159",
+        "color": "0,127,95",
         "description": "confidence_in.tidal"
       },
       {
@@ -5859,43 +5889,43 @@
       {
         "name": "confidence_in_unfilled",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,95,191",
+        "color": "0,127,159",
         "description": "confidence_in.unfilled"
       },
       {
         "name": "confidence_in_blanking_pulse",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,95,223",
+        "color": "0,127,223",
         "description": "confidence_in.blanking_pulse"
       },
       {
         "name": "confidence_in_cosmetic",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,95,255",
+        "color": "0,159,0",
         "description": "confidence_in.cosmetic"
       },
       {
         "name": "confidence_in_duplicate",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,127,31",
+        "color": "0,159,31",
         "description": "confidence_in.duplicate"
       },
       {
         "name": "confidence_in_day",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,127,95",
+        "color": "0,159,63",
         "description": "confidence_in.day"
       },
       {
         "name": "confidence_in_twilight",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,127,159",
+        "color": "0,159,95",
         "description": "confidence_in.twilight"
       },
       {
         "name": "confidence_in_sun_glint",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,127,223",
+        "color": "0,159,127",
         "description": "confidence_in.sun_glint"
       },
       {
@@ -5913,49 +5943,49 @@
       {
         "name": "confidence_in_summary_pointing",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,159,0",
+        "color": "0,159,159",
         "description": "confidence_in.summary_pointing"
       },
       {
         "name": "cloud_io_visible",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,159,31",
+        "color": "0,159,191",
         "description": "cloud_io.visible"
       },
       {
-        "name": "cloud_io_not_implemented",
+        "name": "cloud_io_not_implemented_1",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,159,63",
-        "description": "cloud_io.not_implemented"
+        "color": "0,159,223",
+        "description": "cloud_io.not_implemented_1"
       },
       {
         "name": "cloud_io_1_6_small_histogram",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,159,95",
+        "color": "0,159,255",
         "description": "cloud_io.1_6_small_histogram"
       },
       {
         "name": "cloud_io_1_6_large_histogram",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,159,127",
+        "color": "0,191,31",
         "description": "cloud_io.1_6_large_histogram"
       },
       {
-        "name": "cloud_io_not_implemented",
+        "name": "cloud_io_not_implemented_2",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,159,159",
-        "description": "cloud_io.not_implemented"
+        "color": "0,191,95",
+        "description": "cloud_io.not_implemented_2"
       },
       {
-        "name": "cloud_io_not_implemented",
+        "name": "cloud_io_not_implemented_3",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,159,191",
-        "description": "cloud_io.not_implemented"
+        "color": "0,191,159",
+        "description": "cloud_io.not_implemented_3"
       },
       {
         "name": "cloud_io_11_spatial_coherence",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,159,223",
+        "color": "0,191,223",
         "description": "cloud_io.11_spatial_coherence"
       },
       {
@@ -5967,115 +5997,145 @@
       {
         "name": "cloud_io_11_12_thin_cirrus",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,159,255",
+        "color": "0,223,0",
         "description": "cloud_io.11_12_thin_cirrus"
       },
       {
         "name": "cloud_io_3_7_12_medium_high",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,191,31",
+        "color": "0,223,31",
         "description": "cloud_io.3_7_12_medium_high"
       },
       {
         "name": "cloud_io_11_3_7_fog_low_stratus",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,191,95",
+        "color": "0,223,63",
         "description": "cloud_io.11_3_7_fog_low_stratus"
       },
       {
         "name": "cloud_io_11_12_view_difference",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,191,159",
+        "color": "0,223,95",
         "description": "cloud_io.11_12_view_difference"
       },
       {
         "name": "cloud_io_3_7_11_view_difference",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,191,223",
+        "color": "0,223,127",
         "description": "cloud_io.3_7_11_view_difference"
       },
       {
         "name": "cloud_io_11_12_thermal_histogram",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,223,0",
+        "color": "0,223,159",
         "description": "cloud_io.11_12_thermal_histogram"
+      },
+      {
+        "name": "cloud_io_spare_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,223,191",
+        "description": "cloud_io.spare_1"
+      },
+      {
+        "name": "cloud_io_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,223,223",
+        "description": "cloud_io.spare_2"
       },
       {
         "name": "bayes_io_single_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,223,31",
+        "color": "0,223,255",
         "description": "bayes_io.single_low"
       },
       {
         "name": "bayes_io_single_moderate",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,223,63",
+        "color": "0,255,31",
         "description": "bayes_io.single_moderate"
       },
       {
         "name": "bayes_io_dual_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,223,95",
+        "color": "0,255,95",
         "description": "bayes_io.dual_low"
       },
       {
         "name": "bayes_io_dual_moderate",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,223,127",
+        "color": "0,255,159",
         "description": "bayes_io.dual_moderate"
+      },
+      {
+        "name": "bayes_io_spare_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,223",
+        "description": "bayes_io.spare_1"
+      },
+      {
+        "name": "bayes_io_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "31,0,0",
+        "description": "bayes_io.spare_2"
+      },
+      {
+        "name": "bayes_io_spare_3",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "31,0,31",
+        "description": "bayes_io.spare_3"
       },
       {
         "name": "bayes_io_no_bayesian_probabilities_available",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,223,159",
+        "color": "31,0,63",
         "description": "bayes_io.no_bayesian_probabilities_available"
       },
       {
-        "name": "pointing_io_not_implemented",
+        "name": "pointing_io_not_implemented_1",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,223,191",
-        "description": "pointing_io.not_implemented"
+        "color": "31,0,95",
+        "description": "pointing_io.not_implemented_1"
       },
       {
-        "name": "pointing_io_not_implemented",
+        "name": "pointing_io_not_implemented_2",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,223,223",
-        "description": "pointing_io.not_implemented"
+        "color": "31,0,127",
+        "description": "pointing_io.not_implemented_2"
       },
       {
-        "name": "pointing_io_not_implemented",
+        "name": "pointing_io_not_implemented_3",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,223,255",
-        "description": "pointing_io.not_implemented"
+        "color": "31,0,159",
+        "description": "pointing_io.not_implemented_3"
       },
       {
-        "name": "pointing_io_not_implemented",
+        "name": "pointing_io_not_implemented_4",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,255,31",
-        "description": "pointing_io.not_implemented"
+        "color": "31,0,191",
+        "description": "pointing_io.not_implemented_4"
       },
       {
         "name": "pointing_io_ScanMirrorIntegratedError",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,255,95",
+        "color": "31,0,223",
         "description": "pointing_io.ScanMirrorIntegratedError"
       },
       {
-        "name": "pointing_io_not_implemented",
+        "name": "pointing_io_not_implemented_5",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,255,159",
-        "description": "pointing_io.not_implemented"
+        "color": "31,0,255",
+        "description": "pointing_io.not_implemented_5"
       },
       {
-        "name": "pointing_io_not_implemented",
+        "name": "pointing_io_not_implemented_6",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,255,223",
-        "description": "pointing_io.not_implemented"
+        "color": "31,31,0",
+        "description": "pointing_io.not_implemented_6"
       },
       {
         "name": "pointing_io_Platform_Mode",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,0,0",
+        "color": "31,31,31",
         "description": "pointing_io.Platform_Mode"
       },
       {
@@ -6093,7 +6153,7 @@
       {
         "name": "confidence_io_tidal",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,0,31",
+        "color": "31,31,63",
         "description": "confidence_io.tidal"
       },
       {
@@ -6111,43 +6171,43 @@
       {
         "name": "confidence_io_unfilled",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,0,63",
+        "color": "31,31,95",
         "description": "confidence_io.unfilled"
       },
       {
         "name": "confidence_io_blanking_pulse",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,0,95",
+        "color": "31,31,127",
         "description": "confidence_io.blanking_pulse"
       },
       {
         "name": "confidence_io_cosmetic",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,0,127",
+        "color": "31,31,159",
         "description": "confidence_io.cosmetic"
       },
       {
         "name": "confidence_io_duplicate",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,0,159",
+        "color": "31,31,191",
         "description": "confidence_io.duplicate"
       },
       {
         "name": "confidence_io_day",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,0,191",
+        "color": "31,31,223",
         "description": "confidence_io.day"
       },
       {
         "name": "confidence_io_twilight",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,0,223",
+        "color": "31,31,255",
         "description": "confidence_io.twilight"
       },
       {
         "name": "confidence_io_sun_glint",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,0,255",
+        "color": "31,63,0",
         "description": "confidence_io.sun_glint"
       },
       {
@@ -6165,7 +6225,7 @@
       {
         "name": "confidence_io_summary_pointing",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "31,31,0",
+        "color": "31,63,31",
         "description": "confidence_io.summary_pointing"
       }
     ],
