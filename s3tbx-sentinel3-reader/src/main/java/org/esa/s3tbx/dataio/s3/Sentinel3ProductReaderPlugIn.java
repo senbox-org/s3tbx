@@ -62,7 +62,7 @@ public class Sentinel3ProductReaderPlugIn implements ProductReaderPlugIn {
     }
 
     @Override
-    public final DecodeQualification getDecodeQualification(Object input) {
+    public DecodeQualification getDecodeQualification(Object input) {
         if (isInputValid(input)) {
             return DecodeQualification.INTENDED;
         } else {
@@ -111,7 +111,7 @@ public class Sentinel3ProductReaderPlugIn implements ProductReaderPlugIn {
         return false;
     }
 
-    private boolean isInputValid(Object input) {
+    protected boolean isInputValid(Object input) {
         final File inputFile = new File(input.toString());
         final File parentFile = inputFile.getParentFile();
         return parentFile != null &&
