@@ -88,14 +88,14 @@ public class PDUStitchingDialog extends ModelessDialog {
         Product product = null;
         try {
             product = swingWorker.get();
+            Dialogs.showInformation("SLSTR L1B PDU Stitching",
+                    "Stitched SLSTR L1B product has been successfully created in the target directory.", null);
         } catch (InterruptedException | ExecutionException e) {
             Dialogs.showError("Could not create stitched SLSTR L1B product: " + e.getMessage());
         }
         if (product != null) {
             SnapApp.getDefault().getProductManager().addProduct(product);
         }
-        Dialogs.showInformation("SLSTR L1B PDU Stitching",
-                "Stitched SLSTR L1B product has been successfully created in the target directory.", null);
     }
 
     private ProductReaderPlugIn getSentinel3ReaderPlugin() {
