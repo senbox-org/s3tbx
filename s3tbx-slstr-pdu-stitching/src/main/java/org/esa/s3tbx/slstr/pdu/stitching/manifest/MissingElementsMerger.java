@@ -1,5 +1,6 @@
 package org.esa.s3tbx.slstr.pdu.stitching.manifest;
 
+import com.sun.istack.internal.logging.Logger;
 import org.esa.s3tbx.slstr.pdu.stitching.PDUStitchingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -86,7 +87,7 @@ class MissingElementsMerger extends AbstractElementMerger {
             }
         }
         for (NewNode node : sortedNodes) {
-            String key = node.gridValue + SEPARATOR + node.viewValue;
+            String key = node.gridValue.split(",")[0].trim() + SEPARATOR + node.viewValue;
             double over = overs.get(key);
             try {
                 final String percentage = numberFormatter.valueToString((node.value / over) * 100);
@@ -179,27 +180,32 @@ class MissingElementsMerger extends AbstractElementMerger {
                 final Node childNode = childNodes.item(j);
                 final String nodeName = childNode.getNodeName();
                 if (nodeName.equals(ELEMENT_MISSING_NAME)) {
-                    final String childGrid = getGridFromNode(childNode);
+                    final String childGrids = getGridFromNode(childNode);
                     final String childView = getViewFromNode(childNode);
                     final String childStartTime = getStartTimeFromNode(childNode);
                     final String childStopTime = getStopTimeFromNode(childNode);
                     final String childBandSet = getBandSetFromNode(childNode);
                     final double childPercentage = getPercentageFromNode(childNode);
-                    String key = childGrid + SEPARATOR + childView;
-                    if (!overs.containsKey(key)) {
-                        throw new PDUStitchingException("Unidentified missing element detected");
+                    Integer over = 0;
+                    for (String childGrid : childGrids.split(",")) {
+                        String key = childGrid.trim() + SEPARATOR + childView;
+                        if (!overs.containsKey(key)) {
+                            Logger logger = Logger.getLogger(this.getClass());
+                            logger.warning("Could not determine grid of missing element: " + key);
+                            continue;
+                        }
+                        over = overs.get(key);
                     }
-                    final Integer over = overs.get(key);
                     final int childValue = (int) Math.round((over / 100.0) * childPercentage);
                     boolean contained = false;
                     for (final NewNode missingNode : newMissingElements) {
-                        if (missingNode.belongsToNode(childGrid, childView, childStartTime, childStopTime, childBandSet)) {
+                        if (missingNode.belongsToNode(childGrids, childView, childStartTime, childStopTime, childBandSet)) {
                             missingNode.incorporate(childStartTime, childStopTime, childValue);
                             contained = true;
                         }
                     }
                     if (!contained) {
-                        final NewNode newNode = new NewNode(childGrid, childView, childStartTime, childStopTime,
+                        final NewNode newNode = new NewNode(childGrids, childView, childStartTime, childStopTime,
                                                             childBandSet, childValue);
                         newMissingElements.add(newNode);
                     }
