@@ -68,6 +68,8 @@ public class ImageSizeHandler {
 
     private static String getId(String gridName) {
         switch (gridName) {
+            case "Fire":
+                return "f";
             case "1 km":
                 return "i";
             case "0.5 km stripe A":
