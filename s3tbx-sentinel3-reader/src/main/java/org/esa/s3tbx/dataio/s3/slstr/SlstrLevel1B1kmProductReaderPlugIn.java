@@ -17,9 +17,9 @@ public class SlstrLevel1B1kmProductReaderPlugIn extends Sentinel3ProductReaderPl
 
     @Override
     public DecodeQualification getDecodeQualification(Object input) {
-        if(isInputValid(input)) {
+        if (isInputValid(input)) {
             return DecodeQualification.SUITABLE;
-        }else {
+        } else {
             return DecodeQualification.UNABLE;
         }
     }
