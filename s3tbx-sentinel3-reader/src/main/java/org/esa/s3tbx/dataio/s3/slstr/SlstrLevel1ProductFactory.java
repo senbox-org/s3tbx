@@ -97,6 +97,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     public SlstrLevel1ProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
         gridTypeToGridIndex = new HashMap<>();
+        //todo adapt this when grid is contained in metadata file
+        gridTypeToGridIndex.put("Fire", "f");
         gridTypeToGridIndex.put("1 km", "i");
         gridTypeToGridIndex.put("0.5 km stripe A", "a");
         gridTypeToGridIndex.put("0.5 km stripe B", "b");
@@ -260,7 +262,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     protected void configureDescription(Band sourceBand, RasterDataNode targetNode) {
         final String sourceBandName = sourceBand.getName();
         final String sourceBandNameEnd = sourceBandName.substring(sourceBandName.length() - 2);
-        if (sourceBandNameEnd.startsWith("i")) {
+        if (sourceBandNameEnd.startsWith("i") || sourceBandNameEnd.startsWith("f")) {
             String description = sourceBand.getDescription();
             if (description == null) {
                 targetNode.setDescription("(1 km)");
@@ -374,8 +376,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     @Override
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
-        targetProduct.setAutoGrouping("F*BT_in:F*exception_in:" +
-                                      "F*BT_io:F*exception_io:" +
+        targetProduct.setAutoGrouping("F*BT_*n:F*exception_*n:" +
+                                      "F*BT_*o:F*exception_*o:" +
                                       "S*BT_in:S*exception_in:" +
                                       "S*BT_io:S*exception_io:" +
                                       "radiance_an:S*exception_an:" +
@@ -580,6 +582,14 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                     latBand = product.getBand("latitude_io");
                     lonBand = product.getBand("longitude_io");
                     break;
+                case "fn":
+                    latBand = product.getBand("latitude_fn");
+                    lonBand = product.getBand("longitude_fn");
+                    break;
+                case "fo":
+                    latBand = product.getBand("latitude_fo");
+                    lonBand = product.getBand("longitude_fo");
+                    break;
             }
             if (latBand != null && lonBand != null) {
                 final BasicPixelGeoCoding geoCoding = GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, "", 5);
@@ -608,6 +618,10 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             return "in";
         } else if (maskName.contains("_io_")) {
             return "io";
+        } else if (maskName.contains("_fn_")) {
+            return "fn";
+        } else if (maskName.contains("_fo_")) {
+            return "fo";
         }
         return "";
     }

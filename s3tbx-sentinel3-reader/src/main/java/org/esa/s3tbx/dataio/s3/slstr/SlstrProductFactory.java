@@ -52,7 +52,7 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
 
     protected short[] getResolutions(String gridIndex) {
         short[] resolutions;
-        if (gridIndex.startsWith("i")) {
+        if (gridIndex.startsWith("i") || gridIndex.startsWith("f")) {
             resolutions = new short[]{1000, 1000};
         } else if (gridIndex.startsWith("t")) {
             resolutions = new short[]{16000, 1000};
@@ -161,8 +161,7 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
             }
             String patternName = sourceProductName;
             String[] unwantedPatternContents = new String[]{
-                    "_an", "_ao", "_bn", "_bo", "_cn", "_co", "_in", "_io",
-                    "_tn", "_to", "_tx"
+                    "_an", "_ao", "_bn", "_bo", "_cn", "_co", "_in", "_io", "_fn", "_fo", "_tn", "_to", "_tx"
             };
             for (String unwantedPatternContent : unwantedPatternContents) {
                 if (sourceProductName.contains(unwantedPatternContent)) {
