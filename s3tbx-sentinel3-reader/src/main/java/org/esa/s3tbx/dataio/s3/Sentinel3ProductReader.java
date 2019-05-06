@@ -77,7 +77,7 @@ public class Sentinel3ProductReader extends AbstractProductReader {
             setFactory(new SynL1CProductFactory(this));
         } else if (dirName.matches("S3.?_SY_2_SYN_.*.SEN3")) { // SYN L2
             setFactory(new SynLevel2ProductFactory(this));
-        } else if (dirName.matches("S3.?_SY_(2_VGP|[23]_VG1)_.*.SEN3")) { // SYN VGT
+        } else if (dirName.matches("S3.?_SY_(2_VGP|[23]_VG1|2_V10)_.*.SEN3")) { // SYN VGT
             setFactory(new VgtProductFactory(this));
         }
         return createProduct();

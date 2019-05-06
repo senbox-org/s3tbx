@@ -11,6 +11,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.SampleCoding;
 import org.esa.snap.core.datamodel.VirtualBand;
+import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.io.FileUtils;
 import org.esa.snap.dataio.netcdf.util.Constants;
 import org.esa.snap.dataio.netcdf.util.DataTypeUtils;
@@ -323,9 +324,10 @@ public class S3NetcdfReader extends AbstractProductReader {
     private static void addSamples(SampleCoding sampleCoding, Attribute sampleMeanings, Attribute sampleValues,
                                    boolean msb) {
         final String[] meanings = getSampleMeanings(sampleMeanings);
-        final int sampleCount = Math.min(meanings.length, sampleValues.getLength());
+        String[] uniqueNames = StringUtils.makeStringsUnique(meanings);
+        final int sampleCount = Math.min(uniqueNames.length, sampleValues.getLength());
         for (int i = 0; i < sampleCount; i++) {
-            final String sampleName = replaceNonWordCharacters(meanings[i]);
+            final String sampleName = replaceNonWordCharacters(uniqueNames[i]);
             switch (sampleValues.getDataType()) {
                 case BYTE:
                     sampleCoding.addSample(sampleName,
@@ -360,9 +362,10 @@ public class S3NetcdfReader extends AbstractProductReader {
     private static void addSamples(SampleCoding sampleCoding, Attribute sampleMeanings, Attribute sampleValues,
                                    Attribute sampleMasks, boolean msb) {
         final String[] meanings = getSampleMeanings(sampleMeanings);
-        final int sampleCount = Math.min(meanings.length, sampleMasks.getLength());
+        String[] uniqueNames = StringUtils.makeStringsUnique(meanings);
+        final int sampleCount = Math.min(uniqueNames.length, sampleMasks.getLength());
         for (int i = 0; i < sampleCount; i++) {
-            final String sampleName = replaceNonWordCharacters(meanings[i]);
+            final String sampleName = replaceNonWordCharacters(uniqueNames[i]);
             switch (sampleMasks.getDataType()) {
                 case BYTE:
                     int[] byteValues = {

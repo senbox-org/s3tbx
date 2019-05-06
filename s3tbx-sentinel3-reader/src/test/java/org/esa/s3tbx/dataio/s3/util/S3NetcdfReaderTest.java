@@ -6,7 +6,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 /**
  * @author Tonio Fincke
