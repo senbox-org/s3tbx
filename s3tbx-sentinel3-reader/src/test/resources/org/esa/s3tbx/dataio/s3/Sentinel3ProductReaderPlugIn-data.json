@@ -1,6 +1,18 @@
 {
   "testProducts": [
     {
+      "id": "S3A_SY_2_SYN____20160415T110058",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_SYN____20160415T110058_20160415T110845_20160502T125457_0466_003_094______LN1_D_NC____.SEN3",
+      "description": "S3A_SY_2_SYN v1"
+
+    },
+    {
+      "id": "S3A_SY_2_SYN____20190426T012843",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_SYN____20190426T012843_20190426T013143_20190427T131355_0179_044_074_2340_LN2_O_NT_002.SEN3",
+      "description": "S3A_SY_2_SYN v2"
+
+    },
+    {
       "id": "S3A_SY_2_VG1____20130621T100922",
       "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_VG1____20130621T100922_20130621T104922_20140527T011902_GLOBAL____________LN2_D_NR____.SEN3",
       "description": "S3A_SY_2_VG1 Global"

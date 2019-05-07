@@ -1,0 +1,2711 @@
+{
+  "id": "S3A_SY_2_SYN____20160415T110058",
+  "decodeQualification": "INTENDED",
+  "expectedContent": {
+    "sceneWidth": 4865,
+    "sceneHeight": 10608,
+    "startTime": "15-APR-2016 11:00:58.529201",
+    "endTime": "15-APR-2016 11:08:45.250049",
+    "geoCoding": {
+      "coordinates": [
+        {
+          "x": 2098.0,
+          "y": 5702.0,
+          "lat": 51.68753786950151,
+          "lon": -11.367000971301081
+        },
+        {
+          "x": 3612.0,
+          "y": 6883.0,
+          "lat": 47.799087879318904,
+          "lon": -6.988906982354706
+        }
+      ],
+      "reverseAccuracy": 0.5
+    },
+    "flagCodings": [
+      {
+        "name": "SYN_flags",
+        "samples": [
+          {
+            "name": "SYN_high_error",
+            "value": 32768
+          },
+          {
+            "name": "SYN_too_low",
+            "value": 16384
+          },
+          {
+            "name": "SYN_negative_curvature",
+            "value": 8192
+          },
+          {
+            "name": "SYN_success",
+            "value": 4096
+          },
+          {
+            "name": "SYN_aerosol_filled",
+            "value": 2048
+          },
+          {
+            "name": "SYN_border",
+            "value": 1024
+          },
+          {
+            "name": "SYN_partly_water",
+            "value": 512
+          },
+          {
+            "name": "SYN_partly_cloudy",
+            "value": 256
+          },
+          {
+            "name": "SYN_no_slo_1",
+            "value": 128
+          },
+          {
+            "name": "SYN_no_SLO_2",
+            "value": 64
+          },
+          {
+            "name": "SYN_no_olc",
+            "value": 32
+          },
+          {
+            "name": "SYN_land",
+            "value": 16
+          },
+          {
+            "name": "SYN_cloud_filled",
+            "value": 8
+          },
+          {
+            "name": "SYN_shadow_risk",
+            "value": 4
+          },
+          {
+            "name": "SYN_snow_risk",
+            "value": 2
+          },
+          {
+            "name": "SYN_cloud",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "name": "OLC_flags",
+        "samples": [
+          {
+            "name": "OLC_land",
+            "value": 4096
+          },
+          {
+            "name": "OLC_coastline",
+            "value": 2048
+          },
+          {
+            "name": "OLC_fresh_inland_water",
+            "value": 1024
+          },
+          {
+            "name": "OLC_tidal_region",
+            "value": 512
+          },
+          {
+            "name": "OLC_bright",
+            "value": 256
+          },
+          {
+            "name": "OLC_invalid",
+            "value": 16
+          },
+          {
+            "name": "OLC_cosmetic",
+            "value": 8
+          },
+          {
+            "name": "OLC_sun_glint_risk",
+            "value": 4
+          },
+          {
+            "name": "OLC_dubious",
+            "value": 2
+          },
+          {
+            "name": "OLC_summary_saturated",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "name": "SLN_flags",
+        "samples": [
+          {
+            "name": "SLN_summary_pointing",
+            "value": 8388608
+          },
+          {
+            "name": "SLN_summary_cloud",
+            "value": 4194304
+          },
+          {
+            "name": "SLN_snow",
+            "value": 2097152
+          },
+          {
+            "name": "SLN_sun_glint",
+            "value": 1048576
+          },
+          {
+            "name": "SLN_twilight",
+            "value": 524288
+          },
+          {
+            "name": "SLN_day",
+            "value": 262144
+          },
+          {
+            "name": "SLN_cosmetic",
+            "value": 65536
+          },
+          {
+            "name": "SLN_inland_water",
+            "value": 4096
+          },
+          {
+            "name": "SLN_land",
+            "value": 2048
+          },
+          {
+            "name": "SLN_tidal",
+            "value": 1024
+          },
+          {
+            "name": "SLN_ocean",
+            "value": 512
+          },
+          {
+            "name": "SLN_coastline",
+            "value": 256
+          },
+          {
+            "name": "SLN_summary_unfilled_pixel",
+            "value": 128
+          },
+          {
+            "name": "SLN_summary_no_parameters",
+            "value": 64
+          },
+          {
+            "name": "SLN_summary_invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "SLN_summary_saturation",
+            "value": 16
+          },
+          {
+            "name": "SLN_summary_no_signal",
+            "value": 8
+          },
+          {
+            "name": "SLN_summary_not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "SLN_summary_pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "SLN_summary_ISP_absent",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "name": "SLO_flags",
+        "samples": [
+          {
+            "name": "SLO_summary_pointing",
+            "value": 8388608
+          },
+          {
+            "name": "SLO_summary_cloud",
+            "value": 4194304
+          },
+          {
+            "name": "SLO_snow",
+            "value": 2097152
+          },
+          {
+            "name": "SLO_sun_glint",
+            "value": 1048576
+          },
+          {
+            "name": "SLO_twilight",
+            "value": 524288
+          },
+          {
+            "name": "SLO_day",
+            "value": 262144
+          },
+          {
+            "name": "SLO_cosmetic",
+            "value": 65536
+          },
+          {
+            "name": "SLO_inland_water",
+            "value": 4096
+          },
+          {
+            "name": "SLO_land",
+            "value": 2048
+          },
+          {
+            "name": "SLO_tidal",
+            "value": 1024
+          },
+          {
+            "name": "SLO_ocean",
+            "value": 512
+          },
+          {
+            "name": "SLO_coastline",
+            "value": 256
+          },
+          {
+            "name": "SLO_summary_unfilled_pixel",
+            "value": 128
+          },
+          {
+            "name": "SLO_summary_no_parameters",
+            "value": 64
+          },
+          {
+            "name": "SLO_summary_invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "SLO_summary_saturation",
+            "value": 16
+          },
+          {
+            "name": "SLO_summary_no_signal",
+            "value": 8
+          },
+          {
+            "name": "SLO_summary_not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "SLO_summary_pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "SLO_summary_ISP_absent",
+            "value": 1
+          }
+        ]
+      }
+    ],
+    "bands": [
+      {
+        "name": "SDR_01",
+        "description": "Surface directional reflectance for SYN channel 1",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 253,
+            "y": 1889,
+            "value": "NaN"
+          },
+          {
+            "x": 3332,
+            "y": 9023,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_01_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 1",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1415,
+            "y": 2724,
+            "value": "NaN"
+          },
+          {
+            "x": 2970,
+            "y": 3874,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_02",
+        "description": "Surface directional reflectance for SYN channel 2",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2675,
+            "y": 7906,
+            "value": "NaN"
+          },
+          {
+            "x": 2959,
+            "y": 9849,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_02_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 2",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 769,
+            "y": 7065,
+            "value": "NaN"
+          },
+          {
+            "x": 2525,
+            "y": 9690,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_03",
+        "description": "Surface directional reflectance for SYN channel 3",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3678,
+            "y": 5140,
+            "value": "NaN"
+          },
+          {
+            "x": 4625,
+            "y": 5154,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_03_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 3",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1656,
+            "y": 9541,
+            "value": "NaN"
+          },
+          {
+            "x": 48,
+            "y": 4993,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_04",
+        "description": "Surface directional reflectance for SYN channel 4",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1592,
+            "y": 2090,
+            "value": "NaN"
+          },
+          {
+            "x": 1329,
+            "y": 458,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_04_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 4",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4726,
+            "y": 6414,
+            "value": "NaN"
+          },
+          {
+            "x": 2784,
+            "y": 7603,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_05",
+        "description": "Surface directional reflectance for SYN channel 5",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1128,
+            "y": 5277,
+            "value": "NaN"
+          },
+          {
+            "x": 1562,
+            "y": 7664,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_05_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 5",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1742,
+            "y": 5285,
+            "value": "NaN"
+          },
+          {
+            "x": 1959,
+            "y": 4692,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_06",
+        "description": "Surface directional reflectance for SYN channel 6",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2795,
+            "y": 974,
+            "value": "NaN"
+          },
+          {
+            "x": 3139,
+            "y": 167,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_06_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 6",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4744,
+            "y": 3896,
+            "value": "NaN"
+          },
+          {
+            "x": 4622,
+            "y": 10039,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_07",
+        "description": "Surface directional reflectance for SYN channel 7",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 539,
+            "y": 4793,
+            "value": "NaN"
+          },
+          {
+            "x": 2777,
+            "y": 5966,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_07_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 7",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2460,
+            "y": 5533,
+            "value": 3.1574
+          },
+          {
+            "x": 2192,
+            "y": 6163,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_08",
+        "description": "Surface directional reflectance for SYN channel 8",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 70,
+            "y": 4504,
+            "value": "NaN"
+          },
+          {
+            "x": 341,
+            "y": 10531,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_08_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 8",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1443,
+            "y": 7903,
+            "value": "NaN"
+          },
+          {
+            "x": 3909,
+            "y": 7811,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_09",
+        "description": "Surface directional reflectance for SYN channel 9",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4059,
+            "y": 10029,
+            "value": "NaN"
+          },
+          {
+            "x": 1209,
+            "y": 5641,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_09_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 9",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2972,
+            "y": 2759,
+            "value": "NaN"
+          },
+          {
+            "x": 2689,
+            "y": 1601,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_10",
+        "description": "Surface directional reflectance for SYN channel 10",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2313,
+            "y": 5931,
+            "value": "NaN"
+          },
+          {
+            "x": 464,
+            "y": 9014,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_10_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 10",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 467,
+            "y": 825,
+            "value": 2.4164999
+          },
+          {
+            "x": 2213,
+            "y": 7174,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_11",
+        "description": "Surface directional reflectance for SYN channel 11",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2262,
+            "y": 9496,
+            "value": "NaN"
+          },
+          {
+            "x": 4220,
+            "y": 6365,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_11_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 11",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4680,
+            "y": 4041,
+            "value": "NaN"
+          },
+          {
+            "x": 427,
+            "y": 5650,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_12",
+        "description": "Surface directional reflectance for SYN channel 12",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3577,
+            "y": 6311,
+            "value": "NaN"
+          },
+          {
+            "x": 4749,
+            "y": 1973,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_12_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 12",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2239,
+            "y": 2768,
+            "value": "NaN"
+          },
+          {
+            "x": 1114,
+            "y": 6870,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_13",
+        "description": "Surface directional reflectance for SYN channel 13",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3112,
+            "y": 4641,
+            "value": 0.1906
+          },
+          {
+            "x": 2585,
+            "y": 6016,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_13_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 13",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1925,
+            "y": 2268,
+            "value": "NaN"
+          },
+          {
+            "x": 1357,
+            "y": 9428,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_14",
+        "description": "Surface directional reflectance for SYN channel 14",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4600,
+            "y": 6152,
+            "value": "NaN"
+          },
+          {
+            "x": 3687,
+            "y": 3481,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_14_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 14",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2727,
+            "y": 3085,
+            "value": "NaN"
+          },
+          {
+            "x": 4034,
+            "y": 9237,
+            "value": 2.2210999
+          }
+        ]
+      },
+      {
+        "name": "SDR_15",
+        "description": "Surface directional reflectance for SYN channel 15",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 526,
+            "y": 9410,
+            "value": "NaN"
+          },
+          {
+            "x": 1673,
+            "y": 8636,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_15_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 15",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 886,
+            "y": 7344,
+            "value": "NaN"
+          },
+          {
+            "x": 2882,
+            "y": 5824,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_16",
+        "description": "Surface directional reflectance for SYN channel 16",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1000,
+            "y": 3247,
+            "value": "NaN"
+          },
+          {
+            "x": 1996,
+            "y": 9161,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_16_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 16",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3414,
+            "y": 9520,
+            "value": "NaN"
+          },
+          {
+            "x": 1447,
+            "y": 10530,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_17",
+        "description": "Surface directional reflectance for SYN channel 17",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2662,
+            "y": 1238,
+            "value": "NaN"
+          },
+          {
+            "x": 947,
+            "y": 5952,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_17_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 17",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2228,
+            "y": 1366,
+            "value": "NaN"
+          },
+          {
+            "x": 4032,
+            "y": 6076,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_18",
+        "description": "Surface directional reflectance for SYN channel 18",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 499,
+            "y": 7177,
+            "value": "NaN"
+          },
+          {
+            "x": 3556,
+            "y": 5008,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_18_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 18",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 696,
+            "y": 707,
+            "value": "NaN"
+          },
+          {
+            "x": 4093,
+            "y": 3179,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_19",
+        "description": "Surface directional reflectance for SYN channel 19",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2881,
+            "y": 10309,
+            "value": "NaN"
+          },
+          {
+            "x": 3781,
+            "y": 291,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_19_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 19",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1054,
+            "y": 2614,
+            "value": "NaN"
+          },
+          {
+            "x": 1553,
+            "y": 2055,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_20",
+        "description": "Surface directional reflectance for SYN channel 20",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1374,
+            "y": 9369,
+            "value": "NaN"
+          },
+          {
+            "x": 4853,
+            "y": 801,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_20_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 20",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3984,
+            "y": 5322,
+            "value": "NaN"
+          },
+          {
+            "x": 305,
+            "y": 4088,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_21",
+        "description": "Surface directional reflectance for SYN channel 21",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1349,
+            "y": 6174,
+            "value": "NaN"
+          },
+          {
+            "x": 4517,
+            "y": 1472,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_21_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 21",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 508,
+            "y": 1545,
+            "value": "NaN"
+          },
+          {
+            "x": 4299,
+            "y": 1131,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_22",
+        "description": "Surface directional reflectance for SYN channel 22",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1800,
+            "y": 9349,
+            "value": "NaN"
+          },
+          {
+            "x": 2846,
+            "y": 6105,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_22_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 22",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1642,
+            "y": 3457,
+            "value": "NaN"
+          },
+          {
+            "x": 1818,
+            "y": 9082,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_23",
+        "description": "Surface directional reflectance for SYN channel 23",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1585,
+            "y": 7265,
+            "value": "NaN"
+          },
+          {
+            "x": 3130,
+            "y": 7164,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_23_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 23",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2579,
+            "y": 1383,
+            "value": "NaN"
+          },
+          {
+            "x": 2255,
+            "y": 8493,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_24",
+        "description": "Surface directional reflectance for SYN channel 24",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3903,
+            "y": 9569,
+            "value": 0.095699996
+          },
+          {
+            "x": 124,
+            "y": 7410,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_24_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 24",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4325,
+            "y": 6111,
+            "value": "NaN"
+          },
+          {
+            "x": 3102,
+            "y": 9628,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_25",
+        "description": "Surface directional reflectance for SYN channel 25",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4778,
+            "y": 3425,
+            "value": "NaN"
+          },
+          {
+            "x": 1747,
+            "y": 56,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_25_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 25",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4084,
+            "y": 6037,
+            "value": "NaN"
+          },
+          {
+            "x": 2872,
+            "y": 4223,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "SDR_26",
+        "description": "Surface directional reflectance for SYN channel 26",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1919,
+            "y": 10485,
+            "value": "NaN"
+          },
+          {
+            "x": 1116,
+            "y": 7607,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_26_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 26",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4566,
+            "y": 3059,
+            "value": "NaN"
+          },
+          {
+            "x": 1530,
+            "y": 9038,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_27",
+        "description": "Surface directional reflectance for SYN channel 27",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1593,
+            "y": 5609,
+            "value": "NaN"
+          },
+          {
+            "x": 1742,
+            "y": 8483,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_27_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 27",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2726,
+            "y": 2313,
+            "value": "NaN"
+          },
+          {
+            "x": 462,
+            "y": 7473,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_28",
+        "description": "Surface directional reflectance for SYN channel 28",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3418,
+            "y": 8434,
+            "value": "NaN"
+          },
+          {
+            "x": 4106,
+            "y": 722,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_28_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 28",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4069,
+            "y": 2408,
+            "value": "NaN"
+          },
+          {
+            "x": 3174,
+            "y": 9868,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_29",
+        "description": "Surface directional reflectance for SYN channel 29",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1304,
+            "y": 9138,
+            "value": "NaN"
+          },
+          {
+            "x": 1879,
+            "y": 3934,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_29_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 29",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4728,
+            "y": 7219,
+            "value": "NaN"
+          },
+          {
+            "x": 3526,
+            "y": 4537,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_30",
+        "description": "Surface directional reflectance for SYN channel 30",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2426,
+            "y": 1472,
+            "value": "NaN"
+          },
+          {
+            "x": 4713,
+            "y": 1443,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SDR_30_err",
+        "description": "Surface directional reflectance error estimate for SYN channel 30",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3507,
+            "y": 5898,
+            "value": "NaN"
+          },
+          {
+            "x": 3434,
+            "y": 10499,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "T550",
+        "description": "Aerosol optical Thickness",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3117,
+            "y": 9610,
+            "value": "NaN"
+          },
+          {
+            "x": 4063,
+            "y": 5632,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "T550_err",
+        "description": "Aerosol optical Thickness standard error",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2432,
+            "y": 9863,
+            "value": "NaN"
+          },
+          {
+            "x": 2784,
+            "y": 8194,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "A550",
+        "description": "Aerosol Angstrom exponent at 550 nm",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4521,
+            "y": 416,
+            "value": "NaN"
+          },
+          {
+            "x": 3425,
+            "y": 7668,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "AMIN",
+        "description": "Aerosol Model Index Number",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "0.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1689,
+            "y": 73,
+            "value": "NaN"
+          },
+          {
+            "x": 1052,
+            "y": 9127,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SYN_flags",
+        "description": "Synergy classification and aerosol retrieval flags",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 611,
+            "y": 1076,
+            "value": 1.0
+          },
+          {
+            "x": 419,
+            "y": 1214,
+            "value": 1.0
+          }
+        ]
+      },
+      {
+        "name": "OLC_flags",
+        "description": "Selected quality and classification flags for OLCI SYN channels",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3386,
+            "y": 741,
+            "value": 260.0
+          },
+          {
+            "x": 2341,
+            "y": 9208,
+            "value": 256.0
+          }
+        ]
+      },
+      {
+        "name": "SLN_flags",
+        "description": "Exception summary and confidence flags for SLSTR nadir-view SYN channels",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "4.294967295E9",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 814,
+            "y": 2509,
+            "value": 1.2845568E7
+          },
+          {
+            "x": 1221,
+            "y": 10302,
+            "value": 8651264.0
+          }
+        ]
+      },
+      {
+        "name": "SLO_flags",
+        "description": "Exception summary and confidence flags for SLSTR oblique-view SYN channels",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "noDataValue": "4.294967295E9",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3482,
+            "y": 3604,
+            "value": 1.2847104E7
+          },
+          {
+            "x": 3135,
+            "y": 5416,
+            "value": 1.2845568E7
+          }
+        ]
+      },
+      {
+        "name": "lat",
+        "description": "DEM corrected latitude",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees_north",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4412,
+            "y": 5399,
+            "value": 50.99132
+          },
+          {
+            "x": 4189,
+            "y": 5924,
+            "value": 49.83542
+          }
+        ]
+      },
+      {
+        "name": "lon",
+        "description": "DEM corrected longitude",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees_east",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3894,
+            "y": 8076,
+            "value": -7.254125
+          },
+          {
+            "x": 4063,
+            "y": 7806,
+            "value": -6.423791
+          }
+        ]
+      },
+      {
+        "name": "altitude",
+        "description": "DEM corrected altitude",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "meters",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3061,
+            "y": 4519,
+            "value": 53.0
+          },
+          {
+            "x": 2628,
+            "y": 8096,
+            "value": 57.0
+          }
+        ]
+      },
+      {
+        "name": "OLC_TP_lat",
+        "description": "Latitude (WGS-84)",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees_north",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3084,
+            "y": 1612,
+            "value": 61.51725
+          },
+          {
+            "x": 4292,
+            "y": 3340,
+            "value": 56.2418
+          }
+        ]
+      },
+      {
+        "name": "OLC_TP_lon",
+        "description": "Longitude (WGS-84)",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees_east",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1330,
+            "y": 4078,
+            "value": -13.095597
+          },
+          {
+            "x": 3319,
+            "y": 1978,
+            "value": -1.717764
+          }
+        ]
+      },
+      {
+        "name": "SAA",
+        "description": "Sun Azimuth Angle",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 707,
+            "y": 10469,
+            "value": 127.64573
+          },
+          {
+            "x": 1911,
+            "y": 7996,
+            "value": 138.59914
+          }
+        ]
+      },
+      {
+        "name": "SZA",
+        "description": "Sun Zenith Angle",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 343,
+            "y": 7393,
+            "value": 46.759476
+          },
+          {
+            "x": 2957,
+            "y": 9154,
+            "value": 38.75056
+          }
+        ]
+      },
+      {
+        "name": "OLC_VAA",
+        "description": "OLCI view azimuth angle",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2852,
+            "y": 3525,
+            "value": 105.281
+          },
+          {
+            "x": 2127,
+            "y": 181,
+            "value": 104.55486
+          }
+        ]
+      },
+      {
+        "name": "OLC_VZA",
+        "description": "OLCI view zenith angle",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2925,
+            "y": 7083,
+            "value": 14.234906
+          },
+          {
+            "x": 3818,
+            "y": 947,
+            "value": 4.787874
+          }
+        ]
+      },
+      {
+        "name": "air_pressure",
+        "description": "Mean air pressure at sea-level",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "hPa",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4381,
+            "y": 879,
+            "value": 999.09534
+          },
+          {
+            "x": 375,
+            "y": 8741,
+            "value": 1007.6753
+          }
+        ]
+      },
+      {
+        "name": "ozone",
+        "description": "Total columnar ozone",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "Kg.m-2",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 620,
+            "y": 9689,
+            "value": 0.008366958
+          },
+          {
+            "x": 942,
+            "y": 3417,
+            "value": 0.007701047
+          }
+        ]
+      },
+      {
+        "name": "water_vapour",
+        "description": "Total column water vapour",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "g.cm-2",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2652,
+            "y": 7571,
+            "value": 11.050979
+          },
+          {
+            "x": 572,
+            "y": 2315,
+            "value": 7.5188637
+          }
+        ]
+      },
+      {
+        "name": "SLN_TP_lat",
+        "description": "Latitude (WGS-84)",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees_north",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1988,
+            "y": 7987,
+            "value": 45.852505
+          },
+          {
+            "x": 395,
+            "y": 7937,
+            "value": 46.60145
+          }
+        ]
+      },
+      {
+        "name": "SLN_TP_lon",
+        "description": "Longitude (WGS-84)",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees_east",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4465,
+            "y": 2254,
+            "value": 2.7974017
+          },
+          {
+            "x": 4283,
+            "y": 7453,
+            "value": -5.3679104
+          }
+        ]
+      },
+      {
+        "name": "SLN_VAA",
+        "description": "SLSTR nadir view azimuth angle",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 590,
+            "y": 290,
+            "value": 115.97656
+          },
+          {
+            "x": 1386,
+            "y": 9748,
+            "value": 111.895386
+          }
+        ]
+      },
+      {
+        "name": "SLN_VZA",
+        "description": "SLSTR nadir view zenith angle",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2912,
+            "y": 7679,
+            "value": 15.636115
+          },
+          {
+            "x": 2479,
+            "y": 5020,
+            "value": 23.179197
+          }
+        ]
+      },
+      {
+        "name": "SLO_TP_lat",
+        "description": "Latitude (WGS-84)",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees_north",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2072,
+            "y": 1623,
+            "value": 62.13147
+          },
+          {
+            "x": 126,
+            "y": 8430,
+            "value": 45.417984
+          }
+        ]
+      },
+      {
+        "name": "SLO_TP_lon",
+        "description": "Longitude (WGS-84)",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees_east",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3281,
+            "y": 7500,
+            "value": -8.8068905
+          },
+          {
+            "x": 1436,
+            "y": 2087,
+            "value": -11.033819
+          }
+        ]
+      },
+      {
+        "name": "SLO_VAA",
+        "description": "SLSTR oblique view azimuth angle",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 926,
+            "y": 5936,
+            "value": "NaN"
+          },
+          {
+            "x": 2799,
+            "y": 6893,
+            "value": 179.96625
+          }
+        ]
+      },
+      {
+        "name": "SLO_VZA",
+        "description": "SLSTR oblique view zenith angle",
+        "bandWidth": 4865,
+        "bandHeight": 10608,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2553,
+            "y": 903,
+            "value": 55.22446
+          },
+          {
+            "x": 3778,
+            "y": 3480,
+            "value": 55.241795
+          }
+        ]
+      }
+    ],
+    "masks": [
+      {
+        "name": "SYN_flags_SYN_high_error",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,255",
+        "description": "SYN_flags.SYN_high_error"
+      },
+      {
+        "name": "SYN_flags_SYN_too_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,0",
+        "description": "SYN_flags.SYN_too_low"
+      },
+      {
+        "name": "SYN_flags_SYN_negative_curvature",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,255",
+        "description": "SYN_flags.SYN_negative_curvature"
+      },
+      {
+        "name": "SYN_flags_SYN_success",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,255",
+        "description": "SYN_flags.SYN_success"
+      },
+      {
+        "name": "SYN_flags_SYN_aerosol_filled",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,0",
+        "description": "SYN_flags.SYN_aerosol_filled"
+      },
+      {
+        "name": "SYN_flags_SYN_border",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,127",
+        "description": "SYN_flags.SYN_border"
+      },
+      {
+        "name": "SYN_flags_SYN_partly_water",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,255",
+        "description": "SYN_flags.SYN_partly_water"
+      },
+      {
+        "name": "SYN_flags_SYN_partly_cloudy",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "SYN_flags.SYN_partly_cloudy"
+      },
+      {
+        "name": "SYN_flags_SYN_no_slo_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,0",
+        "description": "SYN_flags.SYN_no_slo_1"
+      },
+      {
+        "name": "SYN_flags_SYN_no_SLO_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,127",
+        "description": "SYN_flags.SYN_no_SLO_2"
+      },
+      {
+        "name": "SYN_flags_SYN_no_olc",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,127",
+        "description": "SYN_flags.SYN_no_olc"
+      },
+      {
+        "name": "SYN_flags_SYN_land",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "SYN_flags.SYN_land"
+      },
+      {
+        "name": "SYN_flags_SYN_cloud_filled",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "SYN_flags.SYN_cloud_filled"
+      },
+      {
+        "name": "SYN_flags_SYN_shadow_risk",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,0",
+        "description": "SYN_flags.SYN_shadow_risk"
+      },
+      {
+        "name": "SYN_flags_SYN_snow_risk",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "SYN_flags.SYN_snow_risk"
+      },
+      {
+        "name": "SYN_flags_SYN_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "SYN_flags.SYN_cloud"
+      },
+      {
+        "name": "OLC_flags_OLC_land",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "OLC_flags.OLC_land"
+      },
+      {
+        "name": "OLC_flags_OLC_coastline",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "OLC_flags.OLC_coastline"
+      },
+      {
+        "name": "OLC_flags_OLC_fresh_inland_water",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "OLC_flags.OLC_fresh_inland_water"
+      },
+      {
+        "name": "OLC_flags_OLC_tidal_region",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,127",
+        "description": "OLC_flags.OLC_tidal_region"
+      },
+      {
+        "name": "OLC_flags_OLC_bright",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,255",
+        "description": "OLC_flags.OLC_bright"
+      },
+      {
+        "name": "OLC_flags_OLC_invalid",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,0",
+        "description": "OLC_flags.OLC_invalid"
+      },
+      {
+        "name": "OLC_flags_OLC_cosmetic",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,127",
+        "description": "OLC_flags.OLC_cosmetic"
+      },
+      {
+        "name": "OLC_flags_OLC_sun_glint_risk",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,255",
+        "description": "OLC_flags.OLC_sun_glint_risk"
+      },
+      {
+        "name": "OLC_flags_OLC_dubious",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,0",
+        "description": "OLC_flags.OLC_dubious"
+      },
+      {
+        "name": "OLC_flags_OLC_summary_saturated",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,127",
+        "description": "OLC_flags.OLC_summary_saturated"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_pointing",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,255",
+        "description": "SLN_flags.SLN_summary_pointing"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "SLN_flags.SLN_summary_cloud"
+      },
+      {
+        "name": "SLN_flags_SLN_snow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "SLN_flags.SLN_snow"
+      },
+      {
+        "name": "SLN_flags_SLN_sun_glint",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,127",
+        "description": "SLN_flags.SLN_sun_glint"
+      },
+      {
+        "name": "SLN_flags_SLN_twilight",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,0",
+        "description": "SLN_flags.SLN_twilight"
+      },
+      {
+        "name": "SLN_flags_SLN_day",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,127",
+        "description": "SLN_flags.SLN_day"
+      },
+      {
+        "name": "SLN_flags_SLN_cosmetic",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,255",
+        "description": "SLN_flags.SLN_cosmetic"
+      },
+      {
+        "name": "SLN_flags_SLN_inland_water",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "SLN_flags.SLN_inland_water"
+      },
+      {
+        "name": "SLN_flags_SLN_land",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "SLN_flags.SLN_land"
+      },
+      {
+        "name": "SLN_flags_SLN_tidal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,127",
+        "description": "SLN_flags.SLN_tidal"
+      },
+      {
+        "name": "SLN_flags_SLN_ocean",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,191",
+        "description": "SLN_flags.SLN_ocean"
+      },
+      {
+        "name": "SLN_flags_SLN_coastline",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "SLN_flags.SLN_coastline"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,63",
+        "description": "SLN_flags.SLN_summary_unfilled_pixel"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,0",
+        "description": "SLN_flags.SLN_summary_no_parameters"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,63",
+        "description": "SLN_flags.SLN_summary_invalid_radiance"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,127",
+        "description": "SLN_flags.SLN_summary_saturation"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,191",
+        "description": "SLN_flags.SLN_summary_no_signal"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,191",
+        "description": "SLN_flags.SLN_summary_not_decompressed"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,0",
+        "description": "SLN_flags.SLN_summary_pixel_absent"
+      },
+      {
+        "name": "SLN_flags_SLN_summary_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,63",
+        "description": "SLN_flags.SLN_summary_ISP_absent"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_pointing",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,127",
+        "description": "SLO_flags.SLO_summary_pointing"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "SLO_flags.SLO_summary_cloud"
+      },
+      {
+        "name": "SLO_flags_SLO_snow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "SLO_flags.SLO_snow"
+      },
+      {
+        "name": "SLO_flags_SLO_sun_glint",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,191",
+        "description": "SLO_flags.SLO_sun_glint"
+      },
+      {
+        "name": "SLO_flags_SLO_twilight",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,255",
+        "description": "SLO_flags.SLO_twilight"
+      },
+      {
+        "name": "SLO_flags_SLO_day",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,63",
+        "description": "SLO_flags.SLO_day"
+      },
+      {
+        "name": "SLO_flags_SLO_cosmetic",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,191",
+        "description": "SLO_flags.SLO_cosmetic"
+      },
+      {
+        "name": "SLO_flags_SLO_inland_water",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "SLO_flags.SLO_inland_water"
+      },
+      {
+        "name": "SLO_flags_SLO_land",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "SLO_flags.SLO_land"
+      },
+      {
+        "name": "SLO_flags_SLO_tidal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,0",
+        "description": "SLO_flags.SLO_tidal"
+      },
+      {
+        "name": "SLO_flags_SLO_ocean",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,191",
+        "description": "SLO_flags.SLO_ocean"
+      },
+      {
+        "name": "SLO_flags_SLO_coastline",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "SLO_flags.SLO_coastline"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,63",
+        "description": "SLO_flags.SLO_summary_unfilled_pixel"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,127",
+        "description": "SLO_flags.SLO_summary_no_parameters"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,191",
+        "description": "SLO_flags.SLO_summary_invalid_radiance"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,255",
+        "description": "SLO_flags.SLO_summary_saturation"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,0",
+        "description": "SLO_flags.SLO_summary_no_signal"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,63",
+        "description": "SLO_flags.SLO_summary_not_decompressed"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,127",
+        "description": "SLO_flags.SLO_summary_pixel_absent"
+      },
+      {
+        "name": "SLO_flags_SLO_summary_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,191",
+        "description": "SLO_flags.SLO_summary_ISP_absent"
+      }
+    ],
+    "metadata": [
+      {
+        "path": "Manifest/metadataSection/orbitReference/passNumber/groundTrackDirection",
+        "value": "descending"
+      },
+      {
+        "path": "Manifest/metadataSection/acquisitionPeriod/startTime",
+        "value": "2016-04-15T11:00:58.529201Z"
+      },
+      {
+        "path": "Manifest/metadataSection/qualityInformation/extension/productQuality/synDataQuality/oRefSRefMaxShift",
+        "value": "0.000000"
+      },
+      {
+        "path": "Manifest/metadataSection/olciProductInformation/ecmwfType/ecmwfType",
+        "value": "ANALYSIS"
+      },
+      {
+        "path": "Manifest/metadataSection/frameSet/footPrint/srsName",
+        "value": "http://www.opengis.net/def/crs/EPSG/0/4326"
+      },
+      {
+        "path": "Manifest/metadataSection/slstrProductInformation/resolution[4]/grid",
+        "value": "0.5 km TDI"
+      },
+      {
+        "path": "Manifest/metadataSection/orbitReference/passNumber/passNumber",
+        "value": "1674"
+      },
+      {
+        "path": "Manifest/metadataSection/generalProductInformation/dumpInformation/granuleNumber",
+        "value": "0"
+      },
+      {
+        "path": "Manifest/metadataSection/frameSet/footPrint/srsName",
+        "value": "http://www.opengis.net/def/crs/EPSG/0/4326"
+      },
+      {
+        "path": "Manifest/metadataSection/slstrProductInformation/resolution[4]/grid",
+        "value": "0.5 km TDI"
+      }
+    ]
+  }
+}
