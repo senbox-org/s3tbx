@@ -1,0 +1,32 @@
+{
+  "testProducts": [
+    {
+      "id": "S3A_SY_2_VG1____20130621T100922",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_VG1____20130621T100922_20130621T104922_20140527T011902_GLOBAL____________LN2_D_NR____.SEN3",
+      "description": "S3A_SY_2_VG1 Global"
+
+    },
+    {
+      "id": "S3A_SY_2_VG1____20190426T111721",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_VG1____20190426T111721_20190427T111721_20190502T113557_SOUTH_EAST_ASIA___LN2_O_NT_002.SEN3",
+      "description": "S3A_SY_2_VG1 South East Asia"
+
+    },
+    {
+      "id": "S3A_SY_2_VGP____20130621T100932",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_VGP____20130621T100932_20130621T101146_20140604T091546_0134_001_002______LN1_D_NC____.SEN3",
+      "description": "S3A_SY_2_VGP 2013 Global"
+
+    },
+    {
+      "id": "S3A_SY_2_VGP____20160415T110058",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_VGP____20160415T110058_20160415T110845_20160502T125459_0466_003_094______LN1_D_NC____.SEN3",
+      "description": "S3A_SY_2_VGP 2016"
+    },
+    {
+      "id": "S3A_SY_2_V10____20190410T111721",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_V10____20190410T111721_20190420T111721_20190430T120711_EUROPE____________LN2_O_NT_002.SEN3",
+      "description": "S3A_SY_2_V10 2019 Europe"
+    }
+  ]
+}
