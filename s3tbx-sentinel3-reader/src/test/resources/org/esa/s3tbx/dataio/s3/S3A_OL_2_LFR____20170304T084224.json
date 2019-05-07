@@ -1,0 +1,2949 @@
+{
+  "id": "S3A_OL_2_LFR____20170304T084224",
+  "decodeQualification": "INTENDED",
+  "expectedContent": {
+    "sceneWidth": 4865,
+    "sceneHeight": 4091,
+    "startTime": "04-MAR-2017 08:42:24.157311",
+    "endTime": "04-MAR-2017 08:45:24.157311",
+    "geoCoding": {
+      "coordinates": [
+        {
+          "x": 2098.0,
+          "y": 2199.0,
+          "lat": -68.19845814113572,
+          "lon": -14.478618555701813
+        },
+        {
+          "x": 3612.0,
+          "y": 2654.0,
+          "lat": -71.16485124066736,
+          "lon": -7.374686491017621
+        }
+      ],
+      "reverseAccuracy": 0.060910801922091196
+    },
+    "flagCodings": [
+      {
+        "name": "LQSF",
+        "samples": [
+          {
+            "name": "INVALID",
+            "value": 1
+          },
+          {
+            "name": "WATER",
+            "value": 2
+          },
+          {
+            "name": "LAND",
+            "value": 4
+          },
+          {
+            "name": "CLOUD",
+            "value": 8
+          },
+          {
+            "name": "SNOW_ICE",
+            "value": 16
+          },
+          {
+            "name": "INLAND_WATER",
+            "value": 32
+          },
+          {
+            "name": "TIDAL",
+            "value": 64
+          },
+          {
+            "name": "COSMETIC",
+            "value": 128
+          },
+          {
+            "name": "SUSPECT",
+            "value": 256
+          },
+          {
+            "name": "HISOLZEN",
+            "value": 512
+          },
+          {
+            "name": "SATURATED",
+            "value": 1024
+          },
+          {
+            "name": "WV_FAIL",
+            "value": 2048
+          },
+          {
+            "name": "OGVI_FAIL",
+            "value": 4096
+          },
+          {
+            "name": "OTCI_FAIL",
+            "value": 8192
+          },
+          {
+            "name": "LRAYFAIL",
+            "value": 16384
+          },
+          {
+            "name": "OGVI_CLASS_BAD",
+            "value": 32768
+          },
+          {
+            "name": "OGVI_CLASS_WS",
+            "value": 65536
+          },
+          {
+            "name": "OGVI_CLASS_CSI",
+            "value": 131072
+          },
+          {
+            "name": "OGVI_CLASS_BRIGHT",
+            "value": 262144
+          },
+          {
+            "name": "OGVI_CLASS_INVAL_REC",
+            "value": 524288
+          },
+          {
+            "name": "OTCI_BAD_IN",
+            "value": 1048576
+          },
+          {
+            "name": "OTCI_CLASS_ANG",
+            "value": 2097152
+          },
+          {
+            "name": "OTCI_CLASS_CLSN",
+            "value": 4194304
+          }
+        ]
+      },
+      {
+        "name": "OTCI_quality_flags",
+        "samples": [
+          {
+            "name": "Soil_flag_1",
+            "value": 1
+          },
+          {
+            "name": "Soil_flag_2",
+            "value": 2
+          },
+          {
+            "name": "Angle_flag_1",
+            "value": 16
+          },
+          {
+            "name": "Angle_flag_2",
+            "value": 32
+          },
+          {
+            "name": "Radiometry_flag",
+            "value": 64
+          },
+          {
+            "name": "TCI_flag",
+            "value": 128
+          }
+        ]
+      }
+    ],
+    "tiePointGrids": [
+      {
+        "name": "TP_latitude",
+        "description": "Latitude",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 253,
+            "y": 728,
+            "value": -62.403282
+          },
+          {
+            "x": 3332,
+            "y": 3479,
+            "value": -72.67269
+          }
+        ]
+      },
+      {
+        "name": "TP_longitude",
+        "description": "Longitude",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1415,
+            "y": 1050,
+            "value": -13.488841
+          },
+          {
+            "x": 2970,
+            "y": 1494,
+            "value": -7.075909
+          }
+        ]
+      },
+      {
+        "name": "OAA",
+        "description": "Observation (Viewing) Azimuth Angle",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2675,
+            "y": 3049,
+            "value": 125.76457
+          },
+          {
+            "x": 2959,
+            "y": 3798,
+            "value": 127.44972
+          }
+        ]
+      },
+      {
+        "name": "OZA",
+        "description": "Observation (Viewing) Zenith Angle",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 769,
+            "y": 2724,
+            "value": 48.071957
+          },
+          {
+            "x": 2525,
+            "y": 3737,
+            "value": 21.991804
+          }
+        ]
+      },
+      {
+        "name": "SAA",
+        "description": "Sun Azimuth Angle",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 3678,
+            "y": 1982,
+            "value": 60.100872
+          },
+          {
+            "x": 4625,
+            "y": 1987,
+            "value": 53.678665
+          }
+        ]
+      },
+      {
+        "name": "SZA",
+        "description": "Sun Zenith Angle",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1656,
+            "y": 3679,
+            "value": 79.274536
+          },
+          {
+            "x": 48,
+            "y": 1925,
+            "value": 77.82683
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_1",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1592,
+            "y": 806,
+            "value": 275.57007
+          },
+          {
+            "x": 1329,
+            "y": 176,
+            "value": 275.50085
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_2",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 4726,
+            "y": 2473,
+            "value": 269.5372
+          },
+          {
+            "x": 2784,
+            "y": 2932,
+            "value": 268.59232
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_3",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1128,
+            "y": 2035,
+            "value": 270.60275
+          },
+          {
+            "x": 1562,
+            "y": 2955,
+            "value": 269.68375
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_4",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1742,
+            "y": 2038,
+            "value": 268.7071
+          },
+          {
+            "x": 1959,
+            "y": 1809,
+            "value": 268.90707
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_5",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2795,
+            "y": 375,
+            "value": 266.0553
+          },
+          {
+            "x": 3139,
+            "y": 64,
+            "value": 266.969
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_6",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 4744,
+            "y": 1502,
+            "value": 262.0971
+          },
+          {
+            "x": 4622,
+            "y": 3871,
+            "value": 261.31937
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_7",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 539,
+            "y": 1848,
+            "value": 263.27957
+          },
+          {
+            "x": 2777,
+            "y": 2301,
+            "value": 258.0891
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_8",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2460,
+            "y": 2133,
+            "value": 253.44205
+          },
+          {
+            "x": 2192,
+            "y": 2376,
+            "value": 252.44171
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_9",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 70,
+            "y": 1737,
+            "value": 253.048
+          },
+          {
+            "x": 341,
+            "y": 4061,
+            "value": 245.31772
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_10",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1443,
+            "y": 3048,
+            "value": 237.99236
+          },
+          {
+            "x": 3909,
+            "y": 3012,
+            "value": 238.0371
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_11",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 4059,
+            "y": 3868,
+            "value": 222.45097
+          },
+          {
+            "x": 1209,
+            "y": 2175,
+            "value": 227.47144
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_12",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2972,
+            "y": 1064,
+            "value": 216.9432
+          },
+          {
+            "x": 2689,
+            "y": 617,
+            "value": 218.60197
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_13",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2313,
+            "y": 2287,
+            "value": 223.85593
+          },
+          {
+            "x": 464,
+            "y": 3476,
+            "value": 227.24706
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_14",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 467,
+            "y": 318,
+            "value": 228.57106
+          },
+          {
+            "x": 2213,
+            "y": 2766,
+            "value": 223.76567
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_15",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2262,
+            "y": 3662,
+            "value": 223.84052
+          },
+          {
+            "x": 4220,
+            "y": 2454,
+            "value": 223.07631
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_16",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 4680,
+            "y": 1558,
+            "value": 223.08514
+          },
+          {
+            "x": 427,
+            "y": 2179,
+            "value": 221.28864
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_17",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 3577,
+            "y": 2433,
+            "value": 223.84476
+          },
+          {
+            "x": 4749,
+            "y": 760,
+            "value": 222.9942
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_18",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2239,
+            "y": 1067,
+            "value": 222.87843
+          },
+          {
+            "x": 1114,
+            "y": 2649,
+            "value": 222.18361
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_19",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 3112,
+            "y": 1790,
+            "value": 224.23997
+          },
+          {
+            "x": 2585,
+            "y": 2320,
+            "value": 224.38826
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_20",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1925,
+            "y": 874,
+            "value": 232.2541
+          },
+          {
+            "x": 1357,
+            "y": 3635,
+            "value": 230.1366
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_21",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 4600,
+            "y": 2372,
+            "value": 235.28279
+          },
+          {
+            "x": 3687,
+            "y": 1342,
+            "value": 235.04254
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_22",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2727,
+            "y": 1189,
+            "value": 241.08524
+          },
+          {
+            "x": 4034,
+            "y": 3562,
+            "value": 238.26466
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_23",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 526,
+            "y": 3629,
+            "value": 249.93057
+          },
+          {
+            "x": 1673,
+            "y": 3330,
+            "value": 247.02774
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_24",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 886,
+            "y": 2832,
+            "value": 253.46324
+          },
+          {
+            "x": 2882,
+            "y": 2246,
+            "value": 252.15254
+          }
+        ]
+      },
+      {
+        "name": "atmospheric_temperature_profile_pressure_level_25",
+        "description": "Air temperature profile",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1000,
+            "y": 1252,
+            "value": 256.0552
+          },
+          {
+            "x": 1996,
+            "y": 3533,
+            "value": 261.85513
+          }
+        ]
+      },
+      {
+        "name": "horizontal_wind_vector_1",
+        "description": "Horizontal wind vector at 10m altitude",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 3414,
+            "y": 3671,
+            "value": -6.018569
+          },
+          {
+            "x": 1447,
+            "y": 4061,
+            "value": -11.394795
+          }
+        ]
+      },
+      {
+        "name": "horizontal_wind_vector_2",
+        "description": "Horizontal wind vector at 10m altitude",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2662,
+            "y": 477,
+            "value": -2.417451
+          },
+          {
+            "x": 947,
+            "y": 2295,
+            "value": -3.4824078
+          }
+        ]
+      },
+      {
+        "name": "humidity",
+        "description": "Relative humidity",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2228,
+            "y": 527,
+            "value": 105.92582
+          },
+          {
+            "x": 4032,
+            "y": 2343,
+            "value": 69.96691
+          }
+        ]
+      },
+      {
+        "name": "sea_level_pressure",
+        "description": "Mean sea level pressure",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 499,
+            "y": 2768,
+            "value": 977.3379
+          },
+          {
+            "x": 3556,
+            "y": 1931,
+            "value": 997.7826
+          }
+        ]
+      },
+      {
+        "name": "total_columnar_water_vapour",
+        "description": "Total column water vapour",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 696,
+            "y": 272,
+            "value": 13.638245
+          },
+          {
+            "x": 4093,
+            "y": 1226,
+            "value": 7.1637716
+          }
+        ]
+      },
+      {
+        "name": "total_ozone",
+        "description": "Total columnar ozone",
+        "offsetX": "0.0",
+        "offsetY": "0.0",
+        "subSamplingX": "64.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 2881,
+            "y": 3975,
+            "value": 0.005907431
+          },
+          {
+            "x": 3781,
+            "y": 112,
+            "value": 0.0059926137
+          }
+        ]
+      }
+    ],
+    "bands": [
+      {
+        "name": "altitude",
+        "description": "DEM corrected altitude",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "m",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1054,
+            "y": 1008,
+            "value": 8.0
+          },
+          {
+            "x": 1553,
+            "y": 792,
+            "value": 7.0
+          }
+        ]
+      },
+      {
+        "name": "latitude",
+        "description": "DEM corrected latitude",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "degrees_north",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1374,
+            "y": 3613,
+            "value": -69.92665
+          },
+          {
+            "x": 4853,
+            "y": 309,
+            "value": -66.6168
+          }
+        ]
+      },
+      {
+        "name": "longitude",
+        "description": "DEM corrected longitude",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "degrees_east",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3984,
+            "y": 2052,
+            "value": -2.813321
+          },
+          {
+            "x": 305,
+            "y": 1576,
+            "value": -20.397657
+          }
+        ]
+      },
+      {
+        "name": "detector_index",
+        "description": "Detector index",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1349,
+            "y": 2381,
+            "value": 593.0
+          },
+          {
+            "x": 4517,
+            "y": 568,
+            "value": 3415.0
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_1",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 508,
+            "y": 595,
+            "value": 14.125143
+          },
+          {
+            "x": 4299,
+            "y": 436,
+            "value": 13.6951065
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_2",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1800,
+            "y": 3605,
+            "value": 9.8565
+          },
+          {
+            "x": 2846,
+            "y": 2354,
+            "value": 9.830443
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_3",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1642,
+            "y": 1333,
+            "value": 9.954703
+          },
+          {
+            "x": 1818,
+            "y": 3502,
+            "value": 9.959538
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_4",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1585,
+            "y": 2802,
+            "value": 9.983425
+          },
+          {
+            "x": 3130,
+            "y": 2762,
+            "value": 9.991408
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_5",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2579,
+            "y": 533,
+            "value": 9.948044
+          },
+          {
+            "x": 2255,
+            "y": 3275,
+            "value": 9.971589
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_6",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3903,
+            "y": 3690,
+            "value": 9.9977255
+          },
+          {
+            "x": 124,
+            "y": 2857,
+            "value": 10.002686
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_7",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4325,
+            "y": 2356,
+            "value": 9.929036
+          },
+          {
+            "x": 3102,
+            "y": 3713,
+            "value": 9.9533825
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_8",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4778,
+            "y": 1321,
+            "value": 10.018742
+          },
+          {
+            "x": 1747,
+            "y": 21,
+            "value": 10.010531
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_9",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4084,
+            "y": 2328,
+            "value": 7.5385847
+          },
+          {
+            "x": 2872,
+            "y": 1628,
+            "value": 7.5228953
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_10",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1919,
+            "y": 4043,
+            "value": 7.49681
+          },
+          {
+            "x": 1116,
+            "y": 2933,
+            "value": 7.5220976
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_11",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4566,
+            "y": 1180,
+            "value": 10.012714
+          },
+          {
+            "x": 1530,
+            "y": 3485,
+            "value": 9.999753
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_12",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1593,
+            "y": 2163,
+            "value": 7.492314
+          },
+          {
+            "x": 1742,
+            "y": 3271,
+            "value": 7.493286
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_13",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2726,
+            "y": 892,
+            "value": 2.6706026
+          },
+          {
+            "x": 462,
+            "y": 2882,
+            "value": 2.573187
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_14",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3418,
+            "y": 3252,
+            "value": 3.713284
+          },
+          {
+            "x": 4106,
+            "y": 278,
+            "value": 3.7197804
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_15",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4069,
+            "y": 928,
+            "value": 2.630067
+          },
+          {
+            "x": 3174,
+            "y": 3805,
+            "value": 2.689155
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_16",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1304,
+            "y": 3524,
+            "value": 15.008732
+          },
+          {
+            "x": 1879,
+            "y": 1517,
+            "value": 15.007398
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_17",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4728,
+            "y": 2784,
+            "value": 19.97216
+          },
+          {
+            "x": 3526,
+            "y": 1749,
+            "value": 19.964872
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_18",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2426,
+            "y": 568,
+            "value": 9.959952
+          },
+          {
+            "x": 4713,
+            "y": 556,
+            "value": 9.982756
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_19",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3507,
+            "y": 2274,
+            "value": 9.963324
+          },
+          {
+            "x": 3434,
+            "y": 4049,
+            "value": 9.965541
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_20",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3117,
+            "y": 3706,
+            "value": 19.823362
+          },
+          {
+            "x": 4063,
+            "y": 2172,
+            "value": 19.897833
+          }
+        ]
+      },
+      {
+        "name": "FWHM_band_21",
+        "description": "OLCI bandwidth (Full Widths at Half Maximum)",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2432,
+            "y": 3803,
+            "value": 27.009783
+          },
+          {
+            "x": 2784,
+            "y": 3160,
+            "value": 27.620842
+          }
+        ]
+      },
+      {
+        "name": "frame_offset",
+        "description": "Re-sampling along-track frame offset",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4521,
+            "y": 160,
+            "value": -1.0
+          },
+          {
+            "x": 3425,
+            "y": 2957,
+            "value": -1.0
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_1",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1689,
+            "y": 28,
+            "value": 400.10077
+          },
+          {
+            "x": 1052,
+            "y": 3520,
+            "value": 400.14764
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_2",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 611,
+            "y": 415,
+            "value": 411.89798
+          },
+          {
+            "x": 419,
+            "y": 468,
+            "value": 411.9685
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_3",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3386,
+            "y": 285,
+            "value": 443.34354
+          },
+          {
+            "x": 2341,
+            "y": 3551,
+            "value": 442.32864
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_4",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 814,
+            "y": 967,
+            "value": 490.49255
+          },
+          {
+            "x": 1221,
+            "y": 3973,
+            "value": 490.2797
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_5",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3482,
+            "y": 1390,
+            "value": 510.71182
+          },
+          {
+            "x": 3135,
+            "y": 2088,
+            "value": 510.33783
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_6",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4412,
+            "y": 2082,
+            "value": 560.63324
+          },
+          {
+            "x": 4189,
+            "y": 2284,
+            "value": 560.8404
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_7",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3894,
+            "y": 3114,
+            "value": 620.38855
+          },
+          {
+            "x": 4063,
+            "y": 3010,
+            "value": 620.8731
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_8",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3061,
+            "y": 1743,
+            "value": 665.1977
+          },
+          {
+            "x": 2628,
+            "y": 3122,
+            "value": 665.59094
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_9",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3084,
+            "y": 621,
+            "value": 673.9
+          },
+          {
+            "x": 4292,
+            "y": 1288,
+            "value": 674.37244
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_10",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1330,
+            "y": 1573,
+            "value": 681.3481
+          },
+          {
+            "x": 3319,
+            "y": 762,
+            "value": 681.843
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_11",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 707,
+            "y": 4037,
+            "value": 709.21173
+          },
+          {
+            "x": 1911,
+            "y": 3083,
+            "value": 708.9982
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_12",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 343,
+            "y": 2851,
+            "value": 754.4395
+          },
+          {
+            "x": 2957,
+            "y": 3530,
+            "value": 754.1607
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_13",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2852,
+            "y": 1359,
+            "value": 761.8541
+          },
+          {
+            "x": 2127,
+            "y": 70,
+            "value": 761.3995
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_14",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2925,
+            "y": 2731,
+            "value": 764.8694
+          },
+          {
+            "x": 3818,
+            "y": 365,
+            "value": 764.7054
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_15",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4381,
+            "y": 339,
+            "value": 768.2187
+          },
+          {
+            "x": 375,
+            "y": 3371,
+            "value": 768.1855
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_16",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 620,
+            "y": 3736,
+            "value": 779.4099
+          },
+          {
+            "x": 942,
+            "y": 1317,
+            "value": 779.2774
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_17",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2652,
+            "y": 2919,
+            "value": 865.6765
+          },
+          {
+            "x": 572,
+            "y": 893,
+            "value": 865.70526
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_18",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1988,
+            "y": 3080,
+            "value": 884.09485
+          },
+          {
+            "x": 395,
+            "y": 3061,
+            "value": 884.64453
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_19",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4465,
+            "y": 869,
+            "value": 899.5789
+          },
+          {
+            "x": 4283,
+            "y": 2874,
+            "value": 899.7545
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_20",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 590,
+            "y": 111,
+            "value": 939.2919
+          },
+          {
+            "x": 1386,
+            "y": 3759,
+            "value": 938.8535
+          }
+        ]
+      },
+      {
+        "name": "lambda0_band_21",
+        "description": "OLCI characterised central wavelength",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "nm",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2912,
+            "y": 2961,
+            "value": 1015.8974
+          },
+          {
+            "x": 2479,
+            "y": 1936,
+            "value": 1015.20044
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_1",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2072,
+            "y": 625,
+            "value": 1520.3129
+          },
+          {
+            "x": 126,
+            "y": 3251,
+            "value": 1545.5317
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_2",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3281,
+            "y": 2892,
+            "value": 1734.8687
+          },
+          {
+            "x": 1436,
+            "y": 805,
+            "value": 1733.7999
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_3",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 926,
+            "y": 2289,
+            "value": 1919.3298
+          },
+          {
+            "x": 2799,
+            "y": 2658,
+            "value": 1927.8586
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_4",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2553,
+            "y": 348,
+            "value": 1977.0802
+          },
+          {
+            "x": 3778,
+            "y": 1342,
+            "value": 1970.7281
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_5",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4231,
+            "y": 3764,
+            "value": 1945.1887
+          },
+          {
+            "x": 2315,
+            "y": 2254,
+            "value": 1960.0636
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_6",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2794,
+            "y": 3882,
+            "value": 1825.6897
+          },
+          {
+            "x": 4521,
+            "y": 763,
+            "value": 1826.4357
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_7",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 332,
+            "y": 3025,
+            "value": 1676.5597
+          },
+          {
+            "x": 318,
+            "y": 2220,
+            "value": 1676.5524
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_8",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3370,
+            "y": 3534,
+            "value": 1555.2101
+          },
+          {
+            "x": 2769,
+            "y": 3594,
+            "value": 1555.453
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_9",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1779,
+            "y": 3838,
+            "value": 1520.012
+          },
+          {
+            "x": 4365,
+            "y": 1007,
+            "value": 1518.7208
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_10",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 512,
+            "y": 2973,
+            "value": 1492.8679
+          },
+          {
+            "x": 1067,
+            "y": 2782,
+            "value": 1493.9614
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_11",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 355,
+            "y": 161,
+            "value": 1425.2299
+          },
+          {
+            "x": 1330,
+            "y": 1276,
+            "value": 1428.2665
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_12",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4465,
+            "y": 1725,
+            "value": 1287.7415
+          },
+          {
+            "x": 382,
+            "y": 2801,
+            "value": 1287.7689
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_13",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1014,
+            "y": 1831,
+            "value": 1267.9757
+          },
+          {
+            "x": 2501,
+            "y": 216,
+            "value": 1271.1707
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_14",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2972,
+            "y": 943,
+            "value": 1260.0095
+          },
+          {
+            "x": 1928,
+            "y": 1453,
+            "value": 1261.1993
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_15",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 603,
+            "y": 385,
+            "value": 1251.6432
+          },
+          {
+            "x": 3810,
+            "y": 2559,
+            "value": 1249.6005
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_16",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 729,
+            "y": 271,
+            "value": 1192.8029
+          },
+          {
+            "x": 2537,
+            "y": 489,
+            "value": 1191.7045
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_17",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4390,
+            "y": 1708,
+            "value": 975.9818
+          },
+          {
+            "x": 1196,
+            "y": 1382,
+            "value": 976.06915
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_18",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3305,
+            "y": 502,
+            "value": 946.3405
+          },
+          {
+            "x": 590,
+            "y": 1231,
+            "value": 946.0094
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_19",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4149,
+            "y": 990,
+            "value": 910.6428
+          },
+          {
+            "x": 480,
+            "y": 4,
+            "value": 910.8316
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_20",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 607,
+            "y": 1868,
+            "value": 839.8963
+          },
+          {
+            "x": 2861,
+            "y": 1996,
+            "value": 840.23895
+          }
+        ]
+      },
+      {
+        "name": "solar_flux_band_21",
+        "description": "In-band solar irradiance, seasonally corrected",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.nm-1",
+        "noDataValue": "-1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 841,
+            "y": 2573,
+            "value": 711.1006
+          },
+          {
+            "x": 2603,
+            "y": 3163,
+            "value": 711.0758
+          }
+        ]
+      },
+      {
+        "name": "IWV",
+        "description": "Integrated water vapour column above the current pixel",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "kg.m-2",
+        "noDataValue": "76.50000303983688",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1954,
+            "y": 1440,
+            "value": "NaN"
+          },
+          {
+            "x": 2163,
+            "y": 3714,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "IWV_err",
+        "description": "Error estimate for Integrated water vapour column above the current pixel",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "kg.m-2",
+        "noDataValue": "76.50000303983688",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 618,
+            "y": 726,
+            "value": "NaN"
+          },
+          {
+            "x": 139,
+            "y": 2465,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "LQSF",
+        "description": "Classification flags, quality and science flags for Land pixels",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "noDataValue": "4.294967295E9",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1736,
+            "y": 243,
+            "value": 8.0
+          },
+          {
+            "x": 3121,
+            "y": 2026,
+            "value": 8.0
+          }
+        ]
+      },
+      {
+        "name": "OGVI",
+        "description": "OLCI Global Vegetation Index",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "noDataValue": "1.003937004134059",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4333,
+            "y": 2375,
+            "value": "NaN"
+          },
+          {
+            "x": 1985,
+            "y": 816,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "OGVI_err",
+        "description": "Error estimate for OLCI Global Vegetation Index",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "noDataValue": "1.003937004134059",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 23,
+            "y": 2620,
+            "value": "NaN"
+          },
+          {
+            "x": 9,
+            "y": 503,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "OTCI",
+        "description": "OLCI Terrestrial Chlorophyll Index",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "noDataValue": "5.521653285250068",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2663,
+            "y": 1847,
+            "value": "NaN"
+          },
+          {
+            "x": 363,
+            "y": 1880,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "OTCI_err",
+        "description": "Error estimate for OLCI Terrestrial Chlorophyll Index",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "noDataValue": "5.521653285250068",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 497,
+            "y": 861,
+            "value": "NaN"
+          },
+          {
+            "x": 3412,
+            "y": 3676,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "OTCI_quality_flags",
+        "description": "OLCI Terrestrial Vegetation Index Quality Flag of the land pixel",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2917,
+            "y": 2379,
+            "value": 0.0
+          },
+          {
+            "x": 1802,
+            "y": 1586,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "RC681",
+        "description": "Rectified reflectance for the band O10",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.sr-1.nm-1",
+        "noDataValue": "258.01181006245315",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2992,
+            "y": 3351,
+            "value": "NaN"
+          },
+          {
+            "x": 2959,
+            "y": 2120,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "RC681_err",
+        "description": "Error estimate for Rectified reflectance for the band O10",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.sr-1.nm-1",
+        "noDataValue": "258.01181006245315",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3609,
+            "y": 3314,
+            "value": "NaN"
+          },
+          {
+            "x": 2651,
+            "y": 3561,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "RC865",
+        "description": "Rectified reflectance for the band O17",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.sr-1.nm-1",
+        "noDataValue": "258.01181006245315",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 826,
+            "y": 2376,
+            "value": "NaN"
+          },
+          {
+            "x": 2425,
+            "y": 1723,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "RC865_err",
+        "description": "Error estimate for Rectified reflectance for the band O17",
+        "bandWidth": 4865,
+        "bandHeight": 4091,
+        "geophysicalUnit": "mW.m-2.sr-1.nm-1",
+        "noDataValue": "258.01181006245315",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2878,
+            "y": 2638,
+            "value": "NaN"
+          },
+          {
+            "x": 4782,
+            "y": 390,
+            "value": "NaN"
+          }
+        ]
+      }
+    ],
+    "masks": [
+      {
+        "name": "LQSF_INVALID",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,255",
+        "description": "LQSF.INVALID"
+      },
+      {
+        "name": "LQSF_WATER",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,255",
+        "description": "LQSF.WATER"
+      },
+      {
+        "name": "LQSF_LAND",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "LQSF.LAND"
+      },
+      {
+        "name": "LQSF_CLOUD",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "LQSF.CLOUD"
+      },
+      {
+        "name": "LQSF_SNOW_ICE",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "LQSF.SNOW_ICE"
+      },
+      {
+        "name": "LQSF_INLAND_WATER",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "LQSF.INLAND_WATER"
+      },
+      {
+        "name": "LQSF_TIDAL",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,0",
+        "description": "LQSF.TIDAL"
+      },
+      {
+        "name": "LQSF_COSMETIC",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,255",
+        "description": "LQSF.COSMETIC"
+      },
+      {
+        "name": "LQSF_SUSPECT",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,255",
+        "description": "LQSF.SUSPECT"
+      },
+      {
+        "name": "LQSF_HISOLZEN",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,0",
+        "description": "LQSF.HISOLZEN"
+      },
+      {
+        "name": "LQSF_SATURATED",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,127",
+        "description": "LQSF.SATURATED"
+      },
+      {
+        "name": "LQSF_WV_FAIL",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,0",
+        "description": "LQSF.WV_FAIL"
+      },
+      {
+        "name": "LQSF_OGVI_FAIL",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,127",
+        "description": "LQSF.OGVI_FAIL"
+      },
+      {
+        "name": "LQSF_OTCI_FAIL",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,127",
+        "description": "LQSF.OTCI_FAIL"
+      },
+      {
+        "name": "LQSF_LRAYFAIL",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,0",
+        "description": "LQSF.LRAYFAIL"
+      },
+      {
+        "name": "LQSF_OGVI_CLASS_BAD",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,127",
+        "description": "LQSF.OGVI_CLASS_BAD"
+      },
+      {
+        "name": "LQSF_OGVI_CLASS_WS",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,255",
+        "description": "LQSF.OGVI_CLASS_WS"
+      },
+      {
+        "name": "LQSF_OGVI_CLASS_CSI",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,0",
+        "description": "LQSF.OGVI_CLASS_CSI"
+      },
+      {
+        "name": "LQSF_OGVI_CLASS_BRIGHT",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,127",
+        "description": "LQSF.OGVI_CLASS_BRIGHT"
+      },
+      {
+        "name": "LQSF_OGVI_CLASS_INVAL_REC",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,255",
+        "description": "LQSF.OGVI_CLASS_INVAL_REC"
+      },
+      {
+        "name": "LQSF_OTCI_BAD_IN",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,0",
+        "description": "LQSF.OTCI_BAD_IN"
+      },
+      {
+        "name": "LQSF_OTCI_CLASS_ANG",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,127",
+        "description": "LQSF.OTCI_CLASS_ANG"
+      },
+      {
+        "name": "LQSF_OTCI_CLASS_CLSN",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,255",
+        "description": "LQSF.OTCI_CLASS_CLSN"
+      },
+      {
+        "name": "OTCI_quality_flags_Soil_flag_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,127",
+        "description": "OTCI_quality_flags.Soil_flag_1"
+      },
+      {
+        "name": "OTCI_quality_flags_Soil_flag_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,0",
+        "description": "OTCI_quality_flags.Soil_flag_2"
+      },
+      {
+        "name": "OTCI_quality_flags_Angle_flag_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,127",
+        "description": "OTCI_quality_flags.Angle_flag_1"
+      },
+      {
+        "name": "OTCI_quality_flags_Angle_flag_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,255",
+        "description": "OTCI_quality_flags.Angle_flag_2"
+      },
+      {
+        "name": "OTCI_quality_flags_Radiometry_flag",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,127",
+        "description": "OTCI_quality_flags.Radiometry_flag"
+      },
+      {
+        "name": "OTCI_quality_flags_TCI_flag",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,63",
+        "description": "OTCI_quality_flags.TCI_flag"
+      }
+    ],
+    "metadata": [
+      {
+        "path": "FWHM/Bandwidths for band 10/Bandwidths",
+        "value": "7.525778,7.525761,7.5257444,7.525728,7.525768,7.525808,7.5258474,7.525887,7.525926,7.525965,7.5260043,7.5260434,7.526082,7.5261207,7.5261593,7.5261974,7.5262356,7.5262737,7.5263114,7.526349,7.5263867,7.526424,7.526461,7.5264983,7.5265355,7.526572,7.526609,7.5266457,7.526682,7.526718,7.5267544,7.5267906,7.5268264,7.526862,7.526898,7.526933,7.5269685,7.527004,7.527039,7.527074,7.5271087,7.5271435,7.5271783,7.5272126,7.527247,7.5272813,7.527315,7.527349,7.527383,7.5274167,7.52745,7.527484,7.527517,7.52755,7.5275836,7.5276165,7.5276127,7.527609,7.527605,7.5276012,7.5275974,7.527594,7.5275903,7.5275865,7.5275826,7.5275793,7.5275755,7.5275717,7.5275683,7.5275645,7.5275607,7.5275574,7.5275536,7.52755,7.5275464,7.527543,7.5275393,7.527536,7.527532,7.527529,7.5275254,7.5275216,7.5275183,7.527515,7.527511,7.527508,7.5275044,7.527501,7.5274973,7.527494,7.5274906,7.5274873,7.527484,7.5274806,7.5274773,7.527474,7.5274706,7.5274673,7.527464,7.5274606,7.527457,7.527454,7.5274506,7.527447,7.5275044,7.5275617,7.527619,7.527676,7.5277333,7.5277905,7.5278482,7.5279055,7.527963,7.528021,7.5280786,7.5281363,7.528194,7.528252,7.52831,7.528368,7.528426,7.528484,7.528542,7.5286007,7.528659,7.528717,7.5287757,7.5288343,7.5288925,7.528951,7.52901,7.529069,7.5291276,7.5291862,7.5292454,7.5293045,7.5293636,7.5294228,7.529482,7.529541,7.5296,7.5296597,7.5297194,7.5297785,7.529838,7.5298977,7.529958,7.5300174,7.530077,7.530137,7.530197,7.5302567,7.530317,7.5303774,7.5304375,7.5304976,7.5304728,7.530448,7.530423,7.5303984,7.5303736,7.5303273,7.530281,7.530235,7.530188,7.530142,7.5300956,7.5300493,7.5300026,7.5299563,7.52991,7.529864,7.5298176,7.5297713,7.5297246,7.5296783,7.529632,7.529586,7.5295396,7.5294933,7.529447,7.529401,7.5293546,7.5293083,7.529262,7.529216,7.5291696,7.5291233,7.529077,7.529031,7.5289845,7.5289383,7.528892,7.528846,7.5287995,7.5287533,7.528707,7.528661,7.5286145,7.5285683,7.5285225,7.528476,7.52843,7.5283837,7.5283375,7.5282917,7.5282454,7.528199,7.528153,7.528107,7.528061,7.5280147,7.5279684,7.5279226,7.5278764,7.52783,7.5277843,7.527738,7.527692,7.527646,7.5276,7.5275536,7.527508,7.5274615,7.5274158,7.5273695,7.5273237,7.5272775,7.527231,7.5271854,7.527139,7.5270934,7.527047,7.5270014,7.5269556,7.5269094,7.5268636,7.5268173,7.5267715,7.5267253,7.5266795,7.5266337,7.5265875,7.5265417,7.526496,7.5264497,7.526404,7.526358,7.526312,7.526266,7.5262203,7.5261745,7.5261283,7.5260825,7.5260367,7.525991,7.525945,7.525899,7.525853,7.5258074,7.5257797,7.525752,7.5257244,7.5256968,7.525669,7.525641,7.525613,7.5255847,7.525557,7.525529,7.525501,7.5254726,7.525445,7.525417,7.5253887,7.525361,7.525333,7.5253053,7.525277,7.525249,7.5252213,7.525193,7.5251656,7.5251374,7.52511,7.5250816,7.525054,7.5250263,7.524998,7.5249705,7.5249424,7.5249147,7.524887,7.524859,7.5248313,7.5248036,7.524776,7.524748,7.52472,7.5246925,7.524665,7.524637,7.5246096,7.5245814,7.524554,7.524526,7.5244985,7.524471,7.524443,7.5244155,7.524388,7.52436,7.5243325,7.524305,7.524277,7.5242496,7.524222,7.5241947,7.524167,7.5241394,7.5241117,7.524084,7.524057,7.5240293,7.5240016,7.523974,7.523947,7.523919,7.5238914,7.5238643,7.5238366,7.523809,7.523782,7.523754,7.523727,7.5236993,7.523672,7.5236444,7.5236173,7.5235896,7.5235624,7.523535,7.5235076,7.52348,7.5234528,7.5234256,7.523398,7.5233707,7.5233436,7.523316,7.5232887,7.5232615,7.5232344,7.5232067,7.5231795,7.5231524,7.523125,7.523098,7.5230703,7.523043,7.523016,7.522989,7.5229616,7.5229344,7.5229073,7.5228887,7.5228696,7.522851,7.5228324,7.522814,7.522805,7.522797,7.522789,7.522781,7.522773,7.522764,7.522756,7.522748,7.52274,7.522732,7.5227237,7.5227156,7.5227075,7.5226994,7.5226912,7.5226836,7.5226755,7.5226674,7.5226593,7.5226517,7.5226436,7.5226355,7.522628,7.5226197,7.522612,7.522604,7.5225964,7.5225883,7.5225806,7.5225725,7.522565,7.5225573,7.522549,7.5225415,7.522534,7.5225263,7.5225186,7.522511,7.522503,7.5224953,7.5224876,7.52248,7.5224724,7.5224648,7.5224576,7.52245,7.5224423,7.5224347,7.522427,7.52242,7.5224123,7.5224047,7.522397,7.52239,7.5223823,7.522375,7.5223675,7.5223603,7.5223527,7.5223455,7.522338,7.5223308,7.5223236,7.5223165,7.522309,7.5223017,7.5222945,7.5222874,7.52228,7.5222726,7.5222654,7.5222583,7.522251,7.522244,7.522237,7.52223,7.522223,7.522216,7.5222087,7.5222015,7.5221944,7.5221877,7.5221806,7.5221734,7.5221667,7.5221596,7.522153,7.5221457,7.522139,7.522132,7.5221252,7.522118,7.5221114,7.5221047,7.5220976,7.522091,7.522084,7.5220776,7.522071,7.5220385,7.5220065,7.521974,7.521942,7.52191,7.5218863,7.5218625,7.521839,7.5218153,7.5217915,7.521768,7.5217443,7.5217204,7.5216966,7.521673,7.5216494,7.5216255,7.521602,7.5215783,7.5215545,7.521531,7.5215073,7.5214834,7.52146,7.521436,7.5214124,7.521389,7.521365,7.5213413,7.521318,7.521294,7.5212703,7.5212464,7.521223,7.521199,7.5211754,7.521152,7.521128,7.5211043,7.521081,7.521057,7.5210333,7.52101,7.520986,7.520962,7.520939,7.520915,7.520891,7.520868,7.520844,7.52082,7.520797,7.520773,7.520749,7.5207253,7.520702,7.520678,7.520654,7.520631,7.520607,7.520583,7.52056,7.520536,7.520512,7.5204887,7.520465,7.520441,7.5204177,7.520394,7.52037,7.520346,7.520323,7.520299,7.520275,7.5202518,7.520228,7.520204,7.5201807,7.520157,7.520133,7.520109,7.520086,7.520062,7.520038,7.520015,7.519991,7.519967,7.5199437,7.51992,7.519896,7.519872,7.519849,7.519825,7.519801,7.519778,7.519754,7.51973,7.5197062,7.519683,7.519659,7.519635,7.519612,7.519588,7.519564,7.5195403,7.519517,7.519493,7.5194693,7.5194454,7.519462,7.5194783,7.5194945,7.5195107,7.519527,7.519543,7.51956,7.519576,7.5195923,7.519609,7.519625,7.519642,7.519658,7.519675,7.519691,7.5197077,7.5197244,7.5197406,7.5197573,7.519774,7.5197906,7.5198073,7.519824,7.5198407,7.5198574,7.519874,7.519891,7.5199075,7.519924,7.5199413,7.519958,7.5199747,7.5199914,7.5200086,7.5200253,7.5200424,7.520059,7.5200763,7.520093,7.52011,7.5201273,7.5201445,7.520161,7.5201783,7.5201955,7.5202127,7.52023,7.520247,7.520264,7.5202813,7.5202985,7.5203156,7.520333,7.5203233,7.520314,7.5203047,7.520295,7.5202856,7.520276,7.520267,7.5202575,7.520248,7.520239,7.5202293,7.5202203,7.5202107,7.5202017,7.520192,7.520183,7.520174,7.5201645,7.5201554,7.5201464,7.5201373,7.520128,7.5201187,7.5201097,7.5201006,7.5200915,7.5200825,7.5200734,7.5200644,7.5200553,7.520046,7.5200377,7.5200286,7.5200195,7.5200105,7.520002,7.519993,7.519984,7.519975,7.519966,7.5199575,7.5199485,7.51994,7.519931,7.5199223,7.5199137,7.5199046,7.519896,7.5198874,7.519879,7.5198703,7.519861,7.5198317,7.519802,7.5197725,7.5197425,7.519713,7.5196834,7.5196533,7.5196238,7.519594,7.519564,7.5195346,7.5195045,7.519475,7.519445,7.5194154,7.5193853,7.5193553,7.5193257,7.5192957,7.519266,7.519236,7.519206,7.5191765,7.5191464,7.5191164,7.5190864,7.5190563,7.5190268,7.5189967,7.5189667,7.5189366,7.5189066,7.5188766,7.5188465,7.5188165,7.5187864,7.5187564,7.5187263,7.5186963,7.5186663,7.518636,7.518606,7.5185757,7.5185456,7.5185156,7.5184855,7.518455,7.518425,7.518395,7.5183644,7.5183344,7.5183043,7.5183005,7.518297,7.518294,7.5182905,7.518287,7.500915,7.500897,7.5008783,7.50086,7.5008545,7.5008492,7.500844,7.5008383,7.500833,7.5008273,7.5008216,7.5008163,7.5008106,7.500805,7.500799,7.5007935,7.5007873,7.5007815,7.500776,7.5007696,7.500764,7.5007577,7.500752,7.500746,7.5007396,7.5007334,7.500727,7.500721,7.500715,7.5007086,7.5007024,7.5006957,7.5006895,7.500683,7.5006766,7.50067,7.5006633,7.500657,7.5006504,7.5006437,7.500637,7.5006304,7.500623,7.5006166,7.50061,7.5006027,7.500596,7.500589,7.500582,7.500575,7.500568,7.5005608,7.5005536,7.5005465,7.5005393,7.500532,7.50053,7.500528,7.5005255,7.500523,7.500521,7.500519,7.5005164,7.500514,7.5005116,7.500509,7.5005064,7.500504,7.500501,7.5004983,7.500496,7.500493,7.50049,7.5004873,7.5004845,7.5004816,7.5004787,7.5004754,7.5004725,7.500469,7.5004663,7.500463,7.5004597,7.5004563,7.500453,7.5004497,7.5004463,7.500443,7.500439,7.500436,7.500432,7.5004287,7.500425,7.500421,7.500417,7.5004134,7.5004096,7.500406,7.500402,7.500398,7.500394,7.50039,7.5003858,7.5003815,7.5003777,7.5003734,7.500369,7.500365,7.50036,7.5003557,7.5003514,7.5003467,7.5003424,7.5003376,7.5003333,7.5003285,7.500324,7.500319,7.500314,7.5003095,7.500304,7.5002995,7.5002947,7.5002894,7.5002847,7.5002794,7.500274,7.500269,7.5002637,7.5002584,7.500253,7.500248,7.5002427,7.500237,7.5002317,7.500226,7.5002203,7.500215,7.5002093,7.5002036,7.500198,7.500192,7.500186,7.5001802,7.5001745,7.5001683,7.500162,7.5001564,7.50015,7.500144,7.500138,7.5001316,7.5001254,7.500119,7.500113,7.5001063,7.5000777,7.500049,7.5000205,7.499992,7.4999633,7.4999304,7.4998975,7.4998646,7.4998317,7.499799,7.499766,7.499733,7.4997,7.4996667,7.499634,7.4996004,7.4995675,7.499534,7.4995008,7.4994674,7.499434,7.4994006,7.499367,7.499334,7.4993,7.4992666,7.499233,7.4991994,7.4991655,7.4991317,7.499098,7.499064,7.49903,7.4989963,7.4989624,7.498928,7.498894,7.49886,7.498826,7.4987917,7.4987574,7.4987235,7.498689,7.498655,7.49862,7.4985857,7.4985514,7.4985166,7.498482,7.4984474,7.498413,7.4983783,7.4983435,7.4983087,7.498274,7.498239,7.498204,7.4981694,7.498134,7.4980993,7.498064,7.4980288,7.497994,7.4979587,7.4979234,7.497888,7.497853,7.4978175,7.4977818,7.4977465,7.497711,7.4976754,7.4976397,7.4976044,7.4975686,7.497533,7.497497,7.4974613,7.4974256,7.49739,7.4973536,7.497318,7.4972816,7.497246,7.4972095,7.4971733,7.497137,7.497101,7.4970646,7.4970284,7.496992,7.496956,7.496919,7.496883,7.496846,7.49681,7.4967732,7.4967365,7.4967,7.496663,7.4966264,7.4965897,7.496553,7.4965158,7.496496,7.4964767,7.4964566,7.496437,7.496417,7.4963894,7.4963613,7.496333,7.496305,7.496277,7.4962487,7.4962206,7.4961925,7.496164,7.4961357,7.4961076,7.496079,7.4960504,7.496022,7.4959936,7.495965,7.4959364,7.495908,7.495879,7.4958506,7.4958215,7.495793,7.4957643,7.495735,7.495706,7.4956775,7.4956484,7.4956193,7.49559,7.495561,7.495532,7.495503,7.495474,7.4954443,7.495415,7.4953856,7.4953566,7.495327,7.4952974,7.495268,7.4952383,7.4952087,7.495179,7.4951496,7.49512,7.4950905,7.4950604,7.495031,7.495001,7.4949713,7.494941,7.494911,7.494881,7.494851,7.494821,7.494791,7.494761,7.4947305,7.4947004,7.4946704,7.49464,7.4946094,7.4945793,7.494549,7.4945183,7.494488,7.4944572,7.4944267,7.494396,7.494365,7.4943347,7.494304,7.494273,7.494242,7.4942117,7.4941807,7.4941497,7.4941187,7.4940877,7.4940567,7.4940257,7.4939947,7.4939632,7.4939322,7.493901,7.49387,7.4938383,7.493807,7.493776,7.4937444,7.493713,7.4936814,7.4936495,7.493618,7.4935865,7.4935546,7.493523,7.493491,7.4934597,7.4934278,7.493388,7.4933486,7.493309,7.4932694,7.49323,7.493185,7.49314,7.4930954,7.49305,7.4930053,7.49296,7.492915,7.49287,7.4928246,7.4927793,7.492734,7.4926887,7.4926434,7.4925976,7.4925523,7.492507,7.492461,7.4924154,7.49237,7.4923244,7.4922786,7.492233,7.492187,7.492141,7.492095,7.492049,7.492003,7.491957,7.491911,7.4918647,7.4918184,7.491772,7.491726,7.4916797,7.4916334,7.4915867,7.4915404,7.4914937,7.4914474,7.4914007,7.491354,7.4913073,7.4912605,7.491214,7.491167,7.4911203,7.491073,7.4910264,7.490979,7.490932,7.4908853,7.490838,7.490791,7.4907436,7.4906964,7.4906487,7.4906015,7.4905543,7.4905066,7.490459,7.4904118,7.490364,7.4903164,7.4902687,7.490221,7.4901733,7.490125,7.4900775,7.49003,7.4899817,7.4899335,7.489886,7.4898376,7.4897895,7.4897413,7.489693,7.4896445,7.4895964,7.489548,7.4894996,7.4894514,7.489403,7.489354,7.4893055,7.489257,7.489208,7.4891596,7.489111,7.489062,7.489013,7.488964,7.4889154,7.4888663,7.488817,7.488768,7.488719,7.48867,7.4886208,7.4885716,7.488537,7.488502,7.4884667,7.488432,7.488397,7.488369,7.4883404,7.4883122,7.488284,7.4882555,7.4882274,7.4881988,7.4881706,7.488142,7.4881134,7.488085,7.488056,7.4880276,7.487999,7.4879704,7.4879413,7.4879127,7.487884,7.487855,7.4878263,7.4877973,7.487768,7.487739,7.4877105,7.4876814,7.4876523,7.4876227,7.4875937,7.4875646,7.4875355,7.487506,7.487477,7.4874473,7.487418,7.4873886,7.487359,7.4873295,7.4873,7.4872704,7.487241,7.487211,7.4871817,7.4871516,7.487122,7.4870925,7.4870625,7.4870324,7.487003,7.486973,7.486943,7.4869127,7.4868827,7.4868526,7.4868226,7.4867926,7.486762,7.486732,7.486702,7.4866714,7.486641,7.486611,7.4865804,7.48655,7.4865193,7.486489,7.4864583,7.486428,7.4863973,7.4863667,7.4863358,7.486305,7.4862742,7.4862437,7.4862127,7.4861817,7.4861507,7.48612,7.486089,7.486058,7.486027,7.485996,7.485965,7.485934,7.4859023,7.4858713,7.48584,7.4858084,7.4857774,7.485746,7.4857144,7.485683,7.4856515,7.48562,7.4855886,7.485557,7.485525,7.4854937,7.4854617,7.4854302,7.4853983,7.4853663,7.485335,7.485303,7.485271,7.4852333,7.4851956,7.485158,7.48512,7.4850817,7.4850435,7.485005,7.4849668,7.484928,7.4848895,7.4848504,7.4848113,7.484772,7.484733,7.484692,7.4846506,7.4846087,7.4845667,7.4845247,7.484483,7.4844403,7.484398,7.4843554,7.484313,7.48427,7.4842277,7.4841843,7.4841413,7.484098,7.484055,7.484011,7.483968,7.483924,7.48388,7.483836,7.4837923,7.483748,7.4837036,7.4836593,7.483615,7.48357,7.4835253,7.4834805,7.483435,7.4833903,7.483345,7.4832993,7.483254,7.483208,7.4831624,7.4831166,7.483071,7.4830246,7.4830165,7.483009,7.4830008,7.4829926,7.4829845,7.4829764,7.482968,7.4829597,7.482951,7.4829426,7.482934,7.482925,7.4829164,7.482908,7.4829006,7.482894,7.482887,7.482879,7.482872,7.482865,7.482857,7.4828496,7.482842,7.4828343,7.482826,7.482818,7.4828105,7.4828024,7.482794,7.4827857,7.482777,7.482769,7.4827604,7.482752,7.482743,7.482734,7.482725,7.482716,7.482707,7.482698,7.482689,7.4826794,7.48267,7.4826603,7.482648,7.482627,7.4826055,7.4825845,7.482563,7.4825416,7.48252,7.4824986,7.4825068,7.4825144,7.4825215,7.482528,7.482535,7.482541,7.482547,7.482552,7.4825573,7.4825616,7.482566,7.4825697,7.482573,7.4825764,7.4825788,7.482581,7.482583,7.482585,7.482586,7.482587,7.4825873,7.4825873,7.4825873,7.482587,7.482586,7.4825845,7.482583,7.482581,7.4825788,7.482576,7.482573,7.4825697,7.482566,7.482562,7.482558,7.482553,7.482548,7.4825425,7.4825373,7.482531,7.482525,7.482518,7.482511,7.482504,7.4824963,7.482488,7.48248,7.4824715,7.482463,7.4824533,7.4824443,7.4824343,7.482383,7.4823318,7.4822803,7.4822288,7.4821773,7.535546,7.5355487,7.5355515,7.5355544,7.535552,7.5355496,7.5355473,7.535545,7.5355425,7.5355396,7.5355372,7.5355344,7.535532,7.535529,7.5355263,7.5355234,7.5355206,7.5355177,7.535515,7.535512,7.5355086,7.535506,7.5355024,7.5354996,7.535496,7.535493,7.5354896,7.535486,7.535483,7.5354795,7.5354757,7.5354724,7.5354686,7.5354652,7.5354614,7.5354576,7.535454,7.53545,7.535446,7.5354424,7.535438,7.5354342,7.53543,7.535426,7.535422,7.5354176,7.5354133,7.535409,7.5354047,7.5354004,7.5353956,7.5353913,7.5353866,7.5353823,7.5353775,7.5353727,7.535372,7.5353703,7.535369,7.5353675,7.535366,7.5353646,7.5353613,7.535357,7.535353,7.535349,7.5353446,7.5353403,7.535336,7.5353317,7.535327,7.5353227,7.535318,7.5353136,7.535309,7.535304,7.5352993,7.5352945,7.53529,7.535285,7.5352798,7.535275,7.5352697,7.535265,7.5352597,7.5352545,7.535249,7.535244,7.5352387,7.5352335,7.535228,7.5352225,7.535217,7.5352116,7.535206,7.5352,7.5351944,7.5351887,7.535183,7.535177,7.535171,7.5351653,7.535159,7.535153,7.535162,7.535171,7.5351796,7.5351887,7.5351973,7.535206,7.5352144,7.535223,7.5352316,7.53524,7.5352488,7.5352573,7.5352654,7.535274,7.535282,7.5352902,7.5352983,7.5353065,7.5353146,7.5353227,7.535331,7.535339,7.5353465,7.5353546,7.5353622,7.5353703,7.535378,7.5353856,7.535393,7.535401,7.5354085,7.5354156,7.5354233,7.535431,7.535438,7.535445,7.535453,7.53546,7.535467,7.5354743,7.5354815,7.5354886,7.5354953,7.5355024,7.535509,7.5355163,7.535523,7.5355296,7.535537,7.5355434,7.53555,7.5355563,7.5355983,7.5356402,7.535682,7.535724,7.535766,7.53581,7.535854,7.5358977,7.5359416,7.535986,7.53603,7.5360737,7.5361176,7.536162,7.536206,7.5362496,7.536294,7.536338,7.536382,7.536426,7.5364704,7.5365148,7.5365586,7.536603,7.5366473,7.536691,7.5367355,7.53678,7.536824,7.5368686,7.536913,7.5369573,7.5370016,7.537046,7.5370903,7.5371346,7.5371766,7.5372186,7.5372605,7.5373025,7.5373445,7.5373864,7.5374284,7.5374703,7.537513,7.5375547,7.5375967,7.537639,7.537681,7.5377235,7.5377655,7.537808,7.53785,7.5378923,7.537935,7.5379767,7.538019,7.5380616,7.538104,7.5381465,7.538189,7.5382314,7.538274,7.5383162,7.538359,7.5384016,7.538444,7.5384865,7.5385294,7.538572,7.5386147,7.538657,7.5387,7.538743,7.5387855,7.5388284,7.5388713,7.538914,7.538957,7.539,7.539043,7.539086,7.539129,7.5391717,7.5392146,7.5392575,7.539301,7.539344,7.539387,7.53943,7.5394735,7.5395164,7.53956,7.539603,7.539646,7.5396895,7.539733,7.5397763,7.5398197,7.539863,7.5399065,7.53995,7.539994,7.540037,7.54001,7.539983,7.5399556,7.5399284,7.5399013,7.539874,7.539847,7.5398197,7.539792,7.539765,7.539737,7.53971,7.5396824,7.5396547,7.539627,7.539599,7.5395713,7.539543,7.539515,7.539487,7.5394588,7.5394306,7.5394025,7.539374,7.5393453,7.5393167,7.539288,7.5392594,7.539231,7.5392017,7.539173,7.539144,7.539115,7.539086,7.539057,7.539027,7.538998,7.538965,7.5389323,7.538899,7.538866,7.5388327,7.5387993,7.538766,7.5387325,7.538699,7.5386653,7.5386314,7.538598,7.5385637,7.53853,7.538496,7.5384617,7.538428,7.5383935,7.538359,7.538325,7.5382905,7.5382557,7.538221,7.5381866,7.5381517,7.538117,7.5380816,7.538047,7.5380116,7.5379767,7.5379415,7.537906,7.5378704,7.537835,7.5378,7.537764,7.5377283,7.5376925,7.537657,7.5376205,7.537585,7.5375485,7.5375123,7.537476,7.53744,7.5374036,7.537367,7.5373306,7.537294,7.537257,7.5372205,7.537184,7.5371466,7.53711,7.5370727,7.5370355,7.5369983,7.536961,7.5369234,7.536886,7.5368485,7.536811,7.536773,7.5367355,7.536698,7.5366597,7.536622,7.536584,7.536611,7.5366383,7.536666,7.536693,7.5367208,7.5367475,7.536774,7.536801,7.5368276,7.5368547,7.5368814,7.536908,7.536935,7.536962,7.5369887,7.5370154,7.5370426,7.5370693,7.5370965,7.5371227,7.5371485,7.537174,7.5371995,7.5372252,7.537251,7.5372767,7.537302,7.537328,7.5373535,7.5373793,7.537405,7.537431,7.537456,7.537482,7.5375075,7.5375333,7.537559,7.537585,7.5376105,7.5376363,7.537662,7.537688,7.5377135,7.5377398,7.5377655,7.5377913,7.537817,7.5378428,7.5378685,7.5378947,7.5379205,7.537946,7.537972,7.537998,7.538024,7.5380497,7.538076,7.5381017,7.5381274,7.5381536,7.5381794,7.5382056,7.5382314,7.5382576,7.5382833,7.5383096,7.5383353,7.5383615,7.538388,7.5384135,7.5384398,7.538466,7.5384917,7.538518,7.538544,7.5385704,7.538596,7.5386224,7.5386486,7.538675,7.538701,7.5387273,7.5387535,7.5387797,7.538806,7.538832,7.5388584,7.5388846,7.538911,7.538937,7.5389633,7.5389895,7.539016,7.5390425,7.5390687,7.539095,7.539121,7.539148,7.539174,7.5392003,7.539227,7.539253,7.5392795,7.539306,7.5392942,7.5392823,7.5392704,7.539258,7.539246,7.5392323,7.5392184,7.5392046,7.5391903,7.5391765,7.539162,7.5391483,7.539134,7.5391197,7.5391054,7.539091,7.539077,7.5390625,7.539048,7.539034,7.539019,7.539005,7.53899,7.5389752,7.538961,7.538946,7.5389314,7.5389166,7.538902,7.5388865,7.538872,7.538857,7.5388417,7.5388265,7.5388117,7.5387964,7.538781,7.538766,7.5387506,7.5387354,7.5387197,7.5387044,7.538689,7.5386734,7.5386577,7.5386424,7.5386267,7.538611,7.538595,7.5385795,7.5385637,7.5385475,7.538532,7.538516,7.5385,7.5384836,7.538468,7.5384517,7.5384355,7.5384192,7.538403,7.5383863,7.53837,7.538354,7.538337,7.538321,7.5383043,7.5382876,7.538271,7.5382543,7.5382376,7.538221,7.538204,7.5381875,7.5381703,7.5381536,7.5381365,7.5381193,7.5381026,7.5380855,7.5380683,7.5380507,7.538032,7.538013,7.537994,7.537975,7.5379558,7.5379367,7.5379176,7.537898,7.537879,7.53786,7.5378404,7.537821,7.5378013,7.537782,7.537762,7.5377426,7.537723,7.5377035,7.5376835,7.537664,7.537644,7.5376244,7.5376043,7.5375843,7.5375643,7.5375443,7.537524,7.5374327,7.537341,7.5372496,7.537158,7.537066,7.5369744,7.5368824,7.5367904,7.5366983,7.536606,7.536514,7.5364213,7.536329,7.5362363,7.5361433,7.536051,7.535958,7.535865,7.535772,7.535679,7.5355854,7.535492,7.535399,7.5353055,7.5352116,7.535118,7.535024,7.53493,7.5348363,7.5347424,7.5346484,7.534554,7.5344596,7.534365,7.534271,7.5341763,7.5340815,7.533987,7.533892,7.533797,7.533702,7.533607,7.5335116,7.5334163,7.533321,7.5332255,7.5331297,7.5330343,7.5329385,7.5328426,7.5327463,7.5326505,7.532554,7.5325656,7.532577,7.5325885,7.5326,7.5326114,7.5326223,7.532634,7.532645,7.5326567,7.5326676,7.532679,7.5326905,7.5327015,7.532713,7.532724,7.5327353,7.5327463,7.5327578,7.5327687,7.53278,7.532791,7.5328026,7.5328135,7.5328245,7.532836,7.532847,7.532858,7.5328693,7.5328803,7.5328913,7.5329022,7.5329137,7.5329247,7.5329356,7.5329466,7.5329576,7.5329685,7.5329795,7.5329905,7.5330014,7.5330124,7.5330234,7.5330343,7.5330453,7.5330563,7.533067,7.533078,7.533089,7.5331,7.533111,7.5331225,7.5331345,7.5331445,7.533154,7.533164,7.5331736,7.5331836,7.533193,7.5332026,7.533212,7.5332217,7.5332317,7.5332413,7.533251,7.53326,7.5332694,7.533279,7.5332885,7.5332975,7.533307,7.533316,7.5333257,7.5333347,7.533344,7.5333533,7.5333624,7.5333714,7.5333805,7.5333896,7.5333986,7.5334077,7.5334163,7.5334253,7.5334344,7.533443,7.533452,7.5334606,7.5334697,7.5334783,7.533487,7.533496,7.5335045,7.533513,7.5335217,7.53353,7.533539,7.533547,7.5335555,7.533564,7.533572,7.533581,7.5335894,7.5335975,7.5336056,7.5335813,7.5335565,7.5335317,7.5335073,7.5334826,7.5477858,7.5477815,7.5477767,7.5477724,7.547782,7.5477915,7.5478005,7.54781,7.547819,7.547828,7.5478373,7.5478463,7.547855,7.547864,7.5478725,7.547881,7.54789,7.5478983,7.547907,7.5479155,7.5479236,7.547932,7.5479403,7.5479484,7.5479565,7.547964,7.547972,7.54798,7.547988,7.5479956,7.548003,7.548011,7.548018,7.5480256,7.5480328,7.5480404,7.5480475,7.5480547,7.5480614,7.5480685,7.548075,7.5480824,7.548089,7.5480957,7.5481024,7.548109,7.5481153,7.548122,7.548128,7.5481343,7.5481405,7.5481467,7.548153,7.5481586,7.548165,7.5481706,7.548178,7.5481863,7.548194,7.5482016,7.5482087,7.5482163,7.548224,7.548231,7.5482383,7.5482454,7.5482526,7.5482597,7.548267,7.5482736,7.5482802,7.5482874,7.548294,7.5483007,7.548307,7.5483136,7.54832,7.5483265,7.5483327,7.548339,7.548345,7.548351,7.548357,7.5483627,7.548369,7.5483747,7.5483804,7.5483856,7.5483913,7.548397,7.5484023,7.5484076,7.548413,7.548418,7.5484233,7.5484285,7.5484333,7.548438,7.5484433,7.548448,7.548453,7.548457,7.548462,7.548466,7.548378,7.54829,7.548201,7.5481124,7.5480237,7.547935,7.547846,7.5477567,7.547668,7.547579,7.5474896,7.5474,7.547311,7.547221,7.5471315,7.547042,7.5469522,7.546862,7.5467725,7.5466824,7.546592,7.546502,7.5464115,7.5463214,7.546231,7.54614,7.5460496,7.545959,7.545868,7.5457773,7.5456862,7.545595,7.545504,7.5454125,7.5453215,7.54523,7.5451384,7.545047,7.544955,7.544863,7.544771,7.544679,7.544587,7.544495,7.544403,7.5443106,7.544218,7.5441256,7.544033,7.5439405,7.5438476,7.543755,7.543748,7.543741,7.5437346,7.5437274,7.5437202,7.543713,7.5437064,7.5436993,7.543692,7.543685,7.543678,7.54367,7.543663,7.5436554,7.543648,7.54364,7.5436325,7.543625,7.5436172,7.5436096,7.5436015,7.5435934,7.5435853,7.543577,7.543569,7.543561,7.543553,7.5435443,7.543536,7.5435276,7.543519,7.5435104,7.543502,7.543493,7.543484,7.5434756,7.5434666,7.5434575,7.5434484,7.5434394,7.5434303,7.543421,7.5434117,7.543402,7.543393,7.5433836,7.543374,7.543364,7.5433545,7.543345,7.543335,7.5433254,7.5433154,7.5433054,7.5432954,7.543285,7.543275,7.543265,7.5432544,7.543244,7.5432334,7.543223,7.5432124,7.543202,7.5431914,7.5431805,7.5431695,7.5431585,7.543148,7.5431366,7.5431256,7.5431147,7.543103,7.5430923,7.543081,7.5430694,7.543058,7.5430465,7.543035,7.543023,7.5430117,7.5429997,7.542988,7.542976,7.542964,7.542952,7.54294,7.5429277,7.542916,7.5429034,7.542891,7.5428786,7.542866,7.542854,7.5428414,7.5428286,7.5428157,7.5428033,7.5427904,7.5427775,7.542764,7.5427513,7.5427384,7.542725,7.5427656,7.5428057,7.5428457,7.542886,7.542926,7.5429645,7.543003,7.543041,7.54308,7.543118,7.543156,7.5431943,7.5432324,7.5432706,7.5433083,7.5433464,7.5433846,7.543422,7.54346,7.5434976,7.543535,7.543573,7.5436106,7.5436482,7.543686,7.543723,7.5437603,7.543798,7.543835,7.5438724,7.5439095,7.5439467,7.543984,7.5440207,7.544058,7.5440946,7.5441318,7.5441685,7.544205,7.544242,7.5442786,7.5443153,7.5443516,7.5443883,7.5444245,7.5444613,7.5444975,7.5445337,7.54457,7.544606,7.5446424,7.544678,7.5447145,7.5447507,7.5447865,7.544822,7.544858,7.5448937,7.5449295,7.5449653,7.545001,7.545037,7.545072,7.545108,7.545143,7.5451784,7.5452137,7.545249,7.5452843,7.5453196,7.5453544,7.5453897,7.5454245,7.5454597,7.5454946,7.5455294,7.545564,7.545599,7.545634,7.5456686,7.545703,7.5457377,7.545772,7.5458064,7.545841,7.5458755,7.54591,7.5459437,7.545978,7.5460124,7.5460463,7.5460806,7.5461144,7.5461483,7.546182,7.546216,7.54625,7.5462837,7.5463176,7.546351,7.546385,7.546418,7.546452,7.5464854,7.546519,7.546456,7.5463934,7.5463305,7.5462675,7.5462046,7.546139,7.546073,7.546007,7.5459414,7.5458755,7.5458093,7.5457435,7.545677,7.545611,7.5455446,7.5454783,7.5454116,7.5453453,7.545279,7.5452123,7.5451455,7.5450788,7.545012,7.5449452,7.5448785,7.5448112,7.5447445,7.5446773,7.54461,7.544543,7.5444756,7.5444083,7.544341,7.5442734,7.544206,7.5441384,7.5440707,7.544003,7.5439353,7.5438676,7.5438,7.5437317,7.543664,7.543596,7.5435276,7.5434594,7.543391,7.543323,7.543255,7.543186,7.543118,7.5430493,7.5429807,7.542912,7.5428433,7.5427747,7.5427055,7.542637,7.5425677,7.5424986,7.5424294,7.5423603,7.542291,7.542222,7.542153,7.5420833,7.5420136,7.5419445,7.541875,7.5418053,7.541735,7.5416656,7.541596,7.541526,7.5414557,7.541386,7.541316,7.5412455,7.5411754,7.5411053,7.5410347,7.5409646,7.540894,7.5408235,7.540753,7.5406823,7.5406117,7.540541,7.54047,7.540399,7.5403285,7.5402575,7.5401864,7.5401154,7.540044,7.539973,7.5399013,7.53983,7.5397587,7.539687,7.5396156,7.539544,7.539472,7.5394006,7.5393276,7.5392547,7.539181,7.5391083,7.539035,7.5389605,7.5388856,7.5388107,7.538736,7.5386605,7.5385857,7.538511,7.5384355,7.5383606,7.5382853,7.5382104,7.538135,7.5380597,7.5379844,7.537909,7.5378337,7.5377584,7.5376825,7.537607,7.537532,7.537456,7.53738,7.537305,7.537229,7.5371532,7.5370774,7.5370016,7.536926,7.5368495,7.5367737,7.536698,7.5366216,7.5365453,7.5364695,7.536393,7.536317,7.5362406,7.5361643,7.536088,7.536011,7.535935,7.5358586,7.535782,7.5357046,7.5356264,7.5355487,7.5354705,7.5353923,7.5353146,7.5352364,7.535158,7.5350795,7.5350013,7.534923,7.534845,7.534766,7.534688,7.5346093,7.5345306,7.5344524,7.5343738,7.534295,7.5342164,7.5341377,7.5340586,7.53398,7.533901,7.533822,7.5337434,7.533664,7.5335855,7.5335064,7.5334272,7.533348,7.533269,7.53319,7.5331106,7.5330315,7.532952,7.5328727,7.532793,7.532714,7.5326343,7.5325546,7.532475,7.532396,7.5323157,7.532236,7.5321565,7.532077,7.531997,7.531917,7.5318375,7.5317574,7.5316772,7.5315976,7.5315175,7.5314374,7.5313573,7.531277,7.5311966,7.5311165,7.5310364,7.530956,7.5309258,7.530895,7.530865,7.5308347,7.530804,7.5307736,7.530743,7.5307126,7.5306816,7.530651,7.5306206,7.5305896,7.5305586,7.530528,7.530497,7.530466,7.530435,7.530404,7.530373,7.5303416,7.5303106,7.530279,7.530248,7.5302167,7.530185,7.5301538,7.5301223,7.530091,7.5300593,7.530028,7.529996,7.5299644,7.5299325,7.5299006,7.529869,7.529837,7.529805,7.529773,7.529741,7.529709,7.529677,7.5296445,7.5296125,7.52958,7.5295477,7.5295153,7.529483,7.5294504,7.529418,7.5293856,7.5293527,7.5293202,7.5292873,7.529227,7.529166,7.5291057,7.5290446,7.528984,7.528923,7.528862,7.5288014,7.5287404,7.5286794,7.5286183,7.528557,7.528496,7.5284348,7.5283732,7.5283117,7.5282507,7.528189,7.5281277,7.528066,7.5280046,7.5279427,7.527881,7.527819,7.5277576,7.5276957,7.5276337,7.5275717,7.5275097,7.5274477,7.5273857,7.5273237,7.5272613,7.5271993,7.527137,7.5270743,7.5270123,7.52695,7.5268874,7.5268245,7.526762,7.5266995,7.5266366,7.5265727,7.5265083,7.526444,7.526379,7.5263147,7.52625,7.5261855,7.5261207,7.526056,7.525992,7.525928,7.5258636,7.5257993,7.525735,7.5256705,7.525606,7.525542,7.5254774,7.5254126,7.525348,7.5252833,7.5252185,7.5251536,7.525089,7.525024,7.5249586,7.5248938,7.5248284,7.5247636,7.5246983,7.524633,7.5245676,7.5245023,7.524437,7.524371,7.524306,7.52424,7.524174,7.5241084,7.5240426,7.523977,7.523911,7.5238447,7.523779,7.5237126,7.523647,7.5235806,7.5235143,7.523448,7.523381,7.523315,7.523248,7.523182,7.523115,7.5230484,7.5229816,7.522915,7.522848,7.5227814,7.522714,7.522647,7.522595,7.5225425,7.52249,7.5224376,7.522385,7.545026,7.5450373,7.545049,7.5450606,7.545041,7.5450215,7.545002,7.5449824,7.544963,7.5449433,7.544924,7.544904,7.5448847,7.544865,7.5448456,7.544826,7.544806,7.5447865,7.544767,7.5447474,7.544728,7.544708,7.544688,7.5446687,7.5446486,7.544629,7.544609,7.5445895,7.54457,7.54455,7.5445304,7.5445104,7.5444903,7.544471,7.5444508,7.544431,7.544411,7.544391,7.544371,7.5443516,7.5443316,7.5443115,7.5442915,7.5442715,7.544252,7.544232,7.544212,7.544192,7.544172,7.544152,7.5441318,7.5441117,7.544091,7.544071,7.544051,7.544031,7.5440135,7.5439954,7.5439777,7.5439596,7.543942,7.543924,7.5439057,7.543888,7.54387,7.543852,7.543834,7.543816,7.543798,7.54378,7.5437617,7.5437436,7.5437255,7.5437074,7.543689,7.5436707,7.5436525,7.5436344,7.543616,7.5435977,7.5435796,7.543561,7.5435424,7.5435243,7.5435057,7.5434875,7.543469,7.5434504,7.5434318,7.543413,7.543395,7.5433764,7.543358,7.5433393,7.54332,7.5433016,7.543283,7.5432644,7.543246,7.5432267,7.543208,7.543189,7.5431705,7.5431514,7.5430994,7.5430474,7.542995,7.542943,7.5428905,7.542838,7.5427856,7.542733,7.5426807,7.542628,7.542575,7.5425224,7.5424695,7.5424166,7.5423636,7.54231,7.5422573,7.542204,7.5421505,7.5420976,7.542044,7.5419903,7.541937,7.5418835,7.5418296,7.5417757,7.541722,7.541668,7.541614,7.54156,7.541506,7.541452,7.5413976,7.541343,7.541289,7.5412345,7.54118,7.5411253,7.541071,7.541016,7.5409613,7.5409064,7.5408516,7.5407968,7.5407414,7.5406866,7.5406313,7.540576,7.5405207,7.5404654,7.54041,7.5403543,7.540357,7.54036,7.540363,7.540365,7.540368,7.540371,7.5403743,7.540377,7.54038,7.540383,7.5403857,7.5403886,7.540391,7.540394,7.540396,7.540399,7.5404015,7.540404,7.540406,7.5404086,7.540411,7.5404134,7.540416,7.5404177,7.54042,7.540422,7.5404243,7.5404263,7.540428,7.54043,7.540432,7.540434,7.5404353,7.540437,7.540439,7.5404406,7.540442,7.5404434,7.5404453,7.5404468,7.5404477,7.540449,7.5404506,7.540452,7.540453,7.540454,7.5404553,7.5404563,7.5404572,7.540458,7.540459,7.54046,7.5404606,7.5404615,7.540462,7.540463,7.5404634,7.540464,7.5404644,7.540465,7.5404654,7.540466,7.5404663,7.5404663,7.540467,7.540467,7.540467,7.5404673,7.5404673,7.5404673,7.5404673,7.540467,7.540467,7.540467,7.5404663,7.540466,7.540466,7.5404654,7.540465,7.5404644,7.540464,7.540463,7.5404625,7.540462,7.540461,7.54046,7.5404596,7.5404587,7.5404577,7.540457,7.540456,7.5404544,7.5404534,7.5404525,7.540451,7.5404496,7.5404487,7.540447,7.540446,7.5404444,7.540443,7.540441,7.5404396,7.540438,7.5404525,7.540467,7.5404816,7.540496,7.54051,7.5405235,7.540537,7.54055,7.540563,7.5405765,7.54059,7.5406027,7.5406156,7.540629,7.540642,7.5406547,7.5406675,7.5406804,7.5406933,7.540706,7.5407186,7.5407314,7.540744,7.5407567,7.540769,7.5407815,7.540794,7.5408063,7.5408187,7.540831,7.5408435,7.540856,7.540868,7.54088,7.540892,7.5409045,7.5409164,7.5409284,7.5409403,7.540952,7.540964,7.540976,7.5409875,7.5409994,7.541011,7.541023,7.541034,7.5410457,7.541057,7.541069,7.54108,7.5410914,7.541103,7.5411143,7.5411253,7.5411367,7.5411477,7.541159,7.54117,7.541181,7.541192,7.541203,7.541214,7.541225,7.541236,7.5412464,7.5412574,7.541268,7.5412784,7.5412893,7.5413,7.5413103,7.541321,7.5413313,7.541342,7.541352,7.5413623,7.5413723,7.541383,7.541393,7.541403,7.5414133,7.5414233,7.5414333,7.5414433,7.541453,7.541463,7.541473,7.5414824,7.5414925,7.541502,7.5415115,7.541521,7.541531,7.5415406,7.5415497,7.541559,7.5415683,7.541577,7.5415854,7.541594,7.5416026,7.5416107,7.5416193,7.5416274,7.541591,7.541555,7.5415187,7.5414824,7.541446,7.5414076,7.5413694,7.5413313,7.5412927,7.541254,7.541216,7.5411773,7.5411386,7.5411,7.541061,7.5410223,7.5409837,7.5409446,7.540906,7.540867,7.540828,7.540789,7.54075,7.540711,7.540672,7.5406327,7.540593,7.540554,7.540515,7.5404754,7.540436,7.5403967,7.540357,7.5403175,7.540278,7.5402384,7.5401983,7.5401587,7.540119,7.540079,7.5400395,7.5399995,7.5399594,7.5399194,7.5398793,7.5398393,7.539799,7.539759,7.5397186,7.5396786,7.539638,7.539598,7.5395575,7.539517,7.5394764,7.539436,7.5393953,7.539355,7.539314,7.5392733,7.5392327,7.5391917,7.5391507,7.5391097,7.539069,7.539028,7.538987,7.5389457,7.5389047,7.5388637,7.538822,7.538781,7.5387397,7.538698,7.538657,7.5386157,7.538574,7.5385327,7.538491,7.5384493,7.538408,7.538366,7.5383244,7.5382824,7.5382404,7.5381985,7.5381565,7.5381145,7.5380726,7.5380306,7.537988,7.537946,7.537904,7.537862,7.5378194,7.537777,7.5377345,7.537692,7.5376496,7.537607,7.5375648,7.537522,7.5374794,7.5374365,7.537404,7.537371,7.5373387,7.537306,7.5372734,7.5372396,7.537206,7.537173,7.537139,7.5371056,7.5370717,7.537038,7.5370045,7.5369706,7.5369368,7.5369024,7.5368686,7.5368347,7.5368004,7.5367665,7.536732,7.536698,7.5366635,7.536629,7.536595,7.5365605,7.5365257,7.5364914,7.5364566,7.5364223,7.5363874,7.5363526,7.536318,7.536283,7.536248,7.536213,7.536178,7.536143,7.536108,7.5360727,7.5360374,7.536002,7.535967,7.5359316,7.5358963,7.5358605,7.5358253,7.5357895,7.535754,7.5357184,7.5356827,7.535647,7.535611,7.5355754,7.535539,7.5355034,7.535467,7.5354314,7.535395,7.535359,7.5353227,7.5352864,7.53525,7.535214,7.535177,7.535141,7.5351043,7.5350676,7.535031,7.5349946,7.534958,7.5349207,7.534884,7.5348473,7.53481,7.5347733,7.534736,7.534699,7.534662,7.5346246,7.5345874,7.53455,7.534513,7.5344753,7.5344377,7.5343986,7.5343595,7.53432,7.534281,7.534241,7.534202,7.5341625,7.534123,7.5340834,7.534044,7.5340037,7.533964,7.5339246,7.5338845,7.5338445,7.533805,7.533765,7.533725,7.5336847,7.533644,7.533604,7.533564,7.5335236,7.533483,7.5334816,7.5334797,7.5334783,7.5334764,7.5334744,7.5334725,7.5334706,7.5334687,7.533467,7.533465,7.533463,7.5334606,7.5334587,7.5334563,7.5334544,7.533452,7.53345,7.5334477,7.5334454,7.533443,7.533441,7.5334387,7.533436,7.5334334,7.533431,7.5334287,7.5334263,7.5334234,7.533421,7.533418,7.533416,7.533413,7.53341,7.5334077,7.533405,7.533402,7.533399,7.5333962,7.5333934,7.53339,7.533387,7.5333843,7.533381,7.533378,7.533375,7.533372,7.5333686,7.5333652,7.5333624,7.533359,7.5333557,7.5333524,7.533349,7.533374,7.533399,7.533424,7.533449,7.533474,7.5334992,7.533524,7.533549,7.533574,7.533599,7.5336237,7.533649,7.533674,7.5336986,7.5337234,7.533748,7.533773,7.5337977,7.5338225,7.5338473,7.533872,7.533897,7.5339217,7.5339465,7.5339713,7.5339956,7.5340204,7.534045,7.5340695,7.5340943,7.534119,7.5341434,7.5341682,7.5341926,7.5342174,7.5342417,7.5342665,7.534291,7.534315,7.53434,7.534364,7.5343885,7.534413,7.5344377,7.534462,7.5344863,7.5345106,7.534535,7.5345592,7.5345836,7.534608,7.534632,7.534662,7.534692,7.5347214,7.5347514,7.534781,7.534811,7.5348406,7.5348706,7.5349,7.53493,7.53496,7.53499,7.5350194,7.5350494,7.535079,7.5351086,7.5351386,7.535168,7.535198,7.535228,7.535258,7.5352874,7.5353174,7.535347,7.535377,7.5354066,7.5354366,7.535466,7.535496,7.535526,7.535556,7.5355854,7.5356154,7.535645,7.535675,7.5357046,7.5357347,7.535764,7.5357943,7.535824,7.5358534,7.5358834,7.535913,7.535943,7.5359726,7.5360026,7.536032,7.5360622,7.536092,7.536122,7.5361514,7.5361814,7.5361576,7.536134,7.53611,7.536086,7.5360622"
+      },
+      {
+        "path": "reference_pressure_level/units",
+        "value": "hPa "
+      },
+      {
+        "path": "solar_flux/Solar fluxes for band 8/Solar flux",
+        "value": "1555.1703,1555.1732,1555.1761,1555.1792,1555.1818,1555.1846,1555.1871,1555.1897,1555.1924,1555.1951,1555.1976,1555.2003,1555.2029,1555.2054,1555.2081,1555.2108,1555.2135,1555.2161,1555.2186,1555.2213,1555.2239,1555.2264,1555.2291,1555.2317,1555.2343,1555.2369,1555.2395,1555.2421,1555.2448,1555.2473,1555.2499,1555.2526,1555.2551,1555.2578,1555.2603,1555.2628,1555.2655,1555.2681,1555.2706,1555.2733,1555.2758,1555.2783,1555.281,1555.2836,1555.286,1555.2887,1555.2913,1555.2937,1555.2964,1555.299,1555.3014,1555.3041,1555.3066,1555.3092,1555.3118,1555.3142,1555.3171,1555.32,1555.3226,1555.3256,1555.3282,1555.3312,1555.3339,1555.3367,1555.3395,1555.3423,1555.345,1555.3479,1555.3506,1555.3535,1555.3562,1555.359,1555.3618,1555.3645,1555.3673,1555.3701,1555.3728,1555.3757,1555.3784,1555.3811,1555.384,1555.3867,1555.3894,1555.3923,1555.395,1555.3978,1555.4005,1555.4033,1555.4061,1555.4088,1555.4115,1555.4143,1555.4171,1555.4199,1555.4226,1555.4253,1555.4281,1555.4308,1555.4335,1555.4363,1555.439,1555.4418,1555.4445,1555.4471,1555.45,1555.4525,1555.4551,1555.4579,1555.4604,1555.463,1555.4657,1555.4684,1555.4711,1555.4736,1555.4762,1555.479,1555.4816,1555.4841,1555.4868,1555.4894,1555.492,1555.4946,1555.4973,1555.4999,1555.5026,1555.5051,1555.5078,1555.5104,1555.513,1555.5156,1555.5182,1555.5208,1555.5234,1555.526,1555.5286,1555.5312,1555.5338,1555.5364,1555.5391,1555.5416,1555.5442,1555.5468,1555.5493,1555.552,1555.5546,1555.5571,1555.5597,1555.5623,1555.5648,1555.5675,1555.5701,1555.5725,1555.5752,1555.5778,1555.5802,1555.5829,1555.5856,1555.5884,1555.591,1555.5936,1555.5964,1555.5992,1555.602,1555.605,1555.6077,1555.6106,1555.6134,1555.6162,1555.6191,1555.622,1555.6248,1555.6277,1555.6304,1555.6333,1555.6361,1555.6389,1555.6418,1555.6445,1555.6475,1555.6503,1555.6531,1555.6559,1555.6587,1555.6615,1555.6643,1555.6671,1555.67,1555.6727,1555.6755,1555.6783,1555.6812,1555.6841,1555.6868,1555.6896,1555.6924,1555.6952,1555.6979,1555.7008,1555.7035,1555.7064,1555.7091,1555.7119,1555.7147,1555.7175,1555.7202,1555.723,1555.7258,1555.7286,1555.7314,1555.7341,1555.7369,1555.7397,1555.7424,1555.7452,1555.748,1555.7509,1555.7535,1555.7562,1555.7592,1555.7618,1555.7645,1555.7673,1555.77,1555.773,1555.7756,1555.7783,1555.7811,1555.7838,1555.7865,1555.7893,1555.7921,1555.7949,1555.7976,1555.8003,1555.8031,1555.8058,1555.8085,1555.8113,1555.814,1555.8168,1555.8195,1555.8221,1555.825,1555.8276,1555.8302,1555.833,1555.8357,1555.8385,1555.8412,1555.8439,1555.8467,1555.8494,1555.8519,1555.8547,1555.8574,1555.8601,1555.8628,1555.8655,1555.8683,1555.871,1555.8735,1555.8763,1555.879,1555.8816,1555.8844,1555.8871,1555.8898,1555.8925,1555.8951,1555.8978,1555.9005,1555.9031,1555.9059,1555.9086,1555.9111,1555.914,1555.9165,1555.9193,1555.9219,1555.9246,1555.9272,1555.9299,1555.9325,1555.9353,1555.9379,1555.9404,1555.9432,1555.9458,1555.9486,1555.9512,1555.9537,1555.9565,1555.9591,1555.9617,1555.9644,1555.967,1555.9696,1555.9723,1555.975,1555.9775,1555.9802,1555.9828,1555.9855,1555.9882,1555.9907,1555.9934,1555.996,1555.9985,1556.0012,1556.0038,1556.0063,1556.0092,1556.0117,1556.0143,1556.017,1556.0195,1556.0222,1556.0248,1556.0273,1556.03,1556.0326,1556.0352,1556.0377,1556.0403,1556.0428,1556.0455,1556.0481,1556.0507,1556.0533,1556.0559,1556.0585,1556.061,1556.0636,1556.0663,1556.0688,1556.0713,1556.074,1556.0765,1556.0791,1556.0817,1556.0842,1556.0868,1556.0894,1556.0919,1556.0945,1556.097,1556.0996,1556.1022,1556.1047,1556.1073,1556.1097,1556.1124,1556.1149,1556.1174,1556.1201,1556.1226,1556.1252,1556.1277,1556.1301,1556.1328,1556.1353,1556.1378,1556.1404,1556.143,1556.1454,1556.148,1556.1503,1556.1527,1556.1552,1556.1575,1556.1598,1556.1622,1556.1646,1556.1669,1556.1693,1556.1716,1556.1738,1556.1761,1556.1786,1556.1809,1556.1831,1556.1855,1556.1879,1556.1902,1556.1925,1556.1948,1556.1971,1556.1995,1556.2018,1556.2041,1556.2064,1556.2087,1556.2109,1556.2134,1556.2157,1556.2179,1556.2202,1556.2225,1556.2249,1556.227,1556.2295,1556.2317,1556.234,1556.2363,1556.2386,1556.2408,1556.2432,1556.2455,1556.2477,1556.2501,1556.2523,1556.2545,1556.2568,1556.2592,1556.2614,1556.2637,1556.266,1556.2682,1556.2704,1556.2728,1556.275,1556.2772,1556.2795,1556.2817,1556.284,1556.2863,1556.2886,1556.2908,1556.293,1556.2953,1556.2975,1556.2998,1556.3021,1556.3043,1556.3065,1556.3088,1556.311,1556.3132,1556.3154,1556.3177,1556.32,1556.3221,1556.3245,1556.3267,1556.3289,1556.331,1556.3333,1556.3354,1556.3376,1556.34,1556.3422,1556.3444,1556.3466,1556.3488,1556.351,1556.3533,1556.3555,1556.3575,1556.3597,1556.362,1556.3643,1556.3663,1556.3687,1556.3708,1556.3729,1556.3752,1556.3774,1556.3795,1556.3817,1556.384,1556.3864,1556.3887,1556.391,1556.3933,1556.3955,1556.3978,1556.4,1556.4022,1556.4045,1556.4067,1556.4089,1556.4111,1556.4135,1556.4156,1556.4178,1556.4202,1556.4224,1556.4246,1556.4269,1556.429,1556.4312,1556.4333,1556.4357,1556.4379,1556.4401,1556.4423,1556.4445,1556.4467,1556.449,1556.451,1556.4532,1556.4554,1556.4578,1556.4598,1556.462,1556.4644,1556.4664,1556.4686,1556.4708,1556.473,1556.4752,1556.4773,1556.4796,1556.4817,1556.4839,1556.4861,1556.4883,1556.4904,1556.4927,1556.4948,1556.497,1556.499,1556.5012,1556.5034,1556.5055,1556.5078,1556.5099,1556.512,1556.5142,1556.5164,1556.5184,1556.5205,1556.5228,1556.5249,1556.527,1556.529,1556.5314,1556.5334,1556.5355,1556.5377,1556.5398,1556.5419,1556.544,1556.5463,1556.5483,1556.5504,1556.5526,1556.5547,1556.5568,1556.559,1556.561,1556.5631,1556.5652,1556.5674,1556.5695,1556.5715,1556.5737,1556.5757,1556.5778,1556.5798,1556.582,1556.5841,1556.5862,1556.5884,1556.5903,1556.5924,1556.5945,1556.5967,1556.5986,1556.6007,1556.6029,1556.605,1556.6069,1556.609,1556.6112,1556.6132,1556.6152,1556.6172,1556.6193,1556.6212,1556.6232,1556.6251,1556.6271,1556.629,1556.6309,1556.6329,1556.6348,1556.6367,1556.6385,1556.6406,1556.6426,1556.6444,1556.6464,1556.6483,1556.6503,1556.6521,1556.654,1556.656,1556.6578,1556.6598,1556.6617,1556.6637,1556.6655,1556.6674,1556.6694,1556.6713,1556.6731,1556.675,1556.677,1556.6788,1556.6808,1556.6826,1556.6846,1556.6864,1556.6884,1556.6902,1556.6921,1556.694,1556.6958,1556.6978,1556.6997,1556.7015,1556.7034,1556.7052,1556.7072,1556.709,1556.7108,1556.7126,1556.7146,1556.7164,1556.7183,1556.7203,1556.7224,1556.7244,1556.7263,1556.7284,1556.7303,1556.7323,1556.7343,1556.7363,1556.7383,1556.7402,1556.7422,1556.7443,1556.7462,1556.748,1556.7501,1556.7521,1556.754,1556.756,1556.758,1556.76,1556.7618,1556.7638,1556.7659,1556.7678,1556.7697,1556.7716,1556.7737,1556.7756,1556.7775,1556.7795,1556.7815,1556.7833,1556.7853,1556.7872,1556.7892,1556.7911,1556.793,1556.795,1556.7969,1556.7988,1556.8007,1556.8027,1556.8046,1556.8065,1556.8083,1556.8104,1556.8123,1556.8142,1556.8162,1556.818,1556.82,1556.8219,1556.8241,1556.8262,1556.8281,1556.8302,1556.8323,1556.8344,1556.8364,1556.8385,1556.8406,1556.8425,1556.8446,1556.8467,1556.8488,1556.8507,1556.8527,1556.8549,1556.8568,1556.8589,1556.861,1556.8629,1556.865,1556.867,1556.8691,1556.8711,1556.873,1556.8751,1556.8772,1556.8792,1556.8811,1556.8832,1556.8853,1556.8872,1556.8892,1556.8912,1556.8932,1556.8953,1556.8973,1556.8993,1556.9012,1556.9032,1556.9053,1556.9072,1556.9092,1556.9111,1556.9132,1556.9152,1556.9171,1556.9192,1556.9211,1556.9231,1556.925,1556.9269,1556.9287,1556.9304,1556.9321,1556.9341,1555.7682,1555.771,1555.7738,1555.7766,1555.7793,1555.7821,1555.7848,1555.7876,1555.7903,1555.793,1555.7959,1555.7986,1555.8013,1555.8041,1555.8068,1555.8096,1555.8123,1555.815,1555.8177,1555.8204,1555.8231,1555.8259,1555.8286,1555.8314,1555.834,1555.8367,1555.8395,1555.8422,1555.8448,1555.8477,1555.8502,1555.853,1555.8557,1555.8584,1555.8612,1555.8638,1555.8665,1555.8693,1555.872,1555.8745,1555.8773,1555.88,1555.8827,1555.8854,1555.8881,1555.8907,1555.8934,1555.896,1555.8988,1555.9015,1555.904,1555.9069,1555.9094,1555.9122,1555.9148,1555.9175,1555.9202,1555.9227,1555.9253,1555.928,1555.9305,1555.9331,1555.9358,1555.9384,1555.9409,1555.9436,1555.9462,1555.9489,1555.9514,1555.954,1555.9567,1555.9592,1555.9618,1555.9645,1555.967,1555.9696,1555.9723,1555.9749,1555.9773,1555.98,1555.9825,1555.9851,1555.9878,1555.9902,1555.9929,1555.9955,1555.998,1556.0006,1556.0032,1556.0057,1556.0083,1556.0109,1556.0134,1556.016,1556.0186,1556.0211,1556.0237,1556.0262,1556.0287,1556.0314,1556.0338,1556.0364,1556.039,1556.0415,1556.044,1556.0466,1556.0491,1556.0518,1556.0542,1556.0566,1556.0593,1556.0618,1556.0643,1556.0669,1556.0693,1556.0719,1556.0745,1556.0769,1556.0793,1556.082,1556.0845,1556.0869,1556.0895,1556.092,1556.0945,1556.097,1556.0995,1556.1019,1556.1045,1556.107,1556.1095,1556.112,1556.1145,1556.117,1556.1195,1556.122,1556.1244,1556.127,1556.1294,1556.1318,1556.1344,1556.1368,1556.1393,1556.1418,1556.1443,1556.1467,1556.1492,1556.1516,1556.154,1556.1566,1556.159,1556.1615,1556.164,1556.1664,1556.1688,1556.1714,1556.1737,1556.1761,1556.1787,1556.1812,1556.1836,1556.1862,1556.1886,1556.191,1556.1936,1556.1959,1556.1984,1556.2009,1556.2034,1556.2059,1556.2084,1556.2108,1556.2134,1556.2158,1556.2181,1556.2207,1556.2231,1556.2256,1556.2281,1556.2305,1556.2329,1556.2355,1556.2379,1556.2402,1556.2428,1556.2452,1556.2476,1556.2501,1556.2526,1556.2549,1556.2574,1556.2598,1556.2622,1556.2648,1556.2671,1556.2695,1556.2719,1556.2744,1556.2767,1556.2792,1556.2816,1556.284,1556.2864,1556.2888,1556.2913,1556.2936,1556.296,1556.2985,1556.3008,1556.3033,1556.3057,1556.308,1556.3104,1556.3129,1556.3152,1556.3176,1556.32,1556.3224,1556.3248,1556.3271,1556.3295,1556.3319,1556.3342,1556.3367,1556.3391,1556.3414,1556.3438,1556.3462,1556.3485,1556.3508,1556.3533,1556.3556,1556.3579,1556.3604,1556.3627,1556.365,1556.3673,1556.3698,1556.3721,1556.3744,1556.3768,1556.379,1556.3813,1556.3838,1556.3861,1556.3884,1556.3907,1556.3931,1556.3954,1556.3978,1556.4,1556.4023,1556.4048,1556.4071,1556.4093,1556.4117,1556.4141,1556.4163,1556.4186,1556.4209,1556.4232,1556.4254,1556.4279,1556.43,1556.4323,1556.4347,1556.437,1556.4393,1556.4418,1556.4441,1556.4464,1556.4489,1556.4512,1556.4535,1556.4559,1556.4583,1556.4606,1556.4629,1556.4653,1556.4675,1556.4698,1556.4723,1556.4746,1556.4769,1556.4792,1556.4816,1556.4839,1556.4862,1556.4885,1556.4908,1556.4932,1556.4955,1556.4978,1556.5001,1556.5024,1556.5048,1556.507,1556.5094,1556.5116,1556.5139,1556.5162,1556.5186,1556.5208,1556.5232,1556.5254,1556.5277,1556.53,1556.5323,1556.5345,1556.5369,1556.5392,1556.5414,1556.5436,1556.546,1556.5482,1556.5504,1556.5529,1556.555,1556.5573,1556.5596,1556.5619,1556.5641,1556.5664,1556.5686,1556.5708,1556.5731,1556.5754,1556.5776,1556.5798,1556.5822,1556.5844,1556.5865,1556.5889,1556.5911,1556.5933,1556.5956,1556.5978,1556.6,1556.6022,1556.6045,1556.6067,1556.6089,1556.6112,1556.6134,1556.6156,1556.6178,1556.62,1556.6222,1556.6244,1556.6267,1556.6289,1556.631,1556.6333,1556.6355,1556.6377,1556.6399,1556.6421,1556.6443,1556.6464,1556.6487,1556.6509,1556.653,1556.6553,1556.6573,1556.6595,1556.6617,1556.664,1556.666,1556.6681,1556.6703,1556.6725,1556.6747,1556.6769,1556.6791,1556.6812,1556.6833,1556.6857,1556.6877,1556.69,1556.6921,1556.6943,1556.6964,1556.6987,1556.7008,1556.703,1556.7051,1556.7073,1556.7095,1556.7115,1556.7139,1556.716,1556.718,1556.7202,1556.7224,1556.7245,1556.7267,1556.7289,1556.731,1556.733,1556.7354,1556.7374,1556.7395,1556.7416,1556.7438,1556.7458,1556.748,1556.7502,1556.7523,1556.7544,1556.7565,1556.7587,1556.7607,1556.7628,1556.765,1556.7671,1556.7692,1556.7712,1556.7734,1556.7755,1556.7776,1556.7798,1556.7819,1556.7839,1556.786,1556.7881,1556.7902,1556.7922,1556.7944,1556.7965,1556.7986,1556.8005,1556.8027,1556.8048,1556.8069,1556.809,1556.811,1556.8131,1556.8151,1556.8173,1556.8193,1556.8213,1556.8235,1556.8254,1556.8275,1556.8296,1556.8317,1556.8337,1556.8357,1556.8378,1556.8398,1556.8419,1556.8439,1556.846,1556.848,1556.85,1556.852,1556.8541,1556.8561,1556.8582,1556.8602,1556.8622,1556.8643,1556.8662,1556.8683,1556.8704,1556.8723,1556.8743,1556.8763,1556.8783,1556.8804,1556.8824,1556.8845,1556.8865,1556.8884,1556.8905,1556.8925,1556.8944,1556.8964,1556.8984,1556.9003,1556.9022,1556.9042,1556.9062,1556.9081,1556.91,1556.9121,1556.914,1556.9159,1556.9178,1556.9198,1556.9218,1556.9236,1556.9255,1556.9276,1556.9294,1556.9314,1556.9332,1556.9353,1556.9371,1556.939,1556.9409,1556.9429,1556.9448,1556.9467,1556.9487,1556.9506,1556.9524,1556.9543,1556.9563,1556.9581,1556.96,1556.9619,1556.9639,1556.9657,1556.9675,1556.9695,1556.9714,1556.9733,1556.9751,1556.9769,1556.9789,1556.9808,1556.9827,1556.9845,1556.9865,1556.9883,1556.9901,1556.992,1556.9939,1556.9957,1556.9976,1556.9994,1557.0013,1557.0032,1557.005,1557.0067,1557.0087,1557.0105,1557.0123,1557.0142,1557.0161,1557.0178,1557.0197,1557.0215,1557.0234,1557.0251,1557.027,1557.0288,1557.0308,1557.0325,1557.0343,1557.0361,1557.038,1557.0398,1557.0415,1557.0433,1557.0452,1557.047,1557.0488,1557.0505,1557.0524,1557.0542,1557.0559,1557.0577,1557.0596,1557.0614,1557.0631,1557.0648,1557.0668,1557.0685,1557.0703,1557.072,1557.0739,1557.0756,1557.0774,1557.0791,1557.0809,1557.0826,1557.0842,1557.0857,1557.0872,1557.0887,1557.0902,1557.0917,1557.0931,1557.0946,1557.0962,1557.0977,1557.0991,1557.1006,1557.102,1557.1036,1557.1051,1557.1066,1557.108,1557.1095,1557.111,1557.1124,1557.1139,1557.1154,1557.1168,1557.1183,1557.1198,1557.1212,1557.1227,1557.124,1557.1256,1557.1271,1557.1284,1557.1299,1557.1312,1557.1328,1557.1343,1557.1356,1557.1371,1557.1384,1557.14,1557.1414,1557.1428,1557.1442,1557.1455,1557.1471,1557.1484,1557.1499,1557.1512,1557.1526,1557.154,1557.1555,1557.1569,1557.1582,1557.1597,1557.161,1557.1625,1557.1638,1557.1653,1557.1666,1557.168,1557.1694,1557.1708,1557.1721,1557.1735,1557.1748,1557.1761,1557.1776,1557.179,1557.1803,1557.1816,1557.183,1557.1844,1557.1858,1557.1871,1557.1885,1557.1898,1557.1913,1557.1926,1557.1938,1557.1952,1557.1965,1557.1979,1557.1993,1557.2006,1557.2019,1557.2032,1557.2045,1557.2059,1557.2073,1557.2085,1557.2098,1557.2112,1557.2124,1557.2139,1557.2151,1557.2164,1557.2177,1557.219,1557.2202,1557.2217,1557.2229,1557.2242,1557.2255,1557.2268,1557.2281,1557.2294,1557.2303,1557.2312,1557.232,1557.2329,1557.2339,1557.2347,1557.2357,1557.2366,1557.2374,1557.2383,1557.2391,1557.24,1557.2408,1557.2417,1557.2428,1557.2437,1557.2444,1557.2452,1557.2461,1557.247,1557.2478,1557.2487,1557.2495,1557.2505,1557.2513,1557.2521,1557.2529,1557.2538,1557.2546,1557.2555,1557.2562,1557.2571,1557.258,1557.2588,1557.2596,1557.2605,1557.2612,1557.2621,1557.2628,1557.2637,1557.2644,1557.2654,1557.2661,1557.267,1557.2677,1557.2686,1557.2693,1557.2701,1557.2709,1557.2716,1557.2726,1557.2733,1557.2747,1557.2761,1557.2775,1557.2788,1557.2804,1554.8369,1554.8402,1554.8433,1554.8464,1554.8492,1554.8522,1554.8552,1554.858,1554.8611,1554.864,1554.8668,1554.8699,1554.8728,1554.8757,1554.8787,1554.8816,1554.8845,1554.8875,1554.8904,1554.8933,1554.8962,1554.8992,1554.9021,1554.905,1554.908,1554.9108,1554.9138,1554.9166,1554.9197,1554.9226,1554.9254,1554.9285,1554.9313,1554.9343,1554.9371,1554.94,1554.943,1554.9458,1554.9489,1554.9517,1554.9546,1554.9575,1554.9604,1554.9634,1554.9662,1554.9691,1554.972,1554.975,1554.9778,1554.9807,1554.9836,1554.9866,1554.9894,1554.9923,1554.9952,1554.998,1555.001,1555.0038,1555.0066,1555.0094,1555.0122,1555.0151,1555.0178,1555.0206,1555.0236,1555.0262,1555.029,1555.032,1555.0347,1555.0376,1555.0404,1555.0431,1555.046,1555.0487,1555.0516,1555.0544,1555.0571,1555.06,1555.0627,1555.0656,1555.0684,1555.0712,1555.074,1555.0768,1555.0795,1555.0824,1555.0851,1555.0879,1555.0907,1555.0935,1555.0963,1555.0991,1555.1018,1555.1047,1555.1074,1555.1101,1555.113,1555.1157,1555.1187,1555.1213,1555.124,1555.127,1555.1296,1555.1323,1555.135,1555.1375,1555.1401,1555.1426,1555.1451,1555.1477,1555.1503,1555.1527,1555.1553,1555.1578,1555.1603,1555.163,1555.1654,1555.1678,1555.1705,1555.173,1555.1755,1555.1781,1555.1805,1555.1831,1555.1857,1555.1881,1555.1907,1555.1932,1555.1957,1555.1981,1555.2008,1555.2032,1555.2057,1555.2084,1555.2108,1555.2134,1555.2158,1555.2183,1555.221,1555.2234,1555.2258,1555.2284,1555.2308,1555.2334,1555.236,1555.2384,1555.2408,1555.2434,1555.2458,1555.2483,1555.251,1555.2534,1555.2559,1555.2584,1555.2609,1555.2633,1555.2661,1555.2688,1555.2715,1555.2743,1555.277,1555.2798,1555.2823,1555.285,1555.2877,1555.2904,1555.293,1555.2957,1555.2983,1555.3009,1555.3037,1555.3063,1555.309,1555.3116,1555.3142,1555.317,1555.3196,1555.3221,1555.325,1555.3275,1555.3301,1555.3328,1555.3354,1555.338,1555.3407,1555.3433,1555.3461,1555.3486,1555.3512,1555.3539,1555.3566,1555.3591,1555.3618,1555.3644,1555.367,1555.3696,1555.3723,1555.3749,1555.3776,1555.3801,1555.3828,1555.3854,1555.388,1555.3906,1555.3932,1555.3958,1555.3984,1555.401,1555.4036,1555.4062,1555.4088,1555.4114,1555.4141,1555.4166,1555.4193,1555.4219,1555.4244,1555.4271,1555.4297,1555.4323,1555.4349,1555.4375,1555.44,1555.4426,1555.4452,1555.4478,1555.4504,1555.453,1555.4554,1555.4581,1555.4607,1555.4634,1555.4658,1555.4684,1555.4711,1555.4736,1555.4761,1555.4788,1555.4813,1555.4838,1555.4865,1555.489,1555.4915,1555.4941,1555.4967,1555.4991,1555.5018,1555.5044,1555.5068,1555.5095,1555.512,1555.5145,1555.5171,1555.5197,1555.5222,1555.5248,1555.5272,1555.5299,1555.5323,1555.5349,1555.5375,1555.54,1555.5426,1555.5452,1555.5477,1555.5502,1555.5527,1555.5553,1555.5577,1555.5604,1555.5629,1555.5653,1555.568,1555.5704,1555.5729,1555.5756,1555.578,1555.5804,1555.583,1555.5856,1555.588,1555.5906,1555.593,1555.5957,1555.5981,1555.6006,1555.6031,1555.6056,1555.6082,1555.6107,1555.6132,1555.6156,1555.6182,1555.6206,1555.623,1555.6256,1555.628,1555.6305,1555.633,1555.6355,1555.638,1555.6406,1555.6431,1555.6454,1555.648,1555.6504,1555.6528,1555.6554,1555.6578,1555.6603,1555.6628,1555.6653,1555.6677,1555.6703,1555.6727,1555.675,1555.6776,1555.68,1555.6825,1555.685,1555.6874,1555.6898,1555.6924,1555.6948,1555.6971,1555.6997,1555.7021,1555.7046,1555.707,1555.7095,1555.7119,1555.7144,1555.7168,1555.7192,1555.7217,1555.7241,1555.7264,1555.729,1555.7314,1555.7338,1555.7363,1555.7386,1555.7411,1555.7435,1555.746,1555.7483,1555.7509,1555.7532,1555.7556,1555.758,1555.7604,1555.7628,1555.7653,1555.7677,1555.77,1555.7725,1555.7749,1555.7772,1555.7797,1555.7821,1555.7844,1555.7869,1555.7893,1555.7916,1555.794,1555.7964,1555.7986,1555.8009,1555.8033,1555.8055,1555.8079,1555.8103,1555.8126,1555.815,1555.8174,1555.8196,1555.8219,1555.8243,1555.8267,1555.829,1555.8313,1555.8336,1555.8359,1555.8384,1555.8406,1555.8429,1555.8452,1555.8475,1555.8499,1555.8522,1555.8545,1555.8568,1555.8591,1555.8615,1555.8638,1555.866,1555.8684,1555.8707,1555.8729,1555.8754,1555.8776,1555.8799,1555.8821,1555.8845,1555.8867,1555.889,1555.8914,1555.8937,1555.8959,1555.8983,1555.9005,1555.9027,1555.9052,1555.9073,1555.9097,1555.912,1555.9142,1555.9165,1555.9187,1555.921,1555.9232,1555.9255,1555.9279,1555.93,1555.9323,1555.9347,1555.9369,1555.9391,1555.9414,1555.9437,1555.9459,1555.9481,1555.9504,1555.9526,1555.9548,1555.9572,1555.9595,1555.9617,1555.964,1555.9662,1555.9684,1555.9707,1555.9729,1555.9751,1555.9773,1555.9796,1555.9818,1555.984,1555.9863,1555.9885,1555.9907,1555.993,1555.9951,1555.9973,1555.9995,1556.0018,1556.004,1556.0062,1556.0085,1556.0106,1556.0128,1556.0151,1556.0173,1556.0195,1556.0216,1556.0239,1556.0261,1556.0282,1556.0305,1556.0327,1556.0349,1556.0372,1556.0394,1556.0416,1556.044,1556.0463,1556.0486,1556.0509,1556.0533,1556.0555,1556.0579,1556.0603,1556.0625,1556.0648,1556.0673,1556.0695,1556.0718,1556.0741,1556.0764,1556.0786,1556.081,1556.0834,1556.0856,1556.0879,1556.0902,1556.0925,1556.0947,1556.0972,1556.0994,1556.1016,1556.104,1556.1062,1556.1085,1556.1108,1556.113,1556.1154,1556.1177,1556.12,1556.1222,1556.1244,1556.1267,1556.129,1556.1312,1556.1335,1556.1359,1556.1381,1556.1404,1556.1426,1556.1448,1556.1472,1556.1494,1556.1516,1556.1538,1556.1561,1556.1583,1556.1606,1556.163,1556.1652,1556.1674,1556.1697,1556.1719,1556.1741,1556.1763,1556.1786,1556.1808,1556.183,1556.1853,1556.1875,1556.1897,1556.192,1556.1942,1556.1964,1556.1987,1556.2008,1556.203,1556.2052,1556.2075,1556.2097,1556.2119,1556.2142,1556.2163,1556.2185,1556.2208,1556.223,1556.2251,1556.2273,1556.2296,1556.2318,1556.2339,1556.2362,1556.2384,1556.2405,1556.2428,1556.245,1556.2471,1556.2493,1556.2515,1556.2537,1556.2559,1556.258,1556.2603,1556.2623,1556.2645,1556.2667,1556.2689,1556.271,1556.2733,1556.2754,1556.2777,1556.2802,1556.2823,1556.2847,1556.2871,1556.2894,1556.2916,1556.294,1556.2964,1556.2986,1556.3009,1556.3033,1556.3055,1556.3079,1556.3103,1556.3125,1556.3148,1556.3173,1556.3195,1556.3218,1556.3241,1556.3264,1556.3286,1556.331,1556.3333,1556.3356,1556.3378,1556.3402,1556.3424,1556.3447,1556.347,1556.3494,1556.3516,1556.3539,1556.3562,1556.3584,1556.3608,1556.363,1556.3652,1556.3677,1556.3699,1556.3721,1556.3743,1556.3767,1556.3789,1556.3811,1556.3835,1556.3857,1556.388,1556.3903,1556.3925,1556.3948,1556.3971,1556.3992,1556.4012,1556.4034,1556.4056,1556.4077,1556.4098,1556.4121,1556.4142,1556.4163,1556.4183,1556.4205,1556.4227,1556.4248,1556.427,1556.4291,1556.4312,1556.4332,1556.4354,1556.4375,1556.4396,1556.4418,1556.444,1556.446,1556.4481,1556.4503,1556.4524,1556.4545,1556.4565,1556.4586,1556.4607,1556.4628,1556.465,1556.467,1556.4691,1556.4713,1556.4734,1556.4753,1556.4774,1556.4796,1556.4817,1556.4838,1556.4858,1556.4879,1556.49,1556.4921,1556.4941,1556.4962,1556.4983,1556.5004,1556.5024,1556.5045,1556.5065,1556.5088,1556.511,1556.5132,1556.5155,1556.5177,1556.5199,1556.5222,1556.5244,1556.5266,1556.5288,1556.5311,1556.5333,1556.5354,1556.5377,1556.5399,1556.5421,1556.5444,1556.5465,1556.5487,1556.5509,1556.5532,1556.5553,1556.5575,1556.5598,1556.5619,1556.5641,1556.5664,1556.5685,1556.5707,1556.5729,1556.5751,1556.5773,1556.5793,1556.5817,1556.5837,1556.5859,1556.588,1556.5903,1556.5924,1556.5946,1556.5968,1556.599,1556.6011,1556.6034,1556.6055,1556.6075,1556.6097,1556.6119,1556.6141,1556.6162,1556.6184,1556.6206,1556.6227,1556.6248,1556.6271,1556.6292,1556.6313,1555.0637,1555.0654,1555.0673,1555.069,1555.0708,1555.0726,1555.0746,1555.0764,1555.0782,1555.0801,1555.082,1555.0839,1555.0857,1555.0875,1555.0895,1555.0914,1555.0933,1555.0951,1555.097,1555.0989,1555.1007,1555.1025,1555.1045,1555.1063,1555.1082,1555.11,1555.112,1555.1139,1555.1157,1555.1176,1555.1195,1555.1213,1555.1232,1555.1252,1555.1271,1555.1289,1555.1307,1555.1327,1555.1346,1555.1365,1555.1383,1555.1403,1555.1421,1555.144,1555.1459,1555.1478,1555.1497,1555.1516,1555.1534,1555.1554,1555.1572,1555.1592,1555.161,1555.163,1555.1649,1555.1667,1555.1685,1555.1704,1555.1721,1555.174,1555.1757,1555.1776,1555.1794,1555.1812,1555.183,1555.1848,1555.1866,1555.1884,1555.1902,1555.192,1555.1938,1555.1957,1555.1974,1555.1993,1555.201,1555.2029,1555.2047,1555.2065,1555.2084,1555.2101,1555.2119,1555.2139,1555.2156,1555.2174,1555.2192,1555.2211,1555.2229,1555.2247,1555.2264,1555.2284,1555.2302,1555.2319,1555.2338,1555.2357,1555.2374,1555.2393,1555.2411,1555.243,1555.2448,1555.2466,1555.2484,1555.2504,1555.2521,1555.2539,1555.2556,1555.2573,1555.2592,1555.2609,1555.2626,1555.2644,1555.2662,1555.268,1555.2697,1555.2714,1555.2732,1555.2749,1555.2766,1555.2784,1555.2803,1555.282,1555.2837,1555.2854,1555.2872,1555.2891,1555.2908,1555.2925,1555.2943,1555.296,1555.2977,1555.2996,1555.3013,1555.3031,1555.3048,1555.3066,1555.3083,1555.3102,1555.3119,1555.3137,1555.3154,1555.3173,1555.319,1555.3208,1555.3225,1555.3243,1555.326,1555.3279,1555.3296,1555.3314,1555.3333,1555.335,1555.3367,1555.3385,1555.3403,1555.342,1555.3438,1555.3457,1555.3475,1555.3494,1555.3512,1555.3531,1555.355,1555.3568,1555.3588,1555.3607,1555.3625,1555.3644,1555.3662,1555.3682,1555.37,1555.3718,1555.3737,1555.3756,1555.3774,1555.3793,1555.3812,1555.3832,1555.385,1555.3868,1555.3887,1555.3906,1555.3925,1555.3943,1555.3961,1555.3982,1555.4,1555.4019,1555.4037,1555.4056,1555.4075,1555.4094,1555.4113,1555.4132,1555.415,1555.4169,1555.4187,1555.4208,1555.4226,1555.4244,1555.4263,1555.4282,1555.4302,1555.432,1555.434,1555.4358,1555.4376,1555.4396,1555.4415,1555.4434,1555.4452,1555.447,1555.4491,1555.4509,1555.4528,1555.4546,1555.4567,1555.4585,1555.4603,1555.4622,1555.4642,1555.4661,1555.4679,1555.4697,1555.4718,1555.4736,1555.4755,1555.4774,1555.4794,1555.4812,1555.483,1555.485,1555.4869,1555.4888,1555.4907,1555.4926,1555.4945,1555.4965,1555.4983,1555.5002,1555.5022,1555.504,1555.5059,1555.5079,1555.5098,1555.5116,1555.5135,1555.5155,1555.5173,1555.5193,1555.5211,1555.5231,1555.525,1555.5269,1555.5287,1555.5308,1555.5326,1555.5344,1555.5364,1555.5383,1555.5403,1555.5421,1555.5438,1555.5457,1555.5475,1555.5492,1555.5509,1555.5529,1555.5547,1555.5565,1555.5583,1555.5603,1555.5621,1555.564,1555.5658,1555.5677,1555.5696,1555.5714,1555.5732,1555.5752,1555.577,1555.5789,1555.5807,1555.5826,1555.5846,1555.5864,1555.5884,1555.5902,1555.592,1555.5939,1555.5958,1555.5977,1555.5995,1555.6013,1555.6033,1555.6051,1555.6069,1555.6089,1555.6108,1555.6127,1555.6145,1555.6163,1555.6183,1555.6201,1555.622,1555.6239,1555.6259,1555.6277,1555.6295,1555.6313,1555.6333,1555.6351,1555.6371,1555.6389,1555.6409,1555.6427,1555.6445,1555.6464,1555.6484,1555.6503,1555.6521,1555.6539,1555.6559,1555.6577,1555.6597,1555.6615,1555.6635,1555.6653,1555.6671,1555.6692,1555.671,1555.6729,1555.6747,1555.6768,1555.6786,1555.6804,1555.6823,1555.6843,1555.6862,1555.688,1555.6898,1555.6918,1555.6937,1555.6956,1555.6974,1555.6995,1555.7013,1555.7031,1555.705,1555.707,1555.7089,1555.7107,1555.7125,1555.7146,1555.7164,1555.7183,1555.7202,1555.7222,1555.724,1555.726,1555.7278,1555.7297,1555.7316,1555.7335,1555.7355,1555.7373,1555.7393,1555.7413,1555.7434,1555.7455,1555.7476,1555.7496,1555.752,1555.7542,1555.7563,1555.7587,1555.7609,1555.7631,1555.7654,1555.7676,1555.7697,1555.7719,1555.7742,1555.7764,1555.7786,1555.7809,1555.7831,1555.7853,1555.7876,1555.7898,1555.792,1555.7943,1555.7965,1555.7987,1555.8009,1555.8032,1555.8053,1555.8075,1555.8098,1555.812,1555.8142,1555.8165,1555.8187,1555.8209,1555.8231,1555.8254,1555.8276,1555.8298,1555.8322,1555.8344,1555.8365,1555.8389,1555.8411,1555.8433,1555.8455,1555.8477,1555.8499,1555.852,1555.8544,1555.8566,1555.8588,1555.8611,1555.8633,1555.8655,1555.8678,1555.87,1555.8722,1555.8744,1555.8767,1555.8789,1555.8811,1555.8834,1555.8856,1555.8878,1555.89,1555.8922,1555.8944,1555.8966,1555.8989,1555.9011,1555.9033,1555.9056,1555.9078,1555.91,1555.9124,1555.9146,1555.9167,1555.919,1555.9213,1555.9235,1555.9257,1555.928,1555.9302,1555.9323,1555.9346,1555.9368,1555.939,1555.9413,1555.9435,1555.9457,1555.9479,1555.9502,1555.9524,1555.9546,1555.9569,1555.9591,1555.9613,1555.9636,1555.9658,1555.9679,1555.9701,1555.9724,1555.9745,1555.9767,1555.9789,1555.9811,1555.9833,1555.9856,1555.9879,1555.9901,1555.9924,1555.9948,1555.997,1555.9993,1556.0016,1556.0038,1556.0061,1556.0084,1556.0106,1556.013,1556.0153,1556.0175,1556.0198,1556.0221,1556.0244,1556.0266,1556.0288,1556.0312,1556.0334,1556.0356,1556.0381,1556.0403,1556.0426,1556.0449,1556.0471,1556.0494,1556.0518,1556.054,1556.0563,1556.0585,1556.0608,1556.0631,1556.0653,1556.0677,1556.07,1556.0721,1556.0746,1556.0768,1556.079,1556.0814,1556.0836,1556.0859,1556.0883,1556.0905,1556.0928,1556.095,1556.0973,1556.0996,1556.1018,1556.1041,1556.1064,1556.1086,1556.1111,1556.1133,1556.1155,1556.1179,1556.1201,1556.1223,1556.1246,1556.127,1556.1293,1556.1315,1556.1338,1556.1361,1556.1383,1556.1406,1556.143,1556.1451,1556.1475,1556.1498,1556.152,1556.1544,1556.1566,1556.1588,1556.1611,1556.1635,1556.1656,1556.168,1556.1703,1556.1725,1556.1748,1556.1771,1556.1793,1556.1816,1556.184,1556.1862,1556.1885,1556.1907,1556.1931,1556.1953,1556.1975,1556.2,1556.2021,1556.2043,1556.2068,1556.209,1556.2112,1556.2136,1556.2158,1556.218,1556.2202,1556.2225,1556.2246,1556.2268,1556.2291,1556.2313,1556.2334,1556.2357,1556.2379,1556.24,1556.2422,1556.2445,1556.2467,1556.2488,1556.2511,1556.2533,1556.2554,1556.2577,1556.2599,1556.262,1556.2642,1556.2665,1556.2687,1556.2708,1556.2731,1556.2753,1556.2773,1556.2797,1556.2819,1556.2839,1556.2861,1556.2885,1556.2905,1556.2927,1556.295,1556.2971,1556.2993,1556.3016,1556.3037,1556.3059,1556.3081,1556.3103,1556.3125,1556.3147,1556.3169,1556.3191,1556.3213,1556.3234,1556.3257,1556.3278,1556.33,1556.3323,1556.3344,1556.3367,1556.339,1556.3412,1556.3434,1556.3457,1556.348,1556.3502,1556.3524,1556.3547,1556.357,1556.3593,1556.3616,1556.3638,1556.366,1556.3683,1556.3706,1556.3728,1556.3751,1556.3773,1556.3795,1556.3818,1556.3842,1556.3864,1556.3885,1556.3909,1556.3931,1556.3953,1556.3977,1556.3999,1556.4021,1556.4044,1556.4066,1556.4088,1556.411,1556.4135,1556.4156,1556.4178,1556.4202,1556.4224,1556.4246,1556.4269,1556.4291,1556.4313,1556.4335,1556.4359,1556.4381,1556.4403,1556.4426,1556.4448,1556.447,1556.4493,1556.4515,1556.4537,1556.4559,1556.4581,1556.4602,1556.4624,1556.4646,1556.4668,1556.4689,1556.4712,1556.4733,1556.4755,1556.4775,1556.4799,1556.4819,1556.4841,1556.4863,1556.4885,1556.4906,1556.4929,1556.495,1556.4972,1556.4993,1556.5016,1556.5037,1556.5059,1556.508,1556.5101,1556.5123,1556.5144,1556.5167,1556.5188,1556.521,1556.5232,1556.5253,1556.5275,1556.5297,1556.5319,1556.5339,1556.536,1556.5383,1556.5404,1556.5426,1556.5448,1556.5469,1556.5491,1556.5511,1556.5533,1556.5555,1556.5576,1556.5598,1556.562,1556.5641,1556.5659,1556.5679,1556.5697,1556.5717,1556.5736,1554.2198,1554.2235,1554.2269,1554.2306,1554.2341,1554.2378,1554.2413,1554.245,1554.2485,1554.2522,1554.2556,1554.2593,1554.2628,1554.2665,1554.27,1554.2737,1554.2771,1554.2808,1554.2843,1554.288,1554.2914,1554.295,1554.2986,1554.3021,1554.3057,1554.3093,1554.3127,1554.3164,1554.32,1554.3234,1554.327,1554.3304,1554.3341,1554.3375,1554.3412,1554.3446,1554.3483,1554.3517,1554.3553,1554.3588,1554.3624,1554.3658,1554.3695,1554.3729,1554.3765,1554.38,1554.3835,1554.387,1554.3906,1554.394,1554.3976,1554.401,1554.4047,1554.4081,1554.4115,1554.415,1554.4185,1554.422,1554.4253,1554.4288,1554.4323,1554.4357,1554.4391,1554.4425,1554.4459,1554.4493,1554.4528,1554.4562,1554.4596,1554.4629,1554.4664,1554.4697,1554.4733,1554.4766,1554.48,1554.4834,1554.4868,1554.4901,1554.4937,1554.497,1554.5004,1554.5038,1554.5071,1554.5105,1554.5139,1554.5173,1554.5206,1554.524,1554.5273,1554.5308,1554.5342,1554.5376,1554.5409,1554.5443,1554.5476,1554.5509,1554.5543,1554.5576,1554.561,1554.5643,1554.5677,1554.571,1554.5745,1554.5778,1554.5814,1554.5848,1554.5885,1554.5919,1554.5953,1554.599,1554.6024,1554.6061,1554.6095,1554.613,1554.6166,1554.6201,1554.6235,1554.6271,1554.6306,1554.6342,1554.6376,1554.6411,1554.6445,1554.6481,1554.6516,1554.6552,1554.6586,1554.6621,1554.6655,1554.669,1554.6725,1554.6759,1554.6794,1554.6829,1554.6864,1554.6898,1554.6934,1554.6968,1554.7003,1554.7037,1554.7073,1554.7106,1554.7141,1554.7175,1554.7211,1554.7245,1554.7278,1554.7313,1554.7347,1554.7383,1554.7416,1554.7451,1554.7485,1554.752,1554.7554,1554.7589,1554.7621,1554.7654,1554.7686,1554.7717,1554.775,1554.7782,1554.7815,1554.7847,1554.7878,1554.791,1554.7943,1554.7975,1554.8007,1554.8038,1554.807,1554.8103,1554.8135,1554.8167,1554.8198,1554.823,1554.8262,1554.8293,1554.8326,1554.8357,1554.839,1554.842,1554.8452,1554.8484,1554.8516,1554.8547,1554.8579,1554.8611,1554.8643,1554.8673,1554.8706,1554.8737,1554.877,1554.88,1554.8832,1554.8864,1554.8894,1554.8926,1554.8958,1554.8989,1554.902,1554.9053,1554.9083,1554.9114,1554.9146,1554.9176,1554.9209,1554.924,1554.9271,1554.9302,1554.9332,1554.9364,1554.9395,1554.9427,1554.9458,1554.949,1554.952,1554.9551,1554.9583,1554.9613,1554.9645,1554.9675,1554.9706,1554.9736,1554.9767,1554.9799,1554.9829,1554.9861,1554.9891,1554.9922,1554.9952,1554.9983,1555.0015,1555.0045,1555.0077,1555.0106,1555.0137,1555.0168,1555.0198,1555.023,1555.026,1555.0289,1555.0321,1555.0352,1555.0382,1555.0413,1555.0443,1555.0474,1555.0503,1555.0535,1555.0564,1555.0596,1555.0625,1555.0656,1555.0686,1555.0717,1555.0747,1555.0778,1555.0807,1555.0837,1555.0868,1555.0898,1555.0928,1555.0958,1555.0988,1555.1018,1555.1049,1555.1079,1555.111,1555.114,1555.117,1555.1201,1555.123,1555.1261,1555.1292,1555.1321,1555.1351,1555.1381,1555.1412,1555.1442,1555.1472,1555.1501,1555.1532,1555.1562,1555.1592,1555.1622,1555.1652,1555.1681,1555.1713,1555.1742,1555.1772,1555.1802,1555.1831,1555.1862,1555.1891,1555.1921,1555.1951,1555.198,1555.201,1555.204,1555.207,1555.21,1555.2129,1555.2158,1555.2188,1555.2218,1555.2247,1555.2277,1555.2307,1555.2335,1555.2366,1555.2395,1555.2424,1555.2454,1555.2483,1555.2513,1555.2543,1555.2571,1555.2601,1555.2631,1555.266,1555.2689,1555.2717,1555.2748,1555.2776,1555.2806,1555.2836,1555.2864,1555.2894,1555.2922,1555.2953,1555.2981,1555.3009,1555.304,1555.3068,1555.3098,1555.3126,1555.3154,1555.3185,1555.3213,1555.3242,1555.3271,1555.33,1555.3329,1555.3357,1555.3387,1555.3416,1555.3444,1555.3473,1555.3501,1555.3531,1555.356,1555.3588,1555.3617,1555.3645,1555.3673,1555.3702,1555.373,1555.376,1555.3788,1555.3816,1555.3845,1555.3873,1555.3903,1555.3931,1555.396,1555.399,1555.402,1555.405,1555.408,1555.4109,1555.414,1555.4169,1555.4199,1555.423,1555.4259,1555.429,1555.4319,1555.4349,1555.4379,1555.4408,1555.4438,1555.4468,1555.4498,1555.4528,1555.4557,1555.4587,1555.4617,1555.4647,1555.4677,1555.4707,1555.4736,1555.4766,1555.4795,1555.4824,1555.4855,1555.4884,1555.4913,1555.4943,1555.4972,1555.5002,1555.5032,1555.506,1555.509,1555.512,1555.5149,1555.5178,1555.5206,1555.5237,1555.5266,1555.5295,1555.5325,1555.5353,1555.5383,1555.5411,1555.5442,1555.547,1555.5499,1555.5529,1555.5558,1555.5586,1555.5615,1555.5645,1555.5674,1555.5703,1555.5731,1555.576,1555.579,1555.5819,1555.5847,1555.5875,1555.5906,1555.5934,1555.5963,1555.5991,1555.6019,1555.6049,1555.6078,1555.6107,1555.6135,1555.6163,1555.6193,1555.6221,1555.6249,1555.6278,1555.6306,1555.6335,1555.6364,1555.6392,1555.6421,1555.6449,1555.6478,1555.6506,1555.6534,1555.6564,1555.659,1555.662,1555.6648,1555.6676,1555.6705,1555.6733,1555.676,1555.679,1555.6818,1555.6846,1555.6874,1555.6902,1555.693,1555.6958,1555.6986,1555.7012,1555.7039,1555.7065,1555.7092,1555.7118,1555.7146,1555.7173,1555.7198,1555.7227,1555.7252,1555.728,1555.7306,1555.7333,1555.736,1555.7386,1555.7412,1555.744,1555.7466,1555.7493,1555.752,1555.7545,1555.7572,1555.7599,1555.7625,1555.7653,1555.7678,1555.7704,1555.7732,1555.7758,1555.7783,1555.781,1555.7837,1555.7863,1555.789,1555.7915,1555.7942,1555.7969,1555.7994,1555.8021,1555.8047,1555.8073,1555.8099,1555.8125,1555.8151,1555.8177,1555.8203,1555.823,1555.8257,1555.8281,1555.8307,1555.8334,1555.8359,1555.8386,1555.8412,1555.8438,1555.8464,1555.849,1555.8516,1555.8542,1555.8567,1555.8593,1555.8619,1555.8645,1555.8671,1555.8696,1555.8722,1555.8748,1555.8774,1555.8799,1555.8826,1555.8851,1555.8876,1555.8903,1555.8928,1555.8953,1555.898,1555.9004,1555.903,1555.9056,1555.9081,1555.9106,1555.9132,1555.9158,1555.9182,1555.9209,1555.9233,1555.9259,1555.9285,1555.931,1555.9335,1555.936,1555.9386,1555.941,1555.9436,1555.9462,1555.9487,1555.9512,1555.9537,1555.9563,1555.9587,1555.9612,1555.9639,1555.9663,1555.9688,1555.9713,1555.9739,1555.9763,1555.9789,1555.9813,1555.9838,1555.9863,1555.9889,1555.9913,1555.9939,1555.9963,1555.9988,1556.0013,1556.0038,1556.0062,1556.0088,1556.0112,1556.0137,1556.0162,1556.0187,1556.0211,1556.0237,1556.0261,1556.0286,1556.0311,1556.0336,1556.036,1556.0385,1556.0409,1556.0433,1556.0459,1556.0483,1556.0507,1556.0532,1556.0557,1556.0581,1556.0605,1556.063,1556.0654,1556.0679,1556.0703,1556.0728,1556.0752,1556.0776,1556.08,1556.0825,1556.085,1556.0873,1556.0898,1556.0922,1556.0946,1556.097,1556.0995,1556.1018,1556.1042,1556.1067,1556.109,1556.1116,1556.1139,1556.1163,1556.1188,1556.1212,1556.1235,1556.1261,1556.1284,1556.1309,1556.1333,1556.1356,1556.1381,1556.1405,1556.1428,1556.1453,1556.1477,1556.15,1556.1525,1556.1549,1556.1572,1556.1595,1556.1621,1556.1644,1556.1667,1556.1692,1556.1715,1556.174,1556.1763,1556.1787,1556.181,1556.1833,1556.1858,1556.1881,1556.1904,1556.1929,1556.1952,1556.1975,1556.2,1556.2023,1556.2046,1556.207,1556.2094,1556.2117,1556.2141,1556.2164,1556.2188,1556.2212,1556.2234,1556.2257,1556.2281,1556.2305,1556.2328,1556.2349,1556.2372,1556.2394,1556.2416,1556.2439,1556.2461,1556.2482,1556.2505,1556.2527,1556.2548,1556.257,1556.2593,1556.2615,1556.2635,1556.2659,1556.2681,1556.2701,1556.2725,1556.2745,1556.2767,1556.2789,1556.2811,1556.2833,1556.2854,1556.2877,1556.2898,1556.292,1556.2942,1556.2963,1556.2985,1556.3005,1556.3029,1556.3049,1556.307,1556.3093,1556.3114,1556.3135,1556.3157,1556.3179,1556.32,1556.3221,1556.3243,1556.3264,1556.3285,1556.3306,1556.3329,1556.335,1556.337,1556.3392,1556.3413,1556.3434,1556.3456,1556.3478,1556.3499,1556.352,1556.3542,1556.3563"
+      },
+      {
+        "path": "atmospheric_temperature_profile/reference_pressure_level",
+        "value": "1000.0,950.0,925.0,900.0,850.0,800.0,700.0,600.0,500.0,400.0,300.0,250.0,200.0,150.0,100.0,70.0,50.0,30.0,20.0,10.0,7.0,5.0,3.0,2.0,1.0"
+      },
+      {
+        "path": "FWHM/Bandwidths for band 6/Bandwidths",
+        "value": "10.000891,10.000909,10.000926,10.000943,10.001012,10.0010805,10.001149,10.001218,10.001286,10.001353,10.001422,10.00149,10.001557,10.001624,10.001692,10.001759,10.001826,10.001893,10.00196,10.002027,10.002093,10.002159,10.002226,10.002292,10.0023575,10.002423,10.002489,10.002555,10.002621,10.002686,10.002751,10.002816,10.002881,10.002946,10.003011,10.003076,10.00314,10.003204,10.003269,10.003333,10.003397,10.003461,10.003525,10.003589,10.003652,10.0037155,10.003778,10.003842,10.003905,10.003968,10.004031,10.004094,10.00415,10.004206,10.00426,10.004314,10.004347,10.00438,10.004413,10.004445,10.0044775,10.00451,10.004542,10.004575,10.004607,10.00464,10.004671,10.0047035,10.004736,10.004767,10.0048,10.004831,10.004863,10.004894,10.004927,10.004958,10.00499,10.005021,10.005053,10.005083,10.005115,10.005146,10.0051775,10.005208,10.0052395,10.00527,10.005301,10.005332,10.0053625,10.005393,10.005424,10.005454,10.005485,10.005515,10.005546,10.005576,10.005607,10.005636,10.005667,10.005697,10.005727,10.005756,10.005787,10.005816,10.005857,10.005898,10.005939,10.00598,10.00602,10.006061,10.006101,10.006142,10.006182,10.006222,10.006262,10.006302,10.006342,10.006382,10.006422,10.006462,10.006502,10.006542,10.006581,10.006621,10.006661,10.0067005,10.00674,10.00678,10.006819,10.006858,10.006898,10.006937,10.006976,10.007015,10.007054,10.007092,10.007132,10.007171,10.00721,10.007248,10.007287,10.007325,10.007364,10.007402,10.007441,10.00748,10.007518,10.007556,10.007594,10.007632,10.00767,10.007709,10.007746,10.007784,10.007822,10.007859,10.007865,10.007871,10.007875,10.007881,10.007886,10.007878,10.007871,10.007863,10.007854,10.007847,10.007838,10.00783,10.007822,10.007813,10.007805,10.007796,10.007788,10.007779,10.007771,10.007762,10.007753,10.007744,10.007735,10.007727,10.007717,10.007708,10.007699,10.007689,10.00768,10.00767,10.007662,10.007652,10.007642,10.007632,10.007623,10.007613,10.007604,10.007593,10.007584,10.007573,10.007564,10.007553,10.007543,10.007532,10.007523,10.007512,10.007502,10.00749,10.00748,10.007469,10.007459,10.007448,10.007437,10.007426,10.007415,10.007403,10.007393,10.007381,10.00737,10.007359,10.007347,10.007336,10.007324,10.007313,10.007301,10.007289,10.0072775,10.007266,10.007254,10.007242,10.00723,10.007217,10.007205,10.007194,10.007181,10.007169,10.007156,10.007144,10.007131,10.007118,10.007106,10.007092,10.00708,10.007067,10.007054,10.007041,10.007028,10.007015,10.007002,10.006989,10.006975,10.006962,10.006948,10.006934,10.006921,10.006907,10.006893,10.00688,10.0068655,10.006852,10.006838,10.006824,10.006809,10.006795,10.006791,10.006787,10.006783,10.006778,10.006774,10.006769,10.006764,10.00676,10.006754,10.006749,10.006744,10.006739,10.006734,10.006728,10.006723,10.006718,10.006712,10.006706,10.006701,10.006696,10.00669,10.006684,10.006678,10.006672,10.006666,10.0066595,10.006654,10.006648,10.0066395,10.006632,10.006623,10.006615,10.006606,10.0065975,10.006589,10.00658,10.006572,10.006562,10.006554,10.006545,10.006536,10.006527,10.006517,10.006508,10.006499,10.00649,10.00648,10.006471,10.006461,10.006452,10.006442,10.006433,10.006422,10.0064125,10.006402,10.0063925,10.006382,10.006372,10.006362,10.006351,10.006341,10.006331,10.006321,10.0063095,10.006299,10.006289,10.006278,10.006268,10.006256,10.006246,10.006234,10.006224,10.006212,10.006201,10.006189,10.006178,10.006167,10.006156,10.006144,10.006132,10.006121,10.006109,10.006097,10.006085,10.006073,10.006062,10.006049,10.006038,10.006025,10.006013,10.0060005,10.005988,10.005976,10.005963,10.005951,10.005938,10.005925,10.005913,10.005899,10.005887,10.005874,10.00586,10.005848,10.005835,10.005821,10.005814,10.005806,10.005798,10.005791,10.005783,10.005783,10.005783,10.005782,10.005782,10.005782,10.005781,10.005781,10.00578,10.00578,10.005779,10.005778,10.005778,10.005777,10.005776,10.005775,10.0057745,10.005774,10.005773,10.005771,10.00577,10.005769,10.005767,10.005766,10.005764,10.005763,10.005761,10.00576,10.005758,10.005756,10.005754,10.005753,10.005751,10.005749,10.005747,10.005745,10.005743,10.00574,10.005738,10.005735,10.0057335,10.005731,10.005729,10.005726,10.005723,10.005721,10.005718,10.005715,10.0057125,10.00571,10.005707,10.005703,10.0057,10.005697,10.005694,10.005691,10.005688,10.005684,10.005681,10.005677,10.005673,10.00567,10.005667,10.005663,10.005659,10.005655,10.005651,10.005648,10.005643,10.005639,10.005635,10.0056305,10.005627,10.005622,10.005618,10.005613,10.005609,10.005605,10.0056,10.005595,10.00559,10.005586,10.005581,10.005576,10.005571,10.005566,10.005561,10.005556,10.00555,10.005546,10.00554,10.005535,10.005529,10.005524,10.005518,10.005513,10.005507,10.005502,10.005496,10.00549,10.005469,10.005448,10.005427,10.005406,10.005384,10.00537,10.005355,10.00534,10.005324,10.005309,10.005294,10.005279,10.005263,10.005248,10.005232,10.005217,10.0052,10.005185,10.005169,10.005154,10.005137,10.005121,10.005105,10.005089,10.005073,10.005056,10.00504,10.005024,10.005007,10.004991,10.004973,10.004957,10.00494,10.004924,10.004907,10.0048895,10.004872,10.004855,10.004838,10.004821,10.004804,10.0047865,10.004769,10.004751,10.004734,10.004716,10.004699,10.004681,10.004663,10.004645,10.004627,10.004609,10.004591,10.004573,10.004555,10.004537,10.004518,10.004499,10.004481,10.004462,10.004444,10.004425,10.004406,10.004388,10.004369,10.00435,10.004331,10.004312,10.0042925,10.004273,10.004253,10.004234,10.004215,10.004195,10.004176,10.004156,10.004136,10.004117,10.004097,10.004077,10.004057,10.004037,10.004017,10.003997,10.003977,10.003956,10.003936,10.003916,10.003895,10.003875,10.003854,10.003833,10.003812,10.003792,10.003771,10.00375,10.003729,10.003708,10.003686,10.003665,10.003644,10.003622,10.003601,10.003579,10.003558,10.003536,10.003514,10.003492,10.003471,10.003456,10.003442,10.0034275,10.003413,10.003398,10.003384,10.003368,10.003354,10.003339,10.003324,10.003309,10.003294,10.003279,10.003263,10.003248,10.003233,10.003217,10.0032015,10.003186,10.00317,10.003155,10.003139,10.003123,10.003107,10.003092,10.003076,10.003059,10.003043,10.003027,10.003011,10.002995,10.002978,10.002961,10.002945,10.002929,10.002912,10.002895,10.002878,10.002862,10.002845,10.002828,10.0028105,10.002793,10.002776,10.002759,10.002742,10.002725,10.0027075,10.00269,10.002672,10.002655,10.002637,10.00262,10.002592,10.002564,10.002537,10.002509,10.002481,10.002454,10.002426,10.002398,10.00237,10.002341,10.002314,10.002285,10.002257,10.002229,10.0022,10.0021715,10.002143,10.002114,10.002086,10.002057,10.002028,10.002,10.00197,10.001942,10.001912,10.0018835,10.001854,10.001824,10.001796,10.001766,10.001737,10.001707,10.0016775,10.001648,10.001617,10.001588,10.001558,10.001528,10.001498,10.001468,10.001438,10.001408,10.001377,10.001347,10.001316,10.001286,10.001255,10.0012245,10.001194,10.0011635,10.001132,10.0011015,10.001055,10.001007,10.00096,10.000914,10.000866,10.000818,10.0007715,10.000724,10.000676,10.000628,10.000581,10.000533,10.000485,10.000437,10.000389,10.000341,10.000293,10.000244,10.000196,10.000148,10.000099,10.000051,10.000002,9.999953,9.999905,9.999855,9.999806,9.999757,9.999708,9.999659,9.99961,9.99956,9.999511,9.999461,9.999412,9.999362,9.999311,9.999262,9.999212,9.999162,9.999112,9.999062,9.999011,9.9989605,9.99891,9.998859,9.998809,9.998758,9.998708,9.998656,9.998606,9.998554,9.998528,9.9985,9.998473,9.9984455,9.998418,10.001207,10.001221,10.001235,10.001248,10.001262,10.001276,10.00129,10.001304,10.001318,10.001331,10.001345,10.001359,10.001372,10.001386,10.0014,10.001413,10.001427,10.00144,10.001453,10.001468,10.001481,10.001494,10.001508,10.001521,10.0015335,10.001547,10.00156,10.001574,10.001587,10.001599,10.001613,10.001626,10.001638,10.001652,10.001665,10.0016775,10.001691,10.001703,10.001716,10.001729,10.001741,10.001754,10.001767,10.00178,10.001792,10.001804,10.001817,10.001829,10.001842,10.001854,10.001866,10.001879,10.001891,10.001904,10.001916,10.001928,10.0019455,10.001963,10.00198,10.001997,10.002014,10.00203,10.002048,10.002065,10.002082,10.002098,10.002115,10.002132,10.002149,10.002166,10.002182,10.002198,10.002215,10.002232,10.002248,10.002265,10.002281,10.002297,10.002314,10.00233,10.002346,10.002362,10.002378,10.002395,10.002411,10.002427,10.002443,10.00246,10.002475,10.002491,10.002507,10.002522,10.002539,10.002554,10.00257,10.002585,10.002602,10.002617,10.002632,10.002648,10.002664,10.002679,10.002694,10.002709,10.002725,10.00274,10.002755,10.00277,10.002786,10.002801,10.002816,10.002831,10.002846,10.002861,10.002876,10.002891,10.002906,10.00292,10.002935,10.00295,10.002965,10.002979,10.002995,10.003009,10.003023,10.003037,10.003052,10.003067,10.003081,10.003096,10.00311,10.003124,10.003139,10.003153,10.003166,10.0031805,10.003195,10.003209,10.003222,10.003237,10.003251,10.003264,10.003279,10.003292,10.003306,10.00332,10.003333,10.003347,10.003361,10.003374,10.003387,10.003401,10.003415,10.003428,10.003442,10.003455,10.003471,10.003489,10.003505,10.003522,10.003538,10.003551,10.003563,10.003576,10.003589,10.003601,10.003613,10.003626,10.003638,10.003651,10.003663,10.0036745,10.003687,10.003699,10.003712,10.003723,10.003736,10.003748,10.003759,10.003772,10.003783,10.003796,10.003807,10.003819,10.003831,10.003842,10.003854,10.003866,10.003878,10.003889,10.003901,10.003912,10.003923,10.003935,10.003946,10.003958,10.003969,10.003981,10.003992,10.004004,10.004014,10.004025,10.004037,10.004047,10.004059,10.00407,10.004081,10.004092,10.004103,10.004113,10.004125,10.004135,10.004146,10.004157,10.004168,10.004178,10.004189,10.004199,10.0042095,10.00422,10.0042305,10.004241,10.0042515,10.004262,10.004272,10.004283,10.004293,10.004303,10.004313,10.004324,10.0043335,10.004344,10.004354,10.004364,10.004374,10.004384,10.004394,10.004404,10.004414,10.004423,10.004433,10.004443,10.004453,10.004462,10.004472,10.004481,10.004491,10.0045,10.00451,10.004519,10.004529,10.004539,10.004547,10.004557,10.004566,10.004576,10.004584,10.004594,10.004602,10.004612,10.0046215,10.00463,10.00464,10.004649,10.004658,10.004659,10.004659,10.00466,10.00466,10.004661,10.004661,10.004661,10.004662,10.004662,10.004662,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.0046625,10.004662,10.004662,10.004662,10.004661,10.004661,10.004661,10.00466,10.00466,10.004659,10.004659,10.004658,10.004658,10.004657,10.004656,10.004656,10.004655,10.004654,10.004653,10.004652,10.004652,10.004651,10.00465,10.004649,10.004648,10.004647,10.004646,10.004645,10.004643,10.0046425,10.004642,10.004641,10.00464,10.004638,10.004637,10.004636,10.004634,10.004633,10.004631,10.00463,10.004628,10.004627,10.004625,10.004623,10.004622,10.004621,10.004619,10.004618,10.004616,10.004614,10.004612,10.00461,10.004608,10.004606,10.004604,10.004602,10.004601,10.004599,10.004597,10.004595,10.004592,10.00459,10.004588,10.004586,10.004583,10.004581,10.00458,10.004577,10.004575,10.004572,10.00457,10.004567,10.004564,10.004562,10.0045595,10.004557,10.004555,10.004552,10.004549,10.004546,10.004542,10.0045395,10.004531,10.004523,10.004515,10.004506,10.004498,10.004489,10.00448,10.004472,10.004463,10.004454,10.004445,10.0044365,10.004428,10.004418,10.00441,10.0044,10.004392,10.004382,10.004374,10.004364,10.004355,10.004346,10.004336,10.004327,10.004318,10.004309,10.004299,10.00429,10.00428,10.004271,10.004261,10.0042515,10.004242,10.004232,10.004222,10.004212,10.004203,10.004192,10.004183,10.004173,10.004163,10.004153,10.004143,10.004132,10.004123,10.004112,10.004102,10.004092,10.004082,10.004071,10.004061,10.00405,10.00404,10.004029,10.004019,10.004008,10.003998,10.003987,10.003977,10.003965,10.003955,10.003944,10.003933,10.003922,10.003911,10.003901,10.003889,10.003879,10.003867,10.003856,10.003845,10.003834,10.003822,10.003811,10.003799,10.003788,10.0037775,10.003766,10.003754,10.003742,10.003731,10.003719,10.003708,10.003696,10.003684,10.003673,10.003661,10.003649,10.003637,10.003625,10.003613,10.003601,10.003589,10.003577,10.003565,10.003552,10.00354,10.003528,10.003516,10.003504,10.003492,10.00348,10.0034685,10.003456,10.003451,10.003446,10.003441,10.003435,10.003429,10.003425,10.003419,10.003413,10.0034075,10.003403,10.003397,10.003391,10.003386,10.00338,10.003374,10.003368,10.003363,10.003357,10.003351,10.0033455,10.00334,10.003334,10.003327,10.003322,10.003316,10.003309,10.003304,10.003298,10.003291,10.003285,10.003279,10.003273,10.003266,10.003261,10.003254,10.003247,10.003242,10.003235,10.003228,10.0032215,10.003215,10.003208,10.003202,10.003196,10.003189,10.003182,10.003176,10.003169,10.003161,10.003155,10.003148,10.003141,10.003135,10.003127,10.00312,10.003114,10.003106,10.003099,10.003092,10.003085,10.0030775,10.003071,10.003063,10.003057,10.003049,10.003041,10.003034,10.003027,10.003019,10.003012,10.003004,10.002996,10.002989,10.002981,10.002974,10.002966,10.002958,10.002951,10.002943,10.002935,10.002928,10.002919,10.002912,10.002904,10.002896,10.002888,10.00288,10.0028715,10.002864,10.002855,10.002848,10.002839,10.002831,10.002823,10.002814,10.002807,10.002798,10.0027895,10.002781,10.002772,10.002764,10.002756,10.002748,10.002739,10.002754,10.00277,10.002786,10.002802,10.002817,10.002832,10.002848,10.002864,10.002879,10.002893,10.002909,10.002924,10.002939,10.002954,10.002969,10.002983,10.002997,10.003013,10.003027,10.003041,10.003056,10.00307,10.003084,10.0030985,10.003112,10.003126,10.0031395,10.003154,10.003167,10.0031805,10.003195,10.003208,10.0032215,10.003235,10.003248,10.003261,10.003274,10.003287,10.0033,10.003313,10.003325,10.003339,10.003351,10.003364,10.003376,10.003388,10.003401,10.003413,10.003426,10.003438,10.003449,10.003462,10.003473,10.003492,10.00351,10.00353,10.003548,10.003567,10.003585,10.003603,10.003621,10.003639,10.003657,10.003675,10.003694,10.003712,10.00373,10.003748,10.003765,10.003783,10.0038,10.0038185,10.003836,10.003854,10.003871,10.003888,10.003905,10.003922,10.00394,10.003957,10.003974,10.003991,10.004008,10.004025,10.004042,10.004059,10.004075,10.004092,10.004108,10.004126,10.004142,10.004158,10.004174,10.00419,10.004207,10.004223,10.004239,10.004255,10.0042715,10.004288,10.004304,10.004319,10.004335,10.004351,10.004367,10.004416,10.004466,10.004516,10.004565,10.004614,10.0046625,10.004711,10.004753,10.004789,10.004826,10.004862,10.004898,10.004933,10.004969,10.005004,10.005039,10.005074,10.005109,10.005143,10.0051775,10.005212,10.005246,10.0052805,10.005314,10.005348,10.005382,10.005415,10.005448,10.005481,10.005514,10.005547,10.005579,10.005612,10.005645,10.005676,10.005709,10.005741,10.005773,10.005804,10.005836,10.005868,10.005898,10.00593,10.005961,10.005992,10.006023,10.006054,10.006084,10.006115,10.0061455,10.006176,10.0062065,10.006196,10.006185,10.006174,10.006164,10.006152,9.997636,9.997644,9.997652,9.997661,9.997674,9.997687,9.997702,9.997715,9.997728,9.997742,9.997755,9.997768,9.997782,9.997795,9.997808,9.997821,9.997834,9.997848,9.997861,9.997874,9.997887,9.9979,9.997913,9.997926,9.997939,9.9979515,9.997965,9.997977,9.997991,9.998003,9.998016,9.998029,9.998041,9.9980545,9.998067,9.998079,9.998093,9.998105,9.998117,9.99813,9.998142,9.998155,9.998167,9.998179,9.998192,9.998204,9.998217,9.998229,9.998241,9.998253,9.998265,9.998278,9.99829,9.9983015,9.998314,9.998326,9.99834,9.998354,9.998367,9.998381,9.998395,9.998408,9.998422,9.998436,9.998449,9.998463,9.998476,9.998489,9.998504,9.998517,9.99853,9.998544,9.998557,9.99857,9.998584,9.998597,9.9986105,9.998624,9.998636,9.99865,9.998661,9.998672,9.998682,9.9986925,9.998703,9.998713,9.998723,9.9987335,9.998744,9.998754,9.998764,9.998775,9.998785,9.998795,9.998805,9.998815,9.998825,9.998835,9.998845,9.998855,9.998865,9.998875,9.998885,9.998895,9.998897,9.998898,9.998899,9.998901,9.998902,9.998904,9.998905,9.998907,9.998908,9.99891,9.998911,9.998913,9.998914,9.998916,9.998917,9.998918,9.9989195,9.99892,9.998921,9.998923,9.998924,9.998925,9.998926,9.998928,9.998929,9.99893,9.998931,9.998932,9.998933,9.998934,9.998935,9.998936,9.998937,9.998938,9.998939,9.9989395,9.99894,9.998941,9.998942,9.998943,9.998943,9.998944,9.998945,9.998946,9.998946,9.998947,9.998948,9.998948,9.998949,9.99895,9.99895,9.998951,9.998954,9.998958,9.9989605,9.998963,9.998966,9.998971,9.998975,9.998979,9.998982,9.998986,9.99899,9.998993,9.998997,9.999001,9.999004,9.999008,9.999012,9.999015,9.999019,9.9990225,9.999025,9.999029,9.999033,9.999036,9.999037,9.999038,9.999038,9.999039,9.999039,9.99904,9.99904,9.99904,9.99904,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.999041,9.99904,9.99904,9.99904,9.999039,9.999039,9.999039,9.999038,9.999038,9.999037,9.999037,9.999036,9.999036,9.999035,9.999034,9.999034,9.999033,9.999032,9.999031,9.999031,9.99903,9.999029,9.999028,9.999027,9.999026,9.999025,9.999024,9.999023,9.9990225,9.999022,9.999021,9.99902,9.999019,9.999017,9.999014,9.99901,9.999007,9.999003,9.999001,9.998997,9.998993,9.99899,9.998986,9.998982,9.99898,9.998976,9.998972,9.998968,9.998964,9.9989605,9.998957,9.998953,9.998949,9.998945,9.998941,9.998938,9.998943,9.998948,9.998954,9.998959,9.998963,9.998969,9.998974,9.99898,9.998984,9.998989,9.998995,9.999,9.999004,9.99901,9.999015,9.99902,9.999025,9.99903,9.999035,9.99904,9.999044,9.99905,9.999055,9.99906,9.999064,9.999069,9.999074,9.999079,9.999084,9.999089,9.999094,9.999099,9.999104,9.999108,9.999113,9.999118,9.999123,9.999127,9.999131,9.999136,9.999141,9.9991455,9.99915,9.999155,9.99916,9.999165,9.999168,9.999173,9.999178,9.999183,9.9991865,9.999191,9.999195,9.999199,9.999202,9.999206,9.999208,9.999212,9.999215,9.999219,9.999222,9.999225,9.9992285,9.999231,9.999234,9.999238,9.999241,9.999244,9.999248,9.99925,9.999253,9.999256,9.999259,9.999263,9.999266,9.999269,9.999271,9.999274,9.999277,9.99928,9.999283,9.999286,9.999289,9.999291,9.999294,9.999297,9.9993,9.999303,9.999306,9.999309,9.999311,9.999314,9.999317,9.999319,9.999322,9.999325,9.999328,9.9993305,9.999332,9.999335,9.999338,9.99934,9.999343,9.999346,9.999348,9.9993515,9.999355,9.999358,9.999362,9.999365,9.999369,9.9993725,9.999375,9.999379,9.999382,9.999386,9.999389,9.999392,9.999395,9.999398,9.999402,9.999405,9.999409,9.999412,9.999414,9.999418,9.999421,9.999424,9.999428,9.999431,9.9994335,9.999437,9.99944,9.999443,9.999447,9.99945,9.999453,9.999455,9.999459,9.999462,9.999465,9.999468,9.999471,9.999475,9.999477,9.99948,9.999483,9.999486,9.999489,9.999493,9.9994955,9.999498,9.999501,9.999504,9.999507,9.99951,9.999513,9.999516,9.999518,9.999521,9.999524,9.999527,9.99953,9.999533,9.999536,9.999538,9.999541,9.999544,9.999547,9.99955,9.999553,9.999556,9.999558,9.999561,9.999564,9.999567,9.999569,9.999572,9.999575,9.9995775,9.99958,9.999583,9.999585,9.999588,9.999591,9.999594,9.999597,9.9995985,9.999601,9.999604,9.999607,9.999609,9.999612,9.999615,9.999617,9.9996195,9.999622,9.999625,9.999627,9.99963,9.999632,9.999635,9.999638,9.9996395,9.999642,9.999645,9.999647,9.99965,9.999652,9.999655,9.999657,9.999659,9.999661,9.999663,9.999665,9.999666,9.999668,9.999669,9.999671,9.999672,9.999674,9.999675,9.999677,9.999678,9.999679,9.9996805,9.999681,9.999682,9.999683,9.999685,9.999686,9.999687,9.999688,9.999689,9.99969,9.999691,9.999692,9.999693,9.999694,9.999695,9.999695,9.999696,9.999697,9.999698,9.999698,9.999699,9.9997,9.9997,9.999701,9.9997015,9.9997015,9.999702,9.999702,9.999702,9.999703,9.999703,9.999704,9.999704,9.999704,9.999704,9.999703,9.999702,9.999701,9.9997,9.999699,9.999698,9.999696,9.999695,9.999694,9.999692,9.999691,9.99969,9.999688,9.999687,9.999685,9.999683,9.999682,9.9996805,9.99968,9.999678,9.999676,9.999674,9.999672,9.999671,9.999669,9.999667,9.999665,9.999663,9.999661,9.99966,9.999658,9.999656,9.999654,9.999652,9.999649,9.999647,9.999645,9.999643,9.99964,9.999639,9.999637,9.999634,9.999632,9.999629,9.999627,9.999624,9.999622,9.9996195,9.999617,9.999615,9.999612,9.999609,9.999606,9.999604,9.999601,9.9995985,9.999596,9.999593,9.999566,9.999539,9.999512,9.999485,9.999458,9.999431,9.999404,9.999377,9.99935,9.999323,9.999295,9.999269,9.999241,9.999213,9.9991865,9.999159,9.999131,9.999104,9.999077,9.999049,9.999022,9.998994,9.998966,9.998939,9.998911,9.998883,9.998856,9.998828,9.9988,9.998773,9.998744,9.998716,9.998689,9.99866,9.998632,9.998605,9.998576,9.9985485,9.99852,9.998492,9.998464,9.998436,9.998407,9.998379,9.998351,9.9983225,9.998294,9.998265,9.998237,9.998209,9.99818,9.998152,9.998123,9.998105,9.998086,9.998068,9.99805,9.998032,9.998013,9.997994,9.997975,9.997957,9.997938,9.99792,9.997901,9.997882,9.997864,9.997845,9.997826,9.997807,9.997787,9.997768,9.997749,9.99773,9.997711,9.997692,9.997673,9.997654,9.997634,9.997615,9.997596,9.997576,9.997557,9.997537,9.997518,9.997498,9.9974785,9.997458,9.997438,9.997419,9.997399,9.997379,9.997359,9.997339,9.997319,9.997299,9.997279,9.997259,9.997239,9.997219,9.997199,9.997178,9.997158,9.997138,9.997117,9.997096,9.997075,9.997054,9.997033,9.997012,9.996991,9.996969,9.996948,9.996927,9.996906,9.996884,9.996863,9.996841,9.99682,9.9967985,9.996778,9.996756,9.996734,9.996713,9.996691,9.996669,9.996648,9.996626,9.996604,9.996582,9.99656,9.996538,9.996516,9.996494,9.996472,9.99645,9.996428,9.996406,9.996384,9.996362,9.996339,9.996317,9.996295,9.996272,9.99625,9.996227,9.996205,9.996182,9.99616,9.996138,9.996115,9.996092,9.996069,9.996046,9.996024,9.996001,9.995978,9.995966,9.995954,9.995942,9.99593,9.995917,9.997316,9.99732,9.997323,9.997327,9.997332,9.997337,9.997343,9.997348,9.997354,9.997358,9.997364,9.997369,9.997375,9.997379,9.997384,9.99739,9.997395,9.9974,9.997405,9.99741,9.997416,9.99742,9.997426,9.997431,9.997436,9.99744,9.997446,9.997451,9.997456,9.99746,9.997466,9.997471,9.997476,9.99748,9.997485,9.997489,9.997494,9.997498,9.997502,9.997506,9.997511,9.997515,9.9975195,9.997523,9.997527,9.997532,9.997536,9.99754,9.997544,9.997548,9.997552,9.997557,9.9975605,9.997564,9.997569,9.997573,9.997578,9.9975815,9.997586,9.99759,9.997595,9.9976,9.997603,9.997608,9.997612,9.997617,9.997621,9.997625,9.99763,9.997634,9.997638,9.9976425,9.997646,9.997651,9.997655,9.99766,9.9976635,9.997667,9.997672,9.997676,9.99768,9.9976845,9.997688,9.997692,9.997697,9.997701,9.9977045,9.997708,9.997712,9.997717,9.997721,9.997725,9.997728,9.997732,9.997736,9.997741,9.997745,9.997748,9.997752,9.997756,9.99776,9.997764,9.997767,9.997771,9.997789,9.997808,9.997827,9.997845,9.997864,9.997882,9.9979,9.997918,9.997937,9.997955,9.997973,9.997992,9.99801,9.998029,9.998047,9.998065,9.998083,9.998101,9.998119,9.998138,9.998157,9.998175,9.998193,9.998211,9.998229,9.998247,9.998265,9.998283,9.9983015,9.99832,9.998338,9.998356,9.998374,9.998392,9.99841,9.998427,9.9984455,9.998464,9.998482,9.9985,9.998518,9.998536,9.998553,9.998571,9.9985895,9.998608,9.998625,9.998643,9.998661,9.998679,9.998696,9.998714,9.998693,9.9986725,9.9986515,9.99863,9.998609,9.998588,9.998567,9.998546,9.998524,9.998503,9.998482,9.99846,9.998439,9.998418,9.998396,9.998375,9.998353,9.998332,9.998311,9.998289,9.998268,9.998246,9.998224,9.998203,9.998181,9.99816,9.998138,9.9981165,9.9980955,9.998074,9.998052,9.99803,9.998009,9.997987,9.997965,9.997943,9.997921,9.997899,9.997877,9.997856,9.997834,9.997812,9.99779,9.997768,9.997746,9.997724,9.997702,9.99768,9.997658,9.997636,9.997614,9.997592,9.997569,9.997547,9.997525,9.997503,9.99748,9.997458,9.997437,9.997414,9.997392,9.997369,9.997347,9.997324,9.997302,9.997279,9.997257,9.997234,9.997212,9.9971895,9.997168,9.997145,9.997122,9.9971,9.997077,9.997054,9.997031,9.997009,9.996986,9.9969635,9.996941,9.996918,9.996895,9.996872,9.996849,9.996827,9.996804,9.996781,9.996758,9.996735,9.996712,9.996689,9.996666,9.996643,9.99662,9.996597,9.996574,9.996551,9.996528,9.996505,9.996482,9.996458,9.996435,9.996412,9.996415,9.996419,9.996422,9.996425,9.9964285,9.996431,9.996434,9.996437,9.99644,9.996443,9.996447,9.996449,9.996452,9.996455,9.996458,9.996461,9.996464,9.996466,9.996469,9.996471,9.996474,9.996477,9.99648,9.996483,9.996485,9.996488,9.9964905,9.996493,9.996496,9.996498,9.996501,9.996504,9.996506,9.996509,9.996511,9.996513,9.996516,9.996518,9.996521,9.996523,9.996526,9.996528,9.996531,9.996532,9.996535,9.996537,9.99654,9.996542,9.996544,9.996547,9.996549,9.996551,9.996553,9.996555,9.996557,9.99656,9.996562,9.996564,9.996566,9.996568,9.996571,9.9965725,9.996574,9.996576,9.996578,9.99658,9.996582,9.996584,9.996586,9.996588,9.99659,9.996592,9.996593,9.996595,9.996597,9.996599,9.996601,9.996602,9.996604,9.996606,9.996608,9.99661,9.996611,9.996613,9.996614,9.996616,9.996617,9.996619,9.996621,9.996622,9.996624,9.996625,9.996627,9.996629,9.99663,9.996632,9.996633,9.9966345,9.996635,9.996637,9.996638,9.996639,9.996641,9.996642,9.996644,9.996656,9.99667,9.996682,9.996695,9.996708,9.99672,9.996733,9.996745,9.9967575,9.99677,9.996782,9.996796,9.996808,9.99682,9.996833,9.996845,9.996858,9.99687,9.996882,9.996895,9.996907,9.99692,9.996932,9.996944,9.996957,9.996968,9.996981,9.996993,9.997005,9.997018,9.99703,9.997043,9.997055,9.997067,9.99708,9.997091,9.997104,9.997116,9.9971285,9.997141,9.997152,9.997165,9.997177,9.9971895,9.997202,9.997213,9.997226,9.997238,9.997251,9.997262,9.997274,9.997287,9.997298,9.997311,9.997323,9.9973345,9.997347,9.997359,9.997371,9.997383,9.997395,9.997407,9.997419,9.997431,9.997443,9.997455,9.997467,9.997479,9.997491,9.997503,9.997515,9.997527,9.997539,9.997551,9.997562,9.997575,9.997586,9.997598,9.99761,9.997622,9.997634,9.997645,9.997658,9.997669,9.997681,9.997693,9.9977045,9.997717,9.997728,9.99774,9.997752,9.997764,9.997775,9.9977865,9.997799,9.99781,9.997822,9.997834,9.997846,9.997857,9.997869,9.997881,9.997892,9.997904,9.997907,9.9979105,9.997913,9.997916,9.99792,9.997923,9.997926,9.997929,9.9979315,9.997934,9.997937,9.99794,9.997943,9.997946,9.997949,9.9979515,9.997954,9.997957,9.99796,9.997963,9.997966,9.997969,9.997972,9.997974,9.997977,9.997979,9.997982,9.997985,9.997988,9.997991,9.997993,9.997996,9.997998,9.998001,9.998004,9.998007,9.99801,9.998012,9.998014,9.998017,9.99802,9.998022,9.998025,9.998028,9.99803,9.998033,9.998035,9.998037,9.99804,9.998043,9.998045,9.998048,9.99805,9.998053,9.998055,9.998057,9.99806,9.998062,9.998064,9.998065,9.998067,9.998069,9.998071,9.998073,9.998074,9.9980755,9.998077,9.998079,9.99808,9.998082,9.998084,9.998086,9.998087,9.998089,9.998091,9.998093,9.998094,9.9980955,9.998097,9.998098,9.9981,9.998102,9.998103,9.998105,9.998107,9.998108,9.99811,9.998111,9.998113,9.998115,9.998116,9.998117,9.998118,9.99812,9.998122,9.998123,9.998125,9.998126,9.998128,9.998129,9.998131,9.998132,9.998134,9.998135,9.9981365,9.998137,9.998139,9.99814,9.998142,9.998118,9.9980955,9.998073,9.99805,9.998026,9.998003,9.99798,9.997956,9.997933,9.9979105,9.997887,9.997864,9.997841,9.997818,9.997794,9.997771,9.997748,9.9977255,9.997702,9.997679,9.997656,9.997632,9.997609,9.997586,9.997563,9.9975395,9.997517,9.997494,9.997471,9.997447,9.997424,9.997401,9.997378,9.9973545,9.997332,9.997309,9.997286,9.997262,9.997239,9.997216,9.997193,9.99717,9.997147,9.997124,9.997101,9.997078,9.997054,9.997031,9.997008,9.996985,9.996962,9.996939,9.996916,9.996891,9.996866,9.996841,9.996817,9.996792,9.996767,9.996742,9.9967165,9.996692,9.996667,9.996642,9.996617,9.9965925,9.996568,9.996542,9.996517,9.996492,9.996468,9.996442,9.996417,9.996392,9.996367,9.996342,9.996317,9.996292,9.996266,9.996242,9.996216,9.996191,9.996166,9.9961405,9.996116,9.99609,9.996065,9.996039,9.996015,9.995989,9.995964,9.995938,9.9959135,9.995888,9.995863,9.995837,9.995811,9.995787,9.995761,9.995735,9.99571,9.995685,9.995659,9.995634,9.995608,9.995583,9.995557,9.995531,9.995505,9.99548,9.995454,9.995428,9.995402,9.995377,9.995351,9.995325,9.995299,9.995274,9.995248,9.995222,9.995196,9.99517,9.995144,9.995118,9.995092,9.995067,9.99504,9.995014,9.994988,9.994962,9.994936,9.99491,9.994884,9.994858,9.994831,9.994805,9.994779,9.994753,9.994726,9.9947,9.994674,9.994648,9.994621,9.994596,9.994569,9.994542,9.994516,9.99449,9.994463,9.994436,9.9944105,9.994384,9.994357,9.99433,9.994304,9.994278,9.994251,9.994243,9.994235,9.994227,9.99422,9.994212,10.022683,10.022689,10.022695,10.0227,10.022695,10.022689,10.022683,10.022677,10.022672,10.022665,10.022659,10.022654,10.022648,10.022642,10.022635,10.02263,10.022624,10.022617,10.022612,10.022605,10.022599,10.022593,10.022587,10.02258,10.022573,10.022568,10.022561,10.022554,10.022548,10.022542,10.022535,10.022529,10.022522,10.022515,10.022509,10.022502,10.022495,10.022489,10.022482,10.022474,10.022468,10.022461,10.022454,10.022447,10.02244,10.022433,10.022426,10.022419,10.022411,10.022405,10.022397,10.022389,10.022383,10.022375,10.0223675,10.022361,10.022354,10.022347,10.022341,10.022335,10.022328,10.022322,10.022315,10.022308,10.022302,10.022295,10.022288,10.022282,10.022275,10.022268,10.022261,10.022254,10.022247,10.02224,10.022233,10.022226,10.022219,10.022212,10.022204,10.022197,10.02219,10.022182,10.022175,10.022168,10.022161,10.022153,10.022145,10.022138,10.02213,10.022122,10.022115,10.022107,10.0220995,10.022092,10.022084,10.022076,10.022068,10.02206,10.022053,10.022044,10.022037,10.022028,10.02202,10.022012,10.0220175,10.022023,10.022029,10.022034,10.022039,10.022045,10.02205,10.022056,10.02206,10.022066,10.022071,10.022077,10.022081,10.022086,10.022092,10.022097,10.022101,10.022106,10.022111,10.022116,10.02212,10.022125,10.02213,10.022135,10.02214,10.022144,10.022148,10.022153,10.022158,10.0221615,10.022166,10.02217,10.022173,10.022176,10.02218,10.022182,10.022185,10.022188,10.022191,10.022194,10.022197,10.0222,10.022202,10.022204,10.022207,10.02221,10.022212,10.022215,10.022217,10.02222,10.022222,10.022224,10.022223,10.022223,10.022223,10.0222225,10.0222225,10.0222225,10.0222225,10.0222225,10.022222,10.022222,10.022222,10.022222,10.022221,10.022221,10.02222,10.02222,10.022219,10.022218,10.022218,10.022217,10.022216,10.022215,10.022214,10.022213,10.022212,10.022211,10.02221,10.022208,10.022207,10.022206,10.022204,10.022203,10.022202,10.022201,10.022199,10.022198,10.022196,10.022194,10.022192,10.02219,10.022188,10.022186,10.022184,10.022182,10.022181,10.022179,10.022176,10.022174,10.022172,10.022169,10.022167,10.022164,10.022162,10.02216,10.022157,10.022154,10.022152,10.022149,10.022146,10.022143,10.0221405,10.022138,10.022134,10.022131,10.022128,10.022125,10.022121,10.022119,10.022115,10.022112,10.022108,10.022104,10.022101,10.022098,10.022094,10.02209,10.022086,10.022082,10.022078,10.022071,10.022063,10.022056,10.022048,10.02204,10.022033,10.022025,10.0220175,10.02201,10.022002,10.021995,10.021987,10.021978,10.021971,10.021962,10.021955,10.021946,10.021938,10.02193,10.021921,10.021914,10.021905,10.021896,10.021888,10.021879,10.021856,10.021832,10.021809,10.021786,10.021762,10.021737,10.021713,10.021688,10.021665,10.02164,10.021615,10.021591,10.021566,10.021542,10.021517,10.021492,10.021467,10.021442,10.021418,10.021392,10.021367,10.021342,10.0213175,10.021292,10.021267,10.021241,10.021216,10.021191,10.021165,10.02114,10.021114,10.021089,10.021063,10.021037,10.021011,10.020986,10.02096,10.020934,10.020908,10.020883,10.020857,10.02083,10.020804,10.020778,10.020752,10.020725,10.0206995,10.020673,10.020647,10.02062,10.020594,10.020567,10.02054,10.020514,10.020487,10.02046,10.0204315,10.020403,10.020375,10.020347,10.020318,10.020289,10.020261,10.020232,10.020204,10.020175,10.020146,10.020118,10.020089,10.02006,10.020031,10.020002,10.019973,10.019944,10.019915,10.019886,10.019856,10.019827,10.019798,10.019769,10.019739,10.01971,10.01968,10.01965,10.019621,10.019591,10.019562,10.019532,10.019503,10.019473,10.019443,10.019413,10.019383,10.019353,10.019323,10.019293,10.019263,10.019233,10.019202,10.019173,10.019142,10.019112,10.019081,10.019051,10.01902,10.019045,10.019069,10.019093,10.019116,10.01914,10.019162,10.019185,10.019208,10.01923,10.019253,10.019275,10.019298,10.01932,10.019342,10.019364,10.019386,10.019409,10.019431,10.019453,10.019475,10.019497,10.019519,10.019541,10.019564,10.019586,10.019607,10.019629,10.01965,10.019672,10.019694,10.019716,10.019737,10.019759,10.019781,10.019802,10.019824,10.019845,10.019867,10.019888,10.01991,10.019931,10.019953,10.019974,10.019995,10.020016,10.020038,10.020059,10.02008,10.020098,10.020117,10.020135,10.020153,10.020172,10.02019,10.020208,10.020227,10.020246,10.020264,10.020282,10.0203,10.020318,10.020336,10.020354,10.020372,10.0203905,10.020409,10.020427,10.020444,10.020462,10.02048,10.020497,10.020515,10.020534,10.020551,10.020569,10.020586,10.020603,10.020621,10.020638,10.020656,10.020674,10.020691,10.020708,10.020725,10.020742,10.02076,10.020777,10.020794,10.020811,10.020828,10.020845,10.020863,10.02088,10.020896,10.020913,10.02093,10.0209465,10.020964,10.02098,10.020997,10.021013,10.02103,10.021047,10.021063,10.021033,10.021004,10.020973,10.020944,10.020913,10.020883,10.020851,10.02082,10.020789,10.020758,10.020726,10.020696,10.020664,10.020633,10.020601,10.02057,10.020538,10.020507,10.020475,10.020444,10.0204115,10.02038,10.020349,10.020316,10.020285,10.020252,10.020221,10.020188,10.020157,10.020124,10.020092,10.02006,10.020028,10.019996,10.019963,10.019931,10.019898,10.019866,10.019834,10.0198,10.019768,10.019735,10.019703,10.01967,10.019637,10.019604,10.019571,10.019538,10.019505,10.019472,10.019439,10.019405,10.019372,10.01934,10.019306,10.019273,10.019239,10.019205,10.019172,10.019138,10.019105,10.019072,10.019037,10.019004,10.01897,10.018936,10.018902,10.018868,10.018834,10.0188,10.018766,10.018732,10.018698,10.018663,10.018629,10.018595,10.01856,10.018526,10.018492,10.018457,10.018422,10.018388,10.018353,10.018318,10.018284,10.018249,10.018214,10.018179,10.018145,10.018109,10.018074,10.018039,10.018003,10.017968,10.017933,10.017898,10.017862,10.017827,10.017792,10.017756,10.017721,10.017685,10.01765,10.017614,10.017578,10.017543,10.017507,10.01747,10.017435,10.017388,10.017342,10.017296,10.017249,10.017202,10.017156,10.017109,10.017062,10.017015,10.016969,10.016922,10.016875,10.016829,10.016782,10.016734,10.016687,10.016641,10.016593,10.016546,10.016499,10.016451,10.016404,10.016356,10.016309,10.016261,10.016213,10.016166,10.016118,10.01607,10.016021,10.015971,10.015922,10.015872,10.015822,10.015772,10.015722,10.015673,10.015622,10.015573,10.015523,10.015472,10.015423,10.015372,10.015322,10.015272,10.015222,10.015171,10.0151205,10.01507,10.015019,10.014969,10.014918,10.014868,10.01485,10.014832,10.014813,10.014794,10.014776,10.014758,10.014739,10.014721,10.014703,10.014684,10.014665,10.014647,10.014627,10.014609,10.01459,10.014571,10.014552,10.014533,10.014515,10.014496,10.014477,10.014458,10.014438,10.014419,10.0144,10.01438,10.014361,10.014341,10.014322,10.014303,10.014283,10.014264,10.014244,10.014224,10.014205,10.014185,10.014165,10.014146,10.014126,10.014106,10.014086,10.014066,10.014046,10.014026,10.014006,10.013986,10.013965,10.013945,10.013925,10.013905,10.013884,10.013864,10.01385,10.013837,10.0138235,10.01381,10.013796,10.0137825,10.013769,10.013756,10.013742,10.013728,10.013715,10.0137005,10.013687,10.013673,10.0136595,10.013645,10.013632,10.0136175,10.013603,10.01359,10.013576,10.013561,10.013547,10.013533,10.013518,10.013504,10.01349,10.013475,10.013461,10.013447,10.0134325,10.013417,10.013403,10.013389,10.013373,10.013359,10.013344,10.0133295,10.013314,10.0133,10.013285,10.01327,10.013255,10.01324,10.013225,10.01321,10.013195,10.01318,10.0131645,10.013149,10.013134,10.013119,10.013087,10.013055,10.013023,10.012992,10.0129595"
+      },
+      {
+        "path": "Manifest/metadataSection/acquisitionPeriod/stopTime",
+        "value": "2017-03-04T08:45:24.157311Z"
+      },
+      {
+        "path": "frame_offset/value",
+        "value": "-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1"
+      },
+      {
+        "path": "frame_offset/long_name",
+        "value": "Re-sampling along-track frame offset "
+      },
+      {
+        "path": "reference_pressure_level/_ChunkSize",
+        "value": "25"
+      },
+      {
+        "path": "Manifest/metadataSection/olciProductInformation/classificationSummary/landPixels/percentage",
+        "value": "4.000000"
+      }
+    ]
+  }
+}
