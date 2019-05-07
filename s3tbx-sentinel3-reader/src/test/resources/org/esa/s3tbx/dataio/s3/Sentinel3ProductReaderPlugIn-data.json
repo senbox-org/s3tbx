@@ -1,0 +1,129 @@
+{
+  "testProducts": [
+    {
+      "id": "S3A_SY_2_SYN____20160415T110058",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_SYN____20160415T110058_20160415T110845_20160502T125457_0466_003_094______LN1_D_NC____.SEN3",
+      "description": "S3A_SY_2_SYN v1"
+
+    },
+    {
+      "id": "S3A_SY_2_SYN____20190426T012843",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_SYN____20190426T012843_20190426T013143_20190427T131355_0179_044_074_2340_LN2_O_NT_002.SEN3",
+      "description": "S3A_SY_2_SYN v2"
+
+    },
+    {
+      "id": "S3A_SY_2_VG1____20130621T100922",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_VG1____20130621T100922_20130621T104922_20140527T011902_GLOBAL____________LN2_D_NR____.SEN3",
+      "description": "S3A_SY_2_VG1 Global"
+
+    },
+    {
+      "id": "S3A_SY_2_VG1____20190426T111721",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_VG1____20190426T111721_20190427T111721_20190502T113557_SOUTH_EAST_ASIA___LN2_O_NT_002.SEN3",
+      "description": "S3A_SY_2_VG1 South East Asia"
+
+    },
+    {
+      "id": "S3A_SY_2_VGP____20130621T100932",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_VGP____20130621T100932_20130621T101146_20140604T091546_0134_001_002______LN1_D_NC____.SEN3",
+      "description": "S3A_SY_2_VGP 2013 Global"
+
+    },
+    {
+      "id": "S3A_SY_2_VGP____20160415T110058",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_VGP____20160415T110058_20160415T110845_20160502T125459_0466_003_094______LN1_D_NC____.SEN3",
+      "description": "S3A_SY_2_VGP 2016"
+    },
+    {
+      "id": "S3A_SY_2_V10____20190410T111721",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_V10____20190410T111721_20190420T111721_20190430T120711_EUROPE____________LN2_O_NT_002.SEN3",
+      "description": "S3A_SY_2_V10 2019 Europe"
+    },
+    {
+      "id": "S3A_SL_1_RBT____20170508T072701",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3A_SL_1_RBT____20170508T072701_20170508T073201_20180629T141902_0299_017_234______LR1_R_NT_003.SEN3",
+      "description": "S3A_SL_1_RBT v1"
+    },
+    {
+      "id": "S3A_SL_1_RBT____20180809T035343",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3A_SL_1_RBT____20180809T035343_20180809T035643_20180810T124116_0179_034_218_2520_MAR_O_NT_002.SEN3",
+      "description": "S3A_SL_1_RBT v2"
+    },
+    {
+      "id": "S3A_SL_1_RBT____20170813T042028",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3A_SL_1_RBT____20170813T042028_20170813T042328_20170814T092642_0179_021_076_6599_LN2_O_NT_002.SEN3",
+      "description": "S3A_SL_1_RBT v3"
+    },
+    {
+      "id": "S3A_SL_2_LST____20160329T084522",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L2/S3A_SL_2_LST____20160329T084522_20160329T084822_20160330T145846_0180_046_207______SVL_O_NR_001.SEN3",
+      "description": "S3A_SL_2_LST"
+    },
+    {
+      "id": "S3A_SL_2_WCT____20160329T084522",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L2/S3A_SL_2_WCT____20160329T084522_20160329T084822_20160330T150059_0180_046_207______MAR_O_NR_001.SEN3",
+      "description": "S3A_SL_2_WCT"
+    },
+    {
+      "id": "S3A_SL_2_WST____20160329T084522",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L2/S3A_SL_2_WST____20160329T084522_20160329T084822_20160330T150059_0180_046_207______MAR_O_NR_001.SEN3",
+      "description": "S3A_SL_2_WST"
+    },
+    {
+      "id": "S3A_OL_1_ERR____20180608T084209",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L1/S3A_OL_1_ERR____20180608T084209_20180608T090412_20180609T114251_1322_032_107______MAR_O_NT_002.SEN3",
+      "description": "S3A_OL_1_ERR v1"
+    },
+    {
+      "id": "S3A_OL_1_ERR____20180305T063241",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L1/S3A_OL_1_ERR____20180305T063241_20180305T071632_20180305T085753_2631_028_291______MAR_O_NR_002.SEN3",
+      "description": "S3A_OL_1_ERR v2"
+    },
+    {
+      "id": "S3A_OL_1_EFR____20190507T000242",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L1/S3A_OL_1_EFR____20190507T000242_20190507T000542_20190507T020447_0179_044_230_2340_MAR_O_NR_002.SEN3",
+      "description": "S3A_OL_1_EFR v1"
+    },
+    {
+      "id": "S3A_OL_1_EFR____20180407T004637",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L1/S3A_OL_1_EFR____20180407T004637_20180407T004937_20180408T065235_0180_029_373_2520_MAR_O_NT_002.SEN3",
+      "description": "S3A_OL_1_EFR v2"
+    },
+    {
+      "id": "S3A_OL_2_LRR____20070910T095130",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L2/S3A_OL_2_LRR____20070910T095130_20070910T095442_20140610T110326_0192_000_000______LN2_D_NR____.SEN3",
+      "description": "S3A_OL_2_LRR"
+    },
+    {
+      "id": "S3A_OL_2_LFR____20070425T152940",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L2/S3A_OL_2_LFR____20070425T152940_20070425T153025_20140610T111104_0045_000_000______LN2_D_NR____.SEN3",
+      "description": "S3A_OL_2_LFR v1"
+    },
+    {
+      "id": "S3A_OL_2_LFR____20170304T084224",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L2/S3A_OL_2_LFR____20170304T084224_20170304T084524_20170305T142632_0179_015_078_4139_LN1_O_NT_002.SEN3",
+      "description": "S3A_OL_2_LFR v2"
+    },
+    {
+      "id": "S3A_OL_2_WRR____20070910T095130",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L2/S3A_OL_2_WRR____20070910T095130_20070910T095442_20140610T110535_0192_000_000______MAR_D_NR____.SEN3",
+      "description": "S3A_OL_2_WRR v1"
+    },
+    {
+      "id": "S3A_OL_2_WRR____20170608T000346",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L2/S3A_OL_2_WRR____20170608T000346_20170608T000546_20171031T064505_0119_018_287______MR1_R_NT_002.SEN3",
+      "description": "S3A_OL_2_WRR v2"
+    },
+    {
+      "id": "S3A_OL_2_WFR____20070425T152940",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L2/S3A_OL_2_WFR____20070425T152940_20070425T153025_20140610T112151_0045_000_000______MAR_D_NR____.SEN3",
+      "description": "S3A_OL_2_WFR v1"
+    },
+    {
+      "id": "S3A_OL_2_WFR____20180707T081143",
+      "relativePath": "sensors_platforms/SENTINEL-3/olci/L2/S3A_OL_2_WFR____20180707T081143_20180707T081443_20180708T142606_0179_033_135_2520_MAR_O_NT_002.SEN3",
+      "description": "S3A_OL_2_WFR v2"
+    }
+  ]
+}

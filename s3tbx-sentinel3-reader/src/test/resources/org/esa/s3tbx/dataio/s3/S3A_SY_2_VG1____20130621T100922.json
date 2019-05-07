@@ -1,0 +1,495 @@
+{
+  "id": "S3A_SY_2_VG1____20130621T100922",
+  "decodeQualification": "INTENDED",
+  "expectedContent": {
+    "sceneWidth": 360,
+    "sceneHeight": 131,
+    "startTime": "21-JUN-2013 10:09:22.000000",
+    "endTime": "21-JUN-2013 10:49:22.000000",
+    "geoCoding": {
+      "coordinates": [
+        {
+          "x": 155.0,
+          "y": 70.0,
+          "lat": 5.0,
+          "lon": -25.0
+        },
+        {
+          "x": 267.0,
+          "y": 85.0,
+          "lat": -10.0,
+          "lon": 87.0
+        }
+      ],
+      "reverseAccuracy": 0.0
+    },
+    "flagCodings": [
+      {
+        "name": "SM",
+        "samples": [
+          {
+            "name": "B0_good",
+            "value": 128
+          },
+          {
+            "name": "B2_good",
+            "value": 64
+          },
+          {
+            "name": "B3_good",
+            "value": 32
+          },
+          {
+            "name": "MIR_good",
+            "value": 16
+          },
+          {
+            "name": "land",
+            "value": 8
+          },
+          {
+            "name": "ice_or_snow",
+            "value": 4
+          },
+          {
+            "name": "cloud",
+            "value": 3
+          },
+          {
+            "name": "uncertain",
+            "value": 3
+          },
+          {
+            "name": "shadow",
+            "value": 3
+          },
+          {
+            "name": "clear",
+            "value": 3
+          }
+        ]
+      }
+    ],
+    "bands": [
+      {
+        "name": "B0",
+        "description": "Surface reflectance for B0 channel",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 18,
+            "y": 23,
+            "value": 0.0021
+          },
+          {
+            "x": 246,
+            "y": 111,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "B2",
+        "description": "Surface reflectance for VGT B2 channel",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 104,
+            "y": 33,
+            "value": "NaN"
+          },
+          {
+            "x": 219,
+            "y": 47,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "B3",
+        "description": "Surface reflectance for VGT B3 channel",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 198,
+            "y": 97,
+            "value": "NaN"
+          },
+          {
+            "x": 219,
+            "y": 121,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "MIR",
+        "description": "Surface reflectance for VGT MIR channel",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "noDataValue": "-0.9999999747378752",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 56,
+            "y": 87,
+            "value": "NaN"
+          },
+          {
+            "x": 186,
+            "y": 119,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "NDVI",
+        "description": "Normalized difference vegetation index",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "noDataValue": "-0.6120000258088112",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 272,
+            "y": 63,
+            "value": "NaN"
+          },
+          {
+            "x": 342,
+            "y": 63,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "AG",
+        "description": "Aerosol optical thickness at 550 nm",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "noDataValue": "1.02",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 122,
+            "y": 117,
+            "value": "NaN"
+          },
+          {
+            "x": 3,
+            "y": 61,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "OG",
+        "description": "Total column ozone",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "geophysicalUnit": "atm.cm",
+        "noDataValue": "1.02",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 117,
+            "y": 25,
+            "value": "NaN"
+          },
+          {
+            "x": 98,
+            "y": 5,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SM",
+        "description": "Status flag",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "noDataValue": "128.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 349,
+            "y": 79,
+            "value": 128.0
+          },
+          {
+            "x": 206,
+            "y": 93,
+            "value": 128.0
+          }
+        ]
+      },
+      {
+        "name": "VAA",
+        "description": "View azimuth angle",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "-192.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 83,
+            "y": 65,
+            "value": "NaN"
+          },
+          {
+            "x": 115,
+            "y": 94,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SAA",
+        "description": "Solar azimuth angle",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "-192.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 128,
+            "y": 65,
+            "value": "NaN"
+          },
+          {
+            "x": 145,
+            "y": 57,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "SZA",
+        "description": "Solar zenith angle",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "127.5",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 206,
+            "y": 12,
+            "value": "NaN"
+          },
+          {
+            "x": 232,
+            "y": 2,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "VZA",
+        "description": "Solar zenith angle",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "geophysicalUnit": "degrees",
+        "noDataValue": "127.5",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 351,
+            "y": 48,
+            "value": "NaN"
+          },
+          {
+            "x": 342,
+            "y": 123,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "TG",
+        "description": "Synthesis time",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "geophysicalUnit": "minutes since start_time",
+        "noDataValue": "4.294967295E9",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 39,
+            "y": 59,
+            "value": "NaN"
+          },
+          {
+            "x": 205,
+            "y": 73,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "WVG",
+        "description": "Total column ozone",
+        "bandWidth": 360,
+        "bandHeight": 131,
+        "geophysicalUnit": "g cm-2",
+        "noDataValue": "10.200000000000001",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 182,
+            "y": 68,
+            "value": "NaN"
+          },
+          {
+            "x": 162,
+            "y": 76,
+            "value": "NaN"
+          }
+        ]
+      }
+    ],
+    "masks": [
+      {
+        "name": "SM_B0_good",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,255",
+        "description": "SM.B0_good"
+      },
+      {
+        "name": "SM_B2_good",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,0",
+        "description": "SM.B2_good"
+      },
+      {
+        "name": "SM_B3_good",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,255",
+        "description": "SM.B3_good"
+      },
+      {
+        "name": "SM_MIR_good",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,255",
+        "description": "SM.MIR_good"
+      },
+      {
+        "name": "SM_land",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "SM.land"
+      },
+      {
+        "name": "SM_ice_or_snow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "SM.ice_or_snow"
+      },
+      {
+        "name": "SM_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "SM.cloud"
+      },
+      {
+        "name": "SM_uncertain",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,0",
+        "description": "SM.uncertain"
+      },
+      {
+        "name": "SM_shadow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,127",
+        "description": "SM.shadow"
+      },
+      {
+        "name": "SM_clear",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,0",
+        "description": "SM.clear"
+      }
+    ],
+    "metadata": [
+      {
+        "path": "Manifest/metadataSection/processing/resource[4]/name",
+        "value": "S3IPF PDS 006 - i1r2 - Product Data Format Specification - SYN"
+      },
+      {
+        "path": "longitude/_ChunkSize",
+        "value": "360"
+      },
+      {
+        "path": "longitude/_ChunkSize",
+        "value": "360"
+      },
+      {
+        "path": "crs/grid_mappring_name",
+        "value": "latitude_longitude "
+      },
+      {
+        "path": "longitude/valid_min",
+        "value": "-180.0"
+      },
+      {
+        "path": "latitude/valid_min",
+        "value": "-56.0"
+      },
+      {
+        "path": "Manifest/metadataSection/orbitReference/orbitNumber/groundTrackDirection",
+        "value": "descending"
+      },
+      {
+        "path": "Manifest/metadataSection/generalProductInformation/dumpInformation/dumpStart",
+        "value": "2013-06-21T10:14:27.000000Z"
+      },
+      {
+        "path": "crs/value",
+        "value": "-2147483647"
+      },
+      {
+        "path": "longitude/value",
+        "value": "-179.5,-178.5,-177.5,-176.5,-175.5,-174.5,-173.5,-172.5,-171.5,-170.5,-169.5,-168.5,-167.5,-166.5,-165.5,-164.5,-163.5,-162.5,-161.5,-160.5,-159.5,-158.5,-157.5,-156.5,-155.5,-154.5,-153.5,-152.5,-151.5,-150.5,-149.5,-148.5,-147.5,-146.5,-145.5,-144.5,-143.5,-142.5,-141.5,-140.5,-139.5,-138.5,-137.5,-136.5,-135.5,-134.5,-133.5,-132.5,-131.5,-130.5,-129.5,-128.5,-127.5,-126.5,-125.5,-124.5,-123.5,-122.5,-121.5,-120.5,-119.5,-118.5,-117.5,-116.5,-115.5,-114.5,-113.5,-112.5,-111.5,-110.5,-109.5,-108.5,-107.5,-106.5,-105.5,-104.5,-103.5,-102.5,-101.5,-100.5,-99.5,-98.5,-97.5,-96.5,-95.5,-94.5,-93.5,-92.5,-91.5,-90.5,-89.5,-88.5,-87.5,-86.5,-85.5,-84.5,-83.5,-82.5,-81.5,-80.5,-79.5,-78.5,-77.5,-76.5,-75.5,-74.5,-73.5,-72.5,-71.5,-70.5,-69.5,-68.5,-67.5,-66.5,-65.5,-64.5,-63.5,-62.5,-61.5,-60.5,-59.5,-58.5,-57.5,-56.5,-55.5,-54.5,-53.5,-52.5,-51.5,-50.5,-49.5,-48.5,-47.5,-46.5,-45.5,-44.5,-43.5,-42.5,-41.5,-40.5,-39.5,-38.5,-37.5,-36.5,-35.5,-34.5,-33.5,-32.5,-31.5,-30.5,-29.5,-28.5,-27.5,-26.5,-25.5,-24.5,-23.5,-22.5,-21.5,-20.5,-19.5,-18.5,-17.5,-16.5,-15.5,-14.5,-13.5,-12.5,-11.5,-10.5,-9.5,-8.5,-7.5,-6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5,8.5,9.5,10.5,11.5,12.5,13.5,14.5,15.5,16.5,17.5,18.5,19.5,20.5,21.5,22.5,23.5,24.5,25.5,26.5,27.5,28.5,29.5,30.5,31.5,32.5,33.5,34.5,35.5,36.5,37.5,38.5,39.5,40.5,41.5,42.5,43.5,44.5,45.5,46.5,47.5,48.5,49.5,50.5,51.5,52.5,53.5,54.5,55.5,56.5,57.5,58.5,59.5,60.5,61.5,62.5,63.5,64.5,65.5,66.5,67.5,68.5,69.5,70.5,71.5,72.5,73.5,74.5,75.5,76.5,77.5,78.5,79.5,80.5,81.5,82.5,83.5,84.5,85.5,86.5,87.5,88.5,89.5,90.5,91.5,92.5,93.5,94.5,95.5,96.5,97.5,98.5,99.5,100.5,101.5,102.5,103.5,104.5,105.5,106.5,107.5,108.5,109.5,110.5,111.5,112.5,113.5,114.5,115.5,116.5,117.5,118.5,119.5,120.5,121.5,122.5,123.5,124.5,125.5,126.5,127.5,128.5,129.5,130.5,131.5,132.5,133.5,134.5,135.5,136.5,137.5,138.5,139.5,140.5,141.5,142.5,143.5,144.5,145.5,146.5,147.5,148.5,149.5,150.5,151.5,152.5,153.5,154.5,155.5,156.5,157.5,158.5,159.5,160.5,161.5,162.5,163.5,164.5,165.5,166.5,167.5,168.5,169.5,170.5,171.5,172.5,173.5,174.5,175.5,176.5,177.5,178.5,179.5"
+      }
+    ]
+  }
+}

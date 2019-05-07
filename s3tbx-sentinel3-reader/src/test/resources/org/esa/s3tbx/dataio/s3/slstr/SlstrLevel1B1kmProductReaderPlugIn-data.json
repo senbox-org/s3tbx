@@ -1,0 +1,19 @@
+{
+  "testProducts": [
+    {
+      "id": "S3A_SL_1_RBT____20170508T072701_1000",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3A_SL_1_RBT____20170508T072701_20170508T073201_20180629T141902_0299_017_234______LR1_R_NT_003.SEN3",
+      "description": "S3A_SL_1_RBT v1 1km"
+    },
+    {
+      "id": "S3A_SL_1_RBT____20180809T035343_1000",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3A_SL_1_RBT____20180809T035343_20180809T035643_20180810T124116_0179_034_218_2520_MAR_O_NT_002.SEN3",
+      "description": "S3A_SL_1_RBT v2 1km"
+    },
+    {
+      "id": "S3A_SL_1_RBT____20170813T042028_1000",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3A_SL_1_RBT____20170813T042028_20170813T042328_20170814T092642_0179_021_076_6599_LN2_O_NT_002.SEN3",
+      "description": "S3A_SL_1_RBT v3 1km"
+    }
+  ]
+}

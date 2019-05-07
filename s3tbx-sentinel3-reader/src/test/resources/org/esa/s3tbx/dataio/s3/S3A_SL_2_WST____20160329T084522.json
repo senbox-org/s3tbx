@@ -1,0 +1,874 @@
+{
+  "id": "S3A_SL_2_WST____20160329T084522",
+  "decodeQualification": "INTENDED",
+  "expectedContent": {
+    "sceneWidth": 1500,
+    "sceneHeight": 1202,
+    "startTime": "29-MAR-2016 08:45:22.000000",
+    "endTime": "29-MAR-2016 08:48:22.399810",
+    "geoCoding": {
+      "coordinates": [
+        {
+          "x": 646.0,
+          "y": 646.0,
+          "lat": -28.303489685058594,
+          "lon": 9.915739059448242
+        },
+        {
+          "x": 1113.0,
+          "y": 779.0,
+          "lat": -30.476289749145508,
+          "lon": 14.255546569824219
+        }
+      ],
+      "reverseAccuracy": 0.5
+    },
+    "flagCodings": [
+      {
+        "name": "l2p_flags",
+        "samples": [
+          {
+            "name": "infrared",
+            "value": 1
+          },
+          {
+            "name": "microwave",
+            "value": 1
+          },
+          {
+            "name": "ocean",
+            "value": 2
+          },
+          {
+            "name": "land",
+            "value": 2
+          },
+          {
+            "name": "ice",
+            "value": 4
+          },
+          {
+            "name": "lake",
+            "value": 8
+          },
+          {
+            "name": "river",
+            "value": 16
+          },
+          {
+            "name": "no_retrieval",
+            "value": 448
+          },
+          {
+            "name": "N2_retrieval",
+            "value": 64
+          },
+          {
+            "name": "N3R_retrieval",
+            "value": 128
+          },
+          {
+            "name": "N3_retrieval",
+            "value": 192
+          },
+          {
+            "name": "D2_retrieval",
+            "value": 256
+          },
+          {
+            "name": "D3_retrieval",
+            "value": 320
+          },
+          {
+            "name": "cosmetic_fill",
+            "value": 512
+          },
+          {
+            "name": "day",
+            "value": 1024
+          },
+          {
+            "name": "sun_glint",
+            "value": 2048
+          },
+          {
+            "name": "cloud",
+            "value": 4096
+          },
+          {
+            "name": "pointing",
+            "value": 8192
+          },
+          {
+            "name": "exception",
+            "value": 16384
+          },
+          {
+            "name": "overflow",
+            "value": 32768
+          }
+        ]
+      }
+    ],
+    "indexCodings": [
+      {
+        "name": "quality_level",
+        "samples": [
+          {
+            "name": "no_data",
+            "value": 0
+          },
+          {
+            "name": "cloud",
+            "value": 1
+          },
+          {
+            "name": "worst_quality",
+            "value": 2
+          },
+          {
+            "name": "low_quality",
+            "value": 3
+          },
+          {
+            "name": "acceptable_quality",
+            "value": 4
+          },
+          {
+            "name": "best_quality",
+            "value": 5
+          }
+        ]
+      }
+    ],
+    "bands": [
+      {
+        "name": "lat",
+        "description": "Latitude",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "degrees_north",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 78,
+            "y": 214,
+            "value": -23.128206
+          },
+          {
+            "x": 1027,
+            "y": 1022,
+            "value": -32.43749
+          }
+        ]
+      },
+      {
+        "name": "lon",
+        "description": "Longitude",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "degrees_east",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 436,
+            "y": 308,
+            "value": 8.776305
+          },
+          {
+            "x": 915,
+            "y": 439,
+            "value": 13.08557
+          }
+        ]
+      },
+      {
+        "name": "sea_surface_temperature",
+        "description": "sea surface temperature skin temperature",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "257.2319984436035",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 825,
+            "y": 895,
+            "value": 293.976
+          },
+          {
+            "x": 912,
+            "y": 1116,
+            "value": 291.555
+          }
+        ]
+      },
+      {
+        "name": "sst_dtime",
+        "description": "SST time deviation from reference time",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "seconds",
+        "noDataValue": "-32768.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 237,
+            "y": 800,
+            "value": "NaN"
+          },
+          {
+            "x": 778,
+            "y": 1098,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "sses_bias",
+        "description": "Single Sensor Error Statistic bias estimate",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-2.559999942779541",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1134,
+            "y": 582,
+            "value": "NaN"
+          },
+          {
+            "x": 1426,
+            "y": 584,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "sses_standard_deviation",
+        "description": "Single Sensor Error Statistic standard deviation estimate",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-0.009999990463256836",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 510,
+            "y": 1081,
+            "value": "NaN"
+          },
+          {
+            "x": 14,
+            "y": 565,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "dt_analysis",
+        "description": "SST deviation from analysis field",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-0.05000019073486328",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 491,
+            "y": 236,
+            "value": 0.6999998
+          },
+          {
+            "x": 409,
+            "y": 51,
+            "value": 0.79999983
+          }
+        ]
+      },
+      {
+        "name": "wind_speed",
+        "description": "10 m wind speed",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "m s-1",
+        "noDataValue": "-0.20000076293945312",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1457,
+            "y": 726,
+            "value": 6.9999995
+          },
+          {
+            "x": 858,
+            "y": 861,
+            "value": 9.599999
+          }
+        ]
+      },
+      {
+        "name": "wind_speed_dtime_from_sst",
+        "description": "Time difference of wind speed from SST measurement",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "hour",
+        "noDataValue": "-12.800000190734863",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 347,
+            "y": 598,
+            "value": "NaN"
+          },
+          {
+            "x": 481,
+            "y": 868,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "sea_ice_fraction",
+        "description": "Fractional sea ice contamination in a pixel",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "1",
+        "noDataValue": "-0.13999998569488525",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 537,
+            "y": 598,
+            "value": 1.1175871E-8
+          },
+          {
+            "x": 604,
+            "y": 531,
+            "value": 1.1175871E-8
+          }
+        ]
+      },
+      {
+        "name": "sea_ice_fraction_dtime_from_sst",
+        "description": "Time difference between sea ice fraction data from SST measurement",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "hour",
+        "noDataValue": "-12.800000190734863",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 862,
+            "y": 110,
+            "value": "NaN"
+          },
+          {
+            "x": 967,
+            "y": 19,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "aerosol_dynamic_indicator",
+        "description": "Aerosol contamination indicator",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "count",
+        "noDataValue": "-128.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1462,
+            "y": 441,
+            "value": "NaN"
+          },
+          {
+            "x": 1425,
+            "y": 1137,
+            "value": 6.0
+          }
+        ]
+      },
+      {
+        "name": "adi_dtime_from_sst",
+        "description": "Time difference of ADI data from SST measurement",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "hour",
+        "noDataValue": "-12.800000190734863",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 166,
+            "y": 543,
+            "value": 0.0
+          },
+          {
+            "x": 856,
+            "y": 676,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "l2p_flags",
+        "description": "L2P and user-defined SST quality flags",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 758,
+            "y": 626,
+            "value": 9472.0
+          },
+          {
+            "x": 676,
+            "y": 698,
+            "value": 9472.0
+          }
+        ]
+      },
+      {
+        "name": "quality_level",
+        "description": "SST measurement quality indicator",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "noDataValue": "-128.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 21,
+            "y": 510,
+            "value": 0.0
+          },
+          {
+            "x": 105,
+            "y": 1193,
+            "value": 3.0
+          }
+        ]
+      },
+      {
+        "name": "satellite_zenith_angle",
+        "description": "Satellite zenith_angle (experimental field)",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "angular_degrees",
+        "noDataValue": "-20.53600311279297",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 445,
+            "y": 895,
+            "value": 41.634
+          },
+          {
+            "x": 1205,
+            "y": 885,
+            "value": 13.249998
+          }
+        ]
+      },
+      {
+        "name": "brightness_temperature_channel_1",
+        "description": "Top of atmosphere brightness temperature (experimental field)",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-37.67999267578125",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1251,
+            "y": 1136,
+            "value": 293.26
+          },
+          {
+            "x": 372,
+            "y": 639,
+            "value": 293.25
+          }
+        ]
+      },
+      {
+        "name": "brightness_temperature_channel_2",
+        "description": "Top of atmosphere brightness temperature (experimental field)",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-37.67999267578125",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 916,
+            "y": 312,
+            "value": 289.93
+          },
+          {
+            "x": 829,
+            "y": 181,
+            "value": 289.71
+          }
+        ]
+      },
+      {
+        "name": "brightness_temperature_channel_3",
+        "description": "Top of atmosphere brightness temperature (experimental field)",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-37.67999267578125",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 713,
+            "y": 672,
+            "value": 288.31
+          },
+          {
+            "x": 143,
+            "y": 1021,
+            "value": 275.27
+          }
+        ]
+      },
+      {
+        "name": "nedt_channel_1",
+        "description": "Top of atmosphere noise equivalent brightness temperature (experimental field)",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-32.768001556396484",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 144,
+            "y": 93,
+            "value": 0.021000002
+          },
+          {
+            "x": 682,
+            "y": 812,
+            "value": 0.018000001
+          }
+        ]
+      },
+      {
+        "name": "nedt_channel_2",
+        "description": "Top of atmosphere noise equivalent brightness temperature (experimental field)",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-32.768001556396484",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 697,
+            "y": 1076,
+            "value": 0.012
+          },
+          {
+            "x": 1301,
+            "y": 721,
+            "value": 0.013
+          }
+        ]
+      },
+      {
+        "name": "nedt_channel_3",
+        "description": "Top of atmosphere noise equivalent brightness temperature (experimental field)",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-32.768001556396484",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1443,
+            "y": 457,
+            "value": 0.015000001
+          },
+          {
+            "x": 131,
+            "y": 640,
+            "value": 0.018000001
+          }
+        ]
+      },
+      {
+        "name": "sst_theoretical_error",
+        "description": "SST total uncertainty (experimental field)",
+        "bandWidth": 1500,
+        "bandHeight": 1202,
+        "geophysicalUnit": "kelvin",
+        "noDataValue": "-32.768001556396484",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1103,
+            "y": 715,
+            "value": 0.141
+          },
+          {
+            "x": 1464,
+            "y": 223,
+            "value": "NaN"
+          }
+        ]
+      }
+    ],
+    "masks": [
+      {
+        "name": "l2p_flags_infrared",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,255",
+        "description": "l2p_flags.infrared"
+      },
+      {
+        "name": "l2p_flags_microwave",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,0",
+        "description": "l2p_flags.microwave"
+      },
+      {
+        "name": "l2p_flags_ocean",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,191",
+        "description": "l2p_flags.ocean"
+      },
+      {
+        "name": "l2p_flags_land",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "l2p_flags.land"
+      },
+      {
+        "name": "l2p_flags_ice",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,255,255",
+        "description": "l2p_flags.ice"
+      },
+      {
+        "name": "l2p_flags_lake",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,255",
+        "description": "l2p_flags.lake"
+      },
+      {
+        "name": "l2p_flags_river",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,255",
+        "description": "l2p_flags.river"
+      },
+      {
+        "name": "l2p_flags_no_retrieval",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,255",
+        "description": "l2p_flags.no_retrieval"
+      },
+      {
+        "name": "l2p_flags_N2_retrieval",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,0",
+        "description": "l2p_flags.N2_retrieval"
+      },
+      {
+        "name": "l2p_flags_N3R_retrieval",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,127",
+        "description": "l2p_flags.N3R_retrieval"
+      },
+      {
+        "name": "l2p_flags_N3_retrieval",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,0",
+        "description": "l2p_flags.N3_retrieval"
+      },
+      {
+        "name": "l2p_flags_D2_retrieval",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,127",
+        "description": "l2p_flags.D2_retrieval"
+      },
+      {
+        "name": "l2p_flags_D3_retrieval",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,127",
+        "description": "l2p_flags.D3_retrieval"
+      },
+      {
+        "name": "l2p_flags_cosmetic_fill",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,0",
+        "description": "l2p_flags.cosmetic_fill"
+      },
+      {
+        "name": "l2p_flags_day",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,127",
+        "description": "l2p_flags.day"
+      },
+      {
+        "name": "l2p_flags_sun_glint",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,255",
+        "description": "l2p_flags.sun_glint"
+      },
+      {
+        "name": "l2p_flags_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "l2p_flags.cloud"
+      },
+      {
+        "name": "l2p_flags_pointing",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,0",
+        "description": "l2p_flags.pointing"
+      },
+      {
+        "name": "l2p_flags_exception",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,127",
+        "description": "l2p_flags.exception"
+      },
+      {
+        "name": "l2p_flags_overflow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,255",
+        "description": "l2p_flags.overflow"
+      },
+      {
+        "name": "quality_level_no_data",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,0",
+        "description": "quality_level == 0"
+      },
+      {
+        "name": "quality_level_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "quality_level == 1"
+      },
+      {
+        "name": "quality_level_worst_quality",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,127",
+        "description": "quality_level == 2"
+      },
+      {
+        "name": "quality_level_low_quality",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,255",
+        "description": "quality_level == 3"
+      },
+      {
+        "name": "quality_level_acceptable_quality",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,127",
+        "description": "quality_level == 4"
+      },
+      {
+        "name": "quality_level_best_quality",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,0",
+        "description": "quality_level == 5"
+      }
+    ],
+    "metadata": [
+      {
+        "path": "Manifest/metadataSection/acquisitionPeriod/stopTime",
+        "value": "2016-03-29T08:48:22.399810Z"
+      },
+      {
+        "path": "time/units",
+        "value": "seconds since 1981-01-01T00:00:00Z "
+      },
+      {
+        "path": "time/units",
+        "value": "seconds since 1981-01-01T00:00:00Z "
+      },
+      {
+        "path": "Manifest/metadataSection/platform/instrument/mode/identifier",
+        "value": "EO"
+      },
+      {
+        "path": "time/standard_name",
+        "value": "time "
+      },
+      {
+        "path": "time/standard_name",
+        "value": "time "
+      },
+      {
+        "path": "time/value",
+        "value": "599533077"
+      },
+      {
+        "path": "Manifest/metadataSection/platform/instrument/familyName/abbreviation",
+        "value": "SLSTR"
+      },
+      {
+        "path": "time/units",
+        "value": "seconds since 1981-01-01T00:00:00Z "
+      },
+      {
+        "path": "Manifest/metadataSection/generalProductInformation/dumpInformation/receivingStartTime",
+        "value": "2016-03-29T09:55:12.310372Z"
+      }
+    ]
+  }
+}
