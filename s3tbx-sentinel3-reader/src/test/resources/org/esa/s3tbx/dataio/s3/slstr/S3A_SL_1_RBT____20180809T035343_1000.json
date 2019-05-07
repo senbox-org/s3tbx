@@ -1,0 +1,5363 @@
+{
+  "id": "S3A_SL_1_RBT____20180809T035343_1000",
+  "decodeQualification": "SUITABLE",
+  "expectedContent": {
+    "sceneWidth": 1500,
+    "sceneHeight": 1200,
+    "startTime": "09-AUG-2018 03:53:42.694402",
+    "endTime": "09-AUG-2018 03:56:42.694402",
+    "geoCoding": {
+      "coordinates": [
+        {
+          "x": 646.0,
+          "y": 645.0,
+          "lat": 24.79791498866022,
+          "lon": 91.65805050735214
+        },
+        {
+          "x": 1113.0,
+          "y": 778.0,
+          "lat": 22.707432264015512,
+          "lon": 95.84631804041581
+        }
+      ],
+      "reverseAccuracy": 0.04126926811602516
+    },
+    "flagCodings": [
+      {
+        "name": "F1_exception_in",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "F1_exception_io",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "F2_exception_in",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "F2_exception_io",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "bayes_in",
+        "samples": [
+          {
+            "name": "single_low",
+            "value": 1
+          },
+          {
+            "name": "single_moderate",
+            "value": 2
+          },
+          {
+            "name": "dual_low",
+            "value": 4
+          },
+          {
+            "name": "dual_moderate",
+            "value": 8
+          },
+          {
+            "name": "spare_1",
+            "value": 16
+          },
+          {
+            "name": "spare_2",
+            "value": 32
+          },
+          {
+            "name": "spare_3",
+            "value": 64
+          },
+          {
+            "name": "spare_4",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "cloud_in",
+        "samples": [
+          {
+            "name": "visible",
+            "value": 1
+          },
+          {
+            "name": "1_37_threshold",
+            "value": 2
+          },
+          {
+            "name": "1_6_small_histogram",
+            "value": 4
+          },
+          {
+            "name": "1_6_large_histogram",
+            "value": 8
+          },
+          {
+            "name": "2_25_small_histogram",
+            "value": 16
+          },
+          {
+            "name": "2_25_large_histogram",
+            "value": 32
+          },
+          {
+            "name": "11_spatial_coherence",
+            "value": 64
+          },
+          {
+            "name": "gross_cloud",
+            "value": 128
+          },
+          {
+            "name": "thin_cirrus",
+            "value": 256
+          },
+          {
+            "name": "medium_high",
+            "value": 512
+          },
+          {
+            "name": "fog_low_stratus",
+            "value": 1024
+          },
+          {
+            "name": "11_12_view_difference",
+            "value": 2048
+          },
+          {
+            "name": "3_7_11_view_difference",
+            "value": 4096
+          },
+          {
+            "name": "thermal_histogram",
+            "value": 8192
+          },
+          {
+            "name": "spare_1",
+            "value": 16384
+          },
+          {
+            "name": "spare_2",
+            "value": 32768
+          }
+        ]
+      },
+      {
+        "name": "confidence_in",
+        "samples": [
+          {
+            "name": "coastline",
+            "value": 1
+          },
+          {
+            "name": "ocean",
+            "value": 2
+          },
+          {
+            "name": "tidal",
+            "value": 4
+          },
+          {
+            "name": "land",
+            "value": 8
+          },
+          {
+            "name": "inland_water",
+            "value": 16
+          },
+          {
+            "name": "unfilled",
+            "value": 32
+          },
+          {
+            "name": "spare_1",
+            "value": 64
+          },
+          {
+            "name": "spare_2",
+            "value": 128
+          },
+          {
+            "name": "cosmetic",
+            "value": 256
+          },
+          {
+            "name": "duplicate",
+            "value": 512
+          },
+          {
+            "name": "day",
+            "value": 1024
+          },
+          {
+            "name": "twilight",
+            "value": 2048
+          },
+          {
+            "name": "sun_glint",
+            "value": 4096
+          },
+          {
+            "name": "snow",
+            "value": 8192
+          },
+          {
+            "name": "summary_cloud",
+            "value": 16384
+          },
+          {
+            "name": "summary_pointing",
+            "value": 32768
+          }
+        ]
+      },
+      {
+        "name": "pointing_in",
+        "samples": [
+          {
+            "name": "FlipMirrorAbsoluteError",
+            "value": 1
+          },
+          {
+            "name": "FlipMirrorIntegratedError",
+            "value": 2
+          },
+          {
+            "name": "FlipMirrorRMSError",
+            "value": 4
+          },
+          {
+            "name": "ScanMirrorAbsoluteError",
+            "value": 8
+          },
+          {
+            "name": "ScanMirrorIntegratedError",
+            "value": 16
+          },
+          {
+            "name": "ScanMirrorRMSError",
+            "value": 32
+          },
+          {
+            "name": "ScanTimeError",
+            "value": 64
+          },
+          {
+            "name": "Platform_Mode",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "bayes_io",
+        "samples": [
+          {
+            "name": "single_low",
+            "value": 1
+          },
+          {
+            "name": "single_moderate",
+            "value": 2
+          },
+          {
+            "name": "dual_low",
+            "value": 4
+          },
+          {
+            "name": "dual_moderate",
+            "value": 8
+          },
+          {
+            "name": "spare_1",
+            "value": 16
+          },
+          {
+            "name": "spare_2",
+            "value": 32
+          },
+          {
+            "name": "spare_3",
+            "value": 64
+          },
+          {
+            "name": "spare_4",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "cloud_io",
+        "samples": [
+          {
+            "name": "visible",
+            "value": 1
+          },
+          {
+            "name": "1_37_threshold",
+            "value": 2
+          },
+          {
+            "name": "1_6_small_histogram",
+            "value": 4
+          },
+          {
+            "name": "1_6_large_histogram",
+            "value": 8
+          },
+          {
+            "name": "2_25_small_histogram",
+            "value": 16
+          },
+          {
+            "name": "2_25_large_histogram",
+            "value": 32
+          },
+          {
+            "name": "11_spatial_coherence",
+            "value": 64
+          },
+          {
+            "name": "gross_cloud",
+            "value": 128
+          },
+          {
+            "name": "thin_cirrus",
+            "value": 256
+          },
+          {
+            "name": "medium_high",
+            "value": 512
+          },
+          {
+            "name": "fog_low_stratus",
+            "value": 1024
+          },
+          {
+            "name": "11_12_view_difference",
+            "value": 2048
+          },
+          {
+            "name": "3_7_11_view_difference",
+            "value": 4096
+          },
+          {
+            "name": "thermal_histogram",
+            "value": 8192
+          },
+          {
+            "name": "spare_1",
+            "value": 16384
+          },
+          {
+            "name": "spare_2",
+            "value": 32768
+          }
+        ]
+      },
+      {
+        "name": "confidence_io",
+        "samples": [
+          {
+            "name": "coastline",
+            "value": 1
+          },
+          {
+            "name": "ocean",
+            "value": 2
+          },
+          {
+            "name": "tidal",
+            "value": 4
+          },
+          {
+            "name": "land",
+            "value": 8
+          },
+          {
+            "name": "inland_water",
+            "value": 16
+          },
+          {
+            "name": "unfilled",
+            "value": 32
+          },
+          {
+            "name": "spare_1",
+            "value": 64
+          },
+          {
+            "name": "spare_2",
+            "value": 128
+          },
+          {
+            "name": "cosmetic",
+            "value": 256
+          },
+          {
+            "name": "duplicate",
+            "value": 512
+          },
+          {
+            "name": "day",
+            "value": 1024
+          },
+          {
+            "name": "twilight",
+            "value": 2048
+          },
+          {
+            "name": "sun_glint",
+            "value": 4096
+          },
+          {
+            "name": "snow",
+            "value": 8192
+          },
+          {
+            "name": "summary_cloud",
+            "value": 16384
+          },
+          {
+            "name": "summary_pointing",
+            "value": 32768
+          }
+        ]
+      },
+      {
+        "name": "pointing_io",
+        "samples": [
+          {
+            "name": "FlipMirrorAbsoluteError",
+            "value": 1
+          },
+          {
+            "name": "FlipMirrorIntegratedError",
+            "value": 2
+          },
+          {
+            "name": "FlipMirrorRMSError",
+            "value": 4
+          },
+          {
+            "name": "ScanMirrorAbsoluteError",
+            "value": 8
+          },
+          {
+            "name": "ScanMirrorIntegratedError",
+            "value": 16
+          },
+          {
+            "name": "ScanMirrorRMSError",
+            "value": 32
+          },
+          {
+            "name": "ScanTimeError",
+            "value": 64
+          },
+          {
+            "name": "Platform_Mode",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "S7_exception_in",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "S7_exception_io",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "S8_exception_in",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "S8_exception_io",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "S9_exception_in",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      },
+      {
+        "name": "S9_exception_io",
+        "samples": [
+          {
+            "name": "ISP_absent",
+            "value": 1
+          },
+          {
+            "name": "pixel_absent",
+            "value": 2
+          },
+          {
+            "name": "not_decompressed",
+            "value": 4
+          },
+          {
+            "name": "no_signal",
+            "value": 8
+          },
+          {
+            "name": "saturation",
+            "value": 16
+          },
+          {
+            "name": "invalid_radiance",
+            "value": 32
+          },
+          {
+            "name": "no_parameters",
+            "value": 64
+          },
+          {
+            "name": "unfilled_pixel",
+            "value": 128
+          }
+        ]
+      }
+    ],
+    "tiePointGrids": [
+      {
+        "name": "x_tx",
+        "description": "Geolocated x (across track) coordinate of detector FOV centre",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 78,
+            "y": 213,
+            "value": 919500.0
+          },
+          {
+            "x": 1027,
+            "y": 1020,
+            "value": -29500.0
+          }
+        ]
+      },
+      {
+        "name": "y_tx",
+        "description": "Geolocated y (along track) coordinate of detector FOV centre",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 436,
+            "y": 308,
+            "value": 1.7195464E7
+          },
+          {
+            "x": 915,
+            "y": 438,
+            "value": 1.7326036E7
+          }
+        ]
+      },
+      {
+        "name": "latitude_tx",
+        "description": "Latitude of detector FOV centre on the earth's surface",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 825,
+            "y": 894,
+            "value": 22.254871
+          },
+          {
+            "x": 912,
+            "y": 1114,
+            "value": 20.138824
+          }
+        ]
+      },
+      {
+        "name": "longitude_tx",
+        "description": "Longitude of detector FOV centre on the earth's surface",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 237,
+            "y": 799,
+            "value": 87.41516
+          },
+          {
+            "x": 778,
+            "y": 1096,
+            "value": 92.01249
+          }
+        ]
+      },
+      {
+        "name": "sat_azimuth_tn",
+        "description": "Satellite azimuth angle",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1134,
+            "y": 581,
+            "value": 309.59888
+          },
+          {
+            "x": 1426,
+            "y": 583,
+            "value": 281.10385
+          }
+        ]
+      },
+      {
+        "name": "sat_path_tn",
+        "description": "Distance from satellite to surface",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 510,
+            "y": 1079,
+            "value": 0.0
+          },
+          {
+            "x": 14,
+            "y": 564,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "sat_zenith_tn",
+        "description": "Satellite zenith angle",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 491,
+            "y": 236,
+            "value": 36.316998
+          },
+          {
+            "x": 409,
+            "y": 51,
+            "value": 41.110374
+          }
+        ]
+      },
+      {
+        "name": "solar_azimuth_tn",
+        "description": "Solar azimuth angle",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1457,
+            "y": 725,
+            "value": 102.3627
+          },
+          {
+            "x": 858,
+            "y": 860,
+            "value": 98.314766
+          }
+        ]
+      },
+      {
+        "name": "solar_path_tn",
+        "description": "Distance from sun to surface",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 347,
+            "y": 597,
+            "value": 1.51679582E11
+          },
+          {
+            "x": 481,
+            "y": 867,
+            "value": 1.51679582E11
+          }
+        ]
+      },
+      {
+        "name": "solar_zenith_tn",
+        "description": "Solar zenith angle",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 537,
+            "y": 597,
+            "value": 31.21698
+          },
+          {
+            "x": 604,
+            "y": 530,
+            "value": 30.677826
+          }
+        ]
+      },
+      {
+        "name": "sat_azimuth_to",
+        "description": "Satellite azimuth angle",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 862,
+            "y": 110,
+            "value": 184.50497
+          },
+          {
+            "x": 967,
+            "y": 19,
+            "value": 191.55576
+          }
+        ]
+      },
+      {
+        "name": "sat_path_to",
+        "description": "Distance from satellite to surface",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1462,
+            "y": 440,
+            "value": 0.0
+          },
+          {
+            "x": 1425,
+            "y": 1135,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "sat_zenith_to",
+        "description": "Satellite zenith angle",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 166,
+            "y": 542,
+            "value": "NaN"
+          },
+          {
+            "x": 856,
+            "y": 674,
+            "value": 54.924435
+          }
+        ]
+      },
+      {
+        "name": "solar_azimuth_to",
+        "description": "Solar azimuth angle",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 758,
+            "y": 625,
+            "value": 102.34069
+          },
+          {
+            "x": 676,
+            "y": 697,
+            "value": 100.94282
+          }
+        ]
+      },
+      {
+        "name": "solar_path_to",
+        "description": "Distance from sun to surface",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 21,
+            "y": 509,
+            "value": "NaN"
+          },
+          {
+            "x": 105,
+            "y": 1191,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "solar_zenith_to",
+        "description": "Solar zenith angle",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 445,
+            "y": 894,
+            "value": "NaN"
+          },
+          {
+            "x": 1205,
+            "y": 883,
+            "value": 24.670961
+          }
+        ]
+      },
+      {
+        "name": "cloud_fraction_tx",
+        "description": "Fractional cloud cover (500 m)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1251,
+            "y": 1134,
+            "value": 0.83698803
+          },
+          {
+            "x": 372,
+            "y": 638,
+            "value": 0.92920566
+          }
+        ]
+      },
+      {
+        "name": "dew_point_tx",
+        "description": "2m dew point",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 916,
+            "y": 312,
+            "value": 299.53784
+          },
+          {
+            "x": 829,
+            "y": 181,
+            "value": 288.93793
+          }
+        ]
+      },
+      {
+        "name": "east_west_stress_tx_time_1_tx",
+        "description": "East-west integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 713,
+            "y": 670,
+            "value": -1092.2151
+          },
+          {
+            "x": 143,
+            "y": 1019,
+            "value": -21390.9
+          }
+        ]
+      },
+      {
+        "name": "east_west_stress_tx_time_2_tx",
+        "description": "East-west integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 144,
+            "y": 93,
+            "value": 433.61447
+          },
+          {
+            "x": 682,
+            "y": 811,
+            "value": -348.99057
+          }
+        ]
+      },
+      {
+        "name": "east_west_stress_tx_time_3_tx",
+        "description": "East-west integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 697,
+            "y": 1074,
+            "value": 204.73448
+          },
+          {
+            "x": 1301,
+            "y": 720,
+            "value": 187.78607
+          }
+        ]
+      },
+      {
+        "name": "east_west_stress_tx_time_4_tx",
+        "description": "East-west integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1443,
+            "y": 457,
+            "value": -3290.1992
+          },
+          {
+            "x": 131,
+            "y": 639,
+            "value": -5305.1655
+          }
+        ]
+      },
+      {
+        "name": "east_west_stress_tx_time_5_tx",
+        "description": "East-west integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1103,
+            "y": 713,
+            "value": 608.6047
+          },
+          {
+            "x": 1464,
+            "y": 223,
+            "value": -3351.8862
+          }
+        ]
+      },
+      {
+        "name": "latent_heat_tx_time_1_tx",
+        "description": "Integrated surface latent heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 690,
+            "y": 313,
+            "value": "NaN"
+          },
+          {
+            "x": 343,
+            "y": 777,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "latent_heat_tx_time_2_tx",
+        "description": "Integrated surface latent heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 959,
+            "y": 525,
+            "value": "NaN"
+          },
+          {
+            "x": 797,
+            "y": 680,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "latent_heat_tx_time_3_tx",
+        "description": "Integrated surface latent heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 593,
+            "y": 256,
+            "value": "NaN"
+          },
+          {
+            "x": 418,
+            "y": 1066,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "latent_heat_tx_time_4_tx",
+        "description": "Integrated surface latent heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1418,
+            "y": 695,
+            "value": "NaN"
+          },
+          {
+            "x": 1137,
+            "y": 393,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "latent_heat_tx_time_5_tx",
+        "description": "Integrated surface latent heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 840,
+            "y": 349,
+            "value": "NaN"
+          },
+          {
+            "x": 1243,
+            "y": 1044,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "north_south_stress_tx_time_1_tx",
+        "description": "North-south integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 162,
+            "y": 1064,
+            "value": 18606.191
+          },
+          {
+            "x": 515,
+            "y": 976,
+            "value": 16550.4
+          }
+        ]
+      },
+      {
+        "name": "north_south_stress_tx_time_2_tx",
+        "description": "North-south integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 273,
+            "y": 830,
+            "value": 1934.1257
+          },
+          {
+            "x": 888,
+            "y": 658,
+            "value": 174.5954
+          }
+        ]
+      },
+      {
+        "name": "north_south_stress_tx_time_3_tx",
+        "description": "North-south integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 308,
+            "y": 367,
+            "value": 77.08964
+          },
+          {
+            "x": 615,
+            "y": 1036,
+            "value": 2925.0173
+          }
+        ]
+      },
+      {
+        "name": "north_south_stress_tx_time_4_tx",
+        "description": "North-south integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1052,
+            "y": 1077,
+            "value": 2648.4346
+          },
+          {
+            "x": 446,
+            "y": 1191,
+            "value": 1225.3164
+          }
+        ]
+      },
+      {
+        "name": "north_south_stress_tx_time_5_tx",
+        "description": "North-south integrated surface wind stress",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 820,
+            "y": 140,
+            "value": 6041.479
+          },
+          {
+            "x": 292,
+            "y": 673,
+            "value": 4900.0527
+          }
+        ]
+      },
+      {
+        "name": "sea_ice_fraction_tx",
+        "description": "Sea ice fraction",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 687,
+            "y": 154,
+            "value": "NaN"
+          },
+          {
+            "x": 1243,
+            "y": 687,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "sea_surface_temperature_tx",
+        "description": "Sea surface temperature",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 153,
+            "y": 811,
+            "value": "NaN"
+          },
+          {
+            "x": 1096,
+            "y": 566,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "sensible_heat_tx_time_1_tx",
+        "description": "Integrated surface sensible heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 214,
+            "y": 79,
+            "value": -3502194.0
+          },
+          {
+            "x": 1262,
+            "y": 359,
+            "value": -1546628.9
+          }
+        ]
+      },
+      {
+        "name": "sensible_heat_tx_time_2_tx",
+        "description": "Integrated surface sensible heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 888,
+            "y": 1166,
+            "value": -57885.74
+          },
+          {
+            "x": 1166,
+            "y": 32,
+            "value": 5515.536
+          }
+        ]
+      },
+      {
+        "name": "sensible_heat_tx_time_3_tx",
+        "description": "Integrated surface sensible heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 325,
+            "y": 295,
+            "value": -32678.271
+          },
+          {
+            "x": 479,
+            "y": 232,
+            "value": -224544.61
+          }
+        ]
+      },
+      {
+        "name": "sensible_heat_tx_time_4_tx",
+        "description": "Integrated surface sensible heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 423,
+            "y": 1059,
+            "value": -200327.78
+          },
+          {
+            "x": 1496,
+            "y": 90,
+            "value": -2345224.2
+          }
+        ]
+      },
+      {
+        "name": "sensible_heat_tx_time_5_tx",
+        "description": "Integrated surface sensible heat flux",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1228,
+            "y": 602,
+            "value": -2127033.2
+          },
+          {
+            "x": 94,
+            "y": 462,
+            "value": -2203506.8
+          }
+        ]
+      },
+      {
+        "name": "skin_temperature_tx",
+        "description": "Skin temperature",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 416,
+            "y": 698,
+            "value": 308.16702
+          },
+          {
+            "x": 1392,
+            "y": 166,
+            "value": 297.46518
+          }
+        ]
+      },
+      {
+        "name": "snow_albedo_tx",
+        "description": "Snow albedo",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 156,
+            "y": 174,
+            "value": 0.70233923
+          },
+          {
+            "x": 1325,
+            "y": 127,
+            "value": 0.879375
+          }
+        ]
+      },
+      {
+        "name": "snow_depth_tx",
+        "description": "Snow liquid water equivalent depth",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 555,
+            "y": 1057,
+            "value": 0.0
+          },
+          {
+            "x": 877,
+            "y": 690,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "soil_wetness_tx",
+        "description": "Volumetric Soil Water Layer 1",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 506,
+            "y": 391,
+            "value": 0.42497137
+          },
+          {
+            "x": 560,
+            "y": 1027,
+            "value": -3.3326447E-5
+          }
+        ]
+      },
+      {
+        "name": "solar_radiation_tx_time_1_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 488,
+            "y": 821,
+            "value": 1.74931E7
+          },
+          {
+            "x": 965,
+            "y": 810,
+            "value": 1.5356715E7
+          }
+        ]
+      },
+      {
+        "name": "solar_radiation_tx_time_2_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 795,
+            "y": 156,
+            "value": 21531.176
+          },
+          {
+            "x": 695,
+            "y": 960,
+            "value": 23316.982
+          }
+        ]
+      },
+      {
+        "name": "solar_radiation_tx_time_3_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1203,
+            "y": 1082,
+            "value": 36558.52
+          },
+          {
+            "x": 38,
+            "y": 838,
+            "value": 95977.43
+          }
+        ]
+      },
+      {
+        "name": "solar_radiation_tx_time_4_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1333,
+            "y": 691,
+            "value": 4387242.5
+          },
+          {
+            "x": 956,
+            "y": 1089,
+            "value": 7473559.0
+          }
+        ]
+      },
+      {
+        "name": "solar_radiation_tx_time_5_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1473,
+            "y": 387,
+            "value": 1.4754394E7
+          },
+          {
+            "x": 538,
+            "y": 6,
+            "value": 1.5955393E7
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_1_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1259,
+            "y": 682,
+            "value": 3.6145689E-6
+          },
+          {
+            "x": 885,
+            "y": 477,
+            "value": 3.6456063E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_2_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 591,
+            "y": 1186,
+            "value": 3.382181E-6
+          },
+          {
+            "x": 344,
+            "y": 860,
+            "value": 3.3691742E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_3_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1408,
+            "y": 346,
+            "value": 3.3192646E-6
+          },
+          {
+            "x": 471,
+            "y": 1022,
+            "value": 3.2958503E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_4_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 491,
+            "y": 634,
+            "value": 3.1374182E-6
+          },
+          {
+            "x": 537,
+            "y": 959,
+            "value": 3.148792E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_5_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 840,
+            "y": 261,
+            "value": 3.0682693E-6
+          },
+          {
+            "x": 142,
+            "y": 845,
+            "value": 3.0668455E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_6_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1053,
+            "y": 954,
+            "value": 2.990926E-6
+          },
+          {
+            "x": 1266,
+            "y": 81,
+            "value": 3.039087E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_7_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1254,
+            "y": 272,
+            "value": 2.9162236E-6
+          },
+          {
+            "x": 978,
+            "y": 1116,
+            "value": 2.8671282E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_8_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 402,
+            "y": 1033,
+            "value": 2.7997246E-6
+          },
+          {
+            "x": 579,
+            "y": 445,
+            "value": 2.86003E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_9_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1457,
+            "y": 816,
+            "value": 2.8177785E-6
+          },
+          {
+            "x": 1087,
+            "y": 513,
+            "value": 2.8311424E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_10_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 748,
+            "y": 166,
+            "value": 3.066197E-6
+          },
+          {
+            "x": 1453,
+            "y": 163,
+            "value": 3.1944687E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_11_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1081,
+            "y": 667,
+            "value": 5.236487E-6
+          },
+          {
+            "x": 1058,
+            "y": 1187,
+            "value": 2.255841E-6
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_12_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 961,
+            "y": 1087,
+            "value": 9.303999E-6
+          },
+          {
+            "x": 1252,
+            "y": 637,
+            "value": 2.4048191E-5
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_13_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 749,
+            "y": 1115,
+            "value": 3.2506112E-5
+          },
+          {
+            "x": 858,
+            "y": 926,
+            "value": 1.0316336E-4
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_14_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1394,
+            "y": 47,
+            "value": 1.822054E-4
+          },
+          {
+            "x": 1056,
+            "y": 867,
+            "value": 1.7731528E-4
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_15_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 520,
+            "y": 8,
+            "value": 9.033866E-4
+          },
+          {
+            "x": 324,
+            "y": 1032,
+            "value": 5.903191E-4
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_16_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 188,
+            "y": 121,
+            "value": 0.0024656423
+          },
+          {
+            "x": 129,
+            "y": 137,
+            "value": 0.0026900978
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_17_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1044,
+            "y": 83,
+            "value": 0.005836956
+          },
+          {
+            "x": 721,
+            "y": 1041,
+            "value": 0.0039826124
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_18_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 251,
+            "y": 283,
+            "value": 0.008617985
+          },
+          {
+            "x": 376,
+            "y": 1165,
+            "value": 0.006025873
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_19_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1073,
+            "y": 407,
+            "value": 0.01065934
+          },
+          {
+            "x": 966,
+            "y": 612,
+            "value": 0.010511578
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_20_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1360,
+            "y": 610,
+            "value": 0.014586182
+          },
+          {
+            "x": 1291,
+            "y": 670,
+            "value": 0.013114098
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_21_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1200,
+            "y": 913,
+            "value": 0.014037463
+          },
+          {
+            "x": 1252,
+            "y": 883,
+            "value": 0.014427948
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_22_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 943,
+            "y": 511,
+            "value": 0.016754886
+          },
+          {
+            "x": 810,
+            "y": 915,
+            "value": 0.016142491
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_23_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 950,
+            "y": 182,
+            "value": 0.016798185
+          },
+          {
+            "x": 1323,
+            "y": 377,
+            "value": 0.013229864
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_24_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 410,
+            "y": 461,
+            "value": 0.016606947
+          },
+          {
+            "x": 1023,
+            "y": 223,
+            "value": 0.017875519
+          }
+        ]
+      },
+      {
+        "name": "specific_humidity_tx_pressure_level_25_tx",
+        "description": "Specific humidity profile (kg/kg)",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 218,
+            "y": 1184,
+            "value": 0.020302951
+          },
+          {
+            "x": 589,
+            "y": 904,
+            "value": 0.019412054
+          }
+        ]
+      },
+      {
+        "name": "surface_pressure_tx",
+        "description": "Surface pressure",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 105,
+            "y": 836,
+            "value": 965.8356
+          },
+          {
+            "x": 911,
+            "y": 1035,
+            "value": 963.7379
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_1_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 879,
+            "y": 398,
+            "value": 257.7605
+          },
+          {
+            "x": 655,
+            "y": 20,
+            "value": 261.55093
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_2_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 901,
+            "y": 801,
+            "value": 251.70589
+          },
+          {
+            "x": 1177,
+            "y": 107,
+            "value": 251.99278
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_3_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1350,
+            "y": 99,
+            "value": 255.0935
+          },
+          {
+            "x": 115,
+            "y": 988,
+            "value": 250.13531
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_4_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 191,
+            "y": 1096,
+            "value": 239.73825
+          },
+          {
+            "x": 290,
+            "y": 386,
+            "value": 235.9005
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_5_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 817,
+            "y": 856,
+            "value": 227.5497
+          },
+          {
+            "x": 176,
+            "y": 261,
+            "value": 233.0202
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_6_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 613,
+            "y": 903,
+            "value": 225.60124
+          },
+          {
+            "x": 121,
+            "y": 897,
+            "value": 228.2975
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_7_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1376,
+            "y": 255,
+            "value": 219.2729
+          },
+          {
+            "x": 1320,
+            "y": 843,
+            "value": 215.48213
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_8_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 181,
+            "y": 32,
+            "value": 216.33324
+          },
+          {
+            "x": 427,
+            "y": 1102,
+            "value": 213.67213
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_9_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 897,
+            "y": 868,
+            "value": 209.31602
+          },
+          {
+            "x": 764,
+            "y": 567,
+            "value": 209.93413
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_10_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 638,
+            "y": 183,
+            "value": 201.63882
+          },
+          {
+            "x": 38,
+            "y": 953,
+            "value": 202.63965
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_11_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1011,
+            "y": 848,
+            "value": 194.80527
+          },
+          {
+            "x": 442,
+            "y": 236,
+            "value": 198.60208
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_12_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 285,
+            "y": 671,
+            "value": 208.5052
+          },
+          {
+            "x": 863,
+            "y": 779,
+            "value": 208.33034
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_13_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 787,
+            "y": 102,
+            "value": 224.76547
+          },
+          {
+            "x": 1165,
+            "y": 393,
+            "value": 223.86525
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_14_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1304,
+            "y": 1104,
+            "value": 236.26505
+          },
+          {
+            "x": 713,
+            "y": 661,
+            "value": 236.35368
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_15_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 861,
+            "y": 1138,
+            "value": 246.21736
+          },
+          {
+            "x": 1394,
+            "y": 224,
+            "value": 247.07913
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_16_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 102,
+            "y": 887,
+            "value": 261.61026
+          },
+          {
+            "x": 98,
+            "y": 651,
+            "value": 261.82062
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_17_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1039,
+            "y": 1036,
+            "value": 270.85077
+          },
+          {
+            "x": 853,
+            "y": 1054,
+            "value": 270.049
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_18_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 548,
+            "y": 1125,
+            "value": 278.97562
+          },
+          {
+            "x": 1346,
+            "y": 295,
+            "value": 279.18686
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_19_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 158,
+            "y": 872,
+            "value": 285.85257
+          },
+          {
+            "x": 329,
+            "y": 816,
+            "value": 285.62927
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_20_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 109,
+            "y": 47,
+            "value": 291.12793
+          },
+          {
+            "x": 410,
+            "y": 374,
+            "value": 292.41336
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_21_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1376,
+            "y": 506,
+            "value": 295.9637
+          },
+          {
+            "x": 117,
+            "y": 821,
+            "value": 293.09897
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_22_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 312,
+            "y": 537,
+            "value": 296.07336
+          },
+          {
+            "x": 771,
+            "y": 63,
+            "value": 295.01837
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_23_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 916,
+            "y": 276,
+            "value": 297.3024
+          },
+          {
+            "x": 594,
+            "y": 426,
+            "value": 297.23547
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_24_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 185,
+            "y": 113,
+            "value": 296.36063
+          },
+          {
+            "x": 1174,
+            "y": 750,
+            "value": 298.95956
+          }
+        ]
+      },
+      {
+        "name": "temperature_profile_tx_pressure_level_25_tx",
+        "description": "Atmospheric temperature profile",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 224,
+            "y": 79,
+            "value": 297.902
+          },
+          {
+            "x": 782,
+            "y": 143,
+            "value": 297.74286
+          }
+        ]
+      },
+      {
+        "name": "temperature_tx",
+        "description": "2m air temperature",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1353,
+            "y": 501,
+            "value": 295.6983
+          },
+          {
+            "x": 368,
+            "y": 405,
+            "value": 289.31528
+          }
+        ]
+      },
+      {
+        "name": "thermal_radiation_tx_time_1_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1019,
+            "y": 147,
+            "value": -1697751.9
+          },
+          {
+            "x": 182,
+            "y": 361,
+            "value": -4243993.5
+          }
+        ]
+      },
+      {
+        "name": "thermal_radiation_tx_time_2_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1279,
+            "y": 290,
+            "value": -433329.66
+          },
+          {
+            "x": 148,
+            "y": 1,
+            "value": -1115918.9
+          }
+        ]
+      },
+      {
+        "name": "thermal_radiation_tx_time_3_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 187,
+            "y": 548,
+            "value": -916959.2
+          },
+          {
+            "x": 882,
+            "y": 585,
+            "value": -945754.44
+          }
+        ]
+      },
+      {
+        "name": "thermal_radiation_tx_time_4_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 259,
+            "y": 754,
+            "value": -957353.8
+          },
+          {
+            "x": 802,
+            "y": 928,
+            "value": -824547.3
+          }
+        ]
+      },
+      {
+        "name": "thermal_radiation_tx_time_5_tx",
+        "description": "Integrated surface solar radiation",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 602,
+            "y": 422,
+            "value": -1594579.5
+          },
+          {
+            "x": 666,
+            "y": 1089,
+            "value": -1657582.0
+          }
+        ]
+      },
+      {
+        "name": "total_column_ozone_tx",
+        "description": "Total column ozone",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 190,
+            "y": 213,
+            "value": 0.0058500953
+          },
+          {
+            "x": 42,
+            "y": 723,
+            "value": 0.0061962735
+          }
+        ]
+      },
+      {
+        "name": "total_column_water_vapour_tx",
+        "description": "Total column water vapour",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 535,
+            "y": 71,
+            "value": 13.508217
+          },
+          {
+            "x": 962,
+            "y": 594,
+            "value": 64.913315
+          }
+        ]
+      },
+      {
+        "name": "u_wind_tx_time_1_tx",
+        "description": "10m U wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1335,
+            "y": 696,
+            "value": 0.15537237
+          },
+          {
+            "x": 612,
+            "y": 239,
+            "value": -0.35756275
+          }
+        ]
+      },
+      {
+        "name": "u_wind_tx_time_2_tx",
+        "description": "10m U wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 7,
+            "y": 768,
+            "value": -3.455844
+          },
+          {
+            "x": 2,
+            "y": 147,
+            "value": 0.12020994
+          }
+        ]
+      },
+      {
+        "name": "u_wind_tx_time_3_tx",
+        "description": "10m U wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 821,
+            "y": 541,
+            "value": -0.37312394
+          },
+          {
+            "x": 111,
+            "y": 551,
+            "value": -3.3142884
+          }
+        ]
+      },
+      {
+        "name": "u_wind_tx_time_4_tx",
+        "description": "10m U wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 153,
+            "y": 252,
+            "value": 0.76556665
+          },
+          {
+            "x": 1052,
+            "y": 1078,
+            "value": 0.037061963
+          }
+        ]
+      },
+      {
+        "name": "u_wind_tx_time_5_tx",
+        "description": "10m U wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 899,
+            "y": 697,
+            "value": 0.69246525
+          },
+          {
+            "x": 555,
+            "y": 465,
+            "value": 1.815291
+          }
+        ]
+      },
+      {
+        "name": "v_wind_tx_time_1_tx",
+        "description": "10m V wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 922,
+            "y": 983,
+            "value": -0.07859911
+          },
+          {
+            "x": 912,
+            "y": 622,
+            "value": 0.610179
+          }
+        ]
+      },
+      {
+        "name": "v_wind_tx_time_2_tx",
+        "description": "10m V wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 1113,
+            "y": 972,
+            "value": 4.531209
+          },
+          {
+            "x": 817,
+            "y": 1044,
+            "value": 0.7340998
+          }
+        ]
+      },
+      {
+        "name": "v_wind_tx_time_3_tx",
+        "description": "10m V wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 254,
+            "y": 697,
+            "value": 0.6401621
+          },
+          {
+            "x": 747,
+            "y": 505,
+            "value": 0.41249943
+          }
+        ]
+      },
+      {
+        "name": "v_wind_tx_time_4_tx",
+        "description": "10m V wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 887,
+            "y": 774,
+            "value": -0.39325705
+          },
+          {
+            "x": 1474,
+            "y": 114,
+            "value": 1.5127966
+          }
+        ]
+      },
+      {
+        "name": "v_wind_tx_time_5_tx",
+        "description": "10m V wind component",
+        "offsetX": "-26.0",
+        "offsetY": "0.0",
+        "subSamplingX": "16.0",
+        "subSamplingY": "1.0",
+        "expectedPixels": [
+          {
+            "x": 226,
+            "y": 523,
+            "value": 0.18612787
+          },
+          {
+            "x": 985,
+            "y": 1061,
+            "value": 1.29121
+          }
+        ]
+      }
+    ],
+    "bands": [
+      {
+        "name": "x_in",
+        "description": "Geolocated x (across track) coordinate of detector FOV centre (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "m",
+        "noDataValue": "-1000000.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 776,
+            "y": 729,
+            "value": 221638.0
+          },
+          {
+            "x": 549,
+            "y": 23,
+            "value": 444755.0
+          }
+        ]
+      },
+      {
+        "name": "y_in",
+        "description": "Geolocated y (along track) coordinate of detector FOV centre (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "m",
+        "noDataValue": "-5000000.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1069,
+            "y": 115,
+            "value": 1.700088E7
+          },
+          {
+            "x": 201,
+            "y": 319,
+            "value": 1.7208352E7
+          }
+        ]
+      },
+      {
+        "name": "x_io",
+        "description": "Geolocated x (across track) coordinate of detector FOV centre (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "m",
+        "noDataValue": "-1000000.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1074,
+            "y": 53,
+            "value": -75436.0
+          },
+          {
+            "x": 321,
+            "y": 69,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "y_io",
+        "description": "Geolocated y (along track) coordinate of detector FOV centre (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "m",
+        "noDataValue": "-5000000.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 906,
+            "y": 379,
+            "value": 1.7267272E7
+          },
+          {
+            "x": 1478,
+            "y": 370,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "F1_BT_in",
+        "description": "Gridded pixel brightness temperature for channel F1(1km TIR grid, nadir view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "3742.0",
+        "spectralBandwidth": "398.0",
+        "expectedPixels": [
+          {
+            "x": 286,
+            "y": 944,
+            "value": 297.04
+          },
+          {
+            "x": 1225,
+            "y": 83,
+            "value": 290.14
+          }
+        ]
+      },
+      {
+        "name": "F1_exception_in",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "3742.0",
+        "spectralBandwidth": "398.0",
+        "expectedPixels": [
+          {
+            "x": 561,
+            "y": 740,
+            "value": 0.0
+          },
+          {
+            "x": 199,
+            "y": 966,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "F1_BT_io",
+        "description": "Gridded pixel brightness temperature for channel F1 (1km TIR grid, oblique view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "3742.0",
+        "spectralBandwidth": "398.0",
+        "expectedPixels": [
+          {
+            "x": 554,
+            "y": 775,
+            "value": "NaN"
+          },
+          {
+            "x": 1382,
+            "y": 976,
+            "value": 257.08
+          }
+        ]
+      },
+      {
+        "name": "F1_exception_io",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "3742.0",
+        "spectralBandwidth": "398.0",
+        "expectedPixels": [
+          {
+            "x": 317,
+            "y": 1191,
+            "value": 255.0
+          },
+          {
+            "x": 182,
+            "y": 1122,
+            "value": 255.0
+          }
+        ]
+      },
+      {
+        "name": "F2_BT_in",
+        "description": "Gridded pixel brightness temperature for channel F2 (1km TIR grid, nadir view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "10854.0",
+        "spectralBandwidth": "776.0",
+        "expectedPixels": [
+          {
+            "x": 985,
+            "y": 184,
+            "value": 268.19
+          },
+          {
+            "x": 978,
+            "y": 303,
+            "value": 291.16
+          }
+        ]
+      },
+      {
+        "name": "F2_exception_in",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "10854.0",
+        "spectralBandwidth": "776.0",
+        "expectedPixels": [
+          {
+            "x": 632,
+            "y": 1101,
+            "value": 0.0
+          },
+          {
+            "x": 1373,
+            "y": 339,
+            "value": 2.0
+          }
+        ]
+      },
+      {
+        "name": "F2_BT_io",
+        "description": "Gridded pixel brightness temperature for channel F2 (1km TIR grid, oblique view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "10854.0",
+        "spectralBandwidth": "776.0",
+        "expectedPixels": [
+          {
+            "x": 531,
+            "y": 459,
+            "value": "NaN"
+          },
+          {
+            "x": 83,
+            "y": 603,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "F2_exception_io",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "10854.0",
+        "spectralBandwidth": "776.0",
+        "expectedPixels": [
+          {
+            "x": 402,
+            "y": 233,
+            "value": 255.0
+          },
+          {
+            "x": 91,
+            "y": 1052,
+            "value": 255.0
+          }
+        ]
+      },
+      {
+        "name": "bayes_in",
+        "description": "(1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 35,
+            "y": 1140,
+            "value": 0.0
+          },
+          {
+            "x": 524,
+            "y": 875,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "cloud_in",
+        "description": "(1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1114,
+            "y": 942,
+            "value": 129.0
+          },
+          {
+            "x": 1486,
+            "y": 725,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "confidence_in",
+        "description": "(1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 821,
+            "y": 578,
+            "value": 17416.0
+          },
+          {
+            "x": 649,
+            "y": 49,
+            "value": 1288.0
+          }
+        ]
+      },
+      {
+        "name": "pointing_in",
+        "description": "(1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 888,
+            "y": 966,
+            "value": 0.0
+          },
+          {
+            "x": 1494,
+            "y": 1169,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "probability_cloud_dual_in",
+        "description": "Probability of cloud in pixel (dual view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "-163.34",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1296,
+            "y": 1146,
+            "value": "NaN"
+          },
+          {
+            "x": 656,
+            "y": 281,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "probability_cloud_single_in",
+        "description": "Probability of cloud in pixel (single view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "-163.34",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1260,
+            "y": 315,
+            "value": "NaN"
+          },
+          {
+            "x": 577,
+            "y": 673,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "bayes_io",
+        "description": "(1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 861,
+            "y": 364,
+            "value": 2.0
+          },
+          {
+            "x": 272,
+            "y": 367,
+            "value": 255.0
+          }
+        ]
+      },
+      {
+        "name": "cloud_io",
+        "description": "(1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1330,
+            "y": 1177,
+            "value": 384.0
+          },
+          {
+            "x": 982,
+            "y": 444,
+            "value": 1.0
+          }
+        ]
+      },
+      {
+        "name": "confidence_io",
+        "description": "(1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 630,
+            "y": 714,
+            "value": 17672.0
+          },
+          {
+            "x": 211,
+            "y": 933,
+            "value": 65535.0
+          }
+        ]
+      },
+      {
+        "name": "pointing_io",
+        "description": "(1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 288,
+            "y": 438,
+            "value": 255.0
+          },
+          {
+            "x": 163,
+            "y": 60,
+            "value": 255.0
+          }
+        ]
+      },
+      {
+        "name": "probability_cloud_dual_io",
+        "description": "Probability of cloud in pixel (dual view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "-163.34",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1383,
+            "y": 1102,
+            "value": "NaN"
+          },
+          {
+            "x": 305,
+            "y": 278,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "probability_cloud_single_io",
+        "description": "Probability of cloud in pixel (single view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "-163.34",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 772,
+            "y": 405,
+            "value": "NaN"
+          },
+          {
+            "x": 223,
+            "y": 110,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "elevation_in",
+        "description": "Surface elevation of detector FOV centre above reference ellipsoid (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "m",
+        "noDataValue": "-32768.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 454,
+            "y": 981,
+            "value": -52.0
+          },
+          {
+            "x": 1211,
+            "y": 1107,
+            "value": 81.0
+          }
+        ]
+      },
+      {
+        "name": "latitude_in",
+        "description": "Latitude of detector FOV centre on the earth's surface (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "degrees_north",
+        "noDataValue": "-2147.483648",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 931,
+            "y": 951,
+            "value": 21.54906
+          },
+          {
+            "x": 1035,
+            "y": 169,
+            "value": 28.242706
+          }
+        ]
+      },
+      {
+        "name": "longitude_in",
+        "description": "Longitude of detector FOV centre on the earth's surface (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "degrees_east",
+        "noDataValue": "-2147.483648",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 292,
+            "y": 924,
+            "value": 87.72578
+          },
+          {
+            "x": 368,
+            "y": 1157,
+            "value": 88.04085
+          }
+        ]
+      },
+      {
+        "name": "elevation_io",
+        "description": "Surface elevation of detector FOV centre above reference ellipsoid (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "m",
+        "noDataValue": "-32768.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 639,
+            "y": 484,
+            "value": 6.0
+          },
+          {
+            "x": 760,
+            "y": 138,
+            "value": 4438.0
+          }
+        ]
+      },
+      {
+        "name": "latitude_io",
+        "description": "Latitude of detector FOV centre on the earth's surface (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "degrees_north",
+        "noDataValue": "-2147.483648",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 795,
+            "y": 846,
+            "value": 22.73636
+          },
+          {
+            "x": 1263,
+            "y": 491,
+            "value": 24.91601
+          }
+        ]
+      },
+      {
+        "name": "longitude_io",
+        "description": "Longitude of detector FOV centre on the earth's surface (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "degrees_east",
+        "noDataValue": "-2147.483648",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 804,
+            "y": 561,
+            "value": 93.36205
+          },
+          {
+            "x": 82,
+            "y": 71,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "detector_in",
+        "description": "Gridded pixel detector number (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 658,
+            "y": 58,
+            "value": 0.0
+          },
+          {
+            "x": 658,
+            "y": 548,
+            "value": 1.0
+          }
+        ]
+      },
+      {
+        "name": "pixel_in",
+        "description": "Gridded pixel number (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 379,
+            "y": 892,
+            "value": 200.0
+          },
+          {
+            "x": 441,
+            "y": 725,
+            "value": 246.0
+          }
+        ]
+      },
+      {
+        "name": "scan_in",
+        "description": "Pixel scan number (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1417,
+            "y": 84,
+            "value": 8467.0
+          },
+          {
+            "x": 182,
+            "y": 175,
+            "value": 8647.0
+          }
+        ]
+      },
+      {
+        "name": "detector_io",
+        "description": "Gridded pixel detector number (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 289,
+            "y": 1106,
+            "value": "NaN"
+          },
+          {
+            "x": 445,
+            "y": 505,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "pixel_io",
+        "description": "Gridded pixel number (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1111,
+            "y": 757,
+            "value": 193.0
+          },
+          {
+            "x": 596,
+            "y": 202,
+            "value": 528.0
+          }
+        ]
+      },
+      {
+        "name": "scan_io",
+        "description": "Pixel scan number (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "65535.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1230,
+            "y": 528,
+            "value": 9124.0
+          },
+          {
+            "x": 1468,
+            "y": 351,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "S7_BT_in",
+        "description": "Gridded pixel brightness temperature for channel S7 (1km TIR grid, nadir view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "3742.0",
+        "spectralBandwidth": "398.0",
+        "expectedPixels": [
+          {
+            "x": 522,
+            "y": 626,
+            "value": 283.42
+          },
+          {
+            "x": 167,
+            "y": 991,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "S7_exception_in",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "3742.0",
+        "spectralBandwidth": "398.0",
+        "expectedPixels": [
+          {
+            "x": 502,
+            "y": 1025,
+            "value": 2.0
+          },
+          {
+            "x": 182,
+            "y": 372,
+            "value": 2.0
+          }
+        ]
+      },
+      {
+        "name": "S7_BT_io",
+        "description": "Gridded pixel brightness temperature for channel S7 (1km TIR grid, oblique view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "3742.0",
+        "spectralBandwidth": "398.0",
+        "expectedPixels": [
+          {
+            "x": 796,
+            "y": 850,
+            "value": 291.85
+          },
+          {
+            "x": 326,
+            "y": 894,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "S7_exception_io",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "3742.0",
+        "spectralBandwidth": "398.0",
+        "expectedPixels": [
+          {
+            "x": 873,
+            "y": 1035,
+            "value": 2.0
+          },
+          {
+            "x": 1437,
+            "y": 242,
+            "value": 128.0
+          }
+        ]
+      },
+      {
+        "name": "S8_BT_in",
+        "description": "Gridded pixel brightness temperature for channel S8 (1km TIR grid, nadir view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "10854.0",
+        "spectralBandwidth": "776.0",
+        "expectedPixels": [
+          {
+            "x": 1350,
+            "y": 887,
+            "value": 268.52
+          },
+          {
+            "x": 233,
+            "y": 853,
+            "value": 289.48
+          }
+        ]
+      },
+      {
+        "name": "S8_exception_in",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "10854.0",
+        "spectralBandwidth": "776.0",
+        "expectedPixels": [
+          {
+            "x": 1280,
+            "y": 477,
+            "value": 0.0
+          },
+          {
+            "x": 1490,
+            "y": 14,
+            "value": 128.0
+          }
+        ]
+      },
+      {
+        "name": "S8_BT_io",
+        "description": "Gridded pixel brightness temperature for channel S8 (1km TIR grid, oblique view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "10854.0",
+        "spectralBandwidth": "776.0",
+        "expectedPixels": [
+          {
+            "x": 438,
+            "y": 545,
+            "value": "NaN"
+          },
+          {
+            "x": 1485,
+            "y": 998,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "S8_exception_io",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "10854.0",
+        "spectralBandwidth": "776.0",
+        "expectedPixels": [
+          {
+            "x": 1087,
+            "y": 1061,
+            "value": 2.0
+          },
+          {
+            "x": 599,
+            "y": 203,
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "name": "S9_BT_in",
+        "description": "Gridded pixel brightness temperature for channel S9 (1km TIR grid, nadir view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "12022.5",
+        "spectralBandwidth": "905.0",
+        "expectedPixels": [
+          {
+            "x": 929,
+            "y": 1132,
+            "value": 282.57
+          },
+          {
+            "x": 995,
+            "y": 395,
+            "value": 275.81
+          }
+        ]
+      },
+      {
+        "name": "S9_exception_in",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "12022.5",
+        "spectralBandwidth": "905.0",
+        "expectedPixels": [
+          {
+            "x": 520,
+            "y": 1080,
+            "value": 2.0
+          },
+          {
+            "x": 415,
+            "y": 603,
+            "value": 2.0
+          }
+        ]
+      },
+      {
+        "name": "S9_BT_io",
+        "description": "Gridded pixel brightness temperature for channel S9 (1km TIR grid, oblique view) (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "geophysicalUnit": "K",
+        "noDataValue": "-43.94999999999999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "12022.5",
+        "spectralBandwidth": "905.0",
+        "expectedPixels": [
+          {
+            "x": 915,
+            "y": 427,
+            "value": 250.8
+          },
+          {
+            "x": 991,
+            "y": 501,
+            "value": 280.95
+          }
+        ]
+      },
+      {
+        "name": "S9_exception_io",
+        "description": "toa_brightness_temperature_status_flag (1 km)",
+        "bandWidth": 1500,
+        "bandHeight": 1200,
+        "noDataValue": "255.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "12022.5",
+        "spectralBandwidth": "905.0",
+        "expectedPixels": [
+          {
+            "x": 1438,
+            "y": 1184,
+            "value": 128.0
+          },
+          {
+            "x": 474,
+            "y": 1059,
+            "value": 255.0
+          }
+        ]
+      }
+    ],
+    "masks": [
+      {
+        "name": "F1_exception_in_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,255",
+        "description": "F1_exception_in.ISP_absent"
+      },
+      {
+        "name": "F1_exception_in_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,0",
+        "description": "F1_exception_in.pixel_absent"
+      },
+      {
+        "name": "F1_exception_in_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,255",
+        "description": "F1_exception_in.not_decompressed"
+      },
+      {
+        "name": "F1_exception_in_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,255",
+        "description": "F1_exception_in.no_signal"
+      },
+      {
+        "name": "F1_exception_in_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,0",
+        "description": "F1_exception_in.saturation"
+      },
+      {
+        "name": "F1_exception_in_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,127",
+        "description": "F1_exception_in.invalid_radiance"
+      },
+      {
+        "name": "F1_exception_in_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,0",
+        "description": "F1_exception_in.no_parameters"
+      },
+      {
+        "name": "F1_exception_in_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,127",
+        "description": "F1_exception_in.unfilled_pixel"
+      },
+      {
+        "name": "F1_exception_io_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,127",
+        "description": "F1_exception_io.ISP_absent"
+      },
+      {
+        "name": "F1_exception_io_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,0",
+        "description": "F1_exception_io.pixel_absent"
+      },
+      {
+        "name": "F1_exception_io_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,127",
+        "description": "F1_exception_io.not_decompressed"
+      },
+      {
+        "name": "F1_exception_io_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,255",
+        "description": "F1_exception_io.no_signal"
+      },
+      {
+        "name": "F1_exception_io_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,0",
+        "description": "F1_exception_io.saturation"
+      },
+      {
+        "name": "F1_exception_io_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,127",
+        "description": "F1_exception_io.invalid_radiance"
+      },
+      {
+        "name": "F1_exception_io_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,255",
+        "description": "F1_exception_io.no_parameters"
+      },
+      {
+        "name": "F1_exception_io_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,0",
+        "description": "F1_exception_io.unfilled_pixel"
+      },
+      {
+        "name": "F2_exception_in_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,127",
+        "description": "F2_exception_in.ISP_absent"
+      },
+      {
+        "name": "F2_exception_in_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,255",
+        "description": "F2_exception_in.pixel_absent"
+      },
+      {
+        "name": "F2_exception_in_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,127",
+        "description": "F2_exception_in.not_decompressed"
+      },
+      {
+        "name": "F2_exception_in_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,0",
+        "description": "F2_exception_in.no_signal"
+      },
+      {
+        "name": "F2_exception_in_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,127",
+        "description": "F2_exception_in.saturation"
+      },
+      {
+        "name": "F2_exception_in_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,255",
+        "description": "F2_exception_in.invalid_radiance"
+      },
+      {
+        "name": "F2_exception_in_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,127",
+        "description": "F2_exception_in.no_parameters"
+      },
+      {
+        "name": "F2_exception_in_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,63",
+        "description": "F2_exception_in.unfilled_pixel"
+      },
+      {
+        "name": "F2_exception_io_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,0",
+        "description": "F2_exception_io.ISP_absent"
+      },
+      {
+        "name": "F2_exception_io_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,63",
+        "description": "F2_exception_io.pixel_absent"
+      },
+      {
+        "name": "F2_exception_io_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,127",
+        "description": "F2_exception_io.not_decompressed"
+      },
+      {
+        "name": "F2_exception_io_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,191",
+        "description": "F2_exception_io.no_signal"
+      },
+      {
+        "name": "F2_exception_io_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,191",
+        "description": "F2_exception_io.saturation"
+      },
+      {
+        "name": "F2_exception_io_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,0",
+        "description": "F2_exception_io.invalid_radiance"
+      },
+      {
+        "name": "F2_exception_io_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,63",
+        "description": "F2_exception_io.no_parameters"
+      },
+      {
+        "name": "F2_exception_io_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,127",
+        "description": "F2_exception_io.unfilled_pixel"
+      },
+      {
+        "name": "bayes_in_single_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,191",
+        "description": "bayes_in.single_low"
+      },
+      {
+        "name": "bayes_in_single_moderate",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,255",
+        "description": "bayes_in.single_moderate"
+      },
+      {
+        "name": "bayes_in_dual_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,63",
+        "description": "bayes_in.dual_low"
+      },
+      {
+        "name": "bayes_in_dual_moderate",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,191",
+        "description": "bayes_in.dual_moderate"
+      },
+      {
+        "name": "bayes_in_spare_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,0",
+        "description": "bayes_in.spare_1"
+      },
+      {
+        "name": "bayes_in_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,63",
+        "description": "bayes_in.spare_2"
+      },
+      {
+        "name": "bayes_in_spare_3",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,127",
+        "description": "bayes_in.spare_3"
+      },
+      {
+        "name": "bayes_in_spare_4",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,191",
+        "description": "bayes_in.spare_4"
+      },
+      {
+        "name": "cloud_in_visible",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,0,255",
+        "description": "cloud_in.visible"
+      },
+      {
+        "name": "cloud_in_1_37_threshold",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,0",
+        "description": "cloud_in.1_37_threshold"
+      },
+      {
+        "name": "cloud_in_1_6_small_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,63",
+        "description": "cloud_in.1_6_small_histogram"
+      },
+      {
+        "name": "cloud_in_1_6_large_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,127",
+        "description": "cloud_in.1_6_large_histogram"
+      },
+      {
+        "name": "cloud_in_2_25_small_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,191",
+        "description": "cloud_in.2_25_small_histogram"
+      },
+      {
+        "name": "cloud_in_2_25_large_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,255",
+        "description": "cloud_in.2_25_large_histogram"
+      },
+      {
+        "name": "cloud_in_11_spatial_coherence",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,0",
+        "description": "cloud_in.11_spatial_coherence"
+      },
+      {
+        "name": "cloud_in_gross_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "cloud_in.gross_cloud"
+      },
+      {
+        "name": "cloud_in_thin_cirrus",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,63",
+        "description": "cloud_in.thin_cirrus"
+      },
+      {
+        "name": "cloud_in_medium_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,127",
+        "description": "cloud_in.medium_high"
+      },
+      {
+        "name": "cloud_in_fog_low_stratus",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,191",
+        "description": "cloud_in.fog_low_stratus"
+      },
+      {
+        "name": "cloud_in_11_12_view_difference",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,255",
+        "description": "cloud_in.11_12_view_difference"
+      },
+      {
+        "name": "cloud_in_3_7_11_view_difference",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,191,0",
+        "description": "cloud_in.3_7_11_view_difference"
+      },
+      {
+        "name": "cloud_in_thermal_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,191,63",
+        "description": "cloud_in.thermal_histogram"
+      },
+      {
+        "name": "cloud_in_spare_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,191,127",
+        "description": "cloud_in.spare_1"
+      },
+      {
+        "name": "cloud_in_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,191,191",
+        "description": "cloud_in.spare_2"
+      },
+      {
+        "name": "confidence_in_coastline",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "confidence_in.coastline"
+      },
+      {
+        "name": "confidence_in_ocean",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,191",
+        "description": "confidence_in.ocean"
+      },
+      {
+        "name": "confidence_in_tidal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,191,255",
+        "description": "confidence_in.tidal"
+      },
+      {
+        "name": "confidence_in_land",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "confidence_in.land"
+      },
+      {
+        "name": "confidence_in_inland_water",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "confidence_in.inland_water"
+      },
+      {
+        "name": "confidence_in_unfilled",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,255,0",
+        "description": "confidence_in.unfilled"
+      },
+      {
+        "name": "confidence_in_spare_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,255,63",
+        "description": "confidence_in.spare_1"
+      },
+      {
+        "name": "confidence_in_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,255,127",
+        "description": "confidence_in.spare_2"
+      },
+      {
+        "name": "confidence_in_cosmetic",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,255,191",
+        "description": "confidence_in.cosmetic"
+      },
+      {
+        "name": "confidence_in_duplicate",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,255,255",
+        "description": "confidence_in.duplicate"
+      },
+      {
+        "name": "confidence_in_day",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,63",
+        "description": "confidence_in.day"
+      },
+      {
+        "name": "confidence_in_twilight",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,0,191",
+        "description": "confidence_in.twilight"
+      },
+      {
+        "name": "confidence_in_sun_glint",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,63,0",
+        "description": "confidence_in.sun_glint"
+      },
+      {
+        "name": "confidence_in_snow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "confidence_in.snow"
+      },
+      {
+        "name": "confidence_in_summary_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "confidence_in.summary_cloud"
+      },
+      {
+        "name": "confidence_in_summary_pointing",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,63,63",
+        "description": "confidence_in.summary_pointing"
+      },
+      {
+        "name": "pointing_in_FlipMirrorAbsoluteError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,63,127",
+        "description": "pointing_in.FlipMirrorAbsoluteError"
+      },
+      {
+        "name": "pointing_in_FlipMirrorIntegratedError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,63,191",
+        "description": "pointing_in.FlipMirrorIntegratedError"
+      },
+      {
+        "name": "pointing_in_FlipMirrorRMSError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,63,255",
+        "description": "pointing_in.FlipMirrorRMSError"
+      },
+      {
+        "name": "pointing_in_ScanMirrorAbsoluteError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,63",
+        "description": "pointing_in.ScanMirrorAbsoluteError"
+      },
+      {
+        "name": "pointing_in_ScanMirrorIntegratedError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,127,191",
+        "description": "pointing_in.ScanMirrorIntegratedError"
+      },
+      {
+        "name": "pointing_in_ScanMirrorRMSError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,191,0",
+        "description": "pointing_in.ScanMirrorRMSError"
+      },
+      {
+        "name": "pointing_in_ScanTimeError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,191,63",
+        "description": "pointing_in.ScanTimeError"
+      },
+      {
+        "name": "pointing_in_Platform_Mode",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,191,127",
+        "description": "pointing_in.Platform_Mode"
+      },
+      {
+        "name": "bayes_io_single_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,191,191",
+        "description": "bayes_io.single_low"
+      },
+      {
+        "name": "bayes_io_single_moderate",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,191,255",
+        "description": "bayes_io.single_moderate"
+      },
+      {
+        "name": "bayes_io_dual_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,63",
+        "description": "bayes_io.dual_low"
+      },
+      {
+        "name": "bayes_io_dual_moderate",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,255,191",
+        "description": "bayes_io.dual_moderate"
+      },
+      {
+        "name": "bayes_io_spare_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,0,0",
+        "description": "bayes_io.spare_1"
+      },
+      {
+        "name": "bayes_io_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,0,63",
+        "description": "bayes_io.spare_2"
+      },
+      {
+        "name": "bayes_io_spare_3",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,0,127",
+        "description": "bayes_io.spare_3"
+      },
+      {
+        "name": "bayes_io_spare_4",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,0,191",
+        "description": "bayes_io.spare_4"
+      },
+      {
+        "name": "cloud_io_visible",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,0,255",
+        "description": "cloud_io.visible"
+      },
+      {
+        "name": "cloud_io_1_37_threshold",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,63,0",
+        "description": "cloud_io.1_37_threshold"
+      },
+      {
+        "name": "cloud_io_1_6_small_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,63,63",
+        "description": "cloud_io.1_6_small_histogram"
+      },
+      {
+        "name": "cloud_io_1_6_large_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,63,127",
+        "description": "cloud_io.1_6_large_histogram"
+      },
+      {
+        "name": "cloud_io_2_25_small_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,63,191",
+        "description": "cloud_io.2_25_small_histogram"
+      },
+      {
+        "name": "cloud_io_2_25_large_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,63,255",
+        "description": "cloud_io.2_25_large_histogram"
+      },
+      {
+        "name": "cloud_io_11_spatial_coherence",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,127,0",
+        "description": "cloud_io.11_spatial_coherence"
+      },
+      {
+        "name": "cloud_io_gross_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "cloud_io.gross_cloud"
+      },
+      {
+        "name": "cloud_io_thin_cirrus",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,127,63",
+        "description": "cloud_io.thin_cirrus"
+      },
+      {
+        "name": "cloud_io_medium_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,127,127",
+        "description": "cloud_io.medium_high"
+      },
+      {
+        "name": "cloud_io_fog_low_stratus",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,127,191",
+        "description": "cloud_io.fog_low_stratus"
+      },
+      {
+        "name": "cloud_io_11_12_view_difference",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,127,255",
+        "description": "cloud_io.11_12_view_difference"
+      },
+      {
+        "name": "cloud_io_3_7_11_view_difference",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,0",
+        "description": "cloud_io.3_7_11_view_difference"
+      },
+      {
+        "name": "cloud_io_thermal_histogram",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,63",
+        "description": "cloud_io.thermal_histogram"
+      },
+      {
+        "name": "cloud_io_spare_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,127",
+        "description": "cloud_io.spare_1"
+      },
+      {
+        "name": "cloud_io_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,255",
+        "description": "cloud_io.spare_2"
+      },
+      {
+        "name": "confidence_io_coastline",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "confidence_io.coastline"
+      },
+      {
+        "name": "confidence_io_ocean",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,191",
+        "description": "confidence_io.ocean"
+      },
+      {
+        "name": "confidence_io_tidal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,255,0",
+        "description": "confidence_io.tidal"
+      },
+      {
+        "name": "confidence_io_land",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "confidence_io.land"
+      },
+      {
+        "name": "confidence_io_inland_water",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,63",
+        "description": "confidence_io.inland_water"
+      },
+      {
+        "name": "confidence_io_unfilled",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,255,63",
+        "description": "confidence_io.unfilled"
+      },
+      {
+        "name": "confidence_io_spare_1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,255,127",
+        "description": "confidence_io.spare_1"
+      },
+      {
+        "name": "confidence_io_spare_2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,255,191",
+        "description": "confidence_io.spare_2"
+      },
+      {
+        "name": "confidence_io_cosmetic",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,63",
+        "description": "confidence_io.cosmetic"
+      },
+      {
+        "name": "confidence_io_duplicate",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,191",
+        "description": "confidence_io.duplicate"
+      },
+      {
+        "name": "confidence_io_day",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,63,0",
+        "description": "confidence_io.day"
+      },
+      {
+        "name": "confidence_io_twilight",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,63,63",
+        "description": "confidence_io.twilight"
+      },
+      {
+        "name": "confidence_io_sun_glint",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,63,127",
+        "description": "confidence_io.sun_glint"
+      },
+      {
+        "name": "confidence_io_snow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "confidence_io.snow"
+      },
+      {
+        "name": "confidence_io_summary_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "191,191,191",
+        "description": "confidence_io.summary_cloud"
+      },
+      {
+        "name": "confidence_io_summary_pointing",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,63,191",
+        "description": "confidence_io.summary_pointing"
+      },
+      {
+        "name": "pointing_io_FlipMirrorAbsoluteError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,63,255",
+        "description": "pointing_io.FlipMirrorAbsoluteError"
+      },
+      {
+        "name": "pointing_io_FlipMirrorIntegratedError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,63",
+        "description": "pointing_io.FlipMirrorIntegratedError"
+      },
+      {
+        "name": "pointing_io_FlipMirrorRMSError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,127,191",
+        "description": "pointing_io.FlipMirrorRMSError"
+      },
+      {
+        "name": "pointing_io_ScanMirrorAbsoluteError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,191,0",
+        "description": "pointing_io.ScanMirrorAbsoluteError"
+      },
+      {
+        "name": "pointing_io_ScanMirrorIntegratedError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,191,63",
+        "description": "pointing_io.ScanMirrorIntegratedError"
+      },
+      {
+        "name": "pointing_io_ScanMirrorRMSError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,191,127",
+        "description": "pointing_io.ScanMirrorRMSError"
+      },
+      {
+        "name": "pointing_io_ScanTimeError",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,191,191",
+        "description": "pointing_io.ScanTimeError"
+      },
+      {
+        "name": "pointing_io_Platform_Mode",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,191,255",
+        "description": "pointing_io.Platform_Mode"
+      },
+      {
+        "name": "S7_exception_in_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,63",
+        "description": "S7_exception_in.ISP_absent"
+      },
+      {
+        "name": "S7_exception_in_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,191",
+        "description": "S7_exception_in.pixel_absent"
+      },
+      {
+        "name": "S7_exception_in_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,31",
+        "description": "S7_exception_in.not_decompressed"
+      },
+      {
+        "name": "S7_exception_in_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,95",
+        "description": "S7_exception_in.no_signal"
+      },
+      {
+        "name": "S7_exception_in_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,159",
+        "description": "S7_exception_in.saturation"
+      },
+      {
+        "name": "S7_exception_in_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,223",
+        "description": "S7_exception_in.invalid_radiance"
+      },
+      {
+        "name": "S7_exception_in_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,0",
+        "description": "S7_exception_in.no_parameters"
+      },
+      {
+        "name": "S7_exception_in_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,31",
+        "description": "S7_exception_in.unfilled_pixel"
+      },
+      {
+        "name": "S7_exception_io_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,63",
+        "description": "S7_exception_io.ISP_absent"
+      },
+      {
+        "name": "S7_exception_io_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,95",
+        "description": "S7_exception_io.pixel_absent"
+      },
+      {
+        "name": "S7_exception_io_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,127",
+        "description": "S7_exception_io.not_decompressed"
+      },
+      {
+        "name": "S7_exception_io_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,159",
+        "description": "S7_exception_io.no_signal"
+      },
+      {
+        "name": "S7_exception_io_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,191",
+        "description": "S7_exception_io.saturation"
+      },
+      {
+        "name": "S7_exception_io_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,223",
+        "description": "S7_exception_io.invalid_radiance"
+      },
+      {
+        "name": "S7_exception_io_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,31,255",
+        "description": "S7_exception_io.no_parameters"
+      },
+      {
+        "name": "S7_exception_io_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,31",
+        "description": "S7_exception_io.unfilled_pixel"
+      },
+      {
+        "name": "S8_exception_in_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,95",
+        "description": "S8_exception_in.ISP_absent"
+      },
+      {
+        "name": "S8_exception_in_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,159",
+        "description": "S8_exception_in.pixel_absent"
+      },
+      {
+        "name": "S8_exception_in_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,223",
+        "description": "S8_exception_in.not_decompressed"
+      },
+      {
+        "name": "S8_exception_in_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,0",
+        "description": "S8_exception_in.no_signal"
+      },
+      {
+        "name": "S8_exception_in_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,31",
+        "description": "S8_exception_in.saturation"
+      },
+      {
+        "name": "S8_exception_in_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,63",
+        "description": "S8_exception_in.invalid_radiance"
+      },
+      {
+        "name": "S8_exception_in_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,95",
+        "description": "S8_exception_in.no_parameters"
+      },
+      {
+        "name": "S8_exception_in_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,127",
+        "description": "S8_exception_in.unfilled_pixel"
+      },
+      {
+        "name": "S8_exception_io_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,159",
+        "description": "S8_exception_io.ISP_absent"
+      },
+      {
+        "name": "S8_exception_io_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,191",
+        "description": "S8_exception_io.pixel_absent"
+      },
+      {
+        "name": "S8_exception_io_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,223",
+        "description": "S8_exception_io.not_decompressed"
+      },
+      {
+        "name": "S8_exception_io_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,95,255",
+        "description": "S8_exception_io.no_signal"
+      },
+      {
+        "name": "S8_exception_io_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,31",
+        "description": "S8_exception_io.saturation"
+      },
+      {
+        "name": "S8_exception_io_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,95",
+        "description": "S8_exception_io.invalid_radiance"
+      },
+      {
+        "name": "S8_exception_io_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,159",
+        "description": "S8_exception_io.no_parameters"
+      },
+      {
+        "name": "S8_exception_io_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,127,223",
+        "description": "S8_exception_io.unfilled_pixel"
+      },
+      {
+        "name": "S9_exception_in_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,159,0",
+        "description": "S9_exception_in.ISP_absent"
+      },
+      {
+        "name": "S9_exception_in_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,159,31",
+        "description": "S9_exception_in.pixel_absent"
+      },
+      {
+        "name": "S9_exception_in_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,159,63",
+        "description": "S9_exception_in.not_decompressed"
+      },
+      {
+        "name": "S9_exception_in_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,159,95",
+        "description": "S9_exception_in.no_signal"
+      },
+      {
+        "name": "S9_exception_in_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,159,127",
+        "description": "S9_exception_in.saturation"
+      },
+      {
+        "name": "S9_exception_in_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,159,159",
+        "description": "S9_exception_in.invalid_radiance"
+      },
+      {
+        "name": "S9_exception_in_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,159,191",
+        "description": "S9_exception_in.no_parameters"
+      },
+      {
+        "name": "S9_exception_in_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,159,223",
+        "description": "S9_exception_in.unfilled_pixel"
+      },
+      {
+        "name": "S9_exception_io_ISP_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,159,255",
+        "description": "S9_exception_io.ISP_absent"
+      },
+      {
+        "name": "S9_exception_io_pixel_absent",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,31",
+        "description": "S9_exception_io.pixel_absent"
+      },
+      {
+        "name": "S9_exception_io_not_decompressed",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,95",
+        "description": "S9_exception_io.not_decompressed"
+      },
+      {
+        "name": "S9_exception_io_no_signal",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,159",
+        "description": "S9_exception_io.no_signal"
+      },
+      {
+        "name": "S9_exception_io_saturation",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,191,223",
+        "description": "S9_exception_io.saturation"
+      },
+      {
+        "name": "S9_exception_io_invalid_radiance",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,223,0",
+        "description": "S9_exception_io.invalid_radiance"
+      },
+      {
+        "name": "S9_exception_io_no_parameters",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,223,31",
+        "description": "S9_exception_io.no_parameters"
+      },
+      {
+        "name": "S9_exception_io_unfilled_pixel",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,223,63",
+        "description": "S9_exception_io.unfilled_pixel"
+      }
+    ],
+    "metadata": [
+      {
+        "path": "Manifest/metadataSection/platform/instrument/mode/mode",
+        "value": "Earth Observation"
+      },
+      {
+        "path": "SCANSYNC/_FillValue",
+        "value": "-2147483648"
+      },
+      {
+        "path": "Oblique_Maximal_ts_i/_FillValue",
+        "value": "-9223372036854775808"
+      },
+      {
+        "path": "z_atmos/long_name",
+        "value": "Height of atmospheric field above surface "
+      },
+      {
+        "path": "t_series/value",
+        "value": "-18,-12,-6,0,6"
+      },
+      {
+        "path": "Nadir_Last_scan_i/valid_max",
+        "value": "19353"
+      },
+      {
+        "path": "t_single/axis",
+        "value": "T "
+      },
+      {
+        "path": "Nadir_First_scan_i/valid_max",
+        "value": "19353"
+      },
+      {
+        "path": "l0_scan_offset_in/_FillValue",
+        "value": "-2147483648"
+      },
+      {
+        "path": "z_soil/bounds",
+        "value": "z_bound "
+      }
+    ]
+  }
+}
