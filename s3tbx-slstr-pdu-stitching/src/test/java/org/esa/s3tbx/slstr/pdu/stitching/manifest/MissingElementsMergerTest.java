@@ -23,6 +23,60 @@ import static junit.framework.TestCase.assertNotNull;
 public class MissingElementsMergerTest {
 
     @Test
+    public void mergeNodes_multipleGrids() throws ParserConfigurationException, SAXException, IOException, PDUStitchingException {
+        List<Node> fromParents = new ArrayList<>();
+        fromParents.add(ManifestTestUtils.createNode(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<slstr:missingElements threshold=\"75.000000\">\n" +
+                        "  <slstr:globalInfo grid=\"0.5 km stripe A\" view=\"Nadir\" value=\"4000\" over=\"4000\" percentage=\"100.000000\"/>\n" +
+                        "  <slstr:globalInfo grid=\"0.5 km stripe B\" view=\"Nadir\" value=\"4000\" over=\"4000\" percentage=\"100.000000\"/>\n" +
+                        "  <slstr:globalInfo grid=\"0.5 km TDI\" view=\"Nadir\" value=\"4000\" over=\"4000\" percentage=\"100.000000\"/>\n" +
+                        "  <slstr:globalInfo grid=\"0.5 km stripe A\" view=\"Oblique\" value=\"4000\" over=\"4000\" percentage=\"100.000000\"/>\n" +
+                        "  <slstr:globalInfo grid=\"0.5 km stripe B\" view=\"Oblique\" value=\"4000\" over=\"4000\" percentage=\"100.000000\"/>\n" +
+                        "  <slstr:globalInfo grid=\"0.5 km TDI\" view=\"Oblique\" value=\"4000\" over=\"4000\" percentage=\"100.000000\"/>\n" +
+                        "  <slstr:elementMissing grid=\"0.5 km stripe A, 0.5 km stripe B, 0.5 km TDI\" view=\"Nadir\" startTime=\"2018-04-11T03:22:56.935232Z\" stopTime=\"2018-04-11T03:27:56.921087Z\" percentage=\"100.000000\">\n" +
+                        "    <slstr:bandSet>S1, S2, S3, S4</slstr:bandSet>\n" +
+                        "  </slstr:elementMissing>\n" +
+                        "  <slstr:elementMissing grid=\"0.5 km stripe A, 0.5 km stripe B, 0.5 km TDI\" view=\"Oblique\" startTime=\"2018-04-11T03:22:56.929785Z\" stopTime=\"2018-04-11T03:27:56.840589Z\" percentage=\"100.000000\">\n" +
+                        "    <slstr:bandSet>S1, S2, S3, S4</slstr:bandSet>\n" +
+                        "  </slstr:elementMissing>\n" +
+                        "</slstr:missingElements>").getFirstChild());
+
+        Document manifest = ManifestTestUtils.createDocument();
+        final Element manifestElement = manifest.createElement("slstr:missingElements");
+        manifest.appendChild(manifestElement);
+
+        new MissingElementsMerger().mergeNodes(fromParents, manifestElement, manifest);
+
+        assertEquals(1, manifestElement.getAttributes().getLength());
+        assert(manifestElement.hasAttribute("threshold"));
+        assertEquals("75.000000", manifestElement.getAttribute("threshold"));
+
+        final NodeList childNodes = manifestElement.getChildNodes();
+        assertEquals(8, childNodes.getLength());
+        final Node globalInfoNode = childNodes.item(0);
+        assertEquals("slstr:globalInfo", globalInfoNode.getNodeName());
+        assert(globalInfoNode.hasAttributes());
+        final NamedNodeMap globalInfoNodeAttributes = globalInfoNode.getAttributes();
+        assertEquals(5, globalInfoNodeAttributes.getLength());
+        assertNotNull(globalInfoNodeAttributes.getNamedItem("grid"));
+        assertEquals("0.5 km stripe A", globalInfoNodeAttributes.getNamedItem("grid").getNodeValue());
+        assertNotNull(globalInfoNodeAttributes.getNamedItem("view"));
+        assertEquals("Nadir", globalInfoNodeAttributes.getNamedItem("view").getNodeValue());
+        assertNotNull(globalInfoNodeAttributes.getNamedItem("value"));
+        assertEquals("4000", globalInfoNodeAttributes.getNamedItem("value").getNodeValue());
+        assertNotNull(globalInfoNodeAttributes.getNamedItem("over"));
+        assertEquals("4000", globalInfoNodeAttributes.getNamedItem("over").getNodeValue());
+        assertNotNull(globalInfoNodeAttributes.getNamedItem("percentage"));
+        assertEquals("100.000000", globalInfoNodeAttributes.getNamedItem("percentage").getNodeValue());
+
+        assertElement(childNodes.item(6), "0.5 km stripe A, 0.5 km stripe B, 0.5 km TDI", "Oblique",
+                "2018-04-11T03:22:56.929785Z", "2018-04-11T03:27:56.840589Z", "100.000000", "S1, S2, S3, S4");
+        assertElement(childNodes.item(7), "0.5 km stripe A, 0.5 km stripe B, 0.5 km TDI", "Nadir",
+                "2018-04-11T03:22:56.935232Z", "2018-04-11T03:27:56.921087Z", "100.000000", "S1, S2, S3, S4");
+    }
+
+    @Test
     public void mergeNodes_interrupted() throws ParserConfigurationException, SAXException, IOException, PDUStitchingException {
         List<Node> fromParents = new ArrayList<>();
         fromParents.add(ManifestTestUtils.createNode(

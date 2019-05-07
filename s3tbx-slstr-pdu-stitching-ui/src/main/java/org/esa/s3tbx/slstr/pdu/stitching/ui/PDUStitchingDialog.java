@@ -19,6 +19,11 @@ import org.esa.snap.ui.ModelessDialog;
 
 import javax.swing.AbstractButton;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -50,15 +55,15 @@ public class PDUStitchingDialog extends ModelessDialog {
 
     @Override
     protected void onApply() {
+        final File targetDir = (File) formModel.getPropertyValue(PDUStitchingModel.PROPERTY_TARGET_DIR);
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+        final String[] before = targetDir.list();
         ProgressMonitorSwingWorker<Product, Void> swingWorker = new ProgressMonitorSwingWorker<Product, Void>(getJDialog(), "PDU Stitching") {
             @Override
             protected Product doInBackground(ProgressMonitor pm) throws Exception {
-                String[] before = null;
                 Product product = null;
-                final File targetDir = (File) formModel.getPropertyValue(PDUStitchingModel.PROPERTY_TARGET_DIR);
-                if (targetDir.exists()) {
-                    before = targetDir.list();
-                }
                 final Map<String, Object> parameterMap = formModel.getParameterMap();
                 final Product[] sourceProducts = formModel.getSourceProducts();
                 Map<String, Product> sourceProductMap = new HashMap<>();
@@ -71,14 +76,15 @@ public class PDUStitchingDialog extends ModelessDialog {
                 if (formModel.openInApp()) {
                     final ProductReaderPlugIn sen3ReaderPlugIn = getSentinel3ReaderPlugin();
                     final String[] after = targetDir.list();
-                    for (String inTargetDir : after) {
-                        if (!ArrayUtils.isMemberOf(inTargetDir, before)) {
-                            pm.setSubTaskName("Opening stitched SLSTR L1B product");
-                            final ProductReader reader = sen3ReaderPlugIn.createReaderInstance();
-                            product = reader.readProductNodes(new File(targetDir, inTargetDir), null);
+                    if (after != null) {
+                        for (String inTargetDir : after) {
+                            if (!ArrayUtils.isMemberOf(inTargetDir, before)) {
+                                pm.setSubTaskName("Opening stitched SLSTR L1B product");
+                                final ProductReader reader = sen3ReaderPlugIn.createReaderInstance();
+                                product = reader.readProductNodes(new File(targetDir, inTargetDir), null);
+                            }
                         }
                     }
-
                 }
                 pm.done();
                 return product;
@@ -88,14 +94,30 @@ public class PDUStitchingDialog extends ModelessDialog {
         Product product = null;
         try {
             product = swingWorker.get();
+            Dialogs.showInformation("SLSTR L1B PDU Stitching",
+                    "Stitched SLSTR L1B product has been successfully created in the target directory.", null);
         } catch (InterruptedException | ExecutionException e) {
             Dialogs.showError("Could not create stitched SLSTR L1B product: " + e.getMessage());
+            final String[] after = targetDir.list();
+            if (after != null) {
+                for (String inTargetDir : after) {
+                    if (!ArrayUtils.isMemberOf(inTargetDir, before)) {
+                        try {
+                            Path productPath = Paths.get(new File(targetDir, inTargetDir).toURI());
+                            Files.walk(productPath)
+                                    .sorted(Comparator.reverseOrder())
+                                    .map(Path::toFile)
+                                    .forEach(File::delete);
+                        } catch (IOException ioe) {
+                            // do nothing
+                        }
+                    }
+                }
+            }
         }
         if (product != null) {
             SnapApp.getDefault().getProductManager().addProduct(product);
         }
-        Dialogs.showInformation("SLSTR L1B PDU Stitching",
-                "Stitched SLSTR L1B product has been successfully created in the target directory.", null);
     }
 
     private ProductReaderPlugIn getSentinel3ReaderPlugin() {
