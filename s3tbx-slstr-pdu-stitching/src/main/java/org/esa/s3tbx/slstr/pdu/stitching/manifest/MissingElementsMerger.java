@@ -1,6 +1,5 @@
 package org.esa.s3tbx.slstr.pdu.stitching.manifest;
 
-import com.sun.istack.internal.logging.Logger;
 import org.esa.s3tbx.slstr.pdu.stitching.PDUStitchingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * @author Tonio Fincke
@@ -29,6 +29,8 @@ class MissingElementsMerger extends AbstractElementMerger {
     private final static String ELEMENT_MISSING_NAME = "slstr:elementMissing";
     private final static String BAND_SET_ELEMENT = "slstr:bandSet";
     private final static long NUMBER_OF_MILLIS_BETWEEN_ENTRIES = 450;
+    private final static Logger logger = Logger.getLogger(MissingElementsMerger.class.getSimpleName());
+
 
     @Override
     public void mergeNodes(List<Node> fromParents, Element toParent, Document toDocument) throws PDUStitchingException {
@@ -187,10 +189,10 @@ class MissingElementsMerger extends AbstractElementMerger {
                     final String childBandSet = getBandSetFromNode(childNode);
                     final double childPercentage = getPercentageFromNode(childNode);
                     Integer over = 0;
+
                     for (String childGrid : childGrids.split(",")) {
                         String key = childGrid.trim() + SEPARATOR + childView;
                         if (!overs.containsKey(key)) {
-                            Logger logger = Logger.getLogger(this.getClass());
                             logger.warning("Could not determine grid of missing element: " + key);
                             continue;
                         }
