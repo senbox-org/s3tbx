@@ -16,9 +16,13 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
-import javax.media.jai.*;
+import javax.media.jai.BorderExtender;
+import javax.media.jai.BorderExtenderCopy;
+import javax.media.jai.JAI;
+import javax.media.jai.KernelJAI;
+import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.ConvolveDescriptor;
-import java.awt.*;
+import java.awt.RenderingHints;
 
 /**
  * Wrapper for MPH CHL pixel operator.
@@ -44,7 +48,7 @@ public class MphChlOp extends Operator {
     private double cyanoMaxValue;
 
     @Parameter(defaultValue = "500.0",
-            description = "Chlorophyll threshold, above which all cyanobacteria dominated waters are 'float.")
+            description = "Chlorophyll threshold, above which all cyanobacteria dominated waters are 'float'.")
     private double chlThreshForFloatFlag;
 
     @Parameter(defaultValue = "false",
