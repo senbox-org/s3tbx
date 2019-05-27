@@ -53,6 +53,11 @@ public class VirtualDirTgz extends VirtualDir {
     }
 
     @Override
+    public File getBaseFile() {
+        return archiveFile;
+    }
+
+    @Override
     public InputStream getInputStream(String path) throws IOException {
         final File file = getFile(path);
         return new BufferedInputStream(new FileInputStream(file));
