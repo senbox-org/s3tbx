@@ -56,7 +56,7 @@ public class MphChlOpTest {
         final Parameter annotation = chlThreshForFloatFlagField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
         assertEquals("500.0", annotation.defaultValue());
-        assertEquals("Chlorophyll threshold, above which all cyanobacteria dominated waters are 'float.", annotation.description());
+        assertEquals("Chlorophyll threshold, above which all cyanobacteria dominated waters are 'float'.", annotation.description());
     }
 
     @Test
