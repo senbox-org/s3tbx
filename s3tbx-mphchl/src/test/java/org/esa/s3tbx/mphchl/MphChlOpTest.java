@@ -56,7 +56,7 @@ public class MphChlOpTest {
         final Parameter annotation = chlThreshForFloatFlagField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
         assertEquals("500.0", annotation.defaultValue());
-        assertEquals("Chlorophyll threshold, above which all cyanobacteria dominated waters are 'float.", annotation.description());
+        assertEquals("Chlorophyll threshold, above which all cyanobacteria dominated waters are 'float'.", annotation.description());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class MphChlOpTest {
     }
 
     @Test
-    public void testGetSensorType() throws Exception {
+    public void testGetSensorType() {
 
         Product sourceProduct = new Product("test", "test", 1, 1);
         for (String bandName : MphChlConstants.MERIS_REQUIRED_RADIANCE_BAND_NAMES) {
@@ -128,7 +128,7 @@ public class MphChlOpTest {
     }
 
     @Test
-    public void testIsValidL1bSourceProduct() throws Exception {
+    public void testIsValidL1bSourceProduct() {
         Product sourceProduct = new Product("test", "test", 1, 1);
         assertFalse(MphChlOp.isValidL1bSourceProduct(sourceProduct, Sensor.MERIS_3RD));
         for (String bandName : MphChlConstants.MERIS_REQUIRED_RADIANCE_BAND_NAMES) {
@@ -150,7 +150,7 @@ public class MphChlOpTest {
     }
 
     @Test
-    public void testIsValidBrrSourceProduct() throws Exception {
+    public void testIsValidBrrSourceProduct() {
         Product sourceProduct = new Product("test", "test", 1, 1);
         assertFalse(MphChlOp.isValidBrrSourceProduct(sourceProduct, Sensor.MERIS_3RD));
         for (String bandName : MphChlConstants.MERIS_REQUIRED_BRR_BAND_NAMES) {
@@ -169,7 +169,7 @@ public class MphChlOpTest {
     }
 
     @Test
-    public void testGetSensorFromBrrSourceProduct() throws Exception {
+    public void testGetSensorFromBrrSourceProduct() {
         String[] sourceBands = MphChlConstants.MERIS_REQUIRED_BRR_BAND_NAMES;
         Sensor sensor = MphChlOp.getSensorFromBrrSourceProduct(sourceBands);
         assertNotNull(sensor);
