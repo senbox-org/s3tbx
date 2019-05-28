@@ -4,7 +4,6 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.util.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -23,8 +22,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -52,7 +51,7 @@ public class SlstrPduStitcherTest {
     }
 
     @Test
-    public void testStitchPDUs_NotEmpty() throws Exception {
+    public void testStitchPDUs_NotEmpty() {
         try {
             SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, new File[0], ProgressMonitor.NULL);
             fail("Exception expected");
@@ -79,7 +78,6 @@ public class SlstrPduStitcherTest {
     }
 
     @Test
-    @Ignore
     public void testStitchPDUs_AllSlstrL1BProductFiles() throws IOException, PDUStitchingException, TransformerException, ParserConfigurationException {
         final File[] slstrFiles = TestUtils.getSlstrFiles();
         final File stitchedProductFile = SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, slstrFiles, ProgressMonitor.NULL);
@@ -97,8 +95,8 @@ public class SlstrPduStitcherTest {
         final SlstrPduStitcher.SlstrNameDecomposition firstSlstrNameDecomposition =
                 SlstrPduStitcher.decomposeSlstrName(TestUtils.getFirstSlstrFile().getParentFile().getName());
 
-        Date startTime = new GregorianCalendar(2013, 6, 7, 15, 32, 52).getTime();
-        Date stopTime = new GregorianCalendar(2013, 6, 7, 15, 37, 52).getTime();
+        Date startTime = new GregorianCalendar(2013, Calendar.JULY, 7, 15, 32, 52).getTime();
+        Date stopTime = new GregorianCalendar(2013, Calendar.JULY, 7, 15, 37, 52).getTime();
         assertEquals(startTime, firstSlstrNameDecomposition.startTime);
         assertEquals(stopTime, firstSlstrNameDecomposition.stopTime);
         assertEquals("0299", firstSlstrNameDecomposition.duration);
