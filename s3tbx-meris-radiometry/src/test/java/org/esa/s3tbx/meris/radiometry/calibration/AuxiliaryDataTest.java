@@ -8,7 +8,6 @@ import org.esa.snap.dataio.envisat.Record;
 import org.esa.snap.dataio.envisat.RecordReader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.imageio.stream.MemoryCacheImageInputStream;
@@ -16,12 +15,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests that the auxiliary data needed for the radiometric calibration adhere
@@ -60,6 +61,23 @@ public class AuxiliaryDataTest {
     };
 
     private List<ProductFile> productFileList;
+
+    @Before
+    public void initProductFiles() throws IOException {
+        productFileList = new ArrayList<>(6);
+        for (final String productFileName : PRODUCT_RESOURCE_NAMES) {
+            final InputStream stream = getClass().getResourceAsStream(productFileName);
+            final ProductFile productFile = new MerisRacProductFile(new MemoryCacheImageInputStream(stream));
+            productFileList.add(productFile);
+        }
+    }
+
+    @After
+    public void closeProductFiles() throws IOException {
+        for (final ProductFile productFile : productFileList) {
+            productFile.close();
+        }
+    }
 
     @Test
     public void validGainFR() throws IOException {
@@ -117,30 +135,6 @@ public class AuxiliaryDataTest {
         }
     }
 
-    @Ignore
-    @Test
-    public void printGains() throws IOException {
-        printToFile("Gain_FR", 0, "gain", new File("gains.csv"));
-    }
-
-    @Ignore
-    @Test
-    public void printBetas() throws IOException {
-        printToFile("Degradation_FR", 0, "beta", new File("betas.csv"));
-    }
-
-    @Ignore
-    @Test
-    public void printGammas() throws IOException {
-        printToFile("Degradation_FR", 0, "gamma", new File("gammas.csv"));
-    }
-
-    @Ignore
-    @Test
-    public void printDeltas() throws IOException {
-        printToFile("Degradation_FR", 0, "delta", new File("deltas.csv"));
-    }
-
     private void assertValidity(String datasetName, int recordCountExpected,
                                 String[] fieldNames, int[] fieldElementCountsExpected) throws IOException {
         for (final ProductFile productFile : productFileList) {
@@ -179,7 +173,7 @@ public class AuxiliaryDataTest {
     }
 
     private void testEquality(String datasetName, int recordIndex, String fieldName) throws IOException {
-        final List<float[]> arrayList = new ArrayList<float[]>(6);
+        final List<float[]> arrayList = new ArrayList<>(6);
         for (final ProductFile productFile : productFileList) {
             final RecordReader recordReader = productFile.getRecordReader(datasetName);
             final Record record = recordReader.readRecord(recordIndex);
@@ -195,15 +189,35 @@ public class AuxiliaryDataTest {
         }
     }
 
+// For debugging
+    @SuppressWarnings("unused")
+    public void printGains() throws IOException {
+        printToFile("Gain_FR", 0, "gain", new File("gains.csv"));
+    }
+
+    @SuppressWarnings("unused")
+    public void printBetas() throws IOException {
+        printToFile("Degradation_FR", 0, "beta", new File("betas.csv"));
+    }
+
+    @SuppressWarnings("unused")
+    public void printGammas() throws IOException {
+        printToFile("Degradation_FR", 0, "gamma", new File("gammas.csv"));
+    }
+
+    @SuppressWarnings("unused")
+    public void printDeltas() throws IOException {
+        printToFile("Degradation_FR", 0, "delta", new File("deltas.csv"));
+    }
+
     private void printToFile(String datasetName, int recordIndex, String fieldName, File file) throws IOException {
-        final List<float[]> arrayList = new ArrayList<float[]>(6);
+        final List<float[]> arrayList = new ArrayList<>(6);
         for (final ProductFile productFile : productFileList) {
             final RecordReader recordReader = productFile.getRecordReader(datasetName);
             final Record record = recordReader.readRecord(recordIndex);
             arrayList.add((float[]) record.getField(fieldName).getElems());
         }
-        final PrintStream ps = new PrintStream(file);
-        try {
+        try (PrintStream ps = new PrintStream(file)) {
             for (final ProductFile productFile : productFileList) {
                 ps.print(productFile.getFile().getName() + ",");
             }
@@ -214,25 +228,7 @@ public class AuxiliaryDataTest {
                 }
                 ps.println();
             }
-        } finally {
-            ps.close();
         }
     }
 
-    @Before
-    public void initProductFiles() throws URISyntaxException, IOException {
-        productFileList = new ArrayList<ProductFile>(6);
-        for (final String productFileName : PRODUCT_RESOURCE_NAMES) {
-            final InputStream stream = getClass().getResourceAsStream(productFileName);
-            final ProductFile productFile = new MerisRacProductFile(new MemoryCacheImageInputStream(stream));
-            productFileList.add(productFile);
-        }
-    }
-
-    @After
-    public void closeProductFiles() throws IOException {
-        for (final ProductFile productFile : productFileList) {
-            productFile.close();
-        }
-    }
 }
