@@ -19,7 +19,6 @@
 package org.esa.s3tbx.olci.radiometry.smilecorr;
 
 import org.esa.s3tbx.olci.radiometry.Sensor;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Files;
@@ -27,7 +26,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author muhammad.bc.
@@ -170,31 +172,29 @@ public class SmileCorrectionAuxdataTest {
     }
 
 
-    @Ignore
     @Test
     public void testReadSolarFluxMER_F() throws Exception {
         SmileCorrectionAuxdata sCorrectAux = new SmileCorrectionAuxdata(Sensor.MERIS);
         sCorrectAux.loadFluxWaven("MER_F");
         double[][] detSunSpectralFlux = sCorrectAux.getDetectorSunSpectralFluxes();
         assertNotNull(detSunSpectralFlux);
-        assertEquals(15, detSunSpectralFlux.length);
+        assertEquals(3700, detSunSpectralFlux.length);
 
         assertEquals(1715.95068068023, detSunSpectralFlux[0][0], 1e-8);
-        assertEquals(1715.94499537724, detSunSpectralFlux[0][1], 1e-8);
-        assertEquals(1715.87048338401, detSunSpectralFlux[0][14], 1e-8);
+        assertEquals(1715.94499537724, detSunSpectralFlux[1][0], 1e-8);
+        assertEquals(1715.87048338401, detSunSpectralFlux[14][0], 1e-8);
     }
 
-    @Ignore
     @Test
     public void testReadSolarFluxMER_R() throws Exception {
         SmileCorrectionAuxdata sCorrectAux = new SmileCorrectionAuxdata(Sensor.MERIS);
         sCorrectAux.loadFluxWaven("MER_R");
         double[][] detSunSpectralFlux = sCorrectAux.getDetectorSunSpectralFluxes();
         assertNotNull(detSunSpectralFlux);
-        assertEquals(15, detSunSpectralFlux.length);
+        assertEquals(925, detSunSpectralFlux.length);
 
         assertEquals(1715.92504199224, detSunSpectralFlux[0][0], 1e-8);
-        assertEquals(1715.90214552674, detSunSpectralFlux[0][1], 1e-8);
-        assertEquals(1715.59427589335, detSunSpectralFlux[0][14], 1e-8);
+        assertEquals(1884.8629040149, detSunSpectralFlux[0][1], 1e-8);
+        assertEquals(895.328636362898, detSunSpectralFlux[0][14], 1e-8);
     }
 }
