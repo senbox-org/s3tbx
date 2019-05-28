@@ -2,12 +2,10 @@ package org.esa.s3tbx.olci.radiometry.gasabsorption;
 
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 
@@ -16,10 +14,10 @@ import static org.junit.Assert.fail;
  */
 public class GaseousAbsorptionAlgoTest {
 
-    GaseousAbsorptionAlgo gaseousAbsorptionAlgo;
+    private GaseousAbsorptionAlgo gaseousAbsorptionAlgo;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         gaseousAbsorptionAlgo = new GaseousAbsorptionAlgo();
     }
 
@@ -31,7 +29,7 @@ public class GaseousAbsorptionAlgoTest {
     }
 
     @Test
-    public void testGetGasToComputeForABand() throws Exception {
+    public void testGetGasToComputeForABand() {
         assertArrayEquals(new String[]{"NO2"}, gaseousAbsorptionAlgo.gasToComputeForBand("gaseous_absorp_01"));
         assertArrayEquals(new String[]{"NO2"}, gaseousAbsorptionAlgo.gasToComputeForBand("gaseous_absorp_02"));
         assertArrayEquals(new String[]{"NO2", "H2O", "O3"}, gaseousAbsorptionAlgo.gasToComputeForBand("gaseous_absorp_03"));
@@ -55,61 +53,49 @@ public class GaseousAbsorptionAlgoTest {
         assertArrayEquals(new String[]{"H2O"}, gaseousAbsorptionAlgo.gasToComputeForBand("gaseous_absorp_21"));
     }
 
-    @Test
-    public void testGasToComputeDoesNotExist() throws Exception {
-        try {
-            assertArrayEquals(null, gaseousAbsorptionAlgo.gasToComputeForBand("dummy1"));
-            fail();
-        } catch (IllegalArgumentException e) {
-
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testGasToComputeDoesNotExist() {
+        assertArrayEquals(null, gaseousAbsorptionAlgo.gasToComputeForBand("dummy1"));
     }
 
 
     @Test
-    public void testGetMassAir() throws Exception {
+    public void testGetMassAir() {
         float[] massAir = gaseousAbsorptionAlgo.getMassAir(new float[]{1, 2}, new float[]{3, 4});
         assertEquals(2, massAir.length);
         assertArrayEquals(new float[]{2.0015247f, 2.0030515f}, massAir, 0);
     }
 
-    @Test
-    public void testGetMassAirNull() throws Exception {
-        try {
-            float[] massAir = gaseousAbsorptionAlgo.getMassAir(null, new float[]{3, 4});
-            assertEquals(2, massAir.length);
-            assertArrayEquals(new float[]{0.84070706f, -3.9328835f}, massAir, 0);
-            fail("The sun zenith angel most not be null");
-        } catch (NullPointerException e) {
-        }
+    @Test(expected = NullPointerException.class)
+    public void testGetMassAirNull() {
+        float[] massAir = gaseousAbsorptionAlgo.getMassAir(null, new float[]{3, 4});
+        assertEquals(2, massAir.length);
+        assertArrayEquals(new float[]{0.84070706f, -3.9328835f}, massAir, 0);
+        fail("The sun zenith angel most not be null");
     }
 
     @Test
-    public void testGetMassAirZero() throws Exception {
+    public void testGetMassAirZero() {
         float[] massAir = gaseousAbsorptionAlgo.getMassAir(new float[]{0, 0}, new float[]{0, 0});
         assertEquals(2, massAir.length);
         assertArrayEquals(new float[]{2, 2}, massAir, 0);
     }
 
     @Test
-    public void testGetTransmissionGasKnownBand() throws Exception {
+    public void testGetTransmissionGasKnownBand() {
         GaseousAbsorptionAlgo algorithm = new GaseousAbsorptionAlgo();
         float[] oza = {4, 5, 6};
         float[] sza = {1, 2, 3};
         float[] oa01_radians = algorithm.getTransmissionGas("gaseous_absorp_01", sza, oza);
         assertEquals(3, oa01_radians.length);
-        assertEquals(0.13498464f, oa01_radians[0]);
-        assertEquals(0.13473716f, oa01_radians[1]);
-        assertEquals(0.1344073f, oa01_radians[2]);
+        assertEquals(0.13498464f, oa01_radians[0], 1.0e-6);
+        assertEquals(0.13473716f, oa01_radians[1], 1.0e-6);
+        assertEquals(0.1344073f, oa01_radians[2], 1.0e-6);
     }
 
-    @Test
-    @Ignore
+    @Test(expected = IllegalArgumentException.class)
     public void testGetTransmissionGasUnKnownBand() {
         GaseousAbsorptionAlgo algorithm = new GaseousAbsorptionAlgo();
-        float[] oza = {4, 5, 6};
-        float[] sza = {1, 2, 3};
-        float[] dummies = algorithm.getTransmissionGas("dummy", sza, oza);
-        assertNull(dummies);
+        algorithm.getTransmissionGas("dummy", new float[]{1, 2, 3}, new float[]{4, 5, 6});
     }
 }

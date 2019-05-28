@@ -28,27 +28,25 @@ import java.util.ArrayList;
  */
 public class GaseousAbsorptionAlgo {
 
-    public float getAtmosphericGas(String bandName) {
+    private float getAtmosphericGas(String bandName) {
         return 1;
     }
 
-    //idea MPs use wavelength instance of name.
-    public float getNormalizedConcentration(String bandName) {
+    private float getNormalizedConcentration(String bandName) {
         return 1;
     }
 
-    public float getExponential(float atmosphericGas, float normConcentration, float massAir) {
-        // to be confirm how the coofficient?
+    float getExponential(float atmosphericGas, float normConcentration, float massAir) {
         final float calValue = -atmosphericGas * normConcentration * massAir;
         return (float) Math.exp(calValue);
     }
 
-    public String[] gasToComputeForBand(String bandName) {
+    String[] gasToComputeForBand(String bandName) {
         GasToCompute gasToCompute = GasToCompute.valueOf(bandName);
         return gasToCompute.getGasBandToCompute();
     }
 
-    public float[] getMassAir(float[] sza, float[] oza) {
+    float[] getMassAir(float[] sza, float[] oza) {
         Assert.notNull(sza, "The sun zenith angel most not be null.");
         Assert.notNull(oza);
         float[] szaRad = SmileCorrectionUtils.convertDegreesToRadians(sza);
@@ -61,19 +59,15 @@ public class GaseousAbsorptionAlgo {
         return massAirs;
     }
 
-    public static float getMassAir(float szaRad, float ozaRad) {
+    private static float getMassAir(float szaRad, float ozaRad) {
         return (float) (1 / Math.cos(szaRad) + 1 / Math.cos(ozaRad));
     }
 
-    public float[] getTransmissionGas(String bandName, float[] sza, float[] oza) {
+    float[] getTransmissionGas(String bandName, float[] sza, float[] oza) {
         float[] calMassAirs = getMassAir(sza, oza);
         String[] gasesToCompute = gasToComputeForBand(bandName);
-        //todo mba/**** Ask MP to just use warning massage.
-        if (gasesToCompute == null) {
-            return null;
-//            throw new OperatorException("Gaseous absorption can not be applied to the band.");
-        }
-        final ArrayList<float[]> arrayListExponential = new ArrayList();
+
+        final ArrayList<float[]> arrayListExponential = new ArrayList<>();
 
         for (String gas : gasesToCompute) {
             final float calAtmosphericGas = getAtmosphericGas(gas);

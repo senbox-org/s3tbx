@@ -7,7 +7,6 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.Tile;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -31,12 +30,12 @@ public class RayleighCorrAlgorithmTest {
     private RayleighCorrAlgorithm algo;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         algo = new RayleighCorrAlgorithm("Oa%02d_radiance", 21);
     }
 
     @Test
-    public void testConvertToRadian() throws Exception {
+    public void testConvertToRadian() {
         double[] convertDegreesToRadians = SmileCorrectionUtils.convertDegreesToRadians(new double[]{50, 30, -1});
         assertEquals(0.872664626, convertDegreesToRadians[0], 1e-8);
         assertEquals(0.5235987756, convertDegreesToRadians[1], 1e-8);
@@ -45,7 +44,7 @@ public class RayleighCorrAlgorithmTest {
     }
 
     @Test
-    public void testCalculateRayleighCrossSection() throws Exception {
+    public void testCalculateRayleighCrossSection() {
         double[] sectionSigma = algo.getCrossSection(new double[]{1., 2.});
         assertEquals(2, sectionSigma.length);
         assertEquals(1.004158010817489E-9, sectionSigma[0], 1e-8);
@@ -53,7 +52,7 @@ public class RayleighCorrAlgorithmTest {
     }
 
     @Test
-    public void testCheckIn() throws Exception {
+    public void testCheckIn() {
         double[] n = new double[]{2.840904951095581,
                 17.638418197631836,
                 28.7684268951416,
@@ -73,8 +72,8 @@ public class RayleighCorrAlgorithmTest {
         assertTrue(c);
     }
 
-    @Test
-    public void testCorrectOzone() throws Exception {
+    @Test(expected = ArithmeticException.class)
+    public void testCorrectOzone() {
         int cosViewAngle = 1;
         int cosSunAngel = 1;
         int ozone = 1;
@@ -84,52 +83,40 @@ public class RayleighCorrAlgorithmTest {
         double corrOzone = algo.getCorrOzone(rayThickness, absorpO, ozone, cosSunAngel, cosViewAngle);
         assertEquals(1.002, corrOzone, 1e-3);
 
-        try {
-            cosSunAngel = 0;
-            cosViewAngle = 0;
-            corrOzone = algo.getCorrOzone(rayThickness, absorpO, ozone, cosSunAngel, cosViewAngle);
-            assertEquals(1.002, corrOzone, 1e-3);
-            fail("The sun angel and the view angle must not be zero.");
-        } catch (ArithmeticException e) {
-
-        }
+        cosSunAngel = 0;
+        cosViewAngle = 0;
+        corrOzone = algo.getCorrOzone(rayThickness, absorpO, ozone, cosSunAngel, cosViewAngle);
+        assertEquals(1.002, corrOzone, 1e-3);
+        fail("The sun angel and the view angle must not be zero.");
 
 
     }
 
-    @Test
-    public void testCorrectOzoneZeroDenominator() throws Exception {
-        try {
-            int cosViewAngle = 1;
-            int cosSunAngel = 1;
-            int ozone = 1;
-            int absorpO = 1;
-            int rayThickness = 1;
-            cosSunAngel = 0;
-            cosViewAngle = 0;
-            double corrOzone = algo.getCorrOzone(rayThickness, absorpO, ozone, cosSunAngel, cosViewAngle);
-            assertEquals(1.002, corrOzone, 1e-3);
-            fail("The sun angel and the view angle must not be zero.");
-        } catch (ArithmeticException e) {
-
-        }
-    }
-
-    @Test
-    public void testCorrectOzoneZero() throws Exception {
-        int cosViewAngle = 0;
+    @Test(expected = ArithmeticException.class)
+    public void testCorrectOzoneZeroDenominator() {
         int cosSunAngel = 0;
+        int cosViewAngle = 0;
+        int ozone = 1;
+        int absorpO = 1;
+        int rayThickness = 1;
+        double corrOzone = algo.getCorrOzone(rayThickness, absorpO, ozone, cosSunAngel, cosViewAngle);
+        assertEquals(1.002, corrOzone, 1e-3);
+        fail("The sun angel and the view angle must not be zero.");
+    }
+
+    @Test
+    public void testCorrectOzoneZero() {
+        int cosViewAngle = 1;
+        int cosSunAngel = 1;
         int ozone = 0;
         int absorpO = 0;
         int rayThickness = 0;
-        cosSunAngel = 1;
-        cosViewAngle = 1;
         double corrOzone = algo.getCorrOzone(rayThickness, absorpO, ozone, cosSunAngel, cosViewAngle);
         assertEquals(0.0, corrOzone, 1e-3);
     }
 
     @Test
-    public void testWaterVapor() throws Exception {
+    public void testWaterVapor() {
         double[] bWVTile = {1.0};
         double[] bWVRefTile = {1.0};
         double[] reflectances = {1.0};
@@ -138,7 +125,7 @@ public class RayleighCorrAlgorithmTest {
     }
 
     @Test
-    public void testThickness() throws Exception {
+    public void testThickness() {
         double latitude = 1.25;
         double altitude = 20.90;
         double seaLevelPressure = 0.8;
@@ -148,7 +135,7 @@ public class RayleighCorrAlgorithmTest {
     }
 
     @Test
-    public void testCrossSectionSigma() throws Exception {
+    public void testCrossSectionSigma() {
         Product product = new Product("dummy", "dummy");
         Band b1 = createBand("radiance_1", 1);
         Band b2 = createBand("radiance_2", 2);
@@ -171,21 +158,19 @@ public class RayleighCorrAlgorithmTest {
         return b1;
     }
 
-    @Ignore
     @Test
-    public void testGetRhoWithRayleighAux() throws Exception {
+    public void testGetRhoWithRayleighAux() {
         RayleighAux rayleighAux = getRayleighAux();
         double[] corrOzoneRefl = {1.0, 2.2};
         double[] rayleighOpticalThickness = {1.0, 2};
 
         double[] expectedRhoBrr = algo.getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
         assertEquals(2, expectedRhoBrr.length);
-//        assertArrayEquals(new double[]{1}, expectedRhoBrr, 1e-4);
 
     }
 
     @Test
-    public void testGetRho() throws Exception {
+    public void testGetRho() {
         ArrayList<double[]> interpolateValues = getInterpolationValues();
 
         double rayleighOpticalThickness = 1.0;
@@ -206,20 +191,6 @@ public class RayleighCorrAlgorithmTest {
         interpolateValues.add(new double[]{5.0, 6.0, 7.0, 8.0});
         interpolateValues.add(new double[]{9.0, 10.0, 11.0, 12.0});
         return interpolateValues;
-    }
-
-    @Test
-    public void testGetRayleighReflectance() throws Exception {
-        RayleighInput rayleighInput = getRayleighSample();
-        RayleighAux rayleighAux = getRayleighAux();
-        int indexOfArray = 1;
-        double[] absorptionOfBand = {1.0, 1.2};
-        double[] crossSectionSigma = {1.0, 1.2};
-
-       /* RayleighOutput rrExpected = algo.getRayleighReflectance(rayleighInput, rayleighAux, indexOfArray, absorptionOfBand, crossSectionSigma);
-        assertNotEquals(getRayleighSample().getSourceReflectance(), rrExpected.getSourceRayRefl());
-        assertNotEquals(getRayleighSample().getLowerReflectance(), rrExpected.getLowerRayRefl());
-        assertNotEquals(getRayleighSample().getUpperReflectance(), rrExpected.getUpperRayRefl());*/
     }
 
 
@@ -258,14 +229,4 @@ public class RayleighCorrAlgorithmTest {
         return mockTile;
     }
 
-    private RayleighInput getRayleighSample() {
-        int sourceReflectance = 5;
-        int lowerReflectance = 10;
-        int upperReflectance = 15;
-        int sourceIndex = 1;
-        int lowerWaterIndex = 1;
-        int upperWaterIndex = 1;
-
-        return new RayleighInput(sourceReflectance, lowerReflectance, upperReflectance, sourceIndex, lowerWaterIndex, upperWaterIndex);
-    }
 }
