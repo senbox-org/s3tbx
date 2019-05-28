@@ -161,11 +161,11 @@ public class RayleighCorrAlgorithmTest {
     @Test
     public void testGetRhoWithRayleighAux() {
         RayleighAux rayleighAux = getRayleighAux();
-        double[] corrOzoneRefl = {1.0, 2.2};
-        double[] rayleighOpticalThickness = {1.0, 2};
+        double[] corrOzoneRefl = {1.0, 2.2, 2.3, 1.7};
+        double[] rayleighOpticalThickness = {1.0, 2, 0.7, 1.3};
 
         double[] expectedRhoBrr = algo.getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
-        assertEquals(2, expectedRhoBrr.length);
+        assertEquals(4, expectedRhoBrr.length);
 
     }
 
@@ -226,6 +226,7 @@ public class RayleighCorrAlgorithmTest {
         when(mockTile.getMaxY()).thenReturn(1);
         when(mockTile.getMinY()).thenReturn(0);
         when(mockTile.getSampleDouble(0, 0)).thenReturn(1.0);
+        when(mockTile.getSamplesDouble()).thenReturn(new double[]{1.0, 2.0, 3.0, 4.0});
         return mockTile;
     }
 

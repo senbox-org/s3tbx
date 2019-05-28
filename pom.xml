@@ -548,7 +548,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.0.0-M3</version>
                     <configuration>
-                        <enableAssertions>true</enableAssertions>
+                        <enableAssertions>false</enableAssertions>
                         <!--<skip>true</skip>-->
                         <printSummary>true</printSummary>
                         <useFile>false</useFile>
