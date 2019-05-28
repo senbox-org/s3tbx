@@ -19,13 +19,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import ucar.nc2.Variable;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LonLatTiePointFunctionTest {
 
     @Test
-    //takes a lot of time
-    @Ignore
+    @Ignore("takes a lot of time")
     public void testApproximation() throws Exception {
 
         NcFile ncFile1 = null;
