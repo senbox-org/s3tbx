@@ -94,7 +94,7 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    @Ignore //set to ignore as test takes a few seconds
+    @Ignore("takes a few seconds")
     public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException {
         final String ncFileName = "met_tx.nc";
         final ImageSize targetImageSize = new ImageSize("in", 21687, 64, 6000, 130);
@@ -123,16 +123,19 @@ public class NcFileStitcherTest {
         assertEquals(DataType.FLOAT, variables.get(10).getDataType());
         assertEquals("snow_depth_tx", variables.get(27).getFullName());
         assertEquals(DataType.FLOAT, variables.get(27).getDataType());
-        assertEquals("long_name", variables.get(27).getAttributes().get(0).getFullName());
-        assertEquals("Snow liquid water equivalent depth", variables.get(27).getAttributes().get(0).getStringValue());
-        assertEquals("standard_name", variables.get(27).getAttributes().get(1).getFullName());
-        assertEquals("lwe_thickness_of_surface_snow_amount", variables.get(27).getAttributes().get(1).getStringValue());
-        assertEquals("units", variables.get(27).getAttributes().get(2).getFullName());
-        assertEquals("metre", variables.get(27).getAttributes().get(2).getStringValue());
-        assertEquals("model", variables.get(27).getAttributes().get(3).getFullName());
-        assertEquals("ECMWF_F", variables.get(27).getAttributes().get(3).getStringValue());
-        assertEquals("parameter", variables.get(27).getAttributes().get(4).getFullName());
-        assertEquals("141", variables.get(27).getAttributes().get(4).getStringValue());
+        List<Attribute> snowLiquidAttributes = variables.get(27).getAttributes();
+        assertEquals("_ChunkSize", snowLiquidAttributes.get(0).getFullName());
+        assertEquals("1 600 130 ", snowLiquidAttributes.get(0).getValues().toString());
+        assertEquals("long_name", snowLiquidAttributes.get(1).getFullName());
+        assertEquals("Snow liquid water equivalent depth", snowLiquidAttributes.get(1).getStringValue());
+        assertEquals("standard_name", snowLiquidAttributes.get(2).getFullName());
+        assertEquals("lwe_thickness_of_surface_snow_amount", snowLiquidAttributes.get(2).getStringValue());
+        assertEquals("units", snowLiquidAttributes.get(3).getFullName());
+        assertEquals("metre", snowLiquidAttributes.get(3).getStringValue());
+        assertEquals("model", snowLiquidAttributes.get(4).getFullName());
+        assertEquals("ECMWF_F", snowLiquidAttributes.get(4).getStringValue());
+        assertEquals("parameter", snowLiquidAttributes.get(5).getFullName());
+        assertEquals("141", snowLiquidAttributes.get(5).getStringValue());
 
         final List<Variable>[] inputFileVariables = new ArrayList[3];
         for (int i = 0; i < 3; i++) {
