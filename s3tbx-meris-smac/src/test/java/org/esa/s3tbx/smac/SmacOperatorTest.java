@@ -20,11 +20,14 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.GPF;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -38,10 +41,23 @@ public class SmacOperatorTest {
     private static final String PRODUCT_PATH = PRODUCT_URL.getPath();
 
     private static Product product;
+    private static Path smacTestOutput;
 
     @BeforeClass
     public static void setUp() throws Exception {
+        smacTestOutput = Files.createTempDirectory("smac");
         product = ProductIO.readProduct(PRODUCT_PATH);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        Files.walk(smacTestOutput).forEach(path -> {
+            try {
+                path.toFile().deleteOnExit();
+                Files.deleteIfExists(path);
+            } catch (IOException e) {
+            }
+        });
     }
 
     @Test
@@ -75,9 +91,9 @@ public class SmacOperatorTest {
         params.put("bandNames", new String[]{"radiance_5", "radiance_8", "radiance_9"});
 
         Product run1 = GPF.createProduct("SmacOP", params, product);
-        ProductIO.writeProduct(run1, "G:\\EOData\\temp\\smac\\smacRun1.dim", "BEAM-DIMAP");
+        ProductIO.writeProduct(run1, smacTestOutput.resolve("smacRun1.dim").toString(), "BEAM-DIMAP");
         Product run2 = GPF.createProduct("SmacOP", params, product);
-        ProductIO.writeProduct(run2, "G:\\EOData\\temp\\smac\\smacRun2.dim", "BEAM-DIMAP");
+        ProductIO.writeProduct(run2, smacTestOutput.resolve("smacRun2.dim").toString(), "BEAM-DIMAP");
 
         // if written and read in again, the results are different. Does the DIMAP writer and reader change the data?
 //        run1.dispose();
