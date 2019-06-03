@@ -4,13 +4,16 @@
       "id": "S3A_SY_2_SYN____20160415T110058",
       "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_SYN____20160415T110058_20160415T110845_20160502T125457_0466_003_094______LN1_D_NC____.SEN3",
       "description": "S3A_SY_2_SYN v1"
-
     },
     {
       "id": "S3A_SY_2_SYN____20190426T012843",
       "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_SYN____20190426T012843_20190426T013143_20190427T131355_0179_044_074_2340_LN2_O_NT_002.SEN3",
       "description": "S3A_SY_2_SYN v2"
-
+    },
+    {
+      "id": "S3B_SY_2_SYN____20190601T135821",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3B_SY_2_SYN____20190601T135821_20190601T140121_20190603T030203_0179_026_067_3240_LN2_O_NT_002.SEN3",
+      "description": "S3B_SY_2_SYN"
     },
     {
       "id": "S3A_SY_2_VG1____20130621T100922",
@@ -54,6 +57,11 @@
       "id": "S3A_SL_1_RBT____20170813T042028",
       "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3A_SL_1_RBT____20170813T042028_20170813T042328_20170814T092642_0179_021_076_6599_LN2_O_NT_002.SEN3",
       "description": "S3A_SL_1_RBT v3"
+    },
+    {
+      "id": "S3B_SL_1_RBT____20190603T025704",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3B_SL_1_RBT____20190603T025704_20190603T030004_20190603T043818_0179_026_089_3060_LN2_O_NR_003.SEN3",
+      "description": "S3B_SL_1_RBT"
     },
     {
       "id": "S3A_SL_2_LST____20160329T084522",
