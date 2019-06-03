@@ -51,7 +51,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@SuppressWarnings({"UnusedDeclaration", "MismatchedReadAndWriteOfArray, FieldCanBeLocal"})
+@SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"})
 @OperatorMetadata(alias = "SmacOp",
         category = "Optical/Thematic Land Processing",
         version = "1.5.205",
