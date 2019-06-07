@@ -51,7 +51,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@SuppressWarnings({"UnusedDeclaration", "MismatchedReadAndWriteOfArray, FieldCanBeLocal"})
+@SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"})
 @OperatorMetadata(alias = "SmacOp",
         category = "Optical/Thematic Land Processing",
         version = "1.5.205",
@@ -148,6 +148,8 @@ public class SmacOperator extends Operator {
 
     @TargetProduct(label = "SMAC product")
     private Product targetProduct;
+    private Mask mask;
+    private Mask forwardMask;
 
     public SmacOperator() {
         inputBandList = new ArrayList<>();
@@ -290,7 +292,7 @@ public class SmacOperator extends Operator {
                 } else {
                     logger.warning(
                             "The requested band '" + bandName +
-                                    "' is not a spectral band and will be excluded from processing");
+                            "' is not a spectral band and will be excluded from processing");
                 }
             }
         }
@@ -436,31 +438,41 @@ public class SmacOperator extends Operator {
         } else {
             logger.info("Using mask expression: " + maskExpression);
         }
-        Mask mask = sourceProduct.addMask(SMAC_MASK, maskExpression, "", Color.BLACK, 0.0);
-        mask.setValidPixelExpression(maskExpression);
+        mask = createMaskRaster(SMAC_MASK, maskExpression);
+
     }
 
     // Creates an AATSR bitmask term given the bitmask expression from the request. If no expression is set, it uses the
     // default expression
     private void createAatsrMask() {
-        Mask mask;
-        Mask forwardMask;
         if ("".equalsIgnoreCase(maskExpression)) {
-            mask = sourceProduct.addMask(SMAC_MASK, DEFAULT_NADIR_FLAGS_VALUE, "", Color.BLACK, 0.0);
-            forwardMask = sourceProduct.addMask(SMAC_MASK_FORWARD, DEFAULT_FORWARD_FLAGS_VALUE, "", Color.BLACK, 0.0);
+            mask = createMaskRaster(SMAC_MASK, DEFAULT_NADIR_FLAGS_VALUE);
+
+            forwardMask = createMaskRaster(SMAC_MASK_FORWARD, DEFAULT_FORWARD_FLAGS_VALUE);
 
             logger.warning("No mask expression defined");
             logger.warning("Using default nadir mask expression: " + DEFAULT_NADIR_FLAGS_VALUE);
             logger.warning("Using default forward mask expression: " + DEFAULT_FORWARD_FLAGS_VALUE);
         } else {
-            mask = sourceProduct.addMask(SMAC_MASK, maskExpression, "", Color.BLACK, 0.0);
-            forwardMask = sourceProduct.addMask(SMAC_MASK_FORWARD, maskExpressionForward, "", Color.BLACK, 0.0);
+            mask = createMaskRaster(SMAC_MASK, maskExpression);
+
+            forwardMask = createMaskRaster(SMAC_MASK_FORWARD, maskExpressionForward);
 
             logger.info("Using nadir mask expression: " + maskExpression);
             logger.info("Using forward mask expression: " + maskExpressionForward);
         }
         mask.setValidPixelExpression(maskExpression);
         forwardMask.setValidPixelExpression(maskExpressionForward);
+    }
+
+    private Mask createMaskRaster(String smacMaskForward, String maskExpressionForward) {
+        Mask forwardMask;
+        forwardMask = Mask.BandMathsType.create(smacMaskForward, "",
+                                                sourceProduct.getSceneRasterWidth(),
+                                                sourceProduct.getSceneRasterHeight(),
+                                                maskExpressionForward, Color.BLACK, 0.0);
+        forwardMask.setOwner(getSourceProduct());
+        return forwardMask;
     }
 
     private Path initAuxdataInstallDir() {
@@ -552,7 +564,6 @@ public class SmacOperator extends Operator {
         float[] uo3 = dobsonToCmAtm(sourceData.uo3);
         float[] uh2o = relativeHumidityTogcm2(sourceData.uh2o);
 
-        Mask mask = sourceProduct.getMaskGroup().get(SMAC_MASK);
         int i = 0;
         for (int absY = targetRectangle.y; absY < targetRectangle.y + targetRectangle.height; absY++) {
             checkForCancellation();
@@ -573,14 +584,12 @@ public class SmacOperator extends Operator {
     // Processes MERIS data.
     private void processMeris(Band spectralBand, SourceData sourceData, Tile targetTile, Rectangle targetRectangle, SmacAlgorithm algorithm) throws IOException {
         if (!setBandCoefficients(spectralBand.getName(), algorithm)) {
-            logger.severe("Sensor coefficient file for spectral band '" + spectralBand.getName() +
-                                  "' not found!");
+            logger.severe(String.format("Sensor coefficient file for spectral band '%s' not found!", spectralBand.getName()));
             return;
         }
 
         float[] reflectances = RsMathUtils.radianceToReflectance(sourceData.toa, sourceData.sza, spectralBand.getSolarFlux(), null);
 
-        Mask mask = sourceProduct.getMaskGroup().get(SMAC_MASK);
         int i = 0;
         for (int absY = targetRectangle.y; absY < targetRectangle.y + targetRectangle.height; absY++) {
             checkForCancellation();
@@ -602,7 +611,7 @@ public class SmacOperator extends Operator {
     private void processAatsr(String bandName, SourceData sourceData, Tile targetTile, Rectangle targetRectangle, SmacAlgorithm algorithm) throws IOException {
         if (!setBandCoefficients(bandName, algorithm)) {
             logger.severe("Sensor coefficient file for spectral band '" + bandName +
-                                  "' not found!");
+                          "' not found!");
             return;
         }
 
@@ -610,24 +619,24 @@ public class SmacOperator extends Operator {
 
         // set the tie point bands and mask according to input band view
         // and scale sun and view elevation to zenith angles
-        Mask mask;
+        Mask localMask;
         float[] vza;
         float[] sza;
         if (isForwardBand) {
             vza = RsMathUtils.elevationToZenith(sourceData.vzaFwd, null);
             sza = RsMathUtils.elevationToZenith(sourceData.szaFwd, null);
-            mask = sourceProduct.getMaskGroup().get(SMAC_MASK_FORWARD);
+            localMask = forwardMask;
         } else {
             vza = RsMathUtils.elevationToZenith(sourceData.vza, null);
             sza = RsMathUtils.elevationToZenith(sourceData.sza, null);
-            mask = sourceProduct.getMaskGroup().get(SMAC_MASK);
+            localMask = mask;
         }
 
         int i = 0;
         for (int absY = targetRectangle.y; absY < targetRectangle.y + targetRectangle.height; absY++) {
             checkForCancellation();
             for (int absX = targetRectangle.x; absX < targetRectangle.x + targetRectangle.width; absX++) {
-                sourceData.process[i] = mask.getSampleInt(absX, absY) != 0;
+                sourceData.process[i] = localMask.getSampleInt(absX, absY) != 0;
                 i++;
             }
         }
@@ -639,7 +648,6 @@ public class SmacOperator extends Operator {
 
         targetTile.setSamples(toa_corr);
     }
-
 
     private boolean setBandCoefficients(String bandName, SmacAlgorithm algorithm) {
         if (coefficients.containsKey(bandName)) {
@@ -691,22 +699,22 @@ public class SmacOperator extends Operator {
     // Converts an array of ozone contents in DU to cm *atm
     private static float[] dobsonToCmAtm(float[] du) {
         Assert.notNull(du, "du");
+        final float[] ret = new float[du.length];
         for (int n = 0; n < du.length; n++) {
-            du[n] = du[n] * duToCmAtm;
+            ret[n] = du[n] * duToCmAtm;
         }
-        return du;
+        return ret;
     }
 
     // Converts an array of relative humidity values (in %) to water vapour content in g/cm^2. This method uses a simple
     // linear relation without plausibility checks
     private static float[] relativeHumidityTogcm2(float[] relHum) {
         Assert.notNull(relHum, "relHum");
-
+        final float[] ret = new float[relHum.length];
         for (int n = 0; n < relHum.length; n++) {
-            relHum[n] = relHumTogcm * relHum[n];
+            ret[n] = relHumTogcm * relHum[n];
         }
-
-        return relHum;
+        return ret;
     }
 
     public static class Spi extends OperatorSpi {
