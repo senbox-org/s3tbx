@@ -148,8 +148,8 @@ public class SmacOperator extends Operator {
 
     @TargetProduct(label = "SMAC product")
     private Product targetProduct;
-    private Mask mask;
-    private Mask forwardMask;
+    private Mask smacMask;
+    private Mask smacMaskForward;
 
     public SmacOperator() {
         inputBandList = new ArrayList<>();
@@ -438,7 +438,7 @@ public class SmacOperator extends Operator {
         } else {
             logger.info("Using mask expression: " + maskExpression);
         }
-        mask = createMaskRaster(SMAC_MASK, maskExpression);
+        smacMask = createMaskRaster(SMAC_MASK, maskExpression);
 
     }
 
@@ -446,23 +446,23 @@ public class SmacOperator extends Operator {
     // default expression
     private void createAatsrMask() {
         if ("".equalsIgnoreCase(maskExpression)) {
-            mask = createMaskRaster(SMAC_MASK, DEFAULT_NADIR_FLAGS_VALUE);
+            smacMask = createMaskRaster(SMAC_MASK, DEFAULT_NADIR_FLAGS_VALUE);
 
-            forwardMask = createMaskRaster(SMAC_MASK_FORWARD, DEFAULT_FORWARD_FLAGS_VALUE);
+            smacMaskForward = createMaskRaster(SMAC_MASK_FORWARD, DEFAULT_FORWARD_FLAGS_VALUE);
 
             logger.warning("No mask expression defined");
             logger.warning("Using default nadir mask expression: " + DEFAULT_NADIR_FLAGS_VALUE);
             logger.warning("Using default forward mask expression: " + DEFAULT_FORWARD_FLAGS_VALUE);
         } else {
-            mask = createMaskRaster(SMAC_MASK, maskExpression);
+            smacMask = createMaskRaster(SMAC_MASK, maskExpression);
 
-            forwardMask = createMaskRaster(SMAC_MASK_FORWARD, maskExpressionForward);
+            smacMaskForward = createMaskRaster(SMAC_MASK_FORWARD, maskExpressionForward);
 
             logger.info("Using nadir mask expression: " + maskExpression);
             logger.info("Using forward mask expression: " + maskExpressionForward);
         }
-        mask.setValidPixelExpression(maskExpression);
-        forwardMask.setValidPixelExpression(maskExpressionForward);
+        smacMask.setValidPixelExpression(maskExpression);
+        smacMaskForward.setValidPixelExpression(maskExpressionForward);
     }
 
     private Mask createMaskRaster(String smacMaskForward, String maskExpressionForward) {
@@ -471,6 +471,7 @@ public class SmacOperator extends Operator {
                                                 sourceProduct.getSceneRasterWidth(),
                                                 sourceProduct.getSceneRasterHeight(),
                                                 maskExpressionForward, Color.BLACK, 0.0);
+
         forwardMask.setOwner(getSourceProduct());
         return forwardMask;
     }
@@ -507,6 +508,13 @@ public class SmacOperator extends Operator {
         ProductUtils.copyBand(EnvisatConstants.MERIS_AMORGOS_L1B_ALTIUDE_BAND_NAME, sourceProduct, targetProduct, true);
 
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
+
+        if (smacMask != null) {
+            targetProduct.addMask(smacMask);
+        }
+        if (smacMaskForward != null) {
+            targetProduct.addMask(smacMaskForward);
+        }
     }
 
     private void addBandsToOutput(String description, boolean convertMerisName) {
@@ -568,7 +576,7 @@ public class SmacOperator extends Operator {
         for (int absY = targetRectangle.y; absY < targetRectangle.y + targetRectangle.height; absY++) {
             checkForCancellation();
             for (int absX = targetRectangle.x; absX < targetRectangle.x + targetRectangle.width; absX++) {
-                sourceData.process[i] = mask.getSampleInt(absX, absY) != 0;
+                sourceData.process[i] = smacMask.getSampleInt(absX, absY) != 0;
                 i++;
             }
         }
@@ -594,7 +602,7 @@ public class SmacOperator extends Operator {
         for (int absY = targetRectangle.y; absY < targetRectangle.y + targetRectangle.height; absY++) {
             checkForCancellation();
             for (int absX = targetRectangle.x; absX < targetRectangle.x + targetRectangle.width; absX++) {
-                sourceData.process[i] = mask.getSampleInt(absX, absY) != 0;
+                sourceData.process[i] = smacMask.getSampleInt(absX, absY) != 0;
                 i++;
             }
         }
@@ -625,11 +633,11 @@ public class SmacOperator extends Operator {
         if (isForwardBand) {
             vza = RsMathUtils.elevationToZenith(sourceData.vzaFwd, null);
             sza = RsMathUtils.elevationToZenith(sourceData.szaFwd, null);
-            localMask = forwardMask;
+            localMask = smacMaskForward;
         } else {
             vza = RsMathUtils.elevationToZenith(sourceData.vza, null);
             sza = RsMathUtils.elevationToZenith(sourceData.sza, null);
-            localMask = mask;
+            localMask = smacMask;
         }
 
         int i = 0;
