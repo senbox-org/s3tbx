@@ -26,7 +26,7 @@
     <artifactId>s3tbx-olci-radiometry</artifactId>
     <packaging>nbm</packaging>
 
-    <name>OLCI Radiometric Correction</name>
+    <name>Sentinel-3 OLCI Radiometric Correction</name>
     <description>Performs radiometric corrections on OLCI data products.</description>
 
     <dependencies>
@@ -108,7 +108,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
         </dependency>
     </dependencies>
 
