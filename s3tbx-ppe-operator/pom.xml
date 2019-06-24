@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>s3tbx-ppe-operator</artifactId>
-    <name>OLCI PPE Filtering</name>
+    <name>Sentinel-3 OLCI PPE Filtering</name>
     <version>7.0.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
     <description>SNAP operator implementing an algorithm for detection and removal of Prompt Particle Events.
