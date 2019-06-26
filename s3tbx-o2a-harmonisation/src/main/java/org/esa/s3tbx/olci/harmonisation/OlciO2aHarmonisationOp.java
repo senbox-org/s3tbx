@@ -1,7 +1,11 @@
 package org.esa.s3tbx.olci.harmonisation;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -11,11 +15,12 @@ import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.math.MathUtils;
 import org.json.simple.parser.ParseException;
 import smile.neighbor.KDTree;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
@@ -66,7 +71,6 @@ public class OlciO2aHarmonisationOp extends Operator {
     private TiePointGrid ozaBand;
 
     private RasterDataNode demAltitudeBand;
-    private RasterDataNode collocationFlagsBand;
     private RasterDataNode altitudeBand;
     private RasterDataNode slpBand;
     private Band detectorIndexBand;
@@ -90,7 +94,7 @@ public class OlciO2aHarmonisationOp extends Operator {
             initDesmileAuxdata();
         } catch (IOException | ParseException e) {
             e.printStackTrace();
-            throw new OperatorException("Cannit initialize auxdata for desmile of transmissions - exiting.");
+            throw new OperatorException("Cannot initialize auxdata for desmile of transmissions - exiting.");
         }
 
         szaBand = l1bProduct.getTiePointGrid("SZA");
@@ -100,8 +104,14 @@ public class OlciO2aHarmonisationOp extends Operator {
 
         altitudeBand = l1bProduct.getBand("altitude");
 
-        if (alternativeAltitudeBandName != null && alternativeAltitudeBandName.length() > 0) {
-            demAltitudeBand = l1bProduct.getBand(alternativeAltitudeBandName);
+        if (StringUtils.isNotNullAndNotEmpty(alternativeAltitudeBandName)) {
+            if(l1bProduct.containsBand(alternativeAltitudeBandName)) {
+                demAltitudeBand = l1bProduct.getBand(alternativeAltitudeBandName);
+            } else {
+                String message = String.format("Specified alternative altitude band '%s' is not contained in OLCI L1B product.",
+                                               alternativeAltitudeBandName);
+                throw new OperatorException(message);
+            }
         }
 
         radianceBands = new Band[5];
