@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
  *
  * @author olafd
  */
-public class OlciHarmonisationIO {
+class OlciHarmonisationIO {
 
     /**
      * Validates the OLCI L1b source product.
      *
      * @param l1bProduct - the L1b product
      */
-    public static void validateSourceProduct(Product l1bProduct) {
+    static void validateSourceProduct(Product l1bProduct) {
         if (!l1bProduct.getProductType().contains("OL_1")) {
             // current products have product type 'OL_1_ERR'
             throw new OperatorException("Input product does not seem to be an OLCI L1b product. " +
@@ -44,10 +44,13 @@ public class OlciHarmonisationIO {
      * @param demProduct - the DEM product
      * @param altitudeBandName - the specified altitude band name
      */
-    public static void validateDemProduct(Product demProduct, String altitudeBandName) {
+    static void validateDemProduct(Product demProduct, String altitudeBandName) {
         if (!demProduct.containsBand(altitudeBandName)) {
-            throw new OperatorException("Optional DEM product does not contain specified altitude band '" +
+            throw new OperatorException("DEM product does not contain specified altitude band '" +
                                                 altitudeBandName + "' - exiting.");
+        }
+        if (demProduct.getSceneGeoCoding() == null) {
+            throw new OperatorException("DEM product is not geo-coded.");
         }
     }
 
@@ -59,7 +62,7 @@ public class OlciHarmonisationIO {
      *
      * @return double
      */
-    public static double parseJSONDouble(JSONObject jsonObject, String variableName) {
+    static double parseJSONDouble(JSONObject jsonObject, String variableName) {
         return (double) jsonObject.get(variableName);
     }
 
@@ -71,7 +74,7 @@ public class OlciHarmonisationIO {
      *
      * @return int
      */
-    public static long parseJSONInt(JSONObject jsonObject, String variableName) {
+    static long parseJSONInt(JSONObject jsonObject, String variableName) {
         return (Long) jsonObject.get(variableName);
     }
 
@@ -83,7 +86,7 @@ public class OlciHarmonisationIO {
      *
      * @return double[]
      */
-    public static double[] parseJSON1DimDoubleArray(JSONObject jsonObject, String variableName) {
+    static double[] parseJSON1DimDoubleArray(JSONObject jsonObject, String variableName) {
         JSONArray jsonArray = (JSONArray) jsonObject.get(variableName);
         List<Double> doubleList = (List<Double>) jsonArray.stream().collect(Collectors.toList());
         return Doubles.toArray(doubleList);
@@ -97,7 +100,7 @@ public class OlciHarmonisationIO {
      *
      * @return String[]
      */
-    public static String[] parseJSON1DimStringArray(JSONObject jsonObject, String variableName) {
+    static String[] parseJSON1DimStringArray(JSONObject jsonObject, String variableName) {
         JSONArray jsonArray = (JSONArray) jsonObject.get(variableName);
         List<String> stringList = (List<String>) jsonArray.stream().collect(Collectors.toList());
         return stringList.toArray(new String[stringList.size()]);
@@ -111,7 +114,7 @@ public class OlciHarmonisationIO {
      *
      * @return double[][]
      */
-    public static double[][] parseJSON2DimDoubleArray(JSONObject jsonObject, String variableName) {
+    static double[][] parseJSON2DimDoubleArray(JSONObject jsonObject, String variableName) {
         final JSONArray jsonArray1 = (JSONArray) jsonObject.get(variableName);
 
         final int dim1 = jsonArray1.size();
@@ -139,7 +142,7 @@ public class OlciHarmonisationIO {
      *
      * @return double[][][]
      */
-    public static double[][][] parseJSON3DimDoubleArray(JSONObject jsonObject, String variableName) {
+    static double[][][] parseJSON3DimDoubleArray(JSONObject jsonObject, String variableName) {
         final JSONArray jsonArray1 = (JSONArray) jsonObject.get(variableName);
 
         final int dim1 = jsonArray1.size();
@@ -171,7 +174,7 @@ public class OlciHarmonisationIO {
      *
      * @return the KDTree object
      */
-    public static KDTree<double[]> createKDTreeForDesmileInterpolation(DesmileLut desmileLut) {
+    static KDTree<double[]> createKDTreeForDesmileInterpolation(DesmileLut desmileLut) {
         return new KDTree<>(desmileLut.getX(), desmileLut.getX());
     }
 
@@ -186,7 +189,7 @@ public class OlciHarmonisationIO {
      * @throws IOException -
      * @throws ParseException -
      */
-    public static DesmileLut createDesmileLut(Path auxdataPath, int bandIndex) throws IOException, ParseException {
+    static DesmileLut createDesmileLut(Path auxdataPath, int bandIndex) throws IOException, ParseException {
         final String jsonFilename = "O2_desmile_lut_" + bandIndex + ".json";
         final Path jsonPath =  auxdataPath.resolve(jsonFilename);
         JSONParser jsonParser = new JSONParser();
