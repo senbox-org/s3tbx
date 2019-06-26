@@ -5,15 +5,15 @@ package org.esa.s3tbx.olci.harmonisation;
  *
  * @author olafd
  */
-public class OlciHarmonisationConstants {
+class OlciHarmonisationConstants {
 
-    public static int OLCI_INVALID_BIT = 25;
+    static int OLCI_INVALID_BIT = 25;
 
     // for bands 13-15, taken from O2_tra2recti_model_coeff_*.json:
-    public static double[] cwvl = {761.726, 764.825, 767.917};
+    static double[] cwvl = {761.726, 764.825, 767.917};
 
     //
-    public static double[][] DWL_CORR_OFFSET = {
+    static double[][] DWL_CORR_OFFSET = {
             {
                     0.0,-0.1,-0.15,-0.15,-0.25
             },
@@ -26,7 +26,7 @@ public class OlciHarmonisationConstants {
     };
 
     // for bands 13-15, taken from O2_tra2recti_model_coeff_*.json:
-    public static double[][] pCoeffsRectification = {
+    static double[][] pCoeffsRectification = {
             {
                     1.9281088925186658,
                     0.8611327564752951,
@@ -66,7 +66,7 @@ public class OlciHarmonisationConstants {
     };
 
     // for bands 13-15, taken from O2_tra2press_model_coeff_*.json:
-    public static double[][] pCoeffsTra2Press = {
+    static double[][] pCoeffsTra2Press = {
             {
                     1995.7143317076086,
                     -3769.722768661591,
@@ -85,7 +85,7 @@ public class OlciHarmonisationConstants {
     };
 
     // for bands 13-15, taken from O2_press2tra_model_coeff_*.json:
-    public static double[][] pCoeffsPress2Tra = {
+    static double[][] pCoeffsPress2Tra = {
             {
                     0.010869397727187936,
                     0.0012156679747751865,

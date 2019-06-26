@@ -44,19 +44,12 @@
 
 <p class="i1">
     <b>OLCI L1b product: </b>
-    Used to select the OLCI L1b source product.  Use the <b>...</b> button to
+    Used to select the OLCI L1b source product.
+    The source product can also be a 'compatible' OLCI L1b product, i.e. being collocated with a DEM
+    product in a preprocessing step to add an alternative altitude band. However, in any case, all OLCI L1b
+    source bands must be included.
+    Use the <b>...</b> button to
     open a data product currently not opened in the Sentinel Toolbox.
-</p>
-
-<p class="i1">
-    <b>DEM product (optional): </b>
-    Used to select an optional source product providing an alternative DEM to be used instead of the altitude
-    information provided with the L1b product. This can be an improvement in certain cases, e.g. over central Greenland
-    where the OLCI altitudes are known to contain some artefacts. Use the <b>...</b> button to
-    open a data product currently not opened in the Sentinel Toolbox. - If a DEM product is selected, it is
-    internally collocated
-    with the OLCI L1b product, the latter one being the master product. Hence, if the collocation region is not fully
-    covered by the alternative DEM, the L1b altitude is used in the missing regions.
 </p>
 
 <h5>Target Product Group</h5>
@@ -83,9 +76,10 @@
 <p align="center"><img src="../images/gui_parms.png"></p>
 
 <p class="i1">
-    <b>Name of DEM altitude band: </b><br>
-    The name of the DEM altitude band in the optional DEM product. If no DEM product is specified, this parameter
-    has no effect. There is no default altitude band name.
+    <b>Name of alternative altitude band: </b><br>
+    The name of an alternative altitude band in the source product.
+    If no name is specified or no band with the given name exists in the source product, this parameter
+    has no effect. There is no default alternative altitude band name.
 </p>
 
 <p class="i1">

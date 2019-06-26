@@ -1,14 +1,7 @@
 package org.esa.s3tbx.olci.harmonisation;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.collocation.CollocateOp;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.PixelPos;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -22,41 +15,39 @@ import org.esa.snap.core.util.math.MathUtils;
 import org.json.simple.parser.ParseException;
 import smile.neighbor.KDTree;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 /**
- * Performs Harmonisation on OLCI L1b product.
- * Authors: R.Preusker (algorithm, Python breadboard), O.Danne (Java conversion), May 2018
+ * Performs O2A band harmonisation on OLCI L1b product.
+ * Authors: R.Preusker (algorithm, Python breadboard), O.Danne, M.Peters (Java conversion), 2018-2019
  * <p/>
  *
  * @author Rene Preusker
  * @author Olaf Danne
+ * @author Marco Peters
  */
 @OperatorMetadata(alias = "OlciO2aHarmonisation", version = "1.1",
-        authors = "R.Preusker, O.Danne",
+        authors = "R.Preusker, O.Danne, M.Peters",
         category = "Optical/Preprocessing",
         copyright = "Copyright (C) 2018 by Brockmann Consult",
         description = "Performs O2A band harmonisation on OLCI L1b product.")
 public class OlciO2aHarmonisationOp extends Operator {
 
-    @SourceProduct(description = "OLCI L1b product",
+    @SourceProduct(description = "OLCI L1b or fully compatible product. " +
+            "May contain an optional altitude band, i.e. introduced from an external DEM.",
             label = "OLCI L1b product")
     private Product l1bProduct;
-
-    @SourceProduct(description = "DEM product (possible improvement compared to OLCI altitude band)",
-            optional = true,
-            label = "DEM product")
-    private Product demProduct;
 
     @TargetProduct
     private Product targetProduct;
 
-    @Parameter(description = "Name of altitude band in optional DEM file. Altitude is expected in meters.",
-            label = "Name of DEM altitude band")
-    private String demAltitudeBandName;
+    @Parameter(description = "Name of alternative altitude band in source product " +
+            "(i.e. introduced from an external DEM). Altitude is expected in meters.",
+            label = "Name of alternative altitude band")
+    private String alternativeAltitudeBandName;
 
     @Parameter(defaultValue = "true",
             description = "If set to true, only band 13 needed for cloud detection will be processed, otherwise bands 13-15.",
@@ -88,8 +79,6 @@ public class OlciO2aHarmonisationOp extends Operator {
     private KDTree<double[]>[] desmileKdTrees;
     private DesmileLut[] desmileLuts;
 
-    private Product collocatedDemProduct;
-
     @Override
     public void initialize() throws OperatorException {
         lastBandToProcess = processOnlyBand13 ? 13 : 15;
@@ -110,16 +99,10 @@ public class OlciO2aHarmonisationOp extends Operator {
         detectorIndexBand = l1bProduct.getBand("detector_index");
 
         altitudeBand = l1bProduct.getBand("altitude");
-        if (demProduct != null) {
-            OlciHarmonisationIO.validateDemProduct(demProduct, demAltitudeBandName);
-            collocatedDemProduct = demProduct;
-            if (!isDemProductCollocated()) {
-                collocatedDemProduct = collocateDemProduct();
-            }
-            demAltitudeBand = collocatedDemProduct.getRasterDataNode(demAltitudeBandName);
-            collocationFlagsBand = collocatedDemProduct.getRasterDataNode("collocation_flags");
+
+        if (alternativeAltitudeBandName != null && alternativeAltitudeBandName.length() > 0) {
+            demAltitudeBand = l1bProduct.getBand(alternativeAltitudeBandName);
         }
-//        setTargetProduct(collocatedDemProduct);  //  test
 
         radianceBands = new Band[5];
         cwlBands = new Band[5];
@@ -144,10 +127,8 @@ public class OlciO2aHarmonisationOp extends Operator {
         final Tile ozaTile = getSourceTile(ozaBand, targetRectangle);
         final Tile altitudeTile = getSourceTile(altitudeBand, targetRectangle);
         Tile demAltitudeTile = null;
-        Tile collocationFlagsTile = null;
         if (demAltitudeBand != null) {
             demAltitudeTile = getSourceTile(demAltitudeBand, targetRectangle);
-            collocationFlagsTile = getSourceTile(collocationFlagsBand, targetRectangle);
         }
         final Tile slpTile = getSourceTile(slpBand, targetRectangle);
         final Tile detectorIndexTile = getSourceTile(detectorIndexBand, targetRectangle);
@@ -172,11 +153,12 @@ public class OlciO2aHarmonisationOp extends Operator {
                     // Preparing input data...
                     final double sza = szaTile.getSampleDouble(x, y);
                     final double oza = ozaTile.getSampleDouble(x, y);
-                    double altitude = altitudeTile.getSampleDouble(x, y);
+                    double altitude;
                     // if all info from DEM is present, use DEM altitude:
-                    if (demAltitudeTile != null && collocationFlagsTile != null &&
-                            collocationFlagsTile.getSampleInt(x, y) == 1) {
+                    if (demAltitudeTile != null) {
                         altitude = demAltitudeTile.getSampleDouble(x, y);
+                    } else {
+                        altitude = altitudeTile.getSampleDouble(x, y);
                     }
 
                     final double slp = slpTile.getSampleDouble(x, y);
@@ -249,7 +231,6 @@ public class OlciO2aHarmonisationOp extends Operator {
                 }
             }
         }
-
     }
 
     private void initDesmileAuxdata() throws IOException, ParseException {
@@ -278,7 +259,7 @@ public class OlciO2aHarmonisationOp extends Operator {
             surfaceBand.setUnit("dl");
             if (writeHarmonisedRadiances) {
                 Band radianceBand = targetProduct.addBand("radiance_" + i, ProductData.TYPE_FLOAT32);
-                final String unit = l1bProduct.getBand("OA01_radiance").getUnit();
+                final String unit = l1bProduct.getBand("OA12_radiance").getUnit();
                 radianceBand.setUnit(unit);
             }
         }
@@ -292,44 +273,6 @@ public class OlciO2aHarmonisationOp extends Operator {
 
         setTargetProduct(targetProduct);
     }
-
-    private boolean isDemProductCollocated() {
-        final int w1 = l1bProduct.getSceneRasterWidth();
-        final int h1 = l1bProduct.getSceneRasterHeight();
-        final int w2 = demProduct.getSceneRasterWidth();
-        final int h2 = demProduct.getSceneRasterHeight();
-        if (w1 != w2 || h1 != h2) {
-            return false;
-        }
-
-        final GeoCoding gc1 = l1bProduct.getSceneGeoCoding();
-        final GeoCoding gc2 = demProduct.getSceneGeoCoding();
-        if (gc1.getGeoPos(new PixelPos(0, 0), null).getLat() != gc2.getGeoPos(new PixelPos(0, 0), null).getLat()) {
-            return false;
-        }
-        if (gc1.getGeoPos(new PixelPos(0, 0), null).getLon() != gc2.getGeoPos(new PixelPos(0, 0), null).getLon()) {
-            return false;
-        }
-        if (gc1.getGeoPos(new PixelPos(w1 - 1, h1 - 1), null).getLat() != gc2.getGeoPos(new PixelPos(w2 - 1, h2 - 1), null).getLat()) {
-            return false;
-        }
-        if (gc1.getGeoPos(new PixelPos(w1 - 1, h1 - 1), null).getLon() != gc2.getGeoPos(new PixelPos(w2 - 1, h2 - 1), null).getLon()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private Product collocateDemProduct() {
-        CollocateOp op = new CollocateOp();
-        op.setParameterDefaultValues();
-        op.setMasterProduct(l1bProduct);
-        op.setSlaveProduct(demProduct);
-        op.setParameter("renameMasterComponents", false);
-        op.setParameter("renameSlaveComponents", false);
-        return op.getTargetProduct();
-    }
-
 
     public static class Spi extends OperatorSpi {
 

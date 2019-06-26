@@ -31,35 +31,27 @@ class OlciHarmonisationIO {
      * @param l1bProduct - the L1b product
      */
     static void validateSourceProduct(Product l1bProduct) {
-        if (!l1bProduct.getProductType().contains("OL_1")) {
-            // current products have product type 'OL_1_ERR'
-            throw new OperatorException("Input product does not seem to be an OLCI L1b product. " +
-                                                "Product type must start with 'OL_1_'.");
+        boolean containsRequiredBands = l1bProduct.getBand("detector_index") != null &&
+                l1bProduct.getBand("altitude") != null;
+        for (int i = 1; i <= 21; i++) {
+            containsRequiredBands = containsRequiredBands &&
+                    l1bProduct.getBand("Oa" + String.format("%02d" , i) + "_radiance") != null &&
+                    l1bProduct.getBand("lambda0_band_" + i) != null &&
+                    l1bProduct.getBand("FWHM_band_" + i) != null &&
+                    l1bProduct.getBand("solar_flux_band_" + i) != null;
         }
-    }
 
-    /**
-     * Validates the optional DEM source product.
-     *
-     * @param demProduct - the DEM product
-     * @param altitudeBandName - the specified altitude band name
-     */
-    static void validateDemProduct(Product demProduct, String altitudeBandName) {
-        if (!demProduct.containsBand(altitudeBandName)) {
-            throw new OperatorException("DEM product does not contain specified altitude band '" +
-                                                altitudeBandName + "' - exiting.");
-        }
-        if (demProduct.getSceneGeoCoding() == null) {
-            throw new OperatorException("DEM product is not geo-coded.");
+        if (!containsRequiredBands) {
+            throw new OperatorException("Input product does not seem to be a fully compatible OLCI L1b product. " +
+                                                "Bands missing for O2A harminisation retrieval. Please check input.");
         }
     }
 
     /**
      * extracts a double variable from a JSON object
      *
-     * @param jsonObject - the JSON object
+     * @param jsonObject   - the JSON object
      * @param variableName - the variable name
-     *
      * @return double
      */
     static double parseJSONDouble(JSONObject jsonObject, String variableName) {
@@ -69,9 +61,8 @@ class OlciHarmonisationIO {
     /**
      * extracts an int variable from a JSON object
      *
-     * @param jsonObject - the JSON object
+     * @param jsonObject   - the JSON object
      * @param variableName - the variable name
-     *
      * @return int
      */
     static long parseJSONInt(JSONObject jsonObject, String variableName) {
@@ -81,9 +72,8 @@ class OlciHarmonisationIO {
     /**
      * extracts a one-dimensional double array variable from a JSON object
      *
-     * @param jsonObject - the JSON object
+     * @param jsonObject   - the JSON object
      * @param variableName - the variable name
-     *
      * @return double[]
      */
     static double[] parseJSON1DimDoubleArray(JSONObject jsonObject, String variableName) {
@@ -95,9 +85,8 @@ class OlciHarmonisationIO {
     /**
      * extracts a one-dimensional String array variable from a JSON object
      *
-     * @param jsonObject - the JSON object
+     * @param jsonObject   - the JSON object
      * @param variableName - the variable name
-     *
      * @return String[]
      */
     static String[] parseJSON1DimStringArray(JSONObject jsonObject, String variableName) {
@@ -109,9 +98,8 @@ class OlciHarmonisationIO {
     /**
      * extracts a two-dimensional double array variable from a JSON object
      *
-     * @param jsonObject - the JSON object
+     * @param jsonObject   - the JSON object
      * @param variableName - the variable name
-     *
      * @return double[][]
      */
     static double[][] parseJSON2DimDoubleArray(JSONObject jsonObject, String variableName) {
@@ -137,9 +125,8 @@ class OlciHarmonisationIO {
     /**
      * extracts a three-dimensional double array variable from a JSON object
      *
-     * @param jsonObject - the JSON object
+     * @param jsonObject   - the JSON object
      * @param variableName - the variable name
-     *
      * @return double[][][]
      */
     static double[][][] parseJSON3DimDoubleArray(JSONObject jsonObject, String variableName) {
@@ -171,7 +158,6 @@ class OlciHarmonisationIO {
      * Creates a KDTree object from a given {@link DesmileLut} lookup table object.
      *
      * @param desmileLut - the lookup table for desmiling
-     *
      * @return the KDTree object
      */
     static KDTree<double[]> createKDTreeForDesmileInterpolation(DesmileLut desmileLut) {
@@ -181,17 +167,15 @@ class OlciHarmonisationIO {
     /**
      * Creates a {@link DesmileLut} lookup table object for given band
      *
-     *
      * @param auxdataPath - the path where the auxdata was installed before
-     * @param bandIndex - the band index
-     *
+     * @param bandIndex   - the band index
      * @return the DesmileLut object
-     * @throws IOException -
+     * @throws IOException    -
      * @throws ParseException -
      */
     static DesmileLut createDesmileLut(Path auxdataPath, int bandIndex) throws IOException, ParseException {
         final String jsonFilename = "O2_desmile_lut_" + bandIndex + ".json";
-        final Path jsonPath =  auxdataPath.resolve(jsonFilename);
+        final Path jsonPath = auxdataPath.resolve(jsonFilename);
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader(jsonPath.toString()));
 
