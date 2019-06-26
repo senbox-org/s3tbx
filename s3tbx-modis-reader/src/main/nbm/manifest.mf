@@ -8,7 +8,7 @@ OpenIDE-Module-Implementation-Version: ${s3tbx.nbmImplVersion}
 OpenIDE-Module-Layer: org/esa/s3tbx/dataio/modis/layer.xml
 OpenIDE-Module-Long-Description: <p>A reader for MODIS (MOD,MXD,MYD) p
  roducts.</p><p><b>Vendor:</b> Brockmann Consult GmbH</p><p><b>Contact
-  address:</b> Max-Planck-Str. 2, 21502 Geesthacht (Germany)</p><p><b>
+  address:</b> Chrysanderstr. 1, 21029 Hamburg (Germany)</p><p><b>
  Copyright:</b> (C) 2014 by Brockmann Consult GmbH</p><p><b>Vendor:</b
  > Brockmann Consult GmbH</p><p><b>License:</b> http://www.gnu.org/lic
  enses/gpl.html</p><p><b>Changelog:</b> Changes in 5.0:<br/>

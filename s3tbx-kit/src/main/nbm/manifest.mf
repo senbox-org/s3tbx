@@ -11,7 +11,7 @@ OpenIDE-Module-Long-Description: The Sentinel-3 Toolbox is a SNAP extension dedi
   <a href="https://senbox.atlassian.net/issues/?filter=-4&jql=project%20%3D%20SIIITBX%20AND%20fixVersion%20%3D%20${s3tbx.majorVersion}.${s3tbx.minorVersion}.${s3tbx.incrementalVersion}">issue tracker</a></p>
  <p><b>Publication date:</b> ${s3tbx.buildDate}<br/>
  <b>Vendor:</b> Brockmann Consult GmbH<br/>
- <b>Contact address:</b> Max-Planck-Str. 2, 21502 Geesthacht (Germany)<br/>
+ <b>Contact address:</b> Chrysanderstr. 1, 21029 Hamburg (Germany)<br/>
  <b>Copyright:</b> (C) 2019 by Brockmann Consult GmbH<br/>
  <b>License:</b> http://www.gnu.org/licenses/gpl.html</p>
 

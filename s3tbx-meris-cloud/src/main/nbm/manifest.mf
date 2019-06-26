@@ -9,6 +9,6 @@ OpenIDE-Module-Layer: org/esa/s3tbx/operator/cloud/layer.xml
 OpenIDE-Module-Long-Description: <p>The MERIS Cloud Probability Proces
  sor calculates a cloud probability for MERIS L1b pixels.</p><p><b>Ven
  dor:</b> Brockmann Consult GmbH</p><p><b>Contact address:</b> Max-Pla
- nck-Str. 2, 21502 Geesthacht (Germany)</p><p><b>Copyright:</b> (C) 20
+ nck-Str. 2, 21029 Hamburg (Germany)</p><p><b>Copyright:</b> (C) 20
  14 by Brockmann Consult GmbH</p><p><b>Vendor:</b> Brockmann Consult G
  mbH</p><p><b>License:</b> http://www.gnu.org/licenses/gpl.html</p>

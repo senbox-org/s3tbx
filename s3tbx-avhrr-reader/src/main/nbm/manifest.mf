@@ -10,6 +10,6 @@ OpenIDE-Module-Long-Description: <p>Enables SNAP to read NOAA and METOP
  AVHRR/3 Level-1b data products. The METOP reader has been developed under
  contract to EUMETSAT in order to support the EUMETSAT Polar System (EPS)</p>
  <p><b>Vendor:</b> Brockmann Consult GmbH</p>
- <p><b>Contact address:</b> Max-Planck-Str. 2, 21502 Geesthacht (Germany)</p>
+ <p><b>Contact address:</b> Chrysanderstr. 1, 21029 Hamburg (Germany)</p>
  <p><b>Copyright:</b> (C) 2016 by Brockmann Consult GmbH</p>
  <p><b>License:</b>http://www.gnu.org/licenses/gpl.html</p>

@@ -9,7 +9,7 @@ OpenIDE-Module-Layer: layer.xml
 OpenIDE-Module-Long-Description: <p>The MPH/CHL Processor
  computes the maximum peak height of chlorophyll.</p
  ><p><b>Vendor:</b> Brockmann Consult GmbH</p><p><b>Contact address:</
- b> Max-Planck-Str. 2, 21502 Geesthacht (Germany)</p><p><b>Copyright:<
+ b> Chrysanderstr. 1, 21029 Hamburg (Germany)</p><p><b>Copyright:<
  /b> (C) 2014 by Brockmann Consult GmbH</p><p><b>Vendor:</b> Brockmann
   Consult GmbH</p><p><b>License:</b> http://www.gnu.org/licenses/gpl.h
  tml</p>
