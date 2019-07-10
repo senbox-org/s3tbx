@@ -86,12 +86,19 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
     @Override
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
-        targetProduct.setAutoGrouping("S*_radiance*_in:S*_BT*_in:" +
-                                      "S*_radiance*_io:S*_BT*_io:" +
-                                      "S*exception_in:S*exception_io:" +
-                                      "x_*:y_*:" +
-                                      "elevation:latitude:longitude:" +
+        targetProduct.setAutoGrouping("radiance_uncert_in:BT_uncert_in:" +
+                                      "radiance_in:BT_in:" +
+                                      "radiance_uncert_io:BT_uncert_io:" +
+                                      "radiance_io:BT_io:" +
+                                      "exception_in:exception_io:" +
+                                      "x_i:y_i:" +
+                                      "elevation_i:latitude_i:longitude_i:" +
                                       "specific_humidity:temperature_profile:" +
+                                      "cloud_in_:cloud_io_:" +
+                                      "bayes_in_:bayes_io_:" +
+                                      "bayes_in_:bayes_io_:" +
+                                      "pointing_in_:pointing_io_:" +
+                                      "confidence_in_:confidence_io_:" +
                                       bandGrouping);
     }
 

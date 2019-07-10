@@ -361,7 +361,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         String autoGrouping = super.getAutoGroupingString(sourceProducts);
         String[] unwantedGroups = new String[]{
                 "F1_BT", "F2_BT", "S1_radiance", "S2_radiance", "S3_radiance",
-                "S4_radiance", "S5_radiance", "S6_radiance", "S7_BT", "S8_BT", "S9_BT"
+                "S4_radiance", "S5_radiance", "S6_radiance", "S7_BT", "S8_BT", "S9_BT", "met"
         };
         for (String unwantedGroup : unwantedGroups) {
             if (autoGrouping.startsWith(unwantedGroup)) {
@@ -376,10 +376,11 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     @Override
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
-        targetProduct.setAutoGrouping("F*BT_*n:F*exception_*n:" +
-                                      "F*BT_*o:F*exception_*o:" +
+        targetProduct.setAutoGrouping(
+                                      "F*BT_in:F*exception_in:" +
+                                      "F*BT_io:F*exception_io:" +
                                       "S*BT_in:S*exception_in:" +
-                                      "S*BT_io:S*exception_io:" +
+                                      "S*BT_io:s*exception_io:" +
                                       "radiance_an:S*exception_an:" +
                                       "radiance_ao:S*exception_ao:" +
                                       "radiance_bn:S*exception_bn:" +
@@ -390,6 +391,27 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                                       "x_*:y_*:" +
                                       "elevation:latitude:longitude:" +
                                       "specific_humidity:temperature_profile:" +
+                                      "bayes_an_:bayes_ao_:" +
+                                      "bayes_bn_:bayes_bo_:" +
+                                      "bayes_cn_:bayes_co_:" +
+                                      "bayes_in_:bayes_io_:" +
+                                      "cloud_an_:cloud_ao_:" +
+                                      "cloud_bn_:cloud_bo_:" +
+                                      "cloud_cn_:cloud_co_:" +
+                                      "cloud_in_:cloud_io_:" +
+                                      "confidence_an_:confidence_ao_:" +
+                                      "confidence_bn_:confidence_bo_:" +
+                                      "confidence_cn_:confidence_co_:" +
+                                      "confidence_in_:confidence_io_:" +
+                                      "pointing_an_:pointing_ao_:" +
+                                      "pointing_bn_:pointing_bo_:" +
+                                      "pointing_cn_:pointing_co_:" +
+                                      "pointing_in_:pointing_io_:" +
+                                      "S*_exception_an_*:S*_exception_ao_*:" +
+                                      "S*_exception_bn_*:S*_exception_bo_*:" +
+                                      "S*_exception_cn_*:S*_exception_co_*:" +
+                                      "S*_exception_in_*:S*_exception_io_*:" +
+                                      "F*_exception_in_*:F*_exception_io_*:" +
                                       bandGrouping);
     }
 
