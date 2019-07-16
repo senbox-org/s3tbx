@@ -16,7 +16,11 @@
 package org.esa.s3tbx.arc;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.ProductNode;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -32,14 +36,11 @@ import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import org.esa.snap.core.util.converters.GeneralExpressionConverter;
-import org.esa.snap.dataio.envisat.EnvisatConstants;
 
 import javax.media.jai.OpImage;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +57,7 @@ import java.util.stream.Stream;
                   authors = "Owen Embury, Marco Peters",
                   copyright = "University of Reading, Brockmann Consult GmbH",
                   version = "0.1",
-                  description = "Computes sea surface temperature (SST) from (A)ATSR products.")
+                  description = "Computes sea surface temperature (SST) from (A)ATSR and SLSTR products.")
 public class ArcSstOp extends PixelOperator {
 
     private Sensor sensor;
@@ -64,8 +65,8 @@ public class ArcSstOp extends PixelOperator {
     @SuppressWarnings("unused")
 
     @SourceProduct(alias = "source",
-                   description = "The path of the (A)ATSR source product",
-                   label = "(A)ATSR source product")
+                   description = "The path of the source product",
+                   label = "(A)ATSR/SLSTR source product")
     private Product sourceProduct;
 
     @Parameter(defaultValue = "30.0", label = "Total Column Water Vapour",
