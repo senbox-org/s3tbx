@@ -91,8 +91,8 @@ public class GaseousAbsorptionOp extends Operator {
     }
 
     private float[] computeGas(String bandName, Rectangle rectangle, Product sourceProduct) {
-        float[] szas = getSourceTile(sourceProduct.getTiePointGrid(SZA), rectangle).getSamplesFloat();
-        float[] ozas = getSourceTile(sourceProduct.getTiePointGrid(OZA), rectangle).getSamplesFloat();
+        float[] szas = getSourceTile(sourceProduct.getRasterDataNode(SZA), rectangle).getSamplesFloat();
+        float[] ozas = getSourceTile(sourceProduct.getRasterDataNode(OZA), rectangle).getSamplesFloat();
         return gasAbsorptionAlgo.getTransmissionGas(bandName, szas, ozas);
     }
 
