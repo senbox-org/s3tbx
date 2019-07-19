@@ -85,8 +85,8 @@
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>4.3.22</netcdf.version>
-        <seadas.reader.version>1.8-rc6</seadas.reader.version>
-        <seadas.reader.ui.version>1.8-rc6</seadas.reader.ui.version>
+        <seadas.reader.version>1.8</seadas.reader.version>
+        <seadas.reader.ui.version>1.8</seadas.reader.ui.version>
         <brandingToken>s3tbx</brandingToken>
         <user.language>en</user.language>
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
