@@ -4,6 +4,7 @@ Sentinel-3 Toolbox Release Notes
 Changes in S3TBX 7.0.0
 --------------------
 
+* [SIIITBX-265] Include new neural nets for OLCI in C2RCC
 * [SIIITBX-263]	Include OLCI Harmonisation operator in S3TBX
 * [SIIITBX-260]	SMAC changes source product while processing
 * [SIIITBX-259]	SMAC gives different results for two runs
