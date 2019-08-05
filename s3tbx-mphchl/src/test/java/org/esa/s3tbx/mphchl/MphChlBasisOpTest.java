@@ -66,6 +66,16 @@ public class MphChlBasisOpTest {
     }
 
     @Test
+    public void testExportAddBandsAnnotation() throws NoSuchFieldException {
+        final Field exportAddBandsField = MphChlBasisOp.class.getDeclaredField("exportAddBands");
+
+        final Parameter annotation = exportAddBandsField.getAnnotation(Parameter.class);
+        assertNotNull(annotation);
+        assertEquals("false", annotation.defaultValue());
+        assertEquals("Add additional chl bands.", annotation.description());
+    }
+
+    @Test
     public void testChlThreshForFloatFlagAnnotation() throws NoSuchFieldException {
         final Field chlThreshForFloatFlagField = MphChlBasisOp.class.getDeclaredField("chlThreshForFloatFlag");
 

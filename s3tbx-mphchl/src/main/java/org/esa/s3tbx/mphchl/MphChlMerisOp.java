@@ -21,12 +21,13 @@ public class MphChlMerisOp extends MphChlBasisOp {
     private static final int REFL_9_IDX = 3;
     private static final int REFL_10_IDX = 4;
     private static final int REFL_14_IDX = 5;
+    private static final int REFL_5_IDX = 6;
 
     @Override
     protected void computePixel(int x, int y, Sample[] sourceSamples, WritableSample[] targetSamples) {
 
         if (!isSampleValid(x, y)) {
-            MphChlUtils.setToInvalid(targetSamples, exportMph);
+            MphChlUtils.setToInvalid(targetSamples, exportMph, exportAddBands);
             return;
         }
 
@@ -36,6 +37,7 @@ public class MphChlMerisOp extends MphChlBasisOp {
         final double r_9 = sourceSamples[REFL_9_IDX].getDouble();
         final double r_10 = sourceSamples[REFL_10_IDX].getDouble();
         final double r_14 = sourceSamples[REFL_14_IDX].getDouble();
+        final double r_5 = sourceSamples[REFL_5_IDX].getDouble();
 
         double maxBrr_0 = r_8;
         double maxLambda_0 = sensorWvls[8];     // 681
@@ -57,11 +59,11 @@ public class MphChlMerisOp extends MphChlBasisOp {
         final double BAIR_peak = r_9 - r_7 - ((r_14 - r_7) * ratioB);
 
         double mph_0 = MphChlUtils.computeMph(maxBrr_0, r_7, r_14, maxLambda_0,
-                                              sensorWvls[7],         // 664
-                                              sensorWvls[14]);     // 885
+                sensorWvls[7],         // 664
+                sensorWvls[14]);     // 885
         double mph_1 = MphChlUtils.computeMph(maxBrr_1, r_7, r_14, maxLambda_1,
-                                              sensorWvls[7],         // 664
-                                              sensorWvls[14]);     // 885
+                sensorWvls[7],         // 664
+                sensorWvls[14]);     // 885
 
         boolean floating_flag = false;
         boolean adj_flag = false;
@@ -102,12 +104,18 @@ public class MphChlMerisOp extends MphChlBasisOp {
         }
 
         double mph_chl = Double.NaN;
+        double mph_matthews = Double.NaN;
+        double chl_pitarch = Double.NaN;
+        double chl_pci_pitarch = Double.NaN;
+        double pci = Double.NaN;
         if (calculatePolynomial) {
             mph_chl = MphChlUtils.computeChlPolynomial(mph_0);
+            mph_matthews = MphChlUtils.computeChlMatthewsPolynomial(mph_0);
         }
 
         if (calculateExponential) {
             mph_chl = MphChlUtils.computeChlExponential(mph_1);
+            mph_matthews = MphChlUtils.computeChlExponential(mph_1);
             if (mph_chl < chlThreshForFloatFlag) {
                 immersed_cyano = 1;
             } else {
@@ -115,6 +123,14 @@ public class MphChlMerisOp extends MphChlBasisOp {
                 floating_cyano = 1;
             }
         }
+
+        chl_pitarch = MphChlUtils.computeChlPitarch(mph_0);
+        pci = MphChlUtils.computePci(r_5, r_6, r_7,
+                sensorWvls[5], //560
+                sensorWvls[6], //620
+                sensorWvls[7]//664
+        );
+        chl_pci_pitarch = MphChlUtils.computeChlPciPitarch(mph_0, pci);
 
         if (mph_chl > cyanoMaxValue) {
             mph_chl = cyanoMaxValue;
@@ -128,6 +144,12 @@ public class MphChlMerisOp extends MphChlBasisOp {
         if (exportMph) {
             targetSamples[5].set(mph_0);
         }
+        if (exportAddBands) {
+            targetSamples[6].set(mph_matthews);
+            targetSamples[7].set(chl_pitarch);
+            targetSamples[8].set(chl_pci_pitarch);
+            targetSamples[9].set(pci);
+        }
     }
 
     @Override
@@ -138,6 +160,7 @@ public class MphChlMerisOp extends MphChlBasisOp {
         sampleConfigurer.defineSample(3, "rBRR_09");
         sampleConfigurer.defineSample(4, "rBRR_10");
         sampleConfigurer.defineSample(5, "rBRR_14");
+        sampleConfigurer.defineSample(6, "rBRR_05");
     }
 
     @Override

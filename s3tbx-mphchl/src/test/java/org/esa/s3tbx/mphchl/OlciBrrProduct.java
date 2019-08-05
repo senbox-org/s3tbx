@@ -29,11 +29,22 @@ public class OlciBrrProduct {
         addBrr_11(product);
         addBrr_12(product);
         addBrr_18(product);
+        addBrr_06(product);
 
         addQualityFlags(product);
         addFlagCodings(product);
 
         return product;
+    }
+
+    private static void addBrr_06(Product olciL1BProduct) {
+        final Band band = olciL1BProduct.addBand("rBRR_06", ProductData.TYPE_FLOAT32);
+        final ProductData rasterData = band.createCompatibleRasterData();
+        rasterData.setElemFloatAt(0, 0.056901217f);
+        rasterData.setElemFloatAt(1, 0.08701459f);
+        rasterData.setElemFloatAt(2, 0.09533884f);
+        rasterData.setElemFloatAt(3, 0.06557705f);
+        band.setData(rasterData);
     }
 
     private static void addBrr_07(Product olciL1BProduct) {

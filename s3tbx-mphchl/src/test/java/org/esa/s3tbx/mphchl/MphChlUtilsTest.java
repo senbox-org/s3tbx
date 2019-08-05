@@ -12,7 +12,7 @@ public class MphChlUtilsTest {
     public void testSetToInvalid() {
         final TestSample[] samples = createSampleArray(6);
 
-        MphChlUtils.setToInvalid(samples, false);
+        MphChlUtils.setToInvalid(samples, false, false);
 
         assertEquals(Double.NaN, samples[0].getDouble(), 1e-8);
         assertEquals(0.0, samples[1].getDouble(), 1e-8);
@@ -26,7 +26,7 @@ public class MphChlUtilsTest {
     public void testSetToInvalid_withMph() {
         final TestSample[] samples = createSampleArray(7);
 
-        MphChlUtils.setToInvalid(samples, true);
+        MphChlUtils.setToInvalid(samples, true, false);
 
         assertEquals(Double.NaN, samples[0].getDouble(), 1e-8);
         assertEquals(0.0, samples[1].getDouble(), 1e-8);
@@ -34,6 +34,40 @@ public class MphChlUtilsTest {
         assertEquals(0.0, samples[3].getDouble(), 1e-8);
         assertEquals(0.0, samples[4].getDouble(), 1e-8);
         assertEquals(Double.NaN, samples[5].getDouble(), 1e-8);
+    }
+
+    @Test
+    public void testSetToInvalid_withAddBands() {
+        final TestSample[] samples = createSampleArray(9);
+
+        MphChlUtils.setToInvalid(samples, false, true);
+
+        assertEquals(Double.NaN, samples[0].getDouble(), 1e-8);
+        assertEquals(0.0, samples[1].getDouble(), 1e-8);
+        assertEquals(0.0, samples[2].getDouble(), 1e-8);
+        assertEquals(0.0, samples[3].getDouble(), 1e-8);
+        assertEquals(0.0, samples[4].getDouble(), 1e-8);
+        assertEquals(Double.NaN, samples[5].getDouble(), 1e-8);
+        assertEquals(0.0, samples[6].getDouble(), 1e-8);
+        assertEquals(Double.NaN, samples[7].getDouble(), 1e-8);
+        assertEquals(Double.NaN, samples[8].getDouble(), 1e-8);
+    }
+
+    @Test
+    public void testSetToInvalid_withAddBands_withMph() {
+        final TestSample[] samples = createSampleArray(9);
+
+        MphChlUtils.setToInvalid(samples, true, true);
+
+        assertEquals(Double.NaN, samples[0].getDouble(), 1e-8);
+        assertEquals(0.0, samples[1].getDouble(), 1e-8);
+        assertEquals(0.0, samples[2].getDouble(), 1e-8);
+        assertEquals(0.0, samples[3].getDouble(), 1e-8);
+        assertEquals(0.0, samples[4].getDouble(), 1e-8);
+        assertEquals(Double.NaN, samples[5].getDouble(), 1e-8);
+        assertEquals(0.0, samples[6].getDouble(), 1e-8);
+        assertEquals(Double.NaN, samples[7].getDouble(), 1e-8);
+        assertEquals(Double.NaN, samples[8].getDouble(), 1e-8);
     }
 
     @Test
@@ -85,9 +119,9 @@ public class MphChlUtilsTest {
 
     @Test
     public void testComputeChlPolynomial() {
-        Assert.assertEquals(353732.6926, MphChlUtils.computeChlPolynomial(0.1), 1e-8);
-        Assert.assertEquals(8.2646992, MphChlUtils.computeChlPolynomial(0.001), 1e-8);
-        Assert.assertEquals(1.9726, MphChlUtils.computeChlPolynomial(0.0), 1e-8);
+        Assert.assertEquals(3833891.989, MphChlUtils.computeChlPolynomial(0.1), 1e-8);
+        Assert.assertEquals(7.754947072, MphChlUtils.computeChlPolynomial(0.001), 1e-8);
+        Assert.assertEquals(5.189, MphChlUtils.computeChlPolynomial(0.0), 1e-8);
     }
 
     @Test

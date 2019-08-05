@@ -46,6 +46,10 @@ public class MphChlBasisOp extends PixelOperator {
             description = "Switch to true to write 'mph' band.")
     boolean exportMph;
 
+    @Parameter(defaultValue = "false",
+            description = "Add additional chl bands.")
+    boolean exportAddBands;
+
 
     float[] sensorWvls;
 
@@ -70,6 +74,12 @@ public class MphChlBasisOp extends PixelOperator {
         if (exportMph) {
             sampleConfigurer.defineSample(5, "mph");
         }
+        if (exportAddBands) {
+            sampleConfigurer.defineSample(6, "chl_matthews");
+            sampleConfigurer.defineSample(7, "chl_pitarch");
+            sampleConfigurer.defineSample(8, "chl_pci_pitarch");
+            sampleConfigurer.defineSample(9, "pci");
+        }
     }
 
     @Override
@@ -92,6 +102,28 @@ public class MphChlBasisOp extends PixelOperator {
             mphBand.setGeophysicalNoDataValue(Double.NaN);
             mphBand.setNoDataValue(Double.NaN);
             mphBand.setNoDataValueUsed(true);
+        }
+        if (exportAddBands) {
+            final Band chlMatthewsBand = productConfigurer.addBand("chl_matthews", ProductData.TYPE_FLOAT32);
+            chlMatthewsBand.setUnit("mg/m^3");
+            chlMatthewsBand.setGeophysicalNoDataValue(Double.NaN);
+            chlMatthewsBand.setNoDataValue(Double.NaN);
+            chlMatthewsBand.setNoDataValueUsed(true);
+            final Band chlPitarchBand = productConfigurer.addBand("chl_pitarch", ProductData.TYPE_FLOAT32);
+            chlPitarchBand.setUnit("mg/m^3");
+            chlPitarchBand.setGeophysicalNoDataValue(Double.NaN);
+            chlPitarchBand.setNoDataValue(Double.NaN);
+            chlPitarchBand.setNoDataValueUsed(true);
+            final Band chlPciPitarchBand = productConfigurer.addBand("chl_pci_pitarch", ProductData.TYPE_FLOAT32);
+            chlPciPitarchBand.setUnit("mg/m^3");
+            chlPciPitarchBand.setGeophysicalNoDataValue(Double.NaN);
+            chlPciPitarchBand.setNoDataValue(Double.NaN);
+            chlPciPitarchBand.setNoDataValueUsed(true);
+            final Band mphPitarchBand = productConfigurer.addBand("pci", ProductData.TYPE_FLOAT32);
+            mphPitarchBand.setUnit("dl");
+            mphPitarchBand.setGeophysicalNoDataValue(Double.NaN);
+            mphPitarchBand.setNoDataValue(Double.NaN);
+            mphPitarchBand.setNoDataValueUsed(true);
         }
         final Band flagBand = productConfigurer.addBand("mph_chl_flags", ProductData.TYPE_INT8);
 

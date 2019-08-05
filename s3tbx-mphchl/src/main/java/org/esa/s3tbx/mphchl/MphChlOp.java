@@ -59,6 +59,10 @@ public class MphChlOp extends Operator {
             description = "Switch to true to apply a 3x3 low-pass filter on the result.")
     boolean applyLowPassFilter;
 
+    @Parameter(defaultValue = "false",
+            description = "Add additional chl bands.")
+    boolean exportAddBands;
+
     @SourceProduct(description = "L1b or Rayleigh corrected product", label = "OLCI or MERIS L1b or Rayleigh corrected product")
     private Product sourceProduct;
 
@@ -172,6 +176,7 @@ public class MphChlOp extends Operator {
         mphChlOp.setParameter("cyanoMaxValue", cyanoMaxValue);
         mphChlOp.setParameter("chlThreshForFloatFlag", chlThreshForFloatFlag);
         mphChlOp.setParameter("exportMph", exportMph);
+        mphChlOp.setParameter("exportAddBands", exportAddBands);
 
         return mphChlOp.getTargetProduct();
     }

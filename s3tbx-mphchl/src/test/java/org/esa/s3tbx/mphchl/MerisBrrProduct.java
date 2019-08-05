@@ -29,6 +29,7 @@ public class MerisBrrProduct {
         addBrr_09(product);
         addBrr_10(product);
         addBrr_14(product);
+        addBrr_05(product);
 
         addl1_flags(product);
         addcloud_classif_flags(product);
@@ -38,6 +39,16 @@ public class MerisBrrProduct {
         addFlagCodings(product);
 
         return product;
+    }
+
+    private static void addBrr_05(Product merisL1BProduct) {
+        final Band band = merisL1BProduct.addBand("rBRR_05", ProductData.TYPE_FLOAT32);
+        final ProductData rasterData = band.createCompatibleRasterData();
+        rasterData.setElemFloatAt(0, 0.056901217f);
+        rasterData.setElemFloatAt(1, 0.08701459f);
+        rasterData.setElemFloatAt(2, 0.09533884f);
+        rasterData.setElemFloatAt(3, 0.06557705f);
+        band.setData(rasterData);
     }
 
     private static void addBrr_06(Product merisL1BProduct) {
