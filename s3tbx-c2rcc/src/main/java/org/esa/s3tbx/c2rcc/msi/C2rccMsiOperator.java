@@ -671,7 +671,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         targetProduct.setProductType(PRODUCT_TYPE);
         ensureTimeInformation(targetProduct, getStartTime(), getEndTime(), timeCoding);
 
-        targetProduct.setPreferredTileSize(128, 128);
+        targetProduct.setPreferredTileSize(610, 610);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
 
         final StringBuilder autoGrouping = new StringBuilder("iop");
