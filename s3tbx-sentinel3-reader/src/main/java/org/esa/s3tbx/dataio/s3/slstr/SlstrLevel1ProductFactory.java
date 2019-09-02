@@ -64,9 +64,9 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     public final static String SLSTR_L1B_S3MPC_CALIBRATION = "s3tbx.reader.slstrl1b.applyS3MPCCalibration";
     private final static String SLSTR_L1B_CALIBRATION_PATTERN = "s3tbx.reader.slstrl1b.ID.calibration.TYPE";
     private final static double SLSTR_L1B_S3MPC_S5_NADIR_ADJUSTMENT_FACTOR = 1.12;
-    private final static double SLSTR_L1B_S3MPC_S6_NADIR_ADJUSTMENT_FACTOR = 1.2;
+    private final static double SLSTR_L1B_S3MPC_S6_NADIR_ADJUSTMENT_FACTOR = 1.13;
     private final static double SLSTR_L1B_S3MPC_S5_OBLIQUE_ADJUSTMENT_FACTOR = 1.15;
-    private final static double SLSTR_L1B_S3MPC_S6_OBLIQUE_ADJUSTMENT_FACTOR = 1.26;
+    private final static double SLSTR_L1B_S3MPC_S6_OBLIQUE_ADJUSTMENT_FACTOR = 1.14;
 
     //todo read all these as metadata - tf 20160401
     // --> included Sn_quality_*.nc products to access solar irradiances - od 20170630
