@@ -285,13 +285,18 @@ public class C2rccOlciAlgorithm {
         double unc_abs_kdmin = 0;
         double unc_abs_tsm = 0;
 
+
+        double[] rtosa_rw_in = new double[23];
+        Arrays.fill(rtosa_rw_in, Double.NaN);
+        double[] rtosa_rw_out = new double[16];
+        Arrays.fill(rtosa_rw_out, Double.NaN);
+
         if (validPixel) {
             double[] r_tosa_ur = new double[olciband16_ix.length];
             for (int i = 0; i < olciband16_ix.length; i++) {
                 r_tosa_ur[i] = r_toa[olciband16_ix[i] - 1]; // -1 because counts in Scilab start at 1 not 0
             }
 
-            // @todo discuss with Carsten and Roland
             // (9.3.0) +++ water vapour correction for band 9 +++++ */
             //X2=rho_900/rho_885;
             double X2 = r_toa[18] / r_toa[17];
@@ -420,9 +425,12 @@ public class C2rccOlciAlgorithm {
                 for (int i = 0; i < r_tosa.length; i++) {
                     log_rw[i] = r_tosa[i] - rpath_nn[i] / (transu_nn[i] * transd_nn[i]);
                 }
+                rtosa_rw_out = new double[r_tosa.length];
             }else {
                 log_rw = nn_rtosa_rw.get().calc(nn_in);
+                rtosa_rw_out = log_rw;
             }
+            rtosa_rw_in = nn_in;
 
             rwa = new double[0];
             if (outputRwa) {
@@ -622,7 +630,7 @@ public class C2rccOlciAlgorithm {
 
         return new Result(r_toa, r_tosa, rtosa_aann, rpath_nn, transd_nn, transu_nn, rwa, rwn, rtosa_oos, rwa_oos,
                           iops_nn, kd489_nn, kdmin_nn, unc_iop_abs, unc_abs_adg, unc_abs_atot, unc_abs_btot,
-                          unc_abs_chl, unc_abs_tsm, unc_abs_kd489, unc_abs_kdmin, flags);
+                          unc_abs_chl, unc_abs_tsm, unc_abs_kd489, unc_abs_kdmin, flags, rtosa_rw_in, rtosa_rw_out);
     }
 
     public String[] getUsedNeuronalNetNames() {
@@ -704,12 +712,14 @@ public class C2rccOlciAlgorithm {
         public final double unc_abs_kd489;
         public final double unc_abs_kdmin;
         public final int flags;
+        public final double[] rtosa_rw_in;
+        public final double[] rtosa_rw_out;
 
         public Result(double[] r_toa, double[] r_tosa, double[] rtosa_aann, double[] rpath_nn, double[] transd_nn, double[] transu_nn, double[] rwa,
                       double[] rwn, double rtosa_oos, double rwa_oos, double[] iops_nn,
                       double kd489_nn, double kdmin_nn, double[] unc_iop_abs,
                       double unc_abs_adg, double unc_abs_atot, double unc_abs_btot, double unc_abs_chl,
-                      double unc_abs_tsm, double unc_abs_kd489, double unc_abs_kdmin, int flags) {
+                      double unc_abs_tsm, double unc_abs_kd489, double unc_abs_kdmin, int flags, double[] rtosa_rw_in, double[] rtosa_rw_out) {
 
             this.r_toa = r_toa;
             this.r_tosa = r_tosa;
@@ -733,6 +743,8 @@ public class C2rccOlciAlgorithm {
             this.unc_abs_kdmin = unc_abs_kdmin;
             this.unc_abs_kd489 = unc_abs_kd489;
             this.flags = flags;
+            this.rtosa_rw_in = rtosa_rw_in;
+            this.rtosa_rw_out = rtosa_rw_out;
         }
     }
 

@@ -62,7 +62,11 @@ public class C2rccCommons {
     }
 
     public static Band addBand(Product targetProduct, String name, String unit, String description) {
-        Band targetBand = targetProduct.addBand(name, ProductData.TYPE_FLOAT32);
+        return addBand(targetProduct, name, unit, description, ProductData.TYPE_FLOAT32);
+    }
+
+    public static Band addBand(Product targetProduct, String name, String unit, String description, int type) {
+        Band targetBand = targetProduct.addBand(name, type);
         targetBand.setUnit(unit);
         targetBand.setDescription(description);
         targetBand.setGeophysicalNoDataValue(Double.NaN);

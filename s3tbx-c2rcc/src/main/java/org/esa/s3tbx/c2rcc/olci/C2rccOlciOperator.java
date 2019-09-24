@@ -160,9 +160,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private static final int UNC_KD489_IX = SINGLE_IX + 17;
     private static final int UNC_KDMIN_IX = SINGLE_IX + 18;
 
+    private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
+
+    private static final int AC_NN_IN_IX = SINGLE_IX + 20;
+    private static final int AC_NN_OUT_IX = SINGLE_IX + 43;
+
+    private static final int AC_NN_IN_CNT = 23;
+    private static final int AC_NN_OUT_CNT = 16;
+
     private static final String PRODUCT_TYPE = "C2RCC_OLCI";
 
-    private static final int C2RCC_FLAGS_IX = SINGLE_IX + 19;
 
     private static final String RADIANCE_BANDNAME_PATTERN = "Oa%02d_radiance";
     private static final String SOLAR_FLUX_BANDNAME_PATTERN = "solar_flux_band_%d";
@@ -568,6 +575,14 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         }
 
         targetSamples[C2RCC_FLAGS_IX].set(result.flags);
+
+
+        for (int i = 0; i < result.rtosa_rw_in.length; i++) {
+            targetSamples[AC_NN_IN_IX + i].set(result.rtosa_rw_in[i]);
+        }
+        for (int i = 0; i < result.rtosa_rw_out.length; i++) {
+            targetSamples[AC_NN_OUT_IX + i].set(result.rtosa_rw_out[i]);
+        }
     }
 
     @Override
@@ -683,6 +698,14 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         }
 
         tsc.defineSample(C2RCC_FLAGS_IX, "c2rcc_flags");
+
+        for (int i = 0; i < AC_NN_IN_CNT; i++) {
+            tsc.defineSample(AC_NN_IN_IX + i, String.format("ac_nn_in_%d", i + 1));
+        }
+        for (int i = 0; i < AC_NN_OUT_CNT; i++) {
+            tsc.defineSample(AC_NN_OUT_IX + i, String.format("ac_nn_out_%d", i + 1));
+        }
+
     }
 
     @Override
@@ -923,6 +946,18 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
         targetProduct.getFlagCodingGroup().add(flagCoding);
         c2rcc_flags.setSampleCoding(flagCoding);
+
+        for (int i = 0; i < AC_NN_IN_CNT; i++) {
+            int idx = i + 1;
+            Band band = addBand(targetProduct, "ac_nn_in_" + idx, "", String.format("AC NN Input %d", idx), ProductData.TYPE_FLOAT64);
+//            band.setValidPixelExpression(validPixelExpression);
+        }
+        for (int i = 0; i < AC_NN_OUT_CNT; i++) {
+            int idx = i + 1;
+            Band band = addBand(targetProduct, "ac_nn_out_" + idx, "sr^-1", String.format("AC NN Output %d", idx), ProductData.TYPE_FLOAT64);
+//            band.setValidPixelExpression(validPixelExpression);
+        }
+
 
         Color[] maskColors = {Color.RED, Color.ORANGE, Color.YELLOW, Color.BLUE, Color.GREEN, Color.PINK, Color.MAGENTA, Color.CYAN, Color.GRAY};
         String[] flagNames = flagCoding.getFlagNames();
