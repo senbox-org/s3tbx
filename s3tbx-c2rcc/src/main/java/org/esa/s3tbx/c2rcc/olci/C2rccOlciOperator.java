@@ -694,7 +694,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         targetProduct.setProductType(PRODUCT_TYPE);
         C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
 
-        targetProduct.setPreferredTileSize(128, 128);
+        targetProduct.setPreferredTileSize(1217, 1023);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
         ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
         for (int i = 0; i < maskGroup.getNodeCount(); i++) {
