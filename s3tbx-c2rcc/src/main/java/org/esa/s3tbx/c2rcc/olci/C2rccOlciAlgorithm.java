@@ -539,8 +539,8 @@ public class C2rccOlciAlgorithm {
             //if (outputOos) {
             double[] log_rw_nn2 = nn_iop_rw.get().calc(nn_in_for);
 
-                // (9.5.7) test out of scope of rho_w by combining inverse and forward NN
-                //  compute the test and set rw is out of scope flag
+            // (9.5.7) test out of scope of rho_w by combining inverse and forward NN
+            //  compute the test and set rw is out of scope flag
             int wvl_442_idx = 2;
             int wvl_560_idx = 5;
             int wvl_620_idx = 6;
