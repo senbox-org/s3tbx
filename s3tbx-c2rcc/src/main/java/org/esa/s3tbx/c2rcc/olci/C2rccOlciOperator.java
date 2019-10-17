@@ -245,11 +245,13 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     // RD20161103 changed from 0.05 to 0.005 for sum of differences
     // 20180131 changed back to 0.05 on suggestion of Kerstin.
-    @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
+    // 20191017 changed to 0.01 according to S3MPC and for harmonisation with IPF
+    @Parameter(defaultValue = "0.01", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
             label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
-    @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances",
+    // 20191017 changed to 0.15 according to S3MPC and for harmonisation with IPF
+    @Parameter(defaultValue = "0.15", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances",
             label = "Threshold AC reflectances OOS")
     private double thresholdAcReflecOos;
 
