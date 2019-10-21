@@ -57,7 +57,7 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
         version = "1.3")
 public class RayleighCorrectionOp extends Operator {
 
-    private static final String AUTO_GROUPING = "rtoa:taur:rtoa_ng:rtoaRay:rBRR";
+    private static final String AUTO_GROUPING = "rtoa:taur:rtoa_ng:rtoaRay:rBRR:rRay";
     private static final int WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION = 709;
     private static final String SOLAR_FLUX_BAND_PATTERN = "solar_flux_band_%d";
 
@@ -74,11 +74,13 @@ public class RayleighCorrectionOp extends Operator {
             "rBRR_%02d",
             "rtoa_ng_%02d",
             "rtoa_%02d",
+            "rRay_%02d"
     };
     static final String R_BRR_PATTERN = "rBRR_\\d{2}";
     static final String RTOA_PATTERN = "rtoa_\\d{2}";
     static final String TAUR_PATTERN = "taur_\\d{2}";
     static final String RTOA_NG_PATTERN = "rtoa_ng_\\d{2}";
+    static final String RRAY_PATTERN = "rRay_\\d{2}";
 
     @SourceProduct(label = "OLCI, MERIS or S2 MSI L1C product")
     Product sourceProduct;
@@ -226,6 +228,11 @@ public class RayleighCorrectionOp extends Operator {
                             targetData = getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
                         }
                     }
+                    if (targetBandNameMatches(targetBandName, RRAY_PATTERN) && computeRBrr) {
+                        //for debugging.
+                        rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex, targetBandName);
+                        targetData = getRhoRayleigh(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
+                    }
                 }
 
                 setTargetSamples(qualityFlagsTile, targetTile, targetData);
@@ -283,6 +290,10 @@ public class RayleighCorrectionOp extends Operator {
         return algorithm.getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
     }
 
+    private double[] getRhoRayleigh(RayleighAux rayleighAux, double[] rayleighOpticalThickness, double[] corrOzoneRefl) {
+        return algorithm.getRhoRayleigh(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
+    }
+
     private double[] getCorrectOzone(RayleighAux rayleighAux, double[] reflectance, int sourceBandIndex,
                                      String targetBandName) {
 
@@ -318,6 +329,8 @@ public class RayleighCorrectionOp extends Operator {
         }
         if (computeRBrr) {
             addTargetBands(sourceProduct, targetProduct, BAND_CATEGORIES[1]);
+            //for debugging: adding rRay, the Rayleigh reflectance from LUT
+            addTargetBands(sourceProduct, targetProduct, BAND_CATEGORIES[4]);
         }
         if (computeRtoaNg) {
             addTargetBands(sourceProduct, targetProduct, BAND_CATEGORIES[2]);
