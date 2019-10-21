@@ -556,7 +556,7 @@ public class RayleighAux {
 
                 double[] fourierSeries = new double[3];
                 //Rayleigh Phase function, 3 Fourier terms
-                fourierSeries[0] = (3.0 * 0.9587256 / 4.0 * (1 + (cosSZARad * cosSZARad) * (cosOZARad * cosOZARad) + (sinSZA2 * sinOZA2) / 2.0) + (1.0 - 0.9587256));
+                fourierSeries[0] = (3.0 * 0.9587256 / 4.0 * (1 + Math.pow(cosSZARad, 2) * Math.pow(cosOZARad, 2) + (sinSZA2 * sinOZA2) / 2.0) + (1.0 - 0.9587256));
                 fourierSeries[1] = (-3.0 * 0.9587256 / 4.0 * cosSZARad * cosOZARad * sinSZARad * sinOZARad);
                 fourierSeries[2] = (3.0 * 0.9587256 / 16.0 * sinSZA2 * sinOZA2);
 
