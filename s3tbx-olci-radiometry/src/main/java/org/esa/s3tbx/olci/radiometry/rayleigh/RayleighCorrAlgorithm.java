@@ -57,12 +57,18 @@ public class RayleighCorrAlgorithm {
             // CB/GK 20170721, following https://earth.esa.int/documents/247904/685211/Sentinel-2+MSI+Spectral+Responses/
             return getCrossSection(S2Utils.getS2TrueWavelengths());
         } else if (sensor != null && sensor == Sensor.OLCI){
-            //todo: these wavelengths belong to S3A - needs also S3B !
+            //todo: these wavelengths belong to S3A
             double[] waveLength = new double[] {400.3031914558257, 411.8452957525705, 442.9625672120682, 490.4930356580268, 510.46748124416945,
                     560.4502797598624, 620.4092905501666, 665.2744162328253, 674.0251490485472, 681.5706005756095,
                     709.1148593849875, 754.1813240203888, 761.7260948029898, 764.8247093465473, 767.9174355161354,
                     779.2567595815481, 865.4296340763456, 884.3082558969855, 899.3107685704568, 938.9730748611009,
                     1015.7990909091901};
+            //todo: these are the wavelengths for S3B
+//            double[] waveLength = new double[]{400.5946791630635, 411.9509453369866, 442.9881235940998, 490.3991247296052, 510.4022075929168,
+//                    560.3663252369439, 620.2839618019312, 665.1312164230563, 673.8681527151621, 681.3856157084324,
+//                    708.9820148630681, 754.0283289464179, 761.5594400832483, 764.6921706636257, 767.8224408129396,
+//                    779.0792072094514, 865.2710905079641, 884.1272744748017, 899.121616355846, 938.7977736873601,
+//                    1015.7390081732657};
             return getCrossSection(waveLength);
         } else {
             double[] waveLength = new double[numBands];
