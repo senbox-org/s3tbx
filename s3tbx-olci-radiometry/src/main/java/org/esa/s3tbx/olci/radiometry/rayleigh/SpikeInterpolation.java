@@ -35,11 +35,26 @@ public class SpikeInterpolation {
                                        double x, double y) {
 
 //        https://en.wikipedia.org/wiki/Bilinear_interpolation
-        double x1 = getLowerBound(xCoordinate, x);
-        double y1 = getLowerBound(yCoordinate, y);
-
-        double x2 = getUpperValue(xCoordinate, x);
-        double y2 = getUpperValue(yCoordinate, y);
+        double x1;
+        double x2;
+        double y1;
+        double y2;
+        if(x < xCoordinate[0]){
+            x1 = xCoordinate[0];
+            x2 = xCoordinate[1];
+        }
+        else{
+            x1 = getLowerBound(xCoordinate, x);
+            x2 = getUpperValue(xCoordinate, x);
+        }
+        if(y < yCoordinate[0]){
+            y1 = yCoordinate[0];
+            y2 = yCoordinate[1];
+        }
+        else{
+            y1 = getLowerBound(yCoordinate, y);
+            y2 = getUpperValue(yCoordinate, y);
+        }
 
         int ix1 = arrayIndex(xCoordinate, x1);
         int ix2 = arrayIndex(xCoordinate, x2);
