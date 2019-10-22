@@ -193,26 +193,26 @@ public class RayleighAux {
                 List<double[]> valueList = new ArrayList<>();
                 for (int i = 0; i < rayCooefMatrixA.length; i++) {
                     double[] values = new double[4];
-                    if (vzaVal >= thetaMin && vzaVal <= thetaMax && szaVal >= thetaMin && szaVal <= thetaMax) {
+//                    if (vzaVal >= thetaMin && vzaVal <= thetaMax && szaVal >= thetaMin && szaVal <= thetaMax) {
                         values[0] = SpikeInterpolation.interpolate2D(rayCooefMatrixA[i], thetas, thetas, szaVal, vzaVal);
                         values[1] = SpikeInterpolation.interpolate2D(rayCooefMatrixB[i], thetas, thetas, szaVal, vzaVal);
                         values[2] = SpikeInterpolation.interpolate2D(rayCooefMatrixC[i], thetas, thetas, szaVal, vzaVal);
                         values[3] = SpikeInterpolation.interpolate2D(rayCooefMatrixD[i], thetas, thetas, szaVal, vzaVal);
                         valueList.add(values);
-                    } else {
-                        if (vzaVal < thetaMin && szaVal < thetaMax) {
-                            valueList.add(getGridValueAt(0, 0));
-                        } else {
-                            int len = thetas.length - 1;
-                            if (vzaVal > thetaMax && szaVal > thetaMin) {
-                                valueList.add(getGridValueAt(0, len));
-                            } else if (szaVal < thetaMin && vzaVal < thetaMax) {
-                                valueList.add(getGridValueAt(0, 0));
-                            } else if (vzaVal > thetaMax && szaVal < thetaMin) {
-                                valueList.add(getGridValueAt(len, len));
-                            }
-                        }
-                    }
+//                    } else {
+//                        if (vzaVal < thetaMin && szaVal < thetaMax) {
+//                                valueList.add(getGridValueAt(0, 0));
+//                            } else {
+//                            int len = thetas.length - 1;
+//                            if (vzaVal > thetaMax && szaVal > thetaMin) {
+//                                valueList.add(getGridValueAt(0, len));
+//                            } else if (szaVal < thetaMin && vzaVal < thetaMax) {
+//                                valueList.add(getGridValueAt(0, 0));
+//                            } else if (vzaVal > thetaMax && szaVal < thetaMin) {
+//                                valueList.add(getGridValueAt(len, len));
+//                            }
+//                        }
+//                    }
                 }
                 interpolate.put(index, valueList);
             }
