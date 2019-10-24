@@ -27,6 +27,7 @@ import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLstProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrSstProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrWstProductFactory;
+import org.esa.s3tbx.dataio.s3.synergy.AODProductFactory;
 import org.esa.s3tbx.dataio.s3.synergy.SynL1CProductFactory;
 import org.esa.s3tbx.dataio.s3.synergy.SynLevel2ProductFactory;
 import org.esa.s3tbx.dataio.s3.synergy.VgtProductFactory;
@@ -77,6 +78,8 @@ public class Sentinel3ProductReader extends AbstractProductReader {
             setFactory(new SynL1CProductFactory(this));
         } else if (dirName.matches("S3.?_SY_2_SYN_.*.SEN3")) { // SYN L2
             setFactory(new SynLevel2ProductFactory(this));
+        } else if (dirName.matches("S3.?_SY_2_AOD_.*.SEN3")) { // SYN AOD
+            setFactory(new AODProductFactory(this));
         } else if (dirName.matches("S3.?_SY_(2_VGP|[23]_VG1|2_V10)_.*.SEN3")) { // SYN VGT
             setFactory(new VgtProductFactory(this));
         }
