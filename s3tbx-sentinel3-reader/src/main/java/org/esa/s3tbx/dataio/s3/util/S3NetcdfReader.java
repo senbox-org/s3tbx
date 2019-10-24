@@ -284,22 +284,25 @@ public class S3NetcdfReader extends AbstractProductReader {
         final Attribute flagMeaningsAttribute = variable.findAttribute(flag_meanings);
         if (flagValuesAttribute != null && flagMasksAttribute != null) {
             final FlagCoding flagCoding =
-                    getFlagCoding(product, band.getName(), flagMeaningsAttribute, flagValuesAttribute,
-                                  flagMasksAttribute, msb);
+                    getFlagCoding(product, band.getName(), band.getDescription(), flagMeaningsAttribute,
+                            flagValuesAttribute, flagMasksAttribute, msb);
             band.setSampleCoding(flagCoding);
         } else if (flagValuesAttribute != null) {
             final IndexCoding indexCoding =
-                    getIndexCoding(product, band.getName(), flagMeaningsAttribute, flagValuesAttribute, msb);
+                    getIndexCoding(product, band.getName(), band.getDescription(), flagMeaningsAttribute,
+                            flagValuesAttribute, msb);
             band.setSampleCoding(indexCoding);
         } else if (flagMasksAttribute != null) {
-            final FlagCoding flagCoding = getFlagCoding(product, band.getName(), flagMeaningsAttribute, flagMasksAttribute, msb);
+            final FlagCoding flagCoding = getFlagCoding(product, band.getName(), band.getDescription(),
+                    flagMeaningsAttribute, flagMasksAttribute, msb);
             band.setSampleCoding(flagCoding);
         }
     }
 
-    private IndexCoding getIndexCoding(Product product, String indexCodingName, Attribute flagMeaningsAttribute,
-                                       Attribute flagValuesAttribute, boolean msb) {
+    private IndexCoding getIndexCoding(Product product, String indexCodingName, String indexCodingDescription,
+                                       Attribute flagMeaningsAttribute, Attribute flagValuesAttribute, boolean msb) {
         final IndexCoding indexCoding = new IndexCoding(indexCodingName);
+        indexCoding.setDescription(indexCodingDescription);
         addSamples(indexCoding, flagMeaningsAttribute, flagValuesAttribute, msb);
         if (!product.getIndexCodingGroup().contains(indexCodingName)) {
             product.getIndexCodingGroup().add(indexCoding);
@@ -307,9 +310,10 @@ public class S3NetcdfReader extends AbstractProductReader {
         return indexCoding;
     }
 
-    private FlagCoding getFlagCoding(Product product, String flagCodingName, Attribute flagMeaningsAttribute,
-                                     Attribute flagMasksAttribute, boolean msb) {
+    private FlagCoding getFlagCoding(Product product, String flagCodingName, String flagCodingDescription,
+                                     Attribute flagMeaningsAttribute, Attribute flagMasksAttribute, boolean msb) {
         final FlagCoding flagCoding = new FlagCoding(flagCodingName);
+        flagCoding.setDescription(flagCodingDescription);
         addSamples(flagCoding, flagMeaningsAttribute, flagMasksAttribute, msb);
         if (!product.getFlagCodingGroup().contains(flagCodingName)) {
             product.getFlagCodingGroup().add(flagCoding);
@@ -317,9 +321,11 @@ public class S3NetcdfReader extends AbstractProductReader {
         return flagCoding;
     }
 
-    private FlagCoding getFlagCoding(Product product, String flagCodingName, Attribute flagMeaningsAttribute,
-                                     Attribute flagValuesAttribute, Attribute flagMasksAttribute, boolean msb) {
+    private FlagCoding getFlagCoding(Product product, String flagCodingName, String flagCodingDescription,
+                                     Attribute flagMeaningsAttribute, Attribute flagValuesAttribute,
+                                     Attribute flagMasksAttribute, boolean msb) {
         final FlagCoding flagCoding = new FlagCoding(flagCodingName);
+        flagCoding.setDescription(flagCodingDescription);
         addSamples(flagCoding, flagMeaningsAttribute, flagValuesAttribute, flagMasksAttribute, msb);
         if (!product.getFlagCodingGroup().contains(flagCodingName)) {
             product.getFlagCodingGroup().add(flagCoding);
