@@ -71,8 +71,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     //todo read all these as metadata - tf 20160401
     // --> included Sn_quality_*.nc products to access solar irradiances - od 20170630
     private final static String[] EXCLUDED_IDS = new String[]{
-            "ADFData", "SLSTR_F1_QUALITY_IN_Data",
-            "SLSTR_F1_QUALITY_IO_Data", "SLSTR_F2_QUALITY_IN_Data", "SLSTR_F2_QUALITY_IO_Data",
+            "ADFData", "SLSTR_F1_QUALITY_FN_Data",
+            "SLSTR_F1_QUALITY_FO_Data", "SLSTR_F2_QUALITY_IN_Data", "SLSTR_F2_QUALITY_IO_Data",
 //                "SLSTR_S1_QUALITY_AN_Data", "SLSTR_S1_QUALITY_AO_Data", "SLSTR_S2_QUALITY_AN_Data",
 //                "SLSTR_S2_QUALITY_AO_Data", "SLSTR_S3_QUALITY_AN_Data", "SLSTR_S3_QUALITY_AO_Data",
 //                "SLSTR_S4_QUALITY_AN_Data", "SLSTR_S4_QUALITY_AO_Data", "SLSTR_S4_QUALITY_BN_Data",
@@ -97,8 +97,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     public SlstrLevel1ProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
         gridTypeToGridIndex = new HashMap<>();
-        //todo adapt this when grid is contained in metadata file
-        gridTypeToGridIndex.put("Fire", "f");
+        gridTypeToGridIndex.put("F1", "f");
         gridTypeToGridIndex.put("1 km", "i");
         gridTypeToGridIndex.put("0.5 km stripe A", "a");
         gridTypeToGridIndex.put("0.5 km stripe B", "b");
@@ -377,10 +376,10 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
         targetProduct.setAutoGrouping(
-                                      "F*BT_in:F*exception_in:" +
-                                      "F*BT_io:F*exception_io:" +
+                                      "F*BT_*n:F*exception_*n:" +
+                                      "F*BT_*o:F*exception_*o:" +
                                       "S*BT_in:S*exception_in:" +
-                                      "S*BT_io:s*exception_io:" +
+                                      "S*BT_io:S*exception_io:" +
                                       "radiance_an:S*exception_an:" +
                                       "radiance_ao:S*exception_ao:" +
                                       "radiance_bn:S*exception_bn:" +
@@ -411,7 +410,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                                       "S*_exception_bn_*:S*_exception_bo_*:" +
                                       "S*_exception_cn_*:S*_exception_co_*:" +
                                       "S*_exception_in_*:S*_exception_io_*:" +
-                                      "F*_exception_in_*:F*_exception_io_*:" +
+                                      "F*_exception_*n_*:F*_exception_*o_*:" +
                                       bandGrouping);
     }
 
