@@ -96,16 +96,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         }
         targetProduct.getMetadataRoot().addElement(manifest.getMetadata());
         processProductSpecificMetadata(manifest.getMetadata().getElement("metadataSection"));
-
-        for (final Product p : openProductList) {
-            MetadataElement root = targetProduct.getMetadataRoot();
-            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
-                if (!root.containsElement(element.getDisplayName())) {
-                    root.addElement(element.createDeepClone());
-                }
-            }
-        }
-
+        addProductSpecificMetadata(targetProduct);
         addDataNodes(masterProduct, targetProduct);
         addSpecialVariables(masterProduct, targetProduct);
         setMasks(targetProduct);
@@ -208,6 +199,17 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected void processProductSpecificMetadata(MetadataElement metadataElement) {
+    }
+
+    protected void addProductSpecificMetadata(Product targetProduct) {
+        for (final Product p : openProductList) {
+            MetadataElement root = targetProduct.getMetadataRoot();
+            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
+                if (!root.containsElement(element.getDisplayName())) {
+                    root.addElement(element.createDeepClone());
+                }
+            }
+        }
     }
 
     protected int getSceneRasterWidth(Product masterProduct) {

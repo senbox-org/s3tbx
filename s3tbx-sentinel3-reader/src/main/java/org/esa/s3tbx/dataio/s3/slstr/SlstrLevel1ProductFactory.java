@@ -68,21 +68,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     private final static double SLSTR_L1B_S3MPC_S5_OBLIQUE_ADJUSTMENT_FACTOR = 1.15;
     private final static double SLSTR_L1B_S3MPC_S6_OBLIQUE_ADJUSTMENT_FACTOR = 1.14;
 
-    //todo read all these as metadata - tf 20160401
-    // --> included Sn_quality_*.nc products to access solar irradiances - od 20170630
     private final static String[] EXCLUDED_IDS = new String[]{
-            "ADFData", "SLSTR_F1_QUALITY_FN_Data",
-            "SLSTR_F1_QUALITY_FO_Data", "SLSTR_F2_QUALITY_IN_Data", "SLSTR_F2_QUALITY_IO_Data",
-//                "SLSTR_S1_QUALITY_AN_Data", "SLSTR_S1_QUALITY_AO_Data", "SLSTR_S2_QUALITY_AN_Data",
-//                "SLSTR_S2_QUALITY_AO_Data", "SLSTR_S3_QUALITY_AN_Data", "SLSTR_S3_QUALITY_AO_Data",
-//                "SLSTR_S4_QUALITY_AN_Data", "SLSTR_S4_QUALITY_AO_Data", "SLSTR_S4_QUALITY_BN_Data",
-//                "SLSTR_S4_QUALITY_BO_Data", "SLSTR_S4_QUALITY_CN_Data", "SLSTR_S4_QUALITY_CO_Data",
-//                "SLSTR_S5_QUALITY_AN_Data", "SLSTR_S5_QUALITY_AO_Data", "SLSTR_S5_QUALITY_BN_Data",
-//                "SLSTR_S5_QUALITY_BO_Data", "SLSTR_S5_QUALITY_CN_Data", "SLSTR_S5_QUALITY_CO_Data",
-//                "SLSTR_S6_QUALITY_AN_Data", "SLSTR_S6_QUALITY_AO_Data", "SLSTR_S6_QUALITY_BN_Data",
-//                "SLSTR_S6_QUALITY_BO_Data", "SLSTR_S6_QUALITY_CN_Data", "SLSTR_S6_QUALITY_CO_Data",
-            "SLSTR_S7_QUALITY_IN_Data", "SLSTR_S7_QUALITY_IO_Data", "SLSTR_S8_QUALITY_IN_Data",
-            "SLSTR_S8_QUALITY_IO_Data", "SLSTR_S9_QUALITY_IN_Data", "SLSTR_S9_QUALITY_IO_Data"
+            "ADFData"
     };
     private final Map<String, String> gridTypeToGridIndex;
     private final Map<String, Double> gridIndexToTrackOffset;
@@ -176,6 +163,29 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                     nameToWavelengthMap.put(bandName, wavelength);
                     nameToBandwidthMap.put(bandName, bandWidth);
                     nameToIndexMap.put(bandName, j);
+                }
+            }
+        }
+    }
+
+    protected void addProductSpecificMetadata(Product targetProduct) {
+        MetadataElement root = targetProduct.getMetadataRoot();
+        String[] subElements = new String[]{"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "F1", "F2",
+                "Nadir", "Oblique"};
+        for (String subElement : subElements) {
+            root.addElement(new MetadataElement(subElement));
+        }
+        List<Product> openProductList = getOpenProductList();
+        for (final Product p : openProductList) {
+            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
+                MetadataElement addTo = root;
+                for (String subElement : subElements) {
+                    if (element.getDisplayName().startsWith(subElement)) {
+                        addTo = root.getElement(subElement);
+                    }
+                }
+                if (!addTo.containsElement(element.getDisplayName())) {
+                    addTo.addElement(element.createDeepClone());
                 }
             }
         }
