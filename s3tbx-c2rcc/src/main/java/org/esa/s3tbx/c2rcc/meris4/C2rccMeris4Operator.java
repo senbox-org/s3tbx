@@ -821,20 +821,20 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         }
 
         Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
-        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophylll concentration");
+        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
 
         conc_tsm.setValidPixelExpression(validPixelExpression);
         conc_chl.setValidPixelExpression(validPixelExpression);
 
         if (outputUncertainties) {
-            Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "uncertainty of pigment absorption coefficient");
-            Band unc_adet = addBand(targetProduct, "unc_adet", "m^-1", "uncertainty of detritus absorption coefficient");
-            Band unc_agelb = addBand(targetProduct, "unc_agelb", "m^-1", "uncertainty of dissolved gelbstoff absorption coefficient");
-            Band unc_bpart = addBand(targetProduct, "unc_bpart", "m^-1", "uncertainty of particle scattering coefficient");
-            Band unc_bwit = addBand(targetProduct, "unc_bwit", "m^-1", "uncertainty of white particle scattering coefficient");
-            Band unc_adg = addBand(targetProduct, "unc_adg", "m^-1", "uncertainty of total gelbstoff absorption coefficient");
-            Band unc_atot = addBand(targetProduct, "unc_atot", "m^-1", "uncertainty of total water constituent absorption coefficient");
-            Band unc_btot = addBand(targetProduct, "unc_btot", "m^-1", "uncertainty of total water constituent scattering coefficient");
+            Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "Uncertainty of pigment absorption coefficient");
+            Band unc_adet = addBand(targetProduct, "unc_adet", "m^-1", "Uncertainty of detritus absorption coefficient");
+            Band unc_agelb = addBand(targetProduct, "unc_agelb", "m^-1", "Uncertainty of dissolved gelbstoff absorption coefficient");
+            Band unc_bpart = addBand(targetProduct, "unc_bpart", "m^-1", "Uncertainty of particle scattering coefficient");
+            Band unc_bwit = addBand(targetProduct, "unc_bwit", "m^-1", "Uncertainty of white particle scattering coefficient");
+            Band unc_adg = addBand(targetProduct, "unc_adg", "m^-1", "Uncertainty of total gelbstoff absorption coefficient");
+            Band unc_atot = addBand(targetProduct, "unc_atot", "m^-1", "Uncertainty of total water constituent absorption coefficient");
+            Band unc_btot = addBand(targetProduct, "unc_btot", "m^-1", "Uncertainty of total water constituent scattering coefficient");
 
             iop_apig.addAncillaryVariable(unc_apig, "uncertainty");
             iop_adet.addAncillaryVariable(unc_adet, "uncertainty");
@@ -854,8 +854,8 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
             unc_atot.setValidPixelExpression(validPixelExpression);
             unc_btot.setValidPixelExpression(validPixelExpression);
 
-            Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
-            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophylll concentration");
+            Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "Uncertainty of total suspended matter (TSM) dry weight concentration");
+            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Uncertainty of chlorophyll concentration");
 
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
@@ -864,9 +864,9 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
             unc_chl.setValidPixelExpression(validPixelExpression);
 
             if (outputKd) {
-                Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
-                Band unc_kdmin = addBand(targetProduct, "unc_kdmin", "m^-1", "uncertainty of mean irradiance attenuation coefficient");
-                Band unc_kd_z90max = addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
+                Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "Uncertainty of irradiance attenuation coefficient");
+                Band unc_kdmin = addBand(targetProduct, "unc_kdmin", "m^-1", "Uncertainty of mean irradiance attenuation coefficient");
+                Band unc_kd_z90max = addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "Uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
 
                 kd489.addAncillaryVariable(unc_kd489, "uncertainty");
                 kdmin.addAncillaryVariable(unc_kdmin, "uncertainty");
