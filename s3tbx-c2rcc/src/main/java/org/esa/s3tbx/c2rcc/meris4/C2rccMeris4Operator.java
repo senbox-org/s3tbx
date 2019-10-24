@@ -195,24 +195,24 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
 
     @Parameter(label = "Valid-pixel expression",
             defaultValue = "!quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)",
-            description = "Defines the pixels which are valid for processing",
+            description = "Defines the pixels which are valid for processing.",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)",
-            description = "The value used as salinity for the scene")
+            description = "The value used as salinity for the scene.")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)",
-            description = "The value used as temperature for the scene")
+            description = "The value used as temperature for the scene.")
     private double temperature;
 
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)",
-            description = "The value used as ozone if not provided by auxiliary data")
+            description = "The value used as ozone if not provided by auxiliary data.")
     private double ozone;
 
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure at Sea Level",
-            description = "The surface air pressure at sea level if not provided by auxiliary data")
+            description = "The surface air pressure at sea level if not provided by auxiliary data.")
     private double press;
 
     @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")
@@ -228,20 +228,20 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
     private double CHLfak;
 
     //RD20161103 parameter 0.05 -> 0.003 for sum of differences of MERIS12 bands 9-12
-    @Parameter(defaultValue = "0.003", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
+    @Parameter(defaultValue = "0.003", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances.",
             label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
-    @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances",
+    @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances.",
             label = "Threshold AC reflectances OOS")
     private double thresholdAcReflecOos;
 
-    @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
-            label = "Threshold for cloud flag on transmittance down @865")
+    @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865.",
+            label = "Threshold for cloud flag on down transmittance @865")
     private double thresholdCloudTDown865;
 
-    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
-            "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
+    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specified products on the I/O Parameters tab. " +
+            "If the auxiliary data is not available at this path, the data will automatically be downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard " +
@@ -255,8 +255,7 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
             label = "Set of neuronal nets")
     private String netSet = STANDARD_NETS;
 
-    @Parameter(defaultValue = "false", description =
-            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+    @Parameter(defaultValue = "false", description = "Write remote sensing reflectances instead of water leaving reflectances.",
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 

@@ -267,8 +267,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             label = "Alternative NN Path")
     private String alternativeNNPath;
 
-    @Parameter(defaultValue = "false", description =
-            "Write remote sensing reflectances instead of water leaving reflectances.",
+    @Parameter(defaultValue = "false", description = "Write remote sensing reflectances instead of water leaving reflectances.",
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 

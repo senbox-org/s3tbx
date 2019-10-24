@@ -193,28 +193,28 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Parameter(label = "Valid-pixel expression",
             defaultValue = "B8 > 0 && B8 < 0.1",
-            description = "Defines the pixels which are valid for processing",
+            description = "Defines the pixels which are valid for processing.",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)",
-            description = "The value used as salinity for the scene")
+            description = "The value used as salinity for the scene.")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)",
-            description = "The value used as temperature for the scene")
+            description = "The value used as temperature for the scene.")
     private double temperature;
 
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)",
-            description = "The value used as ozone if not provided by auxiliary data")
+            description = "The value used as ozone if not provided by auxiliary data.")
     private double ozone;
 
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure at Sea Level",
-            description = "The surface air pressure at sea level if not provided by auxiliary data")
+            description = "The surface air pressure at sea level if not provided by auxiliary data.")
     private double press;
 
     @Parameter(defaultValue = "0", unit = "m", interval = "(0, 8500)", label = "Elevation",
-            description = "Used as fallback if elevation could not be taken from GETASSE30 DEM")
+            description = "Used as fallback if elevation could not be taken from GETASSE30 DEM.")
     private double elevation;
 
     @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")
@@ -238,15 +238,14 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private double thresholdAcReflecOos;
 
     @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
-            label = "Threshold for cloud flag on transmittance down @865")
+            label = "Threshold for cloud flag on down transmittance @865")
     private double thresholdCloudTDown865;
 
-    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
-            "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
+    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specified products on the I/O Parameters tab. " +
+            "If the auxiliary data is not available at this path, the data will automatically be downloaded.")
     private String atmosphericAuxDataPath;
 
-    @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard " +
-            "set of neuronal nets with the ones in the given directory.",
+    @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets.",
             label = "Alternative NN Path")
     private String alternativeNNPath;
 
@@ -256,8 +255,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             label = "Set of neuronal nets")
     private String netSet = STANDARD_NETS;
 
-    @Parameter(defaultValue = "false", description =
-            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+    @Parameter(defaultValue = "false", description = "Write remote sensing reflectances instead of water leaving reflectances.",
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 
@@ -289,10 +287,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     @Parameter(defaultValue = "true", label = "Output normalized water leaving reflectances")
     private boolean outputRhown;
 
-    @Parameter(defaultValue = "false", label = "Output of out of scope values")
+    @Parameter(defaultValue = "false", label = "Output out of scope values")
     private boolean outputOos;
 
-    @Parameter(defaultValue = "true", label = "Output of irradiance attenuation coefficients")
+    @Parameter(defaultValue = "true", label = "Output irradiance attenuation coefficients")
     private boolean outputKd;
 
     @Parameter(defaultValue = "true", label = "Output uncertainties")
