@@ -232,13 +232,15 @@ public class S3NetcdfReader extends AbstractProductReader {
 
     protected void addVariableAsBand(Product product, Variable variable, String variableName, boolean synthetic) {
         int type = getRasterDataType(variable);
-        //todo if the datatype is unsigned long it might even be necessary to split it into three bands. This case is yet theoretical, though
+        //todo consider unsigned long - split into three bands?
         if (type == ProductData.TYPE_INT64) {
             final Band lowerBand = product.addBand(variableName + "_lsb", ProductData.TYPE_UINT32);
             lowerBand.setDescription(variable.getDescription() + "(least significant bytes)");
             lowerBand.setUnit(variable.getUnitsString());
             lowerBand.setScalingFactor(getScalingFactor(variable));
             lowerBand.setScalingOffset(getAddOffset(variable));
+            lowerBand.setSpectralWavelength(getSpectralWavelength(variable));
+            lowerBand.setSpectralBandwidth(getSpectralBandwidth(variable));
             lowerBand.setSynthetic(synthetic);
             addFillValue(lowerBand, variable);
             addSampleCodings(product, lowerBand, variable, false);
@@ -247,6 +249,8 @@ public class S3NetcdfReader extends AbstractProductReader {
             upperBand.setUnit(variable.getUnitsString());
             upperBand.setScalingFactor(getScalingFactor(variable));
             upperBand.setScalingOffset(getAddOffset(variable));
+            upperBand.setSpectralWavelength(getSpectralWavelength(variable));
+            upperBand.setSpectralBandwidth(getSpectralBandwidth(variable));
             upperBand.setSynthetic(synthetic);
             addFillValue(upperBand, variable);
             addSampleCodings(product, upperBand, variable, true);
@@ -256,6 +260,8 @@ public class S3NetcdfReader extends AbstractProductReader {
             band.setUnit(variable.getUnitsString());
             band.setScalingFactor(getScalingFactor(variable));
             band.setScalingOffset(getAddOffset(variable));
+            band.setSpectralWavelength(getSpectralWavelength(variable));
+            band.setSpectralBandwidth(getSpectralBandwidth(variable));
             band.setSynthetic(synthetic);
             addSampleCodings(product, band, variable, false);
             addFillValue(band, variable);
@@ -450,6 +456,22 @@ public class S3NetcdfReader extends AbstractProductReader {
 
     static String replaceNonWordCharacters(String flagName) {
         return flagName.replaceAll("\\W+", "_");
+    }
+
+    private static float getSpectralWavelength(Variable variable) {
+        Attribute attribute = variable.findAttribute("wavelength");
+        if (attribute != null) {
+            return getAttributeValue(attribute).floatValue();
+        }
+        return 0f;
+    }
+
+    private static float getSpectralBandwidth(Variable variable) {
+        Attribute attribute = variable.findAttribute("bandwidth");
+        if (attribute != null) {
+            return getAttributeValue(attribute).floatValue();
+        }
+        return 0f;
     }
 
     protected static double getScalingFactor(Variable variable) {
