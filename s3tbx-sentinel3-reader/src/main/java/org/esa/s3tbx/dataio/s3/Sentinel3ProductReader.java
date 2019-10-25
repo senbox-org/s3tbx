@@ -19,6 +19,7 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.olci.OlciLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.olci.OlciLevel2LProductFactory;
 import org.esa.s3tbx.dataio.s3.olci.OlciLevel2WProductFactory;
+import org.esa.s3tbx.dataio.s3.slstr.SlstrFrpProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1B1kmProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1B1kmProductReaderPlugIn;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1B500mProductFactory;
@@ -74,6 +75,8 @@ public class Sentinel3ProductReader extends AbstractProductReader {
             setFactory(new SlstrWstProductFactory(this));
         } else if (dirName.matches("S3.?_SL_2_WCT_.*.SEN3")) { // SLSTR L2 WCT
             setFactory(new SlstrSstProductFactory(this));
+        } else if (dirName.matches("S3.?_SL_2_FRP_.*.SEN3")) { // SLSTR L2 FRP
+            setFactory(new SlstrFrpProductFactory(this));
         } else if (dirName.matches("S3.?_SY_1_SYN_.*")) { // SYN L1
             setFactory(new SynL1CProductFactory(this));
         } else if (dirName.matches("S3.?_SY_2_SYN_.*.SEN3")) { // SYN L2
