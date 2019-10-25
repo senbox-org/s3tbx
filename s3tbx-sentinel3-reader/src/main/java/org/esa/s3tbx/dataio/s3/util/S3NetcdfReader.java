@@ -411,7 +411,6 @@ public class S3NetcdfReader extends AbstractProductReader {
                     } else {
                         sampleCoding.addSamples(sampleName, intValues, null);
                     }
-                    sampleCoding.addSamples(sampleName, intValues, null);
                     break;
                 case LONG:
                     long[] longValues = {
