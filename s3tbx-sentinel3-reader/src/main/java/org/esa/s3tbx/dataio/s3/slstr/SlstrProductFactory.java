@@ -78,6 +78,15 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         return referenceResolutions;
     }
 
+    @Override
+    protected boolean isNodeSpecial(Band sourceBand, Product targetProduct) {
+        String identifier = sourceBand.getName().substring(sourceBand.getName().length() - 2);
+        return super.isNodeSpecial(sourceBand, targetProduct) || getStartOffset(identifier) != referenceStartOffset ||
+                getTrackOffset(identifier) != referenceTrackOffset ||
+                getResolutions(identifier)[0] != getReferenceResolutions()[0] ||
+                getResolutions(identifier)[1] != getReferenceResolutions()[1];
+    }
+
     protected RenderedImage createSourceImage(Product masterProduct, Band sourceBand, float[] offsets,
                                               Band targetBand, short[] sourceResolutions) {
         final ImageLayout imageLayout = ImageManager.createSingleBandedImageLayout(targetBand);
