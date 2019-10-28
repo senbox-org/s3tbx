@@ -4,7 +4,7 @@ import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
-import org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
+import org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.Result;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.snap.core.datamodel.Band;
@@ -45,8 +45,44 @@ import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
-import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.DEFAULT_OLCI_WAVELENGTH;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_ADET_AT_MAX;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_ADET_AT_MIN;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_AGELB_AT_MAX;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_AGELB_AT_MIN;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_APIG_AT_MAX;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_APIG_AT_MIN;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_BPART_AT_MAX;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_BPART_AT_MIN;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_BWIT_AT_MAX;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_BWIT_AT_MIN;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_CLOUD;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_IOP_OOR;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_KD489_AT_MAX;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_KD489_OOR;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_KDMIN_AT_MAX;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_KDMIN_OOR;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_RHOW_OOR;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_RHOW_OOS;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_RTOSA_OOR;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_RTOSA_OOS;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.FLAG_INDEX_VALID_PE;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_iop_rw;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_iop_unciop;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_iop_uncsumiop_unckd;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rtosa_aann;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rtosa_rpath;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rtosa_rw;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rtosa_trans;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rw_iop;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rw_kd;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.IDX_rw_rwnorm;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband16_ix;
+import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 
@@ -58,7 +94,7 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.*;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.olci", version = "1.0",
+@OperatorMetadata(alias = "c2rcc.olci", version = "2.0",
         authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
@@ -134,16 +170,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private static final String[] c2rccNNResourcePaths = new String[10];
 
     static {
-        c2rccNNResourcePaths[IDX_iop_rw] = "olci/olci_20161012/iop_rw/17x97x47_464.3.net";
-        c2rccNNResourcePaths[IDX_iop_unciop] = "olci/olci_20161012/iop_unciop/17x77x37_11486.7.net";
-        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "olci/olci_20161012/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        c2rccNNResourcePaths[IDX_rtosa_aann] = "olci/olci_20161012/rtosa_aann/31x7x31_1073.7.net";
-        c2rccNNResourcePaths[IDX_rtosa_rpath] = "olci/olci_20161012/rtosa_rpath/31x37_2483.0.net";
-        c2rccNNResourcePaths[IDX_rtosa_rw] = "olci/olci_20161012/rtosa_rw/33x73x53x33_955327.7.net";
-        c2rccNNResourcePaths[IDX_rtosa_trans] = "olci/olci_20161012/rtosa_trans/31x37_46275.8.net";
-        c2rccNNResourcePaths[IDX_rw_iop] = "olci/olci_20161012/rw_iop/97x77x37_20196.0.net";
-        c2rccNNResourcePaths[IDX_rw_kd] = "olci/olci_20161012/rw_kd/97x77x7_389.5.net";
-        c2rccNNResourcePaths[IDX_rw_rwnorm] = "olci/olci_20161012/rw_rwnorm/37x57x17_69.1.net";
+        c2rccNNResourcePaths[IDX_iop_rw] = "olci/iop_rw/77x77x77_1798.8.net";
+        c2rccNNResourcePaths[IDX_iop_unciop] = "olci/iop_unciop/77x77x77_309240.3.net";
+        c2rccNNResourcePaths[IDX_iop_uncsumiop_unckd] = "olci/iop_uncsumiop_unckd/77x77x77_242297.3.net";
+        c2rccNNResourcePaths[IDX_rtosa_aann] = "olci/rtosa_aann/31x7x31_1159.4.net";
+        c2rccNNResourcePaths[IDX_rtosa_rpath] = "olci/rtosa_rpath/31x37x37_17175.9.net";
+        c2rccNNResourcePaths[IDX_rtosa_rw] = "olci/rtosa_rw/33x23x13_2131677.4.net";
+        c2rccNNResourcePaths[IDX_rtosa_trans] = "olci/rtosa_trans/57x57x57_369970.5.net";
+        c2rccNNResourcePaths[IDX_rw_iop] = "olci/rw_iop/37x37x37_596495.4.net";
+        c2rccNNResourcePaths[IDX_rw_kd] = "olci/rw_kd/97x77x77_4669.6.net";
+        c2rccNNResourcePaths[IDX_rw_rwnorm] = "olci/rw_rwnorm/77x77x77_34029.1.net";
     }
 
     @SourceProduct(label = "OLCI L1b product", description = "OLCI L1b source product.")

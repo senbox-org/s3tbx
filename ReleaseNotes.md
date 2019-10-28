@@ -1,6 +1,36 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 7.0.0
+--------------------
+
+* [SIIITBX-265] Include new neural nets for OLCI in C2RCC
+* [SIIITBX-263]	Include OLCI Harmonisation operator in S3TBX
+* [SIIITBX-260]	SMAC changes source product while processing
+* [SIIITBX-259]	SMAC gives different results for two runs
+* [SIIITBX-258]	Add Reader Tests for S3B
+* [SIIITBX-257]	SMAC shall be tested
+* [SIIITBX-256]	Aatsr.SST shall be tested
+* [SIIITBX-255]	ARC.SST shall be tested
+* [SIIITBX-254]	FUB.Water shall be tested
+* [SIIITBX-253]	MphChl shall be tested
+* [SIIITBX-252]	FuClassification shall be tested
+* [SIIITBX-251]	Provide gpf tests for more operators
+* [SIIITBX-250]	Remove Idepix from the S3-Toolbox
+* [SIIITBX-247]	PDU Stitching may fail due to missing elements
+* [SIIITBX-246]	Create reader tests for Sentinel-3 data
+* [SIIITBX-244]	Colours of Idepix masks are random 
+* [SIIITBX-233]	Source product of ARC SST processor is wrongly named AATSR
+* [SIIITBX-231]	Add graph tests to the snap-gpt-tests project
+* [SIIITBX-220]	Provide default graphs for S3TBX use-cases
+* [SIIITBX-205]	Integrated software building, testing and QA scheme
+* [SIIITBX-204]	Adapt PDU Stitching Op to SLSTR format change for the F1 channel
+* [SIIITBX-203]	Adapt reader to SLSTR format change for the F1 channel
+* [SIIITBX-197]	Update Reader for AATSR data in SAFE format
+* [SIIITBX-194]	Implement PPE-processor
+* [SIIITBX-169]	Rayleigh correction operator fails in case of extreme sun angles
+
+
 Changes in S3TBX 6.0.6
 --------------------
 
