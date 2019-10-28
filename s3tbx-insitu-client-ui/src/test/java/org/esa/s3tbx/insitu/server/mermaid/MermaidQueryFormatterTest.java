@@ -1,7 +1,6 @@
 package org.esa.s3tbx.insitu.server.mermaid;
 
 import org.esa.s3tbx.insitu.server.InsituQuery;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -9,29 +8,17 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Marco Peters
  */
 public class MermaidQueryFormatterTest {
 
-    private static Locale defaultLocale;
-    private static TimeZone defaultTimeZone;
-
     @BeforeClass
-    public static void setUpClass() {
-        defaultLocale = Locale.getDefault();
-        defaultTimeZone = TimeZone.getDefault();
+    public static void setUpClass() throws Exception {
         Locale.setDefault(Locale.ENGLISH);
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        Locale.setDefault(defaultLocale);
-        TimeZone.setDefault(defaultTimeZone);
     }
 
     @Test
