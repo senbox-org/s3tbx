@@ -19,10 +19,7 @@
 package org.esa.s3tbx.olci.radiometry.rayleigh;
 
 import com.google.common.primitives.Doubles;
-import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolatingFunction;
-import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator;
 
-import javax.media.jai.Interpolation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -30,16 +27,31 @@ import java.util.stream.IntStream;
 /**
  * @author muhammad.bc.
  */
-public class SpikeInterpolation {
-    public static double interpolate2D(double[][] doubles2D, double[] xCoordinate, double[] yCoordinate,
-                                       double x, double y) {
+class SpikeInterpolation {
+    static double interpolate2D(double[][] doubles2D, double[] xCoordinate, double[] yCoordinate,
+                                double x, double y) {
 
 //        https://en.wikipedia.org/wiki/Bilinear_interpolation
-        double x1 = getLowerBound(xCoordinate, x);
-        double y1 = getLowerBound(yCoordinate, y);
-
-        double x2 = getUpperValue(xCoordinate, x);
-        double y2 = getUpperValue(yCoordinate, y);
+        double x1;
+        double x2;
+        double y1;
+        double y2;
+        if(x < xCoordinate[0]){
+            x1 = xCoordinate[0];
+            x2 = xCoordinate[1];
+        }
+        else{
+            x1 = getLowerBound(xCoordinate, x);
+            x2 = getUpperValue(xCoordinate, x);
+        }
+        if(y < yCoordinate[0]){
+            y1 = yCoordinate[0];
+            y2 = yCoordinate[1];
+        }
+        else{
+            y1 = getLowerBound(yCoordinate, y);
+            y2 = getUpperValue(yCoordinate, y);
+        }
 
         int ix1 = arrayIndex(xCoordinate, x1);
         int ix2 = arrayIndex(xCoordinate, x2);
@@ -58,31 +70,18 @@ public class SpikeInterpolation {
         return interBetween(q11, q12, y2, y1, y);
     }
 
-    public static double[] useLibJAI(double[][] samples, float xfrac, float yfrac) {
-        Interpolation interpolation = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
-        double interpolateBI = interpolation.interpolate(samples, xfrac, yfrac);
-        return new double[]{interpolateBI};
-    }
-
-    public static double useApacheMath(double[] xval, double[] yval, double[][] fval, double x, double y) {
-        BicubicSplineInterpolator interpolator = new BicubicSplineInterpolator();
-        BicubicSplineInterpolatingFunction interpolate = interpolator.interpolate(xval, yval, fval);
-        return interpolate.value(x, y);
-
-    }
-
-    public static double interBetween(double lowerY, double upperY, double upperX, double lowerX, double position) {
+    static double interBetween(double lowerY, double upperY, double upperX, double lowerX, double position) {
         if (upperX - lowerX == 0) {
             return lowerY;
         }
         return lowerY + ((upperY - lowerY) * (position - lowerX)) / (upperX - lowerX);
     }
 
-    public static int arrayIndex(double[] values, double val) {
+    static int arrayIndex(double[] values, double val) {
         return Doubles.asList(values).indexOf(val);
     }
 
-    public static double getUpperValue(double[] doubles, double val) {
+    static double getUpperValue(double[] doubles, double val) {
         final List<Double> xMin = new ArrayList<>();
         int length = doubles.length;
         IntStream.range(0, length).forEach(i -> {
@@ -98,7 +97,7 @@ public class SpikeInterpolation {
         return Doubles.min(allMax);
     }
 
-    public static double getLowerBound(double[] doubles, double val) {
+    static double getLowerBound(double[] doubles, double val) {
         final double[] xMin = new double[1];
         int length = doubles.length;
         IntStream.range(0, length).forEach(i -> {
