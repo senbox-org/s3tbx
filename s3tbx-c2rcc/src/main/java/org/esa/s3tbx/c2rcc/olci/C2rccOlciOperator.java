@@ -26,6 +26,7 @@ import org.esa.snap.core.datamodel.VirtualBand;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
 import org.esa.snap.core.dataop.resamp.Resampling;
+import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -39,11 +40,14 @@ import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.StringUtils;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.awt.Color;
+import java.awt.RenderingHints;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
 import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
@@ -94,7 +98,7 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.olci", version = "2.1",
+@OperatorMetadata(alias = "c2rcc.olci", version = "2.1.2-MPC",
         authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
@@ -1095,5 +1099,15 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         public Spi() {
             super(C2rccOlciOperator.class);
         }
+
+        @Override
+        public Operator createOperator(Map<String, Object> parameters, Map<String, Product> sourceProducts, RenderingHints renderingHints) throws OperatorException {
+            if(parameters.containsKey("TSMfakBpart") || parameters.containsKey("TSMfakBwit")) {
+                SystemUtils.LOG.warning("TSMfakBpart and TSMfakBwit are deprecated parameters and shall not be used anymore." +
+                                                "Please use TSMfac and TSMexp instead. Please consult the help for more information.");
+            }
+            return super.createOperator(parameters, sourceProducts, renderingHints);
+        }
+
     }
 }
