@@ -10,43 +10,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * todo: add comment
- * To change this template use File | Settings | File Templates.
- * Date: 24.07.2017
- * Time: 14:22
+ * Holder for Sentinel-2 MSI spectral response functions
  *
  * @author olafd
  */
-public class S2ResponseFunctions {
+class S2ResponseFunctions {
 
-    private static final String S2_RESPONSE_FUNCTION_DEFAULT_FILE_NAME = "s2a_msi_spectral_responses.csv";
+    //private static final String S2_RESPONSE_FUNCTION_DEFAULT_FILE_NAME = "s2a_msi_spectral_responses.csv";
+
+    // switch to version 3.0,
+    // see https://sentinel.esa.int/web/sentinel/user-guides/sentinel-2-msi/
+    //                           document-library/-/asset_publisher/Wk0TKajiISaR/content/sentinel-2a-spectral-responses
+    private static final String S2_RESPONSE_FUNCTION_DEFAULT_FILE_NAME = "s2a_msi_spectral_responses_v30.csv";
 
     private static final char[] SEPARATOR = new char[]{';'};
 
     private final List<ResponseFunction> s2ResponseFunctions;
     private String s2ResponseFunctionsFileName;
 
-    public S2ResponseFunctions() {
+    S2ResponseFunctions() {
         this(S2_RESPONSE_FUNCTION_DEFAULT_FILE_NAME);
     }
 
-    public S2ResponseFunctions(String filename) {
+    S2ResponseFunctions(String filename) {
         this.s2ResponseFunctionsFileName = filename;
         this.s2ResponseFunctions = loadAuxdata();
     }
 
-    public List<ResponseFunction> getS2ResponseFunctions() {
+    List<ResponseFunction> getS2ResponseFunctions() {
         return s2ResponseFunctions;
     }
 
-    public int getSpectralResponseFunctionRecords() {
+    int getSpectralResponseFunctionRecords() {
         return s2ResponseFunctions.size();
     }
 
     private List<ResponseFunction> loadAuxdata() {
-//        InputStream inputStream = S2ResponseFunction.class.getResourceAsStream(s2ResponseFunctionsFileName);
-//        InputStreamReader streamReader = new InputStreamReader(inputStream);
-//        CsvReader csvReader = new CsvReader(streamReader, SEPARATOR);
         List<String[]> records;
         try {
             Path s2ResponseFunctionsAuxdataPath = RayleighAux.installAuxdata().resolve(s2ResponseFunctionsFileName);
@@ -79,15 +78,15 @@ public class S2ResponseFunctions {
             this.rfs = rf;
         }
 
-        public double getWvl() {
+        double getWvl() {
             return wvl;
         }
 
-        public double[] getRfs() {
+        double[] getRfs() {
             return rfs;
         }
 
-        public double getRf(int bandIndex) {
+        double getRf(int bandIndex) {
             return rfs[bandIndex];
         }
     }

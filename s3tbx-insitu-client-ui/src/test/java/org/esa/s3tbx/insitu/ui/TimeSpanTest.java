@@ -2,6 +2,8 @@ package org.esa.s3tbx.insitu.ui;
 
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -9,16 +11,28 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Marco Peters
  */
 public class TimeSpanTest {
 
+    private static TimeZone defaultTimeZone;
+
+    @BeforeClass
+    public static void setUpTest() {
+        defaultTimeZone = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        TimeZone.setDefault(defaultTimeZone);
+    }
+
     @Test
     public void testCreate_NoProduct() throws Exception {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         ArrayList<Product> products = new ArrayList<>();
         InsituClientModel.TimeSpan timeSpan = InsituClientModel.TimeSpan.create(products);
         Calendar utcCalendar = InsituClientModel.createUtcCalendar();
