@@ -59,14 +59,12 @@ import java.util.stream.Collectors;
  */
 public class RayleighAux {
 
-    public static final String GETASSE_30 = "GETASSE30";
-    public static final String COEFF_MATRIX_TXT = "coeffMatrix.txt";
-    public static final String TAU_RAY = "tau_ray";
-    public static final String THETA = "theta";
-    public static final String RAY_COEFF_MATRIX = "ray_coeff_matrix";
-    public static final String RAY_ALBEDO_LUT = "ray_albedo_lut";
-    public static PolynomialSplineFunction linearInterpolate;
-    public static double[] tau_ray;
+    private static final String GETASSE_30 = "GETASSE30";
+    private static final String COEFF_MATRIX_TXT = "coeffMatrix.txt";
+    private static final String TAU_RAY = "tau_ray";
+    private static final String THETA = "theta";
+    private static final String RAY_COEFF_MATRIX = "ray_coeff_matrix";
+    private static final String RAY_ALBEDO_LUT = "ray_albedo_lut";
     private static ElevationModel elevationModel;
     private static double[] thetas;
     private static double[][][] rayCooefMatrixA;
@@ -97,6 +95,9 @@ public class RayleighAux {
     private double[] sinSZARads;
     private double[] cosOZARads;
     private double[] airMass;
+
+    static PolynomialSplineFunction linearInterpolate;
+    static double[] tau_ray;
 
     public static double[] parseJSON1DimArray(JSONObject parse, String ray_coeff_matrix) {
         JSONArray theta = (JSONArray) parse.get(ray_coeff_matrix);
@@ -174,11 +175,11 @@ public class RayleighAux {
     }
 
     //for test only
-    public void setInterpolation(HashMap<Integer, List<double[]>> integerHashMap) {
+    void setInterpolation(HashMap<Integer, List<double[]>> integerHashMap) {
         this.interpolateMap = integerHashMap;
     }
 
-    public Map<Integer, List<double[]>> getSpikeInterpolation() {
+    private Map<Integer, List<double[]>> getSpikeInterpolation() {
         double[] sunZenithAngles = getSunZenithAngles();
         double[] viewZenithAngles = getViewZenithAngles();
         Map<Integer, List<double[]>> interpolate = new HashMap<>();
@@ -188,31 +189,14 @@ public class RayleighAux {
                 double vzaVal = viewZenithAngles[index];
                 double szaVal = sunZenithAngles[index];
 
-                double thetaMin = thetas[0];
-                double thetaMax = thetas[thetas.length - 1];
                 List<double[]> valueList = new ArrayList<>();
                 for (int i = 0; i < rayCooefMatrixA.length; i++) {
                     double[] values = new double[4];
-//                    if (vzaVal >= thetaMin && vzaVal <= thetaMax && szaVal >= thetaMin && szaVal <= thetaMax) {
                         values[0] = SpikeInterpolation.interpolate2D(rayCooefMatrixA[i], thetas, thetas, szaVal, vzaVal);
                         values[1] = SpikeInterpolation.interpolate2D(rayCooefMatrixB[i], thetas, thetas, szaVal, vzaVal);
                         values[2] = SpikeInterpolation.interpolate2D(rayCooefMatrixC[i], thetas, thetas, szaVal, vzaVal);
                         values[3] = SpikeInterpolation.interpolate2D(rayCooefMatrixD[i], thetas, thetas, szaVal, vzaVal);
                         valueList.add(values);
-//                    } else {
-//                        if (vzaVal < thetaMin && szaVal < thetaMax) {
-//                                valueList.add(getGridValueAt(0, 0));
-//                            } else {
-//                            int len = thetas.length - 1;
-//                            if (vzaVal > thetaMax && szaVal > thetaMin) {
-//                                valueList.add(getGridValueAt(0, len));
-//                            } else if (szaVal < thetaMin && vzaVal < thetaMax) {
-//                                valueList.add(getGridValueAt(0, 0));
-//                            } else if (vzaVal > thetaMax && szaVal < thetaMin) {
-//                                valueList.add(getGridValueAt(len, len));
-//                            }
-//                        }
-//                    }
                 }
                 interpolate.put(index, valueList);
             }
@@ -220,7 +204,7 @@ public class RayleighAux {
         return interpolate;
     }
 
-    public Map<Integer, double[]> getFourier() {
+    Map<Integer, double[]> getFourier() {
         if (Objects.isNull(fourierPoly)) {
             return fourierPoly = getFourierMap();
         }
