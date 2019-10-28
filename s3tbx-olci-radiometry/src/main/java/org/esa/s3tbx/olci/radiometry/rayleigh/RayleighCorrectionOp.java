@@ -73,8 +73,7 @@ public class RayleighCorrectionOp extends Operator {
             "taur_%02d",
             "rBRR_%02d",
             "rtoa_ng_%02d",
-            "rtoa_%02d",
-            "rRay_%02d"
+            "rtoa_%02d"
     };
 
     static final String R_BRR_PATTERN = "rBRR_\\d{2}";
