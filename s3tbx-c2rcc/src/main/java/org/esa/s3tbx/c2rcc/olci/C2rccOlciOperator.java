@@ -26,6 +26,7 @@ import org.esa.snap.core.datamodel.VirtualBand;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
 import org.esa.snap.core.dataop.resamp.Resampling;
+import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -39,11 +40,14 @@ import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.StringUtils;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.awt.Color;
+import java.awt.RenderingHints;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
 import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
@@ -94,7 +98,7 @@ import static org.esa.s3tbx.c2rcc.olci.C2rccOlciAlgorithm.olciband21_ix;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.olci", version = "2.0",
+@OperatorMetadata(alias = "c2rcc.olci", version = "2.1",
         authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
@@ -211,63 +215,63 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
     @Parameter(label = "Valid-pixel expression",
             defaultValue = "!quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)",
-            description = "Defines the pixels which are valid for processing",
+            description = "Defines the pixels which are valid for processing.",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)",
-            description = "The value used as salinity for the scene")
+            description = "The value used as salinity for the scene.")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)",
-            description = "The value used as temperature for the scene")
+            description = "The value used as temperature for the scene.")
     private double temperature;
 
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)",
-            description = "The value used as ozone if not provided by auxiliary data")
+            description = "The value used as ozone if not provided by auxiliary data.")
     private double ozone;
 
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure at Sea Level",
-            description = "The surface air pressure at sea level if not provided by auxiliary data")
+            description = "The surface air pressure at sea level if not provided by auxiliary data.")
     private double press;
 
-    @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")
+    @Parameter(alias="TSMfac", defaultValue = "1.06", description = "TSM factor (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM factor")
     private double TSMfakBpart;
 
-    @Parameter(defaultValue = "3.1", description = "Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bwit")
+    @Parameter(alias="TSMexp", defaultValue = "0.942", description = "TSM exponent (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM exponent")
     private double TSMfakBwit;
 
-    @Parameter(defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
+    @Parameter(alias="CHLexp", defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop_apig^CHLexp * CHLfak ).", label = "CHL exponent")
     private double CHLexp;
 
-    @Parameter(defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
+    @Parameter(alias="CHLfac", defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop_apig^CHLexp * CHLfak ).", label = "CHL factor")
     private double CHLfak;
 
     // RD20161103 changed from 0.05 to 0.005 for sum of differences
     // 20180131 changed back to 0.05 on suggestion of Kerstin.
-    @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
+    // 20191017 changed to 0.01 according to S3MPC and for harmonisation with IPF
+    @Parameter(defaultValue = "0.01", description = "Threshold for nn training dataset out of scope flag for gas corrected top-of-atmosphere reflectances.",
             label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
-    @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances",
+    // 20191017 changed to 0.15 according to S3MPC and for harmonisation with IPF
+    @Parameter(defaultValue = "0.15", description = "Threshold for nn training dataset out of scope flag for atmospherically corrected reflectances.",
             label = "Threshold AC reflectances OOS")
     private double thresholdAcReflecOos;
 
-    @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
-            label = "Threshold for cloud flag on transmittance down @865")
+    @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865.",
+            label = "Threshold for Cloud_risk flag on down transmittance @865")
     private double thresholdCloudTDown865;
 
-    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
-            "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
+    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specified products on the I/O Parameters tab. " +
+            "If the auxiliary data is not available at this path, the data will automatically be downloaded.")
     private String atmosphericAuxDataPath;
 
-    @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard " +
-            "set of neuronal nets with the ones in the given directory.",
+    @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets.",
             label = "Alternative NN Path")
     private String alternativeNNPath;
 
-    @Parameter(defaultValue = "false", description =
-            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+    @Parameter(defaultValue = "false", description = "Write remote sensing reflectances instead of water leaving reflectances.",
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 
@@ -276,7 +280,7 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     private boolean deriveRwFromPathAndTransmittance;
 
     @Parameter(defaultValue = "true", description =
-            "If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used",
+            "Use ECMWF auxiliary data (total_ozone, sea_level_pressure) from the source product.",
             label = "Use ECMWF aux data of source product")
     private boolean useEcmwfAuxData;
 
@@ -304,10 +308,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @Parameter(defaultValue = "true", label = "Output normalized water leaving reflectances")
     private boolean outputRhown;
 
-    @Parameter(defaultValue = "false", label = "Output of out of scope values")
+    @Parameter(defaultValue = "false", label = "Output out of scope values")
     private boolean outputOos;
 
-    @Parameter(defaultValue = "true", label = "Output of irradiance attenuation coefficients")
+    @Parameter(defaultValue = "true", label = "Output irradiance attenuation coefficients")
     private boolean outputKd;
 
     @Parameter(defaultValue = "true", label = "Output uncertainties")
@@ -831,21 +835,21 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             autoGrouping.append(":kd");
         }
 
-        Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
-        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophylll concentration");
+        Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", TSMfakBpart + " * pow(iop_btot, " + TSMfakBwit + ")", "g m^-3", "Total suspended matter dry weight concentration");
+        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
 
         conc_tsm.setValidPixelExpression(validPixelFlagExpression);
         conc_chl.setValidPixelExpression(validPixelFlagExpression);
 
         if (outputUncertainties) {
-            Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "uncertainty of pigment absorption coefficient");
-            Band unc_adet = addBand(targetProduct, "unc_adet", "m^-1", "uncertainty of detritus absorption coefficient");
-            Band unc_agelb = addBand(targetProduct, "unc_agelb", "m^-1", "uncertainty of dissolved gelbstoff absorption coefficient");
-            Band unc_bpart = addBand(targetProduct, "unc_bpart", "m^-1", "uncertainty of particle scattering coefficient");
-            Band unc_bwit = addBand(targetProduct, "unc_bwit", "m^-1", "uncertainty of white particle scattering coefficient");
-            Band unc_adg = addBand(targetProduct, "unc_adg", "m^-1", "uncertainty of total gelbstoff absorption coefficient");
-            Band unc_atot = addBand(targetProduct, "unc_atot", "m^-1", "uncertainty of total water constituent absorption coefficient");
-            Band unc_btot = addBand(targetProduct, "unc_btot", "m^-1", "uncertainty of total water constituent scattering coefficient");
+            Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "Uncertainty of pigment absorption coefficient");
+            Band unc_adet = addBand(targetProduct, "unc_adet", "m^-1", "Uncertainty of detritus absorption coefficient");
+            Band unc_agelb = addBand(targetProduct, "unc_agelb", "m^-1", "Uncertainty of dissolved gelbstoff absorption coefficient");
+            Band unc_bpart = addBand(targetProduct, "unc_bpart", "m^-1", "Uncertainty of particle scattering coefficient");
+            Band unc_bwit = addBand(targetProduct, "unc_bwit", "m^-1", "Uncertainty of white particle scattering coefficient");
+            Band unc_adg = addBand(targetProduct, "unc_adg", "m^-1", "Uncertainty of total gelbstoff absorption coefficient");
+            Band unc_atot = addBand(targetProduct, "unc_atot", "m^-1", "Uncertainty of total water constituent absorption coefficient");
+            Band unc_btot = addBand(targetProduct, "unc_btot", "m^-1", "Uncertainty of total water constituent scattering coefficient");
 
             iop_apig.addAncillaryVariable(unc_apig, "uncertainty");
             iop_adet.addAncillaryVariable(unc_adet, "uncertainty");
@@ -865,8 +869,8 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             unc_atot.setValidPixelExpression(validPixelFlagExpression);
             unc_btot.setValidPixelExpression(validPixelFlagExpression);
 
-            Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
-            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophylll concentration");
+            Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", TSMfakBpart + " * pow(unc_btot, " + TSMfakBwit + ")", "g m^-3", "Uncertainty of total suspended matter (TSM) dry weight concentration");
+            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Uncertainty of chlorophyll concentration");
 
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
@@ -875,9 +879,9 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             unc_chl.setValidPixelExpression(validPixelFlagExpression);
 
             if (outputKd) {
-                Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
-                Band unc_kdmin = addBand(targetProduct, "unc_kdmin", "m^-1", "uncertainty of mean irradiance attenuation coefficient");
-                Band unc_kd_z90max = addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
+                Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "Uncertainty of irradiance attenuation coefficient");
+                Band unc_kdmin = addBand(targetProduct, "unc_kdmin", "m^-1", "Uncertainty of mean irradiance attenuation coefficient");
+                Band unc_kd_z90max = addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "Uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
 
                 kd489.addAncillaryVariable(unc_kd489, "uncertainty");
                 kdmin.addAncillaryVariable(unc_kdmin, "uncertainty");
@@ -1095,5 +1099,15 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         public Spi() {
             super(C2rccOlciOperator.class);
         }
+
+        @Override
+        public Operator createOperator(Map<String, Object> parameters, Map<String, Product> sourceProducts, RenderingHints renderingHints) throws OperatorException {
+            if(parameters.containsKey("TSMfakBpart") || parameters.containsKey("TSMfakBwit")) {
+                SystemUtils.LOG.warning("TSMfakBpart and TSMfakBwit are deprecated parameters and shall not be used anymore." +
+                                                "Please use TSMfac and TSMexp instead. Please consult the help for more information.");
+            }
+            return super.createOperator(parameters, sourceProducts, renderingHints);
+        }
+
     }
 }

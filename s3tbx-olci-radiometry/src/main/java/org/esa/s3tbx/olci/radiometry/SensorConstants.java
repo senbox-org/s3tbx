@@ -63,7 +63,7 @@ public class SensorConstants {
     public static final String OLCI_SLP_NAME = "sea_level_pressure";
     public static final String OLCI_L1B_FLAGS_NAME = "quality_flags";
     public static final int OLCI_INVALID_BIT = 25;
-    public static final int[] OLCI_BOUNDS = {17, 18};
+    public static final int[] OLCI_BOUNDS = {19, 18}; //these are the actual band numbers for WV absorption 900nm = band 19, WV reference 885nm = band 18
     public static final String OLCI_NAME_FORMAT = "Oa%02d_radiance";
     public static final String OLCI_NAME_PATTERN = "Oa\\d+_radiance";
     public static final String OLCI_BAND_INFO_FILE_NAME = "band_info_olci.txt";

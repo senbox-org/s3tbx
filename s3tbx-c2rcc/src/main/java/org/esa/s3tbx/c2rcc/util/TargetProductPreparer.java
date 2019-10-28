@@ -45,7 +45,7 @@ public class TargetProductPreparer {
         addVirtualBand(targetProduct, "iop_btot", "iop_bpart + iop_bwit", "m^-1", "Total particle scattering");
 
         addVirtualBand(targetProduct, "conc_tsm", "(iop_bpart + iop_bwit) * 1.7", "g m^-3", "Total suspended matter dry weight concentration");
-        addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, 1.04) * 20.0", "mg/m^3", "Chlorophylll concentration");
+        addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, 1.04) * 20.0", "mg/m^3", "Chlorophyll concentration");
 
         addBand(targetProduct, "rtosa_ratio_min", "1", "Minimum of rtosa_out:rtosa_in ratios");
         addBand(targetProduct, "rtosa_ratio_max", "1", "Maximum of rtosa_out:rtosa_in ratios");
