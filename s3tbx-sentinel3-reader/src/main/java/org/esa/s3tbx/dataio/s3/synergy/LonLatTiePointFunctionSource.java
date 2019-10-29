@@ -1,15 +1,15 @@
 package org.esa.s3tbx.dataio.s3.synergy;
 
 import org.esa.snap.core.util.math.DistanceMeasure;
+import ucar.nc2.Dimension;
 import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 class LonLatTiePointFunctionSource {
 
@@ -20,8 +20,6 @@ class LonLatTiePointFunctionSource {
     private final int latIndex;
     private final int lonIndex;
     private boolean initialized;
-    private final List<Variable> variables;
-    private final Map<File, NcFile> ncFileMap;
 
     private final Comparator<double[]> latComparator = new Comparator<double[]>() {
         @Override
@@ -30,48 +28,47 @@ class LonLatTiePointFunctionSource {
         }
     };
 
-    LonLatTiePointFunctionSource(List<Variable> variables, List<File> ncFiles, int latIndex, int lonIndex) {
+    LonLatTiePointFunctionSource(List<File> ncFiles, int latIndex, int lonIndex) {
         this.latIndex = latIndex;
         this.lonIndex = lonIndex;
         initialized = false;
-        this.variables = variables;
         this.ncFiles = ncFiles;
-        ncFileMap = new HashMap<>();
     }
 
     private synchronized void initialize() {
         if (initialized) {
             return;
         }
-        Variable variable = variables.get(0);
         try {
-            NcFile ncFile = getNcFile(0);
-            double[] variableData = ncFile.read(variable.getFullName());
-            data = new double[variableData.length][variables.size()];
-            for (int i = 0; i < variables.size(); i++) {
-                variable = variables.get(i);
-                ncFile = getNcFile(i);
-                variableData = ncFile.read(variable.getFullName());
-                for (int j = 0; j < variableData.length; j++) {
-                    data[j][i] = variableData[j];
+            int dimension = -1;
+            int numVariables = 0;
+            List<NcFile> openedNcFiles = new ArrayList<>();
+            for (File file : ncFiles) {
+                NcFile ncFile = NcFile.open(file);
+                openedNcFiles.add(ncFile);
+                List<Dimension> dimensions = ncFile.getDimensions(".*_tp");
+                dimension = dimensions.get(0).getLength();
+                List<Variable> variables = ncFile.getVariables(".*");
+                numVariables += variables.size();
+            }
+            data = new double[dimension][numVariables];
+            int offset = 0;
+            for (int i = 0; i < openedNcFiles.size(); i++) {
+                List<Variable> variables = openedNcFiles.get(i).getVariables(".*");
+                for (int j = 0; j < variables.size(); j++) {
+                    double [] variableData = openedNcFiles.get(i).read(variables.get(j).getFullName());
+                    for (int k = 0; k < dimension; k++) {
+                        data[k][offset + j] = variableData[k];
+                    }
                 }
+                offset += variables.size();
+                openedNcFiles.get(i).close();
             }
             Arrays.sort(data, latComparator);
-            for (NcFile file : ncFileMap.values()) {
-                file.close();
-            }
         } catch (IOException e) {
-            data = new double[0][variables.size()];
+            data = new double[0][0];
         }
         initialized = true;
-    }
-
-    private NcFile getNcFile(int index) throws IOException {
-        File file = ncFiles.get(index);
-        if (!ncFileMap.containsKey(file)) {
-            ncFileMap.put(file, NcFile.open(file));
-        }
-        return ncFileMap.get(file);
     }
 
     public double getValue(double lon, double lat, int index) {

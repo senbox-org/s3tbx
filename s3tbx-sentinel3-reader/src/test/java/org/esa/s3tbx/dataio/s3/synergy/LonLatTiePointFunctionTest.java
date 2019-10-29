@@ -35,10 +35,8 @@ public class LonLatTiePointFunctionTest {
         File file = new File(this.getClass().getResource("tiepoints_olci.nc").getFile());
         List<Variable> variables = ncFile.getVariables(".*");
         ArrayList<File> ncFiles = new ArrayList<>();
-        for (int i = 0; i < variables.size(); i++) {
-            ncFiles.add(file);
-        }
-        LonLatTiePointFunctionSource source = new LonLatTiePointFunctionSource(variables, ncFiles, 1, 0);
+        ncFiles.add(file);
+        LonLatTiePointFunctionSource source = new LonLatTiePointFunctionSource(ncFiles, 1, 0);
         double[] latData = ncFile.read(variables.get(1).getFullName());
         double[] lonData = ncFile.read(variables.get(0).getFullName());
 

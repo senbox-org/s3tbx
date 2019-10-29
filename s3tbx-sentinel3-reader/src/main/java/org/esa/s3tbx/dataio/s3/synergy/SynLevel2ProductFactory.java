@@ -65,17 +65,16 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
         final Band lonBand = targetProduct.getBand(lonBandName);
         int latIndex = -1;
         int lonIndex = -1;
-        ArrayList<Variable> variableList = new ArrayList<>();
         ArrayList<File> ncFileList = new ArrayList<>();
         List<Band> targetBands = new ArrayList<>();
         int offset = 0;
         for (String fileName : fileNames) {
+            ncFileList.add(new File(getInputFileParentDirectory(), fileName));
             final NcFile ncFile = openNcFile(fileName);
             try {
                 final List<Variable> variables = ncFile.getVariables(".*");
                 for (int j = 0; j < variables.size(); j++) {
                     Variable variable = variables.get(j);
-                    variableList.add(variable);
                     ncFileList.add(new File(getInputFileParentDirectory(), fileName));
                     if (variable.getFullName().contains("lat")) {
                         latIndex = offset + j;
@@ -95,7 +94,7 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
                 ncFile.close();
             }
         }
-        LonLatTiePointFunctionSource source = new LonLatTiePointFunctionSource(variableList, ncFileList, latIndex, lonIndex);
+        LonLatTiePointFunctionSource source = new LonLatTiePointFunctionSource(ncFileList, latIndex, lonIndex);
         for (int i = 0; i < targetBands.size(); i++) {
             LonLatTiePointFunction function = new LonLatTiePointFunction(source, i);
             MultiLevelImage targetImage =

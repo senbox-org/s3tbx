@@ -2,6 +2,7 @@ package org.esa.s3tbx.dataio.s3.synergy;
 
 import ucar.ma2.Array;
 import ucar.nc2.Attribute;
+import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -33,11 +34,21 @@ class NcFile {
     List<Variable> getVariables(String regex) {
         List<Variable> variables = new ArrayList<Variable>();
         for (final Variable variable : netcdfFile.getVariables()) {
-            if (variable.getName().matches(regex)) {
+            if (variable.getFullName().matches(regex)) {
                 variables.add(variable);
             }
         }
         return variables;
+    }
+
+    List<Dimension> getDimensions(String regex) {
+        List<Dimension> dimensions = new ArrayList<>();
+        for (final Dimension dimension : netcdfFile.getDimensions()) {
+            if (dimension.getFullName().matches(regex)) {
+                dimensions.add(dimension);
+            }
+        }
+        return dimensions;
     }
 
     double[] read(String name) throws IOException {
