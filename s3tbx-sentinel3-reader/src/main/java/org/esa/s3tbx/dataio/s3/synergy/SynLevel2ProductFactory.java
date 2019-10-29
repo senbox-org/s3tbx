@@ -17,7 +17,6 @@ package org.esa.s3tbx.dataio.s3.synergy;/*
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.ceres.glevel.support.DefaultMultiLevelImage;
 import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
-import org.esa.s3tbx.dataio.s3.LonLatFunction;
 import org.esa.s3tbx.dataio.s3.LonLatMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
@@ -34,6 +33,7 @@ import ucar.nc2.Variable;
 import java.awt.image.DataBuffer;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SynLevel2ProductFactory extends AbstractProductFactory {
@@ -53,67 +53,54 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
 
     @Override
     protected void addSpecialVariables(Product masterProduct, Product targetProduct) throws IOException {
-        final double[] olcTpLon;
-        final double[] olcTpLat;
-        final NcFile olcTiePoints = openNcFile("tiepoints_olci.nc");
-        try {
-            olcTpLon = olcTiePoints.read("OLC_TP_lon");
-            olcTpLat = olcTiePoints.read("OLC_TP_lat");
-        } finally {
-            olcTiePoints.close();
-        }
-        addVariables(targetProduct, olcTpLon, olcTpLat, "tiepoints_olci.nc");
-        addVariables(targetProduct, olcTpLon, olcTpLat, "tiepoints_meteo.nc");
-
-        final double[] slnTpLon;
-        final double[] slnTpLat;
-        final NcFile slnTiePoints = openNcFile("tiepoints_slstr_n.nc");
-        try {
-            slnTpLon = slnTiePoints.read("SLN_TP_lon");
-            slnTpLat = slnTiePoints.read("SLN_TP_lat");
-        } finally {
-            slnTiePoints.close();
-        }
-        addVariables(targetProduct, slnTpLon, slnTpLat, "tiepoints_slstr_n.nc");
-
-        final double[] sloTpLon;
-        final double[] sloTpLat;
-        final NcFile sloTiePoints = openNcFile("tiepoints_slstr_o.nc");
-        try {
-            sloTpLon = sloTiePoints.read("SLO_TP_lon");
-            sloTpLat = sloTiePoints.read("SLO_TP_lat");
-        } finally {
-            sloTiePoints.close();
-        }
-        addVariables(targetProduct, sloTpLon, sloTpLat, "tiepoints_slstr_o.nc");
+        addTiepointVariables(targetProduct, new String[]{"tiepoints_olci.nc", "tiepoints_meteo.nc"});
+        addTiepointVariables(targetProduct, new String[]{"tiepoints_slstr_n.nc"});
+        addTiepointVariables(targetProduct, new String[]{"tiepoints_slstr_o.nc"});
     }
 
-    private void addVariables(Product targetProduct, double[] tpLon, double[] tpLat, String fileName) throws
-                                                                                                      IOException {
+    private void addTiepointVariables(Product targetProduct, String[] fileNames) throws IOException {
         final String latBandName = "lat";
         final String lonBandName = "lon";
         final Band latBand = targetProduct.getBand(latBandName);
         final Band lonBand = targetProduct.getBand(lonBandName);
-
-        final NcFile ncFile = openNcFile(fileName);
-        try {
-            final List<Variable> variables = ncFile.getVariables(".*");
-            for (final Variable variable : variables) {
-                final String targetBandName = variable.getFullName();
-                final Band targetBand = targetProduct.addBand(targetBandName, ProductData.TYPE_FLOAT32);
-                targetBand.setDescription(variable.getDescription());
-                targetBand.setUnit(variable.getUnitsString());
-                final double[] tpVar = ncFile.read(variable.getFullName());
-                final MultiLevelImage targetImage = createTiePointImage(lonBand.getGeophysicalImage(),
-                                                                        latBand.getGeophysicalImage(),
-                                                                        tpLon,
-                                                                        tpLat, tpVar,
-                                                                        400);
-
-                targetBand.setSourceImage(targetImage);
+        int latIndex = -1;
+        int lonIndex = -1;
+        ArrayList<Variable> variableList = new ArrayList<>();
+        ArrayList<File> ncFileList = new ArrayList<>();
+        List<Band> targetBands = new ArrayList<>();
+        int offset = 0;
+        for (String fileName : fileNames) {
+            final NcFile ncFile = openNcFile(fileName);
+            try {
+                final List<Variable> variables = ncFile.getVariables(".*");
+                for (int j = 0; j < variables.size(); j++) {
+                    Variable variable = variables.get(j);
+                    variableList.add(variable);
+                    ncFileList.add(new File(getInputFileParentDirectory(), fileName));
+                    if (variable.getFullName().contains("lat")) {
+                        latIndex = offset + j;
+                    } else if (variable.getFullName().contains("lon")) {
+                        lonIndex = offset + j;
+                    }
+                    final String targetBandName = variable.getFullName();
+                    final Band targetBand = targetProduct.addBand(targetBandName, ProductData.TYPE_FLOAT32);
+                    targetBand.setDescription(variable.getDescription());
+                    targetBand.setUnit(variable.getUnitsString());
+                    targetBand.setNoDataValueUsed(true);
+                    targetBand.setNoDataValue(Double.NaN);
+                    targetBands.add(targetBand);
+                }
+                offset += variables.size();
+            } finally {
+                ncFile.close();
             }
-        } finally {
-            ncFile.close();
+        }
+        LonLatTiePointFunctionSource source = new LonLatTiePointFunctionSource(variableList, ncFileList, latIndex, lonIndex);
+        for (int i = 0; i < targetBands.size(); i++) {
+            LonLatTiePointFunction function = new LonLatTiePointFunction(source, i);
+            MultiLevelImage targetImage =
+                    createTiePointImage(lonBand.getGeophysicalImage(), latBand.getGeophysicalImage(), function);
+            targetBands.get(i).setSourceImage(targetImage);
         }
     }
 
@@ -123,12 +110,8 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
 
     private MultiLevelImage createTiePointImage(MultiLevelImage lonImage,
                                                 MultiLevelImage latImage,
-                                                double[] tpLonData,
-                                                double[] tpLatData,
-                                                double[] tpFunctionData, int colCount) {
-        final LonLatFunction function = new LonLatTiePointFunction(tpLonData,
-                                                                   tpLatData,
-                                                                   tpFunctionData, colCount);
+                                                LonLatTiePointFunction function
+    ) {
         return new DefaultMultiLevelImage(
                 LonLatMultiLevelSource.create(lonImage, latImage, function, DataBuffer.TYPE_FLOAT));
     }
@@ -157,7 +140,7 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
     }
 
     @Override
-    protected void setGeoCoding(Product targetProduct) throws IOException {
+    protected void setGeoCoding(Product targetProduct) {
         final String latBandName = "lat";
         final String lonBandName = "lon";
         final Band latBand = targetProduct.getBand(latBandName);

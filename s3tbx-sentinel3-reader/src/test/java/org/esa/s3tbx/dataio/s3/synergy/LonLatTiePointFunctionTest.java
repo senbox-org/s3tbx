@@ -19,55 +19,38 @@ import org.junit.Ignore;
 import org.junit.Test;
 import ucar.nc2.Variable;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 public class LonLatTiePointFunctionTest {
 
     @Test
-    @Ignore("takes a lot of time")
-    public void testApproximation() throws Exception {
-
-        NcFile ncFile1 = null;
-        NcFile ncFile2 = null;
-        try {
-            ncFile1 = NcFile.openResource("tiepoints_olci.nc");
-
-            final double[] lonData = ncFile1.read("OLC_TP_lon");
-            final double[] latData = ncFile1.read("OLC_TP_lat");
-            for (final Variable variable : ncFile1.getVariables(".*")) {
-                final double[] variableData = ncFile1.read(variable.getName());
-
-                testApproximationForVariable(lonData, latData, variableData);
-            }
-
-            ncFile2 = NcFile.openResource("tiepoints_meteo.nc");
-            for (final Variable variable : ncFile2.getVariables(".*")) {
-                final double[] variableData = ncFile2.read(variable.getName());
-
-                testApproximationForVariable(lonData, latData, variableData);
-            }
-        } finally {
-            if (ncFile1 != null) {
-                ncFile1.close();
-            }
-            if (ncFile2 != null) {
-                ncFile2.close();
-            }
+    public void testApproximation() throws IOException, URISyntaxException {
+        NcFile ncFile = NcFile.openResource("tiepoints_olci.nc");
+        File file = new File(this.getClass().getResource("tiepoints_olci.nc").getFile());
+        List<Variable> variables = ncFile.getVariables(".*");
+        ArrayList<File> ncFiles = new ArrayList<>();
+        for (int i = 0; i < variables.size(); i++) {
+            ncFiles.add(file);
         }
-    }
+        LonLatTiePointFunctionSource source = new LonLatTiePointFunctionSource(variables, ncFiles, 1, 0);
+        double[] latData = ncFile.read(variables.get(1).getFullName());
+        double[] lonData = ncFile.read(variables.get(0).getFullName());
 
-    private void testApproximationForVariable(double[] lonData, double[] latData, double[] variableData) {
-        final LonLatFunction function = new LonLatTiePointFunction(lonData,
-                                                                   latData,
-                                                                   variableData, lonData.length);
-
-        for (int i = 0; i < variableData.length; i++) {
+        LonLatTiePointFunction latFunction = new LonLatTiePointFunction(source, 1);
+        LonLatTiePointFunction lonFunction = new LonLatTiePointFunction(source, 0);
+        for (int i = 0; i < latData.length; i+=10) {
             final double lon = lonData[i];
             final double lat = latData[i];
-            final double var = variableData[i];
-            final double actual = function.getValue(lon, lat);
-
-            assertEquals(var, actual, 0.0);
+            final double retrievedLat = latFunction.getValue(lon, lat);
+            final double retrievedLon = lonFunction.getValue(lon, lat);
+            assertEquals(lat, retrievedLat, 0.0);
+            assertEquals(lon, retrievedLon, 0.0);
         }
     }
 
