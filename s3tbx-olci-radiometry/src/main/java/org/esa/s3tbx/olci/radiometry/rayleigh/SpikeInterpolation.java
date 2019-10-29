@@ -36,28 +36,24 @@ class SpikeInterpolation {
         double x2;
         double y1;
         double y2;
-        if(x < xCoordinate[0]){
+        if (x < xCoordinate[0]) {
             x1 = xCoordinate[0];
             x2 = xCoordinate[1];
-        }
-        else if(x > xCoordinate[xCoordinate.length-1]){
-            x1 = xCoordinate[xCoordinate.length-2];
-            x2 = xCoordinate[xCoordinate.length-1];
-        }
-        else{
+        } else if (x > xCoordinate[xCoordinate.length - 1]) {
+            x1 = xCoordinate[xCoordinate.length - 2];
+            x2 = xCoordinate[xCoordinate.length - 1];
+        } else {
             x1 = getLowerBound(xCoordinate, x);
             x2 = getUpperValue(xCoordinate, x);
         }
 
-        if(y < yCoordinate[0]){
+        if (y < yCoordinate[0]) {
             y1 = yCoordinate[0];
             y2 = yCoordinate[1];
-        }
-        else if(y > yCoordinate[yCoordinate.length-1]){
-            y1 = yCoordinate[yCoordinate.length-2];
-            y2 = yCoordinate[yCoordinate.length-1];
-        }
-        else{
+        } else if (y > yCoordinate[yCoordinate.length - 1]) {
+            y1 = yCoordinate[yCoordinate.length - 2];
+            y2 = yCoordinate[yCoordinate.length - 1];
+        } else {
             y1 = getLowerBound(yCoordinate, y);
             y2 = getUpperValue(yCoordinate, y);
         }
