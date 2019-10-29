@@ -153,13 +153,13 @@ public class MphChlOlciOp extends MphChlBasisOp {
 
     @Override
     protected void configureSourceSamples(SourceSampleConfigurer sampleConfigurer) throws OperatorException {
-        sampleConfigurer.defineSample(0, "rBRR_07");   //  619
-        sampleConfigurer.defineSample(1, "rBRR_08");    // 664
-        sampleConfigurer.defineSample(2, "rBRR_10");    // 681
-        sampleConfigurer.defineSample(3, "rBRR_11");    // 709
-        sampleConfigurer.defineSample(4, "rBRR_12");   // 753
-        sampleConfigurer.defineSample(5, "rBRR_18");   // 885
-        sampleConfigurer.defineSample(6, "rBRR_06");   // 560
+        sampleConfigurer.defineSample(BRR_7_IDX , "rBRR_07");   //  619
+        sampleConfigurer.defineSample(BRR_8_IDX , "rBRR_08");    // 664
+        sampleConfigurer.defineSample(BRR_10_IDX, "rBRR_10");    // 681
+        sampleConfigurer.defineSample(BRR_11_IDX, "rBRR_11");    // 709
+        sampleConfigurer.defineSample(BRR_12_IDX, "rBRR_12");   // 753
+        sampleConfigurer.defineSample(BRR_18_IDX, "rBRR_18");   // 885
+        sampleConfigurer.defineSample(BRR_06_IDX, "rBRR_06");   // 560
     }
 
     @Override
