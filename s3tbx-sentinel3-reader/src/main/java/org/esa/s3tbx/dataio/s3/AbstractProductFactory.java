@@ -96,16 +96,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         }
         targetProduct.getMetadataRoot().addElement(manifest.getMetadata());
         processProductSpecificMetadata(manifest.getMetadata().getElement("metadataSection"));
-
-        for (final Product p : openProductList) {
-            MetadataElement root = targetProduct.getMetadataRoot();
-            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
-                if (!root.containsElement(element.getDisplayName())) {
-                    root.addElement(element.createDeepClone());
-                }
-            }
-        }
-
+        addProductSpecificMetadata(targetProduct);
         addDataNodes(masterProduct, targetProduct);
         addSpecialVariables(masterProduct, targetProduct);
         setMasks(targetProduct);
@@ -210,6 +201,17 @@ public abstract class AbstractProductFactory implements ProductFactory {
     protected void processProductSpecificMetadata(MetadataElement metadataElement) {
     }
 
+    protected void addProductSpecificMetadata(Product targetProduct) {
+        for (final Product p : openProductList) {
+            MetadataElement root = targetProduct.getMetadataRoot();
+            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
+                if (!root.containsElement(element.getDisplayName())) {
+                    root.addElement(element.createDeepClone());
+                }
+            }
+        }
+    }
+
     protected int getSceneRasterWidth(Product masterProduct) {
         return masterProduct.getSceneRasterWidth();
     }
@@ -290,10 +292,10 @@ public abstract class AbstractProductFactory implements ProductFactory {
             for (final Band sourceBand : sourceProduct.getBands()) {
                 if (!sourceBand.getName().contains("orphan")) {
                     RasterDataNode targetNode;
-                    if (sourceBand.getRasterWidth() == w && sourceBand.getRasterHeight() == h) {
-                        targetNode = addBand(sourceBand, targetProduct);
-                    } else {
+                    if (isNodeSpecial(sourceBand, targetProduct)) {
                         targetNode = addSpecialNode(masterProduct, sourceBand, targetProduct);
+                    } else {
+                        targetNode = addBand(sourceBand, targetProduct);
                     }
                     if (targetNode != null) {
                         configureTargetNode(sourceBand, targetNode);
@@ -303,6 +305,11 @@ public abstract class AbstractProductFactory implements ProductFactory {
             }
             copyMasks(sourceProduct, targetProduct, mapping);
         }
+    }
+
+    protected boolean isNodeSpecial(Band sourceBand, Product targetProduct) {
+        return sourceBand.getRasterWidth() != targetProduct.getSceneRasterWidth() ||
+                sourceBand.getRasterHeight() != targetProduct.getSceneRasterHeight();
     }
 
     protected final void copyMasks(Product sourceProduct, Product targetProduct, Map<String, String> mapping) {
