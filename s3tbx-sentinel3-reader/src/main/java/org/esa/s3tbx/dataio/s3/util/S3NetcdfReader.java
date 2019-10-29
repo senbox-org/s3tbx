@@ -232,13 +232,15 @@ public class S3NetcdfReader extends AbstractProductReader {
 
     protected void addVariableAsBand(Product product, Variable variable, String variableName, boolean synthetic) {
         int type = getRasterDataType(variable);
-        //todo if the datatype is unsigned long it might even be necessary to split it into three bands. This case is yet theoretical, though
+        //todo consider unsigned long - split into three bands?
         if (type == ProductData.TYPE_INT64) {
             final Band lowerBand = product.addBand(variableName + "_lsb", ProductData.TYPE_UINT32);
             lowerBand.setDescription(variable.getDescription() + "(least significant bytes)");
             lowerBand.setUnit(variable.getUnitsString());
             lowerBand.setScalingFactor(getScalingFactor(variable));
             lowerBand.setScalingOffset(getAddOffset(variable));
+            lowerBand.setSpectralWavelength(getSpectralWavelength(variable));
+            lowerBand.setSpectralBandwidth(getSpectralBandwidth(variable));
             lowerBand.setSynthetic(synthetic);
             addFillValue(lowerBand, variable);
             addSampleCodings(product, lowerBand, variable, false);
@@ -247,6 +249,8 @@ public class S3NetcdfReader extends AbstractProductReader {
             upperBand.setUnit(variable.getUnitsString());
             upperBand.setScalingFactor(getScalingFactor(variable));
             upperBand.setScalingOffset(getAddOffset(variable));
+            upperBand.setSpectralWavelength(getSpectralWavelength(variable));
+            upperBand.setSpectralBandwidth(getSpectralBandwidth(variable));
             upperBand.setSynthetic(synthetic);
             addFillValue(upperBand, variable);
             addSampleCodings(product, upperBand, variable, true);
@@ -256,6 +260,8 @@ public class S3NetcdfReader extends AbstractProductReader {
             band.setUnit(variable.getUnitsString());
             band.setScalingFactor(getScalingFactor(variable));
             band.setScalingOffset(getAddOffset(variable));
+            band.setSpectralWavelength(getSpectralWavelength(variable));
+            band.setSpectralBandwidth(getSpectralBandwidth(variable));
             band.setSynthetic(synthetic);
             addSampleCodings(product, band, variable, false);
             addFillValue(band, variable);
@@ -278,22 +284,25 @@ public class S3NetcdfReader extends AbstractProductReader {
         final Attribute flagMeaningsAttribute = variable.findAttribute(flag_meanings);
         if (flagValuesAttribute != null && flagMasksAttribute != null) {
             final FlagCoding flagCoding =
-                    getFlagCoding(product, band.getName(), flagMeaningsAttribute, flagValuesAttribute,
-                                  flagMasksAttribute, msb);
+                    getFlagCoding(product, band.getName(), band.getDescription(), flagMeaningsAttribute,
+                            flagValuesAttribute, flagMasksAttribute, msb);
             band.setSampleCoding(flagCoding);
         } else if (flagValuesAttribute != null) {
             final IndexCoding indexCoding =
-                    getIndexCoding(product, band.getName(), flagMeaningsAttribute, flagValuesAttribute, msb);
+                    getIndexCoding(product, band.getName(), band.getDescription(), flagMeaningsAttribute,
+                            flagValuesAttribute, msb);
             band.setSampleCoding(indexCoding);
         } else if (flagMasksAttribute != null) {
-            final FlagCoding flagCoding = getFlagCoding(product, band.getName(), flagMeaningsAttribute, flagMasksAttribute, msb);
+            final FlagCoding flagCoding = getFlagCoding(product, band.getName(), band.getDescription(),
+                    flagMeaningsAttribute, flagMasksAttribute, msb);
             band.setSampleCoding(flagCoding);
         }
     }
 
-    private IndexCoding getIndexCoding(Product product, String indexCodingName, Attribute flagMeaningsAttribute,
-                                       Attribute flagValuesAttribute, boolean msb) {
+    private IndexCoding getIndexCoding(Product product, String indexCodingName, String indexCodingDescription,
+                                       Attribute flagMeaningsAttribute, Attribute flagValuesAttribute, boolean msb) {
         final IndexCoding indexCoding = new IndexCoding(indexCodingName);
+        indexCoding.setDescription(indexCodingDescription);
         addSamples(indexCoding, flagMeaningsAttribute, flagValuesAttribute, msb);
         if (!product.getIndexCodingGroup().contains(indexCodingName)) {
             product.getIndexCodingGroup().add(indexCoding);
@@ -301,9 +310,10 @@ public class S3NetcdfReader extends AbstractProductReader {
         return indexCoding;
     }
 
-    private FlagCoding getFlagCoding(Product product, String flagCodingName, Attribute flagMeaningsAttribute,
-                                     Attribute flagMasksAttribute, boolean msb) {
+    private FlagCoding getFlagCoding(Product product, String flagCodingName, String flagCodingDescription,
+                                     Attribute flagMeaningsAttribute, Attribute flagMasksAttribute, boolean msb) {
         final FlagCoding flagCoding = new FlagCoding(flagCodingName);
+        flagCoding.setDescription(flagCodingDescription);
         addSamples(flagCoding, flagMeaningsAttribute, flagMasksAttribute, msb);
         if (!product.getFlagCodingGroup().contains(flagCodingName)) {
             product.getFlagCodingGroup().add(flagCoding);
@@ -311,9 +321,11 @@ public class S3NetcdfReader extends AbstractProductReader {
         return flagCoding;
     }
 
-    private FlagCoding getFlagCoding(Product product, String flagCodingName, Attribute flagMeaningsAttribute,
-                                     Attribute flagValuesAttribute, Attribute flagMasksAttribute, boolean msb) {
+    private FlagCoding getFlagCoding(Product product, String flagCodingName, String flagCodingDescription,
+                                     Attribute flagMeaningsAttribute, Attribute flagValuesAttribute,
+                                     Attribute flagMasksAttribute, boolean msb) {
         final FlagCoding flagCoding = new FlagCoding(flagCodingName);
+        flagCoding.setDescription(flagCodingDescription);
         addSamples(flagCoding, flagMeaningsAttribute, flagValuesAttribute, flagMasksAttribute, msb);
         if (!product.getFlagCodingGroup().contains(flagCodingName)) {
             product.getFlagCodingGroup().add(flagCoding);
@@ -399,7 +411,6 @@ public class S3NetcdfReader extends AbstractProductReader {
                     } else {
                         sampleCoding.addSamples(sampleName, intValues, null);
                     }
-                    sampleCoding.addSamples(sampleName, intValues, null);
                     break;
                 case LONG:
                     long[] longValues = {
@@ -450,6 +461,22 @@ public class S3NetcdfReader extends AbstractProductReader {
 
     static String replaceNonWordCharacters(String flagName) {
         return flagName.replaceAll("\\W+", "_");
+    }
+
+    private static float getSpectralWavelength(Variable variable) {
+        Attribute attribute = variable.findAttribute("wavelength");
+        if (attribute != null) {
+            return getAttributeValue(attribute).floatValue();
+        }
+        return 0f;
+    }
+
+    private static float getSpectralBandwidth(Variable variable) {
+        Attribute attribute = variable.findAttribute("bandwidth");
+        if (attribute != null) {
+            return getAttributeValue(attribute).floatValue();
+        }
+        return 0f;
     }
 
     protected static double getScalingFactor(Variable variable) {
