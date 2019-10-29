@@ -321,7 +321,7 @@ public class SmileCorrectionOp extends Operator {
         }
 
         float refCentralWaveLength = this.smileAuxdata.getRefCentralWaveLengths()[targetBandIndex];
-        Tile szaTile = getSourceTile(sourceProduct.getTiePointGrid("sun_zenith"), rectangle);
+        Tile szaTile = getSourceTile(sourceProduct.getRasterDataNode("sun_zenith"), rectangle);
         if (correctWater) {
             float[] correctForSmileEffect = correctForSmileEffect(sourceRadianceTile, refCentralWaveLength, waterTileValues, szaTile,
                                                                   targetBandIndex);
@@ -342,7 +342,7 @@ public class SmileCorrectionOp extends Operator {
     private void correctRad(Tile targetTile, String targetBandName, int targetBandIndex, Sensor sensor, ProgressMonitor pm) {
         checkForCancellation();
         Rectangle rectangle = targetTile.getRectangle();
-        Tile szaTile = getSourceTile(sourceProduct.getTiePointGrid(sensor.getSzaName()), rectangle);
+        Tile szaTile = getSourceTile(sourceProduct.getRasterDataNode(sensor.getSzaName()), rectangle);
         Tile sourceRadianceTile = getSourceTile(sourceProduct.getBand(targetBandName), rectangle);
 
         Band sourceSolarIrradianceBand = sourceProduct.getBand(String.format(SOLAR_FLUX_BAND_NAME_PATTERN, targetBandIndex + 1));
@@ -468,20 +468,20 @@ public class SmileCorrectionOp extends Operator {
     private RayleighAux prepareRayleighAux(Rectangle rectangle) {
         RayleighAux rayleighAux = new RayleighAux();
 
-        rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getSzaName()), rectangle));
-        rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getVzaName()), rectangle));
-        rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getSaaName()), rectangle));
-        rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getTiePointGrid(sensor.getVaaName()), rectangle));
-        rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getTiePointGrid(sensor.getSlpName()), rectangle));
-        rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(sensor.getOzoneName()), rectangle));
+        rayleighAux.setSunZenithAngles(getSourceTile(sourceProduct.getRasterDataNode(sensor.getSzaName()), rectangle));
+        rayleighAux.setViewZenithAngles(getSourceTile(sourceProduct.getRasterDataNode(sensor.getVzaName()), rectangle));
+        rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(sensor.getSaaName()), rectangle));
+        rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(sensor.getVaaName()), rectangle));
+        rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getRasterDataNode(sensor.getSlpName()), rectangle));
+        rayleighAux.setTotalOzones(getSourceTile(sourceProduct.getRasterDataNode(sensor.getOzoneName()), rectangle));
         if (Sensor.MERIS.equals(sensor)) {
-            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getTiePointGrid(sensor.getAltName()), rectangle));
-            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getTiePointGrid(sensor.getLatName()), rectangle));
-            rayleighAux.setLongitude(getSourceTile(sourceProduct.getTiePointGrid(sensor.getLonName()), rectangle));
+            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getRasterDataNode(sensor.getAltName()), rectangle));
+            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getRasterDataNode(sensor.getLatName()), rectangle));
+            rayleighAux.setLongitude(getSourceTile(sourceProduct.getRasterDataNode(sensor.getLonName()), rectangle));
         } else {
-            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getBand(sensor.getAltName()), rectangle));
-            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getBand(sensor.getLatName()), rectangle));
-            rayleighAux.setLongitude(getSourceTile(sourceProduct.getBand(sensor.getLonName()), rectangle));
+            rayleighAux.setAltitudes(getSourceTile(sourceProduct.getRasterDataNode(sensor.getAltName()), rectangle));
+            rayleighAux.setLatitudes(getSourceTile(sourceProduct.getRasterDataNode(sensor.getLatName()), rectangle));
+            rayleighAux.setLongitude(getSourceTile(sourceProduct.getRasterDataNode(sensor.getLonName()), rectangle));
         }
         return rayleighAux;
     }

@@ -67,10 +67,10 @@ public class RayleighAux {
     private static final String RAY_ALBEDO_LUT = "ray_albedo_lut";
     private static ElevationModel elevationModel;
     private static double[] thetas;
-    private static double[][][] rayCooefMatrixA;
-    private static double[][][] rayCooefMatrixB;
-    private static double[][][] rayCooefMatrixC;
-    private static double[][][] rayCooefMatrixD;
+    private static double[][][] rayCoeffMatrixA;
+    private static double[][][] rayCoeffMatrixB;
+    private static double[][][] rayCoeffMatrixC;
+    private static double[][][] rayCoeffMatrixD;
     private double[] sunZenithAngles;
     private double[] viewZenithAngles;
     private double[] sunAzimuthAngles;
@@ -117,10 +117,10 @@ public class RayleighAux {
             thetas = parseJSON1DimArray(parse, THETA);
 
             ArrayList<double[][][]> ray_coeff_matrix = parseJSON3DimArray(parse, RAY_COEFF_MATRIX);
-            rayCooefMatrixA = ray_coeff_matrix.get(0);
-            rayCooefMatrixB = ray_coeff_matrix.get(1);
-            rayCooefMatrixC = ray_coeff_matrix.get(2);
-            rayCooefMatrixD = ray_coeff_matrix.get(3);
+            rayCoeffMatrixA = ray_coeff_matrix.get(0);
+            rayCoeffMatrixB = ray_coeff_matrix.get(1);
+            rayCoeffMatrixC = ray_coeff_matrix.get(2);
+            rayCoeffMatrixD = ray_coeff_matrix.get(3);
 
             double[] lineSpace = getLineSpace(0, 1, 17);
             double[] rayAlbedoLuts = parseJSON1DimArray(parse, RAY_ALBEDO_LUT);
@@ -190,12 +190,12 @@ public class RayleighAux {
                 double szaVal = sunZenithAngles[index];
 
                 List<double[]> valueList = new ArrayList<>();
-                for (int i = 0; i < rayCooefMatrixA.length; i++) {
+                for (int i = 0; i < rayCoeffMatrixA.length; i++) {
                     double[] values = new double[4];
-                        values[0] = SpikeInterpolation.interpolate2D(rayCooefMatrixA[i], thetas, thetas, szaVal, vzaVal);
-                        values[1] = SpikeInterpolation.interpolate2D(rayCooefMatrixB[i], thetas, thetas, szaVal, vzaVal);
-                        values[2] = SpikeInterpolation.interpolate2D(rayCooefMatrixC[i], thetas, thetas, szaVal, vzaVal);
-                        values[3] = SpikeInterpolation.interpolate2D(rayCooefMatrixD[i], thetas, thetas, szaVal, vzaVal);
+                        values[0] = SpikeInterpolation.interpolate2D(rayCoeffMatrixA[i], thetas, thetas, szaVal, vzaVal);
+                        values[1] = SpikeInterpolation.interpolate2D(rayCoeffMatrixB[i], thetas, thetas, szaVal, vzaVal);
+                        values[2] = SpikeInterpolation.interpolate2D(rayCoeffMatrixC[i], thetas, thetas, szaVal, vzaVal);
+                        values[3] = SpikeInterpolation.interpolate2D(rayCoeffMatrixD[i], thetas, thetas, szaVal, vzaVal);
                         valueList.add(values);
                 }
                 interpolate.put(index, valueList);
@@ -505,10 +505,10 @@ public class RayleighAux {
 
     private double[] getGridValueAt(int x, int y) {
         double[] values = new double[4];
-        values[0] = rayCooefMatrixA[x][y][0];
-        values[1] = rayCooefMatrixB[x][y][0];
-        values[2] = rayCooefMatrixC[x][y][0];
-        values[3] = rayCooefMatrixD[x][y][0];
+        values[0] = rayCoeffMatrixA[x][y][0];
+        values[1] = rayCoeffMatrixB[x][y][0];
+        values[2] = rayCoeffMatrixC[x][y][0];
+        values[3] = rayCoeffMatrixD[x][y][0];
         return values;
     }
 
