@@ -92,7 +92,7 @@ class SpikeInterpolation {
         });
         double[] allMax = Doubles.toArray(xMin);
         if (allMax.length == 0) {
-            throw new IllegalArgumentException("Can fine the closest max value of " + val);
+            throw new IllegalArgumentException("Can't find the closest max value of " + val);
         }
         return Doubles.min(allMax);
     }
@@ -105,7 +105,7 @@ class SpikeInterpolation {
             xMin[0] = v <= val ? v : xMin[0];
         });
         if (xMin[0] > val) {
-            throw new IllegalArgumentException("Can find the closest min value of " + val);
+            throw new IllegalArgumentException("Can't find the closest min value of " + val);
         }
         return xMin[0];
     }
