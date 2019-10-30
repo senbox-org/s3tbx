@@ -136,6 +136,8 @@ public class PpeOp extends Operator {
                                     sourceProduct.getSceneRasterWidth(),
                                     sourceProduct.getSceneRasterHeight());
 
+        ProductUtils.copyProductNodes(sourceProduct, targetProduct);
+
         final FlagCoding flagCoding = new FlagCoding("PPE_Applied");
         flagCoding.setDescription("PPE processor flag");
         targetProduct.getFlagCodingGroup().add(flagCoding);
@@ -152,22 +154,12 @@ public class PpeOp extends Operator {
             }
         }
 
-
-        Band ppeFlags = new Band("ppe_flags", ProductData.TYPE_UINT32,
-                                 sourceProduct.getSceneRasterWidth(),
-                                 sourceProduct.getSceneRasterHeight());
+        Band ppeFlags = targetProduct.addBand("ppe_flags", ProductData.TYPE_UINT32);
         ppeFlags.setSampleCoding(flagCoding);
 
-        targetProduct.addMask("PPE_operator_applied",  "ppe_flags",
+        targetProduct.addMask("PPE_operator_applied",  "ppe_flags != 0",
                               "PPE operator has been applied on one of the spectral bands", Color.BLUE, 0.5);
 
-        targetProduct.addBand(ppeFlags);
-        ProductUtils.copyMetadata(sourceProduct, targetProduct);
-        ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
-        ProductUtils.copyMasks(sourceProduct, targetProduct);
-        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
-        ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
-        targetProduct.setAutoGrouping(sourceProduct.getAutoGrouping().toString());
     }
 
     private void setBandTile(int x, int y, double median, double mad, double reflecValue, Tile targetTile) {
