@@ -85,12 +85,14 @@ public class RayleighCorrAlgorithm {
         MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
         if (metadataRoot != null) {
             MetadataElement manifest = metadataRoot.getElement("Manifest");
-            MetadataElement metadataSection = manifest.getElement("metadataSection");
-            if (metadataSection != null) {
-                MetadataElement platform = metadataSection.getElement("platform");
-                if (platform != null) {
-                    String sentinelNumber = platform.getAttributeString("number");
-                    return "B".equals(sentinelNumber);
+            if (manifest != null) {
+                MetadataElement metadataSection = manifest.getElement("metadataSection");
+                if (metadataSection != null) {
+                    MetadataElement platform = metadataSection.getElement("platform");
+                    if (platform != null) {
+                        String sentinelNumber = platform.getAttributeString("number");
+                        return "B".equals(sentinelNumber);
+                    }
                 }
             }
         }
