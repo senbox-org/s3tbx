@@ -292,10 +292,10 @@ public abstract class AbstractProductFactory implements ProductFactory {
             for (final Band sourceBand : sourceProduct.getBands()) {
                 if (!sourceBand.getName().contains("orphan")) {
                     RasterDataNode targetNode;
-                    if (sourceBand.getRasterWidth() == w && sourceBand.getRasterHeight() == h) {
-                        targetNode = addBand(sourceBand, targetProduct);
-                    } else {
+                    if (isNodeSpecial(sourceBand, targetProduct)) {
                         targetNode = addSpecialNode(masterProduct, sourceBand, targetProduct);
+                    } else {
+                        targetNode = addBand(sourceBand, targetProduct);
                     }
                     if (targetNode != null) {
                         configureTargetNode(sourceBand, targetNode);
@@ -305,6 +305,11 @@ public abstract class AbstractProductFactory implements ProductFactory {
             }
             copyMasks(sourceProduct, targetProduct, mapping);
         }
+    }
+
+    protected boolean isNodeSpecial(Band sourceBand, Product targetProduct) {
+        return sourceBand.getRasterWidth() != targetProduct.getSceneRasterWidth() ||
+                sourceBand.getRasterHeight() != targetProduct.getSceneRasterHeight();
     }
 
     protected final void copyMasks(Product sourceProduct, Product targetProduct, Map<String, String> mapping) {
