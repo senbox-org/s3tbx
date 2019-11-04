@@ -44,6 +44,11 @@
       "description": "S3A_SY_2_V10 2019 Europe"
     },
     {
+      "id": "S3A_SY_2_AOD____20170619T101637",
+      "relativePath": "sensors_platforms/SENTINEL-3/synergy/S3A_SY_2_AOD____20170619T101637_20170619T101937_20190605T093814_0180_019_065______LR1_D_NT_001.SEN3",
+      "description": "S3A_SY_2_AOD"
+    },
+    {
       "id": "S3A_SL_1_RBT____20170508T072701",
       "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3A_SL_1_RBT____20170508T072701_20170508T073201_20180629T141902_0299_017_234______LR1_R_NT_003.SEN3",
       "description": "S3A_SL_1_RBT v1"
@@ -64,6 +69,11 @@
       "description": "S3B_SL_1_RBT"
     },
     {
+      "id": "S3A_SL_1_RBT____20181108T181449",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L1/S3A_SL_1_RBT____20181108T181449_20181108T181749_20190711T182656_0179_037_369______LR1_D_NT_001.SEN3",
+      "description": "S3A_SL_1_RBT F1 channel update"
+    },
+    {
       "id": "S3A_SL_2_LST____20160329T084522",
       "relativePath": "sensors_platforms/SENTINEL-3/slstr/L2/S3A_SL_2_LST____20160329T084522_20160329T084822_20160330T145846_0180_046_207______SVL_O_NR_001.SEN3",
       "description": "S3A_SL_2_LST"
@@ -77,6 +87,11 @@
       "id": "S3A_SL_2_WST____20160329T084522",
       "relativePath": "sensors_platforms/SENTINEL-3/slstr/L2/S3A_SL_2_WST____20160329T084522_20160329T084822_20160330T150059_0180_046_207______MAR_O_NR_001.SEN3",
       "description": "S3A_SL_2_WST"
+    },
+    {
+      "id": "S3A_SL_2_FRP____20160513T051504",
+      "relativePath": "sensors_platforms/SENTINEL-3/slstr/L2/S3A_SL_2_FRP____20160513T051504_20160513T051804_20190909T081834_0179_004_105______LR1_D_NT_002.SEN3",
+      "description": "S3A_SL_2_FRP"
     },
     {
       "id": "S3A_OL_1_ERR____20180608T084209",
