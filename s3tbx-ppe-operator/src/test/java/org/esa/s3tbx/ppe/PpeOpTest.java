@@ -36,6 +36,12 @@ public class PpeOpTest {
         assertTrue(targetProduct.containsBand("ppe_flags"));
         assertTrue(targetProduct.getBand("ppe_flags").isFlagBand());
         assertEquals("ppe_flags.PPE_Oa09_radiance", targetProduct.getAllFlagNames()[40]);
+        int masksOfSourceProduct = 32;
+        int ppeMaskAdded = 1;
+        assertEquals(masksOfSourceProduct + ppeMaskAdded, targetProduct.getMaskGroup().getNodeCount());
+        assertTrue(targetProduct.getMaskGroup().contains("PPE_operator_applied"));
+        assertTrue(targetProduct.getMaskGroup().contains("quality_flags_land"));
+        assertTrue(targetProduct.getMaskGroup().contains("quality_flags_coastline"));
     }
 
     @Test
@@ -149,7 +155,7 @@ public class PpeOpTest {
     }
 
     @Test
-    public void testLandTransform() throws IOException {
+    public void testWithProduct2() throws IOException {
         Operator ppeOp = new PpeOp();
         String testFilePath = PpeOpTest.class.getResource(TESTFILENAME2).getFile();
         Product product = ProductIO.readProduct(testFilePath);
