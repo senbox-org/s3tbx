@@ -136,6 +136,9 @@ public class PpeOp extends Operator {
                                     sourceProduct.getSceneRasterWidth(),
                                     sourceProduct.getSceneRasterHeight());
 
+        // TODO: Copy flag bands is necessary because of issue
+        // https://senbox.atlassian.net/browse/SNAP-1232
+        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
         ProductUtils.copyProductNodes(sourceProduct, targetProduct);
 
         final FlagCoding flagCoding = new FlagCoding("PPE_Applied");
@@ -150,7 +153,11 @@ public class PpeOp extends Operator {
                 int flagMask = BitSetter.setFlag(0, band.getSpectralBandIndex());
                 flagCoding.addFlag("PPE_" + bandName, flagMask, "PPE applied on " + bandName);
             } else {
-                ProductUtils.copyBand(bandName, sourceProduct, targetProduct, true);
+                boolean alreadyCopied = targetProduct.containsBand(bandName);
+                if (!alreadyCopied) {
+                    // TODO: don't copy the band again - see above TODO
+                    ProductUtils.copyBand(bandName, sourceProduct, targetProduct, true);
+                }
             }
         }
 
