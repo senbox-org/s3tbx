@@ -151,6 +151,8 @@ public class TestGeocoding {
             assertEquals(2300.5, pixelPos.getX(), 1e-8);
             assertEquals(4090.5, pixelPos.getY(), 1e-8);
 
+            // PixelGeoCoding
+            // --------------
             Config.instance().preferences().put(USE_ALTERNATE_PIXEL_GEO_CODING_PROPERTY, "true");
             final BasicPixelGeoCoding oldPixelGeoCoding = GeoCodingFactory.createPixelGeoCoding(product.getBand("latitude"),
                     product.getBand("longitude"),
@@ -173,6 +175,41 @@ public class TestGeocoding {
             pixelPos = oldPixelGeoCoding.getPixelPos(new GeoPos(-33.370613, -149.334552), null);
             assertEquals(4000.5, pixelPos.getX(), 1e-8);
             assertEquals(4000.5, pixelPos.getY(), 1e-8);
+
+            // ------------------------------------
+            // check border pixels - PixelGeoCoding
+            // ------------------------------------
+            geoPos = oldPixelGeoCoding.getGeoPos(new PixelPos(4864.5, 2000.5), null);
+            assertEquals(-145.638679, geoPos.lon, 1e-8);
+            assertEquals(-28.651436999999998, geoPos.lat, 1e-8);
+
+            pixelPos = oldPixelGeoCoding.getPixelPos(new GeoPos(-28.651436999999998, -145.638679), null);
+            assertEquals(4864.5, pixelPos.getX(), 1e-8);
+            assertEquals(2000.5, pixelPos.getY(), 1e-8);
+
+            geoPos = oldPixelGeoCoding.getGeoPos(new PixelPos(0.5, 2100.5), null);
+            assertEquals(-158.553825, geoPos.lon, 1e-8);
+            assertEquals(-25.906769999999998, geoPos.lat, 1e-8);
+
+            pixelPos = oldPixelGeoCoding.getPixelPos(new GeoPos(-25.906769999999998, -158.553825), null);
+            assertEquals(0.5, pixelPos.getX(), 1e-8);
+            assertEquals(2100.5, pixelPos.getY(), 1e-8);
+
+            geoPos = oldPixelGeoCoding.getGeoPos(new PixelPos(2200.5, 0.5), null);
+            assertEquals(-151.277994, geoPos.lon, 1e-8);
+            assertEquals(-22.010883, geoPos.lat, 1e-8);
+
+            pixelPos = oldPixelGeoCoding.getPixelPos(new GeoPos(-22.010883, -151.277994), null);
+            assertEquals(2200.5, pixelPos.getX(), 1e-8);
+            assertEquals(0.5, pixelPos.getY(), 1e-8);
+
+            geoPos = oldPixelGeoCoding.getGeoPos(new PixelPos(2300.5, 4090.5), null);
+            assertEquals(-154.163175, geoPos.lon, 1e-8);
+            assertEquals(-32.580104, geoPos.lat, 1e-8);
+
+            pixelPos = oldPixelGeoCoding.getPixelPos(new GeoPos(-32.580104, -154.163175), null);
+            assertEquals(2300.5, pixelPos.getX(), 1e-8);
+            assertEquals(4090.5, pixelPos.getY(), 1e-8);
 
         } finally {
             product.dispose();
