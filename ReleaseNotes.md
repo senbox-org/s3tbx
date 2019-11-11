@@ -15,6 +15,7 @@ New Feature
 * [SIIITBX-249] - Coefficient have change for SLSTR S5 and S6
 * [SIIITBX-295] - Support new version of SLSTR L1 RBT
 * [SIIITBX-296] - Add Reader for SLSTR L2 FRP products
+* [SIIITBX-297] - Add Reader for SLSTR SYN L2 products
 
 Improvement
 * [SIIITBX-172] - Use new SRF for Sentinel-2 in Rayleigh Correction processor
