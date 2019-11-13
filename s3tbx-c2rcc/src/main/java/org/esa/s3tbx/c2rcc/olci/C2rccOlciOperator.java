@@ -44,6 +44,7 @@ import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -698,7 +699,16 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         targetProduct.setProductType(PRODUCT_TYPE);
         C2rccCommons.ensureTimeInformation(targetProduct, sourceProduct.getStartTime(), sourceProduct.getEndTime(), timeCoding);
 
-        targetProduct.setPreferredTileSize(1217, 1023);
+        //targetProduct.setPreferredTileSize(1217, 1023);
+        Dimension initialTileSize = targetProduct.getPreferredTileSize();
+        targetProduct.setPreferredTileSize(
+                Integer.parseInt(System.getProperty("snap.dataio.reader.tileWidth", "1217")),
+                Integer.parseInt(System.getProperty("snap.dataio.reader.tileHeight", "1023")));
+        getLogger().info("c2rcc initial tile : "
+                                 + initialTileSize
+                                 + ", configured tile: "
+                                 + targetProduct.getPreferredTileSize());
+
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
         ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
         for (int i = 0; i < maskGroup.getNodeCount(); i++) {
