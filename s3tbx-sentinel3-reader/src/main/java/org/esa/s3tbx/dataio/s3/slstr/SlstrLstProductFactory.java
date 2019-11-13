@@ -83,6 +83,22 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
     }
 
     @Override
+    protected short[] getResolutions(String gridIndex) {
+        short[] resolutions;
+        if (gridIndex.equals("tx") || gridIndex.equals("tn")) {
+            resolutions = new short[]{16000, 1000};
+        } else {
+            resolutions = new short[]{1000, 1000};
+        }
+        return resolutions;
+    }
+
+    @Override
+    protected short[] getReferenceResolutions() {
+        return new short[]{1000, 1000};
+    }
+
+    @Override
     protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
         //todo extract values from metadata file as soon as they are provided
         int subSamplingX = 16;
