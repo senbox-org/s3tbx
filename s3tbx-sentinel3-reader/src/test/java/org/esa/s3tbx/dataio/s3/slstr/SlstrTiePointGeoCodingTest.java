@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.awt.geom.AffineTransform;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 /**
  * @author Tonio Fincke

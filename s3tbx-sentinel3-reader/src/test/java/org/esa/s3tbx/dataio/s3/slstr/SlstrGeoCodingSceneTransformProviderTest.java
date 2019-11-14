@@ -8,8 +8,7 @@ import org.opengis.referencing.operation.TransformException;
 
 import java.awt.geom.Point2D;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * @author Tonio Fincke

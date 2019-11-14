@@ -26,6 +26,8 @@ import java.io.IOException;
 
 public class SlstrWstProductFactory extends SlstrSstProductFactory {
 
+    private static final short[] RESOLUTIONS = new short[]{1000, 1000};
+
     public SlstrWstProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
     }
@@ -80,6 +82,26 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
                 }
             }
         }
+    }
+
+    @Override
+    protected Double getStartOffset(String gridIndex) {
+        return 0.0;
+    }
+
+    @Override
+    protected Double getTrackOffset(String gridIndex) {
+        return 0.0;
+    }
+
+    @Override
+    protected short[] getResolutions(String gridIndex) {
+        return RESOLUTIONS;
+    }
+
+    @Override
+    protected short[] getReferenceResolutions() {
+        return RESOLUTIONS;
     }
 
     @Override
