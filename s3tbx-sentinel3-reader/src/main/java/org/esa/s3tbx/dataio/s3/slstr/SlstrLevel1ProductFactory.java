@@ -261,16 +261,15 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
     protected void configureDescription(Band sourceBand, RasterDataNode targetNode) {
         final String sourceBandName = sourceBand.getName();
-        final String sourceBandNameEnd = sourceBandName.substring(sourceBandName.length() - 2);
-        if (sourceBandNameEnd.startsWith("i") || sourceBandNameEnd.startsWith("f")) {
+        String gridIndex = getGridIndex(sourceBandName);
+        if (gridIndex.startsWith("i") || gridIndex.startsWith("f")) {
             String description = sourceBand.getDescription();
             if (description == null) {
                 targetNode.setDescription("(1 km)");
             } else {
                 targetNode.setDescription(description + " (1 km)");
             }
-        } else if (sourceBandNameEnd.startsWith("a") || sourceBandName.startsWith("b") ||
-                   sourceBandName.startsWith("c")) {
+        } else if (gridIndex.startsWith("a") || sourceBandName.startsWith("b") || sourceBandName.startsWith("c")) {
             String description = sourceBand.getDescription();
             if (description == null) {
                 targetNode.setDescription("(500 m)");
@@ -314,11 +313,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     @Override
     protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
         final String sourceBandName = sourceBand.getName();
-        final int sourceBandNameLength = sourceBandName.length();
-        String gridIndex = sourceBandName;
-        if (sourceBandNameLength > 1) {
-            gridIndex = sourceBandName.substring(sourceBandNameLength - 2);
-        }
+        String gridIndex = getGridIndex(sourceBandName);
         final Double sourceStartOffset = getStartOffset(gridIndex);
         final Double sourceTrackOffset = getTrackOffset(gridIndex);
         if (sourceStartOffset != null && sourceTrackOffset != null) {
@@ -422,7 +417,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 //        if (Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_USE_PIXELGEOCODINGS, false)) {
 //            final Band[] bands = product.getBands();
 //            for (Band band : bands) {
-//                final GeoCoding bandGeoCoding = getBandGeoCoding(product, band.getName().substring(band.getName().length() - 2));
+//                final GeoCoding bandGeoCoding = getBandGeoCoding(product, getGridIndex(band.getName));
 //                final SlstrGeoCodingSceneTransformProvider transformProvider =
 //                        new SlstrGeoCodingSceneTransformProvider(product.getSceneGeoCoding(), bandGeoCoding);
 //                band.setModelToSceneTransform(transformProvider.getModelToSceneTransform());
@@ -431,7 +426,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 //            final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
 //            for (int i = 0; i < maskGroup.getNodeCount(); i++) {
 //                final Mask mask = maskGroup.get(i);
-//                final GeoCoding bandGeoCoding = getBandGeoCoding(product, mask.getName().substring(mask.getName().length() - 2));
+//                final GeoCoding bandGeoCoding = getBandGeoCoding(product, getGridIndex(mask.getName()));
 //                final SlstrGeoCodingSceneTransformProvider transformProvider =
 //                        new SlstrGeoCodingSceneTransformProvider(product.getSceneGeoCoding(), bandGeoCoding);
 //                mask.setModelToSceneTransform(transformProvider.getModelToSceneTransform());
@@ -508,7 +503,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     private void setTiePointBandGeoCodings(Product product) {
         final Band[] bands = product.getBands();
         for (Band band : bands) {
-            setTiePointBandGeoCoding(product, band, band.getName().substring(band.getName().length() - 2));
+            setTiePointBandGeoCoding(product, band, getGridIndex(band.getName()));
         }
         final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
         for (int i = 0; i < maskGroup.getNodeCount(); i++) {
@@ -554,13 +549,13 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     private void setPixelBandGeoCodings(Product product) {
         final Band[] bands = product.getBands();
         for (Band band : bands) {
-            final GeoCoding bandGeoCoding = getBandGeoCoding(product, band.getName().substring(band.getName().length() - 2));
+            final GeoCoding bandGeoCoding = getBandGeoCoding(product, getGridIndex(band.getName()));
             band.setGeoCoding(bandGeoCoding);
         }
         final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
         for (int i = 0; i < maskGroup.getNodeCount(); i++) {
             final Mask mask = maskGroup.get(i);
-            final GeoCoding bandGeoCoding = getBandGeoCoding(product, mask.getName().substring(mask.getName().length() - 2));
+            final GeoCoding bandGeoCoding = getBandGeoCoding(product, getGridIndex(mask.getName()));
             mask.setGeoCoding(bandGeoCoding);
         }
     }
