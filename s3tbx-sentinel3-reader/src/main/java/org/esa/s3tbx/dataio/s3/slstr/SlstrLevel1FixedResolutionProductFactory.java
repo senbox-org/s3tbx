@@ -20,11 +20,7 @@ public abstract class SlstrLevel1FixedResolutionProductFactory extends SlstrLeve
     @Override
     protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
         final String sourceBandName = sourceBand.getName();
-        final int sourceBandNameLength = sourceBandName.length();
-        String gridIndex = sourceBandName;
-        if(sourceBandNameLength > 1) {
-            gridIndex = sourceBandName.substring(sourceBandNameLength - 2);
-        }
+        String gridIndex = getGridIndex(sourceBandName);
         final Double sourceStartOffset = getStartOffset(gridIndex);
         final Double sourceTrackOffset = getTrackOffset(gridIndex);
         if (sourceStartOffset != null && sourceTrackOffset != null) {

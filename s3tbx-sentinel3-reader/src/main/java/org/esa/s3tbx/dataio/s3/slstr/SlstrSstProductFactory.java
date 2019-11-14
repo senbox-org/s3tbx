@@ -128,7 +128,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
     protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
         final String sourceBandName = sourceBand.getName();
         final String sourceProductName = sourceBand.getProduct().getName();
-        final String gridIndex = (sourceProductName).substring(sourceProductName.length() - 2);
+        final String gridIndex = getGridIndex(sourceProductName);
         Double sourceStartOffset = getStartOffset(gridIndex);
         Double sourceTrackOffset = getTrackOffset(gridIndex);
         final short[] sourceResolutions = getResolutions(gridIndex);
