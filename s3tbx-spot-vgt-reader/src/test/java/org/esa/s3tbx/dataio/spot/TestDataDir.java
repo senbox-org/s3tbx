@@ -26,7 +26,7 @@ public class TestDataDir {
     public static File get() {
         File dir = new File("./src/test/data/");
         if (!dir.exists()) {
-            dir = new File("./beam-spot-vgt-reader/src/test/data/");
+            dir = new File("./s3tbx/s3tbx-spot-vgt-reader/src/test/data/");
             if (!dir.exists()) {
                 return null;
             }

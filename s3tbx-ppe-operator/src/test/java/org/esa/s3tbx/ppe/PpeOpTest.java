@@ -2,7 +2,9 @@ package org.esa.s3tbx.ppe;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.internal.TileImpl;
@@ -12,7 +14,9 @@ import java.awt.Rectangle;
 import java.awt.image.Raster;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class PpeOpTest {
@@ -32,6 +36,12 @@ public class PpeOpTest {
         assertTrue(targetProduct.containsBand("ppe_flags"));
         assertTrue(targetProduct.getBand("ppe_flags").isFlagBand());
         assertEquals("ppe_flags.PPE_Oa09_radiance", targetProduct.getAllFlagNames()[40]);
+        int masksOfSourceProduct = 32;
+        int ppeMaskAdded = 1;
+        assertEquals(masksOfSourceProduct + ppeMaskAdded, targetProduct.getMaskGroup().getNodeCount());
+        assertTrue(targetProduct.getMaskGroup().contains("PPE_operator_applied"));
+        assertTrue(targetProduct.getMaskGroup().contains("quality_flags_land"));
+        assertTrue(targetProduct.getMaskGroup().contains("quality_flags_coastline"));
     }
 
     @Test
@@ -111,28 +121,41 @@ public class PpeOpTest {
         Operator ppeOp = new PpeOp();
         String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
         Product product = ProductIO.readProduct(testFilePath);
+        ProductData.UTC startTime = product.getStartTime();
+        ProductData.UTC endTime = product.getEndTime();
         ppeOp.setSourceProduct(product);
         ppeOp.setParameterDefaultValues();
         Product result = ppeOp.getTargetProduct();
         result.getBand("Oa10_radiance").readRasterDataFully();
         result.getBand("ppe_flags").readRasterDataFully();
+        Mask ppeMask = result.getMaskGroup().get("PPE_operator_applied");
+        ppeMask.readRasterDataFully();
 
         assertEquals(93, result.getNumBands());
         assertEquals(20, result.getSceneRasterHeight());
         assertEquals(20, result.getSceneRasterWidth());
+        assertEquals(startTime, result.getStartTime());
+        assertEquals(endTime, result.getEndTime());
+        assertNotNull(ppeMask);
         assertEquals(13.20930, result.getBand("Oa10_radiance").getPixelDouble(0, 3), 1e-5);
+        assertEquals(1306560, result.getBand("ppe_flags").getPixelInt(0, 3), 1e-5);
+        assertEquals(255, ppeMask.getPixelInt(0, 3));
         assertEquals(13.20930, result.getBand("Oa10_radiance").getPixelDouble(0, 4), 1e-5);
+        assertEquals(0, result.getBand("ppe_flags").getPixelInt(0, 4), 1e-5);
+        assertEquals(0, ppeMask.getPixelInt(0, 4));
+
         assertEquals(13.10102, result.getBand("Oa10_radiance").getPixelDouble(7, 9), 1e-5);
-        assertEquals(1306560, result.getBand("ppe_flags").getPixelDouble(0, 3), 1e-5);
-        assertEquals(0, result.getBand("ppe_flags").getPixelDouble(0, 4), 1e-5);
-        assertEquals(249728, result.getBand("ppe_flags").getPixelDouble(6, 9), 1e-5);
-        assertEquals(519872, result.getBand("ppe_flags").getPixelDouble(18, 6), 1e-5);
-        assertEquals(0, result.getBand("ppe_flags").getPixelDouble(19, 19), 1e-5);
+        assertEquals(249728, result.getBand("ppe_flags").getPixelInt(6, 9), 1e-5);
+        assertEquals(255, ppeMask.getPixelInt(6, 9));
+        assertEquals(519872, result.getBand("ppe_flags").getPixelInt(18, 6), 1e-5);
+        assertEquals(255, ppeMask.getPixelInt(18, 6));
+        assertEquals(0, result.getBand("ppe_flags").getPixelInt(19, 19), 1e-5);
+        assertEquals(0, ppeMask.getPixelInt(19, 19));
 
     }
 
     @Test
-    public void testLandTransform() throws IOException {
+    public void testWithProduct2() throws IOException {
         Operator ppeOp = new PpeOp();
         String testFilePath = PpeOpTest.class.getResource(TESTFILENAME2).getFile();
         Product product = ProductIO.readProduct(testFilePath);

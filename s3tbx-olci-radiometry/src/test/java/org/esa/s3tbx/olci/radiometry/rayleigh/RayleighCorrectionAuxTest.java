@@ -100,8 +100,5 @@ public class RayleighCorrectionAuxTest {
 
         double doubles1 = SpikeInterpolation.interpolate2D(doubles[0], thetas, thetas, 3, 75);
 
-        SpikeInterpolation.useApacheMath(thetas, thetas, doubles[0], 3, 75);
-
-        SpikeInterpolation.useLibJAI(doubles[0], 3, 75);
     }
 }

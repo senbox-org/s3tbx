@@ -14,8 +14,18 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static java.lang.Math.*;
-import static org.esa.s3tbx.c2rcc.util.ArrayMath.*;
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.exp;
+import static java.lang.Math.log;
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
+import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_abs;
+import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_exp;
+import static org.esa.s3tbx.c2rcc.util.ArrayMath.a_sumx;
 
 /**
  * @author Roland Doerffer
@@ -527,22 +537,25 @@ public class C2rccOlciAlgorithm {
             rwa_oos = 0;
             // RD20161103 no if, because this process should be performed always for the flag
             //if (outputOos) {
-                double[] log_rw_nn2 = nn_iop_rw.get().calc(nn_in_for);
+            double[] log_rw_nn2 = nn_iop_rw.get().calc(nn_in_for);
 
-                // (9.5.7) test out of scope of rho_w by combining inverse and forward NN
-                //  compute the test and set rw is out of scope flag
-                double s1_mess = abs(log_rw[4] - log_rw[1]); // s1_mess and s2_mess are the band ratios of Rw
-                double s2_mess = abs(log_rw[5] - log_rw[4]);
-                double s1_nn2 = abs(log_rw_nn2[4] - log_rw_nn2[1]);// s1_nn2 is the band ratios of Rw'
-                double s2_nn2 = abs(log_rw_nn2[5] - log_rw_nn2[4]);
-                double s1_test = abs(s1_nn2 - s1_mess); // relative deviation for band ratio 5/2 (diff on log)
-                double s2_test = abs(s2_nn2 - s2_mess); // relative deviation for band ratio 6/5 (diff on log)
-                rwa_oos = max(s1_test, s2_test);// maximum deviation output as quality indicator
-                boolean rwa_oos_flag = false;
-                if (rwa_oos > thresh_rwlogslope) {
-                    rwa_oos_flag = true;
-                }
-                flags = BitSetter.setFlag(flags, FLAG_INDEX_RHOW_OOS, rwa_oos_flag);
+            // (9.5.7) test out of scope of rho_w by combining inverse and forward NN
+            //  compute the test and set rw is out of scope flag
+            int wvl_442_idx = 2;
+            int wvl_560_idx = 5;
+            int wvl_620_idx = 6;
+            double s1_mess = abs(log_rw[wvl_560_idx] - log_rw[wvl_442_idx]); // s1_mess and s2_mess are the band ratios of Rw
+            double s2_mess = abs(log_rw[wvl_620_idx] - log_rw[wvl_560_idx]);
+            double s1_nn2 = abs(log_rw_nn2[wvl_560_idx] - log_rw_nn2[wvl_442_idx]);// s1_nn2 is the band ratios of Rw'
+            double s2_nn2 = abs(log_rw_nn2[wvl_620_idx] - log_rw_nn2[wvl_560_idx]);
+            double s1_test = abs(s1_nn2 - s1_mess); // relative deviation for band ratio 5/2 (diff on log)
+            double s2_test = abs(s2_nn2 - s2_mess); // relative deviation for band ratio 6/5 (diff on log)
+            rwa_oos = max(s1_test, s2_test);// maximum deviation output as quality indicator
+            boolean rwa_oos_flag = false;
+            if (rwa_oos > thresh_rwlogslope) {
+                rwa_oos_flag = true;
+            }
+            flags = BitSetter.setFlag(flags, FLAG_INDEX_RHOW_OOS, rwa_oos_flag);
             //}
 
             // (9.5.8) NN compute kd from rw

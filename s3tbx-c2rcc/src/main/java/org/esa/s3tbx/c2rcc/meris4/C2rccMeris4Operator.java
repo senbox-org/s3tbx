@@ -195,24 +195,24 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
 
     @Parameter(label = "Valid-pixel expression",
             defaultValue = "!quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)",
-            description = "Defines the pixels which are valid for processing",
+            description = "Defines the pixels which are valid for processing.",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)",
-            description = "The value used as salinity for the scene")
+            description = "The value used as salinity for the scene.")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)",
-            description = "The value used as temperature for the scene")
+            description = "The value used as temperature for the scene.")
     private double temperature;
 
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)",
-            description = "The value used as ozone if not provided by auxiliary data")
+            description = "The value used as ozone if not provided by auxiliary data.")
     private double ozone;
 
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure at Sea Level",
-            description = "The surface air pressure at sea level if not provided by auxiliary data")
+            description = "The surface air pressure at sea level if not provided by auxiliary data.")
     private double press;
 
     @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")
@@ -228,20 +228,20 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
     private double CHLfak;
 
     //RD20161103 parameter 0.05 -> 0.003 for sum of differences of MERIS12 bands 9-12
-    @Parameter(defaultValue = "0.003", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
+    @Parameter(defaultValue = "0.003", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances.",
             label = "Threshold rtosa OOS")
     private double thresholdRtosaOOS;
 
-    @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances",
+    @Parameter(defaultValue = "0.1", description = "Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances.",
             label = "Threshold AC reflectances OOS")
     private double thresholdAcReflecOos;
 
-    @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
-            label = "Threshold for cloud flag on transmittance down @865")
+    @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865.",
+            label = "Threshold for cloud flag on down transmittance @865")
     private double thresholdCloudTDown865;
 
-    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
-            "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
+    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specified products on the I/O Parameters tab. " +
+            "If the auxiliary data is not available at this path, the data will automatically be downloaded.")
     private String atmosphericAuxDataPath;
 
     @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard " +
@@ -255,8 +255,7 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
             label = "Set of neuronal nets")
     private String netSet = STANDARD_NETS;
 
-    @Parameter(defaultValue = "false", description =
-            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+    @Parameter(defaultValue = "false", description = "Write remote sensing reflectances instead of water leaving reflectances.",
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 
@@ -821,20 +820,20 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         }
 
         Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
-        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophylll concentration");
+        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
 
         conc_tsm.setValidPixelExpression(validPixelExpression);
         conc_chl.setValidPixelExpression(validPixelExpression);
 
         if (outputUncertainties) {
-            Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "uncertainty of pigment absorption coefficient");
-            Band unc_adet = addBand(targetProduct, "unc_adet", "m^-1", "uncertainty of detritus absorption coefficient");
-            Band unc_agelb = addBand(targetProduct, "unc_agelb", "m^-1", "uncertainty of dissolved gelbstoff absorption coefficient");
-            Band unc_bpart = addBand(targetProduct, "unc_bpart", "m^-1", "uncertainty of particle scattering coefficient");
-            Band unc_bwit = addBand(targetProduct, "unc_bwit", "m^-1", "uncertainty of white particle scattering coefficient");
-            Band unc_adg = addBand(targetProduct, "unc_adg", "m^-1", "uncertainty of total gelbstoff absorption coefficient");
-            Band unc_atot = addBand(targetProduct, "unc_atot", "m^-1", "uncertainty of total water constituent absorption coefficient");
-            Band unc_btot = addBand(targetProduct, "unc_btot", "m^-1", "uncertainty of total water constituent scattering coefficient");
+            Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "Uncertainty of pigment absorption coefficient");
+            Band unc_adet = addBand(targetProduct, "unc_adet", "m^-1", "Uncertainty of detritus absorption coefficient");
+            Band unc_agelb = addBand(targetProduct, "unc_agelb", "m^-1", "Uncertainty of dissolved gelbstoff absorption coefficient");
+            Band unc_bpart = addBand(targetProduct, "unc_bpart", "m^-1", "Uncertainty of particle scattering coefficient");
+            Band unc_bwit = addBand(targetProduct, "unc_bwit", "m^-1", "Uncertainty of white particle scattering coefficient");
+            Band unc_adg = addBand(targetProduct, "unc_adg", "m^-1", "Uncertainty of total gelbstoff absorption coefficient");
+            Band unc_atot = addBand(targetProduct, "unc_atot", "m^-1", "Uncertainty of total water constituent absorption coefficient");
+            Band unc_btot = addBand(targetProduct, "unc_btot", "m^-1", "Uncertainty of total water constituent scattering coefficient");
 
             iop_apig.addAncillaryVariable(unc_apig, "uncertainty");
             iop_adet.addAncillaryVariable(unc_adet, "uncertainty");
@@ -854,8 +853,8 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
             unc_atot.setValidPixelExpression(validPixelExpression);
             unc_btot.setValidPixelExpression(validPixelExpression);
 
-            Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
-            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophylll concentration");
+            Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "Uncertainty of total suspended matter (TSM) dry weight concentration");
+            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Uncertainty of chlorophyll concentration");
 
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
@@ -864,9 +863,9 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
             unc_chl.setValidPixelExpression(validPixelExpression);
 
             if (outputKd) {
-                Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
-                Band unc_kdmin = addBand(targetProduct, "unc_kdmin", "m^-1", "uncertainty of mean irradiance attenuation coefficient");
-                Band unc_kd_z90max = addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
+                Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "Uncertainty of irradiance attenuation coefficient");
+                Band unc_kdmin = addBand(targetProduct, "unc_kdmin", "m^-1", "Uncertainty of mean irradiance attenuation coefficient");
+                Band unc_kd_z90max = addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "Uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
 
                 kd489.addAncillaryVariable(unc_kd489, "uncertainty");
                 kdmin.addAncillaryVariable(unc_kdmin, "uncertainty");
