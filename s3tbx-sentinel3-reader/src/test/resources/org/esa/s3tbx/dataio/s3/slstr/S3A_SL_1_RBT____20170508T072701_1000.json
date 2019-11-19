@@ -5323,40 +5323,40 @@
         "value": "2017-05-08T07:27:00.993163Z"
       },
       {
-        "path": "t_single/standard_name",
-        "value": "time "
-      },
-      {
-        "path": "z_soil/long_name",
-        "value": "Depth of soil wetness level "
-      },
-      {
-        "path": "t_series/long_name",
-        "value": "Synoptic times of time series fields "
-      },
-      {
-        "path": "Nadir_First_scan_i/valid_min",
-        "value": "0"
-      },
-      {
-        "path": "SCANSYNC/value",
-        "value": "299985"
-      },
-      {
-        "path": "Nadir_Minimal_ts_i/units",
-        "value": "microseconds since 2000-01-01T00:00:00Z "
-      },
-      {
-        "path": "PIXSYNC_i/units",
+        "path": "SCANSYNC/units",
         "value": "us "
       },
       {
-        "path": "Oblique_Last_scan_i/valid_max",
-        "value": "19353"
+        "path": "z_atmos/long_name",
+        "value": "Height of atmospheric field above surface "
       },
       {
-        "path": "l0_scan_offset_in/long_name",
-        "value": "Offset between scan index and corresponding ISP scan count "
+        "path": "PIXSYNC_i/long_name",
+        "value": "Frequency at which the pixels are sampled on each scan "
+      },
+      {
+        "path": "S8/S8_BBEU_Bridge_Ref_in/units",
+        "value": "V "
+      },
+      {
+        "path": "z_soil/positive",
+        "value": "down "
+      },
+      {
+        "path": "S9/S9_BB2_reference_2_in/units",
+        "value": "V "
+      },
+      {
+        "path": "Nadir/Nadir_Last_scan_i/long_name",
+        "value": "Scan number of the last nadir scan contributing to each line "
+      },
+      {
+        "path": "S9/S9_BB2_reference_2_in/units",
+        "value": "V "
+      },
+      {
+        "path": "z_atmos/axis",
+        "value": "Z "
       }
     ]
   }
