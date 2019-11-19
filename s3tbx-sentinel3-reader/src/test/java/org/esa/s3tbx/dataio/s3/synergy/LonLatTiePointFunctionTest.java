@@ -15,16 +15,17 @@ package org.esa.s3tbx.dataio.s3.synergy;/*
  */
 
 import org.esa.s3tbx.dataio.s3.LonLatFunction;
-import org.junit.Ignore;
+import org.esa.snap.test.LongTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import ucar.nc2.Variable;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(LongTestRunner.class)
 public class LonLatTiePointFunctionTest {
 
     @Test
-    @Ignore("takes a lot of time")
     public void testApproximation() throws Exception {
 
         NcFile ncFile1 = null;

@@ -23,7 +23,7 @@ public class BrrOpIntegrationTest {
         boolean internetAvailable;
         try {
             URLConnection urlConnection = new URL("http://www.google.com").openConnection();
-            urlConnection.setConnectTimeout(5);
+            urlConnection.setConnectTimeout(2000);
             urlConnection.getContent();
             internetAvailable = true;
         } catch (IOException e) {
