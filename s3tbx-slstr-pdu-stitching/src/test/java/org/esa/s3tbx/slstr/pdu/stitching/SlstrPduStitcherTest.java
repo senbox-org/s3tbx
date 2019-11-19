@@ -10,7 +10,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -75,19 +74,6 @@ public class SlstrPduStitcherTest {
         for (File slstrFile : files) {
             assert (new File(stitchedProductFileParentDirectory, slstrFile.getName()).exists());
         }
-    }
-
-    @Test
-    public void testStitchPDUs_AllSlstrL1BProductFiles() throws IOException, PDUStitchingException, TransformerException, ParserConfigurationException {
-        final File[] slstrFiles = TestUtils.getSlstrFiles();
-        final File stitchedProductFile = SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, slstrFiles, ProgressMonitor.NULL);
-
-        final File stitchedProductFileParentDirectory = stitchedProductFile.getParentFile();
-        assert(new File(stitchedProductFileParentDirectory, "xfdumanifest.xml").exists());
-        assert(new File(stitchedProductFileParentDirectory, "F1_BT_io.nc").exists());
-        assert(new File(stitchedProductFileParentDirectory, "met_tx.nc").exists());
-        assert(new File(stitchedProductFileParentDirectory, "viscal.nc").exists());
-        assertEquals(targetDirectory, stitchedProductFileParentDirectory.getParentFile());
     }
 
     @Test

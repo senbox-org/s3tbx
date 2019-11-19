@@ -1,8 +1,5 @@
 package org.esa.s3tbx.c2rcc;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
 import org.esa.snap.core.datamodel.Band;
@@ -11,10 +8,18 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.util.DummyProductBuilder;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
-import org.junit.*;
+import org.esa.snap.test.LongTestRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@RunWith(LongTestRunner.class)
 public class C2rccOperatorTest {
     @Test
     public void testMeris() throws Exception {

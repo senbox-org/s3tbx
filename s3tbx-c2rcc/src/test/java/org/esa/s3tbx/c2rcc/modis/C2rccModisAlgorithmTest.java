@@ -1,13 +1,12 @@
 package org.esa.s3tbx.c2rcc.modis;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
 
-
-public class C2RccModisAlgorithmTest {
+public class C2rccModisAlgorithmTest {
     @Test
     public void testIt() throws Exception {
         C2rccModisAlgorithm algo = new C2rccModisAlgorithm();
