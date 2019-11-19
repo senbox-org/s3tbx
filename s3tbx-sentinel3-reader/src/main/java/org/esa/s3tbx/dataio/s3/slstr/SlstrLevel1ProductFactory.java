@@ -168,7 +168,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         }
     }
 
-    protected void addProductSpecificMetadata(Product targetProduct) {
+//    protected void addProductSpecificMetadata(Product targetProduct) {
 //        MetadataElement root = targetProduct.getMetadataRoot();
 //        String[] subElements = new String[]{"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "F1", "F2",
 //                "Nadir", "Oblique"};
@@ -189,7 +189,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 //                }
 //            }
 //        }
-    }
+//    }
 
     @Override
     protected void configureTargetNode(Band sourceBand, RasterDataNode targetNode) {
