@@ -168,28 +168,28 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         }
     }
 
-//    protected void addProductSpecificMetadata(Product targetProduct) {
-//        MetadataElement root = targetProduct.getMetadataRoot();
-//        String[] subElements = new String[]{"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "F1", "F2",
-//                "Nadir", "Oblique"};
-//        for (String subElement : subElements) {
-//            root.addElement(new MetadataElement(subElement));
-//        }
-//        List<Product> openProductList = getOpenProductList();
-//        for (final Product p : openProductList) {
-//            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
-//                MetadataElement addTo = root;
-//                for (String subElement : subElements) {
-//                    if (element.getDisplayName().startsWith(subElement)) {
-//                        addTo = root.getElement(subElement);
-//                    }
-//                }
-//                if (!addTo.containsElement(element.getDisplayName())) {
-//                    addTo.addElement(element.createDeepClone());
-//                }
-//            }
-//        }
-//    }
+    protected void addProductSpecificMetadata(Product targetProduct) {
+        MetadataElement root = targetProduct.getMetadataRoot();
+        String[] subElements = new String[]{"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "F1", "F2",
+                "Nadir", "Oblique"};
+        for (String subElement : subElements) {
+            root.addElement(new MetadataElement(subElement));
+        }
+        List<Product> openProductList = getOpenProductList();
+        for (final Product p : openProductList) {
+            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
+                MetadataElement addTo = root;
+                for (String subElement : subElements) {
+                    if (element.getDisplayName().startsWith(subElement)) {
+                        addTo = root.getElement(subElement);
+                    }
+                }
+                if (!addTo.containsElement(element.getDisplayName())) {
+                    addTo.addElement(element.createDeepClone());
+                }
+            }
+        }
+    }
 
     @Override
     protected void configureTargetNode(Band sourceBand, RasterDataNode targetNode) {
