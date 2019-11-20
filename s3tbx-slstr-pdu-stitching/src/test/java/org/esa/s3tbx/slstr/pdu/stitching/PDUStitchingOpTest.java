@@ -7,10 +7,11 @@ import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.util.ArrayUtils;
 import org.esa.snap.core.util.io.FileUtils;
+import org.esa.snap.test.LongTestRunner;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.net.URL;
@@ -18,20 +19,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
  * @author Tonio Fincke
  */
+@RunWith(LongTestRunner.class)
 public class PDUStitchingOpTest {
 
-    public static final String EXPECTED_STITCHED_FILE_NAME_PATTERN =
+    private static final String EXPECTED_STITCHED_FILE_NAME_PATTERN =
             "S3A_SL_1_RBT____20130707T153252_20130707T154752_2[0-9]{7}T[0-9]{6}_0299_158_182______SVL_O_NR_001.SEN3";
 
-    File targetDirectory;
+    private File targetDirectory;
 
     @Before
     public void setUp() {
@@ -51,7 +53,6 @@ public class PDUStitchingOpTest {
     }
 
     @Test
-    @Ignore("takes a few seconds")
     public void testOperator() {
         Map<String, Object> parameterMap = new HashMap<>();
         parameterMap.put("targetDir", targetDirectory);
@@ -72,7 +73,6 @@ public class PDUStitchingOpTest {
     }
 
     @Test
-    @Ignore("takes a few seconds")
     public void testOperator_wildcards() {
         Map<String, Object> parameterMap = new HashMap<>();
         Map<String, Product> sourceProductMap = new HashMap<>();

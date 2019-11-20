@@ -20,7 +20,9 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.test.LongTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.net.URL;
@@ -39,6 +41,7 @@ import static org.junit.Assert.assertTrue;
  * @author Marco Peters
  * @author Sabine Embacher
  */
+@RunWith(LongTestRunner.class)
 public class SmacOperatorTest {
 
     private static final URL PRODUCT_URL_MERIS = SmacOperatorTest.class.getResource("MER_RR__1PQBCM20030407_100459_000007352015_00194_05759_0002_subset.nc");

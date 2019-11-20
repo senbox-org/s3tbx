@@ -5,17 +5,21 @@ import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.test.LongTestRunner;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 /**
  * @author Marco Peters
  */
+@RunWith(LongTestRunner.class)
 public class MsiProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_B" + 1, "rhow_B" + 2, "rhow_B" + 3, "rhow_B" + 4, "rhow_B" + 5,

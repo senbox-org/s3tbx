@@ -2,8 +2,11 @@ package org.esa.s3tbx.meris.radiometry;
 
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.test.LongTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(LongTestRunner.class)
 public class MerisRadiometryCorrectionOpTest {
 
 
@@ -21,7 +24,7 @@ public class MerisRadiometryCorrectionOpTest {
 
     }
 
-    void moveFSGBandsAtTheBeginning(Product fsg) {
+    private void moveFSGBandsAtTheBeginning(Product fsg) {
         Band corrLon = fsg.getBandGroup().get("corr_longitude");
         fsg.getBandGroup().remove(corrLon);
         Band corrLat = fsg.getBandGroup().get("corr_latitude");

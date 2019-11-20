@@ -1,4 +1,5 @@
-package org.esa.s3tbx.dataio.s3;/*
+package org.esa.s3tbx.dataio.s3;
+/*
  * Copyright (C) 2012 Brockmann Consult GmbH (info@brockmann-consult.de)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -17,77 +18,61 @@ package org.esa.s3tbx.dataio.s3;/*
 import com.bc.ceres.glevel.MultiLevelSource;
 import com.bc.ceres.glevel.support.AbstractMultiLevelSource;
 import com.bc.ceres.glevel.support.DefaultMultiLevelModel;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+@SuppressWarnings("ConstantConditions")
 public class LonLatMultiLevelSourceTest {
 
     @Test
-    @Ignore
-    public void testCreate_WithNullSources() throws Exception {
+    public void testCreate_WithNullSources() {
         final MultiLevelSource lonSource = new TestMultiLevelSource(10, 10);
         final MultiLevelSource latSource = new TestMultiLevelSource(10, 10);
         final LonLatFunction function = new TestLonLatFunction();
         try {
             LonLatMultiLevelSource.create(null, latSource, function, DataBuffer.TYPE_DOUBLE);
             fail();
-        } catch (NullPointerException e) {
+        } catch (IllegalArgumentException ignored) {
         }
         try {
             LonLatMultiLevelSource.create(lonSource, null, function, DataBuffer.TYPE_DOUBLE);
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
         }
     }
 
     @Test
-    @Ignore
-    public void testCreate_WithNullFunction() throws Exception {
+    public void testCreate_WithNullFunction() {
         final MultiLevelSource lonSource = new TestMultiLevelSource(10, 10);
         final MultiLevelSource latSource = new TestMultiLevelSource(10, 10);
         final LonLatFunction function = null;
         try {
             LonLatMultiLevelSource.create(lonSource, latSource, function, DataBuffer.TYPE_DOUBLE);
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
         }
     }
 
     @Test
-    @Ignore
-    public void testCreate_WithWrongDataType() throws Exception {
-        final MultiLevelSource lonSource = new TestMultiLevelSource(10, 10);
-        final MultiLevelSource latSource = new TestMultiLevelSource(10, 10);
-        final LonLatFunction function = new TestLonLatFunction();
-        try {
-            LonLatMultiLevelSource.create(lonSource, latSource, function, DataBuffer.TYPE_BYTE);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
-    }
-
-    @Test
-    @Ignore
-    public void testCreate_WithIncompatibleSources() throws Exception {
+    public void testCreate_WithIncompatibleSources() {
         final MultiLevelSource lonSource = new TestMultiLevelSource(10, 10);
         final MultiLevelSource latSource = new TestMultiLevelSource(11, 11);
         final LonLatFunction function = new TestLonLatFunction();
         try {
             LonLatMultiLevelSource.create(lonSource, latSource, function, DataBuffer.TYPE_BYTE);
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
         }
     }
 
     @Test
-    @Ignore
-    public void testCreate() throws Exception {
+    public void testCreate() {
         final MultiLevelSource lonSource = new TestMultiLevelSource(10, 10);
         final MultiLevelSource latSource = new TestMultiLevelSource(10, 10);
         final LonLatFunction function = new TestLonLatFunction();

@@ -14,13 +14,16 @@ package org.esa.s3tbx.dataio.s3;/*
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
+import com.bc.ceres.core.Assert;
 import com.bc.ceres.glevel.MultiLevelSource;
 import com.bc.ceres.glevel.support.GenericMultiLevelSource;
 import org.esa.snap.core.util.jai.SingleBandedSampleModel;
 
 import javax.media.jai.ImageLayout;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
+import java.util.Objects;
 
 public final class LonLatMultiLevelSource extends GenericMultiLevelSource {
 
@@ -29,6 +32,12 @@ public final class LonLatMultiLevelSource extends GenericMultiLevelSource {
 
     public static MultiLevelSource create(MultiLevelSource lonSource, MultiLevelSource latSource,
                                           LonLatFunction function, int targetDataType) {
+        Assert.argument(lonSource != null, "lonSource != null");
+        Assert.argument(latSource != null, "latSource != null");
+        Assert.argument(function != null, "function != null");
+        Rectangle2D lonModelBounds = lonSource.getModel().getModelBounds();
+        Rectangle2D latModelBounds = latSource.getModel().getModelBounds();
+        Assert.argument(Objects.equals(lonModelBounds, latModelBounds), "Model bounds of lat and lon source must be equal");
         return new LonLatMultiLevelSource(lonSource, latSource, function, targetDataType);
     }
 
