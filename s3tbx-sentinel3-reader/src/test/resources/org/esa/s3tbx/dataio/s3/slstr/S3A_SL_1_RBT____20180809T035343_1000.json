@@ -5323,40 +5323,40 @@
         "value": "Earth Observation"
       },
       {
-        "path": "SCANSYNC/_FillValue",
+        "path": "PIXSYNC_i/_FillValue",
         "value": "-2147483648"
       },
       {
-        "path": "Oblique_Maximal_ts_i/_FillValue",
-        "value": "-9223372036854775808"
+        "path": "t_single/_FillValue",
+        "value": "-32768"
       },
       {
-        "path": "z_atmos/long_name",
-        "value": "Height of atmospheric field above surface "
+        "path": "S8/S8_T_detector_in/long_name",
+        "value": "Detector temperature "
       },
       {
-        "path": "t_series/value",
-        "value": "-18,-12,-6,0,6"
+        "path": "SCANSYNC/units",
+        "value": "us "
       },
       {
-        "path": "Nadir_Last_scan_i/valid_max",
-        "value": "19353"
+        "path": "S9/S9_T_BB1_in/long_name",
+        "value": "Black body temperature 1 "
       },
       {
-        "path": "t_single/axis",
-        "value": "T "
+        "path": "Nadir/Nadir_Last_scan_i/_FillValue",
+        "value": "-1"
       },
       {
-        "path": "Nadir_First_scan_i/valid_max",
-        "value": "19353"
+        "path": "S9/S9_T_BB1_in/long_name",
+        "value": "Black body temperature 1 "
       },
       {
-        "path": "l0_scan_offset_in/_FillValue",
-        "value": "-2147483648"
+        "path": "PIXSYNC_i/units",
+        "value": "us "
       },
       {
-        "path": "z_soil/bounds",
-        "value": "z_bound "
+        "path": "PIXSYNC_i/value",
+        "value": "81"
       }
     ]
   }

@@ -44,7 +44,7 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
         super.addProductSpecificMetadata(targetProduct);
         List<Product> openProductList = getOpenProductList();
         for (final Product p : openProductList) {
-            String identifier = p.getName().substring(p.getName().length() - 2);
+            String identifier = getGridIndex(p.getName());
             MetadataElement globalAttributes = p.getMetadataRoot().getElement("Global_Attributes");
             if (!gridIndexToStartOffset.containsKey(identifier)) {
                 gridIndexToStartOffset.put(identifier, globalAttributes.getAttributeDouble("start_offset"));
@@ -96,13 +96,13 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
     protected void setBandGeoCodings(Product targetProduct) {
         final Band[] bands = targetProduct.getBands();
         for (Band band : bands) {
-            final GeoCoding bandGeoCoding = getBandGeoCoding(targetProduct, band.getName().substring(band.getName().length() - 2));
+            final GeoCoding bandGeoCoding = getBandGeoCoding(targetProduct, getGridIndex(band.getName()));
             band.setGeoCoding(bandGeoCoding);
         }
         final ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
         for (int i = 0; i < maskGroup.getNodeCount(); i++) {
             final Mask mask = maskGroup.get(i);
-            final GeoCoding bandGeoCoding = getBandGeoCoding(targetProduct, mask.getName().substring(mask.getName().length() - 2));
+            final GeoCoding bandGeoCoding = getBandGeoCoding(targetProduct, getGridIndex(mask.getName()));
             mask.setGeoCoding(bandGeoCoding);
         }
     }
@@ -110,11 +110,7 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
     @Override
     protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
         final String sourceBandName = sourceBand.getName();
-        final int sourceBandNameLength = sourceBandName.length();
-        String gridIndex = sourceBandName;
-        if (sourceBandNameLength > 1) {
-            gridIndex = sourceBandName.substring(sourceBandNameLength - 2);
-        }
+        String gridIndex = getGridIndex(sourceBandName);
         // todo wait for name change. If this happens, we can merge this with the method from SlstrLevel1ProductFactory
         if (sourceBand.getName().equals("flags")) {
             gridIndex = "in";

@@ -136,6 +136,11 @@ public class PpeOp extends Operator {
                                     sourceProduct.getSceneRasterWidth(),
                                     sourceProduct.getSceneRasterHeight());
 
+        // TODO: Copy flag bands is necessary because of issue
+        // https://senbox.atlassian.net/browse/SNAP-1232
+        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
+        ProductUtils.copyProductNodes(sourceProduct, targetProduct);
+
         final FlagCoding flagCoding = new FlagCoding("PPE_Applied");
         flagCoding.setDescription("PPE processor flag");
         targetProduct.getFlagCodingGroup().add(flagCoding);
@@ -148,26 +153,20 @@ public class PpeOp extends Operator {
                 int flagMask = BitSetter.setFlag(0, band.getSpectralBandIndex());
                 flagCoding.addFlag("PPE_" + bandName, flagMask, "PPE applied on " + bandName);
             } else {
-                ProductUtils.copyBand(bandName, sourceProduct, targetProduct, true);
+                boolean alreadyCopied = targetProduct.containsBand(bandName);
+                if (!alreadyCopied) {
+                    // TODO: don't copy the band again - see above TODO
+                    ProductUtils.copyBand(bandName, sourceProduct, targetProduct, true);
+                }
             }
         }
 
-
-        Band ppeFlags = new Band("ppe_flags", ProductData.TYPE_UINT32,
-                                 sourceProduct.getSceneRasterWidth(),
-                                 sourceProduct.getSceneRasterHeight());
+        Band ppeFlags = targetProduct.addBand("ppe_flags", ProductData.TYPE_UINT32);
         ppeFlags.setSampleCoding(flagCoding);
 
-        targetProduct.addMask("PPE_operator_applied",  "ppe_flags",
+        targetProduct.addMask("PPE_operator_applied",  "ppe_flags != 0",
                               "PPE operator has been applied on one of the spectral bands", Color.BLUE, 0.5);
 
-        targetProduct.addBand(ppeFlags);
-        ProductUtils.copyMetadata(sourceProduct, targetProduct);
-        ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
-        ProductUtils.copyMasks(sourceProduct, targetProduct);
-        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
-        ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
-        targetProduct.setAutoGrouping(sourceProduct.getAutoGrouping().toString());
     }
 
     private void setBandTile(int x, int y, double median, double mad, double reflecValue, Tile targetTile) {

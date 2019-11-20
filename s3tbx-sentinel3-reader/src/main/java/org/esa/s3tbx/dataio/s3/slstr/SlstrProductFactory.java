@@ -46,6 +46,22 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         super(productReader);
     }
 
+    static String getGridIndex(String bandName) {
+        String[] nameParts = bandName.split("_");
+        int lastPartIndex = nameParts.length - 1;
+        int index = lastPartIndex;
+        while (index >= 0) {
+            if (nameParts[index].length() == 2) {
+                return nameParts[index];
+            }
+            index--;
+        }
+        if (nameParts[lastPartIndex].length() > 1) {
+            return nameParts[lastPartIndex].substring(nameParts[lastPartIndex].length() - 2);
+        }
+        return nameParts[lastPartIndex];
+    }
+
     protected abstract Double getStartOffset(String gridIndex);
 
     protected abstract Double getTrackOffset(String gridIndex);
@@ -80,7 +96,7 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
 
     @Override
     protected boolean isNodeSpecial(Band sourceBand, Product targetProduct) {
-        String identifier = sourceBand.getName().substring(sourceBand.getName().length() - 2);
+        String identifier = getGridIndex(sourceBand.getName());
         return super.isNodeSpecial(sourceBand, targetProduct) || getStartOffset(identifier) != referenceStartOffset ||
                 getTrackOffset(identifier) != referenceTrackOffset ||
                 getResolutions(identifier)[0] != getReferenceResolutions()[0] ||

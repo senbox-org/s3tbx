@@ -1,6 +1,29 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 7.0.1
+--------------------
+
+Bug
+* [SIIITBX-176] - Rayleigh Correction expects tie-point grids to be present
+* [SIIITBX-268] - Time information is not copied by PPE operator
+* [SIIITBX-270] - Wrong bands used for computing the Rhow_OOS
+* [SIIITBX-273] - Rayleigh correction does not compute correct values
+* [SIIITBX-300] - PPE operator does not copy the masks of the source
+
+New Feature
+* [SIIITBX-249] - Coefficient have change for SLSTR S5 and S6
+* [SIIITBX-295] - Support new version of SLSTR L1 RBT
+* [SIIITBX-296] - Add Reader for SLSTR L2 FRP products
+* [SIIITBX-297] - Add Reader for SLSTR SYN L2 products
+
+Improvement
+* [SIIITBX-172] - Use new SRF for Sentinel-2 in Rayleigh Correction processor
+* [SIIITBX-269] - OOS thresholds should have different default values
+* [SIIITBX-271] - Information in metadata shall be enhanced and more consistent
+* [SIIITBX-272] - TSM computation shall use new equation
+
+
 Changes in S3TBX 7.0.0
 --------------------
 
