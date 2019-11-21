@@ -53,39 +53,40 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
 
     @Override
     protected void addSpecialVariables(Product masterProduct, Product targetProduct) throws IOException {
-        final double[] olcTpLon;
-        final double[] olcTpLat;
-        final NcFile olcTiePoints = openNcFile("tiepoints_olci.nc");
-        try {
-            olcTpLon = olcTiePoints.read("OLC_TP_lon");
-            olcTpLat = olcTiePoints.read("OLC_TP_lat");
-        } finally {
-            olcTiePoints.close();
-        }
-        addVariables(targetProduct, olcTpLon, olcTpLat, "tiepoints_olci.nc");
-        addVariables(targetProduct, olcTpLon, olcTpLat, "tiepoints_meteo.nc");
-
-        final double[] slnTpLon;
-        final double[] slnTpLat;
-        final NcFile slnTiePoints = openNcFile("tiepoints_slstr_n.nc");
-        try {
-            slnTpLon = slnTiePoints.read("SLN_TP_lon");
-            slnTpLat = slnTiePoints.read("SLN_TP_lat");
-        } finally {
-            slnTiePoints.close();
-        }
-        addVariables(targetProduct, slnTpLon, slnTpLat, "tiepoints_slstr_n.nc");
-
-        final double[] sloTpLon;
-        final double[] sloTpLat;
-        final NcFile sloTiePoints = openNcFile("tiepoints_slstr_o.nc");
-        try {
-            sloTpLon = sloTiePoints.read("SLO_TP_lon");
-            sloTpLat = sloTiePoints.read("SLO_TP_lat");
-        } finally {
-            sloTiePoints.close();
-        }
-        addVariables(targetProduct, sloTpLon, sloTpLat, "tiepoints_slstr_o.nc");
+        // disabled due to poor performance
+//        final double[] olcTpLon;
+//        final double[] olcTpLat;
+//        final NcFile olcTiePoints = openNcFile("tiepoints_olci.nc");
+//        try {
+//            olcTpLon = olcTiePoints.read("OLC_TP_lon");
+//            olcTpLat = olcTiePoints.read("OLC_TP_lat");
+//        } finally {
+//            olcTiePoints.close();
+//        }
+//        addVariables(targetProduct, olcTpLon, olcTpLat, "tiepoints_olci.nc");
+//        addVariables(targetProduct, olcTpLon, olcTpLat, "tiepoints_meteo.nc");
+//
+//        final double[] slnTpLon;
+//        final double[] slnTpLat;
+//        final NcFile slnTiePoints = openNcFile("tiepoints_slstr_n.nc");
+//        try {
+//            slnTpLon = slnTiePoints.read("SLN_TP_lon");
+//            slnTpLat = slnTiePoints.read("SLN_TP_lat");
+//        } finally {
+//            slnTiePoints.close();
+//        }
+//        addVariables(targetProduct, slnTpLon, slnTpLat, "tiepoints_slstr_n.nc");
+//
+//        final double[] sloTpLon;
+//        final double[] sloTpLat;
+//        final NcFile sloTiePoints = openNcFile("tiepoints_slstr_o.nc");
+//        try {
+//            sloTpLon = sloTiePoints.read("SLO_TP_lon");
+//            sloTpLat = sloTiePoints.read("SLO_TP_lat");
+//        } finally {
+//            sloTiePoints.close();
+//        }
+//        addVariables(targetProduct, sloTpLon, sloTpLat, "tiepoints_slstr_o.nc");
     }
 
     private void addVariables(Product targetProduct, double[] tpLon, double[] tpLat, String fileName) throws
@@ -167,7 +168,9 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
 
     @Override
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
-        targetProduct.setAutoGrouping("SDR:SDR*err:OLC:SLN:SLO");
+        // todo set other autogrouping when tie points are read in again
+        // targetProduct.setAutoGrouping("SDR:SDR*err:OLC:SLN:SLO");
+        targetProduct.setAutoGrouping("SDR:SDR*err");
     }
 
     @Override
