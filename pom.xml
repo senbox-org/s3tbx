@@ -83,7 +83,7 @@
         -->
         <s3tbx.version>7.0.3-SNAPSHOT</s3tbx.version>
         <netbeans.version>RELEASE82</netbeans.version>
-        <seadas.reader.version>1.8.2</seadas.reader.version>
+        <seadas.reader.version>1.8.3-SNAPSHOT</seadas.reader.version>
         <seadas.reader.ui.version>1.8.3-SNAPSHOT</seadas.reader.ui.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>4.3.22</netcdf.version>
