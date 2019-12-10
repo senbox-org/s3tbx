@@ -70,6 +70,6 @@ the option *Create module groups for multi-module Maven projects*. Everything ca
     **Working directory:** ${snap}/snap-desktop/snap-application/target/snap/
     **Use classpath of module:** snap-main
 
-Enjoy!
+Enjoy developing!
 
 
