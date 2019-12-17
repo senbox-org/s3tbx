@@ -52,7 +52,7 @@ import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_DETECTOR_INDEX_
 @OperatorMetadata(alias = "Rad2Refl",
         authors = "Olaf Danne, Marco Peters",
         copyright = "Brockmann Consult GmbH",
-        category = "Optical/Pre-Processing",
+        category = "Optical/Preprocessing",
         version = "2.0",
         description = "Provides conversion from radiances to reflectances or backwards.")
 public class Rad2ReflOp extends Operator {

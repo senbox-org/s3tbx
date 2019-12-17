@@ -53,7 +53,7 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
         description = "Performs radiometric corrections on OLCI, MERIS L1B and S2 MSI L1C data products.",
         authors = "Marco Peters, Muhammad Bala, Olaf Danne (Brockmann Consult)",
         copyright = "(c) 2016 by Brockmann Consult",
-        category = "Optical/Pre-Processing",
+        category = "Optical/Preprocessing",
         version = "1.3")
 public class RayleighCorrectionOp extends Operator {
 

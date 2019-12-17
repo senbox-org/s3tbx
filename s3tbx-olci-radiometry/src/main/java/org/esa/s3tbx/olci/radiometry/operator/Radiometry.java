@@ -36,7 +36,7 @@ import java.util.HashMap;
         description = "Performs radiometric corrections on OLCI L1b data products.",
         authors = " Marco Peters ,Muhammad Bala (Brockmann Consult)",
         copyright = "(c) 2015 by Brockmann Consult",
-        category = "Optical/Pre-Processing",
+        category = "Optical/Preprocessing",
         version = "1.2")
 
 public class Radiometry extends Operator {
