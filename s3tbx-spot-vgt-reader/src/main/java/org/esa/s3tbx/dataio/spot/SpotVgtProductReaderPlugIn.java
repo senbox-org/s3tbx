@@ -19,6 +19,7 @@ import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.core.VirtualDir;
+import org.apache.commons.io.FilenameUtils;
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
@@ -26,14 +27,12 @@ import org.esa.snap.core.datamodel.RGBImageProfile;
 import org.esa.snap.core.datamodel.RGBImageProfileManager;
 import org.esa.snap.core.util.io.SnapFileFilter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.util.Locale;
 
 public class SpotVgtProductReaderPlugIn implements ProductReaderPlugIn {
+
+    private boolean isVgtPCollection3Product = false;
 
     public SpotVgtProductReaderPlugIn() {
         RGBImageProfileManager manager = RGBImageProfileManager.getInstance();
@@ -74,7 +73,55 @@ public class SpotVgtProductReaderPlugIn implements ProductReaderPlugIn {
                 }
                 return DecodeQualification.INTENDED;
             } catch (IOException e) {
-                return DecodeQualification.UNABLE;
+                // check for new structure of VGT P Collection3 products:
+                // can be a directory or a zip file, e.g. V220140304096 or V220140304096.zip:
+                // contains files <dirname>_*.hdf, <dirname>_LOG.txt, <dirname>_RIG.txt
+                // --> check if <dirname>_LOG.txt and all <dirname>_*.hdf exist:
+                final String productName = FilenameUtils.getBaseName(file.getName());
+                try {
+                    // is directory?
+                    virtualDir.getReader(productName + "_LOG.TXT");
+                } catch (IOException e1) {
+                    try {
+                        // is zip file?
+                        virtualDir.getReader(productName + "/" + productName + "_LOG.TXT");
+                    } catch (IOException e2) {
+                        return DecodeQualification.UNABLE;
+                    }
+                }
+
+                String[] filesInProduct;
+                if (file.list() != null) {
+                    // dir
+                    filesInProduct = file.list();
+                } else {
+                    // zip
+                    try {
+                        filesInProduct = virtualDir.list(productName);
+                    } catch (IOException e1) {
+                        return DecodeQualification.UNABLE;
+                    }
+                }
+
+                if (filesInProduct != null) {
+                    for (int i = 0; i < SpotVgtConstants.BANDS_IN_VGT_P_COLLECTION3_PRODUCT.length; i++) {
+                        boolean vgtPCollection3ProductFile = false;
+                        for (int j = 0; j < filesInProduct.length; j++) {
+                            if (filesInProduct[j].toUpperCase().
+                                    equals(productName + "_" + SpotVgtConstants.BANDS_IN_VGT_P_COLLECTION3_PRODUCT[i] + ".HDF")) {
+                                vgtPCollection3ProductFile = true;
+                                break;
+                            }
+                        }
+                        if (!vgtPCollection3ProductFile) {
+                            return DecodeQualification.UNABLE;
+                        }
+                    }
+                    isVgtPCollection3Product = true;
+                    return DecodeQualification.INTENDED;
+                } else {
+                    return DecodeQualification.UNABLE;
+                }
             }
         } finally {
             virtualDir.close();
@@ -103,7 +150,7 @@ public class SpotVgtProductReaderPlugIn implements ProductReaderPlugIn {
      */
     @Override
     public ProductReader createReaderInstance() {
-        return new SpotVgtProductReader(this);
+        return new SpotVgtProductReader(this, isVgtPCollection3Product);
     }
 
     /**
@@ -167,13 +214,8 @@ public class SpotVgtProductReaderPlugIn implements ProductReaderPlugIn {
         return readKeyValuePairs(inputFile);
     }
 
-    static PropertySet readKeyValuePairs(File inputFile) throws IOException {
-        return readKeyValuePairs(new FileReader(inputFile));
-    }
-
     static PropertySet readKeyValuePairs(Reader reader) throws IOException {
-        BufferedReader breader = new BufferedReader(reader);
-        try {
+        try (BufferedReader breader = new BufferedReader(reader)) {
             PropertySet headerProperties = new PropertyContainer();
             String line;
             while ((line = breader.readLine()) != null) {
@@ -190,8 +232,6 @@ public class SpotVgtProductReaderPlugIn implements ProductReaderPlugIn {
                 headerProperties.addProperty(Property.create(key, value));
             }
             return headerProperties;
-        } finally {
-            breader.close();
         }
     }
 
@@ -213,5 +253,9 @@ public class SpotVgtProductReaderPlugIn implements ProductReaderPlugIn {
             return file.getParentFile();
         }
         return null;
+    }
+
+    private static PropertySet readKeyValuePairs(File inputFile) throws IOException {
+        return readKeyValuePairs(new FileReader(inputFile));
     }
 }
