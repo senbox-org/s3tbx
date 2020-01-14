@@ -1,7 +1,5 @@
 package org.esa.s3tbx.slstr.pdu.stitching.manifest;
 
-import com.sun.org.apache.xerces.internal.dom.TextImpl;
-import org.esa.s3tbx.slstr.pdu.stitching.PDUStitchingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -17,7 +15,7 @@ import java.util.List;
 class OrbitReferenceMerger extends AbstractElementMerger {
 
     @Override
-    public void mergeNodes(List<Node> fromParents, Element toParent, Document toDocument) throws PDUStitchingException {
+    public void mergeNodes(List<Node> fromParents, Element toParent, Document toDocument) {
         final NodeList origChildNodes = fromParents.get(0).getChildNodes();
         mergeNodes(origChildNodes, toParent, toDocument);
     }
