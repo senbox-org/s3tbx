@@ -34,7 +34,8 @@ public class ModisBandReaderFactory {
         }
 
         int scaleMethod = ModisBandReader.decodeScalingMethod(desc.getScalingMethod());
-        final int productDataType = DataTypeUtils.getEquivalentProductDataType(variable.getDataType(), variable.isUnsigned(), true);
+        final int productDataType = DataTypeUtils.getEquivalentProductDataType(variable.getDataType(),
+                variable.getDataType().isUnsigned(), true);
         boolean is3d = is3d(variable);
         final ModisBandReader[] modisBandReaders = createBandReaderArray(variable, is3d);
 

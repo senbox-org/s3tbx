@@ -74,7 +74,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>7.0.3</snap.version>
+        <snap.version>7.0.4-SNAPSHOT</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
@@ -86,7 +86,7 @@
         <seadas.reader.version>1.8.3-SNAPSHOT</seadas.reader.version>
         <seadas.reader.ui.version>1.8.3-SNAPSHOT</seadas.reader.ui.version>
         <javahelp.version>2.0.05</javahelp.version>
-        <netcdf.version>4.3.22</netcdf.version>
+        <netcdf.version>5.0.0-beta6</netcdf.version>
         <brandingToken>s3tbx</brandingToken>
         <user.language>en</user.language>
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
@@ -313,7 +313,7 @@
             <!-- TAR archive support  -->
             <dependency>
                 <groupId>edu.ucar</groupId>
-                <artifactId>netcdf</artifactId>
+                <artifactId>netcdfAll</artifactId>
                 <version>${netcdf.version}</version>
             </dependency>
             <dependency>
