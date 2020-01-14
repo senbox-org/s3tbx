@@ -254,7 +254,7 @@
             </dependency>
             <dependency>
                 <groupId>org.esa.snap</groupId>
-                <artifactId>test-utils</artifactId>
+                <artifactId>snap-test-utils</artifactId>
                 <version>${snap.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
@@ -449,9 +449,9 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
+                    <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>4.1</version>
+                    <version>4.4</version>
                     <extensions>true</extensions>
                     <dependencies>
                         <dependency>

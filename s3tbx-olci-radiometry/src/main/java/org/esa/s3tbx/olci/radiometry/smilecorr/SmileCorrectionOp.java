@@ -55,7 +55,7 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
         description = "Performs radiometric corrections on OLCI L1b data products.",
         authors = " Marco Peters, Muhammad Bala (Brockmann Consult)",
         copyright = "(c) 2015 by Brockmann Consult",
-        category = "Optical/Pre-Processing",
+        category = "Optical/Preprocessing",
         version = "1.2.2")
 public class SmileCorrectionOp extends Operator {
 

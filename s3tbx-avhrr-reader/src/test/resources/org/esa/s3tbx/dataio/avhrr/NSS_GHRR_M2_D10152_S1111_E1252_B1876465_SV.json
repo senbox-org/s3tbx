@@ -161,6 +161,8 @@
             {
                 "name": "radiance_1",
                 "description": "Spectral radiance for channel 1",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "mW / (m^2 sr nm)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -182,6 +184,8 @@
             {
                 "name": "radiance_2",
                 "description": "Spectral radiance for channel 2",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "mW / (m^2 sr nm)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -203,6 +207,8 @@
             {
                 "name": "radiance_3a",
                 "description": "Spectral radiance for channel 3a",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "mW / (m^2 sr nm)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -223,8 +229,10 @@
             },
             {
                 "name": "radiance_3b",
-                "description": "Zero-filled placeholder for radiance_3b, no data available",
-                "geophysicalUnit": "-",
+                "description": "Earth scene radiance for channel 3b",
+                "bandWidth": 401,
+                "bandHeight": 12041,
+                "geophysicalUnit": "mW / (m^2 sr cm^-1)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
                 "spectralWavelength": "3740.0",
@@ -233,18 +241,20 @@
                     {
                         "x": 93,
                         "y": 5990,
-                        "value": "NaN"
+                        "value": 0.023218982
                     },
                     {
                         "x": 128,
                         "y": 8700,
-                        "value": "NaN"
+                        "value": 0.49385595
                     }
                 ]
             },
             {
                 "name": "radiance_4",
                 "description": "Earth scene radiance for channel 4",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "mW / (m^2 sr cm^-1)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -266,6 +276,8 @@
             {
                 "name": "radiance_5",
                 "description": "Earth scene radiance for channel 5",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "mW / (m^2 sr cm^-1)",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -287,6 +299,8 @@
             {
                 "name": "reflec_1",
                 "description": "Reflectance factor for channel 1",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "%",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -308,6 +322,8 @@
             {
                 "name": "reflec_2",
                 "description": "Reflectance factor for channel 2",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "%",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -329,6 +345,8 @@
             {
                 "name": "reflec_3a",
                 "description": "Reflectance factor for channel 3a",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "%",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -349,8 +367,10 @@
             },
             {
                 "name": "temp_3b",
-                "description": "Zero-filled placeholder for temp_3b, no data available",
-                "geophysicalUnit": "-",
+                "description": "Blackbody temperature for channel 3b",
+                "bandWidth": 401,
+                "bandHeight": 12041,
+                "geophysicalUnit": "K",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
                 "spectralWavelength": "3740.0",
@@ -359,7 +379,7 @@
                     {
                         "x": 5,
                         "y": 5112,
-                        "value": "NaN"
+                        "value": 219.26266
                     },
                     {
                         "x": 28,
@@ -371,6 +391,8 @@
             {
                 "name": "temp_4",
                 "description": "Blackbody temperature for channel 4",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "K",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -392,6 +414,8 @@
             {
                 "name": "temp_5",
                 "description": "Blackbody temperature for channel 5",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "geophysicalUnit": "K",
                 "noDataValue": "0.0",
                 "noDataValueUsed": "true",
@@ -412,6 +436,8 @@
             },
             {
                 "name": "flags",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "noDataValue": "0.0",
                 "noDataValueUsed": "false",
                 "spectralWavelength": "0.0",
@@ -431,6 +457,8 @@
             },
             {
                 "name": "cloudFlag",
+                "bandWidth": 401,
+                "bandHeight": 12041,
                 "noDataValue": "0.0",
                 "noDataValueUsed": "false",
                 "spectralWavelength": "0.0",
@@ -515,6 +543,38 @@
             {
                 "path": "HeaderRecord/NAVIGATION/RIGHT_ASCENSION_OF_THE_ASCENDING_NODE",
                 "value": "211.18958"
+            },
+            {
+                "path": "HeaderRecord/DATA_SET_QUALITY_INDICATORS/RECORD_NUMBER_OF_STATUS_CHANGE",
+                "value": "3"
+            },
+            {
+                "path": "HeaderRecord/RADIANCE_CONVERSION/CHANNEL_3B_CONSTANT_2",
+                "value": "1.0034349999999999"
+            },
+            {
+                "path": "HeaderRecord/FILE_IDENTIFICATION/DATA_SET_NAME",
+                "value": "NSS.GHRR.M2.D10152.S1111.E1252.B1876465.SV"
+            },
+            {
+                "path": "HeaderRecord/DATA_SET_QUALITY_INDICATORS/SOCC_CLOCK_UPDATE_INDICATOR",
+                "value": "0"
+            },
+            {
+                "path": "HeaderRecord/DATA_SET_QUALITY_INDICATORS/COUNT_OF_MISSING_SCAN_LINES",
+                "value": "0"
+            },
+            {
+                "path": "HeaderRecord/NAVIGATION/ARGUMENT_OF_PERIGEE",
+                "value": "67.47856"
+            },
+            {
+                "path": "HeaderRecord/DATA_SET_QUALITY_INDICATORS/TIME_SEQUENCE_ERROR",
+                "value": "0"
+            },
+            {
+                "path": "HeaderRecord/NAVIGATION/VELOCITY_VECTOR_Y_DOT_COMPONENT",
+                "value": "0.95812019"
             }
         ]
     }

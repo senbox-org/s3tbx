@@ -7,6 +7,7 @@
 package org.esa.s3tbx.meris.l2auxdata;
 
 import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.util.SystemUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -94,7 +95,7 @@ public class AuxDatabase {
      * @return the logger
      */
     public static Logger getLogger() {
-        return Logger.getLogger(AuxDatabase.class.getName());
+        return SystemUtils.LOG;
     }
 
     /////////////////////////////////////////////////////////////////////////
