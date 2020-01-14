@@ -30,7 +30,8 @@
     <name>Sentinel-3 OLCI/SLSTR Product Reader</name>
 
     <description>
-        This module enables the Sentinel Toolbox to read the following Sentinel-3 data products: OLCI L1b and L2, SLSTR L1b and L2, Synergy L2 and
+        This module enables the Sentinel Toolbox to read the following Sentinel-3 data products: OLCI L1b and L2, SLSTR
+        L1b and L2, Synergy L2 and
         VGT.
     </description>
 
@@ -72,6 +73,13 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>org.esa.s3tbx.dataio.s3.slstr</publicPackage>
+                        <publicPackage>org.esa.s3tbx.dataio.s3.meris</publicPackage>
+                        <publicPackage>org.esa.s3tbx.dataio.s3.olci</publicPackage>
+                    </publicPackages>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
