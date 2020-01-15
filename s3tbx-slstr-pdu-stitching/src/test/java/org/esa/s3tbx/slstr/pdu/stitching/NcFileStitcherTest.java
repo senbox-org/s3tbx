@@ -31,8 +31,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
+import static org.esa.snap.core.util.Debug.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
 
