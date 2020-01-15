@@ -589,8 +589,18 @@ public class S3NetcdfReader extends AbstractProductReader {
                 productData = ProductData.createInstance((byte[]) attributeValues.copyTo1DJavaArray());
                 break;
             }
+            case ProductData.TYPE_UINT8: {
+                Object array = convertShortToByteArray(attributeValues.copyTo1DJavaArray());
+                productData = ProductData.createUnsignedInstance((byte[]) array);
+                break;
+            }
             case ProductData.TYPE_INT16: {
                 productData = ProductData.createInstance((short[]) attributeValues.copyTo1DJavaArray());
+                break;
+            }
+            case ProductData.TYPE_UINT16: {
+                Object array = convertIntToShortArray(attributeValues.copyTo1DJavaArray());
+                productData = ProductData.createUnsignedInstance((short[]) array);
                 break;
             }
             case ProductData.TYPE_INT32: {
@@ -619,6 +629,30 @@ public class S3NetcdfReader extends AbstractProductReader {
             }
         }
         return productData;
+    }
+
+    private Object convertShortToByteArray(Object array) {
+        if (array instanceof short[]) {
+            short[] shortArray = (short[]) array;
+            byte[] newArray = new byte[shortArray.length];
+            for (int i = 0; i < shortArray.length; i++) {
+                newArray[i] = (byte) shortArray[i];
+            }
+            array = newArray;
+        }
+        return array;
+    }
+
+    private Object convertIntToShortArray(Object array) {
+        if (array instanceof int[]) {
+            int[] intArray = (int[]) array;
+            short[] newArray = new short[intArray.length];
+            for (int i = 0; i < intArray.length; i++) {
+                newArray[i] = (short) intArray[i];
+            }
+            array = newArray;
+        }
+        return array;
     }
 
     private Object convertLongToIntArray(Object array) {
