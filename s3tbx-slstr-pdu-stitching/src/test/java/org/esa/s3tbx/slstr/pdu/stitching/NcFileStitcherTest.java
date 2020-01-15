@@ -29,7 +29,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
@@ -375,14 +377,15 @@ public class NcFileStitcherTest {
         assertNotNull(netcdfFile);
         final List<Dimension> dimensions = netcdfFile.getDimensions();
         assertEquals(4, dimensions.size());
-        assertEquals("rows", dimensions.get(0).getFullName());
-        assertEquals(10, dimensions.get(0).getLength());
-        assertEquals("columns", dimensions.get(1).getFullName());
-        assertEquals(20, dimensions.get(1).getLength());
-        assertEquals("the_twilight_zone", dimensions.get(2).getFullName());
-        assertEquals(12, dimensions.get(2).getLength());
-        assertEquals("outer_limits", dimensions.get(3).getFullName());
-        assertEquals(25, dimensions.get(3).getLength());
+        Map<String, Integer> expectedDimensions = new HashMap<>();
+        expectedDimensions.put("rows", 10);
+        expectedDimensions.put("columns", 20);
+        expectedDimensions.put("the_twilight_zone", 12);
+        expectedDimensions.put("outer_limits", 25);
+        for (Dimension dimension : dimensions) {
+            assertTrue(expectedDimensions.containsKey(dimension.getFullName()));
+            assertEquals(expectedDimensions.get(dimension.getFullName()).intValue(), dimension.getLength());
+        }
     }
 
     @Test
