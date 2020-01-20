@@ -7,9 +7,12 @@ import org.geotools.graph.util.geom.Coordinate2D;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +24,9 @@ public class LandsatLevel2MetadataTest {
     private LandsatLevel2Metadata metadata;
     @Before
     public void setUp() throws Exception {
-        String pathString = getClass().getResource("LC08_L1TP_024036_20181011_20181011_01_RT.xml").getFile();
+        URL url = getClass().getResource("LC08_L1TP_024036_20181011_20181011_01_RT.xml");
+        URI uri = new URI(url.toString());
+        String pathString = uri.getPath();
         //create metadata
         XmlMetadataParserFactory.registerParser(LandsatLevel2Metadata.class, new XmlMetadataParser<>(LandsatLevel2Metadata.class));
 
