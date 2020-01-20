@@ -13,6 +13,7 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGeoCoding;
 import org.esa.snap.runtime.Config;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -101,10 +102,12 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         }
     }
 
-    private void setPixelGeoCoding(Product targetProduct) {
+    private void setPixelGeoCoding(Product targetProduct) throws IOException {
         final Band latBand = targetProduct.getBand("latitude");
         final Band lonBand = targetProduct.getBand("longitude");
         if (latBand != null && lonBand != null) {
+            final double[] longitudes = loadDataScaled(lonBand);
+            final double[] latitudes = loadDataScaled(latBand);
             targetProduct.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
         }
     }
@@ -182,6 +185,13 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         return reader.readProductNodes(file, null);
     }
 
-
+    // @todo 2 tb/tb duplicated code segment - ENVISAT reader. 2020-01-20
+    private double[] loadDataScaled(RasterDataNode dataNode) throws IOException {
+        dataNode.loadRasterData();
+        final Dimension rasterSize = dataNode.getRasterSize();
+        final double[] values = new double[rasterSize.width * rasterSize.height];
+        dataNode.readPixels(0, 0, rasterSize.width, rasterSize.height, values);
+        return values;
+    }
 
 }
