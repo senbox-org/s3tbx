@@ -24,7 +24,10 @@ import org.esa.snap.test.LongTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +49,14 @@ public class SmacOperatorTest {
 
     private static final URL PRODUCT_URL_MERIS = SmacOperatorTest.class.getResource("MER_RR__1PQBCM20030407_100459_000007352015_00194_05759_0002_subset.nc");
     private static final URL PRODUCT_URL_AATSR = SmacOperatorTest.class.getResource("ATS_TOA_1CNPDK20030504_111259_000000572016_00080_06146_0157.nc");
-    private static final String PRODUCT_PATH_MERIS = PRODUCT_URL_MERIS.getPath();
-    private static final String PRODUCT_PATH_AATSR = PRODUCT_URL_AATSR.getPath();
+
+    private static String getProductPathMeris() throws URISyntaxException {
+        return new URI(PRODUCT_URL_MERIS.toString()).getPath();
+    }
+
+    private static String getProductPathAatsr() throws URISyntaxException {
+        return new URI(PRODUCT_URL_AATSR.toString()).getPath();
+    }
 
     @Test
     public void testConvertAndRevert() {
@@ -68,8 +77,8 @@ public class SmacOperatorTest {
     }
 
     @Test
-    public void testOutputSignature_MERIS() throws IOException {
-        final Product product = ProductIO.readProduct(PRODUCT_PATH_MERIS);
+    public void testOutputSignature_MERIS() throws IOException, URISyntaxException {
+        final Product product = ProductIO.readProduct(getProductPathMeris());
 
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -109,8 +118,8 @@ public class SmacOperatorTest {
 
     }
     @Test
-    public void testOutputSignature_AATSR() throws IOException {
-        final Product product = ProductIO.readProduct(PRODUCT_PATH_AATSR);
+    public void testOutputSignature_AATSR() throws IOException, URISyntaxException {
+        final Product product = ProductIO.readProduct(getProductPathAatsr());
 
         try {
             HashMap<String, Object> params = new HashMap<>();
@@ -160,7 +169,7 @@ public class SmacOperatorTest {
     }
 
     @Test
-    public void testOperatorOnSampleProduct_useMerisADS_true() throws IOException {
+    public void testOperatorOnSampleProduct_useMerisADS_true() throws IOException, URISyntaxException {
         final boolean useMerisADS_ECMWF = true;
 
         HashMap<String, Object> params = new HashMap<>();
@@ -171,7 +180,7 @@ public class SmacOperatorTest {
         params.put("useMerisADS", String.valueOf(useMerisADS_ECMWF));    // if set to false it always works
         params.put("bandNames", new String[]{"radiance_5", "radiance_8", "radiance_9"});
 
-        final Product product = ProductIO.readProduct(PRODUCT_PATH_MERIS);
+        final Product product = ProductIO.readProduct(getProductPathMeris());
 
         Product run1 = GPF.createProduct("SmacOP", params, product);
         Product run2 = GPF.createProduct("SmacOP", params, product);
@@ -200,7 +209,7 @@ public class SmacOperatorTest {
     }
 
     @Test
-    public void testOperatorOnSampleProduct_useMerisADS_false() throws IOException {
+    public void testOperatorOnSampleProduct_useMerisADS_false() throws IOException, URISyntaxException {
         final boolean useMerisADS_ECMWF = false;
 
         HashMap<String, Object> params = new HashMap<>();
@@ -211,7 +220,7 @@ public class SmacOperatorTest {
         params.put("useMerisADS", String.valueOf(useMerisADS_ECMWF));    // if set to false it always works
         params.put("bandNames", new String[]{"radiance_5", "radiance_8", "radiance_9"});
 
-        final Product product = ProductIO.readProduct(PRODUCT_PATH_MERIS);
+        final Product product = ProductIO.readProduct(getProductPathMeris());
 
         Product run1 = GPF.createProduct("SmacOP", params, product);
         Product run2 = GPF.createProduct("SmacOP", params, product);
@@ -241,7 +250,7 @@ public class SmacOperatorTest {
 
 
     @Test
-    public void testOperatorOnSampleProduct_OperatorDirect_useMerisADS_true() throws IOException {
+    public void testOperatorOnSampleProduct_OperatorDirect_useMerisADS_true() throws IOException, URISyntaxException {
         final boolean useMerisADS_ECMWF = true;
 
         HashMap<String, Object> params = new HashMap<>();
@@ -252,7 +261,7 @@ public class SmacOperatorTest {
         params.put("useMerisADS", String.valueOf(useMerisADS_ECMWF));    // if set to false it always works
         params.put("bandNames", new String[]{"radiance_5", "radiance_8", "radiance_9"});
 
-        final Product product = ProductIO.readProduct(PRODUCT_PATH_MERIS);
+        final Product product = ProductIO.readProduct(getProductPathMeris());
 
         final SmacOperator smacOperator = createOp(params, product);
         Product run1 = smacOperator.getTargetProduct();
@@ -284,7 +293,7 @@ public class SmacOperatorTest {
     }
 
     @Test
-    public void testOperatorOnSampleProduct_OperatorDirect_useMerisADS_false() throws IOException {
+    public void testOperatorOnSampleProduct_OperatorDirect_useMerisADS_false() throws IOException, URISyntaxException {
         final boolean useMerisADS_ECMWF = false;
 
         HashMap<String, Object> params = new HashMap<>();
@@ -295,7 +304,7 @@ public class SmacOperatorTest {
         params.put("useMerisADS", String.valueOf(useMerisADS_ECMWF));    // if set to false it always works
         params.put("bandNames", new String[]{"radiance_5", "radiance_8", "radiance_9"});
 
-        final Product product = ProductIO.readProduct(PRODUCT_PATH_MERIS);
+        final Product product = ProductIO.readProduct(getProductPathMeris());
 
         final SmacOperator smacOperator = createOp(params, product);
         Product run1 = smacOperator.getTargetProduct();
