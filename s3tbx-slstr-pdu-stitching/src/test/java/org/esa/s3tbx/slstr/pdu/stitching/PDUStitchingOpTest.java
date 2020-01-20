@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +55,7 @@ public class PDUStitchingOpTest {
     }
 
     @Test
-    public void testOperator() {
+    public void testOperator() throws URISyntaxException {
         Map<String, Object> parameterMap = new HashMap<>();
         parameterMap.put("targetDir", targetDirectory);
         Map<String, Product> sourceProductMap = new HashMap<>();
@@ -73,12 +75,14 @@ public class PDUStitchingOpTest {
     }
 
     @Test
-    public void testOperator_wildcards() {
+    public void testOperator_wildcards() throws URISyntaxException {
         Map<String, Object> parameterMap = new HashMap<>();
         Map<String, Product> sourceProductMap = new HashMap<>();
         parameterMap.put("targetDir", targetDirectory);
         String[] productPaths = new String[1];
-        productPaths[0] = PDUStitchingOpTest.class.getResource("").getFile() + "S*/xfdumanifest.xml" ;
+        final URL resource = PDUStitchingOpTest.class.getResource("");
+        URI uri = new URI(resource.toString());
+        productPaths[0] = uri.getPath() + "S*/xfdumanifest.xml" ;
         parameterMap.put("sourceProductPaths", productPaths);
 
         assertEquals(0, targetDirectory.list().length);
@@ -112,10 +116,10 @@ public class PDUStitchingOpTest {
         assertTrue(spi.getOperatorClass().isAssignableFrom(PDUStitchingOp.class));
     }
 
-    private static File getResource(String fileName) {
+    private static File getResource(String fileName) throws URISyntaxException {
         final String fullFileName = fileName + "/xfdumanifest.xml";
         final URL resource = PDUStitchingOpTest.class.getResource(fullFileName);
-        return new File(resource.getFile());
+        URI uri = new URI(resource.toString());
+        return new File(uri.getPath());
     }
-
 }

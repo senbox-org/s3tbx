@@ -16,7 +16,7 @@ import static junit.framework.TestCase.assertNotNull;
  * @author Tonio Fincke
  */
 public class S3NetcdfReaderTest {
-    
+
     private S3NetcdfReader reader;
 
     @Before
