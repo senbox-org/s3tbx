@@ -20,4 +20,10 @@ public class OlciProductFactoryTest {
         assertEquals("g.m-3", m.group(1));
     }
 
+    @Test
+    public void testGetResolutionInKm() {
+        assertEquals(0.3, OlciProductFactory.getResolutionInKm("OL_1_EFR"), 1e-8);
+        assertEquals(1.2, OlciProductFactory.getResolutionInKm("OL_1_ERR"), 1e-8);
+    }
+
 }
