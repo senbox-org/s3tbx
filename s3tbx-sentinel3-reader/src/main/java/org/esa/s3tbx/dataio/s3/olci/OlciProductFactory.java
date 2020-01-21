@@ -5,15 +5,11 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReaderFactory;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.runtime.Config;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -106,9 +102,23 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final Band latBand = targetProduct.getBand("latitude");
         final Band lonBand = targetProduct.getBand("longitude");
         if (latBand != null && lonBand != null) {
-            final double[] longitudes = loadDataScaled(lonBand);
-            final double[] latitudes = loadDataScaled(latBand);
-            targetProduct.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
+            final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+            final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+
+            final double resolutionInKilometers = getResolutionInKm(targetProduct.getProductType());
+            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonBand.getRasterWidth(), lonBand.getRasterHeight(),
+                    targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), resolutionInKilometers,
+                    0.5, 0.5,
+                    1.0, 1.0);
+
+            // @todo 1 tb/tb read properties 2020-01-21
+            final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
+            final InverseCoding inverse = ComponentFactory.getInverse("INV_PIXEL_QUAD_TREE");
+
+            final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+            geoCoding.initialize();
+
+            targetProduct.setSceneGeoCoding(geoCoding);
         }
     }
 
@@ -117,14 +127,14 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
             if (targetProduct.getTiePointGrid("latitude") != null && targetProduct.getTiePointGrid(
                     "longitude") != null) {
                 targetProduct.setSceneGeoCoding(new TiePointGeoCoding(targetProduct.getTiePointGrid("latitude"),
-                                                                      targetProduct.getTiePointGrid("longitude")));
+                        targetProduct.getTiePointGrid("longitude")));
             }
         }
         if (targetProduct.getSceneGeoCoding() == null) {
             if (targetProduct.getTiePointGrid("TP_latitude") != null && targetProduct.getTiePointGrid(
                     "TP_longitude") != null) {
                 targetProduct.setSceneGeoCoding(new TiePointGeoCoding(targetProduct.getTiePointGrid("TP_latitude"),
-                                                                      targetProduct.getTiePointGrid("TP_longitude")));
+                        targetProduct.getTiePointGrid("TP_longitude")));
             }
         }
     }
@@ -185,13 +195,17 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         return reader.readProductNodes(file, null);
     }
 
-    // @todo 2 tb/tb duplicated code segment - ENVISAT reader. 2020-01-20
-    private double[] loadDataScaled(RasterDataNode dataNode) throws IOException {
-        dataNode.loadRasterData();
-        final Dimension rasterSize = dataNode.getRasterSize();
-        final double[] values = new double[rasterSize.width * rasterSize.height];
-        dataNode.readPixels(0, 0, rasterSize.width, rasterSize.height, values);
-        return values;
-    }
 
+    static double getResolutionInKm(String productType) {
+        switch (productType) {
+            case "OL_1_EFR":
+                return 0.3;
+
+            case "OL_1_ERR":
+                return 1.2;
+
+            default:
+                throw new IllegalArgumentException("unsupported product of type: " + productType);
+        }
+    }
 }
