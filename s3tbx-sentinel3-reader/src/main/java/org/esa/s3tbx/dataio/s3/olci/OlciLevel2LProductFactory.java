@@ -20,7 +20,6 @@ public class OlciLevel2LProductFactory extends OlciProductFactory {
     @Override
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         targetProduct.setAutoGrouping("IWV:OGVI:OTCI:RC681:RC865:atmospheric_temperature_profile:" +
-                                              "lambda0:FWHM:solar_flux");
+                "lambda0:FWHM:solar_flux");
     }
-
 }
