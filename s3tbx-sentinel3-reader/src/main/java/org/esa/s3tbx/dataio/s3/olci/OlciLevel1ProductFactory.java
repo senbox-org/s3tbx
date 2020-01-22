@@ -77,5 +77,4 @@ public class OlciLevel1ProductFactory extends OlciProductFactory {
             }
         }
     }
-
 }

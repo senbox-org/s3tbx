@@ -285,8 +285,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected void addDataNodes(Product masterProduct, Product targetProduct) throws IOException {
-        final int w = targetProduct.getSceneRasterWidth();
-        final int h = targetProduct.getSceneRasterHeight();
         for (final Product sourceProduct : openProductList) {
             final Map<String, String> mapping = new HashMap<>();
             for (final Band sourceBand : sourceProduct.getBands()) {
