@@ -36,6 +36,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -394,6 +395,14 @@ public abstract class AbstractProductFactory implements ProductFactory {
 
     protected abstract List<String> getFileNames(Manifest manifest);
 
+    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
+        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
+        final Raster tpData = mlImage.getImage(0).getData();
+        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
+        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
+        return tiePoints;
+    }
+
     private void setTimes(Product targetProduct) {
         final Product sourceProduct = findMasterProduct();
         targetProduct.setStartTime(sourceProduct.getStartTime());
@@ -448,5 +457,4 @@ public abstract class AbstractProductFactory implements ProductFactory {
             throw new IOException(msg, e);
         }
     }
-
 }
