@@ -220,9 +220,13 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
     static double getResolutionInKm(String productType) {
         switch (productType) {
             case "OL_1_EFR":
+            case "OL_2_LFR":
+            case "OL_2_WFR":
                 return 0.3;
 
             case "OL_1_ERR":
+            case "OL_2_LRR":
+            case "OL_2_WRR":
                 return 1.2;
 
             default:
