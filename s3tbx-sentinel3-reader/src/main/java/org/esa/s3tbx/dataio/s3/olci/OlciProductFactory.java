@@ -258,12 +258,4 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
 
         return codingNames;
     }
-
-    private double[] loadTiePointData(TiePointGrid tiePointGrid) {
-        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
-        final Raster tpData = mlImage.getImage(0).getData();
-        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
-        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
-        return tiePoints;
-    }
 }
