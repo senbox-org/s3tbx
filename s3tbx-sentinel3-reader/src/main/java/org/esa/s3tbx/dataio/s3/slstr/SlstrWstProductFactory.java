@@ -16,6 +16,8 @@ package org.esa.s3tbx.dataio.s3.slstr;
         */
 
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.BasicPixelGeoCoding;
 import org.esa.snap.core.datamodel.GeoCodingFactory;
@@ -27,6 +29,7 @@ import java.io.IOException;
 public class SlstrWstProductFactory extends SlstrSstProductFactory {
 
     private static final short[] RESOLUTIONS = new short[]{1000, 1000};
+    private static final double RESOLUTION_IN_KM = 1.0;
 
     public SlstrWstProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
@@ -34,31 +37,30 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
-        final String[] bandNames = targetProduct.getBandNames();
-        Band latBand = null;
-        Band lonBand = null;
-        boolean otherBandAlreadyFound = false;
-        for (String bandName : bandNames) {
-            if (bandName.endsWith("lat")) {
-                latBand = targetProduct.getBand(bandName);
-                if (otherBandAlreadyFound) {
-                    break;
-                } else {
-                    otherBandAlreadyFound = true;
-                }
-            } else if (bandName.endsWith("lon")) {
-                lonBand = targetProduct.getBand(bandName);
-                if (otherBandAlreadyFound) {
-                    break;
-                } else {
-                    otherBandAlreadyFound = true;
-                }
-            }
+        final Band lonBand = targetProduct.getBand("lon");
+        final Band latBand = targetProduct.getBand("lat");
+        if (lonBand == null || latBand == null) {
+            // no way to create a geocoding tb 2020-01-24
+            return;
         }
-        if (latBand != null && lonBand != null) {
-            final BasicPixelGeoCoding geoCoding = GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5);
-            targetProduct.setSceneGeoCoding(geoCoding);
-        }
+
+        final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+        final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonBand.getRasterWidth(), lonBand.getRasterHeight(),
+                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
+                0.5, 0.5,
+                1.0, 1.0);
+
+        // @todo 1 tb/tb parametrise this 2020-01-24
+        final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
+        final InverseCoding inverse = ComponentFactory.getInverse("INV_PIXEL_QUAD_TREE");
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
+
     }
 
     @Override
