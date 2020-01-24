@@ -131,7 +131,7 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         targetProduct.setSceneGeoCoding(geoCoding);
     }
 
-    private void setTiePointGeoCoding(Product targetProduct) throws IOException {
+    private void setTiePointGeoCoding(Product targetProduct) {
         TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude");
         TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude");
         if (latGrid == null || lonGrid == null) {
