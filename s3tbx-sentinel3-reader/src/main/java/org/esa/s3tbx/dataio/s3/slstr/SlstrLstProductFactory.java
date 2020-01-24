@@ -16,16 +16,19 @@ package org.esa.s3tbx.dataio.s3.slstr;/*
 
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.runtime.Config;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 public class SlstrLstProductFactory extends SlstrProductFactory {
+
+    private static final double RESOLUTION_IN_KM = 1.0;
+    private final static String SYSPROP_SLSTR_LST_PIXEL_TIE_POINT_FORWARD = "s3tbx.reader.slstr.lst.tiePointGeoCoding.forward";
 
     public SlstrLstProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
@@ -57,19 +60,62 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
-        final Band latBand = targetProduct.getBand("latitude_in");
         final Band lonBand = targetProduct.getBand("longitude_in");
-        if (latBand != null && lonBand != null) {
-            targetProduct.setSceneGeoCoding(
-                    GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, "!confidence_in_duplicate", 5));
-        }
-        if (targetProduct.getSceneGeoCoding() == null) {
-            if (targetProduct.getTiePointGrid("latitude_tx") != null && targetProduct.getTiePointGrid(
-                    "longitude_tx") != null) {
-                targetProduct.setSceneGeoCoding(new TiePointGeoCoding(targetProduct.getTiePointGrid("latitude_tx"),
-                                                                      targetProduct.getTiePointGrid("longitude_tx")));
+        final Band latBand = targetProduct.getBand("latitude_in");
+
+        if (lonBand != null && latBand != null) {
+            setPixelGeoCoding(targetProduct, lonBand, latBand);
+        } else {
+            final TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
+            final TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
+            if ( lonGrid == null || latGrid == null){
+                // no way to create a geo-coding tb 2020-01-22
+                return;
             }
+
+            setTiePointGeoCoding(targetProduct, lonGrid, latGrid);
         }
+    }
+
+    private void setPixelGeoCoding(Product targetProduct, Band lonBand, Band latBand) throws IOException {
+        final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+        final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes,
+                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(),
+                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
+                0.5, 0.5,
+                1.0, 1.0);
+
+        // @todo 1 tb/tb parametrise this 020-01-22
+        final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
+        final InverseCoding inverse = ComponentFactory.getInverse("INV_PIXEL_QUAD_TREE");
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
+    }
+
+    private void setTiePointGeoCoding(Product targetProduct, TiePointGrid lonGrid, TiePointGrid latGrid) {
+        final double[] longitudes = loadTiePointData(lonGrid);
+        final double[] latitudes = loadTiePointData(latGrid);
+
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
+                lonGrid.getOffsetX(), lonGrid.getOffsetY(),
+                lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_TIE_POINT_FORWARD, "FWD_TIE_POINT_BILINEAR");
+
+        final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+        final InverseCoding inverse = ComponentFactory.getInverse("INV_TIE_POINT");
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
     }
 
     @Override
