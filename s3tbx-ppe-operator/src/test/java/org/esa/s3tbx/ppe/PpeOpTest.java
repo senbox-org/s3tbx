@@ -12,7 +12,11 @@ import org.junit.Test;
 
 import java.awt.Rectangle;
 import java.awt.image.Raster;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,9 +29,9 @@ public class PpeOpTest {
     private static final String TESTFILENAME2 = "ppetest2.nc";
 
     @Test
-    public void testPpeOp() throws IOException {
+    public void testPpeOp() throws IOException, URISyntaxException {
         Operator ppeOp = new PpeOp();
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
+        String testFilePath = getTestFilePath(TESTFILENAME);
         Product sourceProduct = ProductIO.readProduct(testFilePath);
         ppeOp.setSourceProduct(sourceProduct);
         Product targetProduct = ppeOp.getTargetProduct();
@@ -66,8 +70,8 @@ public class PpeOpTest {
     }
 
     @Test
-    public void getPixelValueTest() throws IOException {
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
+    public void getPixelValueTest() throws IOException, URISyntaxException {
+        String testFilePath = getTestFilePath(TESTFILENAME);
         Product sourceProduct = ProductIO.readProduct(testFilePath);
         RasterDataNode rasterDataNode = sourceProduct.getRasterDataNode("Oa11_radiance");
         Rectangle expectedRect = new Rectangle(0, 0, 20, 20);
@@ -93,8 +97,8 @@ public class PpeOpTest {
     }
 
     @Test
-    public void getPixelListTest() throws IOException {
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
+    public void getPixelListTest() throws IOException, URISyntaxException {
+        String testFilePath = getTestFilePath(TESTFILENAME);
         Product sourceProduct = ProductIO.readProduct(testFilePath);
 
 
@@ -117,9 +121,9 @@ public class PpeOpTest {
 
 
     @Test
-    public void testWithProduct() throws IOException {
+    public void testWithProduct() throws IOException, URISyntaxException {
         Operator ppeOp = new PpeOp();
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
+        String testFilePath = getTestFilePath(TESTFILENAME);
         Product product = ProductIO.readProduct(testFilePath);
         ProductData.UTC startTime = product.getStartTime();
         ProductData.UTC endTime = product.getEndTime();
@@ -155,9 +159,9 @@ public class PpeOpTest {
     }
 
     @Test
-    public void testWithProduct2() throws IOException {
+    public void testWithProduct2() throws IOException, URISyntaxException {
         Operator ppeOp = new PpeOp();
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME2).getFile();
+        String testFilePath = getTestFilePath(TESTFILENAME2);
         Product product = ProductIO.readProduct(testFilePath);
         ppeOp.setSourceProduct(product);
         ppeOp.setParameterDefaultValues();
@@ -178,5 +182,11 @@ public class PpeOpTest {
         assertEquals(2096128, result.getBand("ppe_flags").getPixelDouble(25, 0), 1e-5);
         assertEquals(0, result.getBand("ppe_flags").getPixelDouble(34, 22), 1e-5);
 
+    }
+
+    private String getTestFilePath(String name) throws URISyntaxException {
+        URL url = getClass().getResource(name);
+        URI uri = new URI(url.toString());
+        return uri.getPath();
     }
 }

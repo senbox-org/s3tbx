@@ -10,11 +10,11 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -78,20 +78,7 @@ public class SlstrPduStitcherTest {
     }
 
     @Test
-    public void testStitchPDUs_AllSlstrL1BProductFiles() throws IOException, PDUStitchingException, TransformerException, ParserConfigurationException {
-        final File[] slstrFiles = TestUtils.getSlstrFiles();
-        final File stitchedProductFile = SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, slstrFiles, ProgressMonitor.NULL);
-
-        final File stitchedProductFileParentDirectory = stitchedProductFile.getParentFile();
-        assert(new File(stitchedProductFileParentDirectory, "xfdumanifest.xml").exists());
-        assert(new File(stitchedProductFileParentDirectory, "F1_BT_io.nc").exists());
-        assert(new File(stitchedProductFileParentDirectory, "met_tx.nc").exists());
-        assert(new File(stitchedProductFileParentDirectory, "viscal.nc").exists());
-        assertEquals(targetDirectory, stitchedProductFileParentDirectory.getParentFile());
-    }
-
-    @Test
-    public void testDecomposeSlstrName() {
+    public void testDecomposeSlstrName() throws URISyntaxException {
         final SlstrPduStitcher.SlstrNameDecomposition firstSlstrNameDecomposition =
                 SlstrPduStitcher.decomposeSlstrName(TestUtils.getFirstSlstrFile().getParentFile().getName());
 
@@ -110,7 +97,7 @@ public class SlstrPduStitcherTest {
     }
 
     @Test
-    public void testCreateParentDirectoryNameOfStitchedFile() {
+    public void testCreateParentDirectoryNameOfStitchedFile() throws URISyntaxException {
         SlstrPduStitcher.SlstrNameDecomposition[] decompositions = new SlstrPduStitcher.SlstrNameDecomposition[3];
         decompositions[0] = SlstrPduStitcher.decomposeSlstrName(TestUtils.getFirstSlstrFile().getParentFile().getName());
         decompositions[1] = SlstrPduStitcher.decomposeSlstrName(TestUtils.getSecondSlstrFile().getParentFile().getName());
@@ -125,7 +112,7 @@ public class SlstrPduStitcherTest {
     }
 
     @Test
-    public void testCollectFiles() throws IOException {
+    public void testCollectFiles() throws IOException, URISyntaxException {
         List<String> ncFiles = new ArrayList<>();
         final File[] slstrFiles = TestUtils.getSlstrFiles();
         for (File slstrFile : slstrFiles) {
