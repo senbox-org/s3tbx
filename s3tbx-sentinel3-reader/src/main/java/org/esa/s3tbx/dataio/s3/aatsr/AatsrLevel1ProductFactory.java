@@ -104,6 +104,7 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) {
+        // @todo 1 tb/tb replace this with the new implementation 2020-01-27
         TiePointGrid latGrid = null;
         TiePointGrid lonGrid = null;
         for (final TiePointGrid grid : targetProduct.getTiePointGrids()) {
