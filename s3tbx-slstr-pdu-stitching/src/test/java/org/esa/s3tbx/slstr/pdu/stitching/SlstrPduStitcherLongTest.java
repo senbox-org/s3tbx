@@ -12,6 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -42,7 +43,7 @@ public class SlstrPduStitcherLongTest {
     }
 
     @Test
-    public void testStitchPDUs_AllSlstrL1BProductFiles() throws IOException, PDUStitchingException, TransformerException, ParserConfigurationException {
+    public void testStitchPDUs_AllSlstrL1BProductFiles() throws IOException, PDUStitchingException, TransformerException, ParserConfigurationException, URISyntaxException {
         final File[] slstrFiles = TestUtils.getSlstrFiles();
         final File stitchedProductFile = SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, slstrFiles, ProgressMonitor.NULL);
 
