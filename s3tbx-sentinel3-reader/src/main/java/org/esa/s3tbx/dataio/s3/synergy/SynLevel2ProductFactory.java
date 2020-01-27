@@ -22,16 +22,11 @@ import org.esa.s3tbx.dataio.s3.LonLatMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.*;
 import ucar.nc2.Variable;
 
 import java.awt.image.DataBuffer;
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -159,6 +154,7 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
+        // @todo 1 tb/tb replace this with the new implementation 2020-01-27
         final String latBandName = "lat";
         final String lonBandName = "lon";
         final Band latBand = targetProduct.getBand(latBandName);
@@ -183,4 +179,11 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
         return reader.readProductNodes(file, null);
     }
 
+    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
+        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
+        final Raster tpData = mlImage.getImage(0).getData();
+        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
+        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
+        return tiePoints;
+    }
 }

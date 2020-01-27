@@ -570,6 +570,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     }
 
     private GeoCoding getBandGeoCoding(Product product, String end) {
+        // @todo 1 tb/tb replace this with the new implementation 2020-01-27
         if (geoCodingMap.containsKey(end)) {
             return geoCodingMap.get(end);
         } else {

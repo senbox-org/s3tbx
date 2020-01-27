@@ -18,17 +18,14 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.SourceImageScaler;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import java.awt.RenderingHints;
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -94,4 +91,11 @@ public class VgtProductFactory extends AbstractProductFactory {
         return new VgtReader().readProductNodes(file, null);
     }
 
+    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
+        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
+        final Raster tpData = mlImage.getImage(0).getData();
+        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
+        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
+        return tiePoints;
+    }
 }

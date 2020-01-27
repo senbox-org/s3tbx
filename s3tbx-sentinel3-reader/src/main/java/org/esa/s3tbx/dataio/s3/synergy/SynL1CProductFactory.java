@@ -5,18 +5,11 @@ import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.BasicPixelGeoCoding;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
-import org.esa.snap.core.datamodel.IndexCoding;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.ProductNodeGroup;
-import org.esa.snap.core.datamodel.SceneTransformProvider;
-import org.esa.snap.core.datamodel.VirtualBand;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.transform.MathTransform2D;
 import org.esa.snap.core.util.ProductUtils;
 
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -175,6 +168,7 @@ public class SynL1CProductFactory extends AbstractProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
+        // @todo 1 tb/tb replace this with the new implementation 2020-01-27
         final ProductNodeGroup<Band> bandGroup = targetProduct.getBandGroup();
         if (bandGroup.contains("GEOLOCATION_REF_latitude") && bandGroup.contains("GEOLOCATION_REF_longitude")) {
             final BasicPixelGeoCoding pixelGeoCoding =
@@ -201,5 +195,13 @@ public class SynL1CProductFactory extends AbstractProductFactory {
     @Override
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         targetProduct.setAutoGrouping("Meas:error_estimates:exception:MISREGIST_OLC:MISREGIST_SLST:GEOLOCATION_REF");
+    }
+
+    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
+        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
+        final Raster tpData = mlImage.getImage(0).getData();
+        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
+        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
+        return tiePoints;
     }
 }

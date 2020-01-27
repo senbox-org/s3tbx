@@ -5,26 +5,25 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelModel;
 import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.BasicPixelGeoCoding;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
-import org.esa.snap.core.datamodel.Mask;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductNodeGroup;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.runtime.Config;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 public class SlstrFrpProductFactory extends SlstrProductFactory {
+
+    private static final double RESOLUTION_IN_KM = 1.0;
+    private final static String SYSPROP_SLSTR_FRP_PIXEL_CODING_INVERSE = "s3tbx.reader.slstr.frp.pixelGeoCoding.inverse";
+    private final static String SYSPROP_SLSTR_FRP_TIE_POINT_CODING_FORWARD = "s3tbx.reader.slstr.frp.tiePointGeoCoding.forward";
 
     private Map<String, GeoCoding> geoCodingMap;
     private final Map<String, Double> gridIndexToTrackOffset;
@@ -93,7 +92,7 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
     }
 
     @Override
-    protected void setBandGeoCodings(Product targetProduct) {
+    protected void setBandGeoCodings(Product targetProduct) throws IOException {
         final Band[] bands = targetProduct.getBands();
         for (Band band : bands) {
             final GeoCoding bandGeoCoding = getBandGeoCoding(targetProduct, getGridIndex(band.getName()));
@@ -154,15 +153,33 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) {
-        if (targetProduct.containsTiePointGrid(LATITUDE_TPG_NAME) && targetProduct.containsTiePointGrid(LONGITUDE_TPG_NAME)) {
-            TiePointGrid latitudeTiePointGrid = targetProduct.getTiePointGrid(LATITUDE_TPG_NAME);
-            TiePointGrid longitudeTiePointGrid = targetProduct.getTiePointGrid(LONGITUDE_TPG_NAME);
-            TiePointGeoCoding tiePointGeoCoding = new TiePointGeoCoding(latitudeTiePointGrid, longitudeTiePointGrid);
-            targetProduct.setSceneGeoCoding(tiePointGeoCoding);
+        final TiePointGrid latGrid = targetProduct.getTiePointGrid(LATITUDE_TPG_NAME);
+        final TiePointGrid lonGrid = targetProduct.getTiePointGrid(LONGITUDE_TPG_NAME);
+
+        if (latGrid == null || lonGrid == null) {
+            return;
         }
+
+        final double[] longitudes = loadTiePointData(lonGrid);
+        final double[] latitudes = loadTiePointData(latGrid);
+
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
+                lonGrid.getOffsetX(), lonGrid.getOffsetY(),
+                lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        final String forwardKey = preferences.get(SYSPROP_SLSTR_FRP_TIE_POINT_CODING_FORWARD, "FWD_TIE_POINT_BILINEAR");
+        final ForwardCoding forward = ComponentFactory.getForward(forwardKey);
+        final InverseCoding inverse = ComponentFactory.getInverse("INV_TIE_POINT");
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
     }
 
-    private GeoCoding getBandGeoCoding(Product product, String end) {
+    private GeoCoding getBandGeoCoding(Product product, String end) throws IOException {
         if (geoCodingMap.containsKey(end)) {
             return geoCodingMap.get(end);
         } else {
@@ -179,7 +196,23 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
                     break;
             }
             if (latBand != null && lonBand != null) {
-                final BasicPixelGeoCoding geoCoding = GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, "", 5);
+                final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+                final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+
+                final int sceneRasterWidth = product.getSceneRasterWidth();
+                final int sceneRasterHeight = product.getSceneRasterHeight();
+                final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, sceneRasterWidth, sceneRasterHeight,
+                        sceneRasterWidth, sceneRasterHeight, RESOLUTION_IN_KM,
+                        0.5, 0.5,
+                        1.0, 1.0);
+
+                final Preferences preferences = Config.instance("s3tbx").preferences();
+                final String inverseKey = preferences.get(SYSPROP_SLSTR_FRP_PIXEL_CODING_INVERSE, "INV_PIXEL_QUAD_TREE");
+                final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
+                final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+
+                final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+                geoCoding.initialize();
                 geoCodingMap.put(end, geoCoding);
                 return geoCoding;
             }

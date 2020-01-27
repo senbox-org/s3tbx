@@ -23,7 +23,6 @@ import org.esa.snap.core.dataio.geocoding.*;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.SourceImageScaler;
@@ -34,6 +33,7 @@ import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import java.awt.RenderingHints;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
@@ -230,5 +230,13 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         final S3NetcdfReader slstrNetcdfReader = SlstrNetcdfReaderFactory.createSlstrNetcdfReader(file, manifest);
         addSeparatingDimensions(slstrNetcdfReader.getSuffixesForSeparatingDimensions());
         return slstrNetcdfReader.readProductNodes(file, null);
+    }
+
+    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
+        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
+        final Raster tpData = mlImage.getImage(0).getData();
+        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
+        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
+        return tiePoints;
     }
 }

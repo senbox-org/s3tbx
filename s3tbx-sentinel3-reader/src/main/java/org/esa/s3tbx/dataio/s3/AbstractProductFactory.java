@@ -395,14 +395,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
 
     protected abstract List<String> getFileNames(Manifest manifest);
 
-    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
-        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
-        final Raster tpData = mlImage.getImage(0).getData();
-        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
-        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
-        return tiePoints;
-    }
-
     private void setTimes(Product targetProduct) {
         final Product sourceProduct = findMasterProduct();
         targetProduct.setStartTime(sourceProduct.getStartTime());
