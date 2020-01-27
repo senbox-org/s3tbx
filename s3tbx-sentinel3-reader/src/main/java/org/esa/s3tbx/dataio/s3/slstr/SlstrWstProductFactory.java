@@ -23,13 +23,16 @@ import org.esa.snap.core.datamodel.BasicPixelGeoCoding;
 import org.esa.snap.core.datamodel.GeoCodingFactory;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.runtime.Config;
 
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 public class SlstrWstProductFactory extends SlstrSstProductFactory {
 
     private static final short[] RESOLUTIONS = new short[]{1000, 1000};
     private static final double RESOLUTION_IN_KM = 1.0;
+    private final static String SYSPROP_SLSTR_WST_PIXEL_INVERSE = "s3tbx.reader.slstr.wst.pixelGeoCoding.inverse";
 
     public SlstrWstProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
@@ -52,15 +55,16 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
                 0.5, 0.5,
                 1.0, 1.0);
 
-        // @todo 1 tb/tb parametrise this 2020-01-24
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        final String invKey = preferences.get(SYSPROP_SLSTR_WST_PIXEL_INVERSE, "INV_PIXEL_QUAD_TREE");
+
         final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
-        final InverseCoding inverse = ComponentFactory.getInverse("INV_PIXEL_QUAD_TREE");
+        final InverseCoding inverse = ComponentFactory.getInverse(invKey);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();
 
         targetProduct.setSceneGeoCoding(geoCoding);
-
     }
 
     @Override
