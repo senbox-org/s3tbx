@@ -129,9 +129,9 @@ public class OlciProductFactoryTest {
 
     @Test
     public void testGetForwardAndInverseKeys_tiePointCoding_forwardKey() {
-        final String forwardKey = System.getProperty(SYSPROP_OLCI_PIXEL_TIE_POINT_FORWARD);
+        final String forwardKey = System.getProperty(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD);
         try {
-            System.setProperty(SYSPROP_OLCI_PIXEL_TIE_POINT_FORWARD, "YEAH!");
+            System.setProperty(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, "YEAH!");
 
             final String[] codingKeys = OlciProductFactory.getForwardAndInverseKeys_tiePointCoding();
             assertEquals("YEAH!", codingKeys[0]);
@@ -139,18 +139,18 @@ public class OlciProductFactoryTest {
 
         } finally {
             if (forwardKey != null) {
-                System.setProperty(SYSPROP_OLCI_PIXEL_TIE_POINT_FORWARD, forwardKey);
+                System.setProperty(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, forwardKey);
             } else {
-                System.clearProperty(SYSPROP_OLCI_PIXEL_TIE_POINT_FORWARD);
+                System.clearProperty(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD);
             }
         }
     }
 
     @Test
     public void testGetForwardAndInverseKeys_tiePointCoding_default() {
-        final String forwardKey = System.getProperty(SYSPROP_OLCI_PIXEL_TIE_POINT_FORWARD);
+        final String forwardKey = System.getProperty(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD);
         try {
-            System.clearProperty(SYSPROP_OLCI_PIXEL_TIE_POINT_FORWARD);
+            System.clearProperty(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD);
 
             final String[] codingKeys = OlciProductFactory.getForwardAndInverseKeys_tiePointCoding();
             assertEquals("FWD_TIE_POINT_BILINEAR", codingKeys[0]);
@@ -158,7 +158,7 @@ public class OlciProductFactoryTest {
 
         } finally {
             if (forwardKey != null) {
-                System.setProperty(SYSPROP_OLCI_PIXEL_TIE_POINT_FORWARD, forwardKey);
+                System.setProperty(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, forwardKey);
             }
         }
     }

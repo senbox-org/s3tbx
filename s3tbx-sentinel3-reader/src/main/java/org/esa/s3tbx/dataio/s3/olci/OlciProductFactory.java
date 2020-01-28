@@ -39,7 +39,7 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
     public final static String SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY = "s3tbx.reader.olci.fractionAccuracy";
     public final static String SYSPROP_OLCI_PIXEL_CODING_FORWARD = "s3tbx.reader.olci.pixelGeoCoding.forward";
     public final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
-    public final static String SYSPROP_OLCI_PIXEL_TIE_POINT_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
+    public final static String SYSPROP_OLCI_TIE_POINT_CODING_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
 
     public OlciProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
@@ -253,7 +253,7 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final String[] codingNames = new String[2];
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        codingNames[0] = preferences.get(SYSPROP_OLCI_PIXEL_TIE_POINT_FORWARD, "FWD_TIE_POINT_BILINEAR");
+        codingNames[0] = preferences.get(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, "FWD_TIE_POINT_BILINEAR");
         codingNames[1] = "INV_TIE_POINT";
 
         return codingNames;
