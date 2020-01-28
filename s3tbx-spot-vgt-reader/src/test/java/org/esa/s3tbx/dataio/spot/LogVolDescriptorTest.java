@@ -51,4 +51,26 @@ public class LogVolDescriptorTest {
             reader.close();
         }
     }
+
+    @Test
+    public void testItForCollection3() throws IOException, ParseException {
+        File dir = TestDataDir.get();
+        File file = new File(dir, "decode_qual_intended_collection3/V220050513179/V220050513179_LOG.TXT");
+        FileReader reader = new FileReader(file);
+        try {
+            LogVolDescriptor descriptor = new LogVolDescriptor(reader);
+            assertEquals("V2KRNP____20050513F179", descriptor.getProductId());
+            assertNotNull(descriptor.getGeoCoding());
+            assertEquals("13-MAY-2005 01:00:28.000000", ProductData.UTC.create(descriptor.getStartDate(), 0).toString());
+            assertEquals("13-MAY-2005 01:08:17.000000", ProductData.UTC.create(descriptor.getEndDate(), 0).toString());
+            Rectangle bounds = descriptor.getImageBounds();
+            assertNotNull(bounds);
+            assertEquals(0, bounds.x);
+            assertEquals(0, bounds.y);
+            assertEquals(3300, bounds.width);
+            assertEquals(3550, bounds.height);
+        } finally {
+            reader.close();
+        }
+    }
 }

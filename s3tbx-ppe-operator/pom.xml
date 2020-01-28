@@ -23,12 +23,12 @@
     <parent>
         <groupId>org.esa.s3tbx</groupId>
         <artifactId>s3tbx</artifactId>
-        <version>7.0.3-SNAPSHOT</version>
+        <version>7.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>s3tbx-ppe-operator</artifactId>
     <name>Sentinel-3 OLCI PPE Filtering</name>
-    <version>7.0.3-SNAPSHOT</version>
+    <version>7.0.4-SNAPSHOT</version>
     <packaging>nbm</packaging>
     <description>SNAP operator implementing an algorithm for detection and removal of Prompt Particle Events.
     </description>

@@ -2,11 +2,9 @@ package org.esa.s3tbx.slstr.pdu.stitching;
 
 import org.esa.snap.core.util.io.FileUtils;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
-import org.esa.snap.test.LongTestRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
@@ -34,7 +32,6 @@ import static org.junit.Assert.fail;
 /**
  * @author Tonio Fincke
  */
-@RunWith(LongTestRunner.class)
 public class NcFileStitcherLongTest {
 
     private File targetDirectory;

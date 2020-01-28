@@ -7,11 +7,9 @@ import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.util.ArrayUtils;
 import org.esa.snap.core.util.io.FileUtils;
-import org.esa.snap.test.LongTestRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.net.URI;
@@ -29,7 +27,6 @@ import static org.junit.Assert.fail;
 /**
  * @author Tonio Fincke
  */
-@RunWith(LongTestRunner.class)
 public class PDUStitchingOpTest {
 
     private static final String EXPECTED_STITCHED_FILE_NAME_PATTERN =

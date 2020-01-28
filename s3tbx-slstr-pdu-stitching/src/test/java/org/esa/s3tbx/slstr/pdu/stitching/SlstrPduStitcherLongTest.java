@@ -2,11 +2,9 @@ package org.esa.s3tbx.slstr.pdu.stitching;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.util.io.FileUtils;
-import org.esa.snap.test.LongTestRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -20,7 +18,6 @@ import static org.junit.Assert.fail;
 /**
  * @author Tonio Fincke
  */
-@RunWith(LongTestRunner.class)
 public class SlstrPduStitcherLongTest {
 
     private File targetDirectory;
