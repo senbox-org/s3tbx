@@ -18,6 +18,7 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -164,7 +165,7 @@ public class NcFileStitcherLongTest {
     }
 
     @Test
-    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException {
+    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException, URISyntaxException {
         final String ncFileName = "met_tx.nc";
         final ImageSize targetImageSize = new ImageSize("in", 21687, 64, 6000, 130);
         final ImageSize[] imageSizes = new ImageSize[3];

@@ -24,6 +24,8 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,7 +72,7 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testStitchViscal() throws IOException, PDUStitchingException {
+    public void testStitchViscal() throws IOException, PDUStitchingException, URISyntaxException {
         final String ncFileName = "viscal.nc";
         final ImageSize targetImageSize = new ImageSize("xx", 0, 0, 0, 0);
         final ImageSize[] imageSizes = new ImageSize[3];
@@ -98,7 +100,7 @@ public class NcFileStitcherTest {
 
     @Test
     @Ignore("takes a few seconds")
-    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException {
+    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException, URISyntaxException {
         final String ncFileName = "met_tx.nc";
         final ImageSize targetImageSize = new ImageSize("in", 21687, 64, 6000, 130);
         final ImageSize[] imageSizes = new ImageSize[3];
@@ -569,7 +571,7 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testDetermineSourceOffsets() throws IOException {
+    public void testDetermineSourceOffsets() throws IOException, URISyntaxException {
         final File f1_BT_io_file = getSecondNcFile("F1_BT_io.nc");
         final NetcdfFile f1_BT_io_netcdfFile = NetcdfFileOpener.open(f1_BT_io_file);
         assertNotNull(f1_BT_io_netcdfFile);
@@ -587,7 +589,7 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testDetermineSectionSize() throws IOException {
+    public void testDetermineSectionSize() throws IOException, URISyntaxException {
         final File f1_BT_io_file = getSecondNcFile("F1_BT_io.nc");
         final NetcdfFile f1_BT_io_netcdfFile = NetcdfFileOpener.open(f1_BT_io_file);
         assertNotNull(f1_BT_io_netcdfFile);
@@ -603,25 +605,27 @@ public class NcFileStitcherTest {
         assertEquals(260000, NcFileStitcher.determineSectionSize(2, u_wind_tx_variable));
     }
 
-    static File[] getNcFiles(String fileName) {
+    static File[] getNcFiles(String fileName) throws URISyntaxException {
         return new File[]{getFirstNcFile(fileName), getSecondNcFile(fileName), getThirdNcFile(fileName)};
     }
 
-    private static File getFirstNcFile(String fileName) {
+    private static File getFirstNcFile(String fileName) throws URISyntaxException {
         return getNcFile(TestUtils.FIRST_FILE_NAME, fileName);
     }
 
-    static File getSecondNcFile(String fileName) {
+    static File getSecondNcFile(String fileName) throws URISyntaxException {
         return getNcFile(TestUtils.SECOND_FILE_NAME, fileName);
     }
 
-    private static File getThirdNcFile(String fileName) {
+    private static File getThirdNcFile(String fileName) throws URISyntaxException {
         return getNcFile(TestUtils.THIRD_FILE_NAME, fileName);
     }
 
-    private static File getNcFile(String fileName, String name) {
+    private static File getNcFile(String fileName, String name) throws URISyntaxException {
         final String fullFileName = fileName + "/" + name;
         final URL resource = NcFileStitcherTest.class.getResource(fullFileName);
-        return new File(resource.getFile());
+        URI uri = new URI(resource.toString());
+        return new File(uri.getPath());
     }
+
 }
