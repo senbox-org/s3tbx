@@ -19,17 +19,9 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelModel;
 import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.BasicPixelGeoCoding;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
-import org.esa.snap.core.datamodel.Mask;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductNodeGroup;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.runtime.Config;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
@@ -41,10 +33,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 public class SlstrSstProductFactory extends SlstrProductFactory {
 
     public final static String SLSTR_L2_SST_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl2sst.pixelGeoCodings";
+    public final static String SLSTR_L2_SST_PIXEL_CODING_FORWARD = "s3tbx.reader.slstrl2sst.pixelGeoCodings.forward";
+    public final static String SLSTR_L2_SST_PIXEL_CODING_INVERSE = "s3tbx.reader.slstrl2sst.pixelGeoCodings.inverse";
 
     private Map<String, GeoCoding> geoCodingMap;
     private Double nadirStartOffset;
@@ -111,14 +106,14 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
     }
 
     protected Double getStartOffset(String gridIndex) {
-        if(gridIndex.endsWith("o")) {
+        if (gridIndex.endsWith("o")) {
             return obliqueStartOffset;
         }
         return nadirStartOffset;
     }
 
     protected Double getTrackOffset(String gridIndex) {
-        if(gridIndex.endsWith("o")) {
+        if (gridIndex.endsWith("o")) {
             return obliqueTrackOffset;
         }
         return nadirTrackOffset;
@@ -154,7 +149,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
             return copyTiePointGrid(sourceBand, targetProduct, sourceStartOffset, sourceTrackOffset, sourceResolutions);
         }
         final Band targetBand = new Band(sourceBandName, sourceBand.getDataType(),
-                                         sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
+                sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
         targetProduct.addBand(targetBand);
         ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
         final RenderedImage sourceRenderedImage = sourceBand.getSourceImage().getImage(0);
@@ -171,7 +166,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
         imageToModelTransform.scale(subSamplingX, subSamplingY);
         final DefaultMultiLevelModel targetModel =
                 new DefaultMultiLevelModel(imageToModelTransform,
-                                           sourceRenderedImage.getWidth(), sourceRenderedImage.getHeight());
+                        sourceRenderedImage.getWidth(), sourceRenderedImage.getHeight());
         final DefaultMultiLevelSource targetMultiLevelSource =
                 new DefaultMultiLevelSource(sourceRenderedImage, targetModel);
         targetBand.setSourceImage(new DefaultMultiLevelImage(targetMultiLevelSource));
@@ -234,7 +229,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
         }
     }
 
-    private void setPixelBandGeoCodings(Product product) {
+    private void setPixelBandGeoCodings(Product product) throws IOException {
         final Band[] bands = product.getBands();
         for (Band band : bands) {
             final GeoCoding bandGeoCoding = getBandGeoCoding(product, getIdentifier(band.getName()));
@@ -258,8 +253,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
         return "";
     }
 
-    private GeoCoding getBandGeoCoding(Product product, String end) {
-        // @todo 1 tb/tb replace this with the new implementation 2020-01-27
+    private GeoCoding getBandGeoCoding(Product product, String end) throws IOException {
         if (geoCodingMap.containsKey(end)) {
             return geoCodingMap.get(end);
         } else {
@@ -275,13 +269,33 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
                     lonBand = product.getBand("longitude_io");
                     break;
             }
-            if (latBand != null && lonBand != null) {
-                final BasicPixelGeoCoding geoCoding = GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, "", 5);
-                geoCodingMap.put(end, geoCoding);
-                return geoCoding;
+            if (latBand == null || lonBand == null) {
+                return null;
             }
+
+            final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+            final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+
+            final int width = product.getSceneRasterWidth();
+            final int height = product.getSceneRasterHeight();
+            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, width, height,
+                    width, height, 1.0,
+                    0.5, 0.5,
+                    1.0, 1.0);
+
+            final Preferences preferences = Config.instance("s3tbx").preferences();
+            final String fwdKey = preferences.get(SLSTR_L2_SST_PIXEL_CODING_FORWARD, "FWD_PIXEL");
+            final String inverseKey = preferences.get(SLSTR_L2_SST_PIXEL_CODING_INVERSE, "INV_PIXEL_QUAD_TREE");
+
+            final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+            final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+
+            final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+            geoCoding.initialize();
+
+            geoCodingMap.put(end, geoCoding);
+            return geoCoding;
         }
-        return null;
     }
 
     private String getGridIndexFromMask(Mask mask) {
