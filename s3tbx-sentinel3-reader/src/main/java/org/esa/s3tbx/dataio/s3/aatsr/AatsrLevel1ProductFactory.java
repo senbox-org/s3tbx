@@ -4,6 +4,7 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.util.MetTxReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
+import org.esa.snap.core.dataio.geocoding.*;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.TiePointGeoCoding;
@@ -104,19 +105,23 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) {
-        // @todo 1 tb/tb replace this with the new implementation 2020-01-27
-        TiePointGrid latGrid = null;
-        TiePointGrid lonGrid = null;
-        for (final TiePointGrid grid : targetProduct.getTiePointGrids()) {
-            if (latGrid == null && grid.getName().endsWith("latitude_tx")) {
-                latGrid = grid;
-            }
-            if (lonGrid == null && grid.getName().endsWith("longitude_tx")) {
-                lonGrid = grid;
-            }
+        final TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
+        final TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
+        if (lonGrid == null || latGrid == null) {
+            return;
         }
 
-        targetProduct.setSceneGeoCoding(new TiePointGeoCoding(latGrid, lonGrid));
+        final double[] longitudes = loadTiePointData(lonGrid);
+        final double[] latitudes = loadTiePointData(latGrid);
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), 1.0,
+                lonGrid.getOffsetX(), lonGrid.getOffsetY(),
+                lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
+
+        final ForwardCoding forward = ComponentFactory.getForward("FWD_TIE_POINT_BILINEAR");
+        final InverseCoding inverse = ComponentFactory.getInverse("INV_TIE_POINT");
+
+        targetProduct.setSceneGeoCoding(new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN));
     }
 
     @Override
