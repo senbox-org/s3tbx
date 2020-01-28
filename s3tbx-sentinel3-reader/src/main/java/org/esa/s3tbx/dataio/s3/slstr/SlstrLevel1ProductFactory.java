@@ -19,18 +19,9 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelModel;
 import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.BasicPixelGeoCoding;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
-import org.esa.snap.core.datamodel.Mask;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.ProductNodeGroup;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.core.util.ProductUtils;
@@ -45,7 +36,7 @@ import ucar.ma2.DataType;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.RenderedImage;
@@ -55,10 +46,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
     public final static String SLSTR_L1B_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl1b.pixelGeoCodings";
+    private final static String SLSTR_L1B_PIXEL_GEOCODING_INVERSE = "s3tbx.reader.slstrl1b.pixelGeoCodings.inverse";
     public final static String SLSTR_L1B_LOAD_ORPHAN_PIXELS = "s3tbx.reader.slstrl1b.loadOrphanPixels";
     public final static String SLSTR_L1B_CUSTOM_CALIBRATION = "s3tbx.reader.slstrl1b.applyCustomCalibration";
     public final static String SLSTR_L1B_S3MPC_CALIBRATION = "s3tbx.reader.slstrl1b.applyS3MPCCalibration";
@@ -300,8 +293,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         for (int i = 1; i < productList.size(); i++) {
             Product product = productList.get(i);
             if (product.getSceneRasterWidth() > masterProduct.getSceneRasterWidth() &&
-                product.getSceneRasterHeight() > masterProduct.getSceneRasterHeight() &&
-                !product.getName().contains("flags")) {
+                    product.getSceneRasterHeight() > masterProduct.getSceneRasterHeight() &&
+                    !product.getName().contains("flags")) {
                 masterProduct = product;
             }
         }
@@ -331,7 +324,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                 return copyTiePointGrid(sourceBand, targetProduct, sourceStartOffset, sourceTrackOffset, sourceResolutions);
             } else {
                 final Band targetBand = new Band(sourceBandName, sourceBand.getDataType(),
-                                                 sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
+                        sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
                 targetProduct.addBand(targetBand);
                 ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
                 final RenderedImage sourceRenderedImage = sourceBand.getSourceImage().getImage(0);
@@ -349,7 +342,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                 imageToModelTransform.scale(subSamplingX, subSamplingY);
                 final DefaultMultiLevelModel targetModel =
                         new DefaultMultiLevelModel(imageToModelTransform,
-                                                   sourceRenderedImage.getWidth(), sourceRenderedImage.getHeight());
+                                sourceRenderedImage.getWidth(), sourceRenderedImage.getHeight());
                 final DefaultMultiLevelSource targetMultiLevelSource =
                         new DefaultMultiLevelSource(sourceRenderedImage, targetModel);
                 targetBand.setSourceImage(new DefaultMultiLevelImage(targetMultiLevelSource));
@@ -381,42 +374,42 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
         targetProduct.setAutoGrouping(
-                                      "F*BT_*n:F*exception_*n:" +
-                                      "F*BT_*o:F*exception_*o:" +
-                                      "S*BT_in:S*exception_in:" +
-                                      "S*BT_io:S*exception_io:" +
-                                      "radiance_an:S*exception_an:" +
-                                      "radiance_ao:S*exception_ao:" +
-                                      "radiance_bn:S*exception_bn:" +
-                                      "radiance_bo:S*exception_bo:" +
-                                      "radiance_cn:S*exception_cn:" +
-                                      "radiance_co:S*exception_co:" +
-                                      (isOrphanPixelsAllowed() ? "*orphan*:" : "") +
-                                      "x_*:y_*:" +
-                                      "elevation:latitude:longitude:" +
-                                      "specific_humidity:temperature_profile:" +
-                                      "bayes_an_:bayes_ao_:" +
-                                      "bayes_bn_:bayes_bo_:" +
-                                      "bayes_cn_:bayes_co_:" +
-                                      "bayes_in_:bayes_io_:" +
-                                      "cloud_an_:cloud_ao_:" +
-                                      "cloud_bn_:cloud_bo_:" +
-                                      "cloud_cn_:cloud_co_:" +
-                                      "cloud_in_:cloud_io_:" +
-                                      "confidence_an_:confidence_ao_:" +
-                                      "confidence_bn_:confidence_bo_:" +
-                                      "confidence_cn_:confidence_co_:" +
-                                      "confidence_in_:confidence_io_:" +
-                                      "pointing_an_:pointing_ao_:" +
-                                      "pointing_bn_:pointing_bo_:" +
-                                      "pointing_cn_:pointing_co_:" +
-                                      "pointing_in_:pointing_io_:" +
-                                      "S*_exception_an_*:S*_exception_ao_*:" +
-                                      "S*_exception_bn_*:S*_exception_bo_*:" +
-                                      "S*_exception_cn_*:S*_exception_co_*:" +
-                                      "S*_exception_in_*:S*_exception_io_*:" +
-                                      "F*_exception_*n_*:F*_exception_*o_*:" +
-                                      bandGrouping);
+                "F*BT_*n:F*exception_*n:" +
+                        "F*BT_*o:F*exception_*o:" +
+                        "S*BT_in:S*exception_in:" +
+                        "S*BT_io:S*exception_io:" +
+                        "radiance_an:S*exception_an:" +
+                        "radiance_ao:S*exception_ao:" +
+                        "radiance_bn:S*exception_bn:" +
+                        "radiance_bo:S*exception_bo:" +
+                        "radiance_cn:S*exception_cn:" +
+                        "radiance_co:S*exception_co:" +
+                        (isOrphanPixelsAllowed() ? "*orphan*:" : "") +
+                        "x_*:y_*:" +
+                        "elevation:latitude:longitude:" +
+                        "specific_humidity:temperature_profile:" +
+                        "bayes_an_:bayes_ao_:" +
+                        "bayes_bn_:bayes_bo_:" +
+                        "bayes_cn_:bayes_co_:" +
+                        "bayes_in_:bayes_io_:" +
+                        "cloud_an_:cloud_ao_:" +
+                        "cloud_bn_:cloud_bo_:" +
+                        "cloud_cn_:cloud_co_:" +
+                        "cloud_in_:cloud_io_:" +
+                        "confidence_an_:confidence_ao_:" +
+                        "confidence_bn_:confidence_bo_:" +
+                        "confidence_cn_:confidence_co_:" +
+                        "confidence_in_:confidence_io_:" +
+                        "pointing_an_:pointing_ao_:" +
+                        "pointing_bn_:pointing_bo_:" +
+                        "pointing_cn_:pointing_co_:" +
+                        "pointing_in_:pointing_io_:" +
+                        "S*_exception_an_*:S*_exception_ao_*:" +
+                        "S*_exception_bn_*:S*_exception_bo_*:" +
+                        "S*_exception_cn_*:S*_exception_co_*:" +
+                        "S*_exception_in_*:S*_exception_io_*:" +
+                        "F*_exception_*n_*:F*_exception_*o_*:" +
+                        bandGrouping);
     }
 
     @Override
@@ -445,7 +438,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     }
 
     @Override
-    protected void setBandGeoCodings(Product product) {
+    protected void setBandGeoCodings(Product product) throws IOException {
         if (Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_USE_PIXELGEOCODINGS, false)) {
             setPixelBandGeoCodings(product);
         } else {
@@ -492,7 +485,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                 }
             }
             // close later if we loaded an orphan variable, otherwise close immediately
-            if(foundOrphan) {
+            if (foundOrphan) {
                 netcdfFileList.add(netcdfFile);
             } else {
                 netcdfFile.close();
@@ -507,6 +500,28 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             netcdfFile.close();
         }
         netcdfFileList.clear();
+    }
+
+    // package access for testing only tb 2020-01-28
+    static double getResolutionInKm(String nameEnd) {
+        switch (nameEnd) {
+            case "an":
+            case "ao":
+            case "bn":
+            case "bo":
+            case "cn":
+            case "co":
+                return 0.5;
+
+            case "fn":
+            case "fo":
+            case "in":
+            case "io":
+                return 1.0;
+
+            default:
+                throw new IllegalArgumentException("Unsupported resolution on bands ending with: " + nameEnd);
+        }
     }
 
     private void setTiePointBandGeoCodings(Product product) {
@@ -555,7 +570,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         }
     }
 
-    private void setPixelBandGeoCodings(Product product) {
+    private void setPixelBandGeoCodings(Product product) throws IOException {
         final Band[] bands = product.getBands();
         for (Band band : bands) {
             final GeoCoding bandGeoCoding = getBandGeoCoding(product, getGridIndex(band.getName()));
@@ -569,14 +584,13 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         }
     }
 
-    private GeoCoding getBandGeoCoding(Product product, String end) {
-        // @todo 1 tb/tb replace this with the new implementation 2020-01-27
-        if (geoCodingMap.containsKey(end)) {
-            return geoCodingMap.get(end);
+    private GeoCoding getBandGeoCoding(Product product, String nameEnd) throws IOException {
+        if (geoCodingMap.containsKey(nameEnd)) {
+            return geoCodingMap.get(nameEnd);
         } else {
             Band latBand = null;
             Band lonBand = null;
-            switch (end) {
+            switch (nameEnd) {
                 case "an":
                     latBand = product.getBand("latitude_an");
                     lonBand = product.getBand("longitude_an");
@@ -618,13 +632,33 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                     lonBand = product.getBand("longitude_fo");
                     break;
             }
-            if (latBand != null && lonBand != null) {
-                final BasicPixelGeoCoding geoCoding = GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, "", 5);
-                geoCodingMap.put(end, geoCoding);
-                return geoCoding;
+
+            if (latBand == null || lonBand == null) {
+                return null;
             }
+
+            final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+            final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+            final double resolutionInKm = getResolutionInKm(nameEnd);
+
+            final int width = product.getSceneRasterWidth();
+            final int height = product.getSceneRasterHeight();
+            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, width, height,
+                    width, height, resolutionInKm,
+                    0.5, 0.5,
+                    1.0, 1.0);
+
+            final Preferences preferences = Config.instance("s3tbx").preferences();
+            final String inverseKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_INVERSE, "INV_PIXEL_QUAD_TREE");
+
+            final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
+            final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+
+            final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+            geoCoding.initialize();
+            geoCodingMap.put(nameEnd, geoCoding);
+            return geoCoding;
         }
-        return null;
     }
 
     private String getGridIndexFromMask(Mask mask) {
@@ -653,7 +687,6 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         return "";
     }
 
-
     private int getDataType(Variable variable) {
         int rasterDataType = DataTypeUtils.getRasterDataType(variable);
         if (variable.getDataType() == DataType.LONG) {
@@ -667,8 +700,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         public SlstrOrphanOpImage(Variable variable, NetcdfFile netcdf, RasterDataNode rdn, Dimension imageTileSize,
                                   ResolutionLevel resolutionLevel) {
             super(variable, new int[]{}, false, netcdf, ImageManager.getDataBufferType(rdn.getDataType()),
-                  rdn.getRasterWidth(), rdn.getRasterHeight(), imageTileSize, resolutionLevel,
-                  ArrayConverter.IDENTITY, new DimensionIndices(1, 0, 2));
+                    rdn.getRasterWidth(), rdn.getRasterHeight(), imageTileSize, resolutionLevel,
+                    ArrayConverter.IDENTITY, new DimensionIndices(1, 0, 2));
 
         }
     }
