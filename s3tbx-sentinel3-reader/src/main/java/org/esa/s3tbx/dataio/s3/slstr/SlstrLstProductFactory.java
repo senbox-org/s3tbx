@@ -18,7 +18,10 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.snap.core.dataio.geocoding.*;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.runtime.Config;
 
 import java.io.IOException;
@@ -28,7 +31,9 @@ import java.util.prefs.Preferences;
 public class SlstrLstProductFactory extends SlstrProductFactory {
 
     private static final double RESOLUTION_IN_KM = 1.0;
-    private final static String SYSPROP_SLSTR_LST_PIXEL_TIE_POINT_FORWARD = "s3tbx.reader.slstr.lst.tiePointGeoCoding.forward";
+    private final static String SYSPROP_SLSTR_LST_TIE_POINT_FORWARD = "s3tbx.reader.slstr.lst.tiePointGeoCoding.forward";
+    private final static String SYSPROP_SLSTR_LST_PIXEL_FORWARD = "s3tbx.reader.slstr.lst.pixelGeoCoding.forward";
+    private final static String SYSPROP_SLSTR_LST_PIXEL_INVERSE = "s3tbx.reader.slstr.lst.pixelGeoCoding.inverse";
 
     public SlstrLstProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
@@ -56,7 +61,8 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
     }
 
     @Override
-    protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {}
+    protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
+    }
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
@@ -68,7 +74,7 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
         } else {
             final TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
             final TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
-            if ( lonGrid == null || latGrid == null){
+            if (lonGrid == null || latGrid == null) {
                 // no way to create a geo-coding tb 2020-01-22
                 return;
             }
@@ -87,9 +93,12 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
                 0.5, 0.5,
                 1.0, 1.0);
 
-        // @todo 1 tb/tb parametrise this 020-01-22
-        final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
-        final InverseCoding inverse = ComponentFactory.getInverse("INV_PIXEL_QUAD_TREE");
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_FORWARD, "FWD_PIXEL");
+        final String inverseKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_INVERSE, "INV_PIXEL_QUAD_TREE");
+
+        final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+        final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();
@@ -107,7 +116,7 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_TIE_POINT_FORWARD, "FWD_TIE_POINT_BILINEAR");
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_TIE_POINT_FORWARD, "FWD_TIE_POINT_BILINEAR");
 
         final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
         final InverseCoding inverse = ComponentFactory.getInverse("INV_TIE_POINT");
