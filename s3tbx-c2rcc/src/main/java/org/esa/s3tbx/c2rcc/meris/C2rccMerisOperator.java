@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.meris;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -917,8 +918,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
-
-        targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
     private void ensureSpectralProperties(Band band, int i) {
@@ -981,19 +980,22 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             String msgFormat = "Invalid source product, raster '%s' required";
             assertSourceRaster(SOURCE_RADIANCE_NAME_PREFIX + i, msgFormat);
         }
-
         if (useEcmwfAuxData) {
             String ecmwfMsg = "For ECMWF usage a '%s' raster is required";
             assertSourceRaster(RASTER_NAME_ATM_PRESS, ecmwfMsg);
             assertSourceRaster(RASTER_NAME_OZONE, ecmwfMsg);
         }
-
         assertVpeIsApplicable();
-
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+    }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 3);
+        pm.setSubTaskName("Defining algorithm ...");
         try {
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
                 String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
@@ -1025,7 +1027,9 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
         algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
+        getTargetProduct().addProductNodeListener(getNnNamesMetadataAppender());
+        pm.worked(1);
+        pm.setSubTaskName("Reading solar flux ...");
         if (useDefaultSolarFlux) {  // not the sol flux values from the input product
             solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
         } else {
@@ -1039,7 +1043,8 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 throw new OperatorException("Invalid solar flux in source product!");
             }
         }
-        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+        pm.worked(1);
+        pm.setSubTaskName("Initialising atmospheric auxiliary data");
         initAtmosphericAuxdata();
     }
 

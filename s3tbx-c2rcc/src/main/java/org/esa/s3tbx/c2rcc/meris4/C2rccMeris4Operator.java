@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.meris4;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -955,7 +956,13 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+    }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 2);
+        pm.setSubTaskName("Defining algorithm ...");
         try {
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
                 String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
@@ -970,13 +977,11 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         } catch (IOException e) {
             throw new OperatorException(e);
         }
-
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
         algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
         algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
-
         algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
         algorithm.setOutputRpath(outputRpath);
         algorithm.setOutputTdown(outputTdown);
@@ -987,8 +992,8 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
         algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
-        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+        pm.worked(1);
+        pm.setSubTaskName("Initialising atmospheric auxiliary data");
         initAtmosphericAuxdata();
     }
 

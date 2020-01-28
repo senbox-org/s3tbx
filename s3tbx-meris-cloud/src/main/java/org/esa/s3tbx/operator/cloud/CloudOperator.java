@@ -61,13 +61,37 @@ public class CloudOperator extends Operator {
 
     @Override
     public void initialize() {
-        getLogger().info("Starting request...");
-        initCloudNode();
+        cloudNode = new CloudPN(getAuxdataInstallationPath().toString());
         try {
             initOutputProduct();
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             throw new OperatorException("Unable to initialise output product.", e);
         }
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing Computation", 3);
+        pm.setSubTaskName("Installing auxiliary data");
+        try {
+            installAuxdata();
+        } catch (IOException e) {
+            throw new OperatorException("Unable to install auxiliary data.", e);
+        }
+        pm.worked(1);
+        pm.setSubTaskName("Set up cloud node");
+        final Map<String, String> cloudConfig = new HashMap<>();
+        cloudConfig.put(CloudPN.CONFIG_FILE_NAME, "cloud_config.txt");
+        cloudConfig.put(CloudPN.INVALID_EXPRESSION, "l1_flags.INVALID");
+        try {
+            cloudNode.setUp(cloudConfig);
+        } catch (IOException e) {
+            throw new OperatorException("Failed to initialise cloud source: " + e.getMessage(), e);
+        }
+        pm.worked(1);
+        pm.setSubTaskName("Start processing cloud node");
+        cloudNode.startProcessing();
+        getLogger().info("Output product successfully initialised");
     }
 
     @Override
@@ -84,21 +108,7 @@ public class CloudOperator extends Operator {
     }
 
     private void initCloudNode() {
-        try {
-            installAuxdata();
-        } catch (IOException e) {
-            throw new OperatorException("Unable to install auxiliary data.", e);
-        }
-
-        final Map<String, String> cloudConfig = new HashMap<>();
-        cloudConfig.put(CloudPN.CONFIG_FILE_NAME, "cloud_config.txt");
-        cloudConfig.put(CloudPN.INVALID_EXPRESSION, "l1_flags.INVALID");
         cloudNode = new CloudPN(getAuxdataInstallationPath().toString());
-        try {
-            cloudNode.setUp(cloudConfig);
-        } catch (IOException e) {
-            throw new OperatorException("Failed to initialise cloud source: " + e.getMessage(), e);
-        }
     }
 
     // package local for testing purposes
@@ -116,7 +126,7 @@ public class CloudOperator extends Operator {
     /**
      * Creates the output product skeleton.
      */
-    private void initOutputProduct() throws IOException, ParseException {
+    private void initOutputProduct() throws IOException {
         if (!EnvisatConstants.MERIS_L1_TYPE_PATTERN.matcher(l1bProduct.getProductType()).matches()) {
             throw new OperatorException("Product type '" + l1bProduct.getProductType() + "' is not supported." +
                                         "It must be a MERIS Level 1b product.");
@@ -131,10 +141,6 @@ public class CloudOperator extends Operator {
         ProductUtils.copyMetadata(l1bProduct, targetProduct);
         targetProduct.setStartTime(l1bProduct.getStartTime());
         targetProduct.setEndTime(l1bProduct.getEndTime());
-
-        cloudNode.startProcessing();
-
-        getLogger().info("Output product successfully initialised");
     }
 
     public static class Spi extends OperatorSpi {

@@ -294,13 +294,14 @@ public class AatsrSstOp extends PixelOperator {
     }
 
     @Override
-    protected void prepareInputs() throws OperatorException {
-        super.prepareInputs();
-
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Read in auxiliary data", 3);
         final File auxdataDir = installAuxiliaryData();
+        pm.worked(1);
         if (nadir) {
             initNadirCoefficients(auxdataDir);
         }
+        pm.worked(1);
         if (dual) {
             initDualCoefficients(auxdataDir);
         }

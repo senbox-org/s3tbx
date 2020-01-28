@@ -1,6 +1,7 @@
 package org.esa.s3tbx.c2rcc.landsat;
 
 import com.bc.ceres.core.Assert;
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -1027,19 +1028,37 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
                 assertSourceBand(bandname);
             }
         }
-
         MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
         MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
         MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
         sunAzimuth = imageAttributes.getAttribute("SUN_AZIMUTH").getData().getElemDouble();
         double sunElevation = imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
         sunZenith = 90 - sunElevation;
+        if (sourceProduct.getSceneGeoCoding() == null) {
+            throw new OperatorException("The source product must be geo-coded.");
+        }
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+        if (sourceProduct.isMultiSize()) {
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("referenceBand", EXPECTED_BANDNAMES[0]);
+            resampledProduct = GPF.createProduct("Resample", parameters, sourceProduct);
+        } else {
+            resampledProduct = sourceProduct;
+        }
+    }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 4);
+        pm.setSubTaskName("Setting reflectance offsets and scales");
+        MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
         SubsetInfo subsetInfo = getSubsetInfo(metadataRoot);
-        geometryAnglesBuilder = new GeometryAnglesBuilder(subsetInfo.subsampling_x, subsetInfo.offset_x, subsetInfo.center_x,
-                                                          sunAzimuth, sunZenith);
+        MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
+        MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
+        double sunElevation = imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
         double sunAngleCorrectionFactor = Math.sin(Math.toRadians(sunElevation));
-
+        geometryAnglesBuilder = new GeometryAnglesBuilder(subsetInfo.subsampling_x, subsetInfo.offset_x, subsetInfo.center_x,
+                sunAzimuth, sunZenith);
         MetadataElement radiometricRescaling = l1MetadataFile.getElement("RADIOMETRIC_RESCALING");
         reflectance_offset = new double[L8_BAND_COUNT];
         reflectance_scale = new double[L8_BAND_COUNT];
@@ -1052,17 +1071,15 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             double scalingFactor = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_MULT_BAND_%d", i + 1));
             reflectance_scale[i] = scalingFactor / sunAngleCorrectionFactor;
         }
-
-        if (sourceProduct.getSceneGeoCoding() == null) {
-            throw new OperatorException("The source product must be geo-coded.");
-        }
-
+        pm.worked(1);
+        pm.setSubTaskName("Creating DEM");
         ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30");
         if (getasse30 != null) {
             // if elevation model cannot be initialised the fallback height will be used
             elevationModel = getasse30.createDem(Resampling.BILINEAR_INTERPOLATION);
         }
-
+        pm.worked(1);
+        pm.setSubTaskName("Defining algorithm");
         try {
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
                 String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
@@ -1094,17 +1111,9 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
         algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
-        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+        pm.worked(1);
+        pm.setSubTaskName("Initialising atmospheric auxiliary data");
         initAtmosphericAuxdata();
-
-        if (sourceProduct.isMultiSize()) {
-            HashMap<String, Object> parameters = new HashMap<>();
-            parameters.put("referenceBand", EXPECTED_BANDNAMES[0]);
-            resampledProduct = GPF.createProduct("Resample", parameters, sourceProduct);
-        } else {
-            resampledProduct = sourceProduct;
-        }
     }
 
     private SubsetInfo getSubsetInfo(MetadataElement metadataRoot) {

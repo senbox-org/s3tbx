@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.msi;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
@@ -913,8 +914,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
-
-        targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
     @Override
@@ -947,9 +946,24 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
         // (mp/20160504) - SolarFlux is not used so we set it to 0
         solflux = new double[SOURCE_BAND_REFL_NAMES.length]; //getSolarFluxValues();
+        timeCoding = sourceProduct.getSceneTimeCoding();
+        if (timeCoding == null) {
+            // if not time coding is set, create one
+            if (sourceProduct.getStartTime() == null || sourceProduct.getEndTime() == null) {
+                // if no start/end time is set, read it from the metadata
+                // (should not happen anymore from SNAP 4.0.2 on)
+                timeCoding = getTimeCoding(getStartTime(), getEndTime());
+            } else {
+                timeCoding = getTimeCoding(sourceProduct);
+            }
 
+        }
+    }
 
-
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 2);
+        pm.setSubTaskName("Defining algorithm ...");
         try {
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
                 String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
@@ -964,13 +978,11 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         } catch (IOException e) {
             throw new OperatorException(e);
         }
-
         algorithm.setTemperature(temperature);
         algorithm.setSalinity(salinity);
         algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
         algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
         algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
-
         algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
         algorithm.setOutputRpath(outputRpath);
         algorithm.setOutputTdown(outputTdown);
@@ -981,19 +993,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
         algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
-        timeCoding = sourceProduct.getSceneTimeCoding();
-        if (timeCoding == null) {
-            // if not time coding is set, create one
-            if (sourceProduct.getStartTime() == null || sourceProduct.getEndTime() == null) {
-                // if no start/end time is set, read it from the metadata
-                // (should not happen anymore from SNAP 4.0.2 on)
-                timeCoding = getTimeCoding(getStartTime(), getEndTime());
-            } else {
-                timeCoding = getTimeCoding(sourceProduct);
-            }
-
-        }
+        getTargetProduct().addProductNodeListener(getNnNamesMetadataAppender());
+        pm.worked(1);
+        pm.setSubTaskName("Initialising atmospheric auxiliary data");
         initAtmosphericAuxdata();
     }
 

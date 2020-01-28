@@ -82,22 +82,6 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
 
     @Override
     public void initialize() throws OperatorException {
-        try {
-            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
-            gasCor = new GaseousAbsorptionCorrection(auxData);
-        } catch (Exception e) {
-            throw new OperatorException("could not load L2Auxdata", e);
-        }
-        rhoToaBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
-
-        for (int i = 0; i < EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS; i++) {
-            rhoToaBands[i] = rhoToaProduct.getBand(Rad2ReflOp.RHO_TOA_BAND_PREFIX + "_" + (i + 1));
-        }
-
-        createTargetProduct();
-    }
-
-    private void createTargetProduct() {
     	targetProduct = createCompatibleProduct(rhoToaProduct, "MER", "MER_L2");
     	
     	rhoNgBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
@@ -123,6 +107,23 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
         }
         if (l1bProduct.getPreferredTileSize() != null) {
             targetProduct.setPreferredTileSize(l1bProduct.getPreferredTileSize());
+        }
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Reading in auxiliary data", 2);
+        try {
+            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
+            gasCor = new GaseousAbsorptionCorrection(auxData);
+        } catch (Exception e) {
+            throw new OperatorException("could not load L2Auxdata", e);
+        }
+        pm.worked(1);
+        rhoToaBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
+
+        for (int i = 0; i < EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS; i++) {
+            rhoToaBands[i] = rhoToaProduct.getBand(Rad2ReflOp.RHO_TOA_BAND_PREFIX + "_" + (i + 1));
         }
     }
 

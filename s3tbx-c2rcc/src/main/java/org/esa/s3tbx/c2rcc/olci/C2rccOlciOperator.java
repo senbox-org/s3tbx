@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.olci;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -941,8 +942,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
-
-        targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
     @Override
@@ -952,11 +951,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             assertSourceBand(getSolarFluxBandname(i));
         }
         useSnapDem = !sourceProduct.containsRasterDataNode(RASTER_NAME_ALTITUDE);
-        if (useSnapDem) {
-            elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
-        }
 
-        sourceProduct.isCompatibleBandArithmeticExpression(validPixelExpression);
+        if (!sourceProduct.isCompatibleBandArithmeticExpression(validPixelExpression)) {
+            throw new OperatorException("The validPixelExpression cannot be applied to this source product.");
+        }
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
@@ -966,8 +964,18 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         assertSourceRaster(RASTER_NAME_SUN_AZIMUTH);
         assertSourceRaster(RASTER_NAME_VIEWING_ZENITH);
         assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH);
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+    }
 
-        try {
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 3);
+        pm.setSubTaskName("Creating DEM");
+        if (useSnapDem) {
+            elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
+        }
+        pm.worked(1);
+        pm.setSubTaskName("Defining algorithm ...");        try {
             final String[] nnFilePaths;
             final boolean loadFromResources = alternativeNNPath == null || alternativeNNPath.trim().length() == 0;
             if (loadFromResources) {
@@ -996,8 +1004,9 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         algorithm.setOutputKd(outputKd);
         algorithm.setOutputUncertainties(outputUncertainties);
         algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
-        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+        getTargetProduct().addProductNodeListener(getNnNamesMetadataAppender());
+        pm.worked(1);
+        pm.setSubTaskName("Initialising atmospheric auxiliary data");
         initAtmosphericAuxdata();
     }
 
