@@ -35,7 +35,8 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
             "tiepoints_slstr_n_Data", "tiepoints_slstr_o_Data", "tiepoints_meteo_Data"};
 
     private static final double RESOLUTION_IN_KM = 0.3;
-    public final static String SYSPROP_SYN_L2_PIXEL_GEO_CODING_INVERSE = "s3tbx.reader.syn.l2.pixelGeoCoding.inverse";
+    private final static String SYSPROP_SYN_L2_PIXEL_GEO_CODING_FORWARD = "s3tbx.reader.syn.l2.pixelGeoCoding.forward";
+    private final static String SYSPROP_SYN_L2_PIXEL_GEO_CODING_INVERSE = "s3tbx.reader.syn.l2.pixelGeoCoding.inverse";
 
     public SynLevel2ProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
@@ -171,9 +172,10 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
                 1.0, 1.0);
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String inverseKey = preferences.get(SYSPROP_SYN_L2_PIXEL_GEO_CODING_INVERSE, "INV_PIXEL_QUAD_TREE");
-        final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
-        final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+        final String fwdKey = preferences.get(SYSPROP_SYN_L2_PIXEL_GEO_CODING_FORWARD, "FWD_PIXEL");
+        final String invKey = preferences.get(SYSPROP_SYN_L2_PIXEL_GEO_CODING_INVERSE, "INV_PIXEL_QUAD_TREE");
+        final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+        final InverseCoding inverse = ComponentFactory.getInverse(invKey);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();

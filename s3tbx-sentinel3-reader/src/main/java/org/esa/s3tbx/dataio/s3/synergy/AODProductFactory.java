@@ -1,21 +1,27 @@
 package org.esa.s3tbx.dataio.s3.synergy;
 
-import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
+import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.runtime.Config;
 
-import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 public class AODProductFactory extends AbstractProductFactory {
+
+    private static final double FILL_VALUE = -999.0;
+    private static final double RESOLUTION_IN_KM = 4.5;
+
+    private final static String SYSPROP_SYN_AOD_PIXEL_GEO_CODING_FORWARD = "s3tbx.reader.syn.aod.pixelGeoCoding.forward";
+    private final static String SYSPROP_SYN_AOD_PIXEL_GEO_CODING_INVERSE = "s3tbx.reader.syn.aod.pixelGeoCoding.inverse";
 
     public AODProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
@@ -36,27 +42,48 @@ public class AODProductFactory extends AbstractProductFactory {
     }
 
     @Override
-    protected void setGeoCoding(Product targetProduct) {
-        // @todo 1 tb/tb replace this with the new implementation 2020-01-27
-        // @todo 1 tb/tb implement masking decorator 2020-01-27
-        if (targetProduct.containsBand("latitude") && targetProduct.containsBand("longitude")) {
-            GeoCoding geoCoding = GeoCodingFactory.createPixelGeoCoding(
-                    targetProduct.getBand("latitude"), targetProduct.getBand("longitude"),
-                    "latitude > -999 and longitude > -999", 5);
-            targetProduct.setSceneGeoCoding(geoCoding);
+    protected void setGeoCoding(Product targetProduct) throws IOException {
+        final Band lonBand = targetProduct.getBand("longitude");
+        final Band latBand = targetProduct.getBand("latitude");
+        if (lonBand == null || latBand == null) {
+            return;
         }
+
+        final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+        final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+
+        // replace fill value with NaN
+        for (int i = 0; i < longitudes.length; i++) {
+            if (longitudes[i] <= FILL_VALUE) {
+                longitudes[i] = Double.NaN;
+            }
+            if (latitudes[i] <= FILL_VALUE) {
+                latitudes[i] = Double.NaN;
+            }
+        }
+
+        final int width = targetProduct.getSceneRasterWidth();
+        final int height = targetProduct.getSceneRasterHeight();
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, width, height,
+                width, height, RESOLUTION_IN_KM,
+                0.5, 0.5,
+                1.0, 1.0);
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        final String fwdKey = preferences.get(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_FORWARD, "FWD_PIXEL");
+        final String invKey = preferences.get(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_INVERSE, "INV_PIXEL_QUAD_TREE");
+
+        final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+        final InverseCoding inverse = ComponentFactory.getInverse(invKey);
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
     }
 
     @Override
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         targetProduct.setAutoGrouping("AOD:SSA:Surface_reflectance");
-    }
-
-    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
-        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
-        final Raster tpData = mlImage.getImage(0).getData();
-        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
-        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
-        return tiePoints;
     }
 }

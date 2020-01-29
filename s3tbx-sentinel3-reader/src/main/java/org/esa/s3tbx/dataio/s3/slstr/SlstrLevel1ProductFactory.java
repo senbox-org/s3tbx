@@ -51,6 +51,7 @@ import java.util.prefs.Preferences;
 public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
     public final static String SLSTR_L1B_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl1b.pixelGeoCodings";
+    private final static String SLSTR_L1B_PIXEL_GEOCODING_FORWARD = "s3tbx.reader.slstrl1b.pixelGeoCodings.forward";
     private final static String SLSTR_L1B_PIXEL_GEOCODING_INVERSE = "s3tbx.reader.slstrl1b.pixelGeoCodings.inverse";
     public final static String SLSTR_L1B_LOAD_ORPHAN_PIXELS = "s3tbx.reader.slstrl1b.loadOrphanPixels";
     public final static String SLSTR_L1B_CUSTOM_CALIBRATION = "s3tbx.reader.slstrl1b.applyCustomCalibration";
@@ -649,10 +650,11 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                     1.0, 1.0);
 
             final Preferences preferences = Config.instance("s3tbx").preferences();
-            final String inverseKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_INVERSE, "INV_PIXEL_QUAD_TREE");
+            final String fwdKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_FORWARD, "FWD_PIXEL");
+            final String invKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_INVERSE, "INV_PIXEL_QUAD_TREE");
 
-            final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
-            final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+            final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+            final InverseCoding inverse = ComponentFactory.getInverse(invKey);
 
             final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
             geoCoding.initialize();
