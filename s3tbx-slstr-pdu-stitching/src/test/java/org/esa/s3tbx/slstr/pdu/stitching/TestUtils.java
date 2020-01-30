@@ -1,6 +1,8 @@
 package org.esa.s3tbx.slstr.pdu.stitching;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
@@ -15,26 +17,26 @@ public class TestUtils {
     public static String THIRD_FILE_NAME =
             "S3A_SL_1_RBT____20130707T154252_20130707T154752_20150217T183537_0299_158_182______SVL_O_NR_001.SEN3";
 
-    static File[] getSlstrFiles() {
+    static File[] getSlstrFiles() throws URISyntaxException {
         return new File[]{getFirstSlstrFile(), getSecondSlstrFile(), getThirdSlstrFile()};
     }
 
-    static File getFirstSlstrFile() {
+    static File getFirstSlstrFile() throws URISyntaxException {
         return getResource(TestUtils.FIRST_FILE_NAME);
     }
 
-    static File getSecondSlstrFile() {
+    static File getSecondSlstrFile() throws URISyntaxException {
         return getResource(TestUtils.SECOND_FILE_NAME);
     }
 
-    static File getThirdSlstrFile() {
+    static File getThirdSlstrFile() throws URISyntaxException {
         return getResource(TestUtils.THIRD_FILE_NAME);
     }
 
-    private static File getResource(String fileName) {
+    private static File getResource(String fileName) throws URISyntaxException {
         final String fullFileName = fileName + "/xfdumanifest.xml";
         final URL resource = TestUtils.class.getResource(fullFileName);
-        return new File(resource.getFile());
+        URI uri = new URI(resource.toString());
+        return new File(uri.getPath());
     }
-
 }

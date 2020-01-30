@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static junit.framework.TestCase.assertEquals;
@@ -21,7 +23,7 @@ import static junit.framework.TestCase.assertEquals;
 public class ImageSizeHandlerTest {
 
     @Test
-    public void testExtractImageSizes() throws IOException {
+    public void testExtractImageSizes() throws IOException, URISyntaxException {
         final ImageSize[] imageSizes1 =
                 ImageSizeHandler.extractImageSizes(createXmlDocument(new FileInputStream(getFirstSlstrFile())));
         assertEquals(10, imageSizes1.length);
@@ -91,22 +93,23 @@ public class ImageSizeHandlerTest {
         }
     }
 
-    private static File getFirstSlstrFile() {
+    private static File getFirstSlstrFile() throws URISyntaxException {
         return getResource(TestUtils.FIRST_FILE_NAME);
     }
 
-    private static File getSecondSlstrFile() {
+    private static File getSecondSlstrFile() throws URISyntaxException {
         return getResource(TestUtils.SECOND_FILE_NAME);
     }
 
-    private static File getThirdSlstrFile() {
+    private static File getThirdSlstrFile() throws URISyntaxException {
         return getResource(TestUtils.THIRD_FILE_NAME);
     }
 
-    private static File getResource(String fileName) {
+    private static File getResource(String fileName) throws URISyntaxException {
         final String fullFileName = fileName + "/xfdumanifest.xml";
         final URL resource = ImageSizeHandlerTest.class.getResource(fullFileName);
-        return new File(resource.getFile());
+        URI uri = new URI(resource.toString());
+        return new File(uri.getPath());
     }
 
 }

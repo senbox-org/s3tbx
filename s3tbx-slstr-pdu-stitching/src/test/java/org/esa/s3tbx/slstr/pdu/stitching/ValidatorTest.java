@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.fail;
@@ -21,7 +22,7 @@ import static org.junit.Assert.fail;
 public class ValidatorTest {
 
     @Test
-    public void testValidate() throws ParserConfigurationException, SAXException {
+    public void testValidate() throws ParserConfigurationException, SAXException, URISyntaxException {
         final File[] slstrFiles = TestUtils.getSlstrFiles();
         try {
             Validator.validate(slstrFiles);
@@ -31,7 +32,7 @@ public class ValidatorTest {
     }
 
     @Test
-    public void testValidateOrbitReference_DifferentOrbitReference() throws ParserConfigurationException, IOException, SAXException {
+    public void testValidateOrbitReference_DifferentOrbitReference() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         final File[] slstrFiles = TestUtils.getSlstrFiles();
         Document[] manifests = new Document[slstrFiles.length + 1];
         for (int i = 0; i < slstrFiles.length; i++) {
@@ -118,7 +119,7 @@ public class ValidatorTest {
     }
 
     @Test
-    public void testAdjacency_notAdjacent() throws ParserConfigurationException, IOException, SAXException {
+    public void testAdjacency_notAdjacent() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         final File firstSlstrFile = TestUtils.getFirstSlstrFile();
         final File thirdSlstrFile = TestUtils.getThirdSlstrFile();
         Document[] manifests = new Document[2];
