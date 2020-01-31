@@ -9,17 +9,18 @@ import org.esa.snap.core.util.ArrayUtils;
 import org.esa.snap.core.util.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -28,10 +29,10 @@ import static org.junit.Assert.fail;
  */
 public class PDUStitchingOpTest {
 
-    public static final String EXPECTED_STITCHED_FILE_NAME_PATTERN =
+    private static final String EXPECTED_STITCHED_FILE_NAME_PATTERN =
             "S3A_SL_1_RBT____20130707T153252_20130707T154752_2[0-9]{7}T[0-9]{6}_0299_158_182______SVL_O_NR_001.SEN3";
 
-    File targetDirectory;
+    private File targetDirectory;
 
     @Before
     public void setUp() {
@@ -51,8 +52,7 @@ public class PDUStitchingOpTest {
     }
 
     @Test
-    @Ignore("takes a few seconds")
-    public void testOperator() {
+    public void testOperator() throws URISyntaxException {
         Map<String, Object> parameterMap = new HashMap<>();
         parameterMap.put("targetDir", targetDirectory);
         Map<String, Product> sourceProductMap = new HashMap<>();
@@ -72,13 +72,14 @@ public class PDUStitchingOpTest {
     }
 
     @Test
-    @Ignore("takes a few seconds")
-    public void testOperator_wildcards() {
+    public void testOperator_wildcards() throws URISyntaxException {
         Map<String, Object> parameterMap = new HashMap<>();
         Map<String, Product> sourceProductMap = new HashMap<>();
         parameterMap.put("targetDir", targetDirectory);
         String[] productPaths = new String[1];
-        productPaths[0] = PDUStitchingOpTest.class.getResource("").getFile() + "S*/xfdumanifest.xml" ;
+        final URL resource = PDUStitchingOpTest.class.getResource("");
+        URI uri = new URI(resource.toString());
+        productPaths[0] = uri.getPath() + "S*/xfdumanifest.xml" ;
         parameterMap.put("sourceProductPaths", productPaths);
 
         assertEquals(0, targetDirectory.list().length);
@@ -112,10 +113,10 @@ public class PDUStitchingOpTest {
         assertTrue(spi.getOperatorClass().isAssignableFrom(PDUStitchingOp.class));
     }
 
-    private static File getResource(String fileName) {
+    private static File getResource(String fileName) throws URISyntaxException {
         final String fullFileName = fileName + "/xfdumanifest.xml";
         final URL resource = PDUStitchingOpTest.class.getResource(fullFileName);
-        return new File(resource.getFile());
+        URI uri = new URI(resource.toString());
+        return new File(uri.getPath());
     }
-
 }

@@ -23,6 +23,8 @@ import org.junit.Test;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileReader;
+import java.net.URI;
+import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -35,7 +37,9 @@ public class Landsat8MetadataTest {
 
     @Before
     public void setUp() throws Exception {
-        metadata = new Landsat8Metadata(new FileReader(new File(getClass().getResource("test_L8_MTL.txt").getFile())));
+        URL url = getClass().getResource("test_L8_MTL.txt");
+        URI uri = new URI(url.toString());
+        metadata = new Landsat8Metadata(new FileReader(new File(uri.getPath())));
     }
 
     @Test

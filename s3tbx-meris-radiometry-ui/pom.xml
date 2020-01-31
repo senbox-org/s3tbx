@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.esa.s3tbx</groupId>
         <artifactId>s3tbx</artifactId>
-        <version>7.0.3-SNAPSHOT</version>
+        <version>7.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>s3tbx-meris-radiometry-ui</artifactId>
@@ -60,6 +60,11 @@
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-gpf-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-envisat-reader</artifactId>
+            <version>${snap.version}</version>
         </dependency>
 
         <dependency>

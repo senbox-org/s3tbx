@@ -5,7 +5,7 @@
     <parent>
         <artifactId>s3tbx</artifactId>
         <groupId>org.esa.s3tbx</groupId>
-        <version>7.0.3-SNAPSHOT</version>
+        <version>7.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>s3tbx-landsat-reader</artifactId>
@@ -42,7 +42,7 @@
         <!-- for bzip2 de-compression-->
         <dependency>
             <groupId>edu.ucar</groupId>
-            <artifactId>netcdf</artifactId>
+            <artifactId>netcdfAll</artifactId>
         </dependency>
         <dependency>
             <groupId>org.xeustechnologies</groupId>
