@@ -93,6 +93,7 @@ public class Rad2ReflOp extends MerisBasisOp implements Constants {
             throw new OperatorException(e.getMessage(), e);
         }
         pm.worked(1);
+        pm.setSubTaskName("Setting up auxiliary images");
         detectorIndexBand = sourceProduct.getBand(EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME);
         sunZenithTPG = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
         invalidImage = VirtualBandOpImage.builder("l1_flags.INVALID", sourceProduct)

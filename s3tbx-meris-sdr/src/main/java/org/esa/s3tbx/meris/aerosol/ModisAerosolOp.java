@@ -86,13 +86,17 @@ public class ModisAerosolOp extends MerisBasisOp {
         gapFiller = new GapFiller();
         gapFiller.setWidthHeight(MOD08_WIDTH, MOD08_HEIGHT);
 
+        createTargetProduct();
+    }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Load MOD08 files", 1);
         try {
             readMod08();
         } catch (IOException e) {
             throw new OperatorException("Could not load MOD08 data files", e);
         }
-        createTargetProduct();
     }
 
     private void createTargetProduct() {

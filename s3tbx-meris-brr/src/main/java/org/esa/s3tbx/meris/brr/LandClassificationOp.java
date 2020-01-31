@@ -80,7 +80,7 @@ public class LandClassificationOp extends MerisBasisOp implements Constants {
 
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
-        pm.beginTask("Reading in auxiliary data", 2);
+        pm.beginTask("Reading in auxiliary data", 1);
         try {
             auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
         } catch (Exception e) {

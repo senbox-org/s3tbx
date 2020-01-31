@@ -16,6 +16,7 @@
 
 package org.esa.s3tbx.meris.radiometry;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.meris.radiometry.calibration.CalibrationAlgorithm;
 import org.esa.s3tbx.meris.radiometry.calibration.Resolution;
 import org.esa.s3tbx.meris.radiometry.equalization.EqualizationAlgorithm;
@@ -157,7 +158,6 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
     protected void prepareInputs() throws OperatorException {
         super.prepareInputs();
         validateSourceProduct();
-        initAlgorithms();
     }
 
     @Override
@@ -304,9 +304,22 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
 
     }
 
-    private void initAlgorithms() {
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
         final String productType = getSourceProduct().getProductType();
+        int workload = 0;
         if (doCalibration) {
+            workload++;
+        }
+        if (doSmile) {
+            workload++;
+        }
+        if (doEqualization) {
+            workload++;
+        }
+        pm.beginTask("Initializing algorithms", workload);
+        if (doCalibration) {
+            pm.setSubTaskName("Initializing calibration algorithm");
             InputStream sourceRacStream = null;
             InputStream targetRacStream = null;
             try {
@@ -330,17 +343,22 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
             }
             // If calibration is performed the equalization  has to use the LUTs of Reprocessing 3
             reproVersion = ReprocessingVersion.REPROCESSING_3;
+            pm.worked(1);
         }
         if (doSmile) {
+            pm.setSubTaskName("Initializing smile correction algorithm");
             try {
                 smileCorrAlgorithm = new SmileCorrectionAlgorithm(SmileCorrectionAuxdata.loadAuxdata(productType));
+                pm.worked(1);
             } catch (Exception e) {
                 throw new OperatorException(e);
             }
         }
         if (doEqualization) {
+            pm.setSubTaskName("Initializing equalization algorithm");
             try {
                 equalizationAlgorithm = new EqualizationAlgorithm(getSourceProduct(), reproVersion);
+                pm.worked(1);
             } catch (Exception e) {
                 throw new OperatorException(e);
             }

@@ -91,10 +91,7 @@ public class BrrOp extends BrrBasisOp {
 
     @Override
     public void initialize() throws OperatorException {
-
         checkInputProduct(sourceProduct);
-        prepareSourceProducts();
-
         targetProduct = createCompatibleProduct(sourceProduct, "BRR", "BRR");
         // set tile-size smaller than the one that GPF might associate. We need to allocate A LOT of memory per tile.
         // preferred tile-size must be odd in x-direction to cope with the 4x4 window required by the algo and the odd
@@ -108,13 +105,17 @@ public class BrrOp extends BrrBasisOp {
         if (outputToar) {
             createOutputBands(toaReflecBands, "toar");
         }
-
-        initAlgorithms(sourceProduct);
     }
 
-    private void initAlgorithms(Product inputProduct) throws OperatorException {
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 2);
+        pm.setSubTaskName("Preparing source product");
+        prepareSourceProducts();
+        pm.worked(1);
         try {
-            auxData = L2AuxDataProvider.getInstance().getAuxdata(inputProduct);
+            pm.setSubTaskName("Initializing L2 Auxdata");
+            auxData = L2AuxDataProvider.getInstance().getAuxdata(sourceProduct);
         } catch (Exception e) {
             throw new OperatorException("Cannot initialize L2 Auxdata:" + e.getMessage(), e);
         }
