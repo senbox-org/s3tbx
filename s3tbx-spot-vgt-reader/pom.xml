@@ -50,10 +50,6 @@
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-netcdf</artifactId>
         </dependency>
-        <dependency>
-            <groupId>edu.ucar</groupId>
-            <artifactId>netcdfAll</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
