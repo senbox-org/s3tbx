@@ -21,7 +21,13 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.VirtualDir;
 import org.apache.commons.io.FilenameUtils;
 import org.esa.snap.core.dataio.AbstractProductReader;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.FlagCoding;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.MetadataElement;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.util.ImageUtils;
 import org.esa.snap.core.util.jai.JAIUtils;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
@@ -31,16 +37,27 @@ import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
-import javax.media.jai.*;
+import javax.media.jai.BorderExtender;
+import javax.media.jai.ImageLayout;
+import javax.media.jai.Interpolation;
+import javax.media.jai.JAI;
+import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.ScaleDescriptor;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import static org.esa.s3tbx.dataio.spot.SpotVgtProductReaderPlugIn.getBandName;
 import static org.esa.s3tbx.dataio.spot.SpotVgtProductReaderPlugIn.getFileInput;
@@ -196,7 +213,7 @@ public class SpotVgtProductReader extends AbstractProductReader {
         Variable variable = findPixelDataVariable(netcdfFile);
         if (isPotentialPixelDataVariable(variable)) {
             DataType netCdfDataType = variable.getDataType();
-            int bandDataType = convertNetcdfTypeToProductDataType(netCdfDataType, variable.getDataType().isUnsigned());
+            int bandDataType = convertNetcdfTypeToProductDataType(netCdfDataType, variable.isUnsigned());
             if (bandDataType != ProductData.TYPE_UNDEFINED) {
                 String bandName = getBandName(hdfFileName);
                 BandInfo bandInfo = getBandInfo(bandName);
