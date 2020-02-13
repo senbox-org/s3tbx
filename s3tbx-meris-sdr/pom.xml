@@ -53,6 +53,11 @@
             <artifactId>s3tbx-meris-ops</artifactId>
             <version>${project.version}</version>
         </dependency>
+		<dependency>
+            <groupId>com.bc.jnn</groupId>
+            <artifactId>jnn</artifactId>
+			<version>1.7</version>
+        </dependency>
 
         <dependency>
             <groupId>ncsa.hdf</groupId>
