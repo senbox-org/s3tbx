@@ -1,7 +1,9 @@
 package org.esa.s3tbx.dataio.s3.util;
 
+import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.datamodel.Product;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
