@@ -38,8 +38,8 @@ import java.util.prefs.Preferences;
 public class SlstrSstProductFactory extends SlstrProductFactory {
 
     public final static String SLSTR_L2_SST_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl2sst.pixelGeoCodings";
-    public final static String SLSTR_L2_SST_PIXEL_CODING_FORWARD = "s3tbx.reader.slstrl2sst.pixelGeoCodings.forward";
-    public final static String SLSTR_L2_SST_PIXEL_CODING_INVERSE = "s3tbx.reader.slstrl2sst.pixelGeoCodings.inverse";
+    private final static String SLSTR_L2_SST_PIXEL_CODING_FORWARD = "s3tbx.reader.slstrl2sst.pixelGeoCodings.forward";
+    private final static String SLSTR_L2_SST_PIXEL_CODING_INVERSE = "s3tbx.reader.slstrl2sst.pixelGeoCodings.inverse";
 
     private Map<String, GeoCoding> geoCodingMap;
     private Double nadirStartOffset;
@@ -257,18 +257,22 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
         if (geoCodingMap.containsKey(end)) {
             return geoCodingMap.get(end);
         } else {
-            Band latBand = null;
-            Band lonBand = null;
+            // @todo 1 tb/tb add test for the switch 2020-02-14
+            String lonVariableName = null;
+            String latVariableName = null;
             switch (end) {
                 case "in":
-                    latBand = product.getBand("latitude_in");
-                    lonBand = product.getBand("longitude_in");
+                    lonVariableName = "longitude_in";
+                    latVariableName = "latitude_in";
                     break;
                 case "io":
-                    latBand = product.getBand("latitude_io");
-                    lonBand = product.getBand("longitude_io");
+                    lonVariableName = "longitude_io";
+                    latVariableName = "latitude_io";
                     break;
             }
+
+            final Band lonBand = product.getBand(lonVariableName);
+            final Band latBand = product.getBand(latVariableName);
             if (latBand == null || lonBand == null) {
                 return null;
             }
@@ -278,10 +282,8 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
 
             final int width = product.getSceneRasterWidth();
             final int height = product.getSceneRasterHeight();
-            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, width, height,
-                    width, height, 1.0,
-                    0.5, 0.5,
-                    1.0, 1.0);
+            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                    width, height, 1.0);
 
             final Preferences preferences = Config.instance("s3tbx").preferences();
             final String fwdKey = preferences.get(SLSTR_L2_SST_PIXEL_CODING_FORWARD, "FWD_PIXEL");

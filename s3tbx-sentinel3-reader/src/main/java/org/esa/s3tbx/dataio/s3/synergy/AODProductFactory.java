@@ -43,8 +43,10 @@ public class AODProductFactory extends AbstractProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
-        final Band lonBand = targetProduct.getBand("longitude");
-        final Band latBand = targetProduct.getBand("latitude");
+        final String lonVariableName = "longitude";
+        final String latVariableName = "latitude";
+        final Band lonBand = targetProduct.getBand(lonVariableName);
+        final Band latBand = targetProduct.getBand(latVariableName);
         if (lonBand == null || latBand == null) {
             return;
         }
@@ -64,10 +66,8 @@ public class AODProductFactory extends AbstractProductFactory {
 
         final int width = targetProduct.getSceneRasterWidth();
         final int height = targetProduct.getSceneRasterHeight();
-        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, width, height,
-                width, height, RESOLUTION_IN_KM,
-                0.5, 0.5,
-                1.0, 1.0);
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                width, height, RESOLUTION_IN_KM);
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
         final String fwdKey = preferences.get(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_FORWARD, "FWD_PIXEL");

@@ -87,11 +87,8 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
         final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
         final double[] latitudes = RasterUtils.loadDataScaled(latBand);
 
-        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes,
-                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(),
-                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
-                0.5, 0.5,
-                1.0, 1.0);
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonBand.getName(), latBand.getName(),
+                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
         final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_FORWARD, "FWD_PIXEL");
@@ -110,7 +107,8 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
         final double[] longitudes = loadTiePointData(lonGrid);
         final double[] latitudes = loadTiePointData(latGrid);
 
-        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getName(), latGrid.getName(),
+                lonGrid.getGridWidth(), lonGrid.getGridHeight(),
                 targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
                 lonGrid.getOffsetX(), lonGrid.getOffsetY(),
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());

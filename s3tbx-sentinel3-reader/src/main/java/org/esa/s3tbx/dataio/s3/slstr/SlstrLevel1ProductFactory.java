@@ -589,51 +589,55 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         if (geoCodingMap.containsKey(nameEnd)) {
             return geoCodingMap.get(nameEnd);
         } else {
-            Band latBand = null;
-            Band lonBand = null;
+            // @todo 1 tb/tb extract method for switch and test 2020-02-14
+            String lonVariableName = null;
+            String latVariableName = null;
             switch (nameEnd) {
                 case "an":
-                    latBand = product.getBand("latitude_an");
-                    lonBand = product.getBand("longitude_an");
+                    lonVariableName = "longitude_an";
+                    latVariableName = "latitude_an";
+
                     break;
                 case "ao":
-                    latBand = product.getBand("latitude_ao");
-                    lonBand = product.getBand("longitude_ao");
+                    lonVariableName = "longitude_ao";
+                    latVariableName = "latitude_ao";
                     break;
                 case "bn":
-                    latBand = product.getBand("latitude_bn");
-                    lonBand = product.getBand("longitude_bn");
+                    lonVariableName = "longitude_bn";
+                    latVariableName = "latitude_bn";
                     break;
                 case "bo":
-                    latBand = product.getBand("latitude_bo");
-                    lonBand = product.getBand("longitude_bo");
+                    lonVariableName = "longitude_bo";
+                    latVariableName = "latitude_bo";
                     break;
                 case "cn":
-                    latBand = product.getBand("latitude_cn");
-                    lonBand = product.getBand("longitude_cn");
+                    lonVariableName = "longitude_cn";
+                    latVariableName = "latitude_cn";
                     break;
                 case "co":
-                    latBand = product.getBand("latitude_co");
-                    lonBand = product.getBand("longitude_co");
+                    lonVariableName = "longitude_co";
+                    latVariableName = "latitude_co";
                     break;
                 case "in":
-                    latBand = product.getBand("latitude_in");
-                    lonBand = product.getBand("longitude_in");
+                    lonVariableName = "longitude_in";
+                    latVariableName = "latitude_in";
                     break;
                 case "io":
-                    latBand = product.getBand("latitude_io");
-                    lonBand = product.getBand("longitude_io");
+                    lonVariableName = "longitude_io";
+                    latVariableName = "latitude_io";
                     break;
                 case "fn":
-                    latBand = product.getBand("latitude_fn");
-                    lonBand = product.getBand("longitude_fn");
+                    lonVariableName = "longitude_fn";
+                    latVariableName = "latitude_fn";
                     break;
                 case "fo":
-                    latBand = product.getBand("latitude_fo");
-                    lonBand = product.getBand("longitude_fo");
+                    lonVariableName = "longitude_fo";
+                    latVariableName = "latitude_fo";
                     break;
             }
 
+            final Band lonBand = product.getBand(lonVariableName);
+            final Band latBand = product.getBand(latVariableName);
             if (latBand == null || lonBand == null) {
                 return null;
             }
@@ -644,10 +648,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
             final int width = product.getSceneRasterWidth();
             final int height = product.getSceneRasterHeight();
-            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, width, height,
-                    width, height, resolutionInKm,
-                    0.5, 0.5,
-                    1.0, 1.0);
+            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                    width, height, resolutionInKm);
 
             final Preferences preferences = Config.instance("s3tbx").preferences();
             final String fwdKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_FORWARD, "FWD_PIXEL");
