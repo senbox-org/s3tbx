@@ -589,55 +589,12 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         if (geoCodingMap.containsKey(nameEnd)) {
             return geoCodingMap.get(nameEnd);
         } else {
-            // @todo 1 tb/tb extract method for switch and test 2020-02-14
-            String lonVariableName = null;
-            String latVariableName = null;
-            switch (nameEnd) {
-                case "an":
-                    lonVariableName = "longitude_an";
-                    latVariableName = "latitude_an";
+            final String[] geolocationVariableNames = getGeolocationVariableNames(nameEnd);
+            final String lonVarName = geolocationVariableNames[0];
+            final String latVarName = geolocationVariableNames[1];
 
-                    break;
-                case "ao":
-                    lonVariableName = "longitude_ao";
-                    latVariableName = "latitude_ao";
-                    break;
-                case "bn":
-                    lonVariableName = "longitude_bn";
-                    latVariableName = "latitude_bn";
-                    break;
-                case "bo":
-                    lonVariableName = "longitude_bo";
-                    latVariableName = "latitude_bo";
-                    break;
-                case "cn":
-                    lonVariableName = "longitude_cn";
-                    latVariableName = "latitude_cn";
-                    break;
-                case "co":
-                    lonVariableName = "longitude_co";
-                    latVariableName = "latitude_co";
-                    break;
-                case "in":
-                    lonVariableName = "longitude_in";
-                    latVariableName = "latitude_in";
-                    break;
-                case "io":
-                    lonVariableName = "longitude_io";
-                    latVariableName = "latitude_io";
-                    break;
-                case "fn":
-                    lonVariableName = "longitude_fn";
-                    latVariableName = "latitude_fn";
-                    break;
-                case "fo":
-                    lonVariableName = "longitude_fo";
-                    latVariableName = "latitude_fo";
-                    break;
-            }
-
-            final Band lonBand = product.getBand(lonVariableName);
-            final Band latBand = product.getBand(latVariableName);
+            final Band lonBand = product.getBand(lonVarName);
+            final Band latBand = product.getBand(latVarName);
             if (latBand == null || lonBand == null) {
                 return null;
             }
@@ -648,7 +605,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
             final int width = product.getSceneRasterWidth();
             final int height = product.getSceneRasterHeight();
-            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
                     width, height, resolutionInKm);
 
             final Preferences preferences = Config.instance("s3tbx").preferences();
@@ -663,6 +620,23 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             geoCodingMap.put(nameEnd, geoCoding);
             return geoCoding;
         }
+    }
+
+    static String[] getGeolocationVariableNames(String extension) throws IOException {
+        final String[] varNames = new String[2];
+
+        if (!(extension.equals("an") || extension.equals("ao") ||
+                extension.equals("bn") || extension.equals("bo") ||
+                extension.equals("cn") || extension.equals("co") ||
+                extension.equals("in") || extension.equals("io") ||
+                extension.equals("fn") || extension.equals("fo"))) {
+            throw new IOException("Unknown or unsupported band extension: " + extension);
+        }
+
+        varNames[0] = "longitude_" + extension;
+        varNames[1] = "latitude_" + extension;
+
+        return varNames;
     }
 
     private String getGridIndexFromMask(Mask mask) {
