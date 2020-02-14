@@ -155,8 +155,10 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
-        final Band lonBand = targetProduct.getBand("lon");
-        final Band latBand = targetProduct.getBand("lat");
+        final String lonVarName = "lon";
+        final String latVarName = "lat";
+        final Band lonBand = targetProduct.getBand(lonVarName);
+        final Band latBand = targetProduct.getBand(latVarName);
         if (lonBand == null || latBand == null) {
             return;
         }
@@ -166,10 +168,8 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
 
         final int width = targetProduct.getSceneRasterWidth();
         final int height = targetProduct.getSceneRasterHeight();
-        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, width, height,
-                width, height, RESOLUTION_IN_KM,
-                0.5, 0.5,
-                1.0, 1.0);
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
+                width, height, RESOLUTION_IN_KM);
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
         final String fwdKey = preferences.get(SYSPROP_SYN_L2_PIXEL_GEO_CODING_FORWARD, "FWD_PIXEL");

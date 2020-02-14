@@ -36,12 +36,12 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
     private int subSamplingY;
 
     public final static String OLCI_USE_PIXELGEOCODING = "s3tbx.reader.olci.pixelGeoCoding";
-    public final static String SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY = "s3tbx.reader.olci.fractionAccuracy";
-    public final static String SYSPROP_OLCI_PIXEL_CODING_FORWARD = "s3tbx.reader.olci.pixelGeoCoding.forward";
-    public final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
-    public final static String SYSPROP_OLCI_TIE_POINT_CODING_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
+    final static String SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY = "s3tbx.reader.olci.fractionAccuracy";
+    final static String SYSPROP_OLCI_PIXEL_CODING_FORWARD = "s3tbx.reader.olci.pixelGeoCoding.forward";
+    final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
+    final static String SYSPROP_OLCI_TIE_POINT_CODING_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
 
-    public OlciProductFactory(Sentinel3ProductReader productReader) {
+    OlciProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
         nameToWavelengthMap = new HashMap<>();
         nameToBandwidthMap = new HashMap<>();
@@ -106,9 +106,11 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
     }
 
     private void setPixelGeoCoding(Product targetProduct) throws IOException {
-        final Band latBand = targetProduct.getBand("latitude");
-        final Band lonBand = targetProduct.getBand("longitude");
-        if (latBand == null || lonBand == null) {
+        final String lonVariableName = "longitude";
+        final String latVariableName = "latitude";
+        final Band lonBand = targetProduct.getBand(lonVariableName);
+        final Band latBand = targetProduct.getBand(latVariableName);
+        if (lonBand == null || latBand == null) {
             return;
         }
 
@@ -116,10 +118,8 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final double[] latitudes = RasterUtils.loadDataScaled(latBand);
 
         final double resolutionInKilometers = getResolutionInKm(targetProduct.getProductType());
-        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonBand.getRasterWidth(), lonBand.getRasterHeight(),
-                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), resolutionInKilometers,
-                0.5, 0.5,
-                1.0, 1.0);
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                lonBand.getRasterWidth(), lonBand.getRasterHeight(), resolutionInKilometers);
 
         final String[] codingKeys = getForwardAndInverseKeys_pixelCoding();
         final ForwardCoding forward = ComponentFactory.getForward(codingKeys[0]);
@@ -132,11 +132,16 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
     }
 
     private void setTiePointGeoCoding(Product targetProduct) {
-        TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude");
-        TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude");
+        String lonVarName = "longitude";
+        String latVarName = "latitude";
+        TiePointGrid lonGrid = targetProduct.getTiePointGrid(lonVarName);
+        TiePointGrid latGrid = targetProduct.getTiePointGrid(latVarName);
+
         if (latGrid == null || lonGrid == null) {
-            latGrid = targetProduct.getTiePointGrid("TP_latitude");
-            lonGrid = targetProduct.getTiePointGrid("TP_longitude");
+            lonVarName = "TP_longitude";
+            latVarName = "TP_latitude";
+            lonGrid = targetProduct.getTiePointGrid(lonVarName);
+            latGrid = targetProduct.getTiePointGrid(latVarName);
             if (latGrid == null || lonGrid == null) {
                 return;
             }
@@ -146,7 +151,8 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final double[] latitudes = loadTiePointData(latGrid);
         final double resolutionInKilometers = getResolutionInKm(targetProduct.getProductType());
 
-        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
+                lonGrid.getGridWidth(), lonGrid.getGridHeight(),
                 targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), resolutionInKilometers,
                 lonGrid.getOffsetX(), lonGrid.getOffsetY(),
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());

@@ -153,8 +153,8 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) {
-        final TiePointGrid latGrid = targetProduct.getTiePointGrid(LATITUDE_TPG_NAME);
         final TiePointGrid lonGrid = targetProduct.getTiePointGrid(LONGITUDE_TPG_NAME);
+        final TiePointGrid latGrid = targetProduct.getTiePointGrid(LATITUDE_TPG_NAME);
 
         if (latGrid == null || lonGrid == null) {
             return;
@@ -163,7 +163,8 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
         final double[] longitudes = loadTiePointData(lonGrid);
         final double[] latitudes = loadTiePointData(latGrid);
 
-        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, LONGITUDE_TPG_NAME, LATITUDE_TPG_NAME,
+                lonGrid.getGridWidth(), lonGrid.getGridHeight(),
                 targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
                 lonGrid.getOffsetX(), lonGrid.getOffsetY(),
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
@@ -183,28 +184,32 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
         if (geoCodingMap.containsKey(end)) {
             return geoCodingMap.get(end);
         } else {
-            Band latBand = null;
-            Band lonBand = null;
+            // @todo 1 tb/tb extract method for switch and test 2020-02-14
+            String lonVariableName = null;
+            String latVariableName = null;
             switch (end) {
                 case "in":
-                    latBand = product.getBand("latitude_in");
-                    lonBand = product.getBand("longitude_in");
+                    lonVariableName = "longitude_in";
+                    latVariableName = "latitude_in";
+
                     break;
                 case "fn":
-                    latBand = product.getBand("latitude_fn");
-                    lonBand = product.getBand("longitude_fn");
+                    lonVariableName = "longitude_fn";
+                    latVariableName = "latitude_fn";
                     break;
             }
+
+            final Band lonBand = product.getBand(lonVariableName);
+            final Band latBand = product.getBand(latVariableName);
+
             if (latBand != null && lonBand != null) {
                 final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
                 final double[] latitudes = RasterUtils.loadDataScaled(latBand);
 
                 final int sceneRasterWidth = product.getSceneRasterWidth();
                 final int sceneRasterHeight = product.getSceneRasterHeight();
-                final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, sceneRasterWidth, sceneRasterHeight,
-                        sceneRasterWidth, sceneRasterHeight, RESOLUTION_IN_KM,
-                        0.5, 0.5,
-                        1.0, 1.0);
+                final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                        sceneRasterWidth, sceneRasterHeight, RESOLUTION_IN_KM);
 
                 final Preferences preferences = Config.instance("s3tbx").preferences();
                 final String inverseKey = preferences.get(SYSPROP_SLSTR_FRP_PIXEL_CODING_INVERSE, "INV_PIXEL_QUAD_TREE");

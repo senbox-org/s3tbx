@@ -7,7 +7,6 @@ import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.snap.core.dataio.geocoding.*;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 
 import java.io.File;
@@ -88,32 +87,35 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
         targetProduct.setAutoGrouping("radiance_uncert_in:BT_uncert_in:" +
-                                      "radiance_in:BT_in:" +
-                                      "radiance_uncert_io:BT_uncert_io:" +
-                                      "radiance_io:BT_io:" +
-                                      "exception_in:exception_io:" +
-                                      "x_i:y_i:" +
-                                      "elevation_i:latitude_i:longitude_i:" +
-                                      "specific_humidity:temperature_profile:" +
-                                      "cloud_in_:cloud_io_:" +
-                                      "bayes_in_:bayes_io_:" +
-                                      "bayes_in_:bayes_io_:" +
-                                      "pointing_in_:pointing_io_:" +
-                                      "confidence_in_:confidence_io_:" +
-                                      bandGrouping);
+                "radiance_in:BT_in:" +
+                "radiance_uncert_io:BT_uncert_io:" +
+                "radiance_io:BT_io:" +
+                "exception_in:exception_io:" +
+                "x_i:y_i:" +
+                "elevation_i:latitude_i:longitude_i:" +
+                "specific_humidity:temperature_profile:" +
+                "cloud_in_:cloud_io_:" +
+                "bayes_in_:bayes_io_:" +
+                "bayes_in_:bayes_io_:" +
+                "pointing_in_:pointing_io_:" +
+                "confidence_in_:confidence_io_:" +
+                bandGrouping);
     }
 
     @Override
     protected void setGeoCoding(Product targetProduct) {
-        final TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
-        final TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
+        final String lonVariableName = "longitude_tx";
+        final String latVariableName = "latitude_tx";
+        final TiePointGrid lonGrid = targetProduct.getTiePointGrid(lonVariableName);
+        final TiePointGrid latGrid = targetProduct.getTiePointGrid(latVariableName);
         if (lonGrid == null || latGrid == null) {
             return;
         }
 
         final double[] longitudes = loadTiePointData(lonGrid);
         final double[] latitudes = loadTiePointData(latGrid);
-        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                lonGrid.getGridWidth(), lonGrid.getGridHeight(),
                 targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), 1.0,
                 lonGrid.getOffsetX(), lonGrid.getOffsetY(),
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());

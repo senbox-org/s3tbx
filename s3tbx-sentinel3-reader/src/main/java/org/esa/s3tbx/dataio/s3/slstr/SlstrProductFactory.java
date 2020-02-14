@@ -32,7 +32,7 @@ import javax.media.jai.BorderExtender;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -113,8 +113,8 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         final ImageLayout imageLayout = ImageManager.createSingleBandedImageLayout(targetBand);
         final RenderingHints renderingHints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, imageLayout);
         renderingHints.add(new RenderingHints(JAI.KEY_BORDER_EXTENDER,
-                                              BorderExtender.createInstance(
-                                                      BorderExtender.BORDER_COPY)
+                BorderExtender.createInstance(
+                        BorderExtender.BORDER_COPY)
         ));
         final MultiLevelImage sourceImage = sourceBand.getSourceImage();
         final float[] scalings = new float[]{
@@ -123,8 +123,8 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         };
         final MultiLevelImage masterImage = masterProduct.getBandAt(0).getSourceImage();
         return SourceImageScaler.scaleMultiLevelImage(masterImage, sourceImage, scalings, offsets, renderingHints,
-                                                      targetBand.getNoDataValue(),
-                                                      Interpolation.getInstance(Interpolation.INTERP_NEAREST));
+                targetBand.getNoDataValue(),
+                Interpolation.getInstance(Interpolation.INTERP_NEAREST));
     }
 
     float[] getOffsets(double sourceStartOffset, double sourceTrackOffset, short[] sourceResolutions) {
@@ -138,9 +138,9 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         final int subSamplingX = sourceResolutions[0] / referenceResolutions[0];
         final int subSamplingY = sourceResolutions[1] / referenceResolutions[1];
         final float[] tiePointGridOffsets = getTiePointGridOffsets(sourceStartOffset, sourceTrackOffset,
-                                                                   subSamplingX, subSamplingY, sourceResolutions);
+                subSamplingX, subSamplingY, sourceResolutions);
         return copyBandAsTiePointGrid(sourceBand, targetProduct, subSamplingX, subSamplingY,
-                                      tiePointGridOffsets[0], tiePointGridOffsets[1]);
+                tiePointGridOffsets[0], tiePointGridOffsets[1]);
     }
 
     private float[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
@@ -153,8 +153,10 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
-        final TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
-        final TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
+        final String lonVariableName = "longitude_tx";
+        final String latVariableName = "latitude_tx";
+        final TiePointGrid lonGrid = targetProduct.getTiePointGrid(lonVariableName);
+        final TiePointGrid latGrid = targetProduct.getTiePointGrid(latVariableName);
         if (latGrid == null || lonGrid == null) {
             return;
         }
@@ -162,7 +164,8 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         final double[] longitudes = loadTiePointData(lonGrid);
         final double[] latitudes = loadTiePointData(latGrid);
 
-        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                lonGrid.getGridWidth(), lonGrid.getGridHeight(),
                 targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), 0.5,
                 lonGrid.getOffsetX(), lonGrid.getOffsetY(),
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
