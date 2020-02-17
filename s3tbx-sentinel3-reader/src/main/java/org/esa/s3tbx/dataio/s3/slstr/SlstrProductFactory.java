@@ -182,10 +182,10 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String fwdKey = preferences.get(SYSPROP_SLSTR_PIXEL_TIE_POINT_FORWARD, "FWD_TIE_POINT_BILINEAR");
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_PIXEL_TIE_POINT_FORWARD, ComponentFactory.FWD_TIE_POINT_BILINEAR);
 
         final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
-        final InverseCoding inverse = ComponentFactory.getInverse("INV_TIE_POINT");
+        final InverseCoding inverse = ComponentFactory.getInverse(ComponentFactory.INV_TIE_POINT);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();

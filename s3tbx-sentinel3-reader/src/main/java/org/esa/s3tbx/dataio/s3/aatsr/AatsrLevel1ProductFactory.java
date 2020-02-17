@@ -115,13 +115,13 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         final double[] longitudes = loadTiePointData(lonGrid);
         final double[] latitudes = loadTiePointData(latGrid);
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
-                lonGrid.getGridWidth(), lonGrid.getGridHeight(),
-                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), 1.0,
-                lonGrid.getOffsetX(), lonGrid.getOffsetY(),
-                lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
+                                                  lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+                                                  targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), 1.0,
+                                                  lonGrid.getOffsetX(), lonGrid.getOffsetY(),
+                                                  lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
 
-        final ForwardCoding forward = ComponentFactory.getForward("FWD_TIE_POINT_BILINEAR");
-        final InverseCoding inverse = ComponentFactory.getInverse("INV_TIE_POINT");
+        final ForwardCoding forward = ComponentFactory.getForward(ComponentFactory.FWD_TIE_POINT_BILINEAR);
+        final InverseCoding inverse = ComponentFactory.getInverse(ComponentFactory.INV_TIE_POINT);
 
         targetProduct.setSceneGeoCoding(new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN));
     }

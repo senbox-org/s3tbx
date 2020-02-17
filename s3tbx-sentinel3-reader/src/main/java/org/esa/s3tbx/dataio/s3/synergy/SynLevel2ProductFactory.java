@@ -169,11 +169,11 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
         final int width = targetProduct.getSceneRasterWidth();
         final int height = targetProduct.getSceneRasterHeight();
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
-                width, height, RESOLUTION_IN_KM);
+                                                  width, height, RESOLUTION_IN_KM);
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String fwdKey = preferences.get(SYSPROP_SYN_L2_PIXEL_GEO_CODING_FORWARD, "FWD_PIXEL");
-        final String invKey = preferences.get(SYSPROP_SYN_L2_PIXEL_GEO_CODING_INVERSE, "INV_PIXEL_QUAD_TREE");
+        final String fwdKey = preferences.get(SYSPROP_SYN_L2_PIXEL_GEO_CODING_FORWARD, ComponentFactory.FWD_PIXEL);
+        final String invKey = preferences.get(SYSPROP_SYN_L2_PIXEL_GEO_CODING_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
         final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
         final InverseCoding inverse = ComponentFactory.getInverse(invKey);
 

@@ -54,9 +54,9 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
                 targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String invKey = preferences.get(SYSPROP_SLSTR_WST_PIXEL_INVERSE, "INV_PIXEL_QUAD_TREE");
+        final String invKey = preferences.get(SYSPROP_SLSTR_WST_PIXEL_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
 
-        final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
+        final ForwardCoding forward = ComponentFactory.getForward(ComponentFactory.FWD_PIXEL);
         final InverseCoding inverse = ComponentFactory.getInverse(invKey);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);

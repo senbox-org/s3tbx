@@ -170,9 +170,9 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String forwardKey = preferences.get(SYSPROP_SLSTR_FRP_TIE_POINT_CODING_FORWARD, "FWD_TIE_POINT_BILINEAR");
+        final String forwardKey = preferences.get(SYSPROP_SLSTR_FRP_TIE_POINT_CODING_FORWARD, ComponentFactory.FWD_TIE_POINT_BILINEAR);
         final ForwardCoding forward = ComponentFactory.getForward(forwardKey);
-        final InverseCoding inverse = ComponentFactory.getInverse("INV_TIE_POINT");
+        final InverseCoding inverse = ComponentFactory.getInverse(ComponentFactory.INV_TIE_POINT);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();
@@ -209,11 +209,11 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
                 final int sceneRasterWidth = product.getSceneRasterWidth();
                 final int sceneRasterHeight = product.getSceneRasterHeight();
                 final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
-                        sceneRasterWidth, sceneRasterHeight, RESOLUTION_IN_KM);
+                                                          sceneRasterWidth, sceneRasterHeight, RESOLUTION_IN_KM);
 
                 final Preferences preferences = Config.instance("s3tbx").preferences();
-                final String inverseKey = preferences.get(SYSPROP_SLSTR_FRP_PIXEL_CODING_INVERSE, "INV_PIXEL_QUAD_TREE");
-                final ForwardCoding forward = ComponentFactory.getForward("FWD_PIXEL");
+                final String inverseKey = preferences.get(SYSPROP_SLSTR_FRP_PIXEL_CODING_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
+                final ForwardCoding forward = ComponentFactory.getForward(ComponentFactory.FWD_PIXEL);
                 final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
 
                 final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
