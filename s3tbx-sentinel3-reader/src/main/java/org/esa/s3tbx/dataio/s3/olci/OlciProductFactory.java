@@ -246,11 +246,11 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final Preferences preferences = Config.instance("s3tbx").preferences();
         final boolean useFractAccuracy = preferences.getBoolean(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, false);
         if (useFractAccuracy) {
-            codingNames[0] = "FWD_PIXEL_INTERPOLATING";
+            codingNames[0] = ComponentFactory.FWD_PIXEL_INTERPOLATING;
         } else {
-            codingNames[0] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_FORWARD, "FWD_PIXEL");
+            codingNames[0] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_FORWARD, ComponentFactory.FWD_PIXEL);
         }
-        codingNames[1] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, "INV_PIXEL_QUAD_TREE");
+        codingNames[1] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
 
         return codingNames;
     }
@@ -259,8 +259,8 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final String[] codingNames = new String[2];
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        codingNames[0] = preferences.get(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, "FWD_TIE_POINT_BILINEAR");
-        codingNames[1] = "INV_TIE_POINT";
+        codingNames[0] = preferences.get(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, ComponentFactory.FWD_TIE_POINT_BILINEAR);
+        codingNames[1] = ComponentFactory.INV_TIE_POINT;
 
         return codingNames;
     }

@@ -88,11 +88,11 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
         final double[] latitudes = RasterUtils.loadDataScaled(latBand);
 
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonBand.getName(), latBand.getName(),
-                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);
+                                                  targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_FORWARD, "FWD_PIXEL");
-        final String inverseKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_INVERSE, "INV_PIXEL_QUAD_TREE");
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_FORWARD, ComponentFactory.FWD_PIXEL);
+        final String inverseKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
 
         final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
         final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
@@ -114,10 +114,10 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_TIE_POINT_FORWARD, "FWD_TIE_POINT_BILINEAR");
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_TIE_POINT_FORWARD, ComponentFactory.FWD_TIE_POINT_BILINEAR);
 
         final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
-        final InverseCoding inverse = ComponentFactory.getInverse("INV_TIE_POINT");
+        final InverseCoding inverse = ComponentFactory.getInverse(ComponentFactory.INV_TIE_POINT);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();
