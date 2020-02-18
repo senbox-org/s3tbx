@@ -603,8 +603,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             final double[] latitudes = RasterUtils.loadDataScaled(latBand);
             final double resolutionInKm = getResolutionInKm(nameEnd);
 
-            final int width = product.getSceneRasterWidth();
-            final int height = product.getSceneRasterHeight();
+            final int width = lonBand.getRasterWidth();
+            final int height = lonBand.getRasterHeight();
             final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
                                                       width, height, resolutionInKm);
 
