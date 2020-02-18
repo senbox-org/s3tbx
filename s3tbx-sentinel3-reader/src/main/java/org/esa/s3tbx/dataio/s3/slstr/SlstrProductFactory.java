@@ -26,6 +26,7 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.SourceImageScaler;
+import org.esa.snap.core.util.ArrayUtils;
 import org.esa.snap.runtime.Config;
 
 import javax.media.jai.BorderExtender;
@@ -51,15 +52,25 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         super(productReader);
     }
 
+    private static final String[] SLSTR_GRID_INDEXES = new String[]{
+            "an", "ao", "bn", "bo", "cn", "co", "in", "io", "fn", "fo", "tn", "to", "tx"
+    };
+
     static String getGridIndex(String bandName) {
         String[] nameParts = bandName.split("_");
         int lastPartIndex = nameParts.length - 1;
         int index = lastPartIndex;
+        int firstIndexOfPartWithTwoLetters = -1;
         while (index >= 0) {
-            if (nameParts[index].length() == 2) {
+            if (ArrayUtils.isMemberOf(nameParts[index], SLSTR_GRID_INDEXES)) {
                 return nameParts[index];
+            } else if (firstIndexOfPartWithTwoLetters < 0 && nameParts[index].length() == 2) {
+                firstIndexOfPartWithTwoLetters = index;
             }
             index--;
+        }
+        if (firstIndexOfPartWithTwoLetters >= 0) {
+            return nameParts[firstIndexOfPartWithTwoLetters];
         }
         if (nameParts[lastPartIndex].length() > 1) {
             return nameParts[lastPartIndex].substring(nameParts[lastPartIndex].length() - 2);
