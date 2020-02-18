@@ -18,6 +18,7 @@ public class SlstrProductFactoryTest {
         assertEquals("gh", SlstrProductFactory.getGridIndex("the_fetrzgh"));
         assertEquals("f", SlstrProductFactory.getGridIndex("thtcfzghj_f"));
         assertEquals("-f", SlstrProductFactory.getGridIndex("thtcfzghj-f"));
+        assertEquals("ao", SlstrProductFactory.getGridIndex("S1_exception_ao_no_parameters"));
     }
 
 }
