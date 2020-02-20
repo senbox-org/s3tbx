@@ -5,6 +5,8 @@ import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.util.MetTxReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.TiePointGrid;
@@ -21,7 +23,7 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     private Product masterProduct;
 
-    public static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
+    private static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
     private static final double FILL_VALUE = -1.0E9;
 
     // todo ideas+ implement valid Expression
@@ -120,8 +122,8 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
                                                   lonGrid.getOffsetX(), lonGrid.getOffsetY(),
                                                   lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
 
-        final ForwardCoding forward = ComponentFactory.getForward(ComponentFactory.FWD_TIE_POINT_BILINEAR);
-        final InverseCoding inverse = ComponentFactory.getInverse(ComponentFactory.INV_TIE_POINT);
+        final ForwardCoding forward = ComponentFactory.getForward(TiePointBilinearForward.KEY);
+        final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
 
         targetProduct.setSceneGeoCoding(new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN));
     }

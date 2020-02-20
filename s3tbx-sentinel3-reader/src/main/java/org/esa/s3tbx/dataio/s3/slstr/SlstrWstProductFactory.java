@@ -17,6 +17,8 @@ package org.esa.s3tbx.dataio.s3.slstr;
 
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -54,9 +56,9 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
                 targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String invKey = preferences.get(SYSPROP_SLSTR_WST_PIXEL_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
+        final String invKey = preferences.get(SYSPROP_SLSTR_WST_PIXEL_INVERSE, PixelQuadTreeInverse.KEY);
 
-        final ForwardCoding forward = ComponentFactory.getForward(ComponentFactory.FWD_PIXEL);
+        final ForwardCoding forward = ComponentFactory.getForward(PixelForward.KEY);
         final InverseCoding inverse = ComponentFactory.getInverse(invKey);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);

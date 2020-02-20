@@ -6,6 +6,10 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.util.ProductUtils;
@@ -170,9 +174,9 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String forwardKey = preferences.get(SYSPROP_SLSTR_FRP_TIE_POINT_CODING_FORWARD, ComponentFactory.FWD_TIE_POINT_BILINEAR);
+        final String forwardKey = preferences.get(SYSPROP_SLSTR_FRP_TIE_POINT_CODING_FORWARD, TiePointBilinearForward.KEY);
         final ForwardCoding forward = ComponentFactory.getForward(forwardKey);
-        final InverseCoding inverse = ComponentFactory.getInverse(ComponentFactory.INV_TIE_POINT);
+        final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();
@@ -212,8 +216,8 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
                                                           sceneRasterWidth, sceneRasterHeight, RESOLUTION_IN_KM);
 
                 final Preferences preferences = Config.instance("s3tbx").preferences();
-                final String inverseKey = preferences.get(SYSPROP_SLSTR_FRP_PIXEL_CODING_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
-                final ForwardCoding forward = ComponentFactory.getForward(ComponentFactory.FWD_PIXEL);
+                final String inverseKey = preferences.get(SYSPROP_SLSTR_FRP_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
+                final ForwardCoding forward = ComponentFactory.getForward(PixelForward.KEY);
                 final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
 
                 final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);

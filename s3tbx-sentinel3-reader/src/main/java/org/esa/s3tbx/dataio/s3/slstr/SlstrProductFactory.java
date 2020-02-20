@@ -20,6 +20,8 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
@@ -182,10 +184,10 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
                 lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String fwdKey = preferences.get(SYSPROP_SLSTR_PIXEL_TIE_POINT_FORWARD, ComponentFactory.FWD_TIE_POINT_BILINEAR);
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_PIXEL_TIE_POINT_FORWARD, TiePointBilinearForward.KEY);
 
         final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
-        final InverseCoding inverse = ComponentFactory.getInverse(ComponentFactory.INV_TIE_POINT);
+        final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();

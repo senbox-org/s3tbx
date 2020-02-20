@@ -7,6 +7,11 @@ import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReaderFactory;
 import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.forward.PixelInterpolatingForward;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.runtime.Config;
@@ -246,11 +251,11 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final Preferences preferences = Config.instance("s3tbx").preferences();
         final boolean useFractAccuracy = preferences.getBoolean(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, false);
         if (useFractAccuracy) {
-            codingNames[0] = ComponentFactory.FWD_PIXEL_INTERPOLATING;
+            codingNames[0] = PixelInterpolatingForward.KEY;
         } else {
-            codingNames[0] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_FORWARD, ComponentFactory.FWD_PIXEL);
+            codingNames[0] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_FORWARD, PixelForward.KEY);
         }
-        codingNames[1] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
+        codingNames[1] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
 
         return codingNames;
     }
@@ -259,8 +264,8 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final String[] codingNames = new String[2];
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        codingNames[0] = preferences.get(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, ComponentFactory.FWD_TIE_POINT_BILINEAR);
-        codingNames[1] = ComponentFactory.INV_TIE_POINT;
+        codingNames[0] = preferences.get(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, TiePointBilinearForward.KEY);
+        codingNames[1] = TiePointInverse.KEY;
 
         return codingNames;
     }

@@ -20,6 +20,8 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
@@ -609,8 +611,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                                                       width, height, resolutionInKm);
 
             final Preferences preferences = Config.instance("s3tbx").preferences();
-            final String fwdKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_FORWARD, ComponentFactory.FWD_PIXEL);
-            final String invKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
+            final String fwdKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_FORWARD, PixelForward.KEY);
+            final String invKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_INVERSE, PixelQuadTreeInverse.KEY);
 
             final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
             final InverseCoding inverse = ComponentFactory.getInverse(invKey);

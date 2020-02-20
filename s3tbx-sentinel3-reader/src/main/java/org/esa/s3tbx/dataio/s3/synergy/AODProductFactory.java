@@ -5,6 +5,8 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -70,8 +72,8 @@ public class AODProductFactory extends AbstractProductFactory {
                                                   width, height, RESOLUTION_IN_KM);
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String fwdKey = preferences.get(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_FORWARD, ComponentFactory.FWD_PIXEL);
-        final String invKey = preferences.get(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_INVERSE, ComponentFactory.INV_PIXEL_QUAD_TREE);
+        final String fwdKey = preferences.get(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_FORWARD, PixelForward.KEY);
+        final String invKey = preferences.get(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_INVERSE, PixelQuadTreeInverse.KEY);
 
         final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
         final InverseCoding inverse = ComponentFactory.getInverse(invKey);
