@@ -146,8 +146,8 @@ public class PDUStitchingOp extends Operator {
             if (targetImageSize == null) {
                 targetImageSize = NULL_IMAGE_SIZE;
             }
-            Band targetBand = new Band(displayFileName, , targetImageSize.getRows(), targetImageSize.getColumns());
-            targetProduct.addBand(targetBand);
+//            Band targetBand = new Band(displayFileName, , targetImageSize.getRows(), targetImageSize.getColumns());
+//            targetProduct.addBand(targetBand);
         }
     }
 
