@@ -151,8 +151,8 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
             final double pipoY = pixelPos.getY();
 
             // TODO: 20.02.2020 SE fixed -- Marked GETGEOPOS abort condition
-            int x0 = (int) Math.floor(pipoX) - pipoX == width ? 1 : 0;
-            int y0 = (int) Math.floor(pipoY) - pipoY == height ? 1 : 0;
+            int x0 = (int) Math.floor(pipoX) - (pipoX == width ? 1 : 0);
+            int y0 = (int) Math.floor(pipoY) - (pipoY == height ? 1 : 0);
             if (x0 >= 0 && x0 < width && y0 >= 0 && y0 < height) {
                 if (x0 > 0 && pipoX - x0 < 0.5f || x0 == width - 1) {
                     x0 -= 1;
