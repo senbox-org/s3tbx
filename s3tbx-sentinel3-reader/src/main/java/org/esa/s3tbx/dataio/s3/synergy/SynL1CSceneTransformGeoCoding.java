@@ -74,7 +74,8 @@ public class SynL1CSceneTransformGeoCoding extends AbstractGeoCoding {
             modelToSceneTransform.transform(pixelPos, modelPixelPos);
             geoPos = wrappedGeoCoding.getGeoPos(modelPixelPos, geoPos);
         } catch (TransformException e) {
-            geoPos.setLocation(Double.NaN, Double.NaN);
+            // TODO: 20.02.2020 SE fixed -- Marked GETGEOPOS setInvalid instead?
+            geoPos.setInvalid();
         }
         return geoPos;
     }
