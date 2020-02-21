@@ -23,6 +23,8 @@ import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Scene;
 import org.esa.snap.core.dataop.maptransf.Datum;
 
+// TODO: 20.02.2020 SE -- Marked GETGEOPOS ... remove this class?
+
 /**
  * Experimental ISIN geo-coding for the MERIS binned Level-2 product.
  * This is not public API.
@@ -88,10 +90,10 @@ public class ISINGeoCoding extends AbstractGeoCoding {
 
     // TODO: 20.02.2020 SE fixed -- Marked GETGEOPOS abort condition
     public int calcIndex(double v, int maxVal) {
-        if (v > maxVal + 1) {
+        if (v < 0 || v > maxVal) {
             return -1;
         }
-        return Math.min(maxVal, (int) v);
+        return Math.min(maxVal - 1, (int) v);
     }
 
     public Datum getDatum() {
