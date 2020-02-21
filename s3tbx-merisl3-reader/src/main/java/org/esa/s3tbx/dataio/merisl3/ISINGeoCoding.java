@@ -70,11 +70,13 @@ public class ISINGeoCoding extends AbstractGeoCoding {
 
     public GeoPos getGeoPos(final PixelPos pixelPos, GeoPos geoPos) {
         geoPos = (geoPos == null) ? new GeoPos() : geoPos;
-        geoPos.lat = -1;
-        geoPos.lon = -1;
-        int rowIndex = (int) pixelPos.y;
-        if (rowIndex >= 0 && rowIndex < _grid.getRowCount()) {
+        // TODO: 20.02.2020 SE fixed -- Marked GETGEOPOS ... -1 ?  NAN ?
+        geoPos.setInvalid();
+        // TODO: 20.02.2020 SE fixed -- Marked GETGEOPOS abort condition
+        int rowIndex = calcIndex(pixelPos.y, _grid.getRowCount());
+        if (rowIndex != -1) {
             int rowLength = _grid.getRowLength(rowIndex);
+            // TODO: 20.02.2020 SE -- Marked GETGEOPOS abort condition
             double colIndex = pixelPos.x - _grid.getRowCount() + (rowLength / 2);
             if (colIndex >= 0 && colIndex < rowLength) {
                 geoPos.lat = 90.0f - 180.0f * (pixelPos.y) / _grid.getRowCount();
@@ -82,6 +84,14 @@ public class ISINGeoCoding extends AbstractGeoCoding {
             }
         }
         return geoPos;
+    }
+
+    // TODO: 20.02.2020 SE fixed -- Marked GETGEOPOS abort condition
+    public int calcIndex(double v, int maxVal) {
+        if (v > maxVal + 1) {
+            return -1;
+        }
+        return Math.min(maxVal, (int) v);
     }
 
     public Datum getDatum() {
