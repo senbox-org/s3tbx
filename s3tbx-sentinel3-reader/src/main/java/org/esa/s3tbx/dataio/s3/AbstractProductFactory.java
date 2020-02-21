@@ -15,6 +15,8 @@ package org.esa.s3tbx.dataio.s3;/*
  */
 
 import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.glevel.support.DefaultMultiLevelImage;
+import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.util.ColorProvider;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.dataio.ProductReader;
@@ -33,9 +35,14 @@ import org.esa.snap.core.util.ProductUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.media.jai.Interpolation;
+import javax.media.jai.RenderedOp;
+import javax.media.jai.operator.CropDescriptor;
+import javax.media.jai.operator.TranslateDescriptor;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -137,18 +144,28 @@ public abstract class AbstractProductFactory implements ProductFactory {
                                                   int subSamplingY,
                                                   float offsetX, float offsetY) {
         final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
-        final int w = sourceImage.getWidth();
-        final int h = sourceImage.getHeight();
-//        final float[] tiePoints = sourceImage.getData().getSamples(0, 0, w, h, 0, new float[w * h]);
         final String unit = sourceBand.getUnit();
-        final TiePointGrid tiePointGrid = new TiePointGrid(sourceBand.getName(), w, h,
-                                                           offsetX, offsetY,
-                                                           subSamplingX, subSamplingY);
 
+        float newOffsetX = offsetX % subSamplingX;
+        float dataOffsetX = (newOffsetX - offsetX) / subSamplingX;
+        double newWidth = Math.ceil((targetProduct.getSceneRasterWidth() - newOffsetX) / subSamplingX);
+        float newOffsetY = offsetY % subSamplingY;
+        float dataOffsetY = (newOffsetY - offsetY) / subSamplingY;
+        double newHeight = Math.ceil((targetProduct.getSceneRasterHeight() - newOffsetY) / subSamplingY);
+        RenderedOp translatedSourceImage = TranslateDescriptor.create(sourceImage, -dataOffsetX, -dataOffsetY,
+                Interpolation.getInstance(Interpolation.INTERP_NEAREST), null);
+        RenderedImage croppedSourceImage = CropDescriptor.create(translatedSourceImage, 0f, 0f,
+                (float) newWidth, (float) newHeight, null);
+        DefaultMultiLevelImage newSourceImage =
+                new DefaultMultiLevelImage(new DefaultMultiLevelSource(croppedSourceImage, sourceImage.getModel()));
+
+        final TiePointGrid tiePointGrid = new TiePointGrid(sourceBand.getName(), (int) newWidth, (int) newHeight,
+                                                           newOffsetX, newOffsetY,
+                                                           subSamplingX, subSamplingY);
         if (unit != null && unit.toLowerCase().contains("degree")) {
             tiePointGrid.setDiscontinuity(TiePointGrid.DISCONT_AUTO);
         }
-        tpgImageMap.put(tiePointGrid, sourceImage);
+        tpgImageMap.put(tiePointGrid, newSourceImage);
         final String description = sourceBand.getDescription();
         tiePointGrid.setDescription(description);
         tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
