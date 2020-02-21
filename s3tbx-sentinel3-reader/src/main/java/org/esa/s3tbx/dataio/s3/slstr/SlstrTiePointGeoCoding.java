@@ -3,6 +3,7 @@ package org.esa.s3tbx.dataio.s3.slstr;
 import org.esa.snap.core.dataio.ProductSubsetDef;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.Scene;
 import org.esa.snap.core.datamodel.TiePointGeoCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
@@ -44,7 +45,38 @@ class SlstrTiePointGeoCoding extends TiePointGeoCoding {
 
     @Override
     public boolean transferGeoCoding(Scene srcScene, Scene destScene, ProductSubsetDef subsetDef) {
-        //todo implement - tf 20160313
-        return false;
+        final String latGridName = getLatGrid().getName();
+        final String lonGridName = getLonGrid().getName();
+        final Product destProduct = destScene.getProduct();
+        TiePointGrid latGrid = destProduct.getTiePointGrid(latGridName);
+        if (latGrid == null) {
+            if (subsetDef != null) {
+                latGrid = TiePointGrid.createSubset(getLatGrid(), subsetDef);
+            } else {
+                latGrid = getLatGrid().cloneTiePointGrid();
+            }
+            destProduct.addTiePointGrid(latGrid);
+        }
+        TiePointGrid lonGrid = destProduct.getTiePointGrid(lonGridName);
+        if (lonGrid == null) {
+            if (subsetDef != null) {
+                lonGrid = TiePointGrid.createSubset(getLonGrid(), subsetDef);
+            } else {
+                lonGrid = getLonGrid().cloneTiePointGrid();
+            }
+            destProduct.addTiePointGrid(lonGrid);
+        }
+        if (latGrid != null && lonGrid != null) {
+            try {
+                SlstrTiePointGeoCoding slstrTiePointGeoCoding =
+                        new SlstrTiePointGeoCoding(latGrid, lonGrid, this.transform);
+                destScene.setGeoCoding(slstrTiePointGeoCoding);
+                return true;
+            } catch (NoninvertibleTransformException e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }
