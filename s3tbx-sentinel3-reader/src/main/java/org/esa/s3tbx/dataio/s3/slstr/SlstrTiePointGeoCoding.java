@@ -47,29 +47,12 @@ class SlstrTiePointGeoCoding extends TiePointGeoCoding {
     public boolean transferGeoCoding(Scene srcScene, Scene destScene, ProductSubsetDef subsetDef) {
         final String latGridName = getLatGrid().getName();
         final String lonGridName = getLonGrid().getName();
-        final Product destProduct = destScene.getProduct();
-        TiePointGrid latGrid = destProduct.getTiePointGrid(latGridName);
-        if (latGrid == null) {
-            if (subsetDef != null) {
-                latGrid = TiePointGrid.createSubset(getLatGrid(), subsetDef);
-            } else {
-                latGrid = getLatGrid().cloneTiePointGrid();
-            }
-            destProduct.addTiePointGrid(latGrid);
-        }
-        TiePointGrid lonGrid = destProduct.getTiePointGrid(lonGridName);
-        if (lonGrid == null) {
-            if (subsetDef != null) {
-                lonGrid = TiePointGrid.createSubset(getLonGrid(), subsetDef);
-            } else {
-                lonGrid = getLonGrid().cloneTiePointGrid();
-            }
-            destProduct.addTiePointGrid(lonGrid);
-        }
-        if (latGrid != null && lonGrid != null) {
+        TiePointGrid destLatGrid = getDestGrid(latGridName, destScene, subsetDef);
+        TiePointGrid destLonGrid = getDestGrid(lonGridName, destScene, subsetDef);
+        if (destLatGrid != null && destLonGrid != null) {
             try {
                 SlstrTiePointGeoCoding slstrTiePointGeoCoding =
-                        new SlstrTiePointGeoCoding(latGrid, lonGrid, this.transform);
+                        new SlstrTiePointGeoCoding(destLatGrid, destLonGrid, this.transform);
                 destScene.setGeoCoding(slstrTiePointGeoCoding);
                 return true;
             } catch (NoninvertibleTransformException e) {
