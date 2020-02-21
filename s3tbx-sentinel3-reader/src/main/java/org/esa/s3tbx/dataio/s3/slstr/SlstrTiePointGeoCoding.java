@@ -45,10 +45,8 @@ class SlstrTiePointGeoCoding extends TiePointGeoCoding {
 
     @Override
     public boolean transferGeoCoding(Scene srcScene, Scene destScene, ProductSubsetDef subsetDef) {
-        final String latGridName = getLatGrid().getName();
-        final String lonGridName = getLonGrid().getName();
-        TiePointGrid destLatGrid = getDestGrid(latGridName, destScene, subsetDef);
-        TiePointGrid destLonGrid = getDestGrid(lonGridName, destScene, subsetDef);
+        TiePointGrid destLatGrid = getDestGrid(getLatGrid(), destScene, subsetDef);
+        TiePointGrid destLonGrid = getDestGrid(getLonGrid(), destScene, subsetDef);
         if (destLatGrid != null && destLonGrid != null) {
             try {
                 SlstrTiePointGeoCoding slstrTiePointGeoCoding =
