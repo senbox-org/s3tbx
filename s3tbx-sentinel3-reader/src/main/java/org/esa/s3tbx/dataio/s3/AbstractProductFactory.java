@@ -18,17 +18,7 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.util.ColorProvider;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.dataio.ProductReader;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.ColorPaletteDef;
-import org.esa.snap.core.datamodel.CrsGeoCoding;
-import org.esa.snap.core.datamodel.ImageInfo;
-import org.esa.snap.core.datamodel.Mask;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductNodeGroup;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.SampleCoding;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.util.ProductUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -42,17 +32,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class AbstractProductFactory implements ProductFactory {
 
-    private Map<TiePointGrid, MultiLevelImage> tpgImageMap;
+    private Map<String, MultiLevelImage> tpgImageMap;
     private final List<Product> openProductList = new ArrayList<>();
     private final Sentinel3ProductReader productReader;
     private final Logger logger;
@@ -130,8 +117,8 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     @Override
-    public MultiLevelImage getImageForTpg(TiePointGrid tpg) {
-        return tpgImageMap.get(tpg);
+    public MultiLevelImage getImageForTpg(String tpgName) {
+        return tpgImageMap.get(tpgName);
     }
 
     protected TiePointGrid copyBandAsTiePointGrid(Band sourceBand, Product targetProduct, int subSamplingX,
@@ -142,14 +129,15 @@ public abstract class AbstractProductFactory implements ProductFactory {
         final int h = sourceImage.getHeight();
 //        final float[] tiePoints = sourceImage.getData().getSamples(0, 0, w, h, 0, new float[w * h]);
         final String unit = sourceBand.getUnit();
-        final TiePointGrid tiePointGrid = new TiePointGrid(sourceBand.getName(), w, h,
-                                                           offsetX, offsetY,
-                                                           subSamplingX, subSamplingY);
+        final String bandName = sourceBand.getName();
+        final TiePointGrid tiePointGrid = new TiePointGrid(bandName, w, h,
+                offsetX, offsetY,
+                subSamplingX, subSamplingY);
 
         if (unit != null && unit.toLowerCase().contains("degree")) {
             tiePointGrid.setDiscontinuity(TiePointGrid.DISCONT_AUTO);
         }
-        tpgImageMap.put(tiePointGrid, sourceImage);
+        tpgImageMap.put(bandName, sourceImage);
         final String description = sourceBand.getDescription();
         tiePointGrid.setDescription(description);
         tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
