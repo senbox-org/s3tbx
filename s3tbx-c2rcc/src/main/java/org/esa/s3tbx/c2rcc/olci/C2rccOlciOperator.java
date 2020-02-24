@@ -240,10 +240,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     @Parameter(alias="TSMexp", defaultValue = "0.942", description = "TSM exponent (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM exponent")
     private double TSMfakBwit;
 
-    @Parameter(alias="CHLexp", defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop_apig^CHLexp * CHLfak ).", label = "CHL exponent")
+    @Parameter(alias = "CHLexp", defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop_apig^CHLexp * CHLfac).", label = "CHL exponent")
     private double CHLexp;
 
-    @Parameter(alias="CHLfac", defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop_apig^CHLexp * CHLfak ).", label = "CHL factor")
+    @Parameter(alias = "CHLfac", defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop_apig^CHLexp * CHLfac).", label = "CHL factor")
     private double CHLfak;
 
     // RD20161103 changed from 0.05 to 0.005 for sum of differences

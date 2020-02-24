@@ -4,7 +4,7 @@ import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
-import org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.*;
+import org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.Result;
 import org.esa.s3tbx.c2rcc.util.NNUtils;
 import org.esa.s3tbx.c2rcc.util.RgbProfiles;
 import org.esa.snap.core.datamodel.Band;
@@ -47,8 +47,34 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
-import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.*;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.DEFAULT_MERIS_WAVELENGTH;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_ADET_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_ADET_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_AGELB_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_AGELB_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_APIG_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_APIG_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_BPART_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_BPART_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_BWIT_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_BWIT_AT_MIN;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_CLOUD;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_IOP_OOR;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_KD489_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_KD489_OOR;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_KDMIN_AT_MAX;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_KDMIN_OOR;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_RHOW_OOR;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_RHOW_OOS;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_RTOSA_OOR;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_RTOSA_OOS;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.FLAG_INDEX_VALID_PE;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.merband12_ix;
+import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.merband15_ix;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 
@@ -215,16 +241,16 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
             description = "The surface air pressure at sea level if not provided by auxiliary data.")
     private double press;
 
-    @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")
+    @Parameter(alias = "TSMfac", defaultValue = "1.72", description = "TSM factor (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM factor")
     private double TSMfakBpart;
 
-    @Parameter(defaultValue = "3.1", description = "Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bwit")
+    @Parameter(alias = "TSMexp", defaultValue = "3.1", description = "TSM exponent (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM exponent")
     private double TSMfakBwit;
 
-    @Parameter(defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
+    @Parameter(alias = "CHLexp", defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop_apig^CHLexp * CHLfac).", label = "CHL exponent")
     private double CHLexp;
 
-    @Parameter(defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
+    @Parameter(alias = "CHLfac", defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop_apig^CHLexp * CHLfac).", label = "CHL factor")
     private double CHLfak;
 
     //RD20161103 parameter 0.05 -> 0.003 for sum of differences of MERIS12 bands 9-12
