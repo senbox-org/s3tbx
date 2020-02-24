@@ -108,8 +108,8 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
     }
 
     private void setTiePointGeoCoding(Product targetProduct, TiePointGrid lonGrid, TiePointGrid latGrid) {
-        final double[] longitudes = loadTiePointData(lonGrid);
-        final double[] latitudes = loadTiePointData(latGrid);
+        final double[] longitudes = loadTiePointData(lonGrid.getName());
+        final double[] latitudes = loadTiePointData(latGrid.getName());
 
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getName(), latGrid.getName(),
                 lonGrid.getGridWidth(), lonGrid.getGridHeight(),

@@ -9,7 +9,6 @@ import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.transform.MathTransform2D;
 import org.esa.snap.core.util.ProductUtils;
 
-import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,9 +47,9 @@ public class SynL1CProductFactory extends AbstractProductFactory {
     }
 
     @Override
-    protected void addDataNodes(Product masterProduct, Product targetProduct) throws IOException {
+    protected void addDataNodes(Product masterProduct, Product targetProduct) {
         for (final Product sourceProduct : getOpenProductList()) {
-            final Map<String, String> mapping = new HashMap<String, String>();
+            final Map<String, String> mapping = new HashMap<>();
             final Map<String, List<String>> partition = Partitioner.partition(sourceProduct.getBandNames(), "_CAM");
 
             for (final Map.Entry<String, List<String>> entry : partition.entrySet()) {
@@ -69,7 +68,7 @@ public class SynL1CProductFactory extends AbstractProductFactory {
                     sourceImage = sourceBand.getSourceImage();
                 }
                 Band targetBand = new Band(targetBandName, sourceBand.getDataType(),
-                                           sourceImage.getWidth(), sourceImage.getHeight());
+                        sourceImage.getWidth(), sourceImage.getHeight());
                 ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
                 targetProduct.addBand(targetBand);
                 //todo change this later
@@ -137,7 +136,7 @@ public class SynL1CProductFactory extends AbstractProductFactory {
             }
         }
         Band cameraIndexBand = new VirtualBand("Camera_Index", ProductData.TYPE_INT8,
-                                               sceneRasterWidth, sceneRasterHeight, expression.toString());
+                sceneRasterWidth, sceneRasterHeight, expression.toString());
         targetProduct.addBand(cameraIndexBand);
         IndexCoding indexCoding = new IndexCoding("Camera_Index");
         for (int i = 0; i < 5; i++) {
@@ -167,13 +166,13 @@ public class SynL1CProductFactory extends AbstractProductFactory {
     }
 
     @Override
-    protected void setGeoCoding(Product targetProduct) throws IOException {
+    protected void setGeoCoding(Product targetProduct) {
         // @todo 1 tb/tb replace this with the new implementation 2020-01-27
         final ProductNodeGroup<Band> bandGroup = targetProduct.getBandGroup();
         if (bandGroup.contains("GEOLOCATION_REF_latitude") && bandGroup.contains("GEOLOCATION_REF_longitude")) {
             final BasicPixelGeoCoding pixelGeoCoding =
                     GeoCodingFactory.createPixelGeoCoding(bandGroup.get("GEOLOCATION_REF_latitude"),
-                                                          bandGroup.get("GEOLOCATION_REF_longitude"), "", 5);
+                            bandGroup.get("GEOLOCATION_REF_longitude"), "", 5);
             targetProduct.setSceneGeoCoding(pixelGeoCoding);
         }
     }
@@ -186,8 +185,8 @@ public class SynL1CProductFactory extends AbstractProductFactory {
             final MathTransform2D modelToSceneTransform = band.getModelToSceneTransform();
             if (sceneToModelTransform != MathTransform2D.IDENTITY || modelToSceneTransform != MathTransform2D.IDENTITY) {
                 band.setGeoCoding(new SynL1CSceneTransformGeoCoding(targetProduct.getSceneGeoCoding(),
-                                                                    sceneToModelTransform,
-                                                                    modelToSceneTransform));
+                        sceneToModelTransform,
+                        modelToSceneTransform));
             }
         }
     }
@@ -195,13 +194,5 @@ public class SynL1CProductFactory extends AbstractProductFactory {
     @Override
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         targetProduct.setAutoGrouping("Meas:error_estimates:exception:MISREGIST_OLC:MISREGIST_SLST:GEOLOCATION_REF");
-    }
-
-    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
-        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
-        final Raster tpData = mlImage.getImage(0).getData();
-        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
-        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
-        return tiePoints;
     }
 }

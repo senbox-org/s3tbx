@@ -164,8 +164,8 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
             return;
         }
 
-        final double[] longitudes = loadTiePointData(lonGrid);
-        final double[] latitudes = loadTiePointData(latGrid);
+        final double[] longitudes = loadTiePointData(LONGITUDE_TPG_NAME);
+        final double[] latitudes = loadTiePointData(LATITUDE_TPG_NAME);
 
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, LONGITUDE_TPG_NAME, LATITUDE_TPG_NAME,
                 lonGrid.getGridWidth(), lonGrid.getGridHeight(),
@@ -213,7 +213,7 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
                 final int sceneRasterWidth = product.getSceneRasterWidth();
                 final int sceneRasterHeight = product.getSceneRasterHeight();
                 final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
-                                                          sceneRasterWidth, sceneRasterHeight, RESOLUTION_IN_KM);
+                        sceneRasterWidth, sceneRasterHeight, RESOLUTION_IN_KM);
 
                 final Preferences preferences = Config.instance("s3tbx").preferences();
                 final String inverseKey = preferences.get(SYSPROP_SLSTR_FRP_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);

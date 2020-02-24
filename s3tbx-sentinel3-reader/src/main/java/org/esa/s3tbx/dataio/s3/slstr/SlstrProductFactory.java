@@ -151,13 +151,13 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         final int subSamplingX = sourceResolutions[0] / referenceResolutions[0];
         final int subSamplingY = sourceResolutions[1] / referenceResolutions[1];
         final float[] tiePointGridOffsets = getTiePointGridOffsets(sourceStartOffset, sourceTrackOffset,
-                subSamplingX, subSamplingY, sourceResolutions);
+                subSamplingX, subSamplingY);
         return copyBandAsTiePointGrid(sourceBand, targetProduct, subSamplingX, subSamplingY,
                 tiePointGridOffsets[0], tiePointGridOffsets[1]);
     }
 
     private float[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
-                                           int subSamplingX, int subSamplingY, short[] sourceResolutions) {
+                                           int subSamplingX, int subSamplingY) {
         float[] tiePointGridOffsets = new float[2];
         tiePointGridOffsets[0] = (float) (referenceTrackOffset - sourceTrackOffset * subSamplingX);
         tiePointGridOffsets[1] = (float) (sourceStartOffset * subSamplingY - referenceStartOffset);
@@ -174,8 +174,8 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
             return;
         }
 
-        final double[] longitudes = loadTiePointData(lonGrid);
-        final double[] latitudes = loadTiePointData(latGrid);
+        final double[] longitudes = loadTiePointData(lonVariableName);
+        final double[] latitudes = loadTiePointData(latVariableName);
 
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
                 lonGrid.getGridWidth(), lonGrid.getGridHeight(),
@@ -248,8 +248,8 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         return slstrNetcdfReader.readProductNodes(file, null);
     }
 
-    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
-        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
+    protected double[] loadTiePointData(String tpgName) {
+        final MultiLevelImage mlImage = getImageForTpg(tpgName);
         final Raster tpData = mlImage.getImage(0).getData();
         final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
         tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);

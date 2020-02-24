@@ -114,8 +114,8 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
             return;
         }
 
-        final double[] longitudes = loadTiePointData(lonGrid);
-        final double[] latitudes = loadTiePointData(latGrid);
+        final double[] longitudes = loadTiePointData(lonVariableName);
+        final double[] latitudes = loadTiePointData(latVariableName);
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
                                                   lonGrid.getGridWidth(), lonGrid.getGridHeight(),
                                                   targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), 1.0,

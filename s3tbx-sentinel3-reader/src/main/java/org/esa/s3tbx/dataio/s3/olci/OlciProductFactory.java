@@ -152,8 +152,8 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
             }
         }
 
-        final double[] longitudes = loadTiePointData(lonGrid);
-        final double[] latitudes = loadTiePointData(latGrid);
+        final double[] longitudes = loadTiePointData(lonVarName);
+        final double[] latitudes = loadTiePointData(latVarName);
         final double resolutionInKilometers = getResolutionInKm(targetProduct.getProductType());
 
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
@@ -270,8 +270,8 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         return codingNames;
     }
 
-    protected double[] loadTiePointData(TiePointGrid tiePointGrid) {
-        final MultiLevelImage mlImage = getImageForTpg(tiePointGrid);
+    protected double[] loadTiePointData(String tpgName) {
+        final MultiLevelImage mlImage = getImageForTpg(tpgName);
         final Raster tpData = mlImage.getImage(0).getData();
         final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
         tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
