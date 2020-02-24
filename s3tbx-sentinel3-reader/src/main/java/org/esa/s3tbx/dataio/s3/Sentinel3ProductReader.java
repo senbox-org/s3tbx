@@ -113,15 +113,15 @@ public class Sentinel3ProductReader extends AbstractProductReader {
     protected final void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight,
                                                 int sourceStepX, int sourceStepY, Band destBand, int destOffsetX,
                                                 int destOffsetY, int destWidth, int destHeight, ProductData destBuffer,
-                                                ProgressMonitor pm) throws IOException {
+                                                ProgressMonitor pm) {
         throw new IllegalStateException("Data are provided by images.");
     }
 
 
     @Override
     public void readTiePointGridRasterData(TiePointGrid tpg, int destOffsetX, int destOffsetY, int destWidth, int destHeight, ProductData destBuffer,
-                                           ProgressMonitor pm) throws IOException {
-        MultiLevelImage imageForTpg = factory.getImageForTpg(tpg);
+                                           ProgressMonitor pm) {
+        MultiLevelImage imageForTpg = factory.getImageForTpg(tpg.getName());
         Raster imageData = imageForTpg.getImage(0).getData();
         imageData.getSamples(destOffsetX, destOffsetY, destWidth, destHeight, 0, (float[]) destBuffer.getElems());
     }
