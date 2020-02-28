@@ -16,9 +16,9 @@
 package org.esa.s3tbx.insitu.ui;
 
 import com.bc.ceres.swing.TableLayout;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.esa.s3tbx.insitu.server.InsituDataset;
 import org.esa.s3tbx.insitu.server.InsituObservation;
 import org.esa.s3tbx.insitu.server.InsituParameter;
