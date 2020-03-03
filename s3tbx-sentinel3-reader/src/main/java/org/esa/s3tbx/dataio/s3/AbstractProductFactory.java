@@ -48,17 +48,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class AbstractProductFactory implements ProductFactory {
 
-    private Map<TiePointGrid, MultiLevelImage> tpgImageMap;
+    private Map<String, MultiLevelImage> tpgImageMap;
     private final List<Product> openProductList = new ArrayList<>();
     private final Sentinel3ProductReader productReader;
     private final Logger logger;
@@ -136,8 +133,8 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     @Override
-    public MultiLevelImage getImageForTpg(TiePointGrid tpg) {
-        return tpgImageMap.get(tpg);
+    public MultiLevelImage getImageForTpg(String tpgName) {
+        return tpgImageMap.get(tpgName);
     }
 
     protected TiePointGrid copyBandAsTiePointGrid(Band sourceBand, Product targetProduct, int subSamplingX,
@@ -158,14 +155,14 @@ public abstract class AbstractProductFactory implements ProductFactory {
                 (float) newWidth, (float) newHeight, null);
         DefaultMultiLevelImage newSourceImage =
                 new DefaultMultiLevelImage(new DefaultMultiLevelSource(croppedSourceImage, sourceImage.getModel()));
-
-        final TiePointGrid tiePointGrid = new TiePointGrid(sourceBand.getName(), (int) newWidth, (int) newHeight,
+        final String bandName = sourceBand.getName();
+        final TiePointGrid tiePointGrid = new TiePointGrid(bandName, (int) newWidth, (int) newHeight,
                                                            newOffsetX, newOffsetY,
                                                            subSamplingX, subSamplingY);
         if (unit != null && unit.toLowerCase().contains("degree")) {
             tiePointGrid.setDiscontinuity(TiePointGrid.DISCONT_AUTO);
         }
-        tpgImageMap.put(tiePointGrid, newSourceImage);
+        tpgImageMap.put(bandName, newSourceImage);
         final String description = sourceBand.getDescription();
         tiePointGrid.setDescription(description);
         tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
@@ -302,8 +299,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected void addDataNodes(Product masterProduct, Product targetProduct) throws IOException {
-        final int w = targetProduct.getSceneRasterWidth();
-        final int h = targetProduct.getSceneRasterHeight();
         for (final Product sourceProduct : openProductList) {
             final Map<String, String> mapping = new HashMap<>();
             for (final Band sourceBand : sourceProduct.getBands()) {

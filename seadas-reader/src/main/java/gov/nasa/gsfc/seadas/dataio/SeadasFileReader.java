@@ -157,6 +157,9 @@ public abstract class SeadasFileReader {
         final int[] maskValues;
         if (flagMasks != null) {
             final Array flagMasksArray = flagMasks.getValues();
+            // must set the unsigned property explicitly,
+            // even though it is set when writing the flag_masks attribute
+            flagMasksArray.setUnsigned(variable.isUnsigned());
             maskValues = new int[flagMasks.getLength()];
             for (int i = 0; i < maskValues.length; i++) {
                 maskValues[i] = flagMasksArray.getInt(i);
@@ -823,13 +826,13 @@ public abstract class SeadasFileReader {
                         band.setScalingOffset(attribute.getNumericValue(0).doubleValue());
                     } else if (attribName.startsWith("valid_")) {
                         if ("valid_min".equals(attribName)) {
-                            if (attribute.getDataType().isUnsigned()){
+                            if (attribute.isUnsigned()){
                                 validMinMax[0] = getUShortAttribute(attribute);
                             } else {
                                 validMinMax[0] = attribute.getNumericValue(0).doubleValue();
                             }
                         } else if ("valid_max".equals(attribName)) {
-                            if (attribute.getDataType().isUnsigned()){
+                            if (attribute.isUnsigned()){
                                 validMinMax[1] = getUShortAttribute(attribute);
                             } else {
                                 validMinMax[1] = attribute.getNumericValue(0).doubleValue();
@@ -1247,22 +1250,16 @@ public abstract class SeadasFileReader {
     }
 
     public static int getProductDataType(Variable variable) {
-        return getProductDataType(variable.getDataType(), variable.getDataType().isUnsigned(), true);
+        return getProductDataType(variable.getDataType(), variable.isUnsigned(), true);
     }
 
     public static int getProductDataType(DataType dataType, boolean unsigned, boolean rasterDataOnly) {
         if (dataType == DataType.BYTE) {
             return unsigned ? ProductData.TYPE_UINT8 : ProductData.TYPE_INT8;
-        } else if (dataType == DataType.UBYTE) {
-            return ProductData.TYPE_UINT8;
         } else if (dataType == DataType.SHORT) {
             return unsigned ? ProductData.TYPE_UINT16 : ProductData.TYPE_INT16;
-        } else if (dataType == DataType.USHORT) {
-            return ProductData.TYPE_UINT16;
         } else if (dataType == DataType.INT) {
             return unsigned ? ProductData.TYPE_UINT32 : ProductData.TYPE_INT32;
-        } else if (dataType == DataType.UINT) {
-            return ProductData.TYPE_UINT32;
         } else if (dataType == DataType.FLOAT) {
             return ProductData.TYPE_FLOAT32;
         } else if (dataType == DataType.DOUBLE) {

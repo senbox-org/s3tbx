@@ -22,6 +22,7 @@ import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.GeoCodingFactory;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.Scene;
+import org.esa.snap.core.subset.PixelSubsetRegion;
 import org.esa.snap.core.util.Guardian;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.math.IndexValidator;
@@ -355,7 +356,7 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
                 ProductSubsetDef bandSubset = new ProductSubsetDef();
                 bandSubset.addNodeName(latBand.getName());
                 bandSubset.addNodeName(lonBand.getName());
-                bandSubset.setRegion(subsetDef.getRegion());
+                bandSubset.setSubsetRegion(new PixelSubsetRegion(subsetDef.getRegion(), 0));
                 bandSubset.setSubSampling(subsetDef.getSubSamplingX(), subsetDef.getSubSamplingY());
                 Product temp = latBand.getProduct().createSubset(bandSubset, "__temp", "");
                 tempLatBand = temp.getBand(latBand.getName());
