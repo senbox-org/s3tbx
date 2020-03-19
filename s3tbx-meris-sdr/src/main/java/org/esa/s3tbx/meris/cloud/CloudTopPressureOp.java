@@ -101,31 +101,35 @@ public class CloudTopPressureOp extends MerisBasisOp {
             workload = 5;
         }
         pm.beginTask("Loading in auxiliary data", workload);
-        pm.setSubTaskName("Loading Neural Net");
         try {
-            loadNeuralNet();
-            pm.worked(1);
-        } catch (Exception e) {
-            throw new OperatorException("Failed to load neural net ctp.nna:\n" + e.getMessage());
-        }
-        pm.setSubTaskName("Initializing auxiliary data");
-        initAuxData();
-        pm.worked(1);
-        try {
-            if (straylightCorr) {
-                readStraylightCoeff();
+            pm.setSubTaskName("Loading Neural Net");
+            try {
+                loadNeuralNet();
                 pm.worked(1);
-                readStraylightCorrWavelengths();
-                pm.worked(1);
+            } catch (Exception e) {
+                throw new OperatorException("Failed to load neural net ctp.nna:\n" + e.getMessage());
             }
-        } catch (Exception e) {
-            throw new OperatorException("Failed to load straylight correction auxdata:\n" + e.getMessage());
+            pm.setSubTaskName("Initializing auxiliary data");
+            initAuxData();
+            pm.worked(1);
+            try {
+                if (straylightCorr) {
+                    readStraylightCoeff();
+                    pm.worked(1);
+                    readStraylightCorrWavelengths();
+                    pm.worked(1);
+                }
+            } catch (Exception e) {
+                throw new OperatorException("Failed to load straylight correction auxdata:\n" + e.getMessage());
+            }
+            szaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
+            saaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_AZIMUTH_DS_NAME);
+            vzaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_VIEW_ZENITH_DS_NAME);
+            vaaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_VIEW_AZIMUTH_DS_NAME);
+            pm.worked(1);
+        } finally {
+            pm.done();
         }
-        szaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
-        saaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_AZIMUTH_DS_NAME);
-        vzaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_VIEW_ZENITH_DS_NAME);
-        vaaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_VIEW_AZIMUTH_DS_NAME);
-        pm.worked(1);
     }
 
     private void loadNeuralNet() throws IOException, JnnException {

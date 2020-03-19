@@ -139,15 +139,17 @@ public class CloudProbabilityOp extends MerisBasisOp {
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("", 300);
-        pm.setSubTaskName("Loading in auxiliary data");
         try {
+            pm.setSubTaskName("Loading in auxiliary data");
             loadAuxdata(pm);
+            centralWavelenth = centralWavelengthProvider.getCentralWavelength(l1bProduct.getProductType());
+            createBooleanBands();
+            pm.worked(100);
         } catch (IOException e) {
             throw new OperatorException("Could not load auxdata", e);
+        } finally {
+            pm.done();
         }
-        centralWavelenth = centralWavelengthProvider.getCentralWavelength(l1bProduct.getProductType());
-        createBooleanBands();
-        pm.worked(100);
     }
     
     private void createBooleanBands() throws OperatorException {

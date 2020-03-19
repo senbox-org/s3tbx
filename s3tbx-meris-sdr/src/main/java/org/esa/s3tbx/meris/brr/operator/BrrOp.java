@@ -110,14 +110,17 @@ public class BrrOp extends BrrBasisOp {
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Preparing computation", 2);
-        pm.setSubTaskName("Preparing source product");
-        prepareSourceProducts();
-        pm.worked(1);
         try {
+            pm.setSubTaskName("Preparing source products");
+            prepareSourceProducts();
+            pm.worked(1);
             pm.setSubTaskName("Initializing L2 Auxdata");
             auxData = L2AuxDataProvider.getInstance().getAuxdata(sourceProduct);
+            pm.worked(1);
         } catch (Exception e) {
             throw new OperatorException("Cannot initialize L2 Auxdata:" + e.getMessage(), e);
+        } finally {
+            pm.done();
         }
     }
 

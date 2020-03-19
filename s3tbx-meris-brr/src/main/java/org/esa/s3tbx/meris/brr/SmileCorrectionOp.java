@@ -80,6 +80,8 @@ public class SmileCorrectionOp extends MerisBasisOp implements Constants {
             pm.worked(1);
         } catch (Exception e) {
             throw new OperatorException("Could not load L2Auxdata", e);
+        } finally {
+            pm.done();
         }
     }
 

@@ -89,20 +89,23 @@ public class Rad2ReflOp extends MerisBasisOp implements Constants {
         pm.beginTask("Reading in auxiliary data", 2);
         try {
             auxData = L2AuxDataProvider.getInstance().getAuxdata(sourceProduct);
+            pm.worked(1);
+            pm.setSubTaskName("Setting up auxiliary images");
+            detectorIndexBand = sourceProduct.getBand(EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME);
+            sunZenithTPG = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
+            invalidImage = VirtualBandOpImage.builder("l1_flags.INVALID", sourceProduct)
+                    .dataType(ProductData.TYPE_FLOAT32)
+                    .fillValue(0.0f)
+                    .tileSize(sourceProduct.getPreferredTileSize())
+                    .mask(false)
+                    .level(ResolutionLevel.MAXRES)
+                    .create();
+            pm.worked(1);
         } catch (L2AuxDataException e) {
             throw new OperatorException(e.getMessage(), e);
+        } finally {
+            pm.done();
         }
-        pm.worked(1);
-        pm.setSubTaskName("Setting up auxiliary images");
-        detectorIndexBand = sourceProduct.getBand(EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME);
-        sunZenithTPG = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
-        invalidImage = VirtualBandOpImage.builder("l1_flags.INVALID", sourceProduct)
-                .dataType(ProductData.TYPE_FLOAT32)
-                .fillValue(0.0f)
-                .tileSize(sourceProduct.getPreferredTileSize())
-                .mask(false)
-                .level(ResolutionLevel.MAXRES)
-                .create();
     }
 
     @Override

@@ -257,11 +257,15 @@ public class SmacOperator extends Operator {
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Preparing SMAC processing", 200);
-        // create a bitmask expression for input
-        // -------------------------------------
-        createMask();
-        pm.worked(100);
-        installAuxdata(pm);
+        try {
+            // create a bitmask expression for input
+            // -------------------------------------
+            createMask();
+            pm.worked(100);
+            installAuxdata(pm);
+        } finally {
+            pm.done();
+        }
     }
 
     private void loadInputProduct() {

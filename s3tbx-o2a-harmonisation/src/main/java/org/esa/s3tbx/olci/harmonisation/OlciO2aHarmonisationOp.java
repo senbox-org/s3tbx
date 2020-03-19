@@ -89,7 +89,7 @@ public class OlciO2aHarmonisationOp extends Operator {
         numBandsToProcess = lastBandToProcess - 13 + 1;
         OlciHarmonisationIO.validateSourceProduct(l1bProduct);
         if (StringUtils.isNotNullAndNotEmpty(alternativeAltitudeBandName)) {
-            if(l1bProduct.containsBand(alternativeAltitudeBandName)) {
+            if (l1bProduct.containsBand(alternativeAltitudeBandName)) {
                 demAltitudeBand = l1bProduct.getBand(alternativeAltitudeBandName);
             } else {
                 String message = String.format("Specified alternative altitude band '%s' is not contained in OLCI L1B product.",
@@ -105,25 +105,27 @@ public class OlciO2aHarmonisationOp extends Operator {
         pm.beginTask("Initializing Desmile Auxiliary Data", (numBandsToProcess * 2) + 2);
         try {
             initDesmileAuxdata(pm);
+            szaBand = l1bProduct.getTiePointGrid("SZA");
+            ozaBand = l1bProduct.getTiePointGrid("OZA");
+            slpBand = l1bProduct.getTiePointGrid("sea_level_pressure");
+            detectorIndexBand = l1bProduct.getBand("detector_index");
+            altitudeBand = l1bProduct.getBand("altitude");
+            radianceBands = new Band[5];
+            cwlBands = new Band[5];
+            fwhmBands = new Band[5];
+            solarFluxBands = new Band[5];
+            for (int i = 12; i < 17; i++) {
+                radianceBands[i - 12] = l1bProduct.getBand("Oa" + i + "_radiance");
+                cwlBands[i - 12] = l1bProduct.getBand("lambda0_band_" + i);
+                fwhmBands[i - 12] = l1bProduct.getBand("FWHM_band_" + i);
+                solarFluxBands[i - 12] = l1bProduct.getBand("solar_flux_band_" + i);
+            }
+            pm.worked(1);
         } catch (IOException | ParseException e) {
             throw new OperatorException("Cannot initialize auxdata for desmile of transmissions - exiting.", e);
+        } finally {
+            pm.done();
         }
-        szaBand = l1bProduct.getTiePointGrid("SZA");
-        ozaBand = l1bProduct.getTiePointGrid("OZA");
-        slpBand = l1bProduct.getTiePointGrid("sea_level_pressure");
-        detectorIndexBand = l1bProduct.getBand("detector_index");
-        altitudeBand = l1bProduct.getBand("altitude");
-        radianceBands = new Band[5];
-        cwlBands = new Band[5];
-        fwhmBands = new Band[5];
-        solarFluxBands = new Band[5];
-        for (int i = 12; i < 17; i++) {
-            radianceBands[i - 12] = l1bProduct.getBand("Oa" + i + "_radiance");
-            cwlBands[i - 12] = l1bProduct.getBand("lambda0_band_" + i);
-            fwhmBands[i - 12] = l1bProduct.getBand("FWHM_band_" + i);
-            solarFluxBands[i - 12] = l1bProduct.getBand("solar_flux_band_" + i);
-        }
-        pm.worked(1);
     }
 
     @Override

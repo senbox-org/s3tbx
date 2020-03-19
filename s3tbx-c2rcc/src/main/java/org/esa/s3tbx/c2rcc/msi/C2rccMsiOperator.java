@@ -168,6 +168,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final String STANDARD_NETS = "C2RCC-Nets";
     private static final String EXTREME_NETS = "C2X-Nets";
     private static final Map<String, String[]> c2rccNetSetMap = new HashMap<>();
+
     static {
         String[] standardNets = new String[10];
         standardNets[IDX_iop_rw] = "msi/std_s2_20160502/iop_rw/17x97x47_125.5.net";
@@ -786,7 +787,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
             if (outputAsRrs) {
                 autoGrouping.append(":rrs");
-            }else {
+            } else {
                 autoGrouping.append(":rhow");
             }
         }
@@ -1001,40 +1002,44 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Preparing computation", 2);
-        pm.setSubTaskName("Defining algorithm ...");
         try {
+            pm.setSubTaskName("Defining algorithm ...");
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
-                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath),
+                        NNUtils.ALTERNATIVE_NET_DIR_NAMES);
                 algorithm = new C2rccMsiAlgorithm(nnFilePaths, false);
             } else {
                 String[] nnFilePaths = c2rccNetSetMap.get(netSet);
-                if(nnFilePaths == null) {
+                if (nnFilePaths == null) {
                     throw new OperatorException(String.format("Unknown set '%s' of neural nets specified.", netSet));
                 }
                 algorithm = new C2rccMsiAlgorithm(nnFilePaths, true);
             }
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
+            algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
+            algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
+            algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
+            algorithm.setOutputRpath(outputRpath);
+            algorithm.setOutputTdown(outputTdown);
+            algorithm.setOutputTup(outputTup);
+            algorithm.setOutputRhow(outputAcReflectance);
+            algorithm.setOutputRhown(outputRhown);
+            algorithm.setOutputOos(outputOos);
+            algorithm.setOutputKd(outputKd);
+            algorithm.setOutputUncertainties(outputUncertainties);
+            algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
+            getTargetProduct().addProductNodeListener(getNnNamesMetadataAppender());
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.worked(1);
         } catch (IOException e) {
             throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-        algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
-        algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
-        algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
-        algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
-        algorithm.setOutputRpath(outputRpath);
-        algorithm.setOutputTdown(outputTdown);
-        algorithm.setOutputTup(outputTup);
-        algorithm.setOutputRhow(outputAcReflectance);
-        algorithm.setOutputRhown(outputRhown);
-        algorithm.setOutputOos(outputOos);
-        algorithm.setOutputKd(outputKd);
-        algorithm.setOutputUncertainties(outputUncertainties);
-        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-        getTargetProduct().addProductNodeListener(getNnNamesMetadataAppender());
-        pm.worked(1);
-        pm.setSubTaskName("Initialising atmospheric auxiliary data");
-        initAtmosphericAuxdata();
     }
 
     private ProductData.UTC getStartTime() {

@@ -93,45 +93,50 @@ public class FillAerosolOp extends MerisBasisOp {
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Preparing computation", config.bands.size() + 2);
-        sourceBands = new HashMap<>(config.bands.size());
-        defaultBands = new HashMap<>(config.bands.size());
+        try {
+            sourceBands = new HashMap<>(config.bands.size());
+            defaultBands = new HashMap<>(config.bands.size());
 
-        Map<String, Object> parameters = new HashMap<>();
-        BandMathsOp.BandDescriptor[] bandDescriptors = new BandMathsOp.BandDescriptor[config.bands.size()];
-        pm.setSubTaskName("Creating band descriptors ...");
-        int i = 0;
-        for (BandDesc bandDesc : config.bands) {
-            Band srcBand = sourceProduct.getBand(bandDesc.inputBand);
-            Band targetBand = targetProduct.addBand(bandDesc.name, ProductData.TYPE_FLOAT32);
-            targetBand.setNoDataValue(-1);
-            targetBand.setNoDataValueUsed(true);
+            Map<String, Object> parameters = new HashMap<>();
+            BandMathsOp.BandDescriptor[] bandDescriptors = new BandMathsOp.BandDescriptor[config.bands.size()];
+            pm.setSubTaskName("Creating band descriptors ...");
+            int i = 0;
+            for (BandDesc bandDesc : config.bands) {
+                Band srcBand = sourceProduct.getBand(bandDesc.inputBand);
+                Band targetBand = targetProduct.addBand(bandDesc.name, ProductData.TYPE_FLOAT32);
+                targetBand.setNoDataValue(-1);
+                targetBand.setNoDataValueUsed(true);
 
-            sourceBands.put(targetBand, srcBand);
-            Band defaultBand = defaultProduct.getBand(bandDesc.defaultBand);
-            defaultBands.put(targetBand, defaultBand);
+                sourceBands.put(targetBand, srcBand);
+                Band defaultBand = defaultProduct.getBand(bandDesc.defaultBand);
+                defaultBands.put(targetBand, defaultBand);
 
-            BandMathsOp.BandDescriptor bandDescriptor = new BandMathsOp.BandDescriptor();
-            bandDescriptor.name = bandDesc.name;
-            bandDescriptor.expression = bandDesc.validExp;
-            bandDescriptor.type = ProductData.TYPESTRING_INT8;
-            bandDescriptors[i] = bandDescriptor;
+                BandMathsOp.BandDescriptor bandDescriptor = new BandMathsOp.BandDescriptor();
+                bandDescriptor.name = bandDesc.name;
+                bandDescriptor.expression = bandDesc.validExp;
+                bandDescriptor.type = ProductData.TYPESTRING_INT8;
+                bandDescriptors[i] = bandDescriptor;
+                pm.worked(1);
+                i++;
+            }
+            pm.setSubTaskName("Creating band maths product ...");
+            parameters.put("targetBands", bandDescriptors);
+            validProduct = GPF.createProduct("BandMaths", parameters, sourceProduct);
             pm.worked(1);
-            i++;
-        }
-        pm.setSubTaskName("Creating band maths product ...");
-        parameters.put("targetBands", bandDescriptors);
-        validProduct = GPF.createProduct("BandMaths", parameters, sourceProduct);
-        pm.worked(1);
 
-        sourceProductRect = new Rectangle(sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
-        if (config.frs) {
-            rectCalculator = new RectangleExtender(sourceProductRect,
-                    (config.pixelWidth + 1) * 4, (config.pixelWidth + 1) * 4);
-        } else {
-            rectCalculator = new RectangleExtender(sourceProductRect, config.pixelWidth, config.pixelWidth);
+            sourceProductRect = new Rectangle(sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
+            if (config.frs) {
+                rectCalculator = new RectangleExtender(sourceProductRect,
+                        (config.pixelWidth + 1) * 4, (config.pixelWidth + 1) * 4);
+            } else {
+                rectCalculator = new RectangleExtender(sourceProductRect, config.pixelWidth, config.pixelWidth);
+            }
+            pm.setSubTaskName("Computing weights matrix ...");
+            computeWeightMatrix();
+            pm.worked(1);
+        } finally {
+            pm.done();
         }
-        pm.setSubTaskName("Computing weights matrix ...");
-        computeWeightMatrix();
     }
 
     private void computeWeightMatrix() {

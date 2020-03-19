@@ -83,10 +83,12 @@ public class LandClassificationOp extends MerisBasisOp implements Constants {
         pm.beginTask("Reading in auxiliary data", 1);
         try {
             auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
+            pm.worked(1);
         } catch (Exception e) {
             throw new OperatorException("could not load L2Auxdata", e);
+        } finally {
+            pm.done();
         }
-        pm.worked(1);
     }
 
     public static FlagCoding createFlagCoding() {

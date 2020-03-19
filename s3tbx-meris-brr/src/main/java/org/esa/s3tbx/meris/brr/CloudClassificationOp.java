@@ -117,12 +117,15 @@ public class CloudClassificationOp extends MerisBasisOp implements Constants {
         pm.beginTask("Reading in auxiliary data", 2);
         try {
             auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
+            pm.worked(1);
+            pixelId = new PixelId(auxData);
+            rayleighCorrection = new RayleighCorrection(auxData);
+            pm.worked(1);
         } catch (L2AuxDataException e) {
             throw new OperatorException("Could not load L2Auxdata", e);
+        } finally {
+            pm.done();
         }
-        pm.worked(1);
-        pixelId = new PixelId(auxData);
-        rayleighCorrection = new RayleighCorrection(auxData);
     }
 
     public static FlagCoding createFlagCoding() {

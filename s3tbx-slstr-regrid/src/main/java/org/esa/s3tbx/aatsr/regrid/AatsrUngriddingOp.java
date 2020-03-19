@@ -97,18 +97,23 @@ public class AatsrUngriddingOp extends PixelOperator {
 
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
-        pm.beginTask("Preparing ungridding", 3);
-        prepareInputParameters();
-        pm.worked(1);
-        prepareMetadata();
-        pm.worked(1);
-        if (enableFOV) {
-            // Get the pixel projection map (along and across track extent) for all 2000 pixels
-            // This assumes spherical earth geometry & constant platform altitude
-            this.pixelProjectionMap = new ArrayList<>();
-            Calculator.getConstantPixelProjection(parameters, pixelProjectionMap);
+        int workload = enableFOV ? 3 : 2;
+        pm.beginTask("Preparing ungridding", workload);
+        try {
+            prepareInputParameters();
+            pm.worked(1);
+            prepareMetadata();
+            pm.worked(1);
+            if (enableFOV) {
+                // Get the pixel projection map (along and across track extent) for all 2000 pixels
+                // This assumes spherical earth geometry & constant platform altitude
+                this.pixelProjectionMap = new ArrayList<>();
+                Calculator.getConstantPixelProjection(parameters, pixelProjectionMap);
+                pm.worked(1);
+            }
+        } finally {
+            pm.done();
         }
-        pm.worked(1);
     }
 
     // PointOperator::initialise() step 2

@@ -88,33 +88,35 @@ public class SmileCorrectionOp extends Operator {
 
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
+        int workload = 3;
         if (Sensor.MERIS.equals(sensor) || Sensor.MERIS_4TH.equals(sensor)) {
-            pm.beginTask("Reading in auxiliary data", 4);
+            workload += 1;
+        }
+        pm.beginTask("Reading in auxiliary Data", workload);
+        if (Sensor.MERIS.equals(sensor) || Sensor.MERIS_4TH.equals(sensor)) {
             try {
                 smileAuxdata.loadFluxWaven(sourceProduct.getProductType());
                 pm.worked(1);
             } catch (IOException e) {
                 throw new OperatorException(e);
             }
-        } else {
-            pm.beginTask("Reading in auxiliary data", 3);
         }
         try {
             RayleighAux.initDefaultAuxiliary();
             pm.worked(1);
+            rayleighCorrAlgorithm = new RayleighCorrAlgorithm(sensor.getNameFormat(), sensor.getNumBands());
+            absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
+            pm.worked(1);
+            waterMask = Mask.BandMathsType.create("__water_mask", null,
+                    getSourceProduct().getSceneRasterWidth(),
+                    getSourceProduct().getSceneRasterHeight(),
+                    WATER_EXPRESSION,
+                    Color.GREEN, 0.0);
+            waterMask.setOwner(getSourceProduct());
+            pm.worked(1);
         } catch (IOException | ParseException e) {
             throw new OperatorException("Could not initialize default auxiliary data", e);
         }
-        rayleighCorrAlgorithm = new RayleighCorrAlgorithm(sensor.getNameFormat(), sensor.getNumBands());
-        absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
-        pm.worked(1);
-        waterMask = Mask.BandMathsType.create("__water_mask", null,
-                getSourceProduct().getSceneRasterWidth(),
-                getSourceProduct().getSceneRasterHeight(),
-                WATER_EXPRESSION,
-                Color.GREEN, 0.0);
-        waterMask.setOwner(getSourceProduct());
-        pm.worked(1);
     }
 
     @Override

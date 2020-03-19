@@ -91,6 +91,8 @@ public class SdrOp extends MerisBasisOp {
             pm.worked(100);
         } catch (Exception e) {
             throw new OperatorException("Failed to load neural net " + neuralNetFile + ":\n" + e.getMessage());
+        } finally {
+            pm.done();
         }
     }
 

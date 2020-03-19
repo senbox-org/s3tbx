@@ -282,9 +282,14 @@ public class ArcSstOp extends PixelOperator {
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Read in auxiliary data", 2);
-        final File auxdataDir = installAuxiliaryData();
-        pm.worked(1);
-        initNadirCoefficients(auxdataDir);
+        try {
+            final File auxdataDir = installAuxiliaryData();
+            pm.worked(1);
+            initNadirCoefficients(auxdataDir);
+            pm.worked(1);
+        } finally {
+            pm.done();
+        }
     }
 
     @Override

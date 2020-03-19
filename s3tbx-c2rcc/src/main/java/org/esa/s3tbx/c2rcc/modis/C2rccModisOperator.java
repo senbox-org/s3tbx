@@ -413,17 +413,22 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Preparing computation", 2);
-        pm.setSubTaskName("Defining algorithm ...");
         try {
-            algorithm = new C2rccModisAlgorithm();
-        } catch (IOException e) {
-            throw new OperatorException(e);
+            pm.setSubTaskName("Defining algorithm ...");
+            try {
+                algorithm = new C2rccModisAlgorithm();
+            } catch (IOException e) {
+                throw new OperatorException(e);
+            }
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.worked(1);
+        } finally {
+            pm.done();
         }
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-        pm.worked(1);
-        pm.setSubTaskName("Initialising atmospheric auxiliary data");
-        initAtmosphericAuxdata();
     }
 
     private void initAtmosphericAuxdata() {

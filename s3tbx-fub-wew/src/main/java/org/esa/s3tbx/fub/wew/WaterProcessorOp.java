@@ -126,8 +126,12 @@ public class WaterProcessorOp extends PixelOperator {
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Retrieving solar flux", 1);
-        solarFlux = getSolarFlux(sourceProduct, inputBands);
-        pm.worked(1);
+        try {
+            solarFlux = getSolarFlux(sourceProduct, inputBands);
+            pm.worked(1);
+        } finally {
+            pm.done();
+        }
     }
 
     @Override

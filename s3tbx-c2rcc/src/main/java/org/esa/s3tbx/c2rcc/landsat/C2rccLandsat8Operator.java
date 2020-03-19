@@ -1085,39 +1085,42 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Preparing computation", 4);
-        pm.setSubTaskName("Setting reflectance offsets and scales");
-        MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
-        SubsetInfo subsetInfo = getSubsetInfo(metadataRoot);
-        MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
-        MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
-        double sunElevation = imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
-        double sunAngleCorrectionFactor = Math.sin(Math.toRadians(sunElevation));
-        geometryAnglesBuilder = new GeometryAnglesBuilder(subsetInfo.subsampling_x, subsetInfo.offset_x, subsetInfo.center_x,
-                sunAzimuth, sunZenith);
-        MetadataElement radiometricRescaling = l1MetadataFile.getElement("RADIOMETRIC_RESCALING");
-        reflectance_offset = new double[L8_BAND_COUNT];
-        reflectance_scale = new double[L8_BAND_COUNT];
-        for (int i = 0; i < L8_BAND_COUNT; i++) {
-            // this follows:
-            // http://landsat.usgs.gov/Landsat8_Using_Product.php, section 'Conversion to TOA Reflectance'
-            // also see org.esa.s3tbx.dataio.landsat.geotiff.Landsat8Metadata#getSunAngleCorrectionFactor
-            double scalingOffset = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_ADD_BAND_%d", i + 1));
-            reflectance_offset[i] = scalingOffset / sunAngleCorrectionFactor;
-            double scalingFactor = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_MULT_BAND_%d", i + 1));
-            reflectance_scale[i] = scalingFactor / sunAngleCorrectionFactor;
-        }
-        pm.worked(1);
-        pm.setSubTaskName("Creating DEM");
-        ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30");
-        if (getasse30 != null) {
-            // if elevation model cannot be initialised the fallback height will be used
-            elevationModel = getasse30.createDem(Resampling.BILINEAR_INTERPOLATION);
-        }
-        pm.worked(1);
-        pm.setSubTaskName("Defining algorithm");
         try {
+            pm.setSubTaskName("Setting reflectance offsets and scales");
+            MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
+            SubsetInfo subsetInfo = getSubsetInfo(metadataRoot);
+            MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
+            MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
+            double sunElevation = imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
+            double sunAngleCorrectionFactor = Math.sin(Math.toRadians(sunElevation));
+            geometryAnglesBuilder = new GeometryAnglesBuilder(subsetInfo.subsampling_x, subsetInfo.offset_x,
+                    subsetInfo.center_x, sunAzimuth, sunZenith);
+            MetadataElement radiometricRescaling = l1MetadataFile.getElement("RADIOMETRIC_RESCALING");
+            reflectance_offset = new double[L8_BAND_COUNT];
+            reflectance_scale = new double[L8_BAND_COUNT];
+            for (int i = 0; i < L8_BAND_COUNT; i++) {
+                // this follows:
+                // http://landsat.usgs.gov/Landsat8_Using_Product.php, section 'Conversion to TOA Reflectance'
+                // also see org.esa.s3tbx.dataio.landsat.geotiff.Landsat8Metadata#getSunAngleCorrectionFactor
+                double scalingOffset = radiometricRescaling.getAttributeDouble(
+                        String.format("REFLECTANCE_ADD_BAND_%d", i + 1));
+                reflectance_offset[i] = scalingOffset / sunAngleCorrectionFactor;
+                double scalingFactor = radiometricRescaling.getAttributeDouble(
+                        String.format("REFLECTANCE_MULT_BAND_%d", i + 1));
+                reflectance_scale[i] = scalingFactor / sunAngleCorrectionFactor;
+            }
+            pm.worked(1);
+            pm.setSubTaskName("Creating DEM");
+            ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30");
+            if (getasse30 != null) {
+                // if elevation model cannot be initialised the fallback height will be used
+                elevationModel = getasse30.createDem(Resampling.BILINEAR_INTERPOLATION);
+            }
+            pm.worked(1);
+            pm.setSubTaskName("Defining algorithm");
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
-                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath),
+                        NNUtils.ALTERNATIVE_NET_DIR_NAMES);
                 algorithm = new C2rccLandsat8Algorithm(nnFilePaths, false);
             } else {
                 String[] nnFilePaths = c2rccNetSetMap.get(netSet);
@@ -1126,29 +1129,30 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
                 }
                 algorithm = new C2rccLandsat8Algorithm(nnFilePaths, true);
             }
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
+            algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
+            algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
+            algorithm.setOutputRtosaGcAann(outputRtosaGcAann);
+            algorithm.setOutputRpath(outputRpath);
+            algorithm.setOutputTdown(outputTdown);
+            algorithm.setOutputTup(outputTup);
+            algorithm.setOutputRhow(outputAcReflectance);
+            algorithm.setOutputRhown(outputRhown);
+            algorithm.setOutputOos(outputOos);
+            algorithm.setOutputKd(outputKd);
+            algorithm.setOutputUncertainties(outputUncertainties);
+            algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.worked(1);
         } catch (IOException e) {
             throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
-
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-        algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
-        algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
-        algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
-
-        algorithm.setOutputRtosaGcAann(outputRtosaGcAann);
-        algorithm.setOutputRpath(outputRpath);
-        algorithm.setOutputTdown(outputTdown);
-        algorithm.setOutputTup(outputTup);
-        algorithm.setOutputRhow(outputAcReflectance);
-        algorithm.setOutputRhown(outputRhown);
-        algorithm.setOutputOos(outputOos);
-        algorithm.setOutputKd(outputKd);
-        algorithm.setOutputUncertainties(outputUncertainties);
-        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-        pm.worked(1);
-        pm.setSubTaskName("Initialising atmospheric auxiliary data");
-        initAtmosphericAuxdata();
     }
 
     private SubsetInfo getSubsetInfo(MetadataElement metadataRoot) {

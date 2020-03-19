@@ -318,50 +318,51 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
             workload++;
         }
         pm.beginTask("Initializing algorithms", workload);
-        if (doCalibration) {
-            pm.setSubTaskName("Initializing calibration algorithm");
-            InputStream sourceRacStream = null;
-            InputStream targetRacStream = null;
-            try {
-                sourceRacStream = openStream(sourceRacFile, DEFAULT_SOURCE_RAC_RESOURCE);
-                targetRacStream = openStream(targetRacFile, DEFAULT_TARGET_RAC_RESOURCE);
-                final double cntJD = 0.5 * (getSourceProduct().getStartTime().getMJD() + getSourceProduct().getEndTime().getMJD());
-                final Resolution resolution = productType.contains("RR") ? Resolution.RR : Resolution.FR;
-                calibrationAlgorithm = new CalibrationAlgorithm(resolution, cntJD, sourceRacStream, targetRacStream);
-            } catch (IOException e) {
-                throw new OperatorException(e);
-            } finally {
+        try {
+            if (doCalibration) {
+                pm.setSubTaskName("Initializing calibration algorithm");
+                InputStream sourceRacStream = null;
+                InputStream targetRacStream = null;
                 try {
-                    if (sourceRacStream != null) {
-                        sourceRacStream.close();
+                    sourceRacStream = openStream(sourceRacFile, DEFAULT_SOURCE_RAC_RESOURCE);
+                    targetRacStream = openStream(targetRacFile, DEFAULT_TARGET_RAC_RESOURCE);
+                    final double cntJD = 0.5 * (getSourceProduct().getStartTime().getMJD() +
+                            getSourceProduct().getEndTime().getMJD());
+                    final Resolution resolution = productType.contains("RR") ? Resolution.RR : Resolution.FR;
+                    calibrationAlgorithm = new CalibrationAlgorithm(resolution, cntJD, sourceRacStream, targetRacStream);
+                } catch (IOException e) {
+                    throw new OperatorException(e);
+                } finally {
+                    try {
+                        if (sourceRacStream != null) {
+                            sourceRacStream.close();
+                        }
+                        if (targetRacStream != null) {
+                            targetRacStream.close();
+                        }
+                    } catch (IOException ignore) {
+                    } finally {
+                        pm.done();
                     }
-                    if (targetRacStream != null) {
-                        targetRacStream.close();
-                    }
-                } catch (IOException ignore) {
                 }
+                // If calibration is performed the equalization  has to use the LUTs of Reprocessing 3
+                reproVersion = ReprocessingVersion.REPROCESSING_3;
+                pm.worked(1);
             }
-            // If calibration is performed the equalization  has to use the LUTs of Reprocessing 3
-            reproVersion = ReprocessingVersion.REPROCESSING_3;
-            pm.worked(1);
-        }
-        if (doSmile) {
-            pm.setSubTaskName("Initializing smile correction algorithm");
-            try {
+            if (doSmile) {
+                pm.setSubTaskName("Initializing smile correction algorithm");
                 smileCorrAlgorithm = new SmileCorrectionAlgorithm(SmileCorrectionAuxdata.loadAuxdata(productType));
                 pm.worked(1);
-            } catch (Exception e) {
-                throw new OperatorException(e);
             }
-        }
-        if (doEqualization) {
-            pm.setSubTaskName("Initializing equalization algorithm");
-            try {
+            if (doEqualization) {
+                pm.setSubTaskName("Initializing equalization algorithm");
                 equalizationAlgorithm = new EqualizationAlgorithm(getSourceProduct(), reproVersion);
                 pm.worked(1);
-            } catch (Exception e) {
-                throw new OperatorException(e);
             }
+        } catch (Exception e) {
+            throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
     }
 

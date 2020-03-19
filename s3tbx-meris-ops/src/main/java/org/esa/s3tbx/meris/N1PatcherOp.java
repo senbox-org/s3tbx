@@ -167,9 +167,12 @@ public class N1PatcherOp extends MerisBasisOp {
                 byte[] sph = parseSPH();
                 pm.worked(1);
                 copyHeader(mph, sph);
+                pm.worked(1);
             }
         } catch (IOException e) {
             throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
     }
 

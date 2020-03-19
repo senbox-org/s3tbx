@@ -162,17 +162,19 @@ public class RayleighCorrectionOp extends Operator {
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Initializing auxiliary data", 4);
-        algorithm = new RayleighCorrAlgorithm(sensor);
-        pm.worked(1);
-        absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
-        pm.worked(1);
-        crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getNameFormat());
-        pm.worked(1);
         try {
+            algorithm = new RayleighCorrAlgorithm(sensor);
+            pm.worked(1);
+            absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
+            pm.worked(1);
+            crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getNameFormat());
+            pm.worked(1);
             RayleighAux.initDefaultAuxiliary();
             pm.worked(1);
         } catch (IOException | ParseException e) {
             throw new OperatorException("Could not initialize default auxiliary data", e);
+        } finally {
+            pm.done();
         }
     }
 
