@@ -1,6 +1,7 @@
 package org.esa.s3tbx.slstr.pdu.stitching;
 
 import com.bc.ceres.core.ProgressMonitor;
+import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.Operator;
@@ -9,16 +10,28 @@ import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProducts;
+import org.esa.snap.core.jexp.Term;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.io.WildcardMatcher;
+import org.w3c.dom.Document;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * @author Tonio Fincke
@@ -31,6 +44,9 @@ import java.util.logging.Logger;
         description = "Stitches multiple SLSTR L1B product dissemination units (PDUs) of the same orbit to a single product.",
         autoWriteDisabled = true)
 public class PDUStitchingOp extends Operator {
+
+    public static final String SLSTR_L1B_NAME_PATTERN = "S3.?_SL_1_RBT_.*(.SEN3)?";
+    public static final ImageSize NULL_IMAGE_SIZE = new ImageSize("null", 0, 0, 0, 0);
 
     @SourceProducts(description = "The product dissemination units to be stitched together. Must all be of type 'SLSTR L1B'.\n" +
             "If not given, the parameter 'sourceProductPaths' must be provided.")
@@ -66,6 +82,72 @@ public class PDUStitchingOp extends Operator {
         }
         if (targetDir == null || StringUtils.isNullOrEmpty(targetDir.getAbsolutePath())) {
             targetDir = new File(SystemUtils.getUserHomeDir().getPath());
+        }
+    }
+
+    private void createTargetProduct(File[] slstrProductFiles) {
+        if (slstrProductFiles.length == 0) {
+            throw new IllegalArgumentException("No product files provided");
+        }
+        final Pattern slstrNamePattern = Pattern.compile(SLSTR_L1B_NAME_PATTERN);
+        for (int i = 0; i < slstrProductFiles.length; i++) {
+            if (slstrProductFiles[i] == null) {
+                throw new OperatorException("File must not be null");
+            }
+            if (!slstrProductFiles[i].getName().equals("xfdumanifest.xml")) {
+                slstrProductFiles[i] = new File(slstrProductFiles[i], "xfdumanifest.xml");
+            }
+            if (!slstrProductFiles[i].getName().equals("xfdumanifest.xml") ||
+                    slstrProductFiles[i].getParentFile() == null ||
+                    !slstrNamePattern.matcher(slstrProductFiles[i].getParentFile().getName()).matches()) {
+                throw new IllegalArgumentException("The PDU Stitcher only supports SLSTR L1B products");
+            }
+        }
+        SlstrPduStitcher.SlstrNameDecomposition[] slstrNameDecompositions = new SlstrPduStitcher.SlstrNameDecomposition[slstrProductFiles.length];
+        Document[] manifestDocuments = new Document[slstrProductFiles.length];
+        final Date now = Calendar.getInstance().getTime();
+        List<String> ncFileNames = new ArrayList<>();
+        Map<String, ImageSize[]> idToImageSizes = new HashMap<>();
+        for (int i = 0; i < slstrProductFiles.length; i++) {
+            try {
+                slstrNameDecompositions[i] = SlstrPduStitcher.decomposeSlstrName(slstrProductFiles[i].getParentFile().getName());
+                manifestDocuments[i] = SlstrPduStitcher.createXmlDocument(new FileInputStream(slstrProductFiles[i]));
+            } catch (PDUStitchingException | IOException e) {
+                throw new OperatorException(e.getMessage());
+            }
+            final ImageSize[] imageSizes = ImageSizeHandler.extractImageSizes(manifestDocuments[i]);
+            for (ImageSize imageSize : imageSizes) {
+                if (idToImageSizes.containsKey(imageSize.getIdentifier())) {
+                    idToImageSizes.get(imageSize.getIdentifier())[i] = imageSize;
+                } else {
+                    final ImageSize[] mapImageSizes = new ImageSize[slstrProductFiles.length];
+                    mapImageSizes[i] = imageSize;
+                    idToImageSizes.put(imageSize.getIdentifier(), mapImageSizes);
+                }
+            }
+            SlstrPduStitcher.collectFiles(ncFileNames, manifestDocuments[i]);
+        }
+        final String stitchedProductFileName =
+                SlstrPduStitcher.createParentDirectoryNameOfStitchedFile(slstrNameDecompositions, now);
+        Map<String, ImageSize> idToTargetImageSize = new HashMap<>();
+        for (String id : idToImageSizes.keySet()) {
+            idToTargetImageSize.put(id, ImageSizeHandler.createTargetImageSize(idToImageSizes.get(id)));
+        }
+        Product targetProduct = new Product(stitchedProductFileName, "SL_1_RBT___");
+        for (int i = 0; i < ncFileNames.size(); i++) {
+            final String ncFileName = ncFileNames.get(i);
+            String[] splitFileName = ncFileName.split("/");
+            final String displayFileName = splitFileName[splitFileName.length - 1];
+            String id = ncFileName.substring(ncFileName.length() - 5, ncFileName.length() - 3);
+            if (id.equals("tx")) {
+                id = "tn";
+            }
+            ImageSize targetImageSize = idToTargetImageSize.get(id);
+            if (targetImageSize == null) {
+                targetImageSize = NULL_IMAGE_SIZE;
+            }
+//            Band targetBand = new Band(displayFileName, , targetImageSize.getRows(), targetImageSize.getColumns());
+//            targetProduct.addBand(targetBand);
         }
     }
 

@@ -87,25 +87,9 @@ public class OlciO2aHarmonisationOp extends Operator {
     public void initialize() throws OperatorException {
         lastBandToProcess = processOnlyBand13 ? 13 : 15;
         numBandsToProcess = lastBandToProcess - 13 + 1;
-
         OlciHarmonisationIO.validateSourceProduct(l1bProduct);
-
-        try {
-            initDesmileAuxdata();
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-            throw new OperatorException("Cannot initialize auxdata for desmile of transmissions - exiting.");
-        }
-
-        szaBand = l1bProduct.getTiePointGrid("SZA");
-        ozaBand = l1bProduct.getTiePointGrid("OZA");
-        slpBand = l1bProduct.getTiePointGrid("sea_level_pressure");
-        detectorIndexBand = l1bProduct.getBand("detector_index");
-
-        altitudeBand = l1bProduct.getBand("altitude");
-
         if (StringUtils.isNotNullAndNotEmpty(alternativeAltitudeBandName)) {
-            if(l1bProduct.containsBand(alternativeAltitudeBandName)) {
+            if (l1bProduct.containsBand(alternativeAltitudeBandName)) {
                 demAltitudeBand = l1bProduct.getBand(alternativeAltitudeBandName);
             } else {
                 String message = String.format("Specified alternative altitude band '%s' is not contained in OLCI L1B product.",
@@ -113,19 +97,35 @@ public class OlciO2aHarmonisationOp extends Operator {
                 throw new OperatorException(message);
             }
         }
-
-        radianceBands = new Band[5];
-        cwlBands = new Band[5];
-        fwhmBands = new Band[5];
-        solarFluxBands = new Band[5];
-        for (int i = 12; i < 17; i++) {
-            radianceBands[i - 12] = l1bProduct.getBand("Oa" + i + "_radiance");
-            cwlBands[i - 12] = l1bProduct.getBand("lambda0_band_" + i);
-            fwhmBands[i - 12] = l1bProduct.getBand("FWHM_band_" + i);
-            solarFluxBands[i - 12] = l1bProduct.getBand("solar_flux_band_" + i);
-        }
-
         createTargetProduct();
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Initializing Desmile Auxiliary Data", (numBandsToProcess * 2) + 2);
+        try {
+            initDesmileAuxdata(pm);
+            szaBand = l1bProduct.getTiePointGrid("SZA");
+            ozaBand = l1bProduct.getTiePointGrid("OZA");
+            slpBand = l1bProduct.getTiePointGrid("sea_level_pressure");
+            detectorIndexBand = l1bProduct.getBand("detector_index");
+            altitudeBand = l1bProduct.getBand("altitude");
+            radianceBands = new Band[5];
+            cwlBands = new Band[5];
+            fwhmBands = new Band[5];
+            solarFluxBands = new Band[5];
+            for (int i = 12; i < 17; i++) {
+                radianceBands[i - 12] = l1bProduct.getBand("Oa" + i + "_radiance");
+                cwlBands[i - 12] = l1bProduct.getBand("lambda0_band_" + i);
+                fwhmBands[i - 12] = l1bProduct.getBand("FWHM_band_" + i);
+                solarFluxBands[i - 12] = l1bProduct.getBand("solar_flux_band_" + i);
+            }
+            pm.worked(1);
+        } catch (IOException | ParseException e) {
+            throw new OperatorException("Cannot initialize auxdata for desmile of transmissions - exiting.", e);
+        } finally {
+            pm.done();
+        }
     }
 
     @Override
@@ -243,13 +243,16 @@ public class OlciO2aHarmonisationOp extends Operator {
         }
     }
 
-    private void initDesmileAuxdata() throws IOException, ParseException {
+    private void initDesmileAuxdata(ProgressMonitor pm) throws IOException, ParseException {
         final Path auxdataPath = OlciHarmonisationIO.installAuxdata();
+        pm.worked(1);
         desmileLuts = new DesmileLut[numBandsToProcess];
         desmileKdTrees = new KDTree[numBandsToProcess];
         for (int i = 13; i <= lastBandToProcess; i++) {
             desmileLuts[i - 13] = OlciHarmonisationIO.createDesmileLut(auxdataPath, i);
+            pm.worked(1);
             desmileKdTrees[i - 13] = OlciHarmonisationIO.createKDTreeForDesmileInterpolation(desmileLuts[i - 13]);
+            pm.worked(1);
         }
     }
 

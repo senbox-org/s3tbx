@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.seawifs;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -341,19 +342,26 @@ public class C2rccSeaWiFSOperator extends PixelOperator implements C2rccConfigur
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
+        timeCoding = getTimeCoding(sourceProduct);
+    }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 2);
         try {
+            pm.setSubTaskName("Defining algorithm ...");
             algorithm = new C2rccSeaWiFSAlgorithm();
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.done();
         } catch (IOException e) {
             throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
-
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-
-        timeCoding = getTimeCoding(sourceProduct);
-        initAtmosphericAuxdata();
-
     }
 
     public static boolean isValidInput(Product product) {

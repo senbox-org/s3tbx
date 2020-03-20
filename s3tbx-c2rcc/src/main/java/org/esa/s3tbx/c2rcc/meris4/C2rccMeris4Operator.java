@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.meris4;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -83,7 +84,6 @@ import static org.esa.s3tbx.c2rcc.meris4.C2rccMeris4Algorithm.merband15_ix;
  * <p/>
  * Computes AC-reflectances and IOPs from OLCI L1b data products using
  * an neural-network approach.
- *
  */
 @OperatorMetadata(alias = "c2rcc.meris4", version = "1.0",
         authors = "Roland Doerffer, Sabine Embacher (Brockmann Consult)",
@@ -472,7 +472,7 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         for (int i = 0; i < BAND_COUNT; i++) {
             radiances[i] = sourceSamples[i].getDouble();
             Sample solFluxSample = sourceSamples[i + SOLAR_FLUX_START_IX];
-            solflux[i] = solFluxSample.getNode().isPixelValid(x,y) ? solFluxSample.getDouble() : Double.NaN;
+            solflux[i] = solFluxSample.getNode().isPixelValid(x, y) ? solFluxSample.getDouble() : Double.NaN;
         }
 
         final PixelPos pixelPos = new PixelPos(x + 0.5f, y + 0.5f);
@@ -965,7 +965,7 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         assertSourceRaster(RASTER_NAME_VIEWING_ZENITH, missingRasterMsgFormat);
         assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH, missingRasterMsgFormat);
 
-        if(useEcmwfAuxData){
+        if (useEcmwfAuxData) {
             String ecmwfMsg = "For ECMWF usage a '%s' raster is required";
             assertSourceRaster(RASTER_NAME_SEA_LEVEL_PRESSURE, ecmwfMsg);
             assertSourceRaster(RASTER_NAME_TOTAL_OZONE, ecmwfMsg);
@@ -981,41 +981,49 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+    }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 2);
         try {
+            pm.setSubTaskName("Defining algorithm ...");
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
-                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath),
+                        NNUtils.ALTERNATIVE_NET_DIR_NAMES);
                 algorithm = new C2rccMeris4Algorithm(nnFilePaths, false);
             } else {
                 String[] nnFilePaths = c2rccNetSetMap.get(netSet);
-                if(nnFilePaths == null) {
+                if (nnFilePaths == null) {
                     throw new OperatorException(String.format("Unknown set '%s' of neural nets specified.", netSet));
                 }
                 algorithm = new C2rccMeris4Algorithm(nnFilePaths, true);
             }
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
+            algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
+            algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
+            algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
+            algorithm.setOutputRpath(outputRpath);
+            algorithm.setOutputTdown(outputTdown);
+            algorithm.setOutputTup(outputTup);
+            algorithm.setOutputRhow(outputAcReflectance);
+            algorithm.setOutputRhown(outputRhown);
+            algorithm.setOutputOos(outputOos);
+            algorithm.setOutputKd(outputKd);
+            algorithm.setOutputUncertainties(outputUncertainties);
+            algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.worked(1);
         } catch (IOException e) {
             throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
-
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-        algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
-        algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
-        algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
-
-        algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
-        algorithm.setOutputRpath(outputRpath);
-        algorithm.setOutputTdown(outputTdown);
-        algorithm.setOutputTup(outputTup);
-        algorithm.setOutputRhow(outputAcReflectance);
-        algorithm.setOutputRhown(outputRhown);
-        algorithm.setOutputOos(outputOos);
-        algorithm.setOutputKd(outputKd);
-        algorithm.setOutputUncertainties(outputUncertainties);
-        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
-        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
-        initAtmosphericAuxdata();
     }
 
     private static String getRadianceBandName(int index) {
@@ -1081,13 +1089,13 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
         if (useEcmwfAuxData) {
             String toDopsenExpr = String.format("%1$s < 1 ? %1$s * 46698 : %1$s", RASTER_NAME_TOTAL_OZONE);
             VirtualBand ozoneInDu = new VirtualBand("__ozone_in_du_",
-                                                    ProductData.TYPE_FLOAT32,
-                                                    getSourceProduct().getSceneRasterWidth(),
-                                                    getSourceProduct().getSceneRasterHeight(),
-                                                    toDopsenExpr);
+                    ProductData.TYPE_FLOAT32,
+                    getSourceProduct().getSceneRasterWidth(),
+                    getSourceProduct().getSceneRasterHeight(),
+                    toDopsenExpr);
             ozoneInDu.setOwner(sourceProduct);
             auxdataBuilder.useAtmosphericRaster(ozoneInDu,
-                                                sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
+                    sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
         }
 
         try {

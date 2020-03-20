@@ -56,16 +56,6 @@ public class SmileCorrectionOp extends MerisBasisOp implements Constants {
 
     @Override
     public void initialize() throws OperatorException {
-        try {
-            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
-        } catch (Exception e) {
-            throw new OperatorException("could not load L2Auxdata", e);
-        }
-        
-        createTargetProduct();
-    }
-
-    private void createTargetProduct() throws OperatorException {
         targetProduct = createCompatibleProduct(gascorProduct, "MER", "MER_L2");
         rhoCorectedBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
         for (int i = 0; i < rhoCorectedBands.length; i++) {
@@ -81,7 +71,20 @@ public class SmileCorrectionOp extends MerisBasisOp implements Constants {
             targetProduct.setPreferredTileSize(l1bProduct.getPreferredTileSize());
         }
     }
-    
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Reading in auxiliary data", 1);
+        try {
+            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
+            pm.worked(1);
+        } catch (Exception e) {
+            throw new OperatorException("Could not load L2Auxdata", e);
+        } finally {
+            pm.done();
+        }
+    }
+
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle rectangle, ProgressMonitor pm) throws OperatorException {
         pm.beginTask("Processing frame...", rectangle.height);

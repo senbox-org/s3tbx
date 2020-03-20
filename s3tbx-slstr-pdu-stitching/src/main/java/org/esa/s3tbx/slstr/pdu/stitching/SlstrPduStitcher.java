@@ -5,6 +5,7 @@ import com.bc.ceres.binding.converters.DateFormatConverter;
 import com.bc.ceres.core.Assert;
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.slstr.pdu.stitching.manifest.ManifestMerger;
+import org.esa.snap.core.gpf.OperatorException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -176,7 +177,7 @@ public class SlstrPduStitcher {
         }
     }
 
-    private static Document createXmlDocument(InputStream inputStream) throws IOException {
+    static Document createXmlDocument(InputStream inputStream) throws IOException {
         final String msg = "Cannot create document from manifest XML file.";
         try {
             return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream);
@@ -223,17 +224,13 @@ public class SlstrPduStitcher {
         return latestDate;
     }
 
-    static SlstrNameDecomposition decomposeSlstrName(String slstrName) {
+    static SlstrNameDecomposition decomposeSlstrName(String slstrName) throws PDUStitchingException {
         final SlstrNameDecomposition slstrNameDecomposition = new SlstrNameDecomposition();
         try {
             slstrNameDecomposition.startTime = SLSTR_DATE_FORMAT_CONVERTER.parse(slstrName.substring(16, 31));
-        } catch (ConversionException e) {
-            e.printStackTrace();
-        }
-        try {
             slstrNameDecomposition.stopTime = SLSTR_DATE_FORMAT_CONVERTER.parse(slstrName.substring(32, 47));
         } catch (ConversionException e) {
-            e.printStackTrace();
+            throw new PDUStitchingException(e.getMessage());
         }
         slstrNameDecomposition.duration = slstrName.substring(64, 68);
         slstrNameDecomposition.cycleNumber = slstrName.substring(69, 72);

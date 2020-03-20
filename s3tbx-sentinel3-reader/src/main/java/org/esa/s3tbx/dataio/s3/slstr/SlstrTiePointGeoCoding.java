@@ -3,6 +3,7 @@ package org.esa.s3tbx.dataio.s3.slstr;
 import org.esa.snap.core.dataio.ProductSubsetDef;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.Scene;
 import org.esa.snap.core.datamodel.TiePointGeoCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
@@ -44,7 +45,19 @@ class SlstrTiePointGeoCoding extends TiePointGeoCoding {
 
     @Override
     public boolean transferGeoCoding(Scene srcScene, Scene destScene, ProductSubsetDef subsetDef) {
-        //todo implement - tf 20160313
-        return false;
+        TiePointGrid destLatGrid = getDestGrid(getLatGrid(), destScene, subsetDef);
+        TiePointGrid destLonGrid = getDestGrid(getLonGrid(), destScene, subsetDef);
+        if (destLatGrid != null && destLonGrid != null) {
+            try {
+                SlstrTiePointGeoCoding slstrTiePointGeoCoding =
+                        new SlstrTiePointGeoCoding(destLatGrid, destLonGrid, this.transform);
+                destScene.setGeoCoding(slstrTiePointGeoCoding);
+                return true;
+            } catch (NoninvertibleTransformException e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }
