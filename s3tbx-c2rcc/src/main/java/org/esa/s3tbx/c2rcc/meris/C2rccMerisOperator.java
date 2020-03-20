@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.meris;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -954,8 +955,6 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
-
-        targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
     private void ensureSpectralProperties(Band band, int i) {
@@ -1018,22 +1017,26 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
             String msgFormat = "Invalid source product, raster '%s' required";
             assertSourceRaster(SOURCE_RADIANCE_NAME_PREFIX + i, msgFormat);
         }
-
         if (useEcmwfAuxData) {
             String ecmwfMsg = "For ECMWF usage a '%s' raster is required";
             assertSourceRaster(RASTER_NAME_ATM_PRESS, ecmwfMsg);
             assertSourceRaster(RASTER_NAME_OZONE, ecmwfMsg);
         }
-
         assertVpeIsApplicable();
-
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+    }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 3);
         try {
+            pm.setSubTaskName("Defining algorithm ...");
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
-                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath),
+                        NNUtils.ALTERNATIVE_NET_DIR_NAMES);
                 algorithm = new C2rccMerisAlgorithm(nnFilePaths, false);
             } else {
                 String[] nnFilePaths = c2rccNetSetMap.get(netSet);
@@ -1042,42 +1045,47 @@ public class C2rccMerisOperator extends PixelOperator implements C2rccConfigurab
                 }
                 algorithm = new C2rccMerisAlgorithm(nnFilePaths, true);
             }
+
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
+            algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
+            algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
+            algorithm.setOutputRtosaGcAann(outputRtosaGcAann);
+            algorithm.setOutputRpath(outputRpath);
+            algorithm.setOutputTdown(outputTdown);
+            algorithm.setOutputTup(outputTup);
+            algorithm.setOutputRhow(outputAcReflectance);
+            algorithm.setOutputRhown(outputRhown);
+            algorithm.setOutputOos(outputOos);
+            algorithm.setOutputKd(outputKd);
+            algorithm.setOutputUncertainties(outputUncertainties);
+            algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
+            getTargetProduct().addProductNodeListener(getNnNamesMetadataAppender());
+            pm.worked(1);
+            pm.setSubTaskName("Reading solar flux ...");
+            if (useDefaultSolarFlux) {  // not the sol flux values from the input product
+                solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
+            } else {
+                double[] solfluxFromL1b = new double[BAND_COUNT];
+                for (int i = 0; i < BAND_COUNT; i++) {
+                    solfluxFromL1b[i] = sourceProduct.getBand("radiance_" + (i + 1)).getSolarFlux();
+                }
+                if (isSolfluxValid(solfluxFromL1b)) {
+                    constantSolarFlux = solfluxFromL1b;
+                } else {
+                    throw new OperatorException("Invalid solar flux in source product!");
+                }
+            }
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.worked(1);
         } catch (IOException e) {
             throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
-
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-        algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
-        algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
-        algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
-
-        algorithm.setOutputRtosaGcAann(outputRtosaGcAann);
-        algorithm.setOutputRpath(outputRpath);
-        algorithm.setOutputTdown(outputTdown);
-        algorithm.setOutputTup(outputTup);
-        algorithm.setOutputRhow(outputAcReflectance);
-        algorithm.setOutputRhown(outputRhown);
-        algorithm.setOutputOos(outputOos);
-        algorithm.setOutputKd(outputKd);
-        algorithm.setOutputUncertainties(outputUncertainties);
-        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
-        if (useDefaultSolarFlux) {  // not the sol flux values from the input product
-            solarFluxLazyLookup = new SolarFluxLazyLookup(DEFAULT_SOLAR_FLUX);
-        } else {
-            double[] solfluxFromL1b = new double[BAND_COUNT];
-            for (int i = 0; i < BAND_COUNT; i++) {
-                solfluxFromL1b[i] = sourceProduct.getBand("radiance_" + (i + 1)).getSolarFlux();
-            }
-            if (isSolfluxValid(solfluxFromL1b)) {
-                constantSolarFlux = solfluxFromL1b;
-            } else {
-                throw new OperatorException("Invalid solar flux in source product!");
-            }
-        }
-        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
-        initAtmosphericAuxdata();
     }
 
     private void assertVpeIsApplicable() {

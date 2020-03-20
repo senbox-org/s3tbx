@@ -37,6 +37,7 @@ import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.math.RsMathUtils;
+import org.json.simple.parser.ParseException;
 
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.ConstantDescriptor;
@@ -86,29 +87,45 @@ public class SmileCorrectionOp extends Operator {
     private SmileCorrectionAuxdata smileAuxdata;
 
     @Override
-    public void initialize() throws OperatorException {
-        sensor = getSensorType(getSourceProduct());
-        smileAuxdata = new SmileCorrectionAuxdata(sensor);
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        int workload = 3;
+        if (Sensor.MERIS.equals(sensor) || Sensor.MERIS_4TH.equals(sensor)) {
+            workload += 1;
+        }
+        pm.beginTask("Reading in auxiliary Data", workload);
         if (Sensor.MERIS.equals(sensor) || Sensor.MERIS_4TH.equals(sensor)) {
             try {
                 smileAuxdata.loadFluxWaven(sourceProduct.getProductType());
+                pm.worked(1);
             } catch (IOException e) {
                 throw new OperatorException(e);
             }
         }
+        try {
+            RayleighAux.initDefaultAuxiliary();
+            pm.worked(1);
+            rayleighCorrAlgorithm = new RayleighCorrAlgorithm(sensor.getNameFormat(), sensor.getNumBands());
+            absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
+            pm.worked(1);
+            waterMask = Mask.BandMathsType.create("__water_mask", null,
+                    getSourceProduct().getSceneRasterWidth(),
+                    getSourceProduct().getSceneRasterHeight(),
+                    WATER_EXPRESSION,
+                    Color.GREEN, 0.0);
+            waterMask.setOwner(getSourceProduct());
+            pm.worked(1);
+        } catch (IOException | ParseException e) {
+            throw new OperatorException("Could not initialize default auxiliary data", e);
+        }
+    }
 
-        RayleighAux.initDefaultAuxiliary();
-        rayleighCorrAlgorithm = new RayleighCorrAlgorithm(sensor.getNameFormat(), sensor.getNumBands());
-        absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
-
+    @Override
+    public void initialize() throws OperatorException {
+        sensor = getSensorType(getSourceProduct());
+        smileAuxdata = new SmileCorrectionAuxdata(sensor);
         Product targetProduct = createTargetBands(sensor);
         setTargetProduct(targetProduct);
-        waterMask = Mask.BandMathsType.create("__water_mask", null,
-                                              getSourceProduct().getSceneRasterWidth(),
-                                              getSourceProduct().getSceneRasterHeight(),
-                                              WATER_EXPRESSION,
-                                              Color.GREEN, 0.0);
-        waterMask.setOwner(getSourceProduct());
+
     }
 
     @Override
@@ -139,13 +156,9 @@ public class SmileCorrectionOp extends Operator {
         // Configure the target
         Product targetProduct = new Product(sourceProduct.getName(), sourceProduct.getProductType(),
                                             sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
-
-
         boolean[] landRefCorrectionSwitches = smileAuxdata.getLandRefCorrectionSwitches();
         boolean[] waterRefCorrectionSwitches = smileAuxdata.getWaterRefCorrectionSwitches();
         float[] refCentralWaveLengths = smileAuxdata.getRefCentralWaveLengths();
-
-
         if (Sensor.OLCI == sensor) {
             createTargetBands(targetProduct, sensor.getNameFormat(), landRefCorrectionSwitches, waterRefCorrectionSwitches, refCentralWaveLengths);
             createTargetLambda(targetProduct, LAMBDA0_BAND_NAME_PATTERN, landRefCorrectionSwitches, waterRefCorrectionSwitches,

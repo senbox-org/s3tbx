@@ -105,30 +105,25 @@ public class RayleighAux {
         return Doubles.toArray(collect);
     }
 
-    public static void initDefaultAuxiliary() {
-        try {
-            ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor(GETASSE_30);
-            elevationModel = getasse30.createDem(Resampling.NEAREST_NEIGHBOUR);
-            Path coeffMatrix = installAuxdata().resolve(COEFF_MATRIX_TXT);
-            JSONParser jsonObject = new JSONParser();
-            JSONObject parse = (JSONObject) jsonObject.parse(new FileReader(coeffMatrix.toString()));
+    public static void initDefaultAuxiliary() throws IOException, ParseException {
+        ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor(GETASSE_30);
+        elevationModel = getasse30.createDem(Resampling.NEAREST_NEIGHBOUR);
+        Path coeffMatrix = installAuxdata().resolve(COEFF_MATRIX_TXT);
+        JSONParser jsonObject = new JSONParser();
+        JSONObject parse = (JSONObject) jsonObject.parse(new FileReader(coeffMatrix.toString()));
 
-            tau_ray = parseJSON1DimArray(parse, TAU_RAY);
-            thetas = parseJSON1DimArray(parse, THETA);
+        tau_ray = parseJSON1DimArray(parse, TAU_RAY);
+        thetas = parseJSON1DimArray(parse, THETA);
 
-            ArrayList<double[][][]> ray_coeff_matrix = parseJSON3DimArray(parse, RAY_COEFF_MATRIX);
-            rayCoeffMatrixA = ray_coeff_matrix.get(0);
-            rayCoeffMatrixB = ray_coeff_matrix.get(1);
-            rayCoeffMatrixC = ray_coeff_matrix.get(2);
-            rayCoeffMatrixD = ray_coeff_matrix.get(3);
+        ArrayList<double[][][]> ray_coeff_matrix = parseJSON3DimArray(parse, RAY_COEFF_MATRIX);
+        rayCoeffMatrixA = ray_coeff_matrix.get(0);
+        rayCoeffMatrixB = ray_coeff_matrix.get(1);
+        rayCoeffMatrixC = ray_coeff_matrix.get(2);
+        rayCoeffMatrixD = ray_coeff_matrix.get(3);
 
-            double[] lineSpace = getLineSpace(0, 1, 17);
-            double[] rayAlbedoLuts = parseJSON1DimArray(parse, RAY_ALBEDO_LUT);
-            linearInterpolate = new LinearInterpolator().interpolate(lineSpace, rayAlbedoLuts);
-
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
+        double[] lineSpace = getLineSpace(0, 1, 17);
+        double[] rayAlbedoLuts = parseJSON1DimArray(parse, RAY_ALBEDO_LUT);
+        linearInterpolate = new LinearInterpolator().interpolate(lineSpace, rayAlbedoLuts);
     }
 
     public void setSolarFluxs(double[] solarFluxs) {
@@ -136,7 +131,7 @@ public class RayleighAux {
     }
 
     public void setAltitudes(Tile altitude) {
-        this.altitudes = altitude.getSamplesDouble(); 
+        this.altitudes = altitude.getSamplesDouble();
     }
 
     public double[] getTaur() {
@@ -346,7 +341,7 @@ public class RayleighAux {
     }
 
     public void setSunZenithAngles(Tile sourceTile) {
-        this.sunZenithAngles = sourceTile.getSamplesDouble(); 
+        this.sunZenithAngles = sourceTile.getSamplesDouble();
         setSunZenithAnglesRad(sunZenithAngles);
     }
 
@@ -365,7 +360,7 @@ public class RayleighAux {
     }
 
     public void setViewZenithAngles(Tile sourceTile) {
-        this.viewZenithAngles = sourceTile.getSamplesDouble(); 
+        this.viewZenithAngles = sourceTile.getSamplesDouble();
         setViewZenithAnglesRad(viewZenithAngles);
     }
 
@@ -375,7 +370,7 @@ public class RayleighAux {
     }
 
     public void setSunAzimuthAngles(Tile sourceTile) {
-        this.sunAzimuthAngles = sourceTile.getSamplesDouble(); 
+        this.sunAzimuthAngles = sourceTile.getSamplesDouble();
         setSunAzimuthAnglesRad(sunAzimuthAngles);
     }
 
@@ -388,7 +383,7 @@ public class RayleighAux {
     }
 
     public void setLatitudes(Tile sourceTile) {
-        this.latitudes = sourceTile.getSamplesDouble(); 
+        this.latitudes = sourceTile.getSamplesDouble();
     }
 
     public void setViewAzimuthAngles(double... viewAzimuthAngles) {
@@ -397,7 +392,7 @@ public class RayleighAux {
     }
 
     public void setViewAzimuthAngles(Tile sourceTile) {
-        this.viewAzimuthAngles = sourceTile.getSamplesDouble(); 
+        this.viewAzimuthAngles = sourceTile.getSamplesDouble();
         setViewAzimuthAnglesRad(viewAzimuthAngles);
     }
 
@@ -433,7 +428,7 @@ public class RayleighAux {
     }
 
     public void setSeaLevels(Tile sourceTile) {
-        this.seaLevels = sourceTile.getSamplesDouble(); 
+        this.seaLevels = sourceTile.getSamplesDouble();
     }
 
     public double[] getTotalOzones() {
@@ -445,7 +440,7 @@ public class RayleighAux {
     }
 
     public void setTotalOzones(Tile sourceTile) {
-        this.totalOzones = sourceTile.getSamplesDouble(); 
+        this.totalOzones = sourceTile.getSamplesDouble();
     }
 
     public void setOlciTotalOzones(Tile sourceTile) {
@@ -461,7 +456,7 @@ public class RayleighAux {
     }
 
     public void setSolarFluxs(Tile sourceTile) {
-        this.solarFluxs = sourceTile.getSamplesDouble(); 
+        this.solarFluxs = sourceTile.getSamplesDouble();
     }
 
     public double[] getSourceSampleRad() {
@@ -469,7 +464,7 @@ public class RayleighAux {
     }
 
     public void setSourceSampleRad(Tile sourceTile) {
-        this.sourceSampleRad = sourceTile.getSamplesDouble(); 
+        this.sourceSampleRad = sourceTile.getSamplesDouble();
     }
 
     public double[] getLongitudes() {

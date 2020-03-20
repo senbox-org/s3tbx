@@ -50,12 +50,17 @@
             <artifactId>snap-envisat-reader</artifactId>
             <version>${snap.version}</version>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>com.bc.jnn</groupId>
             <artifactId>jnn</artifactId>
-			<version>1.7</version>
+            <version>1.7</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-test-utils</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

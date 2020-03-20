@@ -78,7 +78,7 @@ public class SlstrPduStitcherTest {
     }
 
     @Test
-    public void testDecomposeSlstrName() throws URISyntaxException {
+    public void testDecomposeSlstrName() throws URISyntaxException, PDUStitchingException {
         final SlstrPduStitcher.SlstrNameDecomposition firstSlstrNameDecomposition =
                 SlstrPduStitcher.decomposeSlstrName(TestUtils.getFirstSlstrFile().getParentFile().getName());
 
@@ -97,7 +97,7 @@ public class SlstrPduStitcherTest {
     }
 
     @Test
-    public void testCreateParentDirectoryNameOfStitchedFile() throws URISyntaxException {
+    public void testCreateParentDirectoryNameOfStitchedFile() throws URISyntaxException, PDUStitchingException {
         SlstrPduStitcher.SlstrNameDecomposition[] decompositions = new SlstrPduStitcher.SlstrNameDecomposition[3];
         decompositions[0] = SlstrPduStitcher.decomposeSlstrName(TestUtils.getFirstSlstrFile().getParentFile().getName());
         decompositions[1] = SlstrPduStitcher.decomposeSlstrName(TestUtils.getSecondSlstrFile().getParentFile().getName());

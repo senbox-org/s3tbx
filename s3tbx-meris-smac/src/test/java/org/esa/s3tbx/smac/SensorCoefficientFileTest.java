@@ -16,6 +16,7 @@
 
 package org.esa.s3tbx.smac;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +34,7 @@ public class SensorCoefficientFileTest {
     @Before
     public void setUp() throws Exception {
         SmacOperator op = new SmacOperator();
-        op.installAuxdata(); // just to extract auxdata
+        op.installAuxdata(ProgressMonitor.NULL); // just to extract auxdata
         smacAuxDir = op.getAuxdataInstallDir();
     }
 

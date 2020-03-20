@@ -1,5 +1,6 @@
 package org.esa.s3tbx.aatsr.regrid;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
@@ -20,6 +21,7 @@ import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,16 +93,26 @@ public class AatsrUngriddingOp extends PixelOperator {
 
         // What does this do?
         System.setProperty("com.sun.media.jai.disableMediaLib", "true");
+    }
 
-        prepareInputParameters();
-        //prepareSubset();
-        prepareMetadata();
-
-        if (enableFOV) {
-            // Get the pixel projection map (along and across track extent) for all 2000 pixels
-            // This assumes spherical earth geometry & constant platform altitude
-            this.pixelProjectionMap = new ArrayList<>();
-            Calculator.getConstantPixelProjection(parameters, pixelProjectionMap);
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        int workload = enableFOV ? 3 : 2;
+        pm.beginTask("Preparing ungridding", workload);
+        try {
+            prepareInputParameters();
+            pm.worked(1);
+            prepareMetadata();
+            pm.worked(1);
+            if (enableFOV) {
+                // Get the pixel projection map (along and across track extent) for all 2000 pixels
+                // This assumes spherical earth geometry & constant platform altitude
+                this.pixelProjectionMap = new ArrayList<>();
+                Calculator.getConstantPixelProjection(parameters, pixelProjectionMap);
+                pm.worked(1);
+            }
+        } finally {
+            pm.done();
         }
     }
 
@@ -237,7 +249,11 @@ public class AatsrUngriddingOp extends PixelOperator {
 
         //1	<l1b-characterisation-file> 	"./CH1_Files/ATS_CH1_AX"	L1B characterisation file
         if (L1BCharacterisationFile != null) {
-            parameters.parseCharacterisationFile(this.L1BCharacterisationFile.getPath());
+            try {
+                parameters.parseCharacterisationFile(this.L1BCharacterisationFile.getPath(), getLogger());
+            } catch (IOException e) {
+                throw new OperatorException(e.getMessage());
+            }
         } else {
             parameters.firstForwardPixel = DEFAULT_FIRST_FORWARD_PIXEL;
             parameters.firstNadirPixel = DEFAULT_FIRST_NADIR_PIXEL;
@@ -249,7 +265,11 @@ public class AatsrUngriddingOp extends PixelOperator {
 
         //2	<fov-measurement-file> 	"./FOV_measurements/10310845.SFV"	AATSR FOV calibration measurement file
         if (enableFOV) {
-            parameters.parseRawIFOV(this.FOVMeasurementFile.getPath());
+            try {
+                parameters.parseRawIFOV(this.FOVMeasurementFile.getPath(), getLogger());
+            } catch (IOException e) {
+                throw new OperatorException("Could not open raw FOV data, check input filename", e.getCause());
+            }
         }
         //parameters.parseRawIFOV("C:\\dev\\GBT-UBT-Tool v1.6\\FOV_measurements\\10310845.SFV");
         // Sets the following:
