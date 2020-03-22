@@ -21,7 +21,7 @@
 
     <groupId>org.esa.s3tbx</groupId>
     <artifactId>s3tbx</artifactId>
-    <version>7.0.4-SNAPSHOT</version>
+    <version>7.0.4cv-SNAPSHOT</version>
     <name>Sentinel-3 Toolbox</name>
     <description>Tools for the Sentinel-3 Satellite</description>
     <url>https://github.com/senbox-org/s3tbx</url>
@@ -74,18 +74,18 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>7.0.4-SNAPSHOT</snap.version>
+        <snap.version>7.0.4cv-SNAPSHOT</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <s3tbx.version>7.0.4-SNAPSHOT</s3tbx.version>
+        <s3tbx.version>7.0.4cv-SNAPSHOT</s3tbx.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>5.0.0-beta6</netcdf.version>
-        <seadas.reader.version>1.9-SNAPSHOT</seadas.reader.version>
+        <seadas.reader.version>1.9cv-SNAPSHOT</seadas.reader.version>
         <seadas.reader.ui.version>1.9-SNAPSHOT</seadas.reader.ui.version>
         <brandingToken>s3tbx</brandingToken>
         <user.language>en</user.language>
