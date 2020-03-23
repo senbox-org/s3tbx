@@ -65,11 +65,11 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
 
     private GaseousAbsorptionCorrection gasCor;
 
-    @SourceProduct(alias="l1b")
+    @SourceProduct(alias = "l1b")
     private Product l1bProduct;
-    @SourceProduct(alias="rhotoa")
+    @SourceProduct(alias = "rhotoa")
     private Product rhoToaProduct;
-    @SourceProduct(alias="cloud")
+    @SourceProduct(alias = "cloud")
     private Product cloudProduct;
     @TargetProduct
     private Product targetProduct;
@@ -82,24 +82,8 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
 
     @Override
     public void initialize() throws OperatorException {
-        try {
-            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
-            gasCor = new GaseousAbsorptionCorrection(auxData);
-        } catch (Exception e) {
-            throw new OperatorException("could not load L2Auxdata", e);
-        }
-        rhoToaBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
-
-        for (int i = 0; i < EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS; i++) {
-            rhoToaBands[i] = rhoToaProduct.getBand(Rad2ReflOp.RHO_TOA_BAND_PREFIX + "_" + (i + 1));
-        }
-
-        createTargetProduct();
-    }
-
-    private void createTargetProduct() {
     	targetProduct = createCompatibleProduct(rhoToaProduct, "MER", "MER_L2");
-    	
+
     	rhoNgBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
         for (int i = 0; i < EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS; i++) {
             rhoNgBands[i] = targetProduct.addBand(RHO_NG_BAND_PREFIX + "_" + (i + 1), ProductData.TYPE_FLOAT32);
@@ -112,7 +96,7 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
         FlagCoding flagCoding = createFlagCoding();
         flagBand.setSampleCoding(flagCoding);
         targetProduct.getFlagCodingGroup().add(flagCoding);
-        
+
         if (exportTg) {
             tgBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
         	for (int i = 0; i < EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS; i++) {
@@ -123,6 +107,25 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
         }
         if (l1bProduct.getPreferredTileSize() != null) {
             targetProduct.setPreferredTileSize(l1bProduct.getPreferredTileSize());
+        }
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Reading in auxiliary data", 10 + EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS);
+        try {
+            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
+            gasCor = new GaseousAbsorptionCorrection(auxData);
+            pm.worked(10);
+            rhoToaBands = new Band[EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS];
+            for (int i = 0; i < EnvisatConstants.MERIS_L1B_NUM_SPECTRAL_BANDS; i++) {
+                rhoToaBands[i] = rhoToaProduct.getBand(Rad2ReflOp.RHO_TOA_BAND_PREFIX + "_" + (i + 1));
+                pm.worked(1);
+            }
+        } catch (Exception e) {
+            throw new OperatorException("could not load L2Auxdata", e);
+        } finally {
+            pm.done();
         }
     }
 
@@ -148,12 +151,12 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
 			Tile altitude = getSourceTile(l1bProduct.getTiePointGrid(EnvisatConstants.MERIS_DEM_ALTITUDE_DS_NAME), rectangle);
 			Tile ecmwfOzone = getSourceTile(l1bProduct.getTiePointGrid("ozone"), rectangle);
 			Tile l1Flags = getSourceTile(l1bProduct.getBand(EnvisatConstants.MERIS_L1B_FLAGS_DS_NAME), rectangle);
-			
+
 			Tile[] rhoToa = new Tile[rhoToaBands.length];
 			for (int i = 0; i < rhoToa.length; i++) {
                 rhoToa[i] = getSourceTile(rhoToaBands[i], rectangle);
 			}
-			
+
 			Tile cloudFlags = getSourceTile(cloudProduct.getBand(CloudClassificationOp.CLOUD_FLAGS), rectangle);
 
             Tile gasFlags = targetTiles.get(flagBand);
@@ -177,16 +180,16 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
                     boolean correctPixel = false;
 					boolean correctWaterPixel = false;
 					double[] dSumrho = new double[L1_BAND_NUM]; /* accumulator for rho above water */
-					
+
 					for (int iy = y; iy <= yWinEnd; iy++) {
 					    for (int ix = x; ix <= xWinEnd; ix++) {
 					        if (!l1Flags.getSampleBit(ix, iy, L1_F_INVALID) &&
 					                !cloudFlags.getSampleBit(ix, iy, CloudClassificationOp.F_CLOUD) &&
 					                (correctWater || altitude.getSampleFloat(ix, iy) >= -50.0 || l1Flags.getSampleBit(ix, iy, L1_F_LAND))) {
-					
+
 					            correctPixel = true;
 					            gasFlags.setSample(ix, iy, F_DO_CORRECT, true);
-					
+
 					            /* v4.2: average radiances for water pixels */
 					            if (!l1Flags.getSampleBit(ix, iy, L1_F_LAND)) {
 					                correctWaterPixel = true;
@@ -199,7 +202,7 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
 					        }
 					    }
 					}
-					
+
 					if (correctPixel) {
 					    /* v4.2 average TOA radiance */
 					    double etaAverageForWater = 0.0;
@@ -212,7 +215,7 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
 					            iOrinp0 = true;
 					            etaAverageForWater = 1.0;
 					        }
-					
+
 					        if ((dSumrho[bb890] > 0.0) && (dSumrho[bb900] > 0.0)) {
 					            x2AverageForWater = dSumrho[bb900] / dSumrho[bb890];
 					        } else {
@@ -220,14 +223,14 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
 					            x2AverageForWater = 1.0;
 					        }
 					    }
-					
+
 					    /* V.2 APPLY GASEOUS ABSORPTION CORRECTION - DPM Step 2.6.12 */
-					
+
 					    /* ozone transmittance on 4x4 window - step 2.6.12.1 */
 					    double[] T_o3 = new double[L1_BAND_NUM];   /* ozone transmission */
 					    double airMass0 = HelperFunctions.calculateAirMass(vza.getSampleFloat(x, y), sza.getSampleFloat(x, y));
 					    trans_o3(airMass0, ecmwfOzone.getSampleFloat(x, y), T_o3);
-					
+
 					    /* process each pixel */
 					    for (int iy = y; iy <= yWinEnd; iy++) {
 					        for (int ix = x; ix <= xWinEnd; ix++) {
@@ -240,7 +243,7 @@ public class GaseousCorrectionOp extends MerisBasisOp implements Constants {
 					                if (sza.getSampleFloat(ix, iy) > auxData.TETAS_LIM) {
 					                    gasFlags.setSample(ix, iy, F_SUN70, true);
 					                }
-					
+
 					                /* gaseous transmittance gasCor : writes rho-ag field - v4.2 */
 					                /* do band ratio for land pixels with full exception handling */
 					                if (l1Flags.getSampleBit(ix, iy, L1_F_LAND)) {

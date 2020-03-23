@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.msi;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
@@ -167,6 +168,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final String STANDARD_NETS = "C2RCC-Nets";
     private static final String EXTREME_NETS = "C2X-Nets";
     private static final Map<String, String[]> c2rccNetSetMap = new HashMap<>();
+
     static {
         String[] standardNets = new String[10];
         standardNets[IDX_iop_rw] = "msi/std_s2_20160502/iop_rw/17x97x47_125.5.net";
@@ -785,7 +787,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
             if (outputAsRrs) {
                 autoGrouping.append(":rrs");
-            }else {
+            } else {
                 autoGrouping.append(":rhow");
             }
         }
@@ -951,8 +953,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
-
-        targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
     @Override
@@ -985,41 +985,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
         // (mp/20160504) - SolarFlux is not used so we set it to 0
         solflux = new double[SOURCE_BAND_REFL_NAMES.length]; //getSolarFluxValues();
-
-
-
-        try {
-            if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
-                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
-                algorithm = new C2rccMsiAlgorithm(nnFilePaths, false);
-            } else {
-                String[] nnFilePaths = c2rccNetSetMap.get(netSet);
-                if(nnFilePaths == null) {
-                    throw new OperatorException(String.format("Unknown set '%s' of neural nets specified.", netSet));
-                }
-                algorithm = new C2rccMsiAlgorithm(nnFilePaths, true);
-            }
-        } catch (IOException e) {
-            throw new OperatorException(e);
-        }
-
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-        algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
-        algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
-        algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
-
-        algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
-        algorithm.setOutputRpath(outputRpath);
-        algorithm.setOutputTdown(outputTdown);
-        algorithm.setOutputTup(outputTup);
-        algorithm.setOutputRhow(outputAcReflectance);
-        algorithm.setOutputRhown(outputRhown);
-        algorithm.setOutputOos(outputOos);
-        algorithm.setOutputKd(outputKd);
-        algorithm.setOutputUncertainties(outputUncertainties);
-        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
         timeCoding = sourceProduct.getSceneTimeCoding();
         if (timeCoding == null) {
             // if not time coding is set, create one
@@ -1032,7 +997,49 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
 
         }
-        initAtmosphericAuxdata();
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 2);
+        try {
+            pm.setSubTaskName("Defining algorithm ...");
+            if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath),
+                        NNUtils.ALTERNATIVE_NET_DIR_NAMES);
+                algorithm = new C2rccMsiAlgorithm(nnFilePaths, false);
+            } else {
+                String[] nnFilePaths = c2rccNetSetMap.get(netSet);
+                if (nnFilePaths == null) {
+                    throw new OperatorException(String.format("Unknown set '%s' of neural nets specified.", netSet));
+                }
+                algorithm = new C2rccMsiAlgorithm(nnFilePaths, true);
+            }
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
+            algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
+            algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
+            algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
+            algorithm.setOutputRpath(outputRpath);
+            algorithm.setOutputTdown(outputTdown);
+            algorithm.setOutputTup(outputTup);
+            algorithm.setOutputRhow(outputAcReflectance);
+            algorithm.setOutputRhown(outputRhown);
+            algorithm.setOutputOos(outputOos);
+            algorithm.setOutputKd(outputKd);
+            algorithm.setOutputUncertainties(outputUncertainties);
+            algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
+            getTargetProduct().addProductNodeListener(getNnNamesMetadataAppender());
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.worked(1);
+        } catch (IOException e) {
+            throw new OperatorException(e);
+        } finally {
+            pm.done();
+        }
     }
 
     private ProductData.UTC getStartTime() {

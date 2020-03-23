@@ -17,6 +17,7 @@
 package org.esa.s3tbx.meris.cloud;
 
 import com.bc.ceres.core.ProgressMonitor;
+import com.bc.ceres.core.SubProgressMonitor;
 import org.esa.s3tbx.meris.AlbedoUtils;
 import org.esa.s3tbx.meris.MerisBasisOp;
 import org.esa.snap.core.datamodel.*;
@@ -103,20 +104,8 @@ public class CloudProbabilityOp extends MerisBasisOp {
     @Parameter
     private String validOceanExpression = DEFAULT_VALID_OCEAN_EXP;
 
-    private File auxdataTargetDir;
-    private Properties configProperties;
-
-
     @Override
     public void initialize() throws OperatorException {
-        try {
-            loadAuxdata();
-        } catch (IOException e) {
-            throw new OperatorException("Could not load auxdata", e);
-        }
-        
-        centralWavelenth = centralWavelengthProvider.getCentralWavelength(l1bProduct.getProductType());
-
         // create the output product
         targetProduct = createCompatibleProduct(l1bProduct, DEFAULT_OUTPUT_PRODUCT_NAME, PRODUCT_TYPE);
 
@@ -145,7 +134,22 @@ public class CloudProbabilityOp extends MerisBasisOp {
                 throw new IllegalArgumentException("Source product does not contain band " + bandName);
             }
         }
-        createBooleanBands();
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("", 300);
+        try {
+            pm.setSubTaskName("Loading in auxiliary data");
+            loadAuxdata(pm);
+            centralWavelenth = centralWavelengthProvider.getCentralWavelength(l1bProduct.getProductType());
+            createBooleanBands();
+            pm.worked(100);
+        } catch (IOException e) {
+            throw new OperatorException("Could not load auxdata", e);
+        } finally {
+            pm.done();
+        }
     }
     
     private void createBooleanBands() throws OperatorException {
@@ -177,7 +181,7 @@ public class CloudProbabilityOp extends MerisBasisOp {
 		landBand = expProduct.getBand("land");
 	}
 
-    private void loadAuxdata() throws IOException {
+    private void loadAuxdata(ProgressMonitor pm) throws IOException {
 //        String auxdataSrcPath = "auxdata/cloudprob";
 //        final String auxdataDestPath = ".beam/" + AlbedomapConstants.SYMBOLIC_NAME +
 //                "/" + auxdataSrcPath;
@@ -189,17 +193,13 @@ public class CloudProbabilityOp extends MerisBasisOp {
 
         // todo: clarify if this is the right way in Snap/S3tbx:
         final Path auxdataDirPath = SystemUtils.getAuxDataPath().resolve("cloudprob").toAbsolutePath();
-        auxdataTargetDir = auxdataDirPath.toFile();
+        File auxdataTargetDir = auxdataDirPath.toFile();
         final Path sourcePath = ResourceInstaller.findModuleCodeBasePath(getClass()).resolve("auxdata");
-        try {
-            new ResourceInstaller(sourcePath, auxdataDirPath).install(".*", ProgressMonitor.NULL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new ResourceInstaller(sourcePath, auxdataDirPath).install(".*", new SubProgressMonitor(pm, 100));
 
         final File configPropFile = new File(auxdataTargetDir, configFile);
         final InputStream propertiesStream = new FileInputStream(configPropFile);
-        configProperties = new Properties();
+        Properties configProperties = new Properties();
         configProperties.load(propertiesStream);
 
         pressScaleHeight = Integer.parseInt(configProperties
@@ -207,10 +207,12 @@ public class CloudProbabilityOp extends MerisBasisOp {
 
         centralWavelengthProvider = new CentralWavelengthProvider();
         centralWavelengthProvider.readAuxData(auxdataTargetDir);
-
+        pm.worked(50);
         try {
             landAlgo = new CloudAlgorithm(auxdataTargetDir, configProperties.getProperty("land"));
+            pm.worked(25);
             oceanAlgo = new CloudAlgorithm(auxdataTargetDir, configProperties.getProperty("ocean"));
+            pm.worked(25);
         } catch (IOException e) {
             throw new OperatorException("Could not load auxdata", e);
         }
@@ -311,7 +313,7 @@ public class CloudProbabilityOp extends MerisBasisOp {
                 cloneLandAlgo = landAlgo.clone();
                 cloneOceanAlgo = oceanAlgo.clone();
             } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
+                throw new OperatorException(e.getMessage());
             }
 
             final double[] cloudIn = new double[15];

@@ -1,6 +1,7 @@
 package org.esa.s3tbx.fub.wew;
 
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.fub.wew.util.NN_AtmCorr;
 import org.esa.s3tbx.fub.wew.util.NN_CHL;
 import org.esa.s3tbx.fub.wew.util.NN_TSM;
@@ -117,10 +118,19 @@ public class WaterProcessorOp extends PixelOperator {
             }
             inputBands[i] = radianceBand;
         }
-
-        solarFlux = getSolarFlux(sourceProduct, inputBands);
         if (checkWhetherSuspectIsValid) {
             checkWhetherSuspectIsValid();
+        }
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Retrieving solar flux", 1);
+        try {
+            solarFlux = getSolarFlux(sourceProduct, inputBands);
+            pm.worked(1);
+        } finally {
+            pm.done();
         }
     }
 
@@ -502,7 +512,7 @@ public class WaterProcessorOp extends PixelOperator {
         targetSamples[output_planes].set(resultFlags[0]);
     }
 
-    private void checkWhetherSuspectIsValid() {
+    private void checkWhetherSuspectIsValid() throws OperatorException {
         if (!expression.contains(WaterProcessorOpConstant.SUSPECT_EXPRESSION_TERM)) {
             return;
         }
@@ -522,15 +532,15 @@ public class WaterProcessorOp extends PixelOperator {
         try {
             l1FlagsInputBand.readPixels(0, halfHeight, width, 1, l1Flags);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new OperatorException(e.getMessage());
         }
         // The input type pattern for ICOL products
         final String ICOL_PATTERN = "MER_.*1N";
         boolean icolMode = sourceProduct.getProductType().matches(ICOL_PATTERN);
         if (icolMode) {
             expression = expression.replace(WaterProcessorOpConstant.SUSPECT_EXPRESSION_TERM, "");
-            System.out.println("--- Input product is of type icol ---");
-            System.out.println("--- Switching to relaxed mask. ---");
+            getLogger().info("--- Input product is of type icol ---");
+            getLogger().info("--- Switching to relaxed mask. ---");
         } else {
             final PlanarImage validMaskImage = createValidMaskImage(sourceProduct, sensor.getSuspectFlag());
             final Raster validData = validMaskImage.getData();
@@ -547,8 +557,8 @@ public class WaterProcessorOp extends PixelOperator {
                 expression = expression.replace(WaterProcessorOpConstant.SUSPECT_EXPRESSION_TERM, "");
 //                maskToBeUsed = mask_to_be_used;
                 final float percent = (float) k / (float) width * 100.0f;
-                System.out.println("--- " + percent + " % of the scan line are marked as suspect ---");
-                System.out.println("--- Switching to relaxed mask. ---");
+                getLogger().info("--- " + percent + " % of the scan line are marked as suspect ---");
+                getLogger().info("--- Switching to relaxed mask. ---");
             }
         }
     }
