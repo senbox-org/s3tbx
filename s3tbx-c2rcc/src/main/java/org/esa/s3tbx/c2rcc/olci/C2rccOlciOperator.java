@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.olci;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -234,10 +235,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             description = "The surface air pressure at sea level if not provided by auxiliary data.")
     private double press;
 
-    @Parameter(alias="TSMfac", defaultValue = "1.06", description = "TSM factor (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM factor")
+    @Parameter(alias = "TSMfac", defaultValue = "1.06", description = "TSM factor (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM factor")
     private double TSMfakBpart;
 
-    @Parameter(alias="TSMexp", defaultValue = "0.942", description = "TSM exponent (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM exponent")
+    @Parameter(alias = "TSMexp", defaultValue = "0.942", description = "TSM exponent (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM exponent")
     private double TSMfakBwit;
 
     @Parameter(alias = "CHLexp", defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop_apig^CHLexp * CHLfac).", label = "CHL exponent")
@@ -941,8 +942,6 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
-
-        targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
     @Override
@@ -952,11 +951,10 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
             assertSourceBand(getSolarFluxBandname(i));
         }
         useSnapDem = !sourceProduct.containsRasterDataNode(RASTER_NAME_ALTITUDE);
-        if (useSnapDem) {
-            elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").createDem(Resampling.BILINEAR_INTERPOLATION);
-        }
 
-        sourceProduct.isCompatibleBandArithmeticExpression(validPixelExpression);
+        if (!sourceProduct.isCompatibleBandArithmeticExpression(validPixelExpression)) {
+            throw new OperatorException("The validPixelExpression cannot be applied to this source product.");
+        }
 
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
@@ -966,8 +964,24 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         assertSourceRaster(RASTER_NAME_SUN_AZIMUTH);
         assertSourceRaster(RASTER_NAME_VIEWING_ZENITH);
         assertSourceRaster(RASTER_NAME_VIEWING_AZIMUTH);
+        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
+    }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        int numTicks = 2;
+        if (useSnapDem) {
+            numTicks += 1;
+        }
+        pm.beginTask("Preparing computation", numTicks);
         try {
+            if (useSnapDem) {
+                pm.setSubTaskName("Creating DEM");
+                elevationModel = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30").
+                        createDem(Resampling.BILINEAR_INTERPOLATION);
+                pm.worked(1);
+            }
+            pm.setSubTaskName("Defining algorithm ...");
             final String[] nnFilePaths;
             final boolean loadFromResources = alternativeNNPath == null || alternativeNNPath.trim().length() == 0;
             if (loadFromResources) {
@@ -976,29 +990,33 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
                 nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
             }
             algorithm = new C2rccOlciAlgorithm(nnFilePaths, loadFromResources);
+
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
+            algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
+            algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
+
+            algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
+            algorithm.setOutputRpath(outputRpath);
+            algorithm.setOutputTdown(outputTdown);
+            algorithm.setOutputTup(outputTup);
+            algorithm.setOutputRhow(outputAcReflectance);
+            algorithm.setOutputRhown(outputRhown);
+            algorithm.setOutputOos(outputOos);
+            algorithm.setOutputKd(outputKd);
+            algorithm.setOutputUncertainties(outputUncertainties);
+            algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
+            getTargetProduct().addProductNodeListener(getNnNamesMetadataAppender());
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.worked(1);
         } catch (IOException e) {
             throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
-
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-        algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
-        algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
-        algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
-
-        algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
-        algorithm.setOutputRpath(outputRpath);
-        algorithm.setOutputTdown(outputTdown);
-        algorithm.setOutputTup(outputTup);
-        algorithm.setOutputRhow(outputAcReflectance);
-        algorithm.setOutputRhown(outputRhown);
-        algorithm.setOutputOos(outputOos);
-        algorithm.setOutputKd(outputKd);
-        algorithm.setOutputUncertainties(outputUncertainties);
-        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
-        timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
-        initAtmosphericAuxdata();
     }
 
     private static String getRadianceBandName(int index) {
@@ -1063,13 +1081,13 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
         auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
         if (useEcmwfAuxData) {
             VirtualBand ozoneInDu = new VirtualBand("__ozone_in_du_",
-                                                    ProductData.TYPE_FLOAT32,
-                                                    getSourceProduct().getSceneRasterWidth(),
-                                                    getSourceProduct().getSceneRasterHeight(),
-                                                    RASTER_NAME_TOTAL_OZONE + " * 46698");
+                    ProductData.TYPE_FLOAT32,
+                    getSourceProduct().getSceneRasterWidth(),
+                    getSourceProduct().getSceneRasterHeight(),
+                    RASTER_NAME_TOTAL_OZONE + " * 46698");
             ozoneInDu.setOwner(sourceProduct);
             auxdataBuilder.useAtmosphericRaster(ozoneInDu,
-                                                sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
+                    sourceProduct.getRasterDataNode(RASTER_NAME_SEA_LEVEL_PRESSURE));
         }
 
         try {
@@ -1094,9 +1112,9 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
     public static class Spi extends OperatorSpi {
         static {
             RgbProfiles.installRgbProfiles("C2RCC_OLCI",
-                                           "log(0.05 + 0.35 * %1$s_2 + 0.60 * %1$s_5 + %1$s_6 + 0.13 * %1$s_7)",
-                                           "log(0.05 + 0.21 * %1$s_3 + 0.50 * %1$s_4 + %1$s_5 + 0.38 * %1$s_6)",
-                                           "log(0.05 + 0.21 * %1$s_1 + 1.75 * %1$s_2 + 0.47 * %1$s_3 + 0.16 * %1$s_4)");
+                    "log(0.05 + 0.35 * %1$s_2 + 0.60 * %1$s_5 + %1$s_6 + 0.13 * %1$s_7)",
+                    "log(0.05 + 0.21 * %1$s_3 + 0.50 * %1$s_4 + %1$s_5 + 0.38 * %1$s_6)",
+                    "log(0.05 + 0.21 * %1$s_1 + 1.75 * %1$s_2 + 0.47 * %1$s_3 + 0.16 * %1$s_4)");
         }
 
         public Spi() {
@@ -1105,9 +1123,9 @@ public class C2rccOlciOperator extends PixelOperator implements C2rccConfigurabl
 
         @Override
         public Operator createOperator(Map<String, Object> parameters, Map<String, Product> sourceProducts, RenderingHints renderingHints) throws OperatorException {
-            if(parameters.containsKey("TSMfakBpart") || parameters.containsKey("TSMfakBwit")) {
+            if (parameters.containsKey("TSMfakBpart") || parameters.containsKey("TSMfakBwit")) {
                 SystemUtils.LOG.warning("TSMfakBpart and TSMfakBwit are deprecated parameters and shall not be used anymore." +
-                                                "Please use TSMfac and TSMexp instead. Please consult the help for more information.");
+                        "Please use TSMfac and TSMexp instead. Please consult the help for more information.");
             }
             return super.createOperator(parameters, sourceProducts, renderingHints);
         }

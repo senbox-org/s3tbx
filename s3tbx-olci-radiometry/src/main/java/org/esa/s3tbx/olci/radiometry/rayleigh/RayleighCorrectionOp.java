@@ -35,8 +35,10 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
+import org.json.simple.parser.ParseException;
 
 import java.awt.Rectangle;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -132,11 +134,9 @@ public class RayleighCorrectionOp extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-
         if (this.sourceBandNames == null || this.sourceBandNames.length == 0) {
             throw new OperatorException("Please select at least one source band.");
         }
-
         sensor = getSensorType(sourceProduct);
         productToProcess = sourceProduct;
         if (sensor == Sensor.S2_MSI) {
@@ -150,23 +150,33 @@ public class RayleighCorrectionOp extends Operator {
                                                                                    s2MsiTargetResolution);
             }
         }
-
-        algorithm = new RayleighCorrAlgorithm(sensor);
-        absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
-        crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getNameFormat());
-
         Product targetProduct = new Product(productToProcess.getName() + "_rayleigh", productToProcess.getProductType(),
                                             productToProcess.getSceneRasterWidth(), productToProcess.getSceneRasterHeight());
-
-        RayleighAux.initDefaultAuxiliary();
         addTargetBands(productToProcess, targetProduct);
         ProductUtils.copyProductNodes(productToProcess, targetProduct);
         ProductUtils.copyFlagBands(productToProcess, targetProduct, true);
-
         targetProduct.setAutoGrouping(AUTO_GROUPING + (addRrayDebug ? ":rRay" : ""));
         setTargetProduct(targetProduct);
     }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Initializing auxiliary data", 4);
+        try {
+            algorithm = new RayleighCorrAlgorithm(sensor);
+            pm.worked(1);
+            absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
+            pm.worked(1);
+            crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getNameFormat());
+            pm.worked(1);
+            RayleighAux.initDefaultAuxiliary();
+            pm.worked(1);
+        } catch (IOException | ParseException e) {
+            throw new OperatorException("Could not initialize default auxiliary data", e);
+        } finally {
+            pm.done();
+        }
+    }
 
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {

@@ -91,27 +91,45 @@ public class CloudTopPressureOp extends MerisBasisOp {
 
     @Override
     public void initialize() throws OperatorException {
-        try {
-            loadNeuralNet();
-        } catch (Exception e) {
-            throw new OperatorException("Failed to load neural net ctp.nna:\n" + e.getMessage());
-        }
-        initAuxData();
-        try {
-            if (straylightCorr) {
-                readStraylightCoeff();
-                readStraylightCorrWavelengths();
-            }
-        } catch (Exception e) {
-            throw new OperatorException("Failed to load straylight correction auxdata:\n" + e.getMessage());
-        }
         createTargetProduct();
+    }
 
-        szaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
-        saaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_AZIMUTH_DS_NAME);
-        vzaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_VIEW_ZENITH_DS_NAME);
-        vaaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_VIEW_AZIMUTH_DS_NAME);
-
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        int workload = 3;
+        if (straylightCorr) {
+            workload = 5;
+        }
+        pm.beginTask("Loading in auxiliary data", workload);
+        try {
+            pm.setSubTaskName("Loading Neural Net");
+            try {
+                loadNeuralNet();
+                pm.worked(1);
+            } catch (Exception e) {
+                throw new OperatorException("Failed to load neural net ctp.nna:\n" + e.getMessage());
+            }
+            pm.setSubTaskName("Initializing auxiliary data");
+            initAuxData();
+            pm.worked(1);
+            try {
+                if (straylightCorr) {
+                    readStraylightCoeff();
+                    pm.worked(1);
+                    readStraylightCorrWavelengths();
+                    pm.worked(1);
+                }
+            } catch (Exception e) {
+                throw new OperatorException("Failed to load straylight correction auxdata:\n" + e.getMessage());
+            }
+            szaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
+            saaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_AZIMUTH_DS_NAME);
+            vzaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_VIEW_ZENITH_DS_NAME);
+            vaaNode = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_VIEW_AZIMUTH_DS_NAME);
+            pm.worked(1);
+        } finally {
+            pm.done();
+        }
     }
 
     private void loadNeuralNet() throws IOException, JnnException {
