@@ -8,7 +8,6 @@ import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Section;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
-import ucar.nc2.VariableIF;
 
 import javax.media.jai.PlanarImage;
 import java.awt.Dimension;
@@ -22,11 +21,11 @@ import java.io.IOException;
 public class S3ReferencingVariableOpImage extends SingleBandedOpImage {
 
     private final Variable referencedIndexVariable;
-    private final VariableIF variable;
+    private final Variable variable;
     private final DimensionValuesProvider dimensionValuesProvider;
 
     //todo use this to display fires in SLSTR L2 LST products when data is available
-    public S3ReferencingVariableOpImage(VariableIF variable, int dataBufferType, int sourceWidth, int sourceHeight,
+    public S3ReferencingVariableOpImage(Variable variable, int dataBufferType, int sourceWidth, int sourceHeight,
                                         Dimension tileSize, ResolutionLevel level, int[] additionalDimensionIndexes,
                                         Variable referencedIndexVariable, String nameOfReferencingDimension,
                                         String nameOfDisplayedDimension) {
