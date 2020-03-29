@@ -50,6 +50,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>edu.ucar</groupId>
+            <artifactId>netcdfAll</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
