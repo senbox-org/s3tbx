@@ -342,18 +342,22 @@ public class S3NetcdfReader extends AbstractProductReader {
             final String sampleName = replaceNonWordCharacters(uniqueNames[i]);
             switch (sampleValues.getDataType()) {
                 case BYTE:
+                case UBYTE:
                     sampleCoding.addSample(sampleName,
                                            DataType.unsignedByteToShort(sampleValues.getNumericValue(i).byteValue()),
                                            null);
                     break;
                 case SHORT:
+                case USHORT:
                     sampleCoding.addSample(sampleName,
                                            DataType.unsignedShortToInt(sampleValues.getNumericValue(i).shortValue()), null);
                     break;
                 case INT:
+                case UINT:
                     sampleCoding.addSample(sampleName, sampleValues.getNumericValue(i).intValue(), null);
                     break;
                 case LONG:
+                case ULONG:
                     final long longValue = sampleValues.getNumericValue(i).longValue();
                     if (msb) {
                         long shiftedValue = longValue >>> 32;
@@ -380,6 +384,7 @@ public class S3NetcdfReader extends AbstractProductReader {
             final String sampleName = replaceNonWordCharacters(uniqueNames[i]);
             switch (sampleMasks.getDataType()) {
                 case BYTE:
+                case UBYTE:
                     int[] byteValues = {
                             DataType.unsignedByteToShort(sampleMasks.getNumericValue(i).byteValue()),
                             DataType.unsignedByteToShort(sampleValues.getNumericValue(i).byteValue())
@@ -391,6 +396,7 @@ public class S3NetcdfReader extends AbstractProductReader {
                     }
                     break;
                 case SHORT:
+                case USHORT:
                     int[] shortValues = {
                             DataType.unsignedShortToInt(sampleMasks.getNumericValue(i).shortValue()),
                             DataType.unsignedShortToInt(sampleValues.getNumericValue(i).shortValue())
@@ -402,6 +408,7 @@ public class S3NetcdfReader extends AbstractProductReader {
                     }
                     break;
                 case INT:
+                case UINT:
                     int[] intValues = {
                             sampleMasks.getNumericValue(i).intValue(),
                             sampleValues.getNumericValue(i).intValue()
@@ -413,6 +420,7 @@ public class S3NetcdfReader extends AbstractProductReader {
                     }
                     break;
                 case LONG:
+                case ULONG:
                     long[] longValues = {
                             sampleMasks.getNumericValue(i).longValue(),
                             sampleValues.getNumericValue(i).longValue()
