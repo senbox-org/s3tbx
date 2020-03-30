@@ -100,7 +100,7 @@ public class NcFileStitcherTest {
 
     @Test
     @Ignore("takes a few seconds")
-    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException, URISyntaxException {
+    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException {
         final String ncFileName = "met_tx.nc";
         final ImageSize targetImageSize = new ImageSize("in", 21687, 64, 6000, 130);
         final ImageSize[] imageSizes = new ImageSize[3];
@@ -503,7 +503,7 @@ public class NcFileStitcherTest {
     public void testDetermineDestinationOffsets_f1_BT_in() {
         int[][] expected_f1_BT_in_DestinationOffsets = {{0}, {3000000}, {6000000}};
 
-        int[] rowOffsets = new int[] {0, 2000, 4000};
+        int[] rowOffsets = new int[]{0, 2000, 4000};
         int[] numberOfRows = new int[]{2000, 2000, 2000};
         int[] sectionSizes_f1_BT_in = new int[]{3000000, 3000000, 3000000};
         int[][] sourceOffsets = new int[][]{{0}, {0}, {0}};
@@ -521,7 +521,7 @@ public class NcFileStitcherTest {
         int[][] expected_met_tx_DestinationOffsets = {{0, 780000, 1560000, 2340000, 3120000},
                 {260000, 1040000, 1820000, 2600000, 3380000}, {520000, 1300000, 2080000, 2860000, 3640000}};
         int[] sectionSizes_met_tx = new int[]{260000, 260000, 260000};
-        int[] rowOffsets = new int[] {0, 2000, 4000};
+        int[] rowOffsets = new int[]{0, 2000, 4000};
         int[] numberOfRows = new int[]{2000, 2000, 2000};
         int[][] sourceOffsets = new int[][]{{0, 260000, 520000, 780000, 1040000}, {0, 260000, 520000, 780000, 1040000},
                 {0, 260000, 520000, 780000, 1040000}};
@@ -538,10 +538,10 @@ public class NcFileStitcherTest {
     public void testDetermineDestinationOffsets_S1_quality_an() {
         int[][] expectedDestinationOffsets =
                 {{0, 3396, 6792, 10188, 13584, 16980, 20376, 23772},
-                {1601, 4997, 8393, 11789, 15185, 18581, 21977, 25373},
-                {3201, 6597, 9993, 13389, 16785, 20181, 23577, 26973}};
+                        {1601, 4997, 8393, 11789, 15185, 18581, 21977, 25373},
+                        {3201, 6597, 9993, 13389, 16785, 20181, 23577, 26973}};
         int[] sectionSizes = new int[]{1601, 1600, 195};
-        int[] rowOffsets = new int[] {0, 1601, 3201};
+        int[] rowOffsets = new int[]{0, 1601, 3201};
         int[] numberOfRows = new int[]{1601, 1600, 195};
         int[][] sourceOffsets = new int[][]{{0, 1601, 3202, 4803, 6404, 8005, 9606, 11207},
                 {0, 1600, 3200, 4800, 6400, 8000, 9600, 11200}, {0, 195, 390, 585, 780, 975, 1170, 1365}};
@@ -557,7 +557,7 @@ public class NcFileStitcherTest {
     @Test
     public void testDetermineDestinationOffsets_differentSectionSizes() {
         int[][] expectedDestinationOffsets = {{0}, {2000000}, {6500000}};
-        int[] rowOffsets = new int[] {0, 2000, 6500};
+        int[] rowOffsets = new int[]{0, 2000, 6500};
         int[] numberOfRows = new int[]{2000, 4500, 1500};
         int[] sectionSizes = new int[]{2000000, 4500000, 1500000};
         int[][] sourceOffsets = new int[][]{{0}, {0}, {0}};
