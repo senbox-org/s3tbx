@@ -223,6 +223,7 @@ public class OlciProductSignatureTest {
     private C2rccOlciOperator createDefaultOperator() throws FactoryException, TransformException {
         C2rccOlciOperator operator = new C2rccOlciOperator();
         operator.setParameterDefaultValues();
+        operator.setValidPixelExpression(String.format("%s == 500", C2rccOlciOperator.RASTER_NAME_ALTITUDE));
         operator.setSourceProduct(OlciTestProduct.create());
         return operator;
     }
