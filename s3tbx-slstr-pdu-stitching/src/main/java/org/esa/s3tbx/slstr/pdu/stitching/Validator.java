@@ -11,11 +11,14 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 /**
  * @author Tonio Fincke
  */
 public class Validator {
+
+    private static final String SLSTR_L1B_NAME_PATTERN = "S3.?_SL_1_RBT_.*(.SEN3)?";
 
     public static void validate(File[] manifestFiles) throws IOException {
         final String msg = "Cannot create document from manifest XML file";
@@ -32,6 +35,27 @@ public class Validator {
             validateAdjacency(manifests);
         } catch (PDUStitchingException e) {
             throw new IOException(e.getMessage());
+        }
+    }
+
+    static void validateSlstrProductFiles(File[] slstrProductFiles) throws PDUStitchingException {
+        if (slstrProductFiles.length == 0) {
+            throw new IllegalArgumentException("No product files provided");
+        }
+
+        final Pattern slstrNamePattern = Pattern.compile(SLSTR_L1B_NAME_PATTERN);
+        for (int i = 0; i < slstrProductFiles.length; i++) {
+            if (slstrProductFiles[i] == null) {
+                throw new PDUStitchingException("File must not be null");
+            }
+            if (!slstrProductFiles[i].getName().equals("xfdumanifest.xml")) {
+                slstrProductFiles[i] = new File(slstrProductFiles[i], "xfdumanifest.xml");
+            }
+            if (!slstrProductFiles[i].getName().equals("xfdumanifest.xml") ||
+                    slstrProductFiles[i].getParentFile() == null ||
+                    !slstrNamePattern.matcher(slstrProductFiles[i].getParentFile().getName()).matches()) {
+                throw new IllegalArgumentException("The PDU Stitcher only supports SLSTR L1B products");
+            }
         }
     }
 
@@ -72,8 +96,8 @@ public class Validator {
                 final Node nadirImageSize = nadirImageSizes.item(i);
                 final Node grid = nadirImageSize.getAttributes().getNamedItem("grid");
                 startOffsets[k] = -1;
-                endOffsets[k] = 0;
-                if (grid != null && grid.getNodeValue().equals("0.5 km stripe A")) {
+                endOffsets[k] = -1;
+                if (grid != null && grid.getNodeValue().equals("Tie Points")) {
                     final NodeList childNodes = nadirImageSize.getChildNodes();
                     for (int j = 0; j < childNodes.getLength(); j++) {
                         if (childNodes.item(j).getNodeName().equals("sentinel3:startOffset")) {
@@ -89,7 +113,7 @@ public class Validator {
         Arrays.sort(startOffsets);
         Arrays.sort(endOffsets);
         for (int i = 0; i < manifests.length - 1; i++) {
-            if (endOffsets[i] != startOffsets[i + 1]) {
+            if (endOffsets[i] != -1 && startOffsets[i + 1] != -1 && endOffsets[i] != startOffsets[i + 1]) {
                 throw new PDUStitchingException("Selected units must be adjacent");
             }
         }
