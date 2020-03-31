@@ -19,11 +19,25 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelModel;
 import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.ForwardCoding;
+import org.esa.snap.core.dataio.geocoding.GeoChecks;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.InverseCoding;
 import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
 import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.MetadataElement;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.ProductNodeGroup;
+import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.core.util.ProductUtils;
@@ -38,7 +52,7 @@ import ucar.ma2.DataType;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.RenderedImage;
@@ -444,7 +458,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     }
 
     @Override
-    protected void setBandGeoCodings(Product product) {
+    protected void setBandGeoCodings(Product product) throws IOException {
         if (Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_USE_PIXELGEOCODINGS, false)) {
             setPixelBandGeoCodings(product);
         } else {
@@ -576,7 +590,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         }
     }
 
-    private void setPixelBandGeoCodings(Product product) {
+    private void setPixelBandGeoCodings(Product product) throws IOException {
         final Band[] bands = product.getBands();
         for (Band band : bands) {
             final GeoCoding bandGeoCoding = getBandGeoCoding(product, getGridIndex(band.getName()));
