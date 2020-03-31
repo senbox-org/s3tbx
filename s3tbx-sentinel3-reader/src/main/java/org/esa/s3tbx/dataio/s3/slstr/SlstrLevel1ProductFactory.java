@@ -296,12 +296,15 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     @Override
     protected Product findMasterProduct() {
         final List<Product> productList = getOpenProductList();
-        Product masterProduct = productList.get(0);
+        Product masterProduct = new Product("dummy", "dummy", 1, 1);
         for (int i = 1; i < productList.size(); i++) {
             Product product = productList.get(i);
-            if (product.getSceneRasterWidth() > masterProduct.getSceneRasterWidth() &&
-                product.getSceneRasterHeight() > masterProduct.getSceneRasterHeight() &&
-                !product.getName().contains("flags")) {
+            if (product.getSceneRasterWidth() >= masterProduct.getSceneRasterWidth() &&
+                    product.getSceneRasterHeight() >= masterProduct.getSceneRasterHeight() &&
+                    !product.getName().contains("flags") &&
+                    !product.getName().endsWith("tx") &&
+                    !product.getName().endsWith("to") &&
+                    !product.getName().endsWith("tn")) {
                 masterProduct = product;
             }
         }
@@ -331,7 +334,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                 return copyTiePointGrid(sourceBand, targetProduct, sourceStartOffset, sourceTrackOffset, sourceResolutions);
             } else {
                 final Band targetBand = new Band(sourceBandName, sourceBand.getDataType(),
-                                                 sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
+                        sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
                 targetProduct.addBand(targetBand);
                 ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
                 final RenderedImage sourceRenderedImage = sourceBand.getSourceImage().getImage(0);
@@ -349,7 +352,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                 imageToModelTransform.scale(subSamplingX, subSamplingY);
                 final DefaultMultiLevelModel targetModel =
                         new DefaultMultiLevelModel(imageToModelTransform,
-                                                   sourceRenderedImage.getWidth(), sourceRenderedImage.getHeight());
+                                sourceRenderedImage.getWidth(), sourceRenderedImage.getHeight());
                 final DefaultMultiLevelSource targetMultiLevelSource =
                         new DefaultMultiLevelSource(sourceRenderedImage, targetModel);
                 targetBand.setSourceImage(new DefaultMultiLevelImage(targetMultiLevelSource));
@@ -381,42 +384,42 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
         targetProduct.setAutoGrouping(
-                                      "F*BT_*n:F*exception_*n:" +
-                                      "F*BT_*o:F*exception_*o:" +
-                                      "S*BT_in:S*exception_in:" +
-                                      "S*BT_io:S*exception_io:" +
-                                      "radiance_an:S*exception_an:" +
-                                      "radiance_ao:S*exception_ao:" +
-                                      "radiance_bn:S*exception_bn:" +
-                                      "radiance_bo:S*exception_bo:" +
-                                      "radiance_cn:S*exception_cn:" +
-                                      "radiance_co:S*exception_co:" +
-                                      (isOrphanPixelsAllowed() ? "*orphan*:" : "") +
-                                      "x_*:y_*:" +
-                                      "elevation:latitude:longitude:" +
-                                      "specific_humidity:temperature_profile:" +
-                                      "bayes_an_:bayes_ao_:" +
-                                      "bayes_bn_:bayes_bo_:" +
-                                      "bayes_cn_:bayes_co_:" +
-                                      "bayes_in_:bayes_io_:" +
-                                      "cloud_an_:cloud_ao_:" +
-                                      "cloud_bn_:cloud_bo_:" +
-                                      "cloud_cn_:cloud_co_:" +
-                                      "cloud_in_:cloud_io_:" +
-                                      "confidence_an_:confidence_ao_:" +
-                                      "confidence_bn_:confidence_bo_:" +
-                                      "confidence_cn_:confidence_co_:" +
-                                      "confidence_in_:confidence_io_:" +
-                                      "pointing_an_:pointing_ao_:" +
-                                      "pointing_bn_:pointing_bo_:" +
-                                      "pointing_cn_:pointing_co_:" +
-                                      "pointing_in_:pointing_io_:" +
-                                      "S*_exception_an_*:S*_exception_ao_*:" +
-                                      "S*_exception_bn_*:S*_exception_bo_*:" +
-                                      "S*_exception_cn_*:S*_exception_co_*:" +
-                                      "S*_exception_in_*:S*_exception_io_*:" +
-                                      "F*_exception_*n_*:F*_exception_*o_*:" +
-                                      bandGrouping);
+                "F*BT_*n:F*exception_*n:" +
+                        "F*BT_*o:F*exception_*o:" +
+                        "S*BT_in:S*exception_in:" +
+                        "S*BT_io:S*exception_io:" +
+                        "radiance_an:S*exception_an:" +
+                        "radiance_ao:S*exception_ao:" +
+                        "radiance_bn:S*exception_bn:" +
+                        "radiance_bo:S*exception_bo:" +
+                        "radiance_cn:S*exception_cn:" +
+                        "radiance_co:S*exception_co:" +
+                        (isOrphanPixelsAllowed() ? "*orphan*:" : "") +
+                        "x_*:y_*:" +
+                        "elevation:latitude:longitude:" +
+                        "specific_humidity:temperature_profile:" +
+                        "bayes_an_:bayes_ao_:" +
+                        "bayes_bn_:bayes_bo_:" +
+                        "bayes_cn_:bayes_co_:" +
+                        "bayes_in_:bayes_io_:" +
+                        "cloud_an_:cloud_ao_:" +
+                        "cloud_bn_:cloud_bo_:" +
+                        "cloud_cn_:cloud_co_:" +
+                        "cloud_in_:cloud_io_:" +
+                        "confidence_an_:confidence_ao_:" +
+                        "confidence_bn_:confidence_bo_:" +
+                        "confidence_cn_:confidence_co_:" +
+                        "confidence_in_:confidence_io_:" +
+                        "pointing_an_:pointing_ao_:" +
+                        "pointing_bn_:pointing_bo_:" +
+                        "pointing_cn_:pointing_co_:" +
+                        "pointing_in_:pointing_io_:" +
+                        "S*_exception_an_*:S*_exception_ao_*:" +
+                        "S*_exception_bn_*:S*_exception_bo_*:" +
+                        "S*_exception_cn_*:S*_exception_co_*:" +
+                        "S*_exception_in_*:S*_exception_io_*:" +
+                        "F*_exception_*n_*:F*_exception_*o_*:" +
+                        bandGrouping);
     }
 
     @Override
@@ -492,7 +495,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                 }
             }
             // close later if we loaded an orphan variable, otherwise close immediately
-            if(foundOrphan) {
+            if (foundOrphan) {
                 netcdfFileList.add(netcdfFile);
             } else {
                 netcdfFile.close();
@@ -666,8 +669,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         public SlstrOrphanOpImage(Variable variable, NetcdfFile netcdf, RasterDataNode rdn, Dimension imageTileSize,
                                   ResolutionLevel resolutionLevel) {
             super(variable, new int[]{}, false, netcdf, ImageManager.getDataBufferType(rdn.getDataType()),
-                  rdn.getRasterWidth(), rdn.getRasterHeight(), imageTileSize, resolutionLevel,
-                  ArrayConverter.IDENTITY, new DimensionIndices(1, 0, 2));
+                    rdn.getRasterWidth(), rdn.getRasterHeight(), imageTileSize, resolutionLevel,
+                    ArrayConverter.IDENTITY, new DimensionIndices(1, 0, 2));
 
         }
     }
