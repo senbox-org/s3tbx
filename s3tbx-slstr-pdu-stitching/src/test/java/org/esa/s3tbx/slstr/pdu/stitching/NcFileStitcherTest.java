@@ -100,7 +100,7 @@ public class NcFileStitcherTest {
 
     @Test
     @Ignore("takes a few seconds")
-    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException {
+    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException, URISyntaxException {
         final String ncFileName = "met_tx.nc";
         final ImageSize targetImageSize = new ImageSize("in", 21687, 64, 6000, 130);
         final ImageSize[] imageSizes = new ImageSize[3];
