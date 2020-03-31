@@ -70,7 +70,9 @@ public class SlstrNFileWritable {
     void addGlobalAttribute(String name, String value) throws IOException {
         try {
             Attribute attribute = new Attribute(name, value);
-            netcdfFileWriter.addGroupAttribute(null, attribute);
+            if (value!=null) {
+                netcdfFileWriter.addGroupAttribute(null, attribute);
+            }
         } catch (Exception e) {
             throw new IOException(e);
         }

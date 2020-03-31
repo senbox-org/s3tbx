@@ -2,6 +2,7 @@ package org.esa.s3tbx.slstr.pdu.stitching;
 
 import com.bc.ceres.binding.converters.DateFormatConverter;
 import org.esa.snap.core.util.io.FileUtils;
+import org.esa.snap.dataio.netcdf.NetCdfActivator;
 import org.esa.snap.dataio.netcdf.nc.NFileWriteable;
 import org.esa.snap.dataio.netcdf.nc.NVariable;
 import org.esa.snap.dataio.netcdf.nc.NWritableFactory;
@@ -46,6 +47,10 @@ import static org.junit.Assert.fail;
  * @author Tonio Fincke
  */
 public class NcFileStitcherTest {
+
+    static {
+        new NetCdfActivator().start();
+    }
 
     private File targetDirectory;
     private NetcdfFile netcdfFile;
@@ -316,7 +321,7 @@ public class NcFileStitcherTest {
         assertNotNull(netcdfFile);
         final List<Attribute> globalAttributes = netcdfFile.getGlobalAttributes();
 
-        assertEquals(6, globalAttributes.size());
+        assertEquals(7, globalAttributes.size());
         assertEquals("xyz", globalAttributes.get(0).getFullName());
         assertEquals("yz", globalAttributes.get(0).getStringValue());
         assertEquals("abc_1", globalAttributes.get(1).getFullName());

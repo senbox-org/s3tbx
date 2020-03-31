@@ -409,7 +409,7 @@ class NcFileStitcher {
                         for (int j = i; j < globalAttributeLists.length; j++) {
                             final Attribute otherGlobalAttribute =
                                     getAttributeFromList(globalAttributeName, globalAttributeLists[j]);
-                            if (otherGlobalAttribute != null && values != otherGlobalAttribute.getValues()) {
+                            if (otherGlobalAttribute != null && values != otherGlobalAttribute.getValues() && !otherGlobalAttribute.getFullName().equals(globalAttribute.getFullName())) {
                                 nFileWriteable.addGlobalAttribute(globalAttributeName + "_" + j,
                                                                   otherGlobalAttribute.getValues().toString());
                                 break;
@@ -433,13 +433,18 @@ class NcFileStitcher {
                         for (int j = i; j < globalAttributeLists.length; j++) {
                             final Attribute otherGlobalAttribute =
                                     getAttributeFromList(globalAttributeName, globalAttributeLists[j]);
-                            if (otherGlobalAttribute != null && !value.equals(otherGlobalAttribute.getStringValue())) {
-                                nFileWriteable.addGlobalAttribute(globalAttributeName + "_" + j,
-                                                                  otherGlobalAttribute.getStringValue());
-                                break;
+                            if ((otherGlobalAttribute != null && otherGlobalAttribute.getStringValue() != null)) {
+                                if (!value.equals(otherGlobalAttribute.getStringValue())) {
+                                    nFileWriteable.addGlobalAttribute(globalAttributeName + "_" + j,
+                                            otherGlobalAttribute.getStringValue());
+                                    break;
+
+                                }
                             }
                         }
-                        nFileWriteable.addGlobalAttribute(globalAttributeName, value);
+                        if (value != null) {
+                            nFileWriteable.addGlobalAttribute(globalAttributeName, value);
+                        }
                     }
                 }
                 namesOfAddedAttributes.add(globalAttributeName);
