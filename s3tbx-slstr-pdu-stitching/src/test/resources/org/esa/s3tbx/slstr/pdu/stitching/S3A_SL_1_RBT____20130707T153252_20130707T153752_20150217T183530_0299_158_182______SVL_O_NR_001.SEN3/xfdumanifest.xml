@@ -582,60 +582,12 @@
             <slstr:resolution grid="Tie Points">
               <slstr:spatialResolution>16000</slstr:spatialResolution>
             </slstr:resolution>
-            <slstr:nadirImageSize grid="1 km">
-              <sentinel3:startOffset>21687</sentinel3:startOffset>
-              <sentinel3:trackOffset>998</sentinel3:trackOffset>
-              <sentinel3:rows>2000</sentinel3:rows>
-              <sentinel3:columns>1500</sentinel3:columns>
-            </slstr:nadirImageSize>
-            <slstr:nadirImageSize grid="0.5 km stripe A">
-              <sentinel3:startOffset>43374</sentinel3:startOffset>
-              <sentinel3:trackOffset>1996</sentinel3:trackOffset>
-              <sentinel3:rows>4000</sentinel3:rows>
-              <sentinel3:columns>3000</sentinel3:columns>
-            </slstr:nadirImageSize>
-            <slstr:nadirImageSize grid="0.5 km stripe B">
-              <sentinel3:startOffset>43374</sentinel3:startOffset>
-              <sentinel3:trackOffset>1996</sentinel3:trackOffset>
-              <sentinel3:rows>4000</sentinel3:rows>
-              <sentinel3:columns>3000</sentinel3:columns>
-            </slstr:nadirImageSize>
-            <slstr:nadirImageSize grid="0.5 km TDI">
-              <sentinel3:startOffset>43374</sentinel3:startOffset>
-              <sentinel3:trackOffset>1996</sentinel3:trackOffset>
-              <sentinel3:rows>4000</sentinel3:rows>
-              <sentinel3:columns>3000</sentinel3:columns>
-            </slstr:nadirImageSize>
             <slstr:nadirImageSize grid="Tie Points">
               <sentinel3:startOffset>21687</sentinel3:startOffset>
               <sentinel3:trackOffset>64</sentinel3:trackOffset>
               <sentinel3:rows>2000</sentinel3:rows>
               <sentinel3:columns>130</sentinel3:columns>
             </slstr:nadirImageSize>
-            <slstr:obliqueImageSize grid="1 km">
-              <sentinel3:startOffset>21687</sentinel3:startOffset>
-              <sentinel3:trackOffset>450</sentinel3:trackOffset>
-              <sentinel3:rows>2000</sentinel3:rows>
-              <sentinel3:columns>900</sentinel3:columns>
-            </slstr:obliqueImageSize>
-            <slstr:obliqueImageSize grid="0.5 km stripe A">
-              <sentinel3:startOffset>43374</sentinel3:startOffset>
-              <sentinel3:trackOffset>900</sentinel3:trackOffset>
-              <sentinel3:rows>4000</sentinel3:rows>
-              <sentinel3:columns>1800</sentinel3:columns>
-            </slstr:obliqueImageSize>
-            <slstr:obliqueImageSize grid="0.5 km stripe B">
-              <sentinel3:startOffset>43374</sentinel3:startOffset>
-              <sentinel3:trackOffset>900</sentinel3:trackOffset>
-              <sentinel3:rows>4000</sentinel3:rows>
-              <sentinel3:columns>1800</sentinel3:columns>
-            </slstr:obliqueImageSize>
-            <slstr:obliqueImageSize grid="0.5 km TDI">
-              <sentinel3:startOffset>43374</sentinel3:startOffset>
-              <sentinel3:trackOffset>900</sentinel3:trackOffset>
-              <sentinel3:rows>4000</sentinel3:rows>
-              <sentinel3:columns>1800</sentinel3:columns>
-            </slstr:obliqueImageSize>
             <slstr:obliqueImageSize grid="Tie Points">
               <sentinel3:startOffset>21687</sentinel3:startOffset>
               <sentinel3:trackOffset>64</sentinel3:trackOffset>

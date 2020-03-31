@@ -53,7 +53,7 @@ public class SlstrPduStitcherTest {
     @Test
     public void testStitchPDUs_NotEmpty() {
         try {
-            SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, new File[0], ProgressMonitor.NULL);
+            SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, new File[0], null, ProgressMonitor.NULL);
             fail("Exception expected");
         } catch (Exception e) {
             assertEquals("No product files provided", e.getMessage());
@@ -64,9 +64,11 @@ public class SlstrPduStitcherTest {
     public void testStitchPDUs_OnlyOneSlstrL1BProductFile() throws Exception {
         final File firstSlstrFile = TestUtils.getFirstSlstrFile();
 
-        final File stitchedProductFile = SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, new File[]{firstSlstrFile}, ProgressMonitor.NULL);
+        final File stitchedProductFile = SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory,
+                new File[]{firstSlstrFile}, null, ProgressMonitor.NULL);
 
         final File slstrFileParentDirectory = firstSlstrFile.getParentFile();
+        assertNotNull(stitchedProductFile);
         final File stitchedProductFileParentDirectory = stitchedProductFile.getParentFile();
         assertEquals(slstrFileParentDirectory.getName(), stitchedProductFileParentDirectory.getName());
         assertEquals(targetDirectory, stitchedProductFileParentDirectory.getParentFile());

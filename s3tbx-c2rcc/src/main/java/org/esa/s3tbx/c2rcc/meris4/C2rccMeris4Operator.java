@@ -948,8 +948,6 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
             targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
-
-        targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
     @Override
@@ -1015,6 +1013,7 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
             algorithm.setOutputKd(outputKd);
             algorithm.setOutputUncertainties(outputUncertainties);
             algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
+            addNnNamesMetadata();
             pm.worked(1);
             pm.setSubTaskName("Initialising atmospheric auxiliary data");
             initAtmosphericAuxdata();
@@ -1043,40 +1042,23 @@ public class C2rccMeris4Operator extends PixelOperator implements C2rccConfigura
 
     }
 
-    private ProductNodeListener getNnNamesMetadataAppender() {
-        final String processingGraphName = "Processing_Graph";
+    private void addNnNamesMetadata() {
         final String[] nnNames = algorithm.getUsedNeuronalNetNames();
         final String alias = getSpi().getOperatorAlias();
-        return new ProductNodeListenerAdapter() {
-
-            private MetadataElement operatorNode;
-
-            @Override
-            public void nodeAdded(ProductNodeEvent event) {
-                final ProductNode sourceNode = event.getSourceNode();
-                if (!(sourceNode instanceof MetadataAttribute)) {
-                    return;
+        MetadataElement pgElement = getTargetProduct().getMetadataRoot().getElement("Processing_Graph");
+        if (pgElement == null) {
+            return;
+        }
+        for (MetadataElement nodeElement : pgElement.getElements()) {
+            if (nodeElement.containsAttribute("operator") && alias.equals(nodeElement.getAttributeString("operator"))) {
+                final MetadataElement neuronalNetsElem = new MetadataElement("neuronalNets");
+                nodeElement.addElement(neuronalNetsElem);
+                for (String nnName : nnNames) {
+                    neuronalNetsElem.addAttribute(new MetadataAttribute("usedNeuralNet", ProductData.createInstance(nnName), true));
                 }
-                final MetadataAttribute ma = (MetadataAttribute) sourceNode;
-                final MetadataElement pe = ma.getParentElement();
-                if ("operator".equals(ma.getName())
-                        && pe.getName().startsWith("node")
-                        && processingGraphName.equals(pe.getParentElement().getName())) {
-                    if (operatorNode == null) {
-                        if (alias.equals(ma.getData().getElemString())) {
-                            operatorNode = pe;
-                        }
-                    } else {
-                        sourceNode.getProduct().removeProductNodeListener(this);
-                        final MetadataElement neuronalNetsElem = new MetadataElement("neuronalNets");
-                        operatorNode.addElement(neuronalNetsElem);
-                        for (String nnName : nnNames) {
-                            neuronalNetsElem.addAttribute(new MetadataAttribute("usedNeuralNet", ProductData.createInstance(nnName), true));
-                        }
-                    }
-                }
+                return;
             }
-        };
+        }
     }
 
     private void initAtmosphericAuxdata() {
