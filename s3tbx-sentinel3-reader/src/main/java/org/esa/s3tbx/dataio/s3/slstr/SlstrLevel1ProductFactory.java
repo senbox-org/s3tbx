@@ -19,10 +19,17 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelModel;
 import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.ForwardCoding;
+import org.esa.snap.core.dataio.geocoding.GeoChecks;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.InverseCoding;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.BasicPixelGeoCoding;
 import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
 import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
@@ -55,10 +62,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
     public final static String SLSTR_L1B_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl1b.pixelGeoCodings";
+    private final static String SLSTR_L1B_PIXEL_GEOCODING_FORWARD = "s3tbx.reader.slstrl1b.pixelGeoCodings.forward";
+    private final static String SLSTR_L1B_PIXEL_GEOCODING_INVERSE = "s3tbx.reader.slstrl1b.pixelGeoCodings.inverse";
     public final static String SLSTR_L1B_LOAD_ORPHAN_PIXELS = "s3tbx.reader.slstrl1b.loadOrphanPixels";
     public final static String SLSTR_L1B_CUSTOM_CALIBRATION = "s3tbx.reader.slstrl1b.applyCustomCalibration";
     public final static String SLSTR_L1B_S3MPC_CALIBRATION = "s3tbx.reader.slstrl1b.applyS3MPCCalibration";
@@ -296,12 +306,15 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     @Override
     protected Product findMasterProduct() {
         final List<Product> productList = getOpenProductList();
-        Product masterProduct = productList.get(0);
+        Product masterProduct = new Product("dummy", "dummy", 1, 1);
         for (int i = 1; i < productList.size(); i++) {
             Product product = productList.get(i);
-            if (product.getSceneRasterWidth() > masterProduct.getSceneRasterWidth() &&
-                product.getSceneRasterHeight() > masterProduct.getSceneRasterHeight() &&
-                !product.getName().contains("flags")) {
+            if (product.getSceneRasterWidth() >= masterProduct.getSceneRasterWidth() &&
+                    product.getSceneRasterHeight() >= masterProduct.getSceneRasterHeight() &&
+                    !product.getName().contains("flags") &&
+                    !product.getName().endsWith("tx") &&
+                    !product.getName().endsWith("to") &&
+                    !product.getName().endsWith("tn")) {
                 masterProduct = product;
             }
         }
@@ -445,7 +458,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     }
 
     @Override
-    protected void setBandGeoCodings(Product product) {
+    protected void setBandGeoCodings(Product product) throws IOException {
         if (Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_USE_PIXELGEOCODINGS, false)) {
             setPixelBandGeoCodings(product);
         } else {
@@ -492,7 +505,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
                 }
             }
             // close later if we loaded an orphan variable, otherwise close immediately
-            if(foundOrphan) {
+            if (foundOrphan) {
                 netcdfFileList.add(netcdfFile);
             } else {
                 netcdfFile.close();
@@ -507,6 +520,28 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             netcdfFile.close();
         }
         netcdfFileList.clear();
+    }
+
+    // package access for testing only tb 2020-01-28
+    static double getResolutionInKm(String nameEnd) {
+        switch (nameEnd) {
+            case "an":
+            case "ao":
+            case "bn":
+            case "bo":
+            case "cn":
+            case "co":
+                return 0.5;
+
+            case "fn":
+            case "fo":
+            case "in":
+            case "io":
+                return 1.0;
+
+            default:
+                throw new IllegalArgumentException("Unsupported resolution on bands ending with: " + nameEnd);
+        }
     }
 
     private void setTiePointBandGeoCodings(Product product) {
@@ -555,7 +590,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         }
     }
 
-    private void setPixelBandGeoCodings(Product product) {
+    private void setPixelBandGeoCodings(Product product) throws IOException {
         final Band[] bands = product.getBands();
         for (Band band : bands) {
             final GeoCoding bandGeoCoding = getBandGeoCoding(product, getGridIndex(band.getName()));
@@ -569,61 +604,58 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         }
     }
 
-    private GeoCoding getBandGeoCoding(Product product, String end) {
-        if (geoCodingMap.containsKey(end)) {
-            return geoCodingMap.get(end);
+    private GeoCoding getBandGeoCoding(Product product, String nameEnd) throws IOException {
+        if (geoCodingMap.containsKey(nameEnd)) {
+            return geoCodingMap.get(nameEnd);
         } else {
-            Band latBand = null;
-            Band lonBand = null;
-            switch (end) {
-                case "an":
-                    latBand = product.getBand("latitude_an");
-                    lonBand = product.getBand("longitude_an");
-                    break;
-                case "ao":
-                    latBand = product.getBand("latitude_ao");
-                    lonBand = product.getBand("longitude_ao");
-                    break;
-                case "bn":
-                    latBand = product.getBand("latitude_bn");
-                    lonBand = product.getBand("longitude_bn");
-                    break;
-                case "bo":
-                    latBand = product.getBand("latitude_bo");
-                    lonBand = product.getBand("longitude_bo");
-                    break;
-                case "cn":
-                    latBand = product.getBand("latitude_cn");
-                    lonBand = product.getBand("longitude_cn");
-                    break;
-                case "co":
-                    latBand = product.getBand("latitude_co");
-                    lonBand = product.getBand("longitude_co");
-                    break;
-                case "in":
-                    latBand = product.getBand("latitude_in");
-                    lonBand = product.getBand("longitude_in");
-                    break;
-                case "io":
-                    latBand = product.getBand("latitude_io");
-                    lonBand = product.getBand("longitude_io");
-                    break;
-                case "fn":
-                    latBand = product.getBand("latitude_fn");
-                    lonBand = product.getBand("longitude_fn");
-                    break;
-                case "fo":
-                    latBand = product.getBand("latitude_fo");
-                    lonBand = product.getBand("longitude_fo");
-                    break;
+            final String[] geolocationVariableNames = getGeolocationVariableNames(nameEnd);
+            final String lonVarName = geolocationVariableNames[0];
+            final String latVarName = geolocationVariableNames[1];
+
+            final Band lonBand = product.getBand(lonVarName);
+            final Band latBand = product.getBand(latVarName);
+            if (latBand == null || lonBand == null) {
+                return null;
             }
-            if (latBand != null && lonBand != null) {
-                final BasicPixelGeoCoding geoCoding = GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, "", 5);
-                geoCodingMap.put(end, geoCoding);
-                return geoCoding;
-            }
+
+            final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+            final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+            final double resolutionInKm = getResolutionInKm(nameEnd);
+
+            final int width = lonBand.getRasterWidth();
+            final int height = lonBand.getRasterHeight();
+            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
+                                                      width, height, resolutionInKm);
+
+            final Preferences preferences = Config.instance("s3tbx").preferences();
+            final String fwdKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_FORWARD, PixelForward.KEY);
+            final String invKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_INVERSE, PixelQuadTreeInverse.KEY);
+
+            final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+            final InverseCoding inverse = ComponentFactory.getInverse(invKey);
+
+            final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+            geoCoding.initialize();
+            geoCodingMap.put(nameEnd, geoCoding);
+            return geoCoding;
         }
-        return null;
+    }
+
+    static String[] getGeolocationVariableNames(String extension) throws IOException {
+        final String[] varNames = new String[2];
+
+        if (!(extension.equals("an") || extension.equals("ao") ||
+                extension.equals("bn") || extension.equals("bo") ||
+                extension.equals("cn") || extension.equals("co") ||
+                extension.equals("in") || extension.equals("io") ||
+                extension.equals("fn") || extension.equals("fo"))) {
+            throw new IOException("Unknown or unsupported band extension: " + extension);
+        }
+
+        varNames[0] = "longitude_" + extension;
+        varNames[1] = "latitude_" + extension;
+
+        return varNames;
     }
 
     private String getGridIndexFromMask(Mask mask) {
@@ -652,7 +684,6 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         return "";
     }
 
-
     private int getDataType(Variable variable) {
         int rasterDataType = DataTypeUtils.getRasterDataType(variable);
         if (variable.getDataType() == DataType.LONG) {
@@ -666,8 +697,8 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         public SlstrOrphanOpImage(Variable variable, NetcdfFile netcdf, RasterDataNode rdn, Dimension imageTileSize,
                                   ResolutionLevel resolutionLevel) {
             super(variable, new int[]{}, false, netcdf, ImageManager.getDataBufferType(rdn.getDataType()),
-                  rdn.getRasterWidth(), rdn.getRasterHeight(), imageTileSize, resolutionLevel,
-                  ArrayConverter.IDENTITY, new DimensionIndices(1, 0, 2));
+                    rdn.getRasterWidth(), rdn.getRasterHeight(), imageTileSize, resolutionLevel,
+                    ArrayConverter.IDENTITY, new DimensionIndices(1, 0, 2));
 
         }
     }
