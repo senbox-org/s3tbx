@@ -4,9 +4,11 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.util.MetTxReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 
 import java.io.File;
@@ -21,7 +23,7 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     private Product masterProduct;
 
-    public static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
+    private static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
     private static final double FILL_VALUE = -1.0E9;
 
     // todo ideas+ implement valid Expression
@@ -87,35 +89,43 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
         targetProduct.setAutoGrouping("radiance_uncert_in:BT_uncert_in:" +
-                                      "radiance_in:BT_in:" +
-                                      "radiance_uncert_io:BT_uncert_io:" +
-                                      "radiance_io:BT_io:" +
-                                      "exception_in:exception_io:" +
-                                      "x_i:y_i:" +
-                                      "elevation_i:latitude_i:longitude_i:" +
-                                      "specific_humidity:temperature_profile:" +
-                                      "cloud_in_:cloud_io_:" +
-                                      "bayes_in_:bayes_io_:" +
-                                      "bayes_in_:bayes_io_:" +
-                                      "pointing_in_:pointing_io_:" +
-                                      "confidence_in_:confidence_io_:" +
-                                      bandGrouping);
+                "radiance_in:BT_in:" +
+                "radiance_uncert_io:BT_uncert_io:" +
+                "radiance_io:BT_io:" +
+                "exception_in:exception_io:" +
+                "x_i:y_i:" +
+                "elevation_i:latitude_i:longitude_i:" +
+                "specific_humidity:temperature_profile:" +
+                "cloud_in_:cloud_io_:" +
+                "bayes_in_:bayes_io_:" +
+                "bayes_in_:bayes_io_:" +
+                "pointing_in_:pointing_io_:" +
+                "confidence_in_:confidence_io_:" +
+                bandGrouping);
     }
 
     @Override
     protected void setGeoCoding(Product targetProduct) {
-        TiePointGrid latGrid = null;
-        TiePointGrid lonGrid = null;
-        for (final TiePointGrid grid : targetProduct.getTiePointGrids()) {
-            if (latGrid == null && grid.getName().endsWith("latitude_tx")) {
-                latGrid = grid;
-            }
-            if (lonGrid == null && grid.getName().endsWith("longitude_tx")) {
-                lonGrid = grid;
-            }
+        final String lonVariableName = "longitude_tx";
+        final String latVariableName = "latitude_tx";
+        final TiePointGrid lonGrid = targetProduct.getTiePointGrid(lonVariableName);
+        final TiePointGrid latGrid = targetProduct.getTiePointGrid(latVariableName);
+        if (lonGrid == null || latGrid == null) {
+            return;
         }
 
-        targetProduct.setSceneGeoCoding(new TiePointGeoCoding(latGrid, lonGrid));
+        final double[] longitudes = loadTiePointData(lonVariableName);
+        final double[] latitudes = loadTiePointData(latVariableName);
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                                                  lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+                                                  targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), 1.0,
+                                                  lonGrid.getOffsetX(), lonGrid.getOffsetY(),
+                                                  lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
+
+        final ForwardCoding forward = ComponentFactory.getForward(TiePointBilinearForward.KEY);
+        final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
+
+        targetProduct.setSceneGeoCoding(new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN));
     }
 
     @Override
