@@ -19,11 +19,24 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelModel;
 import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.ForwardCoding;
+import org.esa.snap.core.dataio.geocoding.GeoChecks;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.InverseCoding;
 import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
 import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.MetadataElement;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductNodeGroup;
+import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.runtime.Config;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
@@ -151,7 +164,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
             return copyTiePointGrid(sourceBand, targetProduct, sourceStartOffset, sourceTrackOffset, sourceResolutions);
         }
         final Band targetBand = new Band(sourceBandName, sourceBand.getDataType(),
-                sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
+                                         sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
         targetProduct.addBand(targetBand);
         ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
         final RenderedImage sourceRenderedImage = sourceBand.getSourceImage().getImage(0);
@@ -168,7 +181,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
         imageToModelTransform.scale(subSamplingX, subSamplingY);
         final DefaultMultiLevelModel targetModel =
                 new DefaultMultiLevelModel(imageToModelTransform,
-                        sourceRenderedImage.getWidth(), sourceRenderedImage.getHeight());
+                                           sourceRenderedImage.getWidth(), sourceRenderedImage.getHeight());
         final DefaultMultiLevelSource targetMultiLevelSource =
                 new DefaultMultiLevelSource(sourceRenderedImage, targetModel);
         targetBand.setSourceImage(new DefaultMultiLevelImage(targetMultiLevelSource));
@@ -280,7 +293,9 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
             }
 
             final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+            lonBand.unloadRasterData();
             final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+            latBand.unloadRasterData();
 
             final int width = product.getSceneRasterWidth();
             final int height = product.getSceneRasterHeight();

@@ -16,7 +16,12 @@ package org.esa.s3tbx.dataio.s3.slstr;/*
 
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.ForwardCoding;
+import org.esa.snap.core.dataio.geocoding.GeoChecks;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.InverseCoding;
 import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
 import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
 import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
@@ -89,7 +94,9 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
 
     private void setPixelGeoCoding(Product targetProduct, Band lonBand, Band latBand) throws IOException {
         final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+        lonBand.unloadRasterData();
         final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+        latBand.unloadRasterData();
 
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonBand.getName(), latBand.getName(),
                                                   targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);
@@ -112,10 +119,10 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
         final double[] latitudes = loadTiePointData(latGrid.getName());
 
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getName(), latGrid.getName(),
-                lonGrid.getGridWidth(), lonGrid.getGridHeight(),
-                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
-                lonGrid.getOffsetX(), lonGrid.getOffsetY(),
-                lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
+                                                  lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+                                                  targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
+                                                  lonGrid.getOffsetX(), lonGrid.getOffsetY(),
+                                                  lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
         final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_TIE_POINT_FORWARD, TiePointBilinearForward.KEY);

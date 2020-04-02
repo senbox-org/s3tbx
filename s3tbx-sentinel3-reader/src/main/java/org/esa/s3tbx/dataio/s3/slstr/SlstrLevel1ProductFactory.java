@@ -619,7 +619,10 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             }
 
             final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+            lonBand.unloadRasterData();
             final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+            latBand.unloadRasterData();
+
             final double resolutionInKm = getResolutionInKm(nameEnd);
 
             final int width = lonBand.getRasterWidth();
