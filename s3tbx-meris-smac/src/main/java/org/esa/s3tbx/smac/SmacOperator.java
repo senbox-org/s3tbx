@@ -165,6 +165,7 @@ public class SmacOperator extends Operator {
             // create a vector of input bands
             // ------------------------------
             loadInputProduct();
+            createMask();
             createOutputProduct();
         } catch (IOException e) {
             throw new OperatorException(e);
@@ -260,7 +261,6 @@ public class SmacOperator extends Operator {
         try {
             // create a bitmask expression for input
             // -------------------------------------
-            createMask();
             pm.worked(100);
             installAuxdata(pm);
         } finally {
@@ -431,12 +431,6 @@ public class SmacOperator extends Operator {
         } else {
             createAatsrMask();
         }
-        if (smacMask != null) {
-            targetProduct.addMask(smacMask);
-        }
-        if (smacMaskForward != null) {
-            targetProduct.addMask(smacMaskForward);
-        }
     }
 
     // Creates a MERIS mask term given the bitmask expression from the request. If no expression is set, it uses the
@@ -519,6 +513,13 @@ public class SmacOperator extends Operator {
         ProductUtils.copyBand(EnvisatConstants.MERIS_AMORGOS_L1B_ALTIUDE_BAND_NAME, sourceProduct, targetProduct, true);
 
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
+
+        if (smacMask != null) {
+            targetProduct.addMask(smacMask);
+        }
+        if (smacMaskForward != null) {
+            targetProduct.addMask(smacMaskForward);
+        }
     }
 
     private void addBandsToOutput(String description, boolean convertMerisName) {
