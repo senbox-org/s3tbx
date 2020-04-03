@@ -165,6 +165,7 @@ public class SmacOperator extends Operator {
             // create a vector of input bands
             // ------------------------------
             loadInputProduct();
+            createMask();
             createOutputProduct();
         } catch (IOException e) {
             throw new OperatorException(e);
@@ -260,7 +261,6 @@ public class SmacOperator extends Operator {
         try {
             // create a bitmask expression for input
             // -------------------------------------
-            createMask();
             pm.worked(100);
             installAuxdata(pm);
         } finally {
