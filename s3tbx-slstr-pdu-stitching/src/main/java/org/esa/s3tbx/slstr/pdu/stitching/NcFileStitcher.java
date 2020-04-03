@@ -3,6 +3,7 @@ package org.esa.s3tbx.slstr.pdu.stitching;
 import com.bc.ceres.binding.converters.DateFormatConverter;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.ma2.Array;
+import ucar.ma2.DataType;
 import ucar.ma2.IndexIterator;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +41,7 @@ class NcFileStitcher {
             variables[i] = inputFiles[i].getVariables();
         }
         final File file = new File(targetDirectory, fileName);
-        final SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
+        final SlstrNFileWritable netcdfWriteable = new SlstrNFileWritable(file.getAbsolutePath());
         setGlobalAttributes(netcdfWriteable, globalAttributes, targetDirectory.getName(), creationDate);
         setDimensions(netcdfWriteable, dimensions, targetImageSize, variables);
         final Map<String, Array> variableToArrayMap =
@@ -67,18 +69,22 @@ class NcFileStitcher {
                 //todo maybe there is a need to support variables without dimensions
                 if (!namesOfAddedVariables.contains(variableName) && variable.getDimensions().size() > 0) {
                     checkWhetherVariableHasSameDimensionsAcrossFiles(i, variable, variableLists);
-                    addVariableToWritable(netcdfWriteable, variable);
-                    final SlstrN4Variable nVariable = netcdfWriteable.findVariable(variableName);
+                    final SlstrN4Variable nVariable = addVariableToWritable(netcdfWriteable, variable);
+                    addVariableAttributes(nVariable, variable, i, variableLists);
+                    namesOfAddedVariables.add(variableName);
+                    Attribute fillValueAttribute = getAttributeFromList("_FillValue", variable.getAttributes());
+                    Number fillValue = null;
+                    if (fillValueAttribute != null) {
+                        fillValue = fillValueAttribute.getNumericValue();
+                    }
                     final int indexOfRowDimension = getIndexOfRowDimension(variable.getDimensions());
                     if (indexOfRowDimension < 0) {
                         variableToArray.put(variableName, getValidArrayFromVariable(variable));
                     } else {
-                        Array nVariableArray =
-                                createStitchedArray(variable, targetImageSize, imageSizes, indexOfRowDimension, variableLists);
+                        Array nVariableArray = createStitchedArray(variable, targetImageSize, imageSizes,
+                                indexOfRowDimension, variableLists, fillValue);
                         variableToArray.put(variableName, nVariableArray);
                     }
-                    addVariableAttributes(nVariable, variable, i, variableLists);
-                    namesOfAddedVariables.add(variableName);
                 }
             }
         }
@@ -108,18 +114,19 @@ class NcFileStitcher {
         return variable.read();
     }
 
-    private static void addVariableToWritable(SlstrNFileWritable netcdfWriteable, Variable variable) throws IOException {
+    private static SlstrN4Variable addVariableToWritable(SlstrNFileWritable netcdfWriteable, Variable variable) {
         if (variable.getDataType().isString()) {
-            netcdfWriteable.addVariable(variable.getFullName(), variable.getDataType(), variable.isUnsigned(),
-                    null, variable.getDimensionsString(), 0);
+            return netcdfWriteable.addVariable(variable.getFullName(), variable.getDataType(),
+                    variable.getDataType().isUnsigned(), variable.getDimensionsString());
         } else {
-            netcdfWriteable.addVariable(variable.getFullName(), variable.getDataType(), variable.isUnsigned(),
-                    null, variable.getDimensionsString());
+            return netcdfWriteable.addVariable(variable.getFullName(), variable.getDataType(),
+                    variable.getDataType().isUnsigned(), variable.getDimensionsString());
         }
     }
 
     private static Array createStitchedArray(Variable variable, ImageSize targetImageSize, ImageSize[] imageSizes,
-                                             int indexOfRowDimension, List<Variable>[] variableLists) throws IOException {
+                                             int indexOfRowDimension, List<Variable>[] variableLists, Number fillValue)
+            throws IOException {
         final String variableName = variable.getFullName();
         final int[] sectionSizes = new int[variableLists.length];
         final int[][] sourceOffsets = new int[variableLists.length][];
@@ -147,8 +154,7 @@ class NcFileStitcher {
                 nVariableShape[j] = variable.getDimensions().get(j).getLength();
             }
         }
-        final Array nVariableArray = Array.factory(variable.getDataType(), nVariableShape);
-        //todo prefill array with no data value
+        final Array nVariableArray = getPreFilledArray(variable.getDataType(), nVariableShape, fillValue);
         for (int j = 0; j < variableLists.length; j++) {
             final Variable fileVariable = fileVariables[j];
             if (fileVariable != null) {
@@ -162,11 +168,32 @@ class NcFileStitcher {
         return nVariableArray;
     }
 
+    private static Array getPreFilledArray(DataType dataType, int[] shape, Number fillValue) {
+        final Array nVariableArray = Array.factory(dataType, shape);
+        if (fillValue == null) {
+            return nVariableArray;
+        }
+        if (dataType == DataType.BYTE || dataType == DataType.UBYTE) {
+            Arrays.fill((byte[]) nVariableArray.getStorage(), (Byte) fillValue);
+        } else if (dataType == DataType.DOUBLE) {
+            Arrays.fill((double[]) nVariableArray.getStorage(), (Double) fillValue);
+        }  else if (dataType == DataType.FLOAT) {
+            Arrays.fill((float[]) nVariableArray.getStorage(), (Float) fillValue);
+        } else if (dataType == DataType.INT || dataType == DataType.UINT) {
+            Arrays.fill((int[]) nVariableArray.getStorage(), (Integer) fillValue);
+        } else if (dataType == DataType.SHORT || dataType == DataType.USHORT) {
+            Arrays.fill((short[]) nVariableArray.getStorage(), (Short) fillValue);
+        } else if (dataType == DataType.LONG || dataType == DataType.ULONG) {
+            Arrays.fill((long[]) nVariableArray.getStorage(), (Long) fillValue);
+        }
+        return nVariableArray;
+    }
+
     private static void addVariableAttributes(SlstrN4Variable nVariable, Variable variable, int variableIndex,
                                               List<Variable>[] variableLists) throws IOException {
         final String variableName = variable.getFullName();
         final List<Attribute> variableAttributes = variable.getAttributes();
-        Attribute chunkSizeAttribute = new Attribute("_ChunkSize", Array.factory(nVariable.getChunkLengths()));
+        Attribute chunkSizeAttribute = new Attribute("_ChunkSize", Array.makeFromJavaArray(nVariable.getChunkLengths()));
         addAttributeToNVariable(nVariable, chunkSizeAttribute);
         if (variableIndex < variableLists.length) {
             for (final Attribute variableAttribute : variableAttributes) {
@@ -225,13 +252,14 @@ class NcFileStitcher {
         addAttributeToNVariable(nVariable, referenceAttribute.getFullName(), referenceAttribute);
     }
 
-    private static void addAttributeToNVariable(SlstrN4Variable nVariable, String name, Attribute referenceAttribute) throws IOException {
+    private static void addAttributeToNVariable(SlstrN4Variable nVariable, String name, Attribute referenceAttribute) {
         if (referenceAttribute.isArray()) {
-            nVariable.addAttribute(name, referenceAttribute.getValues());
+            nVariable.addAttribute(name, referenceAttribute.getValues(), referenceAttribute.getDataType().isUnsigned());
         } else if (referenceAttribute.isString()) {
             nVariable.addAttribute(name, referenceAttribute.getStringValue());
         } else {
-            nVariable.addAttribute(name, referenceAttribute.getNumericValue(), referenceAttribute.isUnsigned());
+            nVariable.addAttribute(name, referenceAttribute.getNumericValue(),
+                    referenceAttribute.getDataType().isUnsigned());
         }
     }
 
@@ -381,7 +409,7 @@ class NcFileStitcher {
                         for (int j = i; j < globalAttributeLists.length; j++) {
                             final Attribute otherGlobalAttribute =
                                     getAttributeFromList(globalAttributeName, globalAttributeLists[j]);
-                            if (otherGlobalAttribute != null && values != otherGlobalAttribute.getValues()) {
+                            if (otherGlobalAttribute != null && values != otherGlobalAttribute.getValues() && !otherGlobalAttribute.getFullName().equals(globalAttribute.getFullName())) {
                                 nFileWriteable.addGlobalAttribute(globalAttributeName + "_" + j,
                                                                   otherGlobalAttribute.getValues().toString());
                                 break;
@@ -394,9 +422,8 @@ class NcFileStitcher {
                             final Attribute otherGlobalAttribute =
                                     getAttributeFromList(globalAttributeName, globalAttributeLists[j]);
                             if (otherGlobalAttribute != null && !value.equals(otherGlobalAttribute.getNumericValue())) {
-                                //todo write this as numeric, not as string - tf 20160122
                                 nFileWriteable.addGlobalAttribute(globalAttributeName + "_" + j,
-                                                                  otherGlobalAttribute.getNumericValue().toString());
+                                                                  otherGlobalAttribute.getNumericValue());
                                 break;
                             }
                         }
@@ -406,13 +433,18 @@ class NcFileStitcher {
                         for (int j = i; j < globalAttributeLists.length; j++) {
                             final Attribute otherGlobalAttribute =
                                     getAttributeFromList(globalAttributeName, globalAttributeLists[j]);
-                            if (otherGlobalAttribute != null && !value.equals(otherGlobalAttribute.getStringValue())) {
-                                nFileWriteable.addGlobalAttribute(globalAttributeName + "_" + j,
-                                                                  otherGlobalAttribute.getStringValue());
-                                break;
+                            if ((otherGlobalAttribute != null && otherGlobalAttribute.getStringValue() != null)) {
+                                if (!value.equals(otherGlobalAttribute.getStringValue())) {
+                                    nFileWriteable.addGlobalAttribute(globalAttributeName + "_" + j,
+                                            otherGlobalAttribute.getStringValue());
+                                    break;
+
+                                }
                             }
                         }
-                        nFileWriteable.addGlobalAttribute(globalAttributeName, value);
+                        if (value != null) {
+                            nFileWriteable.addGlobalAttribute(globalAttributeName, value);
+                        }
                     }
                 }
                 namesOfAddedAttributes.add(globalAttributeName);
