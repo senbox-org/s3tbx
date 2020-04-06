@@ -99,25 +99,31 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
     protected void setBandGeoCodings(Product targetProduct) throws IOException {
         final Band[] bands = targetProduct.getBands();
         for (Band band : bands) {
-            final GeoCoding bandGeoCoding = getBandGeoCoding(targetProduct, getGridIndex(band.getName()));
+            final GeoCoding bandGeoCoding = getBandGeoCoding(targetProduct, getFrpGridIndex(band));
             band.setGeoCoding(bandGeoCoding);
         }
         final ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
         for (int i = 0; i < maskGroup.getNodeCount(); i++) {
             final Mask mask = maskGroup.get(i);
-            final GeoCoding bandGeoCoding = getBandGeoCoding(targetProduct, getGridIndex(mask.getName()));
+            final GeoCoding bandGeoCoding = getBandGeoCoding(targetProduct, getFrpGridIndex(mask));
             mask.setGeoCoding(bandGeoCoding);
         }
+    }
+
+    private static String getFrpGridIndex(Band band) {
+        // todo wait for name change. If this happens, we can merge this with the method from SlstrLevel1ProductFactory
+        String bandName = band.getName();
+        String bandNameStart = bandName.split("_")[0];
+        if (bandNameStart.equals("flags")) {
+            return  "in";
+        }
+        return getGridIndex(bandName);
     }
 
     @Override
     protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
         final String sourceBandName = sourceBand.getName();
-        String gridIndex = getGridIndex(sourceBandName);
-        // todo wait for name change. If this happens, we can merge this with the method from SlstrLevel1ProductFactory
-        if (sourceBand.getName().equals("flags")) {
-            gridIndex = "in";
-        }
+        String gridIndex = getFrpGridIndex(sourceBand);
         final Double sourceStartOffset = getStartOffset(gridIndex);
         final Double sourceTrackOffset = getTrackOffset(gridIndex);
         if (sourceStartOffset != null && sourceTrackOffset != null) {
