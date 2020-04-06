@@ -619,7 +619,10 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             }
 
             final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+            lonBand.unloadRasterData();
             final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+            latBand.unloadRasterData();
+
             final double resolutionInKm = getResolutionInKm(nameEnd);
 
             final int width = lonBand.getRasterWidth();
@@ -687,7 +690,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     private int getDataType(Variable variable) {
         int rasterDataType = DataTypeUtils.getRasterDataType(variable);
         if (variable.getDataType() == DataType.LONG) {
-            rasterDataType = variable.isUnsigned() ? ProductData.TYPE_UINT32 : ProductData.TYPE_INT32;
+            rasterDataType = variable.getDataType().isUnsigned() ? ProductData.TYPE_UINT32 : ProductData.TYPE_INT32;
         }
         return rasterDataType;
     }

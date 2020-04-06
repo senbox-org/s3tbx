@@ -253,15 +253,15 @@ public class L3BinFileReader extends SeadasFileReader {
                             if (lineIndex >= 0) {
                                 final int rasterIndex = width * y + x;
                                 final Array elem;
-                                elem = Array.factory(bindata.copyTo1DJavaArray());
-                                for (int i=0; i<elem.getSize(); i++){
+                                elem = Array.factory(bindata.getDataType(), bindata.getShape(),
+                                                     bindata.copyTo1DJavaArray());
+                                for (int i = 0; i < elem.getSize(); i++) {
                                     if (prodtype == DataType.FLOAT) {
 
                                         buffer.setElemFloatAt(rasterIndex, elem.getFloat(i));
                                     } else {
                                         buffer.setElemIntAt(rasterIndex, elem.getInt(i));
                                     }
-    //                                System.arraycopy(bindata, lineIndex, buffer, rasterIndex, 1);
                                 }
                             }
                         }

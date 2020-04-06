@@ -166,7 +166,9 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
         }
 
         final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+        lonBand.unloadRasterData();
         final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+        latBand.unloadRasterData();
 
         final int width = targetProduct.getSceneRasterWidth();
         final int height = targetProduct.getSceneRasterHeight();

@@ -109,7 +109,7 @@ public class NcFileStitcherLongTest {
 
         assertEquals("F1_exception_orphan_io", variables.get(3).getFullName());
         assertEquals(DataType.BYTE, variables.get(3).getDataType());
-        assertTrue(variables.get(3).isUnsigned());
+        assertTrue(variables.get(3).getDataType().isUnsigned());
         assertEquals("rows orphan_pixels", variables.get(3).getDimensionsString());
         final List<Attribute> F1_exception_orphan_io_attributes = variables.get(3).getAttributes();
         assertEquals("_ChunkSize", F1_exception_orphan_io_attributes.get(0).getFullName());
