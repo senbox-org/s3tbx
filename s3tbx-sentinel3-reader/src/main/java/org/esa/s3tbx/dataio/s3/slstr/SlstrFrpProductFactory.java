@@ -195,18 +195,19 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
             return geoCodingMap.get(end);
         } else {
             // @todo 1 tb/tb extract method for switch and test 2020-02-14
-            String lonVariableName = null;
-            String latVariableName = null;
+            String lonVariableName;
+            String latVariableName;
             switch (end) {
                 case "in":
                     lonVariableName = "longitude_in";
                     latVariableName = "latitude_in";
-
                     break;
                 case "fn":
                     lonVariableName = "longitude_fn";
                     latVariableName = "latitude_fn";
                     break;
+                default:
+                    return null;
             }
 
             final Band lonBand = product.getBand(lonVariableName);
