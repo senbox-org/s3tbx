@@ -321,29 +321,16 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
         try {
             if (doCalibration) {
                 pm.setSubTaskName("Initializing calibration algorithm");
-                InputStream sourceRacStream = null;
-                InputStream targetRacStream = null;
-                try {
-                    sourceRacStream = openStream(sourceRacFile, DEFAULT_SOURCE_RAC_RESOURCE);
-                    targetRacStream = openStream(targetRacFile, DEFAULT_TARGET_RAC_RESOURCE);
+                try (
+                        InputStream sourceRacStream = openStream(sourceRacFile, DEFAULT_SOURCE_RAC_RESOURCE);
+                        InputStream targetRacStream = openStream(targetRacFile, DEFAULT_TARGET_RAC_RESOURCE)
+                ) {
                     final double cntJD = 0.5 * (getSourceProduct().getStartTime().getMJD() +
-                            getSourceProduct().getEndTime().getMJD());
+                                                getSourceProduct().getEndTime().getMJD());
                     final Resolution resolution = productType.contains("RR") ? Resolution.RR : Resolution.FR;
                     calibrationAlgorithm = new CalibrationAlgorithm(resolution, cntJD, sourceRacStream, targetRacStream);
                 } catch (IOException e) {
                     throw new OperatorException(e);
-                } finally {
-                    try {
-                        if (sourceRacStream != null) {
-                            sourceRacStream.close();
-                        }
-                        if (targetRacStream != null) {
-                            targetRacStream.close();
-                        }
-                    } catch (IOException ignore) {
-                    } finally {
-                        pm.done();
-                    }
                 }
                 // If calibration is performed the equalization  has to use the LUTs of Reprocessing 3
                 reproVersion = ReprocessingVersion.REPROCESSING_3;
