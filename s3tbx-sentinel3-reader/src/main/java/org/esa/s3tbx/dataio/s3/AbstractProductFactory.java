@@ -145,10 +145,12 @@ public abstract class AbstractProductFactory implements ProductFactory {
 
         float newOffsetX = offsetX % subSamplingX;
         float dataOffsetX = (newOffsetX - offsetX) / subSamplingX;
-        double newWidth = Math.ceil((targetProduct.getSceneRasterWidth() - newOffsetX) / subSamplingX);
+        double newWidth = Math.min(sourceBand.getRasterWidth(),
+                Math.ceil((targetProduct.getSceneRasterWidth() - newOffsetX) / subSamplingX));
         float newOffsetY = offsetY % subSamplingY;
         float dataOffsetY = (newOffsetY - offsetY) / subSamplingY;
-        double newHeight = Math.ceil((targetProduct.getSceneRasterHeight() - newOffsetY) / subSamplingY);
+        double newHeight = Math.min(sourceBand.getRasterHeight(),
+                Math.ceil((targetProduct.getSceneRasterHeight() - newOffsetY) / subSamplingY));
         RenderedOp translatedSourceImage = TranslateDescriptor.create(sourceImage, -dataOffsetX, -dataOffsetY,
                 Interpolation.getInstance(Interpolation.INTERP_NEAREST), null);
         RenderedImage croppedSourceImage = CropDescriptor.create(translatedSourceImage, 0f, 0f,
