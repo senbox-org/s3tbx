@@ -49,7 +49,7 @@ import static org.junit.Assert.fail;
 public class NcFileStitcherTest {
 
     static {
-        new NetCdfActivator().start();
+        NetCdfActivator.activate();
     }
 
     private File targetDirectory;
