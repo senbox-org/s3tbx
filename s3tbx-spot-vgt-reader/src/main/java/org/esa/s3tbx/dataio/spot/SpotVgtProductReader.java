@@ -30,6 +30,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.util.ImageUtils;
 import org.esa.snap.core.util.jai.JAIUtils;
+import org.esa.snap.dataio.netcdf.util.DataTypeUtils;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
@@ -250,18 +251,8 @@ public class SpotVgtProductReader extends AbstractProductReader {
     }
 
     private int convertNetcdfTypeToProductDataType(DataType netCdfDataType, boolean unsigned) {
-        if (netCdfDataType == DataType.BYTE) {
-            return unsigned ? ProductData.TYPE_UINT8 : ProductData.TYPE_INT8;
-        } else if (netCdfDataType == DataType.SHORT) {
-            return unsigned ? ProductData.TYPE_UINT16 : ProductData.TYPE_INT16;
-        } else if (netCdfDataType == DataType.INT) {
-            return unsigned ? ProductData.TYPE_UINT32 : ProductData.TYPE_INT32;
-        } else if (netCdfDataType == DataType.FLOAT) {
-            return ProductData.TYPE_FLOAT32;
-        } else if (netCdfDataType == DataType.DOUBLE) {
-            return ProductData.TYPE_FLOAT64;
-        }
-        return ProductData.TYPE_UNDEFINED;
+        int rasterDataType = DataTypeUtils.getRasterDataType(netCdfDataType, unsigned);
+        return rasterDataType == -1 ? ProductData.TYPE_UNDEFINED : rasterDataType;
     }
 
     private boolean isPotentialPixelDataVariable(Variable variable) {
