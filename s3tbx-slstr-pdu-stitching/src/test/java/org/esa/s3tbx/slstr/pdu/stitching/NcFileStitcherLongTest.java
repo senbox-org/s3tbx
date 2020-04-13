@@ -2,11 +2,9 @@ package org.esa.s3tbx.slstr.pdu.stitching;
 
 import org.esa.snap.core.util.io.FileUtils;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
-import org.esa.snap.test.LongTestRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
@@ -34,7 +32,7 @@ import static org.junit.Assert.fail;
 /**
  * @author Tonio Fincke
  */
-@RunWith(LongTestRunner.class)
+//@RunWith(LongTestRunner.class)
 public class NcFileStitcherLongTest {
 
     private File targetDirectory;
@@ -108,7 +106,7 @@ public class NcFileStitcherLongTest {
         assertEquals("F1_BT_orphan_io", variables.get(2).getFullName());
 
         assertEquals("F1_exception_orphan_io", variables.get(3).getFullName());
-        assertEquals(DataType.BYTE, variables.get(3).getDataType());
+        assertEquals(DataType.UBYTE, variables.get(3).getDataType());
         assertTrue(variables.get(3).getDataType().isUnsigned());
         assertEquals("rows orphan_pixels", variables.get(3).getDimensionsString());
         final List<Attribute> F1_exception_orphan_io_attributes = variables.get(3).getAttributes();
