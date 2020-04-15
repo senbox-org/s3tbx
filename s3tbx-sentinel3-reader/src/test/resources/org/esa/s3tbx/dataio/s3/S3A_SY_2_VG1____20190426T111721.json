@@ -483,10 +483,6 @@
         "value": "6378137.0"
       },
       {
-        "path": "crs/_ChunkSize",
-        "value": "1"
-      },
-      {
         "path": "longitude/valid_max",
         "value": "180.0"
       }
