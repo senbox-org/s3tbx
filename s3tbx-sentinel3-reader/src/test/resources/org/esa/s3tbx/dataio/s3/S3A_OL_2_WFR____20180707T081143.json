@@ -3663,8 +3663,8 @@
         "description": "Classification flags, quality and science flags for Marine and Inland Waters pixels(least significant bytes)",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "4.294967294E9",
-        "noDataValueUsed": "true",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
         "expectedPixels": [
@@ -3685,8 +3685,8 @@
         "description": "Classification flags, quality and science flags for Marine and Inland Waters pixels(most significant bytes)",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "4.294967294E9",
-        "noDataValueUsed": "true",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
         "expectedPixels": [
@@ -4031,10 +4031,6 @@
       {
         "path": "frame_offset/valid_max",
         "value": "15"
-      },
-      {
-        "path": "time_stamp/_ChunkSize",
-        "value": "4091"
       },
       {
         "path": "atmospheric_temperature_profile/reference_pressure_level",
