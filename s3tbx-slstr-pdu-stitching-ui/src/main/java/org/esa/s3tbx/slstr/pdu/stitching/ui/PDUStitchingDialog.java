@@ -12,6 +12,7 @@ import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.ui.OperatorMenu;
 import org.esa.snap.core.gpf.ui.OperatorParameterSupport;
 import org.esa.snap.core.util.ArrayUtils;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.ui.AppContext;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 
 /**
  * @author Tonio Fincke
@@ -97,7 +99,9 @@ public class PDUStitchingDialog extends ModelessDialog {
             Dialogs.showInformation("SLSTR L1B PDU Stitching",
                     "Stitched SLSTR L1B product has been successfully created in the target directory.", null);
         } catch (InterruptedException | ExecutionException e) {
-            Dialogs.showError("Could not create stitched SLSTR L1B product: " + e.getMessage());
+            String msg = "Could not create stitched SLSTR L1B product";
+            SystemUtils.LOG.log(Level.SEVERE, msg, e);
+            Dialogs.showError(msg + ": " + e.getMessage());
             final String[] after = targetDir.list();
             if (after != null) {
                 for (String inTargetDir : after) {
