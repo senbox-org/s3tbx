@@ -55,7 +55,7 @@ import java.util.stream.Stream;
         authors = "Owen Embury, Marco Peters",
         copyright = "University of Reading, Brockmann Consult GmbH",
         version = "1.0",
-        description = "Computes sea surface temperature (SST) from (A)ATSR products.")
+        description = "Computes sea surface temperature (SST) from (A)ATSR and SLSTR products.")
 public class ArcSstOp extends PixelOperator {
 
     private Sensor sensor;
