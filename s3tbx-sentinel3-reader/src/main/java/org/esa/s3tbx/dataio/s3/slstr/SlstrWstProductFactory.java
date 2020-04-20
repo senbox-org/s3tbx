@@ -121,5 +121,8 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
     protected void configureTargetNode(Band sourceBand, RasterDataNode targetNode) {
     }
 
-
+    @Override
+    protected void setBandGeoCodings(Product product) {
+        // this is intended - we do not have band geo-codings for this product type tb 2020-04-20
+    }
 }
