@@ -18,65 +18,63 @@
 
 package org.esa.s3tbx.olci.radiometry.rayleigh;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author muhammad.bc.
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class SpikeInterpolationTest {
-    double[] useAr = {-2, 1.3, 1.7, 2, 2.9, 3};
+    private final double[] useAr = {-2, 1.3, 1.7, 2, 2.9, 3};
 
     @Test
-    public void testClosestToLowerBound() throws Exception {
-        Assert.assertEquals(1.3, SpikeInterpolation.getLowerBound(useAr, 1.4), 1e-2);
-        Assert.assertEquals(1.3, SpikeInterpolation.getLowerBound(useAr, 1.5), 1e-2);
-        Assert.assertEquals(1.7, SpikeInterpolation.getLowerBound(useAr, 1.9), 1e-2);
-        Assert.assertEquals(2.0, SpikeInterpolation.getLowerBound(useAr, 2.1), 1e-2);
-        Assert.assertEquals(3, SpikeInterpolation.getLowerBound(useAr, 3), 1e-2);
-        Assert.assertEquals(3, SpikeInterpolation.getLowerBound(useAr, 4), 1e-2);
-        Assert.assertEquals(3, SpikeInterpolation.getLowerBound(useAr, 30), 1e-2);
+    public void testClosestToLowerBound() {
+        assertEquals(1.3, SpikeInterpolation.getLowerBound(useAr, 1.4), 1e-8);
+        assertEquals(1.3, SpikeInterpolation.getLowerBound(useAr, 1.5), 1e-8);
+        assertEquals(1.7, SpikeInterpolation.getLowerBound(useAr, 1.9), 1e-8);
+        assertEquals(2.0, SpikeInterpolation.getLowerBound(useAr, 2.1), 1e-8);
+        assertEquals(3, SpikeInterpolation.getLowerBound(useAr, 3), 1e-8);
+        assertEquals(3, SpikeInterpolation.getLowerBound(useAr, 4), 1e-8);
+        assertEquals(3, SpikeInterpolation.getLowerBound(useAr, 30), 1e-8);
     }
 
     @Test
-    public void testClosestToLowerBoundNotInArray() throws Exception {
+    public void testClosestToLowerBoundNotInArray() {
         try {
-            Assert.assertEquals(-2, SpikeInterpolation.getLowerBound(useAr, -3), 1e-2);
-            Assert.assertEquals(-2, SpikeInterpolation.getLowerBound(useAr, -3), 1e-2);
-            fail();
-        } catch (IllegalArgumentException e) {
-
+            SpikeInterpolation.getLowerBound(useAr, -3);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException expected) {
         }
     }
 
     @Test
-    public void testClosestToUpperBound() throws Exception {
-        Assert.assertEquals(1.3, SpikeInterpolation.getUpperValue(useAr, 1.3), 1e-2);
-        Assert.assertEquals(2, SpikeInterpolation.getUpperValue(useAr, 1.9), 1e-2);
-        Assert.assertEquals(2.9, SpikeInterpolation.getUpperValue(useAr, 2.7), 1e-2);
-        Assert.assertEquals(2.9, SpikeInterpolation.getUpperValue(useAr, 2.9), 1e-2);
+    public void testClosestToUpperBound() {
+        assertEquals(1.3, SpikeInterpolation.getUpperValue(useAr, 1.3), 1e-8);
+        assertEquals(2, SpikeInterpolation.getUpperValue(useAr, 1.9), 1e-8);
+        assertEquals(2.9, SpikeInterpolation.getUpperValue(useAr, 2.7), 1e-8);
+        assertEquals(2.9, SpikeInterpolation.getUpperValue(useAr, 2.9), 1e-8);
     }
 
     @Test
-    public void testClosestToUpperBoundNotInArray() throws Exception {
+    public void testClosestToUpperBoundNotInArray() {
         try {
-            Assert.assertEquals(-2, SpikeInterpolation.getUpperValue(useAr, -10), 1e-2);
-            Assert.assertEquals(-2, SpikeInterpolation.getUpperValue(useAr, 100), 1e-2);
+            SpikeInterpolation.getUpperValue(useAr, 100);
             fail("Can fine the closest max value of 100.0");
         } catch (IllegalArgumentException e) {
         }
     }
 
     @Test
-    public void testGetValueIndexInArray() throws Exception {
+    public void testGetValueIndexInArray() {
         assertEquals(1, SpikeInterpolation.arrayIndex(useAr, 1.3));
         assertEquals(3, SpikeInterpolation.arrayIndex(useAr, 2));
     }
 
     @Test
-    public void testInterpolatedBtwArrayRange() throws Exception {
+    public void testInterpolatedBtwArrayRange() {
         //https://en.wikipedia.org/wiki/Bilinear_interpolation
 
         double upperBound = SpikeInterpolation.interBetween(91, 210, 15, 14, 14.5);
@@ -87,5 +85,4 @@ public class SpikeInterpolationTest {
         double v = SpikeInterpolation.interBetween(lowerBound, upperBound, 20, 21, 20.2);
         assertEquals(146.1, v, 1e-2);
     }
-
 }
