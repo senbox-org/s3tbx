@@ -20,10 +20,6 @@ package org.esa.s3tbx.olci.radiometry.rayleigh;
 
 import com.google.common.primitives.Doubles;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-
 /**
  * @author muhammad.bc.
  */
@@ -87,31 +83,30 @@ class SpikeInterpolation {
     }
 
     static double getUpperValue(double[] doubles, double val) {
-        final List<Double> xMin = new ArrayList<>();
-        int length = doubles.length;
-        IntStream.range(0, length).forEach(i -> {
-            double v = doubles[i];
-            if (v >= val) {
-                xMin.add(v);
+        double lowestUpper = Double.MAX_VALUE;
+
+        for (double current : doubles) {
+            if (current >= val && current <= lowestUpper) {
+                lowestUpper = current;
             }
-        });
-        double[] allMax = Doubles.toArray(xMin);
-        if (allMax.length == 0) {
+        }
+        if (lowestUpper == Double.MAX_VALUE) {
             throw new IllegalArgumentException("Can't find the closest max value of " + val);
         }
-        return Doubles.min(allMax);
+
+        return lowestUpper;
     }
 
     static double getLowerBound(double[] doubles, double val) {
-        final double[] xMin = new double[1];
-        int length = doubles.length;
-        IntStream.range(0, length).forEach(i -> {
-            double v = doubles[i];
-            xMin[0] = v <= val ? v : xMin[0];
-        });
-        if (xMin[0] > val) {
+        double xMin = Double.MAX_VALUE;
+
+        for (double current : doubles) {
+            xMin = current <= val ? current : xMin;
+        }
+        if (xMin > val) {
             throw new IllegalArgumentException("Can't find the closest min value of " + val);
         }
-        return xMin[0];
+
+        return xMin;
     }
 }
