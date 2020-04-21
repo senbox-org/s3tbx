@@ -22,12 +22,13 @@
 
     <tocitem text="Sentinel Toolbox Application">
         <tocitem text="Optical">
-            <tocitem text="Pre-Processing">
+            <tocitem text="Preprocessing">
                 <tocitem text="MERIS L1b Radiometry Correction" target="merisRadiometryCorrection">
                     <tocitem text="Overview" target="merisRadiometryCorrection"/>
                     <tocitem text="Processor Description" target="merisRadiometryCorrectionProcessorDescription"/>
                     <tocitem text="Command Line Description" target="merisRadiometryCommandLine"/>
-                    <tocitem text="Equalization Algorithm Specification" target="merisEqualizationAlgorithmSpecification"/>
+                    <tocitem text="Equalization Algorithm Specification"
+                             target="merisEqualizationAlgorithmSpecification"/>
                     <tocitem text="Radiometry Recalibration Algorithm Specification"
                              target="merisRecalibrationAlgorithmSpecification"/>
                     <tocitem text="Smile Correction Algorithm Specification"
