@@ -240,13 +240,19 @@ public class SmacOperator extends Operator {
 
     // package private for testing reasons only
     void installAuxdata(ProgressMonitor pm) {
-        auxdataInstallDir = initAuxdataInstallDir();
+        pm.beginTask("Preparing SMAC processing", 100);
         try {
-            Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(getClass()).resolve("auxdata");
-            new ResourceInstaller(sourceDirPath, auxdataInstallDir).install(".*", new SubProgressMonitor(pm, 100));
-        } catch (IOException e) {
-            throw new OperatorException("Failed to install auxdata into " + auxdataInstallDir.toString(), e);
+            auxdataInstallDir = initAuxdataInstallDir();
+            try {
+                Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(getClass()).resolve("auxdata");
+                new ResourceInstaller(sourceDirPath, auxdataInstallDir).install(".*", new SubProgressMonitor(pm, 100));
+            } catch (IOException e) {
+                throw new OperatorException("Failed to install auxdata into " + auxdataInstallDir.toString(), e);
+            }
+        } finally {
+            pm.done();
         }
+
     }
 
     // package private for testing reasons only
@@ -257,15 +263,7 @@ public class SmacOperator extends Operator {
 
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
-        pm.beginTask("Preparing SMAC processing", 200);
-        try {
-            // create a bitmask expression for input
-            // -------------------------------------
-            pm.worked(100);
-            installAuxdata(pm);
-        } finally {
-            pm.done();
-        }
+        installAuxdata(pm);
     }
 
     private void loadInputProduct() {
