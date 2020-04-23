@@ -27,7 +27,7 @@
     <packaging>nbm</packaging>
 
     <name>In-Situ Client Tool</name>
-    <description>Tool for accessing In-Situ database sevices.</description>
+    <description>Tool for accessing In-Situ database services.</description>
 
     <dependencies>
         <dependency>
