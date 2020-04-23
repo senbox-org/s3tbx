@@ -63,8 +63,8 @@ class InsituClientModel {
     private double maxLat;
 
     private InsituServer selectedServer;
-    private PMListener productManagerListener;
-    private PropertyChangeSupport changeSupport;
+    private final PMListener productManagerListener;
+    private final PropertyChangeSupport changeSupport;
 
     public InsituClientModel() {
         final Set<InsituServerSpi> allRegisteredServers = InsituServerRegistry.getInstance().getAllRegisteredServers();
@@ -263,7 +263,7 @@ class InsituClientModel {
         }
 
         @Override
-        public InsituServer createServer() throws InsituServerException {
+        public InsituServer createServer() {
             return new InsituServer() {
                 @Override
                 public String getName() {
@@ -271,7 +271,7 @@ class InsituClientModel {
                 }
 
                 @Override
-                public InsituResponse query(InsituQuery query) throws InsituServerException {
+                public InsituResponse query(InsituQuery query) {
                     return InsituResponse.EMPTY_RESPONSE;
                 }
             };
