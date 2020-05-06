@@ -91,7 +91,6 @@ public class SynL1CSceneTransformGeoCoding extends AbstractGeoCoding {
 
     @Override
     public boolean transferGeoCoding(Scene srcScene, Scene destScene, ProductSubsetDef subsetDef) {
-        //todo maybe improve this method if necessary - tf 20160127
         if (subsetDef != null || srcScene.getProduct() != destScene.getProduct()) {
             return false;
         }
