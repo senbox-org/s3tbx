@@ -91,12 +91,23 @@ public class SynL1CSceneTransformGeoCoding extends AbstractGeoCoding {
 
     @Override
     public boolean transferGeoCoding(Scene srcScene, Scene destScene, ProductSubsetDef subsetDef) {
-        //todo maybe improve this method if necessary - tf 20160127
         if (subsetDef != null || srcScene.getProduct() != destScene.getProduct()) {
             return false;
         }
-        destScene.setGeoCoding(new SynL1CSceneTransformGeoCoding(wrappedGeoCoding, sceneToModelTransform, modelToSceneTransform));
+        destScene.setGeoCoding(clone());
         return true;
     }
 
+    @Override
+    public boolean canClone() {
+        return true;
+    }
+
+    @Override
+    public GeoCoding clone() {
+        if (wrappedGeoCoding.canClone()) {
+            return new SynL1CSceneTransformGeoCoding(wrappedGeoCoding.clone(), sceneToModelTransform, modelToSceneTransform);
+        }
+        return new SynL1CSceneTransformGeoCoding(wrappedGeoCoding, sceneToModelTransform, modelToSceneTransform);
+    }
 }

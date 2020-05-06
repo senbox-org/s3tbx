@@ -185,6 +185,21 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         return geoPos;
     }
 
+    /**
+     * Creates a shallow clone of this geocoding. Geolocation raster data is shared.
+     *
+     * @return the cloned geocoding
+     */
+    @Override
+    public GeoCoding clone() {
+        throw new IllegalStateException("not implemented");
+    }
+
+
+    public boolean canClone() {
+        return false;
+    }
+
     private boolean quadTreeRecursion(final int depth,
                                       final double lat, final double lon,
                                       final int i, final int j,
