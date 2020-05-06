@@ -41,70 +41,39 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
     private Boolean crossingMeridianAt180;
 
 
+    private static class Result {
+
+        public static final float INVALID = Float.MAX_VALUE;
+
+        private int x;
+        private int y;
+        private double delta;
+
+        private Result() {
+            delta = INVALID;
+        }
+
+        public final boolean update(final int x, final int y, final double delta) {
+            final boolean b = delta < this.delta;
+            if (b) {
+                this.x = x;
+                this.y = y;
+                this.delta = delta;
+            }
+            return b;
+        }
+
+        @Override
+        public String toString() {
+            return "Result[" + x + ", " + y + ", " + delta + "]";
+        }
+    }
+
     public BowtiePixelScanGeoCoding(float[] lats, float[] lons, int width, int height) {
         this.lats = lats;
         this.lons = lons;
         this.width = width;
         this.height = height;
-    }
-
-    private static double min(final double a, final double b) {
-        return (a <= b) ? a : b;
-    }
-
-    private static double max(final double a, final double b) {
-        return (a >= b) ? a : b;
-    }
-
-    private static double sq(final double dx, final double dy) {
-        return dx * dx + dy * dy;
-    }
-
-    static double getNegativeLonMax(double lon0, double lon1, double lon2, double lon3) {
-        double lonMax;
-        lonMax = -180.0f;
-        if (lon0 < 0.0f) {
-            lonMax = lon0;
-        }
-        if (lon1 < 0.0f) {
-            lonMax = max(lon1, lonMax);
-        }
-        if (lon2 < 0.0f) {
-            lonMax = max(lon2, lonMax);
-        }
-        if (lon3 < 0.0f) {
-            lonMax = max(lon3, lonMax);
-        }
-        return lonMax;
-    }
-
-    static double getPositiveLonMin(double lon0, double lon1, double lon2, double lon3) {
-        double lonMin;
-        lonMin = 180.0f;
-        if (lon0 >= 0.0f) {
-            lonMin = lon0;
-        }
-        if (lon1 >= 0.0f) {
-            lonMin = min(lon1, lonMin);
-        }
-        if (lon2 >= 0.0f) {
-            lonMin = min(lon2, lonMin);
-        }
-        if (lon3 >= 0.0f) {
-            lonMin = min(lon3, lonMin);
-        }
-        return lonMin;
-    }
-
-    static boolean isCrossingMeridianInsideQuad(boolean crossingMeridianInsideProduct, double lon0, double lon1,
-                                                double lon2, double lon3) {
-        if (!crossingMeridianInsideProduct) {
-            return false;
-        }
-        double lonMin = min(lon0, min(lon1, min(lon2, lon3)));
-        double lonMax = max(lon0, max(lon1, max(lon2, lon3)));
-
-        return Math.abs(lonMax - lonMin) > 180.0;
     }
 
     /**
@@ -226,7 +195,7 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         throw new IllegalStateException("not implemented");
     }
 
-    @Override
+
     public boolean canClone() {
         return false;
     }
@@ -257,6 +226,65 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         final boolean b4 = quadTreeSearch(depth + 1, lat, lon, i2, j2, w2r, h2r, result);
 
         return b1 || b2 || b3 || b4;
+    }
+
+    private static double min(final double a, final double b) {
+        return (a <= b) ? a : b;
+    }
+
+    private static double max(final double a, final double b) {
+        return (a >= b) ? a : b;
+    }
+
+    private static double sq(final double dx, final double dy) {
+        return dx * dx + dy * dy;
+    }
+
+    static double getNegativeLonMax(double lon0, double lon1, double lon2, double lon3) {
+        double lonMax;
+        lonMax = -180.0f;
+        if (lon0 < 0.0f) {
+            lonMax = lon0;
+        }
+        if (lon1 < 0.0f) {
+            lonMax = max(lon1, lonMax);
+        }
+        if (lon2 < 0.0f) {
+            lonMax = max(lon2, lonMax);
+        }
+        if (lon3 < 0.0f) {
+            lonMax = max(lon3, lonMax);
+        }
+        return lonMax;
+    }
+
+    static double getPositiveLonMin(double lon0, double lon1, double lon2, double lon3) {
+        double lonMin;
+        lonMin = 180.0f;
+        if (lon0 >= 0.0f) {
+            lonMin = lon0;
+        }
+        if (lon1 >= 0.0f) {
+            lonMin = min(lon1, lonMin);
+        }
+        if (lon2 >= 0.0f) {
+            lonMin = min(lon2, lonMin);
+        }
+        if (lon3 >= 0.0f) {
+            lonMin = min(lon3, lonMin);
+        }
+        return lonMin;
+    }
+
+    static boolean isCrossingMeridianInsideQuad(boolean crossingMeridianInsideProduct, double lon0, double lon1,
+                                                double lon2, double lon3) {
+        if (!crossingMeridianInsideProduct) {
+            return false;
+        }
+        double lonMin = min(lon0, min(lon1, min(lon2, lon3)));
+        double lonMax = max(lon0, max(lon1, max(lon2, lon3)));
+
+        return Math.abs(lonMax - lonMin) > 180.0;
     }
 
     private boolean quadTreeSearch(final int depth,
@@ -342,6 +370,7 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         return pixelFound;
     }
 
+
     /**
      * Returns the pixel co-ordinates as x/y for a given geographical position given as lat/lon.
      * This algorithm
@@ -378,6 +407,7 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         return pixelPos;
     }
 
+
     @Override
     public Datum getDatum() {
         return null;
@@ -406,33 +436,5 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
     @Override
     public MathTransform getImageToMapTransform() {
         return null;
-    }
-
-    private static class Result {
-
-        public static final float INVALID = Float.MAX_VALUE;
-
-        private int x;
-        private int y;
-        private double delta;
-
-        private Result() {
-            delta = INVALID;
-        }
-
-        public final boolean update(final int x, final int y, final double delta) {
-            final boolean b = delta < this.delta;
-            if (b) {
-                this.x = x;
-                this.y = y;
-                this.delta = delta;
-            }
-            return b;
-        }
-
-        @Override
-        public String toString() {
-            return "Result[" + x + ", " + y + ", " + delta + "]";
-        }
     }
 }

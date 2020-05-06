@@ -1,6 +1,7 @@
 package org.esa.s3tbx.dataio.s3.slstr;
 
 import org.esa.snap.core.dataio.ProductSubsetDef;
+import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
@@ -45,6 +46,12 @@ class SlstrTiePointGeoCoding extends TiePointGeoCoding {
 
     @Override
     public boolean transferGeoCoding(Scene srcScene, Scene destScene, ProductSubsetDef subsetDef) {
+        if (subsetDef == null || subsetDef.isEntireProductSelected()) {
+            copyGridsToDestScene(destScene);
+            destScene.setGeoCoding(clone());
+            return true;
+        }
+
         TiePointGrid destLatGrid = getDestGrid(getLatGrid(), destScene, subsetDef);
         TiePointGrid destLonGrid = getDestGrid(getLonGrid(), destScene, subsetDef);
         if (destLatGrid != null && destLonGrid != null) {
@@ -58,6 +65,21 @@ class SlstrTiePointGeoCoding extends TiePointGeoCoding {
             }
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public boolean canClone() {
+        return true;
+    }
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public GeoCoding clone() {
+        try {
+            return new SlstrTiePointGeoCoding(super.getLatGrid(), super.getLonGrid(), transform);
+        } catch (NoninvertibleTransformException e) {
+            throw new IllegalStateException("Unable to clone: " + e.getMessage());
         }
     }
 }
