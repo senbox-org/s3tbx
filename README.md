@@ -3,7 +3,9 @@ Sentinel-3 Toolbox (S3TBX)
 
 A toolbox for the OLCI and SLSTR instruments on board of ESA's Sentinel-3 satellite.
 
-The project page of SNAP and the sentinel toolboxes can be found at http://step.esa.int. There you will find a tutorial about the usage of the application, a forum where you can ask questions and lots of other interesting things.
+The project page of SNAP, and the sentinel toolboxes can be found at http://step.esa.int. 
+There you can find tutorials, developer guides, a user forum and other interesting things.
+
 
 Building S3TBX from the source
 ------------------------------
@@ -55,7 +57,7 @@ Setting up IntelliJ IDEA
 2. Import the pom.xml files of snap-engine, snap-desktop and s3tbx as modules. Ensure **not** to enable
 the option *Create module groups for multi-module Maven projects*. Everything can be default values.
 
-3. Set the used SDK for the main project. A JDK 1.8 or later is needed.
+3. Set the used JDK for the main project.
 
 4. Use the following configuration to run SNAP in the IDE:
 
