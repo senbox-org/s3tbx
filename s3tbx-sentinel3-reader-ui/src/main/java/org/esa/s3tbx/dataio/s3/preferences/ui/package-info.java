@@ -6,7 +6,7 @@
 @OptionsPanelController.ContainerRegistration(
         id = "S3TBX",
         categoryName = "#LBL_S3TBXOptionsCategory_Name",
-        iconBase = "org/esa/s3tbx/dataio/s3/preferences/s3tbx_new_32.png",
+        iconBase = "org/esa/s3tbx/dataio/s3/preferences/S3TBX_icon_32.jpg",
         keywords = "#LBL_S3TBXOptionsCategory_Keywords",
         keywordsCategory = "S3TBX",
         position = 1200
