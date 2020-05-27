@@ -3,18 +3,22 @@ Sentinel-3 Toolbox (S3TBX)
 
 A toolbox for the OLCI and SLSTR instruments on board of ESA's Sentinel-3 satellite.
 
-[![Build Status](https://travis-ci.org/senbox-org/s3tbx.svg?branch=master)](https://travis-ci.org/senbox-org/s3tbx)
-[![Coverity Scan Status](https://scan.coverity.com/projects/7247/badge.svg)](https://scan.coverity.com/projects/senbox-org-s3tbx)
+The project page of SNAP, and the sentinel toolboxes can be found at http://step.esa.int. 
+There you can find tutorials, developer guides, a user forum and other interesting things.
 
-The project page of SNAP and the sentinel toolboxes can be found at http://step.esa.int. There you will find a tutorial about the usage of the application, a forum where you can ask questions and lots of other interesting things.
 
 Building S3TBX from the source
 ------------------------------
 
 Download and install the required build tools
-	* Install J2SE 1.8 JDK and set JAVA_HOME accordingly. 
-	* Install Maven and set MAVEN_HOME accordingly. 
-	* Install git
+
+* Install Java 8 JDK and set JAVA_HOME accordingly. A distribution of OpenJDK is suggested. 
+Several distributions are available, for example
+  * [Azul Zulu](https://www.azul.com/downloads/zulu-community)  
+  * [AdoptOpenJDK](https://adoptopenjdk.net)   
+  * [Amazon Corretto](https://aws.amazon.com/de/corretto)	  
+* Install Maven and set MAVEN_HOME accordingly. 
+* Install git
 
 Add $JAVA_HOME/bin, $MAVEN_HOME/bin to your PATH.
 
@@ -53,7 +57,7 @@ Setting up IntelliJ IDEA
 2. Import the pom.xml files of snap-engine, snap-desktop and s3tbx as modules. Ensure **not** to enable
 the option *Create module groups for multi-module Maven projects*. Everything can be default values.
 
-3. Set the used SDK for the main project. A JDK 1.8 or later is needed.
+3. Set the used JDK for the main project.
 
 4. Use the following configuration to run SNAP in the IDE:
 

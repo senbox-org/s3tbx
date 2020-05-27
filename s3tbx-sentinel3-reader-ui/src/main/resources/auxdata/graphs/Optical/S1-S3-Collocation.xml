@@ -1,4 +1,4 @@
-<graph id="s1-s3-collocation">
+<graph id="S1-S3-Collocation">
     <version>1.0</version>
     <node id="ReadGrd">
         <operator>Read</operator>
@@ -148,22 +148,22 @@
             <displayPosition x="104.0" y="250.0"/>
         </node>
         <node id="DespeckleGrD">
-            <displayPosition x="293.0" y="254.0"/>
+            <displayPosition x="213.0" y="250.0"/>
         </node>
         <node id="TerrainCorrectGrd">
-            <displayPosition x="468.0" y="252.0"/>
+            <displayPosition x="345.0" y="249.0"/>
         </node>
         <node id="ReadS3">
-            <displayPosition x="236.0" y="158.0"/>
+            <displayPosition x="17.0" y="158.0"/>
         </node>
         <node id="SubsetS3">
-            <displayPosition x="337.0" y="157.0"/>
+            <displayPosition x="104.0" y="158.0"/>
         </node>
         <node id="Collocate">
-            <displayPosition x="494.0" y="162.0"/>
+            <displayPosition x="372.0" y="157.0"/>
         </node>
         <node id="Write">
-            <displayPosition x="629.0" y="159.0"/>
+            <displayPosition x="505.0" y="158.0"/>
         </node>
     </applicationData>
 </graph>

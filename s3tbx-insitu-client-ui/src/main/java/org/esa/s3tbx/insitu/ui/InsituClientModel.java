@@ -17,7 +17,9 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.ProductManager;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.util.ProgressHandleMonitor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -61,8 +63,8 @@ class InsituClientModel {
     private double maxLat;
 
     private InsituServer selectedServer;
-    private PMListener productManagerListener;
-    private PropertyChangeSupport changeSupport;
+    private final PMListener productManagerListener;
+    private final PropertyChangeSupport changeSupport;
 
     public InsituClientModel() {
         final Set<InsituServerSpi> allRegisteredServers = InsituServerRegistry.getInstance().getAllRegisteredServers();
@@ -261,7 +263,7 @@ class InsituClientModel {
         }
 
         @Override
-        public InsituServer createServer() throws InsituServerException {
+        public InsituServer createServer() {
             return new InsituServer() {
                 @Override
                 public String getName() {
@@ -269,7 +271,7 @@ class InsituClientModel {
                 }
 
                 @Override
-                public InsituResponse query(InsituQuery query) throws InsituServerException {
+                public InsituResponse query(InsituQuery query) {
                     return InsituResponse.EMPTY_RESPONSE;
                 }
             };
@@ -300,7 +302,7 @@ class InsituClientModel {
                     updateParameterModel(selectedServer);
                 } catch (Exception e) {
                     insituServerModel.setSelectedItem(NO_SELECTION_SERVER_SPI);
-                    throw new IllegalStateException("Could not create server instance for server '" + insituServerSpi.getName() + "'", e);
+                    Dialogs.showError("Server connection failed", e.getMessage());
                 }
             }
         }
@@ -323,7 +325,34 @@ class InsituClientModel {
             query.datasets(datasetNames);
         }
         final InsituResponse insituResponse = server.query(query);
-        insituResponse.getParameters().forEach(parameterModel::addElement);
+        if (insituResponse.getStatus() == InsituResponse.STATUS_CODE.OK) {
+            List<? extends InsituParameter> parameters = insituResponse.getParameters();
+            parameters.forEach(parameterModel::addElement);
+        } else {
+            String message = createExceptionMessage(insituResponse);
+            throw new InsituServerException(message);
+        }
+    }
+
+    @NotNull
+    private String createExceptionMessage(InsituResponse insituResponse) {
+        List<String> reasons = insituResponse.getFailureReasons();
+
+        StringBuilder sb = new StringBuilder("Could not retrieve data from server.");
+        if (reasons != null) {
+            sb.append(reasons.size() == 1 ? "\nReason" : "\nReasons");
+            sb.append(" provided by server:\n");
+
+            int count = 1;
+            for (String reason : reasons) {
+                sb.append("\n");
+                if (reasons.size() > 1) {
+                    sb.append(count++).append(": ");
+                }
+                sb.append(reason);
+            }
+        }
+        return sb.toString();
     }
 
     private class DatasetListSelectionListener implements ListSelectionListener {
