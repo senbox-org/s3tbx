@@ -22,6 +22,14 @@
         <version>7.0.3-SNAPSHOT</version>
     </parent>
 
+    <!-- TODO Remove this in case of s3tbx v7.0.3 release -->
+    <version>7.0.3</version>
+
+    <properties>
+        <s3tbx.nbmSpecVersion>7.0.3</s3tbx.nbmSpecVersion>
+        <snap.version>7.0.3-SNAPSHOT</snap.version>
+    </properties>
+
     <artifactId>s3tbx-rad2refl</artifactId>
     <packaging>nbm</packaging>
 
