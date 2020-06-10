@@ -26,15 +26,30 @@ A comprehensive list of all issues resolved in this version of the Sentinel-3 To
 [issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12705)
 
 
+Changes in S3TBX 7.0.3
+--------------------
+
+Bug
+* [SIIITBX-328] - Rad2Refl Operator cannot handle latest SLSTR input products
+
+Improvement 
+* [SIIITBX-267] - SPOT VGT product reader shall support VGT P collection 3 products
+
+A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
+[issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12755)  
+
 Changes in S3TBX 7.0.2
 --------------------
 
-[SIIITBX-301] - SLSTR L2 LST products can not be read
-[SIIITBX-302] - SLSTR L2 WST products can not be read
-[SIIITBX-303] - AATSR products from 4th Reprocessing can not be read
-[SIIITBX-308] - KLM AVHRR reader channel 3a/3b detection not correct
+Bug
+* [SIIITBX-301] - SLSTR L2 LST products can not be read
+* [SIIITBX-302] - SLSTR L2 WST products can not be read
+* [SIIITBX-303] - AATSR products from 4th Reprocessing can not be read
+* [SIIITBX-308] - KLM AVHRR reader channel 3a/3b detection not correct
+
 Improvement
-[SIIITBX-305] - Description of copied masks should not be altered
+* [SIIITBX-305] - Description of copied masks should not be altered
+
 
 A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
 [issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12754)
