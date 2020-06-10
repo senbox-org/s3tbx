@@ -1,6 +1,13 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 7.0.4
+--------------------
+
+Improvement 
+* [SIIITBX-332] - SLSTR L2 FRP products cannot be read
+
+
 Changes in S3TBX 7.0.3
 --------------------
 

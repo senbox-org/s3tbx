@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class SlstrFrpProductFactory extends SlstrProductFactory {
 
-    private Map<String, GeoCoding> geoCodingMap;
+    private final Map<String, GeoCoding> geoCodingMap;
     private final Map<String, Double> gridIndexToTrackOffset;
     private final Map<String, Double> gridIndexToStartOffset;
 
@@ -52,7 +52,7 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
             if (!gridIndexToTrackOffset.containsKey(identifier)) {
                 gridIndexToTrackOffset.put(identifier, globalAttributes.getAttributeDouble("track_offset"));
             }
-            if (identifier.equals("fn")) {
+            if (identifier.equals("in")) {
                 setReferenceStartOffset(getStartOffset(identifier));
                 setReferenceTrackOffset(getTrackOffset(identifier));
                 setReferenceResolutions(getResolutions(identifier));
@@ -64,7 +64,7 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
     protected Product findMasterProduct() {
         List<Product> openProductList = getOpenProductList();
         for (final Product p : openProductList) {
-            if (p.getName().endsWith("fn")) {
+            if (p.getName().endsWith("in")) {
                 return p;
             }
         }
