@@ -26,6 +26,15 @@ A comprehensive list of all issues resolved in this version of the Sentinel-3 To
 [issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12705)
 
 
+Changes in S3TBX 7.0.4
+--------------------
+
+Improvement 
+* [SIIITBX-332] - SLSTR L2 FRP products cannot be read
+
+A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
+[issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12761) 
+
 Changes in S3TBX 7.0.3
 --------------------
 
