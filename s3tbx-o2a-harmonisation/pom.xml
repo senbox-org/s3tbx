@@ -26,6 +26,7 @@
     </parent>
 
     <artifactId>s3tbx-o2a-harmonisation</artifactId>
+    <version>7.0.4.1</version>
 
     <name>Sentinel-3 OLCI O2A Harmonisation</name>
     <packaging>nbm</packaging>
@@ -79,6 +80,12 @@
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-collocation</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-netcdf</artifactId>
             <version>${snap.version}</version>
         </dependency>
         

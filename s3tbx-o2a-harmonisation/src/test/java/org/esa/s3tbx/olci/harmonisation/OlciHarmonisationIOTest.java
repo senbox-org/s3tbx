@@ -1,16 +1,19 @@
 package org.esa.s3tbx.olci.harmonisation;
 
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.Product;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 public class OlciHarmonisationIOTest {
@@ -184,11 +187,37 @@ public class OlciHarmonisationIOTest {
     }
 
     @Test
-//    @Ignore
     public void testInstallAuxdata() throws Exception {
         Path auxPath = OlciHarmonisationIO.installAuxdata();
         assertNotNull(auxPath);
 
+    }
+
+    @Test
+    public void testModelO2BandsInV4() {
+//        URL url = OlciHarmonisationIO.class.getResource("olci_B_temporal_model_O2_bands_20200227.nc4");
+//        URL url = OlciHarmonisationIO.class.getResource("olci_B_temporal_model_O2_bands_20200227_TEST.nc");
+//        File filePath = new File(url.getPath());
+
+        final Path pathModelFile = installAuxdataPath.resolve("olci_B_temporal_model_O2_bands.nc");
+        File filePath = pathModelFile.toFile();
+        try {
+            final Product s3bModelProduct = ProductIO.readProduct(filePath.getAbsolutePath());
+            assertNotNull(s3bModelProduct);
+
+            final int orbitNum = 6843;  // todo: get from source product metadata
+
+            OlciHarmonisationIO.SpectralCharacteristics specChar =
+                    OlciHarmonisationIO.getSpectralCharacteristics(orbitNum, s3bModelProduct);
+
+            assertEquals(764.86835f, specChar.getCwvl()[2][123], 1.E-5);
+            assertEquals(778.9952f, specChar.getCwvl()[4][1357], 1.E-4);
+            assertEquals(3.7730427f, specChar.getFwhm()[2][123], 1.E-7);
+            assertEquals(14.988376f, specChar.getFwhm()[4][1357], 1.E-6);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
 
 }

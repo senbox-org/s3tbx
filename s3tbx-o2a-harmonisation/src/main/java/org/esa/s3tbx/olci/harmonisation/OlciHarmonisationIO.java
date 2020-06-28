@@ -2,6 +2,11 @@ package org.esa.s3tbx.olci.harmonisation;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.google.common.primitives.Doubles;
+import org.apache.commons.lang.ArrayUtils;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.util.ResourceInstaller;
@@ -12,6 +17,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import smile.neighbor.KDTree;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -174,7 +180,7 @@ class OlciHarmonisationIO {
      * @throws ParseException -
      */
     static DesmileLut createDesmileLut(Path auxdataPath, int bandIndex) throws IOException, ParseException {
-        final String jsonFilename = "O2_desmile_lut_" + bandIndex + ".json";
+        final String jsonFilename = "O2_v4_desmile_lut_" + bandIndex + ".json";
         final Path jsonPath = auxdataPath.resolve(jsonFilename);
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader(jsonPath.toString()));
@@ -210,4 +216,166 @@ class OlciHarmonisationIO {
         return auxdataDirectory;
     }
 
+    static SpectralCharacteristics getSpectralCharacteristics(int orbitNumber, Product modelProduct) {
+        final double logOrbitNum = Math.log(orbitNumber*1.);
+        final int numCoefs = 3;
+        final int numCameras = 5;
+        final int w = modelProduct.getSceneRasterWidth();
+        final int h = modelProduct.getSceneRasterHeight();
+        final Band[][] cwvlCoefBands = new Band[numCoefs][numCameras];
+        final Band[][] fwhmCoefBands = new Band[numCoefs][numCameras];
+        for (int i = 0; i < numCoefs; i++) {
+            for (int j = 0; j < numCameras; j++) {
+                cwvlCoefBands[i][j] = modelProduct.getBand("cwvl_coef_coef" + (i+1) + "_camera" + (j+1));
+                fwhmCoefBands[i][j] = modelProduct.getBand("fwhm_coef_coef" + (i+1) + "_camera" + (j+1));
+            }
+        }
+
+        final float[][][][] cwvlCoefs = new float[numCoefs][numCameras][h][w];
+        final float[][][][] fwhmCoefs = new float[numCoefs][numCameras][h][w];
+        for (int i = 0; i < numCoefs; i++) {
+            for (int j = 0; j < numCameras; j++) {
+                for (int k = 0; k < h; k++) {
+                    for (int l = 0; l < w; l++) {
+                        final double cwvlCoef = cwvlCoefBands[i][j].getSampleFloat(l, k);
+                        cwvlCoefs[i][j][k][l] = (float) (cwvlCoef * Math.pow( logOrbitNum, i));
+                        final double fwhmCoef = fwhmCoefBands[i][j].getSampleFloat(l, k);
+                        fwhmCoefs[i][j][k][l] = (float) (fwhmCoef * Math.pow( logOrbitNum, i));
+                    }
+                }
+            }
+        }
+
+        final float[][][] cwvl = new float[numCameras][h][w];
+        final float[][][] fwhm = new float[numCameras][h][w];
+        for (int j = 0; j < numCameras; j++) {
+            for (int k = 0; k < h; k++) {
+                for (int m = 0; m < w; m++) {
+                    cwvl[k][j][m] = cwvlCoefs[0][j][k][m] + cwvlCoefs[1][j][k][m] + cwvlCoefs[2][j][k][m];
+                    fwhm[k][j][m] = fwhmCoefs[0][j][k][m] + fwhmCoefs[1][j][k][m] + fwhmCoefs[2][j][k][m];
+                }
+            }
+        }
+
+        // transpose and revert sequence
+        for (int j = 0; j < numCameras; j++) {
+            for (int k = 0; k < h; k++) {
+                ArrayUtils.reverse(cwvl[k][j]);  // np.transpose(cwvlCoefs,(1,0,2)[...,::-1]
+                ArrayUtils.reverse(fwhm[k][j]);  // np.transpose(cwvlCoefs,(1,0,2)[...,::-1]
+            }
+        }
+
+        // merge k and m dimensions
+        final float[][] cwvl_2D = new float[numCameras][h*w];
+        final float[][] fwhm_2D = new float[numCameras][h*w];
+        for (int j = 0; j < numCameras; j++) {
+            for (int k = 0; k < h; k++) {
+                for (int m = 0; m < w; m++) {
+                    final int index = k*w + m;
+                    cwvl_2D[j][index] = cwvl[j][k][m];  // reshape((5,-1))
+                    fwhm_2D[j][index] = fwhm[j][k][m];  // reshape((5,-1))
+                }
+            }
+        }
+
+        return new SpectralCharacteristics(cwvl_2D, fwhm_2D);
+    }
+
+    static int getOrbitNumber(Product product) {
+        final MetadataElement metadataRoot = product.getMetadataRoot();
+        if (metadataRoot != null) {
+            final MetadataElement manifestElement = metadataRoot.getElement("Manifest");
+            if (manifestElement != null) {
+                final MetadataElement metadataSectionElement = manifestElement.getElement("metadataSection");
+                if (metadataSectionElement != null) {
+                    final MetadataElement orbitReferenceElement = metadataSectionElement.getElement("orbitReference");
+                    if (orbitReferenceElement != null) {
+                        final MetadataElement orbitNumberElement = orbitReferenceElement.getElement("orbitNumber");
+                        if (orbitNumberElement != null) {
+                            final MetadataAttribute orbitNumberAttr = orbitNumberElement.getAttribute("orbitNumber");
+                            if (orbitNumberAttr != null) {
+                                final String s = orbitNumberAttr.getData().getElemString();
+                                return Integer.parseInt(s);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    static String getNssdcIdentifier(Product product) {
+        final MetadataElement metadataRoot = product.getMetadataRoot();
+        if (metadataRoot != null) {
+            final MetadataElement manifestElement = metadataRoot.getElement("Manifest");
+            if (manifestElement != null) {
+                final MetadataElement metadataSectionElement = manifestElement.getElement("metadataSection");
+                if (metadataSectionElement != null) {
+                    final MetadataElement platformElement = metadataSectionElement.getElement("platform");
+                    if (platformElement != null) {
+                        final MetadataAttribute nssdcIdentifier = platformElement.getAttribute("nssdcIdentifier");
+                        if (nssdcIdentifier != null) {
+                            return nssdcIdentifier.getData().getElemString();
+                        }
+                    }
+                }
+            }
+        }
+        throw new OperatorException("Cannot find Sentinel platform identifier in product metadata");
+    }
+
+    static Product getModelProduct(String nssdcIdentifier) throws IOException {
+        final String s3PlatformIdentifier;
+        switch (nssdcIdentifier) {
+            case "2016-011A":
+                s3PlatformIdentifier = "A";
+                break;
+            case "2018-039A":
+                s3PlatformIdentifier = "B";
+                break;
+            default:
+                throw new OperatorException("Cannot identify Sentinel platform identifier '" + nssdcIdentifier + "'.");
+        }
+
+        // original 'olci_<identifier>_temporal_model_O2_bands_20200227.nc4' are differently interpreted by
+        // different SNAP 7.x nc readers. Re-exporting as NetCDF4-CF into
+        // 'olci_<identifier>_temporal_model_O2_bands_20200227.nc' seems to have solved the problem
+        final Path pathModelFile = installAuxdata().resolve("olci_" + s3PlatformIdentifier + "_temporal_model_O2_bands.nc");
+        File filePath = pathModelFile.toFile();
+        try {
+            return ProductIO.readProduct(filePath.getAbsolutePath());
+        } catch (IOException e) {
+            throw new OperatorException("Cannot open O2 spectral model product '" + filePath.getAbsolutePath() + "'.");
+        }
+    }
+
+    static double[][] getDwlCorrOffsets(String nssdcIdentifier) {
+        switch (nssdcIdentifier) {
+            case "2016-011A":
+                return OlciHarmonisationConstants.OLCI_A_DWL_CORR_OFFSET;
+            case "2018-039A":
+                return OlciHarmonisationConstants.OLCI_B_DWL_CORR_OFFSET;
+            default:
+                throw new OperatorException("Cannot identify Sentinel platform identifier '" + nssdcIdentifier + "'.");
+        }
+    }
+
+    static class SpectralCharacteristics {
+        float[][] cwvl;
+        float[][] fwhm;
+
+        SpectralCharacteristics(float[][] cwvl, float[][] fwhm) {
+            this.cwvl = cwvl;
+            this.fwhm = fwhm;
+        }
+
+        float[][] getCwvl() {
+            return cwvl;
+        }
+
+        float[][] getFwhm() {
+            return fwhm;
+        }
+    }
 }

@@ -1,11 +1,7 @@
 package org.esa.s3tbx.olci.harmonisation;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -20,13 +16,14 @@ import org.esa.snap.core.util.math.MathUtils;
 import org.json.simple.parser.ParseException;
 import smile.neighbor.KDTree;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 /**
  * Performs O2A band harmonisation on OLCI L1b product.
+ * Implements last update v4 provided by R.Preusker, June 2020.
  * Authors: R.Preusker (algorithm, Python breadboard), O.Danne, M.Peters (Java conversion), 2018-2019
  * <p/>
  *
@@ -34,11 +31,11 @@ import java.util.regex.Pattern;
  * @author Olaf Danne
  * @author Marco Peters
  */
-@OperatorMetadata(alias = "OlciO2aHarmonisation", version = "1.1",
+@OperatorMetadata(alias = "OlciO2aHarmonisation", version = "1.2",
         authors = "R.Preusker, O.Danne, M.Peters",
         category = "Optical/Preprocessing",
-        copyright = "Copyright (C) 2018 by Brockmann Consult",
-        description = "Performs O2A band harmonisation on OLCI L1b product.")
+        copyright = "Copyright (C) 2018-2020 by Brockmann Consult",
+        description = "Performs O2A band harmonisation on OLCI L1b product. Implements update v4 of R.Preusker, June 2020.")
 public class OlciO2aHarmonisationOp extends Operator {
 
     @SourceProduct(description = "OLCI L1b or fully compatible product. " +
@@ -82,30 +79,16 @@ public class OlciO2aHarmonisationOp extends Operator {
 
     private KDTree<double[]>[] desmileKdTrees;
     private DesmileLut[] desmileLuts;
+    private OlciHarmonisationIO.SpectralCharacteristics specChar;
+    private double[][] dwlCorrOffsets;
 
     @Override
     public void initialize() throws OperatorException {
         lastBandToProcess = processOnlyBand13 ? 13 : 15;
         numBandsToProcess = lastBandToProcess - 13 + 1;
-
         OlciHarmonisationIO.validateSourceProduct(l1bProduct);
-
-        try {
-            initDesmileAuxdata();
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-            throw new OperatorException("Cannot initialize auxdata for desmile of transmissions - exiting.");
-        }
-
-        szaBand = l1bProduct.getTiePointGrid("SZA");
-        ozaBand = l1bProduct.getTiePointGrid("OZA");
-        slpBand = l1bProduct.getTiePointGrid("sea_level_pressure");
-        detectorIndexBand = l1bProduct.getBand("detector_index");
-
-        altitudeBand = l1bProduct.getBand("altitude");
-
         if (StringUtils.isNotNullAndNotEmpty(alternativeAltitudeBandName)) {
-            if(l1bProduct.containsBand(alternativeAltitudeBandName)) {
+            if (l1bProduct.containsBand(alternativeAltitudeBandName)) {
                 demAltitudeBand = l1bProduct.getBand(alternativeAltitudeBandName);
             } else {
                 String message = String.format("Specified alternative altitude band '%s' is not contained in OLCI L1B product.",
@@ -114,18 +97,46 @@ public class OlciO2aHarmonisationOp extends Operator {
             }
         }
 
-        radianceBands = new Band[5];
-        cwlBands = new Band[5];
-        fwhmBands = new Band[5];
-        solarFluxBands = new Band[5];
-        for (int i = 12; i < 17; i++) {
-            radianceBands[i - 12] = l1bProduct.getBand("Oa" + i + "_radiance");
-            cwlBands[i - 12] = l1bProduct.getBand("lambda0_band_" + i);
-            fwhmBands[i - 12] = l1bProduct.getBand("FWHM_band_" + i);
-            solarFluxBands[i - 12] = l1bProduct.getBand("solar_flux_band_" + i);
+        int orbitNumber = OlciHarmonisationIO.getOrbitNumber(l1bProduct);
+        String nssdcIdentifier = OlciHarmonisationIO.getNssdcIdentifier(l1bProduct);
+        Product modelProduct;
+        try {
+            modelProduct = OlciHarmonisationIO.getModelProduct(nssdcIdentifier);
+            specChar = OlciHarmonisationIO.getSpectralCharacteristics(orbitNumber, modelProduct);
+            dwlCorrOffsets = OlciHarmonisationIO.getDwlCorrOffsets(nssdcIdentifier);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         createTargetProduct();
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Initializing Desmile Auxiliary Data", (numBandsToProcess * 2) + 2);
+        try {
+            initDesmileAuxdata(pm);
+            szaBand = l1bProduct.getTiePointGrid("SZA");
+            ozaBand = l1bProduct.getTiePointGrid("OZA");
+            slpBand = l1bProduct.getTiePointGrid("sea_level_pressure");
+            detectorIndexBand = l1bProduct.getBand("detector_index");
+            altitudeBand = l1bProduct.getBand("altitude");
+            radianceBands = new Band[5];
+            cwlBands = new Band[5];
+            fwhmBands = new Band[5];
+            solarFluxBands = new Band[5];
+            for (int i = 12; i < 17; i++) {
+                radianceBands[i - 12] = l1bProduct.getBand("Oa" + i + "_radiance");
+                cwlBands[i - 12] = l1bProduct.getBand("lambda0_band_" + i);
+                fwhmBands[i - 12] = l1bProduct.getBand("FWHM_band_" + i);
+                solarFluxBands[i - 12] = l1bProduct.getBand("solar_flux_band_" + i);
+            }
+            pm.worked(1);
+        } catch (IOException | ParseException e) {
+            throw new OperatorException("Cannot initialize auxdata for desmile of transmissions - exiting.", e);
+        } finally {
+            pm.done();
+        }
     }
 
     @Override
@@ -145,13 +156,9 @@ public class OlciO2aHarmonisationOp extends Operator {
         final Tile l1FlagsTile = getSourceTile(l1bProduct.getRasterDataNode("quality_flags"), targetRectangle);
 
         Tile[] radianceTiles = new Tile[5];
-        Tile[] cwlTiles = new Tile[5];
-        Tile[] fwhmTiles = new Tile[5];
         Tile[] solarFluxTiles = new Tile[5];
         for (int i = 0; i < 5; i++) {
             radianceTiles[i] = getSourceTile(radianceBands[i], targetRectangle);
-            cwlTiles[i] = getSourceTile(cwlBands[i], targetRectangle);
-            fwhmTiles[i] = getSourceTile(fwhmBands[i], targetRectangle);
             solarFluxTiles[i] = getSourceTile(solarFluxBands[i], targetRectangle);
         }
 
@@ -182,28 +189,30 @@ public class OlciO2aHarmonisationOp extends Operator {
                     double[] cwl = new double[5];
                     double[] fwhm = new double[5];
                     double[] solarFlux = new double[5];
+
                     for (int i = 0; i < 5; i++) {    // 12, 13, 14, 15, 16
                         radiance[i] = radianceTiles[i].getSampleDouble(x, y);
-                        cwl[i] = cwlTiles[i].getSampleDouble(x, y);
-                        fwhm[i] = fwhmTiles[i].getSampleDouble(x, y);
+                        cwl[i] = specChar.getCwvl()[i][(int) detectorIndex];
+                        fwhm[i] = specChar.getFwhm()[i][(int) detectorIndex];
                         solarFlux[i] = solarFluxTiles[i].getSampleDouble(x, y);
                         r[i] = radiance[i] / solarFlux[i];
                     }
 
                     final double dlam = cwl[4] - cwl[0];
                     final double drad = r[4] - r[0];
+                    final double grad = drad / dlam;
                     double[] trans = new double[5];
                     double[] radianceAbsFree = new double[5];
+
+                    final int camera = (int) (detectorIndex / 740);
                     for (int i = 0; i < 3; i++) {   // 13, 14, 15 !!
                         if (dlam > 0.0001) {
-                            final double grad = drad / dlam;
                             radianceAbsFree[i + 1] = r[0] + grad * (cwl[i + 1] - cwl[0]);
                         } else {
                             radianceAbsFree[i + 1] = Float.NaN;
                         }
                         trans[i + 1] = r[i + 1] / radianceAbsFree[i + 1];
-                        cwl[i + 1] += OlciHarmonisationAlgorithm.overcorrectLambda(detectorIndex,
-                                                                                   OlciHarmonisationConstants.DWL_CORR_OFFSET[i]);
+                        cwl[i + 1] += dwlCorrOffsets[i][camera];
                     }
 
                     // Processing data...
@@ -243,13 +252,16 @@ public class OlciO2aHarmonisationOp extends Operator {
         }
     }
 
-    private void initDesmileAuxdata() throws IOException, ParseException {
+    private void initDesmileAuxdata(ProgressMonitor pm) throws IOException, ParseException {
         final Path auxdataPath = OlciHarmonisationIO.installAuxdata();
+        pm.worked(1);
         desmileLuts = new DesmileLut[numBandsToProcess];
         desmileKdTrees = new KDTree[numBandsToProcess];
         for (int i = 13; i <= lastBandToProcess; i++) {
             desmileLuts[i - 13] = OlciHarmonisationIO.createDesmileLut(auxdataPath, i);
+            pm.worked(1);
             desmileKdTrees[i - 13] = OlciHarmonisationIO.createKDTreeForDesmileInterpolation(desmileLuts[i - 13]);
+            pm.worked(1);
         }
     }
 
