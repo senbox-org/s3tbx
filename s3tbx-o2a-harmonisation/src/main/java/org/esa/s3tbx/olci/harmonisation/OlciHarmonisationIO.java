@@ -43,7 +43,7 @@ class OlciHarmonisationIO {
 
         if (!containsRequiredBands) {
             throw new OperatorException("Input product does not seem to be a fully compatible OLCI L1b product. " +
-                                                "Bands missing for O2A harminisation retrieval. Please check input.");
+                                                "Bands missing for O2A harmonisation retrieval. Please check input.");
         }
     }
 
