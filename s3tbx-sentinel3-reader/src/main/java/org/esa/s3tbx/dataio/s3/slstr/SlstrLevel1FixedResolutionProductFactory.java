@@ -42,11 +42,4 @@ public abstract class SlstrLevel1FixedResolutionProductFactory extends SlstrLeve
         return sourceBand;
     }
 
-    @Override
-    protected void setSceneTransforms(Product product) {
-    }
-
-    @Override
-    protected void setBandGeoCodings(Product product) {
-    }
 }
