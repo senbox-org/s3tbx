@@ -1,6 +1,12 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 7.0.5
+--------------------
+
+Bug 
+* [S3TBX-341] - The 'Use pixel-based GeoCoding' is not considered for SLSTR products when opened on fixed resolution
+
 Changes in S3TBX 7.0.4
 --------------------
 
