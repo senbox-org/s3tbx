@@ -10,10 +10,13 @@ Bug
 [SIIITBX-328] - Rad2Refl Operator cannot handle latest SLSTR input products
 [SIIITBX-329] - Setting pins on OLCI RGB after reprojection is not working
 [SIIITBX-332] - SLSTR L2 FRP products cannot be read
+[SIIITBX-341] - The 'Use pixel-based GeoCoding' is not considered for SLSTR products when opened on fixed resolution
+
 
 Task
 [SIIITBX-285] - Obsolete and not working tutorial should be removed from web
 [SIIITBX-288] - Recommended graphs shall be available in GraphBuilder
+
 Improvement
 [SIIITBX-179] - Meris l2Auxdata module is logging to much
 [SIIITBX-267] - SPOT VGT product reader shall support VGT P collection 3 products
