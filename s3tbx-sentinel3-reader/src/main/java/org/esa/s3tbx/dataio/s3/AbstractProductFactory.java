@@ -48,14 +48,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class AbstractProductFactory implements ProductFactory {
 
-    private Map<String, MultiLevelImage> tpgImageMap;
+    private final Map<String, MultiLevelImage> tpgImageMap;
     private final List<Product> openProductList = new ArrayList<>();
     private final Sentinel3ProductReader productReader;
     private final Logger logger;
@@ -350,16 +353,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
                 }
             }
         }
-    }
-
-    /**
-     * Of no use anymore. Implementations return just the unchanged parameter
-     *
-     * @deprecated since SNAP 6.0, can be removed in SNAP 7.0 without further notice
-     */
-    @Deprecated()
-    protected ProductNodeGroup<Mask> prepareMasksForCopying(ProductNodeGroup<Mask> maskGroup) {
-        return maskGroup;
     }
 
     protected Product readProduct(String fileName, Manifest manifest) throws IOException {
