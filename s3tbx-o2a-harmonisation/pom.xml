@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>s3tbx-o2a-harmonisation</artifactId>
-    <version>7.0.4.1</version>
+    <version>7.0.4.2</version>
 
     <name>Sentinel-3 OLCI O2A Harmonisation</name>
     <packaging>nbm</packaging>

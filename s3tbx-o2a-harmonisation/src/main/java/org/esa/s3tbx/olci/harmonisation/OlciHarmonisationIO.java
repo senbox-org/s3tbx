@@ -41,7 +41,7 @@ class OlciHarmonisationIO {
                 l1bProduct.getBand("altitude") != null;
         for (int i = 1; i <= 21; i++) {
             containsRequiredBands = containsRequiredBands &&
-                    l1bProduct.getBand("Oa" + String.format("%02d" , i) + "_radiance") != null &&
+                    l1bProduct.getBand("Oa" + String.format("%02d", i) + "_radiance") != null &&
                     l1bProduct.getBand("lambda0_band_" + i) != null &&
                     l1bProduct.getBand("FWHM_band_" + i) != null &&
                     l1bProduct.getBand("solar_flux_band_" + i) != null;
@@ -49,7 +49,7 @@ class OlciHarmonisationIO {
 
         if (!containsRequiredBands) {
             throw new OperatorException("Input product does not seem to be a fully compatible OLCI L1b product. " +
-                                                "Bands missing for O2A harminisation retrieval. Please check input.");
+                    "Bands missing for O2A harminisation retrieval. Please check input.");
         }
     }
 
@@ -217,7 +217,7 @@ class OlciHarmonisationIO {
     }
 
     static SpectralCharacteristics getSpectralCharacteristics(int orbitNumber, Product modelProduct) {
-        final double logOrbitNum = Math.log(orbitNumber*1.);
+        final double logOrbitNum = Math.log(orbitNumber * 1.);
         final int numCoefs = 3;
         final int numCameras = 5;
         final int w = modelProduct.getSceneRasterWidth();
@@ -226,8 +226,8 @@ class OlciHarmonisationIO {
         final Band[][] fwhmCoefBands = new Band[numCoefs][numCameras];
         for (int i = 0; i < numCoefs; i++) {
             for (int j = 0; j < numCameras; j++) {
-                cwvlCoefBands[i][j] = modelProduct.getBand("cwvl_coef_coef" + (i+1) + "_camera" + (j+1));
-                fwhmCoefBands[i][j] = modelProduct.getBand("fwhm_coef_coef" + (i+1) + "_camera" + (j+1));
+                cwvlCoefBands[i][j] = modelProduct.getBand("cwvl_coef_coef" + (i + 1) + "_camera" + (j + 1));
+                fwhmCoefBands[i][j] = modelProduct.getBand("fwhm_coef_coef" + (i + 1) + "_camera" + (j + 1));
             }
         }
 
@@ -238,9 +238,9 @@ class OlciHarmonisationIO {
                 for (int k = 0; k < h; k++) {
                     for (int l = 0; l < w; l++) {
                         final double cwvlCoef = cwvlCoefBands[i][j].getSampleFloat(l, k);
-                        cwvlCoefs[i][j][k][l] = (float) (cwvlCoef * Math.pow( logOrbitNum, i));
+                        cwvlCoefs[i][j][k][l] = (float) (cwvlCoef * Math.pow(logOrbitNum, i));
                         final double fwhmCoef = fwhmCoefBands[i][j].getSampleFloat(l, k);
-                        fwhmCoefs[i][j][k][l] = (float) (fwhmCoef * Math.pow( logOrbitNum, i));
+                        fwhmCoefs[i][j][k][l] = (float) (fwhmCoef * Math.pow(logOrbitNum, i));
                     }
                 }
             }
@@ -266,12 +266,12 @@ class OlciHarmonisationIO {
         }
 
         // merge k and m dimensions
-        final float[][] cwvl_2D = new float[numCameras][h*w];
-        final float[][] fwhm_2D = new float[numCameras][h*w];
+        final float[][] cwvl_2D = new float[numCameras][h * w];
+        final float[][] fwhm_2D = new float[numCameras][h * w];
         for (int j = 0; j < numCameras; j++) {
             for (int k = 0; k < h; k++) {
                 for (int m = 0; m < w; m++) {
-                    final int index = k*w + m;
+                    final int index = k * w + m;
                     cwvl_2D[j][index] = cwvl[j][k][m];  // reshape((5,-1))
                     fwhm_2D[j][index] = fwhm[j][k][m];  // reshape((5,-1))
                 }
@@ -305,7 +305,8 @@ class OlciHarmonisationIO {
         return -1;
     }
 
-    static String getNssdcIdentifier(Product product) {
+    static String getPlatform(Product product) {
+        String platform = null;
         final MetadataElement metadataRoot = product.getMetadataRoot();
         if (metadataRoot != null) {
             final MetadataElement manifestElement = metadataRoot.getElement("Manifest");
@@ -314,34 +315,40 @@ class OlciHarmonisationIO {
                 if (metadataSectionElement != null) {
                     final MetadataElement platformElement = metadataSectionElement.getElement("platform");
                     if (platformElement != null) {
-                        final MetadataAttribute nssdcIdentifier = platformElement.getAttribute("nssdcIdentifier");
-                        if (nssdcIdentifier != null) {
-                            return nssdcIdentifier.getData().getElemString();
+                        final MetadataAttribute nssdcIdentifierAttr = platformElement.getAttribute("nssdcIdentifier");
+                        if (nssdcIdentifierAttr != null) {
+                            final String nssdcIdentifier = nssdcIdentifierAttr.getData().getElemString();
+                            switch (nssdcIdentifier) {
+                                case "2016-011A":
+                                    platform = "A";
+                                    break;
+                                case "2018-039A":
+                                    platform = "B";
+                                    break;
+                                default:
+                                    final MetadataAttribute numberAttr = platformElement.getAttribute("numberAttr");
+                                    if (numberAttr != null) {
+                                        platform = numberAttr.getData().getElemString();
+                                    }
+                                    break;
+                            }
                         }
                     }
                 }
             }
         }
-        throw new OperatorException("Cannot find Sentinel platform identifier in product metadata");
+
+        if (platform == null || (!(platform.equals("A")) && !(platform.equals("B")))) {
+            throw new OperatorException("Cannot identify Sentinel platform from product metadata");
+        }
+        return platform;
     }
 
-    static Product getModelProduct(String nssdcIdentifier) throws IOException {
-        final String s3PlatformIdentifier;
-        switch (nssdcIdentifier) {
-            case "2016-011A":
-                s3PlatformIdentifier = "A";
-                break;
-            case "2018-039A":
-                s3PlatformIdentifier = "B";
-                break;
-            default:
-                throw new OperatorException("Cannot identify Sentinel platform identifier '" + nssdcIdentifier + "'.");
-        }
-
+    static Product getModelProduct(String platform) throws IOException {
         // original 'olci_<identifier>_temporal_model_O2_bands_20200227.nc4' are differently interpreted by
         // different SNAP 7.x nc readers. Re-exporting as NetCDF4-CF into
         // 'olci_<identifier>_temporal_model_O2_bands_20200227.nc' seems to have solved the problem
-        final Path pathModelFile = installAuxdata().resolve("olci_" + s3PlatformIdentifier + "_temporal_model_O2_bands.nc");
+        final Path pathModelFile = installAuxdata().resolve("olci_" + platform + "_temporal_model_O2_bands.nc");
         File filePath = pathModelFile.toFile();
         try {
             return ProductIO.readProduct(filePath.getAbsolutePath());
@@ -350,15 +357,10 @@ class OlciHarmonisationIO {
         }
     }
 
-    static double[][] getDwlCorrOffsets(String nssdcIdentifier) {
-        switch (nssdcIdentifier) {
-            case "2016-011A":
-                return OlciHarmonisationConstants.OLCI_A_DWL_CORR_OFFSET;
-            case "2018-039A":
-                return OlciHarmonisationConstants.OLCI_B_DWL_CORR_OFFSET;
-            default:
-                throw new OperatorException("Cannot identify Sentinel platform identifier '" + nssdcIdentifier + "'.");
-        }
+    static double[][] getDwlCorrOffsets(String platform) {
+        return platform.equals("A") ?
+                OlciHarmonisationConstants.OLCI_A_DWL_CORR_OFFSET :
+                OlciHarmonisationConstants.OLCI_B_DWL_CORR_OFFSET;
     }
 
     static class SpectralCharacteristics {

@@ -73,8 +73,6 @@ public class OlciO2aHarmonisationOp extends Operator {
     private Band detectorIndexBand;
 
     private Band[] radianceBands;
-    private Band[] cwlBands;
-    private Band[] fwhmBands;
     private Band[] solarFluxBands;
 
     private KDTree<double[]>[] desmileKdTrees;
@@ -98,12 +96,12 @@ public class OlciO2aHarmonisationOp extends Operator {
         }
 
         int orbitNumber = OlciHarmonisationIO.getOrbitNumber(l1bProduct);
-        String nssdcIdentifier = OlciHarmonisationIO.getNssdcIdentifier(l1bProduct);
+        final String platform = OlciHarmonisationIO.getPlatform(l1bProduct);
         Product modelProduct;
         try {
-            modelProduct = OlciHarmonisationIO.getModelProduct(nssdcIdentifier);
+            modelProduct = OlciHarmonisationIO.getModelProduct(platform);
             specChar = OlciHarmonisationIO.getSpectralCharacteristics(orbitNumber, modelProduct);
-            dwlCorrOffsets = OlciHarmonisationIO.getDwlCorrOffsets(nssdcIdentifier);
+            dwlCorrOffsets = OlciHarmonisationIO.getDwlCorrOffsets(platform);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -122,13 +120,9 @@ public class OlciO2aHarmonisationOp extends Operator {
             detectorIndexBand = l1bProduct.getBand("detector_index");
             altitudeBand = l1bProduct.getBand("altitude");
             radianceBands = new Band[5];
-            cwlBands = new Band[5];
-            fwhmBands = new Band[5];
             solarFluxBands = new Band[5];
             for (int i = 12; i < 17; i++) {
                 radianceBands[i - 12] = l1bProduct.getBand("Oa" + i + "_radiance");
-                cwlBands[i - 12] = l1bProduct.getBand("lambda0_band_" + i);
-                fwhmBands[i - 12] = l1bProduct.getBand("FWHM_band_" + i);
                 solarFluxBands[i - 12] = l1bProduct.getBand("solar_flux_band_" + i);
             }
             pm.worked(1);
