@@ -326,7 +326,7 @@ class OlciHarmonisationIO {
                                     platform = "B";
                                     break;
                                 default:
-                                    final MetadataAttribute numberAttr = platformElement.getAttribute("numberAttr");
+                                    final MetadataAttribute numberAttr = platformElement.getAttribute("number");
                                     if (numberAttr != null) {
                                         platform = numberAttr.getData().getElemString();
                                     }
