@@ -20,7 +20,7 @@ public class S3MultiLevelOpImage extends AbstractNetcdfMultiLevelImage {
     private final Variable variable;
     private final int[] dimensionIndexes;
     private final String[] dimensionNames;
-    private Variable referencedIndexVariable;
+    private RasterDataNode referencedIndexRasterDataNode;
     private String nameOfReferencingIndexDimension;
     private String nameOfDisplayedDimension;
     private int xIndex;
@@ -49,13 +49,13 @@ public class S3MultiLevelOpImage extends AbstractNetcdfMultiLevelImage {
 
     public S3MultiLevelOpImage(RasterDataNode rasterDataNode, Variable variable,
                                String[] dimensionNames, int[] dimensionIndexes,
-                               Variable referencedIndexVariable,
+                               RasterDataNode referencedIndexRasterDataNode,
                                String nameOfReferencingIndexDimension, String nameOfDisplayedDimension) {
         super(rasterDataNode);
         this.variable = variable;
         this.dimensionNames = dimensionNames;
         this.dimensionIndexes = dimensionIndexes;
-        this.referencedIndexVariable = referencedIndexVariable;
+        this.referencedIndexRasterDataNode = referencedIndexRasterDataNode;
         this.nameOfReferencingIndexDimension = nameOfReferencingIndexDimension;
         this.nameOfDisplayedDimension = nameOfDisplayedDimension;
     }
@@ -68,10 +68,10 @@ public class S3MultiLevelOpImage extends AbstractNetcdfMultiLevelImage {
         int sceneRasterHeight = rasterDataNode.getRasterHeight();
         ResolutionLevel resolutionLevel = ResolutionLevel.create(getModel(), level);
         Dimension imageTileSize = new Dimension(getTileWidth(), getTileHeight());
-        if(referencedIndexVariable  != null && nameOfReferencingIndexDimension != null && nameOfDisplayedDimension != null) {
+        if(referencedIndexRasterDataNode  != null && nameOfReferencingIndexDimension != null && nameOfDisplayedDimension != null) {
             return new S3ReferencingVariableOpImage(variable, dataBufferType, sceneRasterWidth, sceneRasterHeight,
                                                     imageTileSize, resolutionLevel, dimensionIndexes,
-                                                    referencedIndexVariable, nameOfReferencingIndexDimension,
+                                                    referencedIndexRasterDataNode, nameOfReferencingIndexDimension,
                                                     nameOfDisplayedDimension);
         }
         if(rasterDataNode.getName().endsWith("_msb")) {
