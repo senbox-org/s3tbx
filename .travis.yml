@@ -28,8 +28,8 @@ addons:
 #   - sed -i -n '/<repositories>/{p; :a; N; /<\/repositories>/!ba; s/.*\n//}; p' ~/.m2/settings.xml
   
 
-install:
-  - true
+# install:
+#   - true
 
-script:
-  - mvn clean install -B -V
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
