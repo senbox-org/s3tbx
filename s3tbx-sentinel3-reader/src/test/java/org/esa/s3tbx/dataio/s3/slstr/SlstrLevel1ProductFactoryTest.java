@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
 
 public class SlstrLevel1ProductFactoryTest {
@@ -77,4 +78,15 @@ public class SlstrLevel1ProductFactoryTest {
         }
 
     }
+
+    @Test
+    public void testCreateIndexesForProduct() {
+        assertArrayEquals(new int[]{0}, SlstrLevel1ProductFactory.createIndexesForProduct(1, 0));
+        assertArrayEquals(new int[]{1}, SlstrLevel1ProductFactory.createIndexesForProduct(1, 1));
+        assertArrayEquals(new int[]{0, 1}, SlstrLevel1ProductFactory.createIndexesForProduct(2, 0));
+        assertArrayEquals(new int[]{1, 3}, SlstrLevel1ProductFactory.createIndexesForProduct(2, 2));
+        assertArrayEquals(new int[]{2, 5, 8, 11}, SlstrLevel1ProductFactory.createIndexesForProduct(4, 8));
+    }
+
+
 }

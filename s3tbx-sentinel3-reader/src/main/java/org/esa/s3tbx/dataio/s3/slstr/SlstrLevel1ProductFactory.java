@@ -89,6 +89,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     private Map<String, Integer> nameToIndexMap;
     private Map<String, GeoCoding> geoCodingMap;
     private List<NetcdfFile> netcdfFileList;
+    private Map<String, int[]> indexMap;
 
 
     public SlstrLevel1ProductFactory(Sentinel3ProductReader productReader) {
@@ -107,6 +108,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         nameToIndexMap = new HashMap<>();
         geoCodingMap = new HashMap<>();
         netcdfFileList = new ArrayList<>();
+        indexMap = new HashMap<>();
     }
 
     protected Double getStartOffset(String gridIndex) {
@@ -332,6 +334,46 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         }
     }
 
+    private int getIndex(Band sourceBand, Product targetProduct) {
+        Product sourceProduct = sourceBand.getProduct();
+        String sourceProductName = sourceProduct.getName();
+        if (!indexMap.containsKey(sourceProductName)) {
+            indexMap.put(sourceProductName, createIndexesForProduct(sourceProduct.getNumBands(), targetProduct.getNumBands()));
+        }
+        return indexMap.get(sourceProductName)[sourceProduct.getBandIndex(sourceBand.getName())];
+    }
+
+    static int[] createIndexesForProduct(int numSourceBands, int numTargetBands) {
+        int[] indexes = new int[numSourceBands];
+        for (int i = 0; i < numSourceBands; i++) {
+            double factor = getFactor(numSourceBands, numTargetBands + i);
+            indexes[i] = (int) Math.round((i + 1) * factor);
+            if (i > 0 && indexes[i] == indexes[i - 1]) {
+                indexes[i] += 1;
+            }
+        }
+        return indexes;
+    }
+
+    private static double getFactor(int numSourceBands, int numTargetBands) {
+        double factor = 0.;
+        if (numTargetBands > 0) {
+            factor = (double) numTargetBands / (double) numSourceBands;
+        }
+        return factor;
+    }
+
+    @Override
+    protected Band addBand(Band sourceBand, Product targetProduct) {
+        int bandIndex = getIndex(sourceBand, targetProduct);
+        Band targetBand = new Band(sourceBand.getName(), sourceBand.getDataType(),
+                sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
+        targetProduct.getBandGroup().add(bandIndex, targetBand);
+        ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
+        targetBand.setSourceImage(sourceBand.getSourceImage());
+        return targetBand;
+    }
+
     @Override
     protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
         final String sourceBandName = sourceBand.getName();
@@ -343,9 +385,10 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             if (gridIndex.startsWith("t")) {
                 return copyTiePointGrid(sourceBand, targetProduct, sourceStartOffset, sourceTrackOffset, sourceResolutions);
             } else {
+                int targetBandIndex = getIndex(sourceBand, targetProduct);
                 final Band targetBand = new Band(sourceBandName, sourceBand.getDataType(),
                                                  sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
-                targetProduct.addBand(targetBand);
+                targetProduct.getBandGroup().add(targetBandIndex, targetBand);
                 ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
                 final RenderedImage sourceRenderedImage = sourceBand.getSourceImage().getImage(0);
                 //todo remove commented lines when resampling works with scenetransforms
