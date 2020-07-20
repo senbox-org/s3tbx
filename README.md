@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/senbox-org/s3tbx.svg?branch=master)](https://travis-ci.org/senbox-org/s3tbx)
+
 Sentinel-3 Toolbox (S3TBX)
 ==========================
 
