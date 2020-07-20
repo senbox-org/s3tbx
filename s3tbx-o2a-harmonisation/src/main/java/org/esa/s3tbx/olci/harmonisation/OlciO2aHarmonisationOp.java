@@ -222,8 +222,10 @@ public class OlciO2aHarmonisationOp extends Operator {
                     final double transDesmiledRectified =
                             OlciHarmonisationAlgorithm.rectifyDesmiledTransmission(transDesmiled, amf, bandIndex + 13);
 
-                    if (targetBandName.startsWith("trans")) {
+                    if (targetBandName.startsWith("trans_1")) {
                         targetTile.setSample(x, y, transDesmiledRectified);
+                    } else if (targetBandName.startsWith("transDesmiled_1")) {
+                        targetTile.setSample(x, y, transDesmiled);
                     } else if (targetBandName.startsWith("press")) {
                         final double transPress = OlciHarmonisationAlgorithm.trans2Press(transDesmiledRectified, bandIndex + 13);
                         targetTile.setSample(x, y, transPress);
@@ -269,6 +271,8 @@ public class OlciO2aHarmonisationOp extends Operator {
         for (int i = 13; i <= lastBandToProcess; i++) {
             Band transBand = targetProduct.addBand("trans_" + i, ProductData.TYPE_FLOAT32);
             transBand.setUnit("dl");
+            Band transDesmiledBand = targetProduct.addBand("transDesmiled_" + i, ProductData.TYPE_FLOAT32);
+            transDesmiledBand.setUnit("dl");
             Band pressBand = targetProduct.addBand("press_" + i, ProductData.TYPE_FLOAT32);
             pressBand.setUnit("hPa");
             Band surfaceBand = targetProduct.addBand("surface_" + i, ProductData.TYPE_FLOAT32);
