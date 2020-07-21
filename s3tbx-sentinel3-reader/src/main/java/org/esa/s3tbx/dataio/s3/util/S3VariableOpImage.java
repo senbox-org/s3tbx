@@ -65,8 +65,6 @@ public class S3VariableOpImage extends SingleBandedOpImage {
 
     @Override
     protected void computeRect(PlanarImage[] sourceImages, WritableRaster tile, Rectangle rectangle) {
-//        System.out.println(variable.getFullName() + ": " + tile.getMinX() + ", " + tile.getMinY() + ", " +
-//                                   tile.getWidth() + ", " + tile.getHeight());
         final int rank = variable.getRank();
         final int[] origin = new int[rank];
         final int[] shape = new int[rank];
