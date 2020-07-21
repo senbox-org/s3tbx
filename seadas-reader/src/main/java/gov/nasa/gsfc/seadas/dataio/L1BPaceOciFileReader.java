@@ -39,7 +39,7 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
     enum WvlType {
         RED("red_wavelengths"),
         BLUE("blue_wavelengths"),
-        SWIR("swir_wavelenghts");
+        SWIR("swir_wavelengths");
 
         private String name;
 
@@ -83,8 +83,6 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
             // somehow there are duplicate bands in the test file.
             // fixme
             swir_wavlengths = Array.factory(DataType.INT, new int[]{940, 1038, 1250, 1251, 1378, 1615, 1616, 2130, 2260});
-
-
 
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage(), e);

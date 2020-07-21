@@ -39,7 +39,7 @@ public class L1BPaceOcisFileReader extends SeadasFileReader {
     enum WvlType {
         RED("red_wavelengths"),
         BLUE("blue_wavelengths"),
-        SWIR("swir_wavelenghts");
+        SWIR("swir_wavelengths");
 
         private String name;
 
