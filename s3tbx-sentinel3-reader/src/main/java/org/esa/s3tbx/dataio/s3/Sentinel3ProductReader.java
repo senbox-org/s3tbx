@@ -39,6 +39,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.TiePointGrid;
 
+import java.awt.Rectangle;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
@@ -122,7 +123,8 @@ public class Sentinel3ProductReader extends AbstractProductReader {
     public void readTiePointGridRasterData(TiePointGrid tpg, int destOffsetX, int destOffsetY, int destWidth, int destHeight, ProductData destBuffer,
                                            ProgressMonitor pm) {
         MultiLevelImage imageForTpg = factory.getImageForTpg(tpg.getName());
-        Raster imageData = imageForTpg.getImage(0).getData();
+        Rectangle rectangle = new Rectangle(destOffsetX, destOffsetY, destWidth, destHeight);
+        Raster imageData = imageForTpg.getImage(0).getData(rectangle);
         imageData.getSamples(destOffsetX, destOffsetY, destWidth, destHeight, 0, (float[]) destBuffer.getElems());
     }
 
