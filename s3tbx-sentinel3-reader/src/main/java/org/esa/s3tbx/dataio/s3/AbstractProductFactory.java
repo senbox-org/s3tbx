@@ -97,6 +97,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         targetProduct.setDescription(manifest.getDescription());
         targetProduct.setFileLocation(getInputFile());
         targetProduct.setNumResolutionsMax(masterProduct.getNumResolutionsMax());
+        targetProduct.setPreferredTileSize(masterProduct.getPreferredTileSize());
 
         if (masterProduct.getSceneGeoCoding() instanceof CrsGeoCoding) {
             ProductUtils.copyGeoCoding(masterProduct, targetProduct);

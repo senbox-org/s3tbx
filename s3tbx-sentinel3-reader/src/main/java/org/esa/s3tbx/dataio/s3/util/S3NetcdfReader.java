@@ -74,7 +74,11 @@ public class S3NetcdfReader extends AbstractProductReader {
             if (band instanceof VirtualBand) {
                 continue;
             }
-            band.setSourceImage(createSourceImage(band));
+            RenderedImage sourceImage = createSourceImage(band);
+            if (product.getPreferredTileSize() == null) {
+                product.setPreferredTileSize(sourceImage.getTileWidth(), sourceImage.getTileHeight());
+            }
+            band.setSourceImage(sourceImage);
         }
         return product;
     }

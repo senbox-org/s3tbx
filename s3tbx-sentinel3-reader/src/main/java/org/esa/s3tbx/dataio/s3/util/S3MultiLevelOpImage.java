@@ -7,6 +7,7 @@ import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.dataio.netcdf.util.AbstractNetcdfMultiLevelImage;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
+import ucar.nc2.constants.CDM;
 
 import java.awt.Dimension;
 import java.awt.image.DataBuffer;
@@ -33,17 +34,15 @@ public class S3MultiLevelOpImage extends AbstractNetcdfMultiLevelImage {
         this.variable = variable;
         this.dimensionNames = dimensionNames;
         this.dimensionIndexes = dimensionIndexes;
-        this.xIndex  = xIndex;
+        this.xIndex = xIndex;
         this.yIndex = yIndex;
-        for (Attribute attribute : variable.getAttributes()) {
-            if (attribute.getFullName().equals("_ChunkSize")) {
-                int tileHeight = attribute.getNumericValue(yIndex).intValue();
-                int tileWidth = attribute.getNumericValue(xIndex).intValue();
-                int dataBufferType = ImageManager.getDataBufferType(rasterDataNode.getDataType());
-                setImageLayout(ImageManager.createSingleBandedImageLayout(dataBufferType, rasterDataNode.getRasterWidth(),
-                        rasterDataNode.getRasterHeight(), tileWidth, tileHeight));
-                break;
-            }
+        Attribute attribChunkSizes = variable.findAttribute(CDM.CHUNK_SIZES);
+        if (attribChunkSizes != null) {
+            int tileHeight = attribChunkSizes.getNumericValue(yIndex).intValue();
+            int tileWidth = attribChunkSizes.getNumericValue(xIndex).intValue();
+            int dataBufferType = ImageManager.getDataBufferType(rasterDataNode.getDataType());
+            setImageLayout(ImageManager.createSingleBandedImageLayout(dataBufferType, rasterDataNode.getRasterWidth(),
+                                                                      rasterDataNode.getRasterHeight(), tileWidth, tileHeight));
         }
     }
 
