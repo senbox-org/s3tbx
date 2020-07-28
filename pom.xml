@@ -569,12 +569,21 @@
 
     <developers>
         <developer>
+            <id>marcop</id>
+            <name>Marco Peters</name>
+            <email>marco.peters@brockmann-consult.de</email>
+            <organization>Brockmann Consult</organization>
+            <roles>
+                <role>Project Manager</role>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
             <id>norman</id>
             <name>Norman Fomferra</name>
             <email>norman.fomferra@brockmann-consult.de</email>
             <organization>Brockmann Consult</organization>
             <roles>
-                <role>Project Manager</role>
                 <role>Java Developer</role>
             </roles>
         </developer>
@@ -591,15 +600,6 @@
             <id>tonio</id>
             <name>Tonio Fincke</name>
             <email>tonio.fincke@brockmann-consult.de</email>
-            <organization>Brockmann Consult</organization>
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>marcop</id>
-            <name>Marco Peters</name>
-            <email>marco.peters@brockmann-consult.de</email>
             <organization>Brockmann Consult</organization>
             <roles>
                 <role>Java Developer</role>
