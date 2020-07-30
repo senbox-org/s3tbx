@@ -54,7 +54,7 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
         authors = "Marco Peters, Muhammad Bala, Olaf Danne (Brockmann Consult)",
         copyright = "(c) 2016 by Brockmann Consult",
         category = "Optical/Pre-Processing",
-        version = "1.3")
+        version = "1.4")
 public class RayleighCorrectionOp extends Operator {
 
     private static final String AUTO_GROUPING = "rtoa:taur:rtoa_ng:rtoaRay:rBRR";
