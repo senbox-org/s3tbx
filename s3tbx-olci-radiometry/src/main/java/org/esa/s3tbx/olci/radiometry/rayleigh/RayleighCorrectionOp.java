@@ -43,8 +43,33 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
-import static org.esa.s3tbx.olci.radiometry.SensorConstants.*;
-import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_OZONE_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_SLP_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_VZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_LAT_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_LON_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_OZONE_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_SLP_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_VZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_OZONE_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_SLP_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_VZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_VZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSampleDoubles;
+import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSensorType;
+import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSourceBandIndex;
 
 /**
  * This operator performs radiometric corrections on OLCI, MERIS L1b and S2 MSI data products.
@@ -56,7 +81,7 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
         authors = "Marco Peters, Muhammad Bala, Olaf Danne (Brockmann Consult)",
         copyright = "(c) 2016 by Brockmann Consult",
         category = "Optical/Preprocessing",
-        version = "1.3")
+        version = "1.4")
 public class RayleighCorrectionOp extends Operator {
 
     private static final String AUTO_GROUPING = "rtoa:taur:rtoa_ng:rtoaRay:rBRR";
