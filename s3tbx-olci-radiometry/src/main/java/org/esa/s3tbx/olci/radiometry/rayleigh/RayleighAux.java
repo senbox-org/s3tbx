@@ -183,15 +183,17 @@ public class RayleighAux {
             for (int index = 0; index < sunZenithAngles.length; index++) {
                 double vzaVal = viewZenithAngles[index];
                 double szaVal = sunZenithAngles[index];
-
+                if (Double.isNaN(szaVal) || Double.isNaN(vzaVal)) {
+                    continue;
+                }
                 List<double[]> valueList = new ArrayList<>();
                 for (int i = 0; i < rayCoeffMatrixA.length; i++) {
                     double[] values = new double[4];
-                        values[0] = SpikeInterpolation.interpolate2D(rayCoeffMatrixA[i], thetas, thetas, szaVal, vzaVal);
-                        values[1] = SpikeInterpolation.interpolate2D(rayCoeffMatrixB[i], thetas, thetas, szaVal, vzaVal);
-                        values[2] = SpikeInterpolation.interpolate2D(rayCoeffMatrixC[i], thetas, thetas, szaVal, vzaVal);
-                        values[3] = SpikeInterpolation.interpolate2D(rayCoeffMatrixD[i], thetas, thetas, szaVal, vzaVal);
-                        valueList.add(values);
+                    values[0] = SpikeInterpolation.interpolate2D(rayCoeffMatrixA[i], thetas, thetas, szaVal, vzaVal);
+                    values[1] = SpikeInterpolation.interpolate2D(rayCoeffMatrixB[i], thetas, thetas, szaVal, vzaVal);
+                    values[2] = SpikeInterpolation.interpolate2D(rayCoeffMatrixC[i], thetas, thetas, szaVal, vzaVal);
+                    values[3] = SpikeInterpolation.interpolate2D(rayCoeffMatrixD[i], thetas, thetas, szaVal, vzaVal);
+                    valueList.add(values);
                 }
                 interpolate.put(index, valueList);
             }
