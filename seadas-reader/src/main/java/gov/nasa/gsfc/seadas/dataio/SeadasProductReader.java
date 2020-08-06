@@ -56,9 +56,13 @@ public class SeadasProductReader extends AbstractProductReader {
         Level1A_Seawifs("SeaWiFS Level 1A"),
         Level1B("Generic Level 1B"),
         Level1B_HICO("HICO L1B"),
+        Level1B_PACE("PACE L1B"),
         Level1B_Modis("MODIS Level 1B"),
         Level1B_OCM2("OCM2_L1B"),
+        Level1B_PaceOCI("PaceOCI_L1B"),
+        Level1B_PaceOCIS("PaceOCIS_L1B"),
         Level2("Level 2"),
+        Level2_DscovrEpic("DscovrEpic Level 2"),
         Level3_Bin("Level 3 Binned"),
         MEaSUREs("MEaSUREs Mapped"),
         MEaSUREs_Bin("MEaSUREs Binned"),
@@ -117,6 +121,9 @@ public class SeadasProductReader extends AbstractProductReader {
                 case Level2_CZCS:
                     seadasFileReader = new L2FileReader(this);
                     break;
+                case Level2_DscovrEpic:
+                    seadasFileReader = new L2DscovrEpicFileReader(this);
+                    break;
                 case Level1A_OCTS:
                     seadasFileReader = new L1AOctsFileReader(this);
                     break;
@@ -131,6 +138,12 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case Level1B_OCM2:
                     seadasFileReader = new L1BOcm2FileReader(this);
+                    break;
+                case Level1B_PaceOCI:
+                    seadasFileReader = new L1BPaceOciFileReader(this);
+                    break;
+                case Level1B_PaceOCIS:
+                    seadasFileReader = new L1BPaceOcisFileReader(this);
                     break;
                 case Level3_Bin:
                     seadasFileReader = new L3BinFileReader(this);
@@ -266,11 +279,26 @@ public class SeadasProductReader extends AbstractProductReader {
         }
         return ProductType.UNKNOWN;
     }
+
+    private boolean checkDscoverEpicL2() {
+        Attribute scene_title = ncfile.findGlobalAttribute("HDFEOS_ADDITIONAL_FILE_ATTRIBUTES_LocalGranuleID");
+        if(scene_title != null && scene_title.toString().contains("EPIC-DSCOVR_L2")) {
+            return true;
+        }
+        return false;
+    }
+
     private boolean checkHicoL1B() {
-        Attribute hicol1bName = ncfile.findGlobalAttribute("metadata_FGDC_Instrument_Information_Instrument_Name");
-        return hicol1bName != null;
-    }    
-    
+        Attribute hicol1bName = ncfile.findGlobalAttribute("metadata_FGDC_Identification_Information_Platform_and_Instrument_Identification_Instrument_Short_Name");
+        if(hicol1bName != null && hicol1bName.getStringValue(0).equals("hico")) {
+            Attribute level = ncfile.findGlobalAttribute("metadata_FGDC_Identification_Information_Processing_Level_Processing_Level_Identifier");
+            if(level != null && level.getStringValue(0).equals("Level-1B")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private ProductType checkViirsL1B() {
         Attribute instrumentName = ncfile.findGlobalAttribute("instrument");
         Attribute processingLevel = ncfile.findGlobalAttribute("processing_level");
@@ -298,6 +326,10 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Level1A_Aquarius;
             } else if (title.contains("Aquarius Level 2 Data")) {
                 return ProductType.Level2_Aquarius;
+            } else if (title.contains("PACE OCI Level-1B Data")) {
+                return ProductType.Level1B_PaceOCI;
+            } else if (title.contains("PACE OCIS Level-1B Data")) {
+                return ProductType.Level1B_PaceOCIS;
             } else if (title.contains("Level-1B")) {
                 return ProductType.Level1B;
             } else if (title.equals("CZCS Level-1A Data")) {
@@ -333,7 +365,9 @@ public class SeadasProductReader extends AbstractProductReader {
             }
         } else if (checkModisL1B()) {
             return ProductType.Level1B_Modis;
-        } else if (checkHicoL1B()) {
+        } else if (checkDscoverEpicL2()) {
+            return ProductType.Level2_DscovrEpic;
+        }else if (checkHicoL1B()) {
             return ProductType.Level1B_HICO;
         } else if ((tmp = checkViirsXDR()) != ProductType.UNKNOWN) {
             return tmp;

@@ -194,7 +194,7 @@ public abstract class AbstractBowtieGeoCoding extends AbstractGeoCoding {
         }
     }
 
-    protected static PolyLine createCenterPolyLine(GeoCoding geoCoding, final int sceneWidth,
+    public static PolyLine createCenterPolyLine(GeoCoding geoCoding, final int sceneWidth,
                                                  final int sceneHeight) {
 
         final double numberOfSegments = 100.0;

@@ -64,7 +64,7 @@ import java.io.Reader;
 )
 @ActionReference(
         path = "Menu/File/Import/Vector Data",
-        position = 100
+        position = 101
 )
 @NbBundle.Messages({
         "CTL_ImportSeabassActionText=SeaBASS Data",
