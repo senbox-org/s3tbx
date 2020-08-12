@@ -10,4 +10,6 @@ gov.nasa.gsfc.seadas.dataio.ViirsProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.L3ProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.BrowseProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.L1BViirsProductReaderPlugin
+gov.nasa.gsfc.seadas.dataio.L1BPaceProductReaderPlugIn
+gov.nasa.gsfc.seadas.dataio.L2DscovrEpicProductReaderPlugIn
 
