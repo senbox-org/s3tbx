@@ -53,6 +53,10 @@ public class FlhMciOp extends PixelOperator {
     @SourceProduct(alias = "source", label = "Source product", description="The source product.")
     private Product sourceProduct;
 
+    @Parameter(defaultValue = "NONE",
+            label = "Preset",
+            validator = NodeNameValidator.class)
+    private  Presets preset;
     @Parameter(description = "The name for the lower wavelength band defining the baseline",
                rasterDataNodeType = Band.class)
     private String lowerBaselineBandName;
@@ -155,6 +159,7 @@ public class FlhMciOp extends PixelOperator {
     @Override
     protected void prepareInputs() throws OperatorException {
         super.prepareInputs();
+        setParametersFromPreset();
         validateParameters();
 
         float lowerLambda = getWavelength(lowerBaselineBandName);
@@ -203,6 +208,17 @@ public class FlhMciOp extends PixelOperator {
                     "The band '" + band.getName() + "' is not a spectral band.\nPlease select a spectral band for processing.");
         }
         return wavelength;
+    }
+
+    private void setParametersFromPreset() {
+        if (preset != Presets.NONE) {
+            upperBaselineBandName = preset.getUpperBaselineBandName();
+            lowerBaselineBandName = preset.getLowerBaselineBandName();
+            signalBandName = preset.getSignalBandName();
+            lineHeightBandName = preset.getLineHeightBandName();
+            slopeBandName = preset.getSlopeBandName();
+            maskExpression = preset.getMaskExpression();
+        }
     }
 
     public static class NodeNameValidator implements Validator {

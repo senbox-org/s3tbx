@@ -1,7 +1,6 @@
-package org.esa.s3tbx.processor.flh_mci.visat;
+package org.esa.s3tbx.processor.flh_mci;
 
 import com.bc.ceres.binding.Property;
-import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.swing.binding.BindingContext;
 import org.esa.snap.core.gpf.ui.DefaultSingleTargetProductDialog;
@@ -11,12 +10,13 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
+import org.esa.s3tbx.processor.flh_mci.Presets;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-@ActionID(category = "Processing", id = "org.esa.s3tbx.processor.flh_mci.visat.FlhMciAction" )
+@ActionID(category = "Processing", id = "org.esa.s3tbx.processor.flh_mci.FlhMciAction" )
 @ActionRegistration(displayName = "#CTL_FlhMciAction_Text")
 @ActionReference(path = "Menu/Optical/Thematic Water Processing", position = 200 )
 @NbBundle.Messages({"CTL_FlhMciAction_Text=FLH/MCI Processor"})
@@ -71,12 +71,12 @@ public class FlhMciAction extends AbstractSnapAction {
     }
 
     private void configurePropertySet(PropertySet propertySet) {
-        final PropertySet presetPropertySet = PropertyContainer.createObjectBacked(new PresetContainer());
+        //final PropertySet presetPropertySet = PropertyContainer.createObjectBacked(new PresetContainer());
 
         // awkward - purpose is to insert 'preset' property at the first position of the binding context's property set
         final Property[] properties = propertySet.getProperties();
         propertySet.removeProperties(properties);
-        propertySet.addProperty(presetPropertySet.getProperty("preset"));
+        //propertySet.addProperty(presetPropertySet.getProperty("preset"));
         propertySet.addProperties(properties);
     }
 

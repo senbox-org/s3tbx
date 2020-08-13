@@ -1,6 +1,6 @@
-package org.esa.s3tbx.processor.flh_mci.visat;
+package org.esa.s3tbx.processor.flh_mci;
 
-enum Presets {
+public enum Presets {
     NONE("None", "", "", "", "", "", ""),
     MERIS_L1B_MCI("MERIS L1b MCI", "radiance_8", "radiance_10", "radiance_9", "MCI", "MCI_slope",
                   "NOT l1_flags.LAND_OCEAN AND NOT l1_flags.BRIGHT AND NOT l1_flags.INVALID"),
@@ -15,15 +15,15 @@ enum Presets {
     OLCI_L2_MCI("OLCI L2 MCI", "Oa10_reflectance", "Oa12_reflectance", "Oa11_reflectance", "MCI", "MCI_slope",
                  "WQSF_lsb.WATER || WQSF_lsb.INLAND_WATER");
 
-    private final String label;
-    private final String lowerBaselineBandName;
-    private final String upperBaselineBandName;
-    private final String signalBandName;
-    private final String lineHeightBandName;
-    private final String slopeBandName;
-    private final String maskExpression;
+    public final String label;
+    public final String lowerBaselineBandName;
+    public final String upperBaselineBandName;
+    public final String signalBandName;
+    public final String lineHeightBandName;
+    public final String slopeBandName;
+    public final String maskExpression;
 
-    private Presets(String label, String upperBaselineBandName, String lowerBaselineBandName,
+    Presets(String label, String upperBaselineBandName, String lowerBaselineBandName,
                     String signalBandName, String lineHeightBandName, String slopeBandName, String maskExpression) {
         this.label = label;
         this.upperBaselineBandName = upperBaselineBandName;
@@ -39,27 +39,27 @@ enum Presets {
         return label;
     }
 
-    String getLowerBaselineBandName() {
+    public String getLowerBaselineBandName() {
         return lowerBaselineBandName;
     }
 
-    String getUpperBaselineBandName() {
+    public String getUpperBaselineBandName() {
         return upperBaselineBandName;
     }
 
-    String getSignalBandName() {
+    public String getSignalBandName() {
         return signalBandName;
     }
 
-    String getLineHeightBandName() {
+    public String getLineHeightBandName() {
         return lineHeightBandName;
     }
 
-    String getSlopeBandName() {
+    public String getSlopeBandName() {
         return slopeBandName;
     }
 
-    String getMaskExpression() {
+    public String getMaskExpression() {
         return maskExpression;
     }
 }
