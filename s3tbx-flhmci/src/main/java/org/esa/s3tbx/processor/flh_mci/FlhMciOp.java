@@ -52,9 +52,7 @@ public class FlhMciOp extends PixelOperator {
     @SourceProduct(alias = "source", label = "Source product", description="The source product.")
     private Product sourceProduct;
 
-    @Parameter(defaultValue = "NONE",
-            label = "Preset",
-            validator = NodeNameValidator.class)
+    @Parameter(defaultValue = "NONE", label = "Preset", description = "Sets default values according to the selected preset")
     private  Presets preset;
     @Parameter(description = "The name for the lower wavelength band defining the baseline",
                rasterDataNodeType = Band.class)
