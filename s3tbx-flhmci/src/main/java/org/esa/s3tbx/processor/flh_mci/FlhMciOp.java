@@ -44,24 +44,25 @@ import org.esa.snap.core.util.converters.BooleanExpressionConverter;
  * @author Marco Peters
  */
 @OperatorMetadata(alias = "FlhMci", authors = "Tom Block, Ralf Quast, Marco Peters", copyright = "Brockmann Consult GmbH",
-                  category = "Optical/Thematic Water Processing",
-                  version = "3.0",
-                  description = "Computes fluorescence line height (FLH) or maximum chlorophyll index (MCI).")
+        category = "Optical/Thematic Water Processing",
+        version = "3.1",
+        description = "Computes fluorescence line height (FLH) or maximum chlorophyll index (MCI).")
 public class FlhMciOp extends PixelOperator {
 
-    @SourceProduct(alias = "source", label = "Source product", description="The source product.")
+    @SourceProduct(alias = "source", label = "Source product", description = "The source product.")
     private Product sourceProduct;
 
-    @Parameter(defaultValue = "NONE", label = "Preset", description = "Sets default values according to the selected preset")
-    private  Presets preset;
+    @Parameter(defaultValue = "NONE", label = "Preset", description = "Sets default values according to the selected preset. " +
+            "The specific parameters have precedence and override the ones from the preset")
+    private Presets preset;
     @Parameter(description = "The name for the lower wavelength band defining the baseline",
-               rasterDataNodeType = Band.class)
+            rasterDataNodeType = Band.class)
     private String lowerBaselineBandName;
     @Parameter(description = "The name of the upper wavelength band defining the baseline",
-               rasterDataNodeType = Band.class)
+            rasterDataNodeType = Band.class)
     private String upperBaselineBandName;
     @Parameter(description = " The name of the signal band, i.e. the band for which the baseline height is calculated",
-               rasterDataNodeType = Band.class)
+            rasterDataNodeType = Band.class)
     private String signalBandName;
     @Parameter(description = "The name of the line height band in the target product",
                validator = NodeNameValidator.class)
@@ -209,12 +210,24 @@ public class FlhMciOp extends PixelOperator {
 
     private void setParametersFromPreset() {
         if (preset != Presets.NONE) {
-            upperBaselineBandName = preset.getUpperBaselineBandName();
-            lowerBaselineBandName = preset.getLowerBaselineBandName();
-            signalBandName = preset.getSignalBandName();
-            lineHeightBandName = preset.getLineHeightBandName();
-            slopeBandName = preset.getSlopeBandName();
-            maskExpression = preset.getMaskExpression();
+            if (upperBaselineBandName == null) {
+                upperBaselineBandName = preset.getUpperBaselineBandName();
+            }
+            if (lowerBaselineBandName == null) {
+                lowerBaselineBandName = preset.getLowerBaselineBandName();
+            }
+            if (signalBandName == null) {
+                signalBandName = preset.getSignalBandName();
+            }
+            if (lineHeightBandName == null) {
+                lineHeightBandName = preset.getLineHeightBandName();
+            }
+            if (slopeBandName == null) {
+                slopeBandName = preset.getSlopeBandName();
+            }
+            if (maskExpression == null) {
+                maskExpression = preset.getMaskExpression();
+            }
         }
     }
 
