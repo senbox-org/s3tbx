@@ -16,7 +16,6 @@
 package org.esa.s3tbx.processor.flh_mci;
 
 import com.bc.ceres.binding.Property;
-import com.bc.ceres.binding.ValidationException;
 import com.bc.ceres.binding.Validator;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -224,7 +223,7 @@ public class FlhMciOp extends PixelOperator {
     public static class NodeNameValidator implements Validator {
 
         @Override
-        public void validateValue(Property property, Object value) throws ValidationException {
+        public void validateValue(Property property, Object value) {
             ProductNode.isValidNodeName(value.toString());
         }
     }
