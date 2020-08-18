@@ -10,6 +10,10 @@ There you can find tutorials, developer guides, a user forum and other interesti
 Building S3TBX from the source
 ------------------------------
 
+The following gives a brief introduction how to build the S3TBX.
+More information can be found in the [Developer Guide](https://senbox.atlassian.net/wiki/display/SNAP/Developer+Guide).
+
+
 Download and install the required build tools
 
 * Install Java 8 JDK and set JAVA_HOME accordingly. A distribution of OpenJDK is suggested. 
