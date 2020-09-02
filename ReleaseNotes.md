@@ -11,11 +11,13 @@ Bug
 [SIIITBX-329] - Setting pins on OLCI RGB after reprojection is not working
 [SIIITBX-332] - SLSTR L2 FRP products cannot be read
 [SIIITBX-341] - The 'Use pixel-based GeoCoding' is not considered for SLSTR products when opened on fixed resolution
-
+[SIIITBX-342] - Reading OLCI L1 products in SAFE format is slow
+[SIIITBX-344] - Wrong band index in Rayleigh correction for MERIS
 
 Task
 [SIIITBX-285] - Obsolete and not working tutorial should be removed from web
 [SIIITBX-288] - Recommended graphs shall be available in GraphBuilder
+[SIIITBX-347] - Remove chris-reader from S3TBX
 
 Improvement
 [SIIITBX-179] - Meris l2Auxdata module is logging to much
@@ -24,6 +26,7 @@ Improvement
 [SIIITBX-289] - All help material shall be revised
 [SIIITBX-290] - Dependencies to 3rd-party libraries shall be cleaned up
 [SIIITBX-330] - Provide better names vor conversion parameter for TSM and CHL
+[SIIITBX-345] - Include support for PACE and Dscovr/Epic to SeadasProductReader
 
 A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
 [issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12705)
