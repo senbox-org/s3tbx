@@ -105,10 +105,11 @@ public class SlstrPduStitcherTest {
         decompositions[1] = SlstrPduStitcher.decomposeSlstrName(TestUtils.getSecondSlstrFile().getParentFile().getName());
         decompositions[2] = SlstrPduStitcher.decomposeSlstrName(TestUtils.getThirdSlstrFile().getParentFile().getName());
 
+        Date time = Calendar.getInstance().getTime();
         final String parentDirectoryNameOfStitchedFile =
-                SlstrPduStitcher.createParentDirectoryNameOfStitchedFile(decompositions, Calendar.getInstance().getTime());
+                SlstrPduStitcher.createParentDirectoryNameOfStitchedFile(decompositions, time);
 
-        final String now = new SimpleDateFormat("yyyyMMdd'T'HHmmss").format(Calendar.getInstance().getTime());
+        final String now = new SimpleDateFormat("yyyyMMdd'T'HHmmss").format(time);
         assertEquals("S3A_SL_1_RBT____20130707T153252_20130707T154752_" + now + "_0299_158_182______SVL_O_NR_001.SEN3",
                               parentDirectoryNameOfStitchedFile);
     }
