@@ -134,7 +134,7 @@ public class RayleighCorrectionOp extends Operator {
 
     @Parameter(defaultValue = "20",
             valueSet = {"10", "20", "60"},
-            label = "Image resolution in m in target product (S2 MSI only)")
+            label = "Image resolution in m in target product. Resampling is only applied if source product is not resampled yet (S2 MSI only)")
     private int s2MsiTargetResolution;
 
 
