@@ -74,7 +74,7 @@ public class ImageSizeHandler {
     private static String getId(String gridName) {
         switch (gridName) {
             //todo adapt this when grid is contained in metadata file
-            case "Fire":
+            case "F1":
                 return "f";
             case "1 km":
                 return "i";
