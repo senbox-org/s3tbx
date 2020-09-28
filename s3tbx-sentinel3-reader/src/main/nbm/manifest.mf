@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Layer: org/esa/s3tbx/dataio/s3/layer.xml
 OpenIDE-Module-Java-Dependencies: Java > 1.8
-OpenIDE-Module-Display-Category: Sentinel-3 Toolbox
+OpenIDE-Module-Display-Category: SNAP Toolboxes
 OpenIDE-Module-Specification-Version: 7.0.2.1
 OpenIDE-Module-Implementation-Version: 7.0.2.1
 AutoUpdate-Show-In-Client: true
