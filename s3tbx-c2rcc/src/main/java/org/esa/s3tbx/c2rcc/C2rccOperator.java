@@ -46,28 +46,28 @@ public class C2rccOperator extends Operator {
     private Product sourceProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Ozone interpolation start product (TOMSOMI)")
-    private Product tomsomiStartProduct;
+            label = "Ozone interpolation start product (TOMSOMI or CAMS)")
+    private Product ozoneStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Ozone interpolation end product (TOMSOMI)")
-    private Product tomsomiEndProduct;
+            label = "Ozone interpolation end product (TOMSOMI or CAMS)")
+    private Product ozoneEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Air pressure interpolation start product (NCEP)")
-    private Product ncepStartProduct;
+            label = "Air pressure interpolation start product (NCEP or CAMS)")
+    private Product pressureStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Air pressure interpolation end product (NCEP)")
-    private Product ncepEndProduct;
+            label = "Air pressure interpolation end product (NCEP or CAMS)")
+    private Product pressureEndProduct;
 
     @TargetProduct
     private Product targetProduct;
@@ -163,10 +163,10 @@ public class C2rccOperator extends Operator {
     }
 
     private void configure(C2rccConfigurable c2rConfigOp) {
-        c2rConfigOp.setTomsomiStartProduct(tomsomiStartProduct);
-        c2rConfigOp.setTomsomiEndProduct(tomsomiEndProduct);
-        c2rConfigOp.setNcepStartProduct(ncepStartProduct);
-        c2rConfigOp.setNcepEndProduct(ncepEndProduct);
+        c2rConfigOp.setOzoneStartProduct(ozoneStartProduct);
+        c2rConfigOp.setOzoneEndProduct(ozoneEndProduct);
+        c2rConfigOp.setPressureStartProduct(pressureStartProduct);
+        c2rConfigOp.setPressureEndProduct(pressureEndProduct);
         if (StringUtils.isNotNullAndNotEmpty(validPixelExpression)) {
             c2rConfigOp.setValidPixelExpression(validPixelExpression);
         }

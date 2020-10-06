@@ -6,13 +6,13 @@ public interface C2rccConfigurable {
 
     void setAtmosphericAuxDataPath(String atmosphericAuxDataPath);
 
-    void setTomsomiStartProduct(Product tomsomiStartProduct);
+    void setOzoneStartProduct(Product ozoneStartProduct);
 
-    void setTomsomiEndProduct(Product tomsomiEndProduct);
+    void setOzoneEndProduct(Product ozoneEndProduct);
 
-    void setNcepStartProduct(Product ncepStartProduct);
+    void setPressureStartProduct(Product pressureStartProduct);
 
-    void setNcepEndProduct(Product ncepEndProduct);
+    void setPressureEndProduct(Product pressureEndProduct);
 
     void setTemperature(double temperature);
 
