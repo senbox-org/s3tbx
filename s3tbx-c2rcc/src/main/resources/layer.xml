@@ -140,22 +140,22 @@
                     <file name="org-esa-s3tbx-c2rcc-meris4-OpAction.shadow">
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-meris4-OpAction.instance"/>
-                        <attr name="position" intvalue="4"/>
+                        <attr name="position" intvalue="5"/>
                     </file>
                     <file name="org-esa-s3tbx-c2rcc-modis-OpAction.shadow">
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-modis-OpAction.instance"/>
-                        <attr name="position" intvalue="5"/>
+                        <attr name="position" intvalue="6"/>
                     </file>
                     <file name="org-esa-s3tbx-c2rcc-seawifs-OpAction.shadow">
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-seawifs-OpAction.instance"/>
-                        <attr name="position" intvalue="6"/>
+                        <attr name="position" intvalue="7"/>
                     </file>
                     <file name="org-esa-s3tbx-c2rcc-viirs-OpAction.shadow">
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-c2rcc-viirs-OpAction.instance"/>
-                        <attr name="position" intvalue="7"/>
+                        <attr name="position" intvalue="8"/>
                     </file>
                 </folder>
             </folder>
