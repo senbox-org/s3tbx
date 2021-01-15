@@ -118,6 +118,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         setBandGeoCodings(targetProduct);
         final Product[] sourceProducts = openProductList.toArray(new Product[0]);
         setAutoGrouping(sourceProducts, targetProduct);
+        setTimeCoding(targetProduct);
 
         return targetProduct;
     }
@@ -186,7 +187,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected void fixTiePointGrids(Product targetProduct) {
-
     }
 
     protected void setUncertaintyBands(Product product) {
@@ -356,6 +356,10 @@ public abstract class AbstractProductFactory implements ProductFactory {
         }
     }
 
+    protected void setTimeCoding(Product targetProduct) {
+
+    }
+
     protected Product readProduct(String fileName, Manifest manifest) throws IOException {
         final File file = new File(getInputFileParentDirectory(), fileName);
         if (!file.exists()) {
@@ -392,7 +396,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
     protected String getProductName() {
         return manifest.getProductName();
     }
-
 
     protected void addSeparatingDimensions(String[] suffixesForSeparatingDimensions) {
         for (String suffixForSeparatingDimension : suffixesForSeparatingDimensions) {
