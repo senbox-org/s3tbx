@@ -9,7 +9,7 @@
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="OLCI O2A Harmonisation"/>
                 <attr name="operatorName" stringvalue="OlciO2aHarmonisation"/>
-                <attr name="dialogTitle" stringvalue="OLCI O2A Harmonisation - v1.1"/>
+                <attr name="dialogTitle" stringvalue="OLCI O2A Harmonisation - v1.2"/>
                 <attr name="targetProductNameSuffix" stringvalue="_harmonised"/>
                 <attr name="helpId" stringvalue="olciHarmonisationTool"/>
             </file>
