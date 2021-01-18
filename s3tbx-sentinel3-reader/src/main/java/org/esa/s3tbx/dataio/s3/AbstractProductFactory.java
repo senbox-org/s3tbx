@@ -356,7 +356,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         }
     }
 
-    protected void setTimeCoding(Product targetProduct) {
+    protected void setTimeCoding(Product targetProduct) throws IOException {
 
     }
 

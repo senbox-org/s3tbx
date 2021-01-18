@@ -1,18 +1,17 @@
 package org.esa.s3tbx.dataio.s3;
 
 import org.esa.snap.core.datamodel.PixelPos;
-import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.util.DateTimeUtils;
 
 import java.util.Calendar;
 
-class SentinelTimeCoding implements TimeCoding {
+public class SentinelTimeCoding implements TimeCoding {
 
     private final long[] timeStamps;
 
-    SentinelTimeCoding(long[] timeStamps) {
+    public SentinelTimeCoding(long[] timeStamps) {
         this.timeStamps = timeStamps;
     }
 
@@ -32,7 +31,10 @@ class SentinelTimeCoding implements TimeCoding {
         cal2000.add(Calendar.MILLISECOND, millis);
 
         final double jd = DateTimeUtils.utcToJD(cal2000.getTime());
-        return DateTimeUtils.jdToMJD(jd);
+        final double mjd = DateTimeUtils.jdToMJD(jd);
+
+        // convert to MJD2000 tb 2021-01-18
+        return mjd - 51544.0;
     }
 
     @Override

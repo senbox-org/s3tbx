@@ -4,6 +4,7 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
+import org.esa.s3tbx.dataio.s3.SentinelTimeCoding;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReaderFactory;
 import org.esa.snap.core.dataio.geocoding.ComponentFactory;
@@ -23,7 +24,11 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import org.esa.snap.runtime.Config;
+import ucar.ma2.Array;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 
 import java.awt.image.Raster;
 import java.io.File;
@@ -224,6 +229,30 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
 
     protected void applyCustomCalibration(Band targetBand) {
         //empty implementation
+    }
+
+    @Override
+    protected void setTimeCoding(Product targetProduct) throws IOException {
+        final File file = new File(getInputFileParentDirectory(), "time_coordinates.nc");
+        if (!file.exists()) {
+            throw new IOException("Time coordinates file not found.");
+        }
+
+        try (NetcdfFile netcdfFile = NetcdfFileOpener.open(file)) {
+            if (netcdfFile == null) {
+                throw new IOException("Unable to open file: " + file.getAbsolutePath());
+            }
+
+            final Variable variable = netcdfFile.findVariable("time_stamp");
+            if (variable == null) {
+                throw new IOException("Unable to read variable 'time_stamp': " + file.getAbsolutePath());
+            }
+
+            final Array timeStampArray = variable.read();
+            final long[] timeStamps = (long[]) timeStampArray.copyTo1DJavaArray();
+            final SentinelTimeCoding sentinelTimeCoding = new SentinelTimeCoding(timeStamps);
+            targetProduct.setSceneTimeCoding(sentinelTimeCoding);
+        }
     }
 
     protected abstract String getValidExpression();

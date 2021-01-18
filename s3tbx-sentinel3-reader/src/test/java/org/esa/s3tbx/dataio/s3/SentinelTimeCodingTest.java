@@ -34,13 +34,23 @@ public class SentinelTimeCodingTest {
         final SentinelTimeCoding timeCoding = new SentinelTimeCoding(timeStamps);
 
         double mjd = timeCoding.getMJD(new PixelPos(128, 0));
-        assertEquals(59205.3742695488, mjd, 1e-8);
+        assertEquals(7661.374269548804, mjd, 1e-8);
 
         mjd = timeCoding.getMJD(new PixelPos(128, 2));
-        assertEquals(59205.374273622874, mjd, 1e-8);
+        assertEquals(7661.374273622874, mjd, 1e-8);
 
         mjd = timeCoding.getMJD(new PixelPos(128, 4));
-        assertEquals(59205.374277696945, mjd, 1e-8);
+        assertEquals(7661.374277696945, mjd, 1e-8);
+    }
+
+    @Test
+    public void testGetMjd_zero() {
+        final long[] timeStamps = {0L};
+
+        final SentinelTimeCoding timeCoding = new SentinelTimeCoding(timeStamps);
+
+        double mjd = timeCoding.getMJD(new PixelPos(128, 0));
+        assertEquals(0.0, mjd, 1e-8);
     }
 
     @Test
