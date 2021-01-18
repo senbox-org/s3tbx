@@ -233,26 +233,7 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
 
     @Override
     protected void setTimeCoding(Product targetProduct) throws IOException {
-        final File file = new File(getInputFileParentDirectory(), "time_coordinates.nc");
-        if (!file.exists()) {
-            throw new IOException("Time coordinates file not found.");
-        }
-
-        try (NetcdfFile netcdfFile = NetcdfFileOpener.open(file)) {
-            if (netcdfFile == null) {
-                throw new IOException("Unable to open file: " + file.getAbsolutePath());
-            }
-
-            final Variable variable = netcdfFile.findVariable("time_stamp");
-            if (variable == null) {
-                throw new IOException("Unable to read variable 'time_stamp': " + file.getAbsolutePath());
-            }
-
-            final Array timeStampArray = variable.read();
-            final long[] timeStamps = (long[]) timeStampArray.copyTo1DJavaArray();
-            final SentinelTimeCoding sentinelTimeCoding = new SentinelTimeCoding(timeStamps);
-            targetProduct.setSceneTimeCoding(sentinelTimeCoding);
-        }
+        setTimeCoding(targetProduct, "time_coordinates.nc", "time_stamp");
     }
 
     protected abstract String getValidExpression();

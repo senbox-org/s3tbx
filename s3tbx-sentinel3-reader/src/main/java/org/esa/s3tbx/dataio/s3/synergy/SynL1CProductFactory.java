@@ -195,4 +195,9 @@ public class SynL1CProductFactory extends AbstractProductFactory {
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         targetProduct.setAutoGrouping("Meas:error_estimates:exception:MISREGIST_OLC:MISREGIST_SLST:GEOLOCATION_REF");
     }
+
+    @Override
+    protected void setTimeCoding(Product targetProduct) throws IOException {
+        setTimeCoding(targetProduct, "time.nc", "Time");
+    }
 }
