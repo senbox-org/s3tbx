@@ -32,8 +32,12 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.SampleCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import ucar.ma2.Array;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 
 import javax.media.jai.Interpolation;
 import javax.media.jai.RenderedOp;
@@ -58,10 +62,6 @@ import java.util.logging.Logger;
 
 public abstract class AbstractProductFactory implements ProductFactory {
 
-    private final Map<String, MultiLevelImage> tpgImageMap;
-    private final List<Product> openProductList = new ArrayList<>();
-    private final Sentinel3ProductReader productReader;
-    private final Logger logger;
     private final static Color[] uncertainty_colors = new Color[]{
             new Color(127, 0, 255),
             new Color(0, 0, 255),
@@ -70,6 +70,10 @@ public abstract class AbstractProductFactory implements ProductFactory {
             new Color(255, 127, 0),
             new Color(255, 0, 0)
     };
+    private final Map<String, MultiLevelImage> tpgImageMap;
+    private final List<Product> openProductList = new ArrayList<>();
+    private final Sentinel3ProductReader productReader;
+    private final Logger logger;
     private final List<String> separatingDimensions;
 
     private volatile Manifest manifest;
@@ -79,6 +83,10 @@ public abstract class AbstractProductFactory implements ProductFactory {
         this.logger = Logger.getLogger(getClass().getSimpleName());
         separatingDimensions = new ArrayList<>();
         tpgImageMap = new HashMap<>();
+    }
+
+    protected static Band copyBand(Band sourceBand, Product targetProduct, boolean copySourceImage) {
+        return ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), targetProduct, copySourceImage);
     }
 
     @Override
@@ -118,6 +126,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         setBandGeoCodings(targetProduct);
         final Product[] sourceProducts = openProductList.toArray(new Product[0]);
         setAutoGrouping(sourceProducts, targetProduct);
+        setTimeCoding(targetProduct);
 
         return targetProduct;
     }
@@ -130,10 +139,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
 
     protected final Logger getLogger() {
         return logger;
-    }
-
-    protected static Band copyBand(Band sourceBand, Product targetProduct, boolean copySourceImage) {
-        return ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), targetProduct, copySourceImage);
     }
 
     @Override
@@ -150,15 +155,15 @@ public abstract class AbstractProductFactory implements ProductFactory {
         float newOffsetX = offsetX % subSamplingX;
         float dataOffsetX = (newOffsetX - offsetX) / subSamplingX;
         double newWidth = Math.min(sourceBand.getRasterWidth(),
-                Math.ceil((targetProduct.getSceneRasterWidth() - newOffsetX) / subSamplingX));
+                                   Math.ceil((targetProduct.getSceneRasterWidth() - newOffsetX) / subSamplingX));
         float newOffsetY = offsetY % subSamplingY;
         float dataOffsetY = (newOffsetY - offsetY) / subSamplingY;
         double newHeight = Math.min(sourceBand.getRasterHeight(),
-                Math.ceil((targetProduct.getSceneRasterHeight() - newOffsetY) / subSamplingY));
+                                    Math.ceil((targetProduct.getSceneRasterHeight() - newOffsetY) / subSamplingY));
         RenderedOp translatedSourceImage = TranslateDescriptor.create(sourceImage, -dataOffsetX, -dataOffsetY,
-                Interpolation.getInstance(Interpolation.INTERP_NEAREST), null);
+                                                                      Interpolation.getInstance(Interpolation.INTERP_NEAREST), null);
         RenderedImage croppedSourceImage = CropDescriptor.create(translatedSourceImage, 0f, 0f,
-                (float) newWidth, (float) newHeight, null);
+                                                                 (float) newWidth, (float) newHeight, null);
         DefaultMultiLevelImage newSourceImage =
                 new DefaultMultiLevelImage(new DefaultMultiLevelSource(croppedSourceImage, sourceImage.getModel()));
         final String bandName = sourceBand.getName();
@@ -186,7 +191,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected void fixTiePointGrids(Product targetProduct) {
-
     }
 
     protected void setUncertaintyBands(Product product) {
@@ -356,6 +360,10 @@ public abstract class AbstractProductFactory implements ProductFactory {
         }
     }
 
+    protected void setTimeCoding(Product targetProduct) throws IOException {
+
+    }
+
     protected Product readProduct(String fileName, Manifest manifest) throws IOException {
         final File file = new File(getInputFileParentDirectory(), fileName);
         if (!file.exists()) {
@@ -393,7 +401,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
         return manifest.getProductName();
     }
 
-
     protected void addSeparatingDimensions(String[] suffixesForSeparatingDimensions) {
         for (String suffixForSeparatingDimension : suffixesForSeparatingDimensions) {
             if (!separatingDimensions.contains(suffixForSeparatingDimension)) {
@@ -403,6 +410,30 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected abstract List<String> getFileNames(Manifest manifest);
+
+    protected void setTimeCoding(Product targetProduct, String timeDataFileName, String timeVariableName) throws IOException {
+        final File file = new File(getInputFileParentDirectory(), timeDataFileName);
+        if (!file.exists()) {
+            throw new IOException("Time coordinates file not found: " + timeDataFileName);
+        }
+
+        try (NetcdfFile netcdfFile = NetcdfFileOpener.open(file)) {
+            if (netcdfFile == null) {
+                throw new IOException("Unable to open file: " + file.getAbsolutePath());
+            }
+
+
+            final Variable variable = netcdfFile.findVariable(timeVariableName);
+            if (variable == null) {
+                throw new IOException("Unable to read variable '" + timeVariableName + "': " + file.getAbsolutePath());
+            }
+
+            final Array timeStampArray = variable.read();
+            final long[] timeStamps = (long[]) timeStampArray.copyTo1DJavaArray();
+            final SentinelTimeCoding sentinelTimeCoding = new SentinelTimeCoding(timeStamps);
+            targetProduct.setSceneTimeCoding(sentinelTimeCoding);
+        }
+    }
 
     private void setTimes(Product targetProduct) {
         final Product sourceProduct = findMasterProduct();

@@ -466,6 +466,11 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         }
     }
 
+    @Override
+    protected void setTimeCoding(Product targetProduct) throws IOException {
+        setTimeCoding(targetProduct, "time_an.nc", "time_stamp_a");
+    }
+
     protected boolean isOrphanPixelsAllowed() {
         return Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_LOAD_ORPHAN_PIXELS, false);
     }
