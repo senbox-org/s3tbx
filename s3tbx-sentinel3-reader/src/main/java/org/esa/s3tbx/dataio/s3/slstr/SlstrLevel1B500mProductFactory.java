@@ -3,6 +3,7 @@ package org.esa.s3tbx.dataio.s3.slstr;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.snap.core.datamodel.Product;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -42,5 +43,10 @@ public class SlstrLevel1B500mProductFactory extends SlstrLevel1FixedResolutionPr
     @Override
     protected boolean isOrphanPixelsAllowed() {
         return false;
+    }
+
+    @Override
+    protected void setTimeCoding(Product targetProduct) throws IOException {
+        setTimeCoding(targetProduct, "time_an.nc", "time_stamp_a");
     }
 }

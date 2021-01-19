@@ -198,6 +198,11 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
         }
     }
 
+    @Override
+    protected void setTimeCoding(Product targetProduct) throws IOException {
+        setTimeCoding(targetProduct, "time_in.nc", "time_stamp_i");
+    }
+
     private void setTiePointBandGeoCodings(Product product) throws IOException {
         final Band[] bands = product.getBands();
         for (Band band : bands) {
