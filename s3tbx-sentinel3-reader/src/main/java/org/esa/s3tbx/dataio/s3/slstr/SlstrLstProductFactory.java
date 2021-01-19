@@ -74,6 +74,11 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
     }
 
     @Override
+    protected void setTimeCoding(Product targetProduct) throws IOException {
+        setTimeCoding(targetProduct, "time_in.nc", "time_stamp_i");
+    }
+
+    @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
         final Band lonBand = targetProduct.getBand("longitude_in");
         final Band latBand = targetProduct.getBand("latitude_in");
