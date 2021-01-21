@@ -205,7 +205,7 @@
         </dependency>
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
-            <artifactId>s3tbx-o2a-harmonisation</artifactId>
+            <artifactId>s3tbx-olci-o2aharmonisation</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -1,4 +1,4 @@
-package org.esa.s3tbx.olci.harmonisation;
+package org.esa.s3tbx.olci.o2a.harmonisation;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.google.common.primitives.Doubles;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  *
  * @author olafd
  */
-class OlciHarmonisationIO {
+class OlciO2aHarmonisationIO {
 
     /**
      * Validates the OLCI L1b source product.
@@ -186,18 +186,18 @@ class OlciHarmonisationIO {
         JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader(jsonPath.toString()));
 
         // parse JSON file...
-        final long L = OlciHarmonisationIO.parseJSONInt(jsonObject, "L");
-        final long M = OlciHarmonisationIO.parseJSONInt(jsonObject, "M");
-        final long N = OlciHarmonisationIO.parseJSONInt(jsonObject, "N");
-        final double[][][] jacobians = OlciHarmonisationIO.parseJSON3DimDoubleArray(jsonObject, "JACO");
-        final double[][] X = OlciHarmonisationIO.parseJSON2DimDoubleArray(jsonObject, "X");
-        final double[][] Y = OlciHarmonisationIO.parseJSON2DimDoubleArray(jsonObject, "Y");
-        final double[] VARI = OlciHarmonisationIO.parseJSON1DimDoubleArray(jsonObject, "VARI");
-        final double cbwd = OlciHarmonisationIO.parseJSONDouble(jsonObject, "cbwd");
-        final double cwvl = OlciHarmonisationIO.parseJSONDouble(jsonObject, "cwvl");
-        final long leafsize = OlciHarmonisationIO.parseJSONInt(jsonObject, "leafsize");
-        final String[] sequ = OlciHarmonisationIO.parseJSON1DimStringArray(jsonObject, "sequ");
-        final double[] MEAN = OlciHarmonisationIO.parseJSON1DimDoubleArray(jsonObject, "MEAN");
+        final long L = OlciO2aHarmonisationIO.parseJSONInt(jsonObject, "L");
+        final long M = OlciO2aHarmonisationIO.parseJSONInt(jsonObject, "M");
+        final long N = OlciO2aHarmonisationIO.parseJSONInt(jsonObject, "N");
+        final double[][][] jacobians = OlciO2aHarmonisationIO.parseJSON3DimDoubleArray(jsonObject, "JACO");
+        final double[][] X = OlciO2aHarmonisationIO.parseJSON2DimDoubleArray(jsonObject, "X");
+        final double[][] Y = OlciO2aHarmonisationIO.parseJSON2DimDoubleArray(jsonObject, "Y");
+        final double[] VARI = OlciO2aHarmonisationIO.parseJSON1DimDoubleArray(jsonObject, "VARI");
+        final double cbwd = OlciO2aHarmonisationIO.parseJSONDouble(jsonObject, "cbwd");
+        final double cwvl = OlciO2aHarmonisationIO.parseJSONDouble(jsonObject, "cwvl");
+        final long leafsize = OlciO2aHarmonisationIO.parseJSONInt(jsonObject, "leafsize");
+        final String[] sequ = OlciO2aHarmonisationIO.parseJSON1DimStringArray(jsonObject, "sequ");
+        final double[] MEAN = OlciO2aHarmonisationIO.parseJSON1DimDoubleArray(jsonObject, "MEAN");
 
         return new DesmileLut(L, M, N, X, Y, jacobians, MEAN, VARI, cwvl, cbwd, leafsize, sequ);
     }
@@ -359,8 +359,8 @@ class OlciHarmonisationIO {
 
     static double[][] getDwlCorrOffsets(String platform) {
         return platform.equals("A") ?
-                OlciHarmonisationConstants.OLCI_A_DWL_CORR_OFFSET :
-                OlciHarmonisationConstants.OLCI_B_DWL_CORR_OFFSET;
+                OlciO2aHarmonisationConstants.OLCI_A_DWL_CORR_OFFSET :
+                OlciO2aHarmonisationConstants.OLCI_B_DWL_CORR_OFFSET;
     }
 
     static class SpectralCharacteristics {

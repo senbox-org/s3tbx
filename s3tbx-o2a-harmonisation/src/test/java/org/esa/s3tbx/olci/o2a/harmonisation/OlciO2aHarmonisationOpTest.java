@@ -1,4 +1,4 @@
-package org.esa.s3tbx.olci.harmonisation;
+package org.esa.s3tbx.olci.o2a.harmonisation;
 
 import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.gpf.OperatorSpi;

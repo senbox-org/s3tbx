@@ -1,4 +1,4 @@
-package org.esa.s3tbx.olci.harmonisation;
+package org.esa.s3tbx.olci.o2a.harmonisation;
 
 import smile.neighbor.KDTree;
 import smile.neighbor.Neighbor;
@@ -8,7 +8,7 @@ import smile.neighbor.Neighbor;
  *
  * @author olafd
  */
-public class OlciHarmonisationAlgorithm {
+public class OlciO2aHarmonisationAlgorithm {
 
     /**
      * This calculates the 1to1 transmission  ('rectified') (Zenith Sun --> Nadir observation: amf=2) at
@@ -19,7 +19,7 @@ public class OlciHarmonisationAlgorithm {
      * @return the rectified transmission
      */
     public static double press2Trans(double press, int bandIndex) {
-        final double[] p = OlciHarmonisationConstants.pCoeffsPress2Tra[bandIndex - 13];
+        final double[] p = OlciO2aHarmonisationConstants.pCoeffsPress2Tra[bandIndex - 13];
         double pressPolynom = p[0] + p[1] * press + p[2] * press * press;
         return Math.exp(-pressPolynom);
     }
@@ -34,7 +34,7 @@ public class OlciHarmonisationAlgorithm {
      * @return the pressure in hPa
      */
     public static double trans2Press(double trans_rectified, int bandIndex) {
-        final double[] p = OlciHarmonisationConstants.pCoeffsTra2Press[bandIndex - 13];
+        final double[] p = OlciO2aHarmonisationConstants.pCoeffsTra2Press[bandIndex - 13];
         return p[0] + p[1] * trans_rectified + p[2] * trans_rectified * trans_rectified;
     }
 
@@ -126,7 +126,7 @@ public class OlciHarmonisationAlgorithm {
     public static double rectifyDesmiledTransmission(double trans_desmiled, double amf, int bandIndex) {
         final double tau = Math.log(trans_desmiled);
         final double amfM = amf - 2.0;
-        final double[] p = OlciHarmonisationConstants.pCoeffsRectification[bandIndex - 13];
+        final double[] p = OlciO2aHarmonisationConstants.pCoeffsRectification[bandIndex - 13];
 
         final double rectifyFactor = p[0] + p[1] * tau + p[2] * tau * tau + p[3] * amfM + p[4] * amfM * amfM +
                 p[5] * tau * Math.sqrt(amfM) + p[7] * trans_desmiled;

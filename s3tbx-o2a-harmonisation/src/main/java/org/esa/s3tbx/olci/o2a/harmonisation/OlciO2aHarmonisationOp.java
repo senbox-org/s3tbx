@@ -1,4 +1,4 @@
-package org.esa.s3tbx.olci.harmonisation;
+package org.esa.s3tbx.olci.o2a.harmonisation;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.datamodel.*;
@@ -77,14 +77,14 @@ public class OlciO2aHarmonisationOp extends Operator {
 
     private KDTree<double[]>[] desmileKdTrees;
     private DesmileLut[] desmileLuts;
-    private OlciHarmonisationIO.SpectralCharacteristics specChar;
+    private OlciO2aHarmonisationIO.SpectralCharacteristics specChar;
     private double[][] dwlCorrOffsets;
 
     @Override
     public void initialize() throws OperatorException {
         lastBandToProcess = processOnlyBand13 ? 13 : 15;
         numBandsToProcess = lastBandToProcess - 13 + 1;
-        OlciHarmonisationIO.validateSourceProduct(l1bProduct);
+        OlciO2aHarmonisationIO.validateSourceProduct(l1bProduct);
         if (StringUtils.isNotNullAndNotEmpty(alternativeAltitudeBandName)) {
             if (l1bProduct.containsBand(alternativeAltitudeBandName)) {
                 demAltitudeBand = l1bProduct.getBand(alternativeAltitudeBandName);
@@ -95,13 +95,13 @@ public class OlciO2aHarmonisationOp extends Operator {
             }
         }
 
-        int orbitNumber = OlciHarmonisationIO.getOrbitNumber(l1bProduct);
-        final String platform = OlciHarmonisationIO.getPlatform(l1bProduct);
+        int orbitNumber = OlciO2aHarmonisationIO.getOrbitNumber(l1bProduct);
+        final String platform = OlciO2aHarmonisationIO.getPlatform(l1bProduct);
         Product modelProduct;
         try {
-            modelProduct = OlciHarmonisationIO.getModelProduct(platform);
-            specChar = OlciHarmonisationIO.getSpectralCharacteristics(orbitNumber, modelProduct);
-            dwlCorrOffsets = OlciHarmonisationIO.getDwlCorrOffsets(platform);
+            modelProduct = OlciO2aHarmonisationIO.getModelProduct(platform);
+            specChar = OlciO2aHarmonisationIO.getSpectralCharacteristics(orbitNumber, modelProduct);
+            dwlCorrOffsets = OlciO2aHarmonisationIO.getDwlCorrOffsets(platform);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -159,7 +159,7 @@ public class OlciO2aHarmonisationOp extends Operator {
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
             checkForCancellation();
             for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
-                final boolean pixelIsValid = !l1FlagsTile.getSampleBit(x, y, OlciHarmonisationConstants.OLCI_INVALID_BIT);
+                final boolean pixelIsValid = !l1FlagsTile.getSampleBit(x, y, OlciO2aHarmonisationConstants.OLCI_INVALID_BIT);
                 if (pixelIsValid) {
                     // Preparing input data...
                     final double sza = szaTile.getSampleDouble(x, y);
@@ -173,7 +173,7 @@ public class OlciO2aHarmonisationOp extends Operator {
                     }
 
                     final double slp = slpTile.getSampleDouble(x, y);
-                    double surfacePress = OlciHarmonisationAlgorithm.height2press(altitude, slp);
+                    double surfacePress = OlciO2aHarmonisationAlgorithm.height2press(altitude, slp);
                     final float detectorIndex = detectorIndexTile.getSampleFloat(x, y);
 
                     final double amf = (1.0 / Math.cos(sza * MathUtils.DTOR) + 1.0 / Math.cos(oza * MathUtils.DTOR));
@@ -213,24 +213,24 @@ public class OlciO2aHarmonisationOp extends Operator {
 
                     //  bands 13, 14, or 15 will get bandIndex 0, 1 or 2
                     final int bandIndex = Integer.parseInt(targetBandName.split(Pattern.quote("_"))[1]) - 13;
-                    final double dwl = cwl[bandIndex + 1] - OlciHarmonisationConstants.cwvl[bandIndex];
-                    final double transDesmiled = OlciHarmonisationAlgorithm.desmileTransmission(dwl, fwhm[bandIndex + 1],
+                    final double dwl = cwl[bandIndex + 1] - OlciO2aHarmonisationConstants.cwvl[bandIndex];
+                    final double transDesmiled = OlciO2aHarmonisationAlgorithm.desmileTransmission(dwl, fwhm[bandIndex + 1],
                             amf,
                             trans[bandIndex + 1],
                             desmileKdTrees[bandIndex],
                             desmileLuts[bandIndex]);
                     final double transDesmiledRectified =
-                            OlciHarmonisationAlgorithm.rectifyDesmiledTransmission(transDesmiled, amf, bandIndex + 13);
+                            OlciO2aHarmonisationAlgorithm.rectifyDesmiledTransmission(transDesmiled, amf, bandIndex + 13);
 
                     if (targetBandName.startsWith("trans_1")) {
                         targetTile.setSample(x, y, transDesmiledRectified);
                     } else if (targetBandName.startsWith("transDesmiled_1")) {
                         targetTile.setSample(x, y, transDesmiled);
                     } else if (targetBandName.startsWith("press")) {
-                        final double transPress = OlciHarmonisationAlgorithm.trans2Press(transDesmiledRectified, bandIndex + 13);
+                        final double transPress = OlciO2aHarmonisationAlgorithm.trans2Press(transDesmiledRectified, bandIndex + 13);
                         targetTile.setSample(x, y, transPress);
                     } else if (targetBandName.startsWith("surface")) {
-                        final double transSurface = OlciHarmonisationAlgorithm.press2Trans(surfacePress, bandIndex + 13);
+                        final double transSurface = OlciO2aHarmonisationAlgorithm.press2Trans(surfacePress, bandIndex + 13);
                         targetTile.setSample(x, y, transSurface);
                     } else if (targetBandName.startsWith("radiance")) {
                         // radiance
@@ -249,14 +249,14 @@ public class OlciO2aHarmonisationOp extends Operator {
     }
 
     private void initDesmileAuxdata(ProgressMonitor pm) throws IOException, ParseException {
-        final Path auxdataPath = OlciHarmonisationIO.installAuxdata();
+        final Path auxdataPath = OlciO2aHarmonisationIO.installAuxdata();
         pm.worked(1);
         desmileLuts = new DesmileLut[numBandsToProcess];
         desmileKdTrees = new KDTree[numBandsToProcess];
         for (int i = 13; i <= lastBandToProcess; i++) {
-            desmileLuts[i - 13] = OlciHarmonisationIO.createDesmileLut(auxdataPath, i);
+            desmileLuts[i - 13] = OlciO2aHarmonisationIO.createDesmileLut(auxdataPath, i);
             pm.worked(1);
-            desmileKdTrees[i - 13] = OlciHarmonisationIO.createKDTreeForDesmileInterpolation(desmileLuts[i - 13]);
+            desmileKdTrees[i - 13] = OlciO2aHarmonisationIO.createKDTreeForDesmileInterpolation(desmileLuts[i - 13]);
             pm.worked(1);
         }
     }
