@@ -25,7 +25,7 @@
         <version>9.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>s3tbx-o2a-harmonisation</artifactId>
+    <artifactId>s3tbx-olci-o2aharmonisation</artifactId>
 
     <name>Sentinel-3 OLCI O2A Harmonisation</name>
     <packaging>nbm</packaging>

@@ -1,11 +1,11 @@
-package org.esa.s3tbx.olci.harmonisation;
+package org.esa.s3tbx.olci.o2a.harmonisation;
 
 /**
  * Constants for OLCI O2A Harmonisation
  *
  * @author olafd
  */
-class OlciHarmonisationConstants {
+class OlciO2aHarmonisationConstants {
 
     static int OLCI_INVALID_BIT = 25;
 

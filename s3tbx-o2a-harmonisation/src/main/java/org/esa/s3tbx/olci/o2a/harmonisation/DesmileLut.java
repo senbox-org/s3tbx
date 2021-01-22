@@ -1,4 +1,4 @@
-package org.esa.s3tbx.olci.harmonisation;
+package org.esa.s3tbx.olci.o2a.harmonisation;
 
 /**
  * Holder for contents of 'desmile' lookup table (e.g. O2_desmile_lut_13.json)

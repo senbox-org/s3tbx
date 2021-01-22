@@ -1,4 +1,4 @@
-package org.esa.s3tbx.olci.harmonisation;
+package org.esa.s3tbx.olci.o2a.harmonisation;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,13 +13,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-public class OlciHarmonisationIOTest {
+public class OlciO2aHarmonisationIOTest {
 
     private Path installAuxdataPath;
 
     @Before
     public void setUp() throws Exception {
-        installAuxdataPath = OlciHarmonisationIO.installAuxdata();
+        installAuxdataPath = OlciO2aHarmonisationIO.installAuxdata();
     }
 
     @Test
@@ -29,18 +29,18 @@ public class OlciHarmonisationIOTest {
         JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader(pathJSON.toString()));
 
         // parse JSON file...
-        final long L = OlciHarmonisationIO.parseJSONInt(jsonObject, "L");
-        final long M = OlciHarmonisationIO.parseJSONInt(jsonObject, "M");
-        final long N = OlciHarmonisationIO.parseJSONInt(jsonObject, "N");
-        final double[][][] jacobians = OlciHarmonisationIO.parseJSON3DimDoubleArray(jsonObject, "JACO");
-        final double[][] X = OlciHarmonisationIO.parseJSON2DimDoubleArray(jsonObject, "X");
-        final double[][] Y = OlciHarmonisationIO.parseJSON2DimDoubleArray(jsonObject, "Y");
-        final double[] VARI = OlciHarmonisationIO.parseJSON1DimDoubleArray(jsonObject, "VARI");
-        final double cbwd = OlciHarmonisationIO.parseJSONDouble(jsonObject, "cbwd");
-        final double cwvl = OlciHarmonisationIO.parseJSONDouble(jsonObject, "cwvl");
-        final long leafsize = OlciHarmonisationIO.parseJSONInt(jsonObject, "leafsize");
-        final String[] sequ = OlciHarmonisationIO.parseJSON1DimStringArray(jsonObject, "sequ");
-        final double[] MEAN = OlciHarmonisationIO.parseJSON1DimDoubleArray(jsonObject, "MEAN");
+        final long L = OlciO2aHarmonisationIO.parseJSONInt(jsonObject, "L");
+        final long M = OlciO2aHarmonisationIO.parseJSONInt(jsonObject, "M");
+        final long N = OlciO2aHarmonisationIO.parseJSONInt(jsonObject, "N");
+        final double[][][] jacobians = OlciO2aHarmonisationIO.parseJSON3DimDoubleArray(jsonObject, "JACO");
+        final double[][] X = OlciO2aHarmonisationIO.parseJSON2DimDoubleArray(jsonObject, "X");
+        final double[][] Y = OlciO2aHarmonisationIO.parseJSON2DimDoubleArray(jsonObject, "Y");
+        final double[] VARI = OlciO2aHarmonisationIO.parseJSON1DimDoubleArray(jsonObject, "VARI");
+        final double cbwd = OlciO2aHarmonisationIO.parseJSONDouble(jsonObject, "cbwd");
+        final double cwvl = OlciO2aHarmonisationIO.parseJSONDouble(jsonObject, "cwvl");
+        final long leafsize = OlciO2aHarmonisationIO.parseJSONInt(jsonObject, "leafsize");
+        final String[] sequ = OlciO2aHarmonisationIO.parseJSON1DimStringArray(jsonObject, "sequ");
+        final double[] MEAN = OlciO2aHarmonisationIO.parseJSON1DimDoubleArray(jsonObject, "MEAN");
 
         // test all parsed objects...
         assertJSONParsedObjects(L, M, N, jacobians, X, Y, VARI, cbwd, cwvl, leafsize, sequ, MEAN);
@@ -186,7 +186,7 @@ public class OlciHarmonisationIOTest {
     @Test
 //    @Ignore
     public void testInstallAuxdata() throws Exception {
-        Path auxPath = OlciHarmonisationIO.installAuxdata();
+        Path auxPath = OlciO2aHarmonisationIO.installAuxdata();
         assertNotNull(auxPath);
 
     }
