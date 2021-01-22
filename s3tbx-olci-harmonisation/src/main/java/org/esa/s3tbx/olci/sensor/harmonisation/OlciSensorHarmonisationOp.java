@@ -16,13 +16,17 @@
 
 package org.esa.s3tbx.olci.sensor.harmonisation;
 
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
+import org.esa.snap.core.util.ProductUtils;
 
 /**
  * Performs OLCI sensor harmonisation on OLCI L1b products.
@@ -41,6 +45,8 @@ import org.esa.snap.core.gpf.annotations.TargetProduct;
         description = "Performs sensor harmonisation on OLCI L1b product. Implements algorithm described in 'OLCI A/B Tandem Phase Analysis'")
 public class OlciSensorHarmonisationOp extends Operator {
 
+    private static final String SUFFIX = "_HARM";
+    
     @SourceProduct(description = "OLCI L1b or fully compatible product.",
             label = "OLCI L1b product")
     private Product l1bProduct;
@@ -59,13 +65,51 @@ public class OlciSensorHarmonisationOp extends Operator {
             }
         }
 
-        // @todo 1 tb/tb check for central wavelength metadata 2021-01-21
+        final MetadataElement metadataRoot = input.getMetadataRoot();
+        if (!metadataRoot.containsElement("lambda0")) {
+            throw new OperatorException("Metadata element 'lambda0' missing.");
+        }
+    }
+
+    static Product createOutputProduct(Product input) {
+        final String inputProductType = input.getProductType();
+        final String inputName = input.getName();
+        final Product outputProduct = new Product(inputName + SUFFIX,
+                                            inputProductType + SUFFIX,
+                                            input.getSceneRasterWidth(),
+                                            input.getSceneRasterHeight());
+
+        outputProduct.setDescription("OLCI sensor harmonized L1b");
+        outputProduct.setStartTime(input.getStartTime());
+        outputProduct.setEndTime(input.getEndTime());
+
+        // @todo 2 tb/tb which metadata to copy over? 2021-01-21
+
+        for (int i = 1; i < 22; i++) {
+            final String bandName = "Oa" + String.format("%02d", i) + "_radiance";
+            final Band sourceBand = input.getBand(bandName);
+
+            final Band band = outputProduct.addBand(bandName + SUFFIX, ProductData.TYPE_FLOAT32);
+            band.setNoDataValue(Float.NaN);
+            band.setNoDataValueUsed(true);
+
+            band.setUnit(sourceBand.getUnit());
+            band.setSpectralWavelength(sourceBand.getSpectralWavelength());
+            band.setSpectralBandwidth(sourceBand.getSpectralBandwidth());
+        }
+
+        ProductUtils.copyTiePointGrids(input, outputProduct);
+        ProductUtils.copyGeoCoding(input, outputProduct);
+
+        return outputProduct;
     }
 
     @Override
     public void initialize() throws OperatorException {
         validateInputProduct(l1bProduct);
-        // create output
+
+        targetProduct = createOutputProduct(l1bProduct);
+        setTargetProduct(targetProduct);
         // load auxdata
     }
 
