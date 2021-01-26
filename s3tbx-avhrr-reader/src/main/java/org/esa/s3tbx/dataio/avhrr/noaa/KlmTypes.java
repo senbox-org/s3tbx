@@ -137,7 +137,8 @@ class KlmTypes {
                              addItem(7, "NOAA-18 (NOAA-N)").
                              addItem(8, "(NOAA-P)").
                              addItem(11, "MetOp-1").
-                             addItem(12, "MetOp-A")),
+                             addItem(12, "MetOp-A").
+                             addItem(13, "MetOp-C")),
                      MEMBER("INSTRUMENT_ID", USHORT),
                      META_MEMBER("DATA_TYPE_CODE", USHORT, META().
                              addItem(1, "LAC").
