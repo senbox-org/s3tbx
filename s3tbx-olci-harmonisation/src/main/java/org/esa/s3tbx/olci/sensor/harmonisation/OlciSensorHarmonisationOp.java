@@ -16,6 +16,7 @@
 
 package org.esa.s3tbx.olci.sensor.harmonisation;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
@@ -23,10 +24,13 @@ import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
+
+import java.awt.Rectangle;
 
 /**
  * Performs OLCI sensor harmonisation on OLCI L1b products.
@@ -46,7 +50,7 @@ import org.esa.snap.core.util.ProductUtils;
 public class OlciSensorHarmonisationOp extends Operator {
 
     private static final String SUFFIX = "_HARM";
-    
+
     @SourceProduct(description = "OLCI L1b or fully compatible product.",
             label = "OLCI L1b product")
     private Product l1bProduct;
@@ -75,9 +79,9 @@ public class OlciSensorHarmonisationOp extends Operator {
         final String inputProductType = input.getProductType();
         final String inputName = input.getName();
         final Product outputProduct = new Product(inputName + SUFFIX,
-                                            inputProductType + SUFFIX,
-                                            input.getSceneRasterWidth(),
-                                            input.getSceneRasterHeight());
+                                                  inputProductType + SUFFIX,
+                                                  input.getSceneRasterWidth(),
+                                                  input.getSceneRasterHeight());
 
         outputProduct.setDescription("OLCI sensor harmonized L1b");
         outputProduct.setStartTime(input.getStartTime());
@@ -111,6 +115,27 @@ public class OlciSensorHarmonisationOp extends Operator {
         targetProduct = createOutputProduct(l1bProduct);
         setTargetProduct(targetProduct);
         // load auxdata
+    }
+
+    @Override
+    public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
+        final Rectangle targetRectangle = targetTile.getRectangle();
+        final String targetBandName = targetBand.getName();
+
+        // get source tile for radiance
+        // get source tile detector index
+
+        for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+            checkForCancellation();
+
+            // detect camera
+            // load factor
+
+            for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+
+
+            }
+        }
     }
 
     public static class Spi extends OperatorSpi {
