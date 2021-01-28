@@ -24,6 +24,10 @@ import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.OperatorException;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -116,6 +120,52 @@ public class OlciSensorHarmonisationOpTest {
 
         final TiePointGrid heffalump = outputProduct.getTiePointGrid("heffalump");
         assertNotNull(heffalump);
+    }
+
+    @Test
+    public void testParseCameraGains() throws IOException {
+        final String resource = "# S3A\n" +
+                "0.992, 0.997, 1.000, 0.998, 0.988\n" +
+                "# S3B\n" +
+                "0.991, 0.997, 1.000, 0.996, 0.983";
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream(resource.getBytes());
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+        final float[][] gains = OlciSensorHarmonisationOp.parseCameraGains(reader);
+        assertEquals(2, gains.length);
+
+        final float[] s3aGain = gains[0];
+        assertEquals(0.992f, s3aGain[0], 1e-8);
+        assertEquals(0.997f, s3aGain[1], 1e-8);
+
+        final float[] s3bGain = gains[1];
+        assertEquals(1.f, s3bGain[2], 1e-8);
+        assertEquals(0.996f, s3bGain[3], 1e-8);
+    }
+
+    @Test
+    public void testGetCameraIndex() {
+        assertEquals(0, OlciSensorHarmonisationOp.getCameraIndex(0));
+        assertEquals(0, OlciSensorHarmonisationOp.getCameraIndex(2));
+        assertEquals(0, OlciSensorHarmonisationOp.getCameraIndex(739));
+
+        assertEquals(1, OlciSensorHarmonisationOp.getCameraIndex(740));
+        assertEquals(1, OlciSensorHarmonisationOp.getCameraIndex(1479));
+
+        assertEquals(2, OlciSensorHarmonisationOp.getCameraIndex(1480));
+        assertEquals(2, OlciSensorHarmonisationOp.getCameraIndex(2219));
+
+        assertEquals(3, OlciSensorHarmonisationOp.getCameraIndex(2220));
+        assertEquals(3, OlciSensorHarmonisationOp.getCameraIndex(2959));
+
+        assertEquals(4, OlciSensorHarmonisationOp.getCameraIndex(2960));
+        assertEquals(4, OlciSensorHarmonisationOp.getCameraIndex(3699));
+    }
+
+    @Test
+    public void testGetCameraIndex_invalidDetectors() {
+        assertEquals(-1, OlciSensorHarmonisationOp.getCameraIndex(-1));
+        assertEquals(-1, OlciSensorHarmonisationOp.getCameraIndex(3700));
     }
 
     private Product createTestProduct() {

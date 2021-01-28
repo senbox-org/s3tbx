@@ -31,6 +31,12 @@ import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
 
 import java.awt.Rectangle;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Performs OLCI sensor harmonisation on OLCI L1b products.
@@ -50,6 +56,8 @@ import java.awt.Rectangle;
 public class OlciSensorHarmonisationOp extends Operator {
 
     private static final String SUFFIX = "_HARM";
+    private static final int DETECTORS_PER_CAMERA = 740;
+    private static final int NUM_DETECTORS = 3700;
 
     @SourceProduct(description = "OLCI L1b or fully compatible product.",
             label = "OLCI L1b product")
@@ -57,6 +65,8 @@ public class OlciSensorHarmonisationOp extends Operator {
 
     @TargetProduct
     private Product targetProduct;
+
+    private float[][] cameraGains;
 
     static void validateInputProduct(Product input) {
         if (!input.containsBand("detector_index")) {
@@ -108,13 +118,66 @@ public class OlciSensorHarmonisationOp extends Operator {
         return outputProduct;
     }
 
+    static float[][] parseCameraGains(BufferedReader reader) throws IOException {
+        final ArrayList<float[]> arrayList = new ArrayList<>();
+        while (true) {
+            String line = reader.readLine();
+            if (line == null) {
+                break;
+            }
+            line = line.trim();
+            if (line.startsWith("#")) {
+                continue;
+            }
+
+            final StringTokenizer tokenizer = new StringTokenizer(line, ",", false);
+            final int numTokens = tokenizer.countTokens();
+            final float[] gains = new float[numTokens];
+            for (int i = 0; i < numTokens; i++) {
+                final String gainString = tokenizer.nextToken();
+                gains[i] = Float.parseFloat(gainString.trim());
+            }
+
+            arrayList.add(gains);
+        }
+
+        final int numGainVectors = arrayList.size();
+        final float[][] result = new float[numGainVectors][];
+        for (int i = 0; i < numGainVectors; i++) {
+            result[i] = arrayList.get(i);
+        }
+        return result;
+    }
+
+    static int getCameraIndex(int detector) {
+        if (detector < 0 || detector >= NUM_DETECTORS) {
+            return -1;
+        }
+        return detector / DETECTORS_PER_CAMERA;
+    }
+
     @Override
     public void initialize() throws OperatorException {
         validateInputProduct(l1bProduct);
 
         targetProduct = createOutputProduct(l1bProduct);
         setTargetProduct(targetProduct);
-        // load auxdata
+
+        loadCameraGains();
+    }
+
+    private void loadCameraGains() throws OperatorException {
+        final InputStream inputStream = OlciSensorHarmonisationOp.class.getResourceAsStream("camera_gains.csv");
+        if (inputStream == null) {
+            throw new IllegalArgumentException("resource I/O error: resource not found: camera_gains.csv");
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            cameraGains = parseCameraGains(reader);
+
+        } catch (IOException e) {
+            throw new OperatorException(e.getMessage());
+        }
     }
 
     @Override
@@ -125,15 +188,13 @@ public class OlciSensorHarmonisationOp extends Operator {
         // get source tile for radiance
         // get source tile detector index
 
-        for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+        for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
             checkForCancellation();
 
-            // detect camera
-            // load factor
+            for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
 
-            for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
-
-
+                // detect camera
+                // load factor
             }
         }
     }
