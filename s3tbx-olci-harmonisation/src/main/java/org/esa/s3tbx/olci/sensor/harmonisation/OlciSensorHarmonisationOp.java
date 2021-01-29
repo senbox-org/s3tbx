@@ -67,6 +67,7 @@ public class OlciSensorHarmonisationOp extends Operator {
     private Product targetProduct;
 
     private float[][] cameraGains;
+    private int sensorIndex;
 
     static void validateInputProduct(Product input) {
         if (!input.containsBand("detector_index")) {
@@ -187,13 +188,16 @@ public class OlciSensorHarmonisationOp extends Operator {
 
         // get source tile for radiance
         // get source tile detector index
+        final Band detectorIndexBand = l1bProduct.getBand("detector_index");
+        final Tile detectorIndexTile = getSourceTile(detectorIndexBand, targetRectangle);
 
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
             checkForCancellation();
 
             for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
-
                 // detect camera
+                final int detectorIndex = detectorIndexTile.getSampleInt(x, y);
+                final int cameraIndex = getCameraIndex(detectorIndex);
                 // load factor
             }
         }
