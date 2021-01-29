@@ -17,6 +17,7 @@
 package org.esa.s3tbx.olci.sensor.harmonisation;
 
 import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
@@ -200,6 +201,34 @@ public class OlciSensorHarmonisationOpTest {
         }
     }
 
+    @Test
+    public void testLoadDetectorWavelengths() {
+        final Product testProduct = createTestProduct();
+
+        // testdata contains only data for 3 wavelengths instead of 3700 tb 2021-01-29
+        final float[][] wavelengths = OlciSensorHarmonisationOp.loadDetectorWavelengths(testProduct);
+        assertEquals(21, wavelengths.length);
+
+        float[] wavelength_vector = wavelengths[3];
+        assertEquals(3, wavelength_vector.length);
+        assertEquals(5.f, wavelength_vector[0], 1e-8);
+
+        wavelength_vector = wavelengths[7];
+        assertEquals(3, wavelength_vector.length);
+        assertEquals(10.f, wavelength_vector[1], 1e-8);
+
+        wavelength_vector = wavelengths[19];
+        assertEquals(3, wavelength_vector.length);
+        assertEquals(23.f, wavelength_vector[2], 1e-8);
+    }
+
+    @Test
+    public void testGetBandIndex() {
+        assertEquals(0, OlciSensorHarmonisationOp.getBandIndex("Oa01_radiance"));
+        assertEquals(6, OlciSensorHarmonisationOp.getBandIndex("Oa07_radiance"));
+        assertEquals(20, OlciSensorHarmonisationOp.getBandIndex("Oa21_radiance"));
+    }
+
     private Product createTestProduct() {
         final Product product = new Product("test_me", "test_type", 3, 5);
         product.setStartTime(ProductData.UTC.create(new Date(1611314251000L), 0));
@@ -215,7 +244,15 @@ public class OlciSensorHarmonisationOpTest {
 
         product.addTiePointGrid(new TiePointGrid("heffalump", 2, 3, 0.5, 0.5, 2, 2, new float[6]));
 
-        product.getMetadataRoot().addElement(new MetadataElement("lambda0"));
+        final MetadataElement lambda0 = new MetadataElement("lambda0");
+        for (int i = 1; i < 22; i++) {
+            final MetadataElement waveLengthElement = new MetadataElement("Central wavelengths for band " + i);
+            final float[] values = {1.f + i, 2.f + i, 3.f + i};
+            final MetadataAttribute centralWavelength = new MetadataAttribute("Central wavelength", ProductData.createInstance(values), true);
+            waveLengthElement.addAttribute(centralWavelength);
+            lambda0.addElement(waveLengthElement);
+        }
+        product.getMetadataRoot().addElement(lambda0);
 
         return product;
     }

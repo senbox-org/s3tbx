@@ -18,6 +18,7 @@ package org.esa.s3tbx.olci.sensor.harmonisation;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
@@ -26,6 +27,7 @@ import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
+import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
@@ -58,6 +60,8 @@ public class OlciSensorHarmonisationOp extends Operator {
     private static final String SUFFIX = "_HARM";
     private static final int DETECTORS_PER_CAMERA = 740;
     private static final int NUM_DETECTORS = 3700;
+    private static final int NUM_BANDS = 21;
+    private static final String LAMBDA_0 = "lambda0";
 
     @SourceProduct(description = "OLCI L1b or fully compatible product.",
             label = "OLCI L1b product")
@@ -66,8 +70,15 @@ public class OlciSensorHarmonisationOp extends Operator {
     @TargetProduct
     private Product targetProduct;
 
+    @Parameter(defaultValue = "false",
+            description = "If set to true, sensor cross-harmonisation (i.e. S3A->S3B or S3B->S3A) is performed using linear regression.",
+            label = "Perform sensor cross-harmonisation")
+    private boolean performSensorCrossHarmonisation;
+
     private float[][] cameraGains;
-    private int sensorIndex;
+    private int sensorIndex;    // 0 -> S3A, 1 -> S3B
+    private float[][] detectorWavelengths;
+    private DetectorRegression regression;
 
     static void validateInputProduct(Product input) {
         if (!input.containsBand("detector_index")) {
@@ -81,8 +92,8 @@ public class OlciSensorHarmonisationOp extends Operator {
         }
 
         final MetadataElement metadataRoot = input.getMetadataRoot();
-        if (!metadataRoot.containsElement("lambda0")) {
-            throw new OperatorException("Metadata element 'lambda0' missing.");
+        if (!metadataRoot.containsElement(LAMBDA_0)) {
+            throw new OperatorException("Metadata element '" + LAMBDA_0 + "' missing.");
         }
     }
 
@@ -100,8 +111,8 @@ public class OlciSensorHarmonisationOp extends Operator {
 
         // @todo 2 tb/tb which metadata to copy over? 2021-01-21
 
-        for (int i = 1; i < 22; i++) {
-            final String bandName = "Oa" + String.format("%02d", i) + "_radiance";
+        for (int i = 0; i < NUM_BANDS; i++) {
+            final String bandName = "Oa" + String.format("%02d", i + 1) + "_radiance";
             final Band sourceBand = input.getBand(bandName);
 
             final Band band = outputProduct.addBand(bandName + SUFFIX, ProductData.TYPE_FLOAT32);
@@ -180,16 +191,46 @@ public class OlciSensorHarmonisationOp extends Operator {
         return targetBandName.substring(0, lastIndex);
     }
 
+    static float[][] loadDetectorWavelengths(Product l1bProduct) {
+        final MetadataElement metadataRoot = l1bProduct.getMetadataRoot();
+        final MetadataElement lambdaElement = metadataRoot.getElement(LAMBDA_0);
+
+        final float[][] waveLengths = new float[NUM_BANDS][];
+
+        for (int i = 0; i < NUM_BANDS; i++) {
+            final MetadataElement waveLengthElement = lambdaElement.getElement("Central wavelengths for band " + (i + 1));
+            final MetadataAttribute centralWavelengthAttribute = waveLengthElement.getAttribute("Central wavelength");
+            final ProductData wavelengthData = centralWavelengthAttribute.getData();
+            final int numElems = wavelengthData.getNumElems();
+
+            waveLengths[i] = new float[numElems];
+            for (int k = 0; k < numElems; k++) {
+                waveLengths[i][k] = wavelengthData.getElemFloatAt(k);
+            }
+        }
+
+        return waveLengths;
+    }
+
+    static int getBandIndex(String bandName) {
+        final String numberString = bandName.substring(2, 4);
+        return Integer.parseInt(numberString) - 1;
+    }
+
     @Override
     public void initialize() throws OperatorException {
         validateInputProduct(l1bProduct);
 
         sensorIndex = getSensorIndex(l1bProduct.getName());
+        if (performSensorCrossHarmonisation) {
+            regression = DetectorRegression.get(sensorIndex);
+        }
 
         targetProduct = createOutputProduct(l1bProduct);
         setTargetProduct(targetProduct);
 
         loadCameraGains();
+        detectorWavelengths = loadDetectorWavelengths(l1bProduct);
     }
 
     private void loadCameraGains() throws OperatorException {
@@ -211,8 +252,6 @@ public class OlciSensorHarmonisationOp extends Operator {
         final Rectangle targetRectangle = targetTile.getRectangle();
         final String targetBandName = targetBand.getName();
 
-        final float[] sensorCameraGains = cameraGains[sensorIndex];
-
         // get source tile for radiance
         final String sourceBandName = getSourceBandName(targetBandName);
         final Band radianceBand = l1bProduct.getBand(sourceBandName);
@@ -221,6 +260,15 @@ public class OlciSensorHarmonisationOp extends Operator {
         final Band detectorIndexBand = l1bProduct.getBand("detector_index");
         final Tile detectorIndexTile = getSourceTile(detectorIndexBand, targetRectangle);
 
+        if (performSensorCrossHarmonisation) {
+            processCrossHarmonisation(targetTile, targetRectangle, radianceSourceTile, detectorIndexTile);
+        } else {
+            processCameraFlattening(targetTile, targetRectangle, radianceSourceTile, detectorIndexTile);
+        }
+    }
+
+    private void processCameraFlattening(Tile targetTile, Rectangle targetRectangle, Tile radianceSourceTile, Tile detectorIndexTile) {
+        final float[] sensorCameraGains = cameraGains[sensorIndex];
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
             checkForCancellation();
 
@@ -237,6 +285,37 @@ public class OlciSensorHarmonisationOp extends Operator {
                 final float sourceRadiance = radianceSourceTile.getSampleFloat(x, y);
 
                 final float targetRadiance = sourceRadiance * camGain;
+                targetTile.setSample(x, y, targetRadiance);
+            }
+        }
+    }
+
+    private void processCrossHarmonisation(Tile targetTile, Rectangle targetRectangle, Tile radianceSourceTile, Tile detectorIndexTile) {
+        final float[] sensorCameraGains = cameraGains[sensorIndex];
+
+        final int bandIndex = getBandIndex(targetTile.getRasterDataNode().getName());
+        final float[] bandWavelengths = detectorWavelengths[bandIndex];
+
+        for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+            checkForCancellation();
+
+            for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+                // detect camera
+                final int detectorIndex = detectorIndexTile.getSampleInt(x, y);
+                final int cameraIndex = getCameraIndex(detectorIndex);
+                if (cameraIndex == -1) {
+                    targetTile.setSample(x, y, Float.NaN);
+                    continue;
+                }
+
+                final float detectorWavelength = bandWavelengths[detectorIndex];
+                final float regFactor = regression.calculate(detectorWavelength);
+
+                final float camGain = sensorCameraGains[cameraIndex];
+                final float sourceRadiance = radianceSourceTile.getSampleFloat(x, y);
+
+                final float targetRadiance = sourceRadiance * camGain * regFactor;
+
                 targetTile.setSample(x, y, targetRadiance);
             }
         }
