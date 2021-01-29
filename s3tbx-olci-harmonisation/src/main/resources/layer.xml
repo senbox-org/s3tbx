@@ -25,9 +25,9 @@
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="OLCI Sensor Harmonisation"/>
                 <attr name="operatorName" stringvalue="OlciSensorHarmonisation"/>
-                <attr name="dialogTitle" stringvalue="OLCI Sensor Harmonisation - v1.2"/>
+                <attr name="dialogTitle" stringvalue="OLCI Sensor Harmonisation - v1.0"/>
                 <attr name="targetProductNameSuffix" stringvalue="_harm"/>
-                <!--<attr name="helpId" stringvalue="olciO2aHarmonisationTool"/>-->
+                <attr name="helpId" stringvalue="olciSensorHarmonisationTool"/>
             </file>
         </folder>
     </folder>
