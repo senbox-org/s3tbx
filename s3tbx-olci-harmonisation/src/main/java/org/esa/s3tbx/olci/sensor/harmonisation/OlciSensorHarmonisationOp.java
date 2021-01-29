@@ -157,9 +157,34 @@ public class OlciSensorHarmonisationOp extends Operator {
         return detector / DETECTORS_PER_CAMERA;
     }
 
+    static int getSensorIndex(String productName) {
+        final String upperCaseName = productName.toUpperCase();
+        if (upperCaseName.contains("S3A_OL")) {
+            return 0;
+        } else if (upperCaseName.contains("S3B_OL")) {
+            return 1;
+        } else if (upperCaseName.contains("S3C_OL")) {
+            return 2;
+        } else if (upperCaseName.contains("S3D_OL")) {
+            return 3;
+        }
+
+        throw new OperatorException("Invalid input product type: " + productName);
+    }
+
+    static String getSourceBandName(String targetBandName) {
+        final int lastIndex = targetBandName.indexOf(SUFFIX);
+        if (lastIndex < 0) {
+            throw new OperatorException("Invalid band name: " + targetBandName);
+        }
+        return targetBandName.substring(0, lastIndex);
+    }
+
     @Override
     public void initialize() throws OperatorException {
         validateInputProduct(l1bProduct);
+
+        sensorIndex = getSensorIndex(l1bProduct.getName());
 
         targetProduct = createOutputProduct(l1bProduct);
         setTargetProduct(targetProduct);
@@ -186,8 +211,13 @@ public class OlciSensorHarmonisationOp extends Operator {
         final Rectangle targetRectangle = targetTile.getRectangle();
         final String targetBandName = targetBand.getName();
 
+        final float[] sensorCameraGains = cameraGains[sensorIndex];
+
         // get source tile for radiance
-        // get source tile detector index
+        final String sourceBandName = getSourceBandName(targetBandName);
+        final Band radianceBand = l1bProduct.getBand(sourceBandName);
+        final Tile radianceSourceTile = getSourceTile(radianceBand, targetRectangle);
+
         final Band detectorIndexBand = l1bProduct.getBand("detector_index");
         final Tile detectorIndexTile = getSourceTile(detectorIndexBand, targetRectangle);
 
@@ -198,7 +228,16 @@ public class OlciSensorHarmonisationOp extends Operator {
                 // detect camera
                 final int detectorIndex = detectorIndexTile.getSampleInt(x, y);
                 final int cameraIndex = getCameraIndex(detectorIndex);
-                // load factor
+                if (cameraIndex == -1) {
+                    targetTile.setSample(x, y, Float.NaN);
+                    continue;
+                }
+
+                final float camGain = sensorCameraGains[cameraIndex];
+                final float sourceRadiance = radianceSourceTile.getSampleFloat(x, y);
+
+                final float targetRadiance = sourceRadiance * camGain;
+                targetTile.setSample(x, y, targetRadiance);
             }
         }
     }

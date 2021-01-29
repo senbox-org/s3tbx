@@ -113,7 +113,7 @@ public class OlciSensorHarmonisationOpTest {
             assertEquals(Float.NaN, band.getNoDataValue(), 1e-8);
             assertTrue(band.isNoDataValueUsed());
 
-            assertEquals("mW.m-2.sr-1.nm-1",band.getUnit());
+            assertEquals("mW.m-2.sr-1.nm-1", band.getUnit());
             assertEquals(12.5f * i, band.getSpectralWavelength(), 1e-8);
             assertEquals(0.8f * i, band.getSpectralBandwidth(), 1e-8);
         }
@@ -166,6 +166,38 @@ public class OlciSensorHarmonisationOpTest {
     public void testGetCameraIndex_invalidDetectors() {
         assertEquals(-1, OlciSensorHarmonisationOp.getCameraIndex(-1));
         assertEquals(-1, OlciSensorHarmonisationOp.getCameraIndex(3700));
+    }
+
+    @Test
+    public void testGetSensorIndex() {
+        assertEquals(0, OlciSensorHarmonisationOp.getSensorIndex("S3A_OL_1_EFR____20130621T100921_20130621T101417_20140613T170503_0295_001_002______LN2_D_NR____.SEN3"));
+        assertEquals(1, OlciSensorHarmonisationOp.getSensorIndex("S3B_OL_1_EFR____20190420T120914_20190420T121214_20190421T151110_0179_024_237_3420_LN1_O_NT_002.SEN3"));
+        assertEquals(2, OlciSensorHarmonisationOp.getSensorIndex("S3C_OL_1_EFR____20190420T120914_20190420T121214_20190421T151110_0179_024_237_3420_LN1_O_NT_002.SEN3"));
+        assertEquals(3, OlciSensorHarmonisationOp.getSensorIndex("S3D_OL_1_EFR____20190420T120914_20190420T121214_20190421T151110_0179_024_237_3420_LN1_O_NT_002.SEN3"));
+    }
+
+    @Test
+    public void testGetSensorIndex_invalidType() {
+        try {
+            OlciSensorHarmonisationOp.getSensorIndex("S3A_SL_1_RBT____20180809T035343_20180809T035643_20180810T124116_0179_034_218_2520_MAR_O_NT_002.SEN3");
+            fail("OperatorException expected");
+        } catch (OperatorException expected) {
+        }
+    }
+
+    @Test
+    public void testGetSourceBandName() {
+        assertEquals("Oa07_radiance", OlciSensorHarmonisationOp.getSourceBandName("Oa07_radiance_HARM"));
+        assertEquals("Oa18_radiance", OlciSensorHarmonisationOp.getSourceBandName("Oa18_radiance_HARM"));
+    }
+
+    @Test
+    public void testGetSourceBandName_invalidName() {
+        try {
+            OlciSensorHarmonisationOp.getSourceBandName("Heffalump");
+            fail("OperatorException expected");
+        } catch (OperatorException expected) {
+        }
     }
 
     private Product createTestProduct() {
