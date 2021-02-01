@@ -21,9 +21,9 @@
 
 <map version="2.0">
 
-    <!--<mapID target="olciO2aHarmonisationTool" url="harmonisation/OlciO2aHarmonisationTool.html"/>-->
-    <!--<mapID target="olciO2aHarmonisationAlgorithmSpecification" url="harmonisation/OlciO2aHarmonisationAlgorithmSpecification.html"/>-->
-    <!--<mapID target="olciO2aHarmonisationProcessorDescription" url="harmonisation/OlciO2aHarmonisationProcessorDescription.html"/>-->
-    <!--<mapID target="olciO2aHarmonisationCommandLine" url="harmonisation/OlciO2aHarmonisationCommandLine.html"/>-->
+    <mapID target="olciSensorHarmonisationTool" url="harmonisation/OlciSensorHarmonisationTool.html"/>
+    <mapID target="olciSensorHarmonisationAlgorithmSpecification" url="harmonisation/OlciSensorHarmonisationAlgorithmSpecification.html"/>
+    <mapID target="olciSensorHarmonisationProcessorDescription" url="harmonisation/OlciSensorHarmonisationProcessorDescription.html"/>
+    <mapID target="olciSensorHarmonisationCommandLine" url="harmonisation/OlciSensorHarmonisationCommandLine.html"/>
 
 </map>

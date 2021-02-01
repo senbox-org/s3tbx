@@ -27,9 +27,9 @@
         <tocitem text="Optical">
             <tocitem text="Preprocessing">
                 <tocitem text="OLCI Sensor Harmonisation" target="olciSensorHarmonisationTool">
-                    <!--<tocitem text="Algorithm Specification" target="olciO2aHarmonisationAlgorithmSpecification"/>-->
-                    <!--<tocitem text="Processor Description" target="olciO2aHarmonisationProcessorDescription"/>-->
-                    <!--<tocitem text="Command Line Processing" target="olciO2aHarmonisationCommandLine"/>-->
+                    <tocitem text="Algorithm Specification" target="olciSensorHarmonisationAlgorithmSpecification"/>
+                    <tocitem text="Processor Description" target="olciSensorHarmonisationProcessorDescription"/>
+                    <tocitem text="Command Line Processing" target="olciSensorHarmonisationCommandLine"/>
                 </tocitem>
             </tocitem>
         </tocitem>
