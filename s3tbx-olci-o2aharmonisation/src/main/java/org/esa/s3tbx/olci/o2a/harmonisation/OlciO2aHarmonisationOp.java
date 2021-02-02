@@ -1,7 +1,11 @@
 package org.esa.s3tbx.olci.o2a.harmonisation;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -16,7 +20,7 @@ import org.esa.snap.core.util.math.MathUtils;
 import org.json.simple.parser.ParseException;
 import smile.neighbor.KDTree;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
