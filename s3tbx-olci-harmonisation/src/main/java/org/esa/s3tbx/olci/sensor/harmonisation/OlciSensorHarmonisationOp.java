@@ -75,7 +75,7 @@ public class OlciSensorHarmonisationOp extends Operator {
             label = "Perform sensor cross-harmonisation")
     private boolean performSensorCrossHarmonisation;
 
-    private float[][] cameraGains;
+    private double[][] cameraGains;
     private int sensorIndex;    // 0 -> S3A, 1 -> S3B
     private float[][] detectorWavelengths;
     private DetectorRegression regression;
@@ -130,8 +130,8 @@ public class OlciSensorHarmonisationOp extends Operator {
         return outputProduct;
     }
 
-    static float[][] parseCameraGains(BufferedReader reader) throws IOException {
-        final ArrayList<float[]> arrayList = new ArrayList<>();
+    static double[][] parseCameraGains(BufferedReader reader) throws IOException {
+        final ArrayList<double[]> arrayList = new ArrayList<>();
         while (true) {
             String line = reader.readLine();
             if (line == null) {
@@ -144,17 +144,17 @@ public class OlciSensorHarmonisationOp extends Operator {
 
             final StringTokenizer tokenizer = new StringTokenizer(line, ",", false);
             final int numTokens = tokenizer.countTokens();
-            final float[] gains = new float[numTokens];
+            final double[] gains = new double[numTokens];
             for (int i = 0; i < numTokens; i++) {
                 final String gainString = tokenizer.nextToken();
-                gains[i] = Float.parseFloat(gainString.trim());
+                gains[i] = Double.parseDouble(gainString.trim());
             }
 
             arrayList.add(gains);
         }
 
         final int numGainVectors = arrayList.size();
-        final float[][] result = new float[numGainVectors][];
+        final double[][] result = new double[numGainVectors][];
         for (int i = 0; i < numGainVectors; i++) {
             result[i] = arrayList.get(i);
         }
@@ -268,7 +268,7 @@ public class OlciSensorHarmonisationOp extends Operator {
     }
 
     private void processCameraFlattening(Tile targetTile, Rectangle targetRectangle, Tile radianceSourceTile, Tile detectorIndexTile) {
-        final float[] sensorCameraGains = cameraGains[sensorIndex];
+        final double[] sensorCameraGains = cameraGains[sensorIndex];
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
             checkForCancellation();
 
@@ -281,17 +281,17 @@ public class OlciSensorHarmonisationOp extends Operator {
                     continue;
                 }
 
-                final float camGain = sensorCameraGains[cameraIndex];
-                final float sourceRadiance = radianceSourceTile.getSampleFloat(x, y);
+                final double camGain = sensorCameraGains[cameraIndex];
+                final double sourceRadiance = radianceSourceTile.getSampleDouble(x, y);
 
-                final float targetRadiance = sourceRadiance * camGain;
+                final float targetRadiance = (float) (sourceRadiance * camGain);
                 targetTile.setSample(x, y, targetRadiance);
             }
         }
     }
 
     private void processCrossHarmonisation(Tile targetTile, Rectangle targetRectangle, Tile radianceSourceTile, Tile detectorIndexTile) {
-        final float[] sensorCameraGains = cameraGains[sensorIndex];
+        final double[] sensorCameraGains = cameraGains[sensorIndex];
 
         final int bandIndex = getBandIndex(targetTile.getRasterDataNode().getName());
         final float[] bandWavelengths = detectorWavelengths[bandIndex];
@@ -309,12 +309,12 @@ public class OlciSensorHarmonisationOp extends Operator {
                 }
 
                 final float detectorWavelength = bandWavelengths[detectorIndex];
-                final float regFactor = regression.calculate(detectorWavelength);
+                final double regFactor = regression.calculate(detectorWavelength);
 
-                final float camGain = sensorCameraGains[cameraIndex];
-                final float sourceRadiance = radianceSourceTile.getSampleFloat(x, y);
+                final double camGain = sensorCameraGains[cameraIndex];
+                final double sourceRadiance = radianceSourceTile.getSampleDouble(x, y);
 
-                final float targetRadiance = sourceRadiance * camGain * regFactor;
+                final float targetRadiance = (float) (sourceRadiance * camGain * regFactor);
 
                 targetTile.setSample(x, y, targetRadiance);
             }

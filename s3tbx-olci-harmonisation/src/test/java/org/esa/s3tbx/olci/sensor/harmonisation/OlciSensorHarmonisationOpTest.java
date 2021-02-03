@@ -132,16 +132,16 @@ public class OlciSensorHarmonisationOpTest {
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(resource.getBytes());
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-        final float[][] gains = OlciSensorHarmonisationOp.parseCameraGains(reader);
+        final double[][] gains = OlciSensorHarmonisationOp.parseCameraGains(reader);
         assertEquals(2, gains.length);
 
-        final float[] s3aGain = gains[0];
-        assertEquals(0.992f, s3aGain[0], 1e-8);
-        assertEquals(0.997f, s3aGain[1], 1e-8);
+        final double[] s3aGain = gains[0];
+        assertEquals(0.992, s3aGain[0], 1e-8);
+        assertEquals(0.997, s3aGain[1], 1e-8);
 
-        final float[] s3bGain = gains[1];
-        assertEquals(1.f, s3bGain[2], 1e-8);
-        assertEquals(0.996f, s3bGain[3], 1e-8);
+        final double[] s3bGain = gains[1];
+        assertEquals(1.0, s3bGain[2], 1e-8);
+        assertEquals(0.996, s3bGain[3], 1e-8);
     }
 
     @Test

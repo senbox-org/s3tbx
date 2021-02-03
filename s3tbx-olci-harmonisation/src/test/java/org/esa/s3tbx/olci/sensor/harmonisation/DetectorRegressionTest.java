@@ -29,18 +29,18 @@ public class DetectorRegressionTest {
     public void testAtoB() {
         final DetectorRegression.AtoB atoB = new DetectorRegression.AtoB();
 
-        assertEquals(0.9739829897880554f, atoB.calculate(0), 1e-8);
-        assertEquals(0.979218065738678f, atoB.calculate(400.234f), 1e-8);
-        assertEquals(0.9847421050071716f, atoB.calculate(822.56f), 1e-8);
+        assertEquals(0.973983, atoB.calculate(0), 1e-8);
+        assertEquals(0.979218065738678, atoB.calculate(400.234f), 1e-8);
+        assertEquals(0.9847420847680664, atoB.calculate(822.56f), 1e-8);
     }
 
     @Test
     public void testBtoA() {
         final DetectorRegression.BtoA btoA = new DetectorRegression.BtoA();
 
-        assertEquals(1.0267119407653809f, btoA.calculate(0), 1e-8);
-        assertEquals(1.0212229490280151f, btoA.calculate(400.234f), 1e-8);
-        assertEquals(1.0154943466186523f, btoA.calculate(822.56f), 1e-8);
+        assertEquals(1.0267119651985712, btoA.calculate(0), 1e-8);
+        assertEquals(1.0212229941381172, btoA.calculate(400.234f), 1e-8);
+        assertEquals(1.0154943263499572, btoA.calculate(822.56f), 1e-8);
     }
 
     @Test

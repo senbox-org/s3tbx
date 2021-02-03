@@ -20,10 +20,10 @@ import org.esa.snap.core.gpf.OperatorException;
 
 abstract class DetectorRegression {
 
-    private static float G0 = 2.60170f;
-    private static float G1 = 0.001308f;
+    private static double G0 = 2.60170;
+    private static double G1 = 0.001308;
 
-    abstract float calculate(float waveLength);
+    abstract double calculate(float waveLength);
 
     static DetectorRegression get(int sensorIndex) {
         if (sensorIndex == 0) {
@@ -37,15 +37,15 @@ abstract class DetectorRegression {
 
     static class AtoB extends DetectorRegression {
         @Override
-        float calculate(float waveLength) {
-            return 1.f + (G1 * waveLength - G0) * 0.01f;
+        double calculate(float waveLength) {
+            return 1.0 + (G1 * waveLength - G0) * 0.01;
         }
     }
 
     static class BtoA extends DetectorRegression {
         @Override
-        float calculate(float waveLength) {
-            return 1.f / (1.f + (G1 * waveLength - G0) * 0.01f);
+        double calculate(float waveLength) {
+            return 1.0 / (1.0 + (G1 * waveLength - G0) * 0.01);
         }
     }
 
