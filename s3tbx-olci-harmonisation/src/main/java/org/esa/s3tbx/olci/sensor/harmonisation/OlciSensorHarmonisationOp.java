@@ -144,12 +144,13 @@ public class OlciSensorHarmonisationOp extends Operator {
 
                 ProductUtils.copyBand(inputBandName, input, outputProduct, true);
             }
+
+            ProductUtils.copyFlagCodings(input, outputProduct);
         }
 
         ProductUtils.copyTiePointGrids(input, outputProduct);
         ProductUtils.copyGeoCoding(input, outputProduct);
         ProductUtils.copyMetadata(input, outputProduct);
-        ProductUtils.copyFlagCodings(input, outputProduct);
 
         return outputProduct;
     }
