@@ -33,6 +33,7 @@ import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -93,10 +94,10 @@ public class OlciSensorHarmonisationOpTest {
     }
 
     @Test
-    public void testCreateOutputProduct() {
+    public void testCreateOutputProduct_dontCopyInputs() {
         final Product testProduct = createTestProduct();
 
-        final Product outputProduct = OlciSensorHarmonisationOp.createOutputProduct(testProduct);
+        final Product outputProduct = OlciSensorHarmonisationOp.createOutputProduct(testProduct, false);
 
         assertEquals("test_type_HARM", outputProduct.getProductType());
         assertEquals("test_me_HARM", outputProduct.getName());
@@ -117,10 +118,27 @@ public class OlciSensorHarmonisationOpTest {
             assertEquals("mW.m-2.sr-1.nm-1", band.getUnit());
             assertEquals(12.5f * i, band.getSpectralWavelength(), 1e-8);
             assertEquals(0.8f * i, band.getSpectralBandwidth(), 1e-8);
+            assertEquals("whatever harmonized", band.getDescription());
         }
+
+        final Band detectorIndex = outputProduct.getBand("detector_index");
+        assertNull(detectorIndex);
 
         final TiePointGrid heffalump = outputProduct.getTiePointGrid("heffalump");
         assertNotNull(heffalump);
+
+        final MetadataElement metadataRoot = outputProduct.getMetadataRoot();
+        final MetadataElement lambda0 = metadataRoot.getElement("lambda0");
+        assertNotNull(lambda0);
+    }
+
+    @Test
+    public void testCreateOutputProduct_copyInputs() {
+        final Product testProduct = createTestProduct();
+
+        final Product outputProduct = OlciSensorHarmonisationOp.createOutputProduct(testProduct, true);
+        final Band detectorIndex = outputProduct.getBand("detector_index");
+        assertNotNull(detectorIndex);
     }
 
     @Test
@@ -240,6 +258,7 @@ public class OlciSensorHarmonisationOpTest {
             band.setUnit("mW.m-2.sr-1.nm-1");
             band.setSpectralWavelength(12.5f * i);
             band.setSpectralBandwidth(0.8f * i);
+            band.setDescription("whatever");
         }
 
         product.addTiePointGrid(new TiePointGrid("heffalump", 2, 3, 0.5, 0.5, 2, 2, new float[6]));

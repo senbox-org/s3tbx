@@ -75,6 +75,12 @@ public class OlciSensorHarmonisationOp extends Operator {
             label = "Perform sensor cross-harmonisation")
     private boolean performSensorCrossHarmonisation;
 
+    @Parameter(defaultValue = "false",
+            description = "If set to true, all bands of the input product (except for the radiances) are copied to the target product. " +
+                    "If set to false, only the tie-point rasters are copied",
+            label = "Copy input bands")
+    private boolean copyInputBands;
+
     private double[][] cameraGains;
     private int sensorIndex;    // 0 -> S3A, 1 -> S3B
     private float[][] detectorWavelengths;
@@ -97,7 +103,7 @@ public class OlciSensorHarmonisationOp extends Operator {
         }
     }
 
-    static Product createOutputProduct(Product input) {
+    static Product createOutputProduct(Product input, boolean copyInputBands) {
         final String inputProductType = input.getProductType();
         final String inputName = input.getName();
         final Product outputProduct = new Product(inputName + SUFFIX,
@@ -108,8 +114,6 @@ public class OlciSensorHarmonisationOp extends Operator {
         outputProduct.setDescription("OLCI sensor harmonized L1b");
         outputProduct.setStartTime(input.getStartTime());
         outputProduct.setEndTime(input.getEndTime());
-
-        // @todo 2 tb/tb which metadata to copy over? 2021-01-21
 
         for (int i = 0; i < NUM_BANDS; i++) {
             final String bandName = "Oa" + String.format("%02d", i + 1) + "_radiance";
@@ -122,10 +126,30 @@ public class OlciSensorHarmonisationOp extends Operator {
             band.setUnit(sourceBand.getUnit());
             band.setSpectralWavelength(sourceBand.getSpectralWavelength());
             band.setSpectralBandwidth(sourceBand.getSpectralBandwidth());
+            band.setDescription(sourceBand.getDescription() + " harmonized");
+        }
+
+        if (copyInputBands) {
+            final Band[] inputBands = input.getBands();
+            for (final Band inputBand : inputBands) {
+                final String inputBandName = inputBand.getName();
+                if (inputBandName.contains("_radiance") ||
+                        inputBandName.contains("lambda") ||
+                        inputBandName.contains("FWHM") ||
+                        inputBandName.contains("solar") ||
+                        inputBandName.contains("frame")) {
+                    // skip original radiances and metadata exploded to full raster size tb 2021-02-03
+                    continue;
+                }
+
+                ProductUtils.copyBand(inputBandName, input, outputProduct, true);
+            }
         }
 
         ProductUtils.copyTiePointGrids(input, outputProduct);
         ProductUtils.copyGeoCoding(input, outputProduct);
+        ProductUtils.copyMetadata(input, outputProduct);
+        ProductUtils.copyFlagCodings(input, outputProduct);
 
         return outputProduct;
     }
@@ -226,7 +250,7 @@ public class OlciSensorHarmonisationOp extends Operator {
             regression = DetectorRegression.get(sensorIndex);
         }
 
-        targetProduct = createOutputProduct(l1bProduct);
+        targetProduct = createOutputProduct(l1bProduct, copyInputBands);
         setTargetProduct(targetProduct);
 
         loadCameraGains();
