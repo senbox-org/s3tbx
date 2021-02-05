@@ -1,0 +1,102 @@
+<!--
+  ~ Copyright (C) 2021 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - OLCI Sensor Harmonisation Processor Description</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            SNAP Data Processors - OLCI Sensor Harmonisation Processor Description
+        </td>
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+                src="../images/snap_header.jpg"
+                border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h3>Processor Description</h3>
+
+<h4>I/O Parameters Tab</h4>
+
+<p align="center"><img src="../images/gui_io.png"></p>
+
+<h5>Source Product Group</h5>
+
+<p class="i1">
+    <b>OLCI L1b product: </b>
+    Used to select the OLCI L1b source product.
+    The source product can also be a 'compatible' OLCI L1b product, however, all OLCI radiances, the detector indices and,
+    if a cross harmonisation is executed, the per-detector wavelength (lambda0) must be present and named the same as the
+    original data.
+    Use the <b>...</b> button to
+    open a data product currently not opened in the Sentinel Toolbox.
+</p>
+
+<h5>Target Product Group</h5>
+
+<p class="i1">
+    <b>Name:</b>
+    Used to specify the name of the target product.
+</p>
+
+<p class="i1">
+    <b>Save as:</b>
+    Used to specify whether the target product should be saved to the file system. The
+    combo box presents a list of file formats.
+</p>
+
+<p class="i1">
+    <b>Open in SNAP:</b>
+    Used to specify whether the target product should be opened in the Sentinel Toolbox.
+    When the target product is not saved, it is opened in the Sentinel Toolbox automatically.
+</p>
+
+<h3>The Processing Parameters</h3>
+
+<p align="center"><img src="../images/gui_params.png"></p>
+
+<p class="i1">
+    <b>Perform sensor cross-calibration: </b><br>
+    If set to true, the sensor cross harmonisation is executed. I.e. the processor runs a flat-fielding operation
+    followed
+    by the linear regression calculation on the detector sensitivities. The parameters for this process are detected
+    automatically from the input sensor type.
+
+    <b>Copy input bands: </b><br>
+    If set to true, the processor copies all bands, i.e. all datasets of full raster resolution to the output product.
+    This
+    excludes the original radiance bands and all bands that have been extrapolated to full resolution from
+    the metadata.
+</p>
+
+<h3>The Processor Output</h3>
+
+<p>
+    The processor provides for the OLCI radiance bands <i>OaXX_radiance</i> the corrected radiances.
+</p>
+
+
+<hr>
+</body>
+</html>
