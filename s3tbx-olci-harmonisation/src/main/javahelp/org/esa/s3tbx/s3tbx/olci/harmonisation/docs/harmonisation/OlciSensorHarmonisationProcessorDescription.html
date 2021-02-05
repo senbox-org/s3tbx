@@ -74,16 +74,18 @@
 
 <h3>The Processing Parameters</h3>
 
-<p align="center"><img src="../images/gui_parms.png"></p>
+<p align="center"><img src="../images/gui_params.png"></p>
 
 <p class="i1">
-    <b>Perform sensor cross-harmonisation: </b><br>
-    If set to true, the sensor cross harmonisation is executed. I.e. the processor runs a flat-fielding operation followed
+    <b>Perform sensor cross-calibration: </b><br>
+    If set to true, the sensor cross harmonisation is executed. I.e. the processor runs a flat-fielding operation
+    followed
     by the linear regression calculation on the detector sensitivities. The parameters for this process are detected
     automatically from the input sensor type.
 
     <b>Copy input bands: </b><br>
-    If set to true, the processor copies all bands, i.e. all datasets of full raster resolution to the output product. This
+    If set to true, the processor copies all bands, i.e. all datasets of full raster resolution to the output product.
+    This
     excludes the original radiance bands and all bands that have been extrapolated to full resolution from
     the metadata.
 </p>

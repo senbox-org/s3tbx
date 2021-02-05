@@ -9,7 +9,7 @@ OpenIDE-Module-Layer: layer.xml
 OpenIDE-Module-Long-Description: <p>This operator performs OLCI Sensor Harmonisation</p
  ><p><b>Vendor:</b> Brockmann Consult GmbH</p><p><b>Contact address:</
  b> Chrysanderstr. 1, 21029 Hamburg (Germany)</p><p><b>Copyright:<
- /b> (C) 2018 by Brockmann Consult GmbH</p><p><b>Vendor:</b> Brockmann
+ /b> (C) 2021 by Brockmann Consult GmbH</p><p><b>Vendor:</b> Brockmann
   Consult GmbH</p><p><b>License:</b> http://www.gnu.org/licenses/gpl.h
  tml</p>
 
