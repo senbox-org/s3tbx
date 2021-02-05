@@ -71,9 +71,9 @@ public class OlciSensorHarmonisationOp extends Operator {
     private Product targetProduct;
 
     @Parameter(defaultValue = "false",
-            description = "If set to true, sensor cross-harmonisation (i.e. S3A->S3B or S3B->S3A) is performed using linear regression.",
-            label = "Perform sensor cross-harmonisation")
-    private boolean performSensorCrossHarmonisation;
+            description = "If set to true, in addition to the camera homogenisation, sensor cross-calibration (i.e. S3A->S3B or S3B->S3A) is performed using linear regression",
+            label = "Perform sensor cross-calibration")
+    private boolean performSensorCrossCalibration;
 
     @Parameter(defaultValue = "false",
             description = "If set to true, all bands of the input product (except for the radiances) are copied to the target product. " +
@@ -111,7 +111,7 @@ public class OlciSensorHarmonisationOp extends Operator {
                                                   input.getSceneRasterWidth(),
                                                   input.getSceneRasterHeight());
 
-        outputProduct.setDescription("OLCI sensor harmonized L1b");
+        outputProduct.setDescription("OLCI sensor harmonised L1b");
         outputProduct.setStartTime(input.getStartTime());
         outputProduct.setEndTime(input.getEndTime());
 
@@ -126,7 +126,7 @@ public class OlciSensorHarmonisationOp extends Operator {
             band.setUnit(sourceBand.getUnit());
             band.setSpectralWavelength(sourceBand.getSpectralWavelength());
             band.setSpectralBandwidth(sourceBand.getSpectralBandwidth());
-            band.setDescription(sourceBand.getDescription() + " harmonized");
+            band.setDescription(sourceBand.getDescription() + " harmonised");
         }
 
         if (copyInputBands) {
@@ -247,7 +247,7 @@ public class OlciSensorHarmonisationOp extends Operator {
         validateInputProduct(l1bProduct);
 
         sensorIndex = getSensorIndex(l1bProduct.getName());
-        if (performSensorCrossHarmonisation) {
+        if (performSensorCrossCalibration) {
             regression = DetectorRegression.get(sensorIndex);
         }
 
@@ -285,7 +285,7 @@ public class OlciSensorHarmonisationOp extends Operator {
         final Band detectorIndexBand = l1bProduct.getBand("detector_index");
         final Tile detectorIndexTile = getSourceTile(detectorIndexBand, targetRectangle);
 
-        if (performSensorCrossHarmonisation) {
+        if (performSensorCrossCalibration) {
             processCrossHarmonisation(targetTile, targetRectangle, radianceSourceTile, detectorIndexTile);
         } else {
             processCameraFlattening(targetTile, targetRectangle, radianceSourceTile, detectorIndexTile);

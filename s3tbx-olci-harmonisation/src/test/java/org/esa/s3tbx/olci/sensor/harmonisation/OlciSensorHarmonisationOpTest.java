@@ -104,7 +104,7 @@ public class OlciSensorHarmonisationOpTest {
         assertEquals(3, outputProduct.getSceneRasterWidth());
         assertEquals(5, outputProduct.getSceneRasterHeight());
 
-        assertEquals("OLCI sensor harmonized L1b", outputProduct.getDescription());
+        assertEquals("OLCI sensor harmonised L1b", outputProduct.getDescription());
         assertEquals("22-JAN-2021 11:17:31.000000", outputProduct.getStartTime().format());
         assertEquals("22-JAN-2021 11:20:31.000000", outputProduct.getEndTime().format());
 
@@ -118,7 +118,7 @@ public class OlciSensorHarmonisationOpTest {
             assertEquals("mW.m-2.sr-1.nm-1", band.getUnit());
             assertEquals(12.5f * i, band.getSpectralWavelength(), 1e-8);
             assertEquals(0.8f * i, band.getSpectralBandwidth(), 1e-8);
-            assertEquals("whatever harmonized", band.getDescription());
+            assertEquals("whatever harmonised", band.getDescription());
         }
 
         final Band detectorIndex = outputProduct.getBand("detector_index");
