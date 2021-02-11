@@ -74,16 +74,6 @@ import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RHOW_OOS;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RTOSA_OOR;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RTOSA_OOS;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_VALID_PE;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_rw;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_unciop;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_uncsumiop_unckd;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_aann;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_rpath;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_rw;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_trans;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_iop;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_kd;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_rwnorm;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.Result;
 import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES;
@@ -163,13 +153,13 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     private static final String STANDARD_NETS = "C2RCC-Nets";
     private static final String EXTREME_NETS = "C2X-Nets";
-    private static final String CIWAWA_NETS = "CIWAWA-Nets"; // TODO (mp, FEB2021) - Rename
+    private static final String COMPLEX_NETS = "COMPLEX-Nets"; // TODO (mp, FEB2021) - Rename
     private static final Map<String, String[]> c2rccNetSetMap = new HashMap<>();
 
     static {
         c2rccNetSetMap.put(STANDARD_NETS, NnPaths.getStandard());
         c2rccNetSetMap.put(EXTREME_NETS, NnPaths.getExtreme());
-        c2rccNetSetMap.put(CIWAWA_NETS, NnPaths.getCiwawa());
+        c2rccNetSetMap.put(COMPLEX_NETS, NnPaths.getComplex());
     }
 
 
@@ -261,7 +251,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             label = "Alternative NN Path")
     private String alternativeNNPath;
 
-    @Parameter(valueSet = {STANDARD_NETS, EXTREME_NETS},
+    @Parameter(valueSet = {STANDARD_NETS, EXTREME_NETS, COMPLEX_NETS},
             description = "Set of neuronal nets for algorithm.",
             defaultValue = STANDARD_NETS,
             label = "Set of neuronal nets")

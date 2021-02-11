@@ -47,19 +47,18 @@ public final class NnPaths {
         return extremeNets;
     }
 
-    static String[] getCiwawa() {
-        // todo(mp, FEB2021) - those nets are provided by the ciwawa project, but they should not be named like that
+    static String[] getComplex() {
         String[] ciwawa = new String[10];
-        ciwawa[IDX_iop_rw] = "msi/ciwawa/iop_rw/77x77x77_28.3.net";
-        ciwawa[IDX_iop_unciop] = "msi/ciwawa/iop_unciop/17x77x37_11486.7.net";
-        ciwawa[IDX_iop_uncsumiop_unckd] = "msi/ciwawa/iop_uncsumiop_unckd/17x77x37_9113.1.net";
-        ciwawa[IDX_rtosa_aann] = "msi/ciwawa/rtosa_aann/31x7x31_7.2.net";
-        ciwawa[IDX_rtosa_rpath] = "msi/ciwawa/rtosa_rpath/37x37x37_175.7.net";
-        ciwawa[IDX_rtosa_rw] = "msi/ciwawa/rtosa_rw/77x77x77x77_10688.3.net";
-        ciwawa[IDX_rtosa_trans] = "msi/ciwawa/rtosa_trans/77x77x77_7809.2.net";
-        ciwawa[IDX_rw_iop] = "msi/ciwawa/rw_iop/77x77x77_785.6.net";
-        ciwawa[IDX_rw_kd] = "msi/ciwawa/rw_kd/77x77x77_61.6.net";
-        ciwawa[IDX_rw_rwnorm] = "msi/ciwawa/rw_rwnorm/27x7x27_28.0.net";
+        ciwawa[IDX_iop_rw] = "msi/ciwawa_20200321/iop_rw/55x55x55_2775.5.net";
+        ciwawa[IDX_iop_unciop] = "msi/ciwawa_20200321/iop_unciop/55x55x55_23294.6.net";
+        ciwawa[IDX_iop_uncsumiop_unckd] = "msi/ciwawa_20200321/iop_uncsumiop_unckd/55x55x55_23199.4.net";
+        ciwawa[IDX_rtosa_aann] = "msi/ciwawa_20200321/rtosa_aann/55x7x55_51.2.net";
+        ciwawa[IDX_rtosa_rpath] = "msi/ciwawa_20200321/rtosa_rpath/55x55x55_1247.8.net";
+        ciwawa[IDX_rtosa_rw] = "msi/ciwawa_20200321/rtosa_rw/99x99x99_9210.2.net";
+        ciwawa[IDX_rtosa_trans] = "msi/ciwawa_20200321/rtosa_trans/55x55x55_107567.4.net";
+        ciwawa[IDX_rw_iop] = "msi/ciwawa_20200321/rw_iop/39x39x39_1935.5.net";
+        ciwawa[IDX_rw_kd] = "msi/ciwawa_20200321/rw_kd/55x55x55_315.5.net";
+        ciwawa[IDX_rw_rwnorm] = "msi/ciwawa_20200321/rw_rwnorm/27x7x27_28.0.net";
         return ciwawa;
     }
 }
