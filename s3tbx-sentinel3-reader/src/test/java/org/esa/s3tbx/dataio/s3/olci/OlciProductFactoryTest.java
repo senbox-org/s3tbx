@@ -43,20 +43,20 @@ public class OlciProductFactoryTest {
 
     @Test
     public void testGetForwardAndInverseKeys_pixelCoding_fractionalAccuracy() {
-        final String fractionalAccuracy = System.getProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY);
+        final String fractionalAccuracy = System.getProperty(OLCI_USE_FRACTIONAL_ACCURACY);
 
         try {
-            System.setProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, "true");
+            System.setProperty(OLCI_USE_FRACTIONAL_ACCURACY, "true");
 
             final String[] codingKeys = OlciProductFactory.getForwardAndInverseKeys_pixelCoding();
             assertEquals("FWD_PIXEL_INTERPOLATING", codingKeys[0]);
-            assertEquals("INV_PIXEL_QUAD_TREE", codingKeys[1]);
+            assertEquals("INV_PIXEL_QUAD_TREE_INTERPOLATING", codingKeys[1]);
 
         } finally {
             if (fractionalAccuracy != null) {
-                System.setProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, fractionalAccuracy);
+                System.setProperty(OLCI_USE_FRACTIONAL_ACCURACY, fractionalAccuracy);
             } else {
-                System.clearProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY);
+                System.clearProperty(OLCI_USE_FRACTIONAL_ACCURACY);
             }
         }
     }
@@ -103,12 +103,12 @@ public class OlciProductFactoryTest {
     public void testGetForwardAndInverseKeys_pixelCoding_default() {
         final String forwardKey = System.getProperty(SYSPROP_OLCI_PIXEL_CODING_FORWARD);
         final String inverseKey = System.getProperty(SYSPROP_OLCI_PIXEL_CODING_INVERSE);
-        final String fractionalAccuracy = System.getProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY);
+        final String fractionalAccuracy = System.getProperty(OLCI_USE_FRACTIONAL_ACCURACY);
 
         try {
             System.clearProperty(SYSPROP_OLCI_PIXEL_CODING_INVERSE);
             System.clearProperty(SYSPROP_OLCI_PIXEL_CODING_FORWARD);
-            System.clearProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY);
+            System.clearProperty(OLCI_USE_FRACTIONAL_ACCURACY);
 
             final String[] codingKeys = OlciProductFactory.getForwardAndInverseKeys_pixelCoding();
             assertEquals("FWD_PIXEL", codingKeys[0]);
@@ -122,7 +122,7 @@ public class OlciProductFactoryTest {
                 System.setProperty(SYSPROP_OLCI_PIXEL_CODING_INVERSE, inverseKey);
             }
             if (fractionalAccuracy != null) {
-                System.setProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, fractionalAccuracy);
+                System.setProperty(OLCI_USE_FRACTIONAL_ACCURACY, fractionalAccuracy);
             }
         }
     }
