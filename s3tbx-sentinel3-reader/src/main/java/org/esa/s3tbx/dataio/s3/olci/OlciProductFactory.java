@@ -4,7 +4,6 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.s3tbx.dataio.s3.SentinelTimeCoding;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReaderFactory;
 import org.esa.snap.core.dataio.geocoding.ComponentFactory;
@@ -16,6 +15,7 @@ import org.esa.snap.core.dataio.geocoding.InverseCoding;
 import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
 import org.esa.snap.core.dataio.geocoding.forward.PixelInterpolatingForward;
 import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelGeoIndexInverse;
 import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
@@ -24,11 +24,7 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGrid;
-import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import org.esa.snap.runtime.Config;
-import ucar.ma2.Array;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
 
 import java.awt.image.Raster;
 import java.io.File;
@@ -40,6 +36,8 @@ import java.util.logging.Level;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.esa.snap.core.dataio.geocoding.InverseCoding.KEY_SUFFIX_INTERPOLATING;
 
 /**
  * @author Tonio Fincke
@@ -55,7 +53,7 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
     private int subSamplingY;
 
     public final static String OLCI_USE_PIXELGEOCODING = "s3tbx.reader.olci.pixelGeoCoding";
-    final static String SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY = "s3tbx.reader.olci.fractionAccuracy";
+    public final static String OLCI_USE_FRACTIONAL_ACCURACY = "s3tbx.reader.olci.fractionAccuracy";
     final static String SYSPROP_OLCI_PIXEL_CODING_FORWARD = "s3tbx.reader.olci.pixelGeoCoding.forward";
     final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
     final static String SYSPROP_OLCI_TIE_POINT_CODING_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
@@ -204,10 +202,10 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         // the unit string follows the CF conventions.
         // See: http://www.unidata.ucar.edu/software/udunits/udunits-2.0.4/udunits2lib.html#Syntax
         if (targetNode.getName().startsWith("ADG443_NN") ||
-                targetNode.getName().startsWith("CHL_NN") ||
-                targetNode.getName().startsWith("CHL_OC4ME") ||
-                targetNode.getName().startsWith("KD490_M07") ||
-                targetNode.getName().startsWith("TSM_NN")) {
+            targetNode.getName().startsWith("CHL_NN") ||
+            targetNode.getName().startsWith("CHL_OC4ME") ||
+            targetNode.getName().startsWith("KD490_M07") ||
+            targetNode.getName().startsWith("TSM_NN")) {
             if (targetNode instanceof Band) {
                 final Band targetBand = (Band) targetNode;
                 String unit = targetBand.getUnit();
@@ -270,13 +268,18 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final String[] codingNames = new String[2];
 
         final Preferences preferences = Config.instance("s3tbx").preferences();
-        final boolean useFractAccuracy = preferences.getBoolean(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, false);
+        final boolean useFractAccuracy = preferences.getBoolean(OLCI_USE_FRACTIONAL_ACCURACY, false);
         if (useFractAccuracy) {
             codingNames[0] = PixelInterpolatingForward.KEY;
+            String inverseKey = preferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY_INTERPOLATING);
+            if (!inverseKey.endsWith(KEY_SUFFIX_INTERPOLATING)) {
+                inverseKey += KEY_SUFFIX_INTERPOLATING;
+            }
+            codingNames[1] = inverseKey;
         } else {
             codingNames[0] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_FORWARD, PixelForward.KEY);
+            codingNames[1] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
         }
-        codingNames[1] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
 
         return codingNames;
     }

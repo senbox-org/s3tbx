@@ -110,6 +110,10 @@
         When using tie-point geo-coding, the product is opened quicker,
         using the per-pixel geo-coding will lead to more precise results.
     </li>
+    <li><b>Use fractional accuracy in Sentinel-3 OLCI products with activated per-pixel geo-coding</b><br>
+        When geo-coding is pixel-based, a sub-pixel fraction accuracy shall be used.
+        This leads to a more precise result in the reprojection if bilinear or bicubic interpolation was chosen for the reprojection.
+    </li>
     <li><b>Read Sentinel-3 OLCI L1 product with custom calibration</b><br>
         This option provides a way to set scaling factors and offsets to OLCI L1 bands.
         When switched on, the S3TBX will consider factors and offsets given in the <i><b>s3tbx.properties</b></i> file.<br>
