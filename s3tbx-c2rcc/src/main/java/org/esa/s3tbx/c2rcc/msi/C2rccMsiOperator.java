@@ -153,7 +153,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     private static final String STANDARD_NETS = "C2RCC-Nets";
     private static final String EXTREME_NETS = "C2X-Nets";
-    private static final String COMPLEX_NETS = "COMPLEX-Nets"; // TODO (mp, FEB2021) - Rename
+    private static final String COMPLEX_NETS = "C2X-COMPLEX-Nets";
     private static final Map<String, String[]> c2rccNetSetMap = new HashMap<>();
 
     static {
