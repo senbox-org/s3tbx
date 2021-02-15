@@ -48,17 +48,17 @@ public final class NnPaths {
     }
 
     static String[] getComplex() {
-        String[] ciwawa = new String[10];
-        ciwawa[IDX_iop_rw] = "msi/ciwawa_20200321/iop_rw/55x55x55_2775.5.net";
-        ciwawa[IDX_iop_unciop] = "msi/ciwawa_20200321/iop_unciop/55x55x55_23294.6.net";
-        ciwawa[IDX_iop_uncsumiop_unckd] = "msi/ciwawa_20200321/iop_uncsumiop_unckd/55x55x55_23199.4.net";
-        ciwawa[IDX_rtosa_aann] = "msi/ciwawa_20200321/rtosa_aann/55x7x55_51.2.net";
-        ciwawa[IDX_rtosa_rpath] = "msi/ciwawa_20200321/rtosa_rpath/55x55x55_1247.8.net";
-        ciwawa[IDX_rtosa_rw] = "msi/ciwawa_20200321/rtosa_rw/99x99x99_9210.2.net";
-        ciwawa[IDX_rtosa_trans] = "msi/ciwawa_20200321/rtosa_trans/55x55x55_107567.4.net";
-        ciwawa[IDX_rw_iop] = "msi/ciwawa_20200321/rw_iop/39x39x39_1935.5.net";
-        ciwawa[IDX_rw_kd] = "msi/ciwawa_20200321/rw_kd/55x55x55_315.5.net";
-        ciwawa[IDX_rw_rwnorm] = "msi/ciwawa_20200321/rw_rwnorm/27x7x27_28.0.net";
-        return ciwawa;
+        String[] complex = new String[10];
+        complex[IDX_iop_rw] = "msi/complex_20200321/iop_rw/55x55x55_2775.5.net";
+        complex[IDX_iop_unciop] = "msi/complex_20200321/iop_unciop/55x55x55_23294.6.net";
+        complex[IDX_iop_uncsumiop_unckd] = "msi/complex_20200321/iop_uncsumiop_unckd/55x55x55_23199.4.net";
+        complex[IDX_rtosa_aann] = "msi/complex_20200321/rtosa_aann/55x7x55_51.2.net";
+        complex[IDX_rtosa_rpath] = "msi/complex_20200321/rtosa_rpath/55x55x55_1247.8.net";
+        complex[IDX_rtosa_rw] = "msi/complex_20200321/rtosa_rw/99x99x99_9210.2.net";
+        complex[IDX_rtosa_trans] = "msi/complex_20200321/rtosa_trans/55x55x55_107567.4.net";
+        complex[IDX_rw_iop] = "msi/complex_20200321/rw_iop/39x39x39_1935.5.net";
+        complex[IDX_rw_kd] = "msi/complex_20200321/rw_kd/55x55x55_315.5.net";
+        complex[IDX_rw_rwnorm] = "msi/complex_20200321/rw_rwnorm/27x7x27_28.0.net";
+        return complex;
     }
 }
