@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE helpsetref PUBLIC "-//NetBeans//DTD JavaHelp Help Set Reference 1.0//EN" "http://www.netbeans.org/dtds/helpsetref-1_0.dtd">
+<!-- The path must be a composition of the maven groupId and the artifactId.
+See also https://senbox.atlassian.net/wiki/display/SENBOX/Help+System+Migration -->
+<helpsetref url="nbdocs:/org/esa/s3tbx/s3tbx/dos/operator/docs/help.hs" merge="true"/>
+
+

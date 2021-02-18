@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - Slope Calculation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Slope Calculation</td>
+        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg" border=0></a>
+        </td>
+    </tr>
+</table>
+
+<p>
+    The Slope Calculation processor provides the computation of terrain slope and aspect angle from
+    a given altitude band in the source product. Slope and aspect are simply computed from the altitudes
+    in a moving 3x3 pixel window around the considered pixel.
+
+    The computation is completely sensor independent. The source product just needs to contain an altitude band,
+    a geocoding, and its format must be supported by SNAP.
+</p>
+<br>
+
+<p><a href="DarkObjectSubtractionProcessorDescription.html">Slope Calculation Processor Description</a></p>
+<p><a href="DarkObjectSubtractionAlgorithmDescription.html">Slope Calculation Algorithm Specification</a></p>
+<p><a href="DarkObjectSubtractionCommandLine.html">Processing from the Command Line</a></p>
+
+</body>
+</html>
