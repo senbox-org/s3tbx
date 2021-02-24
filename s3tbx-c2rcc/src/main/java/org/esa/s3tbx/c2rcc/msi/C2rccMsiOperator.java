@@ -219,10 +219,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             description = "Used as fallback if elevation could not be taken from GETASSE30 DEM.")
     private double elevation;
 
-    @Parameter(alias = "TSMfac", defaultValue = "1.72", description = "TSM factor (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM factor")
+    @Parameter(alias = "TSMfac", defaultValue = "1.06", description = "TSM factor (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM factor")
     private double TSMfakBpart;
 
-    @Parameter(alias = "TSMexp", defaultValue = "3.1", description = "TSM exponent (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM exponent")
+    @Parameter(alias = "TSMexp", defaultValue = "0.942", description = "TSM exponent (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM exponent")
     private double TSMfakBwit;
 
     @Parameter(alias = "CHLexp", defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop_apig^CHLexp * CHLfac).", label = "CHL exponent")
@@ -811,7 +811,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             autoGrouping.append(":kd");
         }
 
-        Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
+        Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", TSMfakBpart + " * pow(iop_btot, " + TSMfakBwit + ")", "g m^-3", "Total suspended matter dry weight concentration");
         Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
 
         conc_tsm.setValidPixelExpression(validPixelExpression);
