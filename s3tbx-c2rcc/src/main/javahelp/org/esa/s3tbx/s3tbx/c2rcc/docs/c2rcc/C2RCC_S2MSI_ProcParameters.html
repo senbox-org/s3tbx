@@ -56,17 +56,17 @@
     <li><b>Elevation</b><br>
         The value used as elevation for scene.
     </li>
-    <li><b>TSM factor bpart</b><br>
-        Conversion factor bpart. (TSM = bpart * <b>TSMfakBpart</b> + bwit * TSMfakBwit)
+    <li><b>TSM factor</b><br>
+        Conversion factor bpart. (TSM = <b>TSMfac</b> * iop_btot^TSMexp)
     </li>
-    <li><b>TSM factor bwit</b><br>
-        Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * <b>TSMfakBwit</b>)
+    <li><b>TSM exponent</b><br>
+        Conversion factor bwit. (TSM = TSMfac * iop_btot^<b>TSMexp</b>)
     </li>
     <li><b>CHL exponent</b><br>
-        Chlorophyll exponent (CHL = iop-apig^<b>CHLexp</b> * CHLfak)
+        Chlorophyll exponent (CHL = iop_apig^<b>CHLexp</b> * CHLfac)
     </li>
     <li><b>CHL factor</b><br>
-        Chlorophyll factor (CHL = iop-apig^CHLexp * <b>CHLfak</b>)
+        Chlorophyll factor (CHL = iop_apig^CHLexp * <b>CHLfac</b>)
     </li>
     <li><b>Threshold rtosa OOS</b><br>
         Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances
