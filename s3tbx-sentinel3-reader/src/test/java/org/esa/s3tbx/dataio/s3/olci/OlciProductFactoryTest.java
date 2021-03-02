@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.esa.s3tbx.dataio.s3.olci.OlciProductFactory.*;
+import static org.esa.snap.core.dataio.geocoding.ComponentGeoCoding.SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY;
 import static org.junit.Assert.*;
 
 public class OlciProductFactoryTest {
@@ -43,39 +44,20 @@ public class OlciProductFactoryTest {
 
     @Test
     public void testGetForwardAndInverseKeys_pixelCoding_fractionalAccuracy() {
-        final String fractionalAccuracy = System.getProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY);
+        final String fractionalAccuracy = System.getProperty(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY);
 
         try {
-            System.setProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, "true");
+            System.setProperty(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY, "true");
 
             final String[] codingKeys = OlciProductFactory.getForwardAndInverseKeys_pixelCoding();
             assertEquals("FWD_PIXEL_INTERPOLATING", codingKeys[0]);
-            assertEquals("INV_PIXEL_QUAD_TREE", codingKeys[1]);
+            assertEquals("INV_PIXEL_QUAD_TREE_INTERPOLATING", codingKeys[1]);
 
         } finally {
             if (fractionalAccuracy != null) {
-                System.setProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, fractionalAccuracy);
+                System.setProperty(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY, fractionalAccuracy);
             } else {
-                System.clearProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY);
-            }
-        }
-    }
-
-    @Test
-    public void testGetForwardAndInverseKeys_pixelCoding_forwardCoding() {
-        final String forwardKey = System.getProperty(SYSPROP_OLCI_PIXEL_CODING_FORWARD);
-        try {
-            System.setProperty(SYSPROP_OLCI_PIXEL_CODING_FORWARD, "hoppla");
-
-            final String[] codingKeys = OlciProductFactory.getForwardAndInverseKeys_pixelCoding();
-            assertEquals("hoppla", codingKeys[0]);
-            assertEquals("INV_PIXEL_QUAD_TREE", codingKeys[1]);
-
-        } finally {
-            if (forwardKey != null) {
-                System.setProperty(SYSPROP_OLCI_PIXEL_CODING_FORWARD, forwardKey);
-            } else {
-                System.clearProperty(SYSPROP_OLCI_PIXEL_CODING_FORWARD);
+                System.clearProperty(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY);
             }
         }
     }
@@ -101,28 +83,23 @@ public class OlciProductFactoryTest {
 
     @Test
     public void testGetForwardAndInverseKeys_pixelCoding_default() {
-        final String forwardKey = System.getProperty(SYSPROP_OLCI_PIXEL_CODING_FORWARD);
         final String inverseKey = System.getProperty(SYSPROP_OLCI_PIXEL_CODING_INVERSE);
-        final String fractionalAccuracy = System.getProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY);
+        final String fractionalAccuracy = System.getProperty(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY);
 
         try {
             System.clearProperty(SYSPROP_OLCI_PIXEL_CODING_INVERSE);
-            System.clearProperty(SYSPROP_OLCI_PIXEL_CODING_FORWARD);
-            System.clearProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY);
+            System.clearProperty(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY);
 
             final String[] codingKeys = OlciProductFactory.getForwardAndInverseKeys_pixelCoding();
             assertEquals("FWD_PIXEL", codingKeys[0]);
             assertEquals("INV_PIXEL_QUAD_TREE", codingKeys[1]);
 
         } finally {
-            if (forwardKey != null) {
-                System.setProperty(SYSPROP_OLCI_PIXEL_CODING_FORWARD, forwardKey);
-            }
             if (inverseKey != null) {
                 System.setProperty(SYSPROP_OLCI_PIXEL_CODING_INVERSE, inverseKey);
             }
             if (fractionalAccuracy != null) {
-                System.setProperty(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, fractionalAccuracy);
+                System.setProperty(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY, fractionalAccuracy);
             }
         }
     }

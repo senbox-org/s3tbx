@@ -46,6 +46,7 @@ import javax.media.jai.operator.TranslateDescriptor;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.Color;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -389,7 +390,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         return product;
     }
 
-    protected final File getInputFile() {
+    private File getInputFile() {
         return productReader.getInputFile();
     }
 
@@ -433,6 +434,14 @@ public abstract class AbstractProductFactory implements ProductFactory {
             final SentinelTimeCoding sentinelTimeCoding = new SentinelTimeCoding(timeStamps);
             targetProduct.setSceneTimeCoding(sentinelTimeCoding);
         }
+    }
+
+    protected double[] loadTiePointData(String tpgName) {
+        final MultiLevelImage mlImage = getImageForTpg(tpgName);
+        final Raster tpData = mlImage.getImage(0).getData();
+        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
+        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
+        return tiePoints;
     }
 
     private void setTimes(Product targetProduct) {

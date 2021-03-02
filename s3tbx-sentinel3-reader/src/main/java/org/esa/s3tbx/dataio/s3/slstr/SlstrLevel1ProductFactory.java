@@ -26,6 +26,7 @@ import org.esa.snap.core.dataio.geocoding.GeoChecks;
 import org.esa.snap.core.dataio.geocoding.GeoRaster;
 import org.esa.snap.core.dataio.geocoding.InverseCoding;
 import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.forward.PixelInterpolatingForward;
 import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
@@ -64,11 +65,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
+import static org.esa.snap.core.dataio.geocoding.ComponentGeoCoding.SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY;
+import static org.esa.snap.core.dataio.geocoding.InverseCoding.KEY_SUFFIX_INTERPOLATING;
+
 public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
     public final static String SLSTR_L1B_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl1b.pixelGeoCodings";
-    private final static String SLSTR_L1B_PIXEL_GEOCODING_FORWARD = "s3tbx.reader.slstrl1b.pixelGeoCodings.forward";
-    private final static String SLSTR_L1B_PIXEL_GEOCODING_INVERSE = "s3tbx.reader.slstrl1b.pixelGeoCodings.inverse";
+
+    final static String SLSTR_L1B_PIXEL_GEOCODING_INVERSE = "s3tbx.reader.slstrl1b.pixelGeoCodings.inverse";
     public final static String SLSTR_L1B_LOAD_ORPHAN_PIXELS = "s3tbx.reader.slstrl1b.loadOrphanPixels";
     public final static String SLSTR_L1B_CUSTOM_CALIBRATION = "s3tbx.reader.slstrl1b.applyCustomCalibration";
     public final static String SLSTR_L1B_S3MPC_CALIBRATION = "s3tbx.reader.slstrl1b.applyS3MPCCalibration";
@@ -278,7 +282,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         return Double.NaN;
     }
 
-    protected void configureDescription(Band sourceBand, RasterDataNode targetNode) {
+    private void configureDescription(Band sourceBand, RasterDataNode targetNode) {
         final String sourceBandName = sourceBand.getName();
         String gridIndex = getGridIndex(sourceBandName);
         if (gridIndex.startsWith("i") || gridIndex.startsWith("f")) {
@@ -483,7 +487,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         return Config.instance("s3tbx").load().preferences().getBoolean(SLSTR_L1B_S3MPC_CALIBRATION, false);
     }
 
-    protected void loadOrphanPixelBands(Product targetProduct, final Product sourceProduct) throws IOException {
+    private void loadOrphanPixelBands(Product targetProduct, final Product sourceProduct) throws IOException {
         File file = sourceProduct.getFileLocation();
         NetcdfFile netcdfFile = NetcdfFileOpener.open(file.getAbsolutePath());
         boolean foundOrphan = false;
@@ -635,18 +639,33 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
                                                       width, height, resolutionInKm);
 
-            final Preferences preferences = Config.instance("s3tbx").preferences();
-            final String fwdKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_FORWARD, PixelForward.KEY);
-            final String invKey = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_INVERSE, PixelQuadTreeInverse.KEY);
+            final String[] codingKeys = getForwardAndInverseKeys();
 
-            final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
-            final InverseCoding inverse = ComponentFactory.getInverse(invKey);
+            final ForwardCoding forward = ComponentFactory.getForward(codingKeys[0]);
+            final InverseCoding inverse = ComponentFactory.getInverse(codingKeys[1]);
 
             final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
             geoCoding.initialize();
             geoCodingMap.put(nameEnd, geoCoding);
             return geoCoding;
         }
+    }
+
+    // package access for testing only tb 2021-03-02
+    static String[] getForwardAndInverseKeys() {
+        final String[] keys = new String[2];
+        final Preferences snapPreferences = Config.instance("snap").preferences();
+        final boolean useFractAccuracy = snapPreferences.getBoolean(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY, false);
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        keys[1] = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_INVERSE, PixelQuadTreeInverse.KEY);
+        if (useFractAccuracy) {
+            keys[0] = PixelInterpolatingForward.KEY;
+            keys[1] = keys[1].concat(KEY_SUFFIX_INTERPOLATING);
+        } else {
+            keys[0] = PixelForward.KEY;
+        }
+        return keys;
     }
 
     static String[] getGeolocationVariableNames(String extension) throws IOException {
@@ -702,7 +721,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
     private static class SlstrOrphanOpImage extends NetcdfOpImage {
 
-        public SlstrOrphanOpImage(Variable variable, NetcdfFile netcdf, RasterDataNode rdn, Dimension imageTileSize,
+        SlstrOrphanOpImage(Variable variable, NetcdfFile netcdf, RasterDataNode rdn, Dimension imageTileSize,
                                   ResolutionLevel resolutionLevel) {
             super(variable, new int[]{}, false, netcdf, ImageManager.getDataBufferType(rdn.getDataType()),
                     rdn.getRasterWidth(), rdn.getRasterHeight(), imageTileSize, resolutionLevel,
