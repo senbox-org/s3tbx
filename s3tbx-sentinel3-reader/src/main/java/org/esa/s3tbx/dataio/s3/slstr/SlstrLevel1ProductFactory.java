@@ -25,9 +25,6 @@ import org.esa.snap.core.dataio.geocoding.ForwardCoding;
 import org.esa.snap.core.dataio.geocoding.GeoChecks;
 import org.esa.snap.core.dataio.geocoding.GeoRaster;
 import org.esa.snap.core.dataio.geocoding.InverseCoding;
-import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
-import org.esa.snap.core.dataio.geocoding.forward.PixelInterpolatingForward;
-import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoCoding;
@@ -63,16 +60,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.prefs.Preferences;
-
-import static org.esa.snap.core.dataio.geocoding.ComponentGeoCoding.SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY;
-import static org.esa.snap.core.dataio.geocoding.InverseCoding.KEY_SUFFIX_INTERPOLATING;
 
 public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
     public final static String SLSTR_L1B_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl1b.pixelGeoCodings";
-
-    final static String SLSTR_L1B_PIXEL_GEOCODING_INVERSE = "s3tbx.reader.slstrl1b.pixelGeoCodings.inverse";
+    public final static String SLSTR_L1B_PIXEL_GEOCODING_INVERSE = "s3tbx.reader.slstrl1b.pixelGeoCodings.inverse";
     public final static String SLSTR_L1B_LOAD_ORPHAN_PIXELS = "s3tbx.reader.slstrl1b.loadOrphanPixels";
     public final static String SLSTR_L1B_CUSTOM_CALIBRATION = "s3tbx.reader.slstrl1b.applyCustomCalibration";
     public final static String SLSTR_L1B_S3MPC_CALIBRATION = "s3tbx.reader.slstrl1b.applyS3MPCCalibration";
@@ -111,6 +103,45 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         nameToIndexMap = new HashMap<>();
         geoCodingMap = new HashMap<>();
         netcdfFileList = new ArrayList<>();
+    }
+
+    // package access for testing only tb 2020-01-28
+    static double getResolutionInKm(String nameEnd) {
+        switch (nameEnd) {
+            case "an":
+            case "ao":
+            case "bn":
+            case "bo":
+            case "cn":
+            case "co":
+                return 0.5;
+
+            case "fn":
+            case "fo":
+            case "in":
+            case "io":
+                return 1.0;
+
+            default:
+                throw new IllegalArgumentException("Unsupported resolution on bands ending with: " + nameEnd);
+        }
+    }
+
+    static String[] getGeolocationVariableNames(String extension) throws IOException {
+        final String[] varNames = new String[2];
+
+        if (!(extension.equals("an") || extension.equals("ao") ||
+                extension.equals("bn") || extension.equals("bo") ||
+                extension.equals("cn") || extension.equals("co") ||
+                extension.equals("in") || extension.equals("io") ||
+                extension.equals("fn") || extension.equals("fo"))) {
+            throw new IOException("Unknown or unsupported band extension: " + extension);
+        }
+
+        varNames[0] = "longitude_" + extension;
+        varNames[1] = "latitude_" + extension;
+
+        return varNames;
     }
 
     protected Double getStartOffset(String gridIndex) {
@@ -398,42 +429,42 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
         targetProduct.setAutoGrouping(
-                                      "F*BT_*n:F*exception_*n:" +
-                                      "F*BT_*o:F*exception_*o:" +
-                                      "S*BT_in:S*exception_in:" +
-                                      "S*BT_io:S*exception_io:" +
-                                      "radiance_an:S*exception_an:" +
-                                      "radiance_ao:S*exception_ao:" +
-                                      "radiance_bn:S*exception_bn:" +
-                                      "radiance_bo:S*exception_bo:" +
-                                      "radiance_cn:S*exception_cn:" +
-                                      "radiance_co:S*exception_co:" +
-                                      (isOrphanPixelsAllowed() ? "*orphan*:" : "") +
-                                      "x_*:y_*:" +
-                                      "elevation:latitude:longitude:" +
-                                      "specific_humidity:temperature_profile:" +
-                                      "bayes_an_:bayes_ao_:" +
-                                      "bayes_bn_:bayes_bo_:" +
-                                      "bayes_cn_:bayes_co_:" +
-                                      "bayes_in_:bayes_io_:" +
-                                      "cloud_an_:cloud_ao_:" +
-                                      "cloud_bn_:cloud_bo_:" +
-                                      "cloud_cn_:cloud_co_:" +
-                                      "cloud_in_:cloud_io_:" +
-                                      "confidence_an_:confidence_ao_:" +
-                                      "confidence_bn_:confidence_bo_:" +
-                                      "confidence_cn_:confidence_co_:" +
-                                      "confidence_in_:confidence_io_:" +
-                                      "pointing_an_:pointing_ao_:" +
-                                      "pointing_bn_:pointing_bo_:" +
-                                      "pointing_cn_:pointing_co_:" +
-                                      "pointing_in_:pointing_io_:" +
-                                      "S*_exception_an_*:S*_exception_ao_*:" +
-                                      "S*_exception_bn_*:S*_exception_bo_*:" +
-                                      "S*_exception_cn_*:S*_exception_co_*:" +
-                                      "S*_exception_in_*:S*_exception_io_*:" +
-                                      "F*_exception_*n_*:F*_exception_*o_*:" +
-                                      bandGrouping);
+                "F*BT_*n:F*exception_*n:" +
+                        "F*BT_*o:F*exception_*o:" +
+                        "S*BT_in:S*exception_in:" +
+                        "S*BT_io:S*exception_io:" +
+                        "radiance_an:S*exception_an:" +
+                        "radiance_ao:S*exception_ao:" +
+                        "radiance_bn:S*exception_bn:" +
+                        "radiance_bo:S*exception_bo:" +
+                        "radiance_cn:S*exception_cn:" +
+                        "radiance_co:S*exception_co:" +
+                        (isOrphanPixelsAllowed() ? "*orphan*:" : "") +
+                        "x_*:y_*:" +
+                        "elevation:latitude:longitude:" +
+                        "specific_humidity:temperature_profile:" +
+                        "bayes_an_:bayes_ao_:" +
+                        "bayes_bn_:bayes_bo_:" +
+                        "bayes_cn_:bayes_co_:" +
+                        "bayes_in_:bayes_io_:" +
+                        "cloud_an_:cloud_ao_:" +
+                        "cloud_bn_:cloud_bo_:" +
+                        "cloud_cn_:cloud_co_:" +
+                        "cloud_in_:cloud_io_:" +
+                        "confidence_an_:confidence_ao_:" +
+                        "confidence_bn_:confidence_bo_:" +
+                        "confidence_cn_:confidence_co_:" +
+                        "confidence_in_:confidence_io_:" +
+                        "pointing_an_:pointing_ao_:" +
+                        "pointing_bn_:pointing_bo_:" +
+                        "pointing_cn_:pointing_co_:" +
+                        "pointing_in_:pointing_io_:" +
+                        "S*_exception_an_*:S*_exception_ao_*:" +
+                        "S*_exception_bn_*:S*_exception_bo_*:" +
+                        "S*_exception_cn_*:S*_exception_co_*:" +
+                        "S*_exception_in_*:S*_exception_io_*:" +
+                        "F*_exception_*n_*:F*_exception_*o_*:" +
+                        bandGrouping);
     }
 
     @Override
@@ -531,28 +562,6 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
         netcdfFileList.clear();
     }
 
-    // package access for testing only tb 2020-01-28
-    static double getResolutionInKm(String nameEnd) {
-        switch (nameEnd) {
-            case "an":
-            case "ao":
-            case "bn":
-            case "bo":
-            case "cn":
-            case "co":
-                return 0.5;
-
-            case "fn":
-            case "fo":
-            case "in":
-            case "io":
-                return 1.0;
-
-            default:
-                throw new IllegalArgumentException("Unsupported resolution on bands ending with: " + nameEnd);
-        }
-    }
-
     private void setTiePointBandGeoCodings(Product product) {
         final Band[] bands = product.getBands();
         for (Band band : bands) {
@@ -639,7 +648,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
                                                       width, height, resolutionInKm);
 
-            final String[] codingKeys = getForwardAndInverseKeys();
+            final String[] codingKeys = getForwardAndInverseKeys_pixelCoding(SLSTR_L1B_PIXEL_GEOCODING_INVERSE);
 
             final ForwardCoding forward = ComponentFactory.getForward(codingKeys[0]);
             final InverseCoding inverse = ComponentFactory.getInverse(codingKeys[1]);
@@ -649,40 +658,6 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
             geoCodingMap.put(nameEnd, geoCoding);
             return geoCoding;
         }
-    }
-
-    // package access for testing only tb 2021-03-02
-    static String[] getForwardAndInverseKeys() {
-        final String[] keys = new String[2];
-        final Preferences snapPreferences = Config.instance("snap").preferences();
-        final boolean useFractAccuracy = snapPreferences.getBoolean(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY, false);
-
-        final Preferences preferences = Config.instance("s3tbx").preferences();
-        keys[1] = preferences.get(SLSTR_L1B_PIXEL_GEOCODING_INVERSE, PixelQuadTreeInverse.KEY);
-        if (useFractAccuracy) {
-            keys[0] = PixelInterpolatingForward.KEY;
-            keys[1] = keys[1].concat(KEY_SUFFIX_INTERPOLATING);
-        } else {
-            keys[0] = PixelForward.KEY;
-        }
-        return keys;
-    }
-
-    static String[] getGeolocationVariableNames(String extension) throws IOException {
-        final String[] varNames = new String[2];
-
-        if (!(extension.equals("an") || extension.equals("ao") ||
-                extension.equals("bn") || extension.equals("bo") ||
-                extension.equals("cn") || extension.equals("co") ||
-                extension.equals("in") || extension.equals("io") ||
-                extension.equals("fn") || extension.equals("fo"))) {
-            throw new IOException("Unknown or unsupported band extension: " + extension);
-        }
-
-        varNames[0] = "longitude_" + extension;
-        varNames[1] = "latitude_" + extension;
-
-        return varNames;
     }
 
     private String getGridIndexFromMask(Mask mask) {
@@ -722,10 +697,10 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     private static class SlstrOrphanOpImage extends NetcdfOpImage {
 
         SlstrOrphanOpImage(Variable variable, NetcdfFile netcdf, RasterDataNode rdn, Dimension imageTileSize,
-                                  ResolutionLevel resolutionLevel) {
+                           ResolutionLevel resolutionLevel) {
             super(variable, new int[]{}, false, netcdf, ImageManager.getDataBufferType(rdn.getDataType()),
-                    rdn.getRasterWidth(), rdn.getRasterHeight(), imageTileSize, resolutionLevel,
-                    ArrayConverter.IDENTITY, new DimensionIndices(1, 0, 2));
+                  rdn.getRasterWidth(), rdn.getRasterHeight(), imageTileSize, resolutionLevel,
+                  ArrayConverter.IDENTITY, new DimensionIndices(1, 0, 2));
 
         }
     }

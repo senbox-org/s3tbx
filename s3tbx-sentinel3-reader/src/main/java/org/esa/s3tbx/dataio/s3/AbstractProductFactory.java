@@ -20,6 +20,9 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.util.ColorProvider;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.dataio.ProductReader;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.forward.PixelInterpolatingForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.ColorPaletteDef;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
@@ -33,6 +36,7 @@ import org.esa.snap.core.datamodel.SampleCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
+import org.esa.snap.runtime.Config;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import ucar.ma2.Array;
@@ -60,6 +64,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
+
+import static org.esa.snap.core.dataio.geocoding.ComponentGeoCoding.SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY;
+import static org.esa.snap.core.dataio.geocoding.InverseCoding.KEY_SUFFIX_INTERPOLATING;
 
 public abstract class AbstractProductFactory implements ProductFactory {
 
@@ -442,6 +450,24 @@ public abstract class AbstractProductFactory implements ProductFactory {
         final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
         tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
         return tiePoints;
+    }
+
+    protected static String[] getForwardAndInverseKeys_pixelCoding(String inverseCodingProperty) {
+        final String[] codingNames = new String[2];
+
+        final Preferences snapPreferences = Config.instance("snap").preferences();
+        final boolean useFractAccuracy = snapPreferences.getBoolean(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY, false);
+
+        final Preferences s3TbxPreferences = Config.instance("s3tbx").preferences();
+        codingNames[1] = s3TbxPreferences.get(inverseCodingProperty, PixelQuadTreeInverse.KEY);
+        if (useFractAccuracy) {
+            codingNames[0] = PixelInterpolatingForward.KEY;
+            codingNames[1] = codingNames[1].concat(KEY_SUFFIX_INTERPOLATING);
+        } else {
+            codingNames[0] = PixelForward.KEY;
+        }
+
+        return codingNames;
     }
 
     private void setTimes(Product targetProduct) {

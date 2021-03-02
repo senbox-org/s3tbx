@@ -11,10 +11,7 @@ import org.esa.snap.core.dataio.geocoding.ForwardCoding;
 import org.esa.snap.core.dataio.geocoding.GeoChecks;
 import org.esa.snap.core.dataio.geocoding.GeoRaster;
 import org.esa.snap.core.dataio.geocoding.InverseCoding;
-import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
-import org.esa.snap.core.dataio.geocoding.forward.PixelInterpolatingForward;
 import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
-import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
@@ -34,17 +31,14 @@ import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.esa.snap.core.dataio.geocoding.ComponentGeoCoding.SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY;
-import static org.esa.snap.core.dataio.geocoding.InverseCoding.KEY_SUFFIX_INTERPOLATING;
-
 /**
  * @author Tonio Fincke
  */
 public abstract class OlciProductFactory extends AbstractProductFactory {
 
     public final static String OLCI_USE_PIXELGEOCODING = "s3tbx.reader.olci.pixelGeoCoding";
-    final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
     final static String SYSPROP_OLCI_TIE_POINT_CODING_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
+    private final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
     private final static String[] excludedIDs = new String[]{"removedPixelsData"};
     private Map<String, Float> nameToWavelengthMap;
     private Map<String, Float> nameToBandwidthMap;
@@ -74,24 +68,6 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
             default:
                 throw new IllegalArgumentException("unsupported product of type: " + productType);
         }
-    }
-
-    static String[] getForwardAndInverseKeys_pixelCoding() {
-        final String[] codingNames = new String[2];
-
-        final Preferences snapPreferences = Config.instance("snap").preferences();
-        final boolean useFractAccuracy = snapPreferences.getBoolean(SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY, false);
-
-        final Preferences s3TbxPreferences = Config.instance("s3tbx").preferences();
-        codingNames[1] = s3TbxPreferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
-        if (useFractAccuracy) {
-            codingNames[0] = PixelInterpolatingForward.KEY;
-            codingNames[1] = codingNames[1].concat(KEY_SUFFIX_INTERPOLATING);
-        } else {
-            codingNames[0] = PixelForward.KEY;
-        }
-
-        return codingNames;
     }
 
     static String[] getForwardAndInverseKeys_tiePointCoding() {
@@ -179,7 +155,7 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
                                                   lonBand.getRasterWidth(), lonBand.getRasterHeight(), resolutionInKilometers);
 
-        final String[] codingKeys = getForwardAndInverseKeys_pixelCoding();
+        final String[] codingKeys = getForwardAndInverseKeys_pixelCoding(SYSPROP_OLCI_PIXEL_CODING_INVERSE);
         final ForwardCoding forward = ComponentFactory.getForward(codingKeys[0]);
         final InverseCoding inverse = ComponentFactory.getInverse(codingKeys[1]);
 
