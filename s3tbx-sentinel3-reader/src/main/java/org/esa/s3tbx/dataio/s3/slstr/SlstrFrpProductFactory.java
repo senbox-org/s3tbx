@@ -226,8 +226,9 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
 
                 final Preferences preferences = Config.instance("s3tbx").preferences();
                 final String inverseKey = preferences.get(SYSPROP_SLSTR_FRP_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
-                final ForwardCoding forward = ComponentFactory.getForward(PixelForward.KEY);
-                final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+                final String[] keys = getForwardAndInverseKeys_pixelCoding(inverseKey);
+                final ForwardCoding forward = ComponentFactory.getForward(keys[0]);
+                final InverseCoding inverse = ComponentFactory.getInverse(keys[1]);
 
                 final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
                 geoCoding.initialize();
