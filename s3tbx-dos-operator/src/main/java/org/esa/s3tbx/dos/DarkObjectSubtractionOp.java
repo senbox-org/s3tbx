@@ -23,8 +23,9 @@ import java.awt.image.renderable.ParameterBlock;
  *
  * @author olafd
  */
-@OperatorMetadata(alias = "Snap.DarkObjectSubtraction",
+@OperatorMetadata(alias = "DarkObjectSubtraction",
         version = "1.0-SNAPSHOT",
+        category = "Optical/Preprocessing",
 //        internal = true,
         authors = "Olaf Danne",
         copyright = "(c) 2019 by Brockmann Consult",
@@ -226,7 +227,6 @@ public class DarkObjectSubtractionOp extends Operator {
     }
 
     public static class Spi extends OperatorSpi {
-
         public Spi() {
             super(DarkObjectSubtractionOp.class);
         }
