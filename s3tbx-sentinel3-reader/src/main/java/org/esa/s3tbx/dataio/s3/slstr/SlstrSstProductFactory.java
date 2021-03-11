@@ -314,7 +314,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
             final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
             final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
 
-            final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+            final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.POLES);
             geoCoding.initialize();
 
             geoCodingMap.put(end, geoCoding);

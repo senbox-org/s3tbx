@@ -68,7 +68,7 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
         final ForwardCoding forward = ComponentFactory.getForward(PixelForward.KEY);
         final InverseCoding inverse = ComponentFactory.getInverse(invKey);
 
-        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.POLES);
         geoCoding.initialize();
 
         targetProduct.setSceneGeoCoding(geoCoding);
