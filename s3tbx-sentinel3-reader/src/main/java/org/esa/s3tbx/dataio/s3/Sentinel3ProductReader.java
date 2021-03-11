@@ -19,6 +19,7 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.olci.OlciLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.olci.OlciLevel2LProductFactory;
 import org.esa.s3tbx.dataio.s3.olci.OlciLevel2WProductFactory;
+import org.esa.s3tbx.dataio.s3.slstr.SlstrFrpProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1B1kmProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1B1kmProductReaderPlugIn;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1B500mProductFactory;
@@ -27,6 +28,7 @@ import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLstProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrSstProductFactory;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrWstProductFactory;
+import org.esa.s3tbx.dataio.s3.synergy.AODProductFactory;
 import org.esa.s3tbx.dataio.s3.synergy.SynL1CProductFactory;
 import org.esa.s3tbx.dataio.s3.synergy.SynLevel2ProductFactory;
 import org.esa.s3tbx.dataio.s3.synergy.VgtProductFactory;
@@ -37,6 +39,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.TiePointGrid;
 
+import java.awt.Rectangle;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
@@ -73,10 +76,14 @@ public class Sentinel3ProductReader extends AbstractProductReader {
             setFactory(new SlstrWstProductFactory(this));
         } else if (dirName.matches("S3.?_SL_2_WCT_.*.SEN3")) { // SLSTR L2 WCT
             setFactory(new SlstrSstProductFactory(this));
+        } else if (dirName.matches("S3.?_SL_2_FRP_.*.SEN3")) { // SLSTR L2 FRP
+            setFactory(new SlstrFrpProductFactory(this));
         } else if (dirName.matches("S3.?_SY_1_SYN_.*")) { // SYN L1
             setFactory(new SynL1CProductFactory(this));
         } else if (dirName.matches("S3.?_SY_2_SYN_.*.SEN3")) { // SYN L2
             setFactory(new SynLevel2ProductFactory(this));
+        } else if (dirName.matches("S3.?_SY_2_AOD_.*.SEN3")) { // SYN AOD
+            setFactory(new AODProductFactory(this));
         } else if (dirName.matches("S3.?_SY_(2_VGP|[23]_VG1|2_V10)_.*.SEN3")) { // SYN VGT
             setFactory(new VgtProductFactory(this));
         }
@@ -107,16 +114,17 @@ public class Sentinel3ProductReader extends AbstractProductReader {
     protected final void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight,
                                                 int sourceStepX, int sourceStepY, Band destBand, int destOffsetX,
                                                 int destOffsetY, int destWidth, int destHeight, ProductData destBuffer,
-                                                ProgressMonitor pm) throws IOException {
+                                                ProgressMonitor pm) {
         throw new IllegalStateException("Data are provided by images.");
     }
 
 
     @Override
     public void readTiePointGridRasterData(TiePointGrid tpg, int destOffsetX, int destOffsetY, int destWidth, int destHeight, ProductData destBuffer,
-                                           ProgressMonitor pm) throws IOException {
-        MultiLevelImage imageForTpg = factory.getImageForTpg(tpg);
-        Raster imageData = imageForTpg.getImage(0).getData();
+                                           ProgressMonitor pm) {
+        MultiLevelImage imageForTpg = factory.getImageForTpg(tpg.getName());
+        Rectangle rectangle = new Rectangle(destOffsetX, destOffsetY, destWidth, destHeight);
+        Raster imageData = imageForTpg.getImage(0).getData(rectangle);
         imageData.getSamples(destOffsetX, destOffsetY, destWidth, destHeight, 0, (float[]) destBuffer.getElems());
     }
 

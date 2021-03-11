@@ -145,23 +145,34 @@ public class N1PatcherOp extends MerisBasisOp {
             }
         }
         ProductUtils.copyFlagBands(n1Product, targetProduct, false);
+        File originalFileLocation = n1Product.getFileLocation();
+        if (originalFileLocation == null) {
+            throw new OperatorException("The 'n1Product' is not stored on disk.");
+        }
+        if (!originalFileLocation.getName().endsWith(".N1")) {
+            throw new OperatorException("The file of 'n1Product' must have '.N1' as extension.");
+        }
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Copy headers", 4);
         try {
-            File originalFileLocation = n1Product.getFileLocation();
-            if (originalFileLocation == null) {
-                throw new OperatorException("The 'n1Product' is not stored on disk.");
-            }
-            if (!originalFileLocation.getName().endsWith(".N1")) {
-                throw new OperatorException("The file of 'n1Product' must have '.N1' as extension.");
-            }
             synchronized (syncObject) {
-                inputStream = new FileImageInputStream(originalFileLocation);
+                inputStream = new FileImageInputStream(n1Product.getFileLocation());
                 outputStream = new FileImageOutputStream(patchedFile);
+                pm.worked(1);
                 byte[] mph = parseMPH();
+                pm.worked(1);
                 byte[] sph = parseSPH();
+                pm.worked(1);
                 copyHeader(mph, sph);
+                pm.worked(1);
             }
         } catch (IOException e) {
             throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
     }
 

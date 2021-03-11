@@ -38,8 +38,8 @@ public class SpotVgtProductReaderPlugInTest {
     public void testGetBandName() {
         assertEquals("VZA", SpotVgtProductReaderPlugIn.getBandName("VZA.HDF"));
         assertEquals("VZA", SpotVgtProductReaderPlugIn.getBandName("_VZA.HDF"));
-        assertEquals("B2", SpotVgtProductReaderPlugIn.getBandName("0001_B2.HDF"));
-        assertEquals("MIR", SpotVgtProductReaderPlugIn.getBandName("0001_MIR.HDF"));
+        assertEquals("B2", SpotVgtProductReaderPlugIn.getBandName("V220050513179_B2.HDF"));
+        assertEquals("MIR", SpotVgtProductReaderPlugIn.getBandName("V220050513179_MIR.HDF"));
     }
 
     @Test
@@ -104,10 +104,27 @@ public class SpotVgtProductReaderPlugInTest {
         file = new File(dir, "decode_qual_unable_3/NON_EXISTENT");
         assertEquals(DecodeQualification.UNABLE, plugIn.getDecodeQualification(file));
         assertEquals(DecodeQualification.UNABLE, plugIn.getDecodeQualification(file.getPath()));
+
+        // new for VGT 1P Collection3 products:
+        file = new File(dir, "decode_qual_intended_collection3/zip/V220050513179.zip");
+        assertEquals(DecodeQualification.INTENDED, plugIn.getDecodeQualification(file));
+        assertEquals(DecodeQualification.INTENDED, plugIn.getDecodeQualification(file.getPath()));
+
+        file = new File(dir, "decode_qual_intended_collection3/V220050513179");
+        assertEquals(DecodeQualification.INTENDED, plugIn.getDecodeQualification(file));
+        assertEquals(DecodeQualification.INTENDED, plugIn.getDecodeQualification(file.getPath()));
+
+        file = new File(dir, "decode_qual_unable_1_missing_bands_collection3/V220050513179");
+        assertEquals(DecodeQualification.UNABLE, plugIn.getDecodeQualification(file));
+        assertEquals(DecodeQualification.UNABLE, plugIn.getDecodeQualification(file.getPath()));
+
+        file = new File(dir, "decode_qual_unable_2_missing_logdescr_collection3/V220050513179");
+        assertEquals(DecodeQualification.UNABLE, plugIn.getDecodeQualification(file));
+        assertEquals(DecodeQualification.UNABLE, plugIn.getDecodeQualification(file.getPath()));
     }
 
     public static void main(String[] args) throws IOException {
-//        final NetcdfFile netcdfFile = SimpleNetcdfFile.openNetcdf("C:\\Users\\Norman\\EOData\\SPOT-VGT\\V2KRNS10__20060721_RADIO_Europe\\0001\\0001_B3.HDF");
+//        final NetcdfFile netcdfFile = SimpleNetcdfFile.openNetcdf("C:\\Users\\Norman\\EOData\\SPOT-VGT\\V2KRNS10__20060721_RADIO_Europe\\0001\\V220050513179_B3.HDF");
 //        netcdfFile.writeCDL(System.out, false);
 
         Product product = ProductIO.readProduct(new File(args[0]));

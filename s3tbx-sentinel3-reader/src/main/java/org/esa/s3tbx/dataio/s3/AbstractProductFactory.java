@@ -15,6 +15,8 @@ package org.esa.s3tbx.dataio.s3;/*
  */
 
 import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.glevel.support.DefaultMultiLevelImage;
+import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.util.ColorProvider;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.dataio.ProductReader;
@@ -33,9 +35,14 @@ import org.esa.snap.core.util.ProductUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.media.jai.Interpolation;
+import javax.media.jai.RenderedOp;
+import javax.media.jai.operator.CropDescriptor;
+import javax.media.jai.operator.TranslateDescriptor;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -51,7 +58,7 @@ import java.util.logging.Logger;
 
 public abstract class AbstractProductFactory implements ProductFactory {
 
-    private Map<TiePointGrid, MultiLevelImage> tpgImageMap;
+    private final Map<String, MultiLevelImage> tpgImageMap;
     private final List<Product> openProductList = new ArrayList<>();
     private final Sentinel3ProductReader productReader;
     private final Logger logger;
@@ -90,22 +97,14 @@ public abstract class AbstractProductFactory implements ProductFactory {
         targetProduct.setDescription(manifest.getDescription());
         targetProduct.setFileLocation(getInputFile());
         targetProduct.setNumResolutionsMax(masterProduct.getNumResolutionsMax());
+        targetProduct.setPreferredTileSize(masterProduct.getPreferredTileSize());
 
         if (masterProduct.getSceneGeoCoding() instanceof CrsGeoCoding) {
             ProductUtils.copyGeoCoding(masterProduct, targetProduct);
         }
         targetProduct.getMetadataRoot().addElement(manifest.getMetadata());
         processProductSpecificMetadata(manifest.getMetadata().getElement("metadataSection"));
-
-        for (final Product p : openProductList) {
-            MetadataElement root = targetProduct.getMetadataRoot();
-            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
-                if (!root.containsElement(element.getDisplayName())) {
-                    root.addElement(element.createDeepClone());
-                }
-            }
-        }
-
+        addProductSpecificMetadata(targetProduct);
         addDataNodes(masterProduct, targetProduct);
         addSpecialVariables(masterProduct, targetProduct);
         setMasks(targetProduct);
@@ -138,26 +137,38 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     @Override
-    public MultiLevelImage getImageForTpg(TiePointGrid tpg) {
-        return tpgImageMap.get(tpg);
+    public MultiLevelImage getImageForTpg(String tpgName) {
+        return tpgImageMap.get(tpgName);
     }
 
     protected TiePointGrid copyBandAsTiePointGrid(Band sourceBand, Product targetProduct, int subSamplingX,
                                                   int subSamplingY,
                                                   float offsetX, float offsetY) {
         final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
-        final int w = sourceImage.getWidth();
-        final int h = sourceImage.getHeight();
-//        final float[] tiePoints = sourceImage.getData().getSamples(0, 0, w, h, 0, new float[w * h]);
         final String unit = sourceBand.getUnit();
-        final TiePointGrid tiePointGrid = new TiePointGrid(sourceBand.getName(), w, h,
-                                                           offsetX, offsetY,
-                                                           subSamplingX, subSamplingY);
 
+        float newOffsetX = offsetX % subSamplingX;
+        float dataOffsetX = (newOffsetX - offsetX) / subSamplingX;
+        double newWidth = Math.min(sourceBand.getRasterWidth(),
+                Math.ceil((targetProduct.getSceneRasterWidth() - newOffsetX) / subSamplingX));
+        float newOffsetY = offsetY % subSamplingY;
+        float dataOffsetY = (newOffsetY - offsetY) / subSamplingY;
+        double newHeight = Math.min(sourceBand.getRasterHeight(),
+                Math.ceil((targetProduct.getSceneRasterHeight() - newOffsetY) / subSamplingY));
+        RenderedOp translatedSourceImage = TranslateDescriptor.create(sourceImage, -dataOffsetX, -dataOffsetY,
+                Interpolation.getInstance(Interpolation.INTERP_NEAREST), null);
+        RenderedImage croppedSourceImage = CropDescriptor.create(translatedSourceImage, 0f, 0f,
+                (float) newWidth, (float) newHeight, null);
+        DefaultMultiLevelImage newSourceImage =
+                new DefaultMultiLevelImage(new DefaultMultiLevelSource(croppedSourceImage, sourceImage.getModel()));
+        final String bandName = sourceBand.getName();
+        final TiePointGrid tiePointGrid = new TiePointGrid(bandName, (int) newWidth, (int) newHeight,
+                                                           newOffsetX, newOffsetY,
+                                                           subSamplingX, subSamplingY);
         if (unit != null && unit.toLowerCase().contains("degree")) {
             tiePointGrid.setDiscontinuity(TiePointGrid.DISCONT_AUTO);
         }
-        tpgImageMap.put(tiePointGrid, sourceImage);
+        tpgImageMap.put(bandName, newSourceImage);
         final String description = sourceBand.getDescription();
         tiePointGrid.setDescription(description);
         tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
@@ -208,6 +219,17 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected void processProductSpecificMetadata(MetadataElement metadataElement) {
+    }
+
+    protected void addProductSpecificMetadata(Product targetProduct) {
+        for (final Product p : openProductList) {
+            MetadataElement root = targetProduct.getMetadataRoot();
+            for (final MetadataElement element : p.getMetadataRoot().getElement("Variable_Attributes").getElements()) {
+                if (!root.containsElement(element.getDisplayName())) {
+                    root.addElement(element.createDeepClone());
+                }
+            }
+        }
     }
 
     protected int getSceneRasterWidth(Product masterProduct) {
@@ -283,17 +305,15 @@ public abstract class AbstractProductFactory implements ProductFactory {
     }
 
     protected void addDataNodes(Product masterProduct, Product targetProduct) throws IOException {
-        final int w = targetProduct.getSceneRasterWidth();
-        final int h = targetProduct.getSceneRasterHeight();
         for (final Product sourceProduct : openProductList) {
             final Map<String, String> mapping = new HashMap<>();
             for (final Band sourceBand : sourceProduct.getBands()) {
                 if (!sourceBand.getName().contains("orphan")) {
                     RasterDataNode targetNode;
-                    if (sourceBand.getRasterWidth() == w && sourceBand.getRasterHeight() == h) {
-                        targetNode = addBand(sourceBand, targetProduct);
-                    } else {
+                    if (isNodeSpecial(sourceBand, targetProduct)) {
                         targetNode = addSpecialNode(masterProduct, sourceBand, targetProduct);
+                    } else {
+                        targetNode = addBand(sourceBand, targetProduct);
                     }
                     if (targetNode != null) {
                         configureTargetNode(sourceBand, targetNode);
@@ -303,6 +323,11 @@ public abstract class AbstractProductFactory implements ProductFactory {
             }
             copyMasks(sourceProduct, targetProduct, mapping);
         }
+    }
+
+    protected boolean isNodeSpecial(Band sourceBand, Product targetProduct) {
+        return sourceBand.getRasterWidth() != targetProduct.getSceneRasterWidth() ||
+                sourceBand.getRasterHeight() != targetProduct.getSceneRasterHeight();
     }
 
     protected final void copyMasks(Product sourceProduct, Product targetProduct, Map<String, String> mapping) {
@@ -329,16 +354,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
                 }
             }
         }
-    }
-
-    /**
-     * Of no use anymore. Implementations return just the unchanged parameter
-     *
-     * @deprecated since SNAP 6.0, can be removed in SNAP 7.0 without further notice
-     */
-    @Deprecated()
-    protected ProductNodeGroup<Mask> prepareMasksForCopying(ProductNodeGroup<Mask> maskGroup) {
-        return maskGroup;
     }
 
     protected Product readProduct(String fileName, Manifest manifest) throws IOException {

@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.esa.s3tbx</groupId>
         <artifactId>s3tbx</artifactId>
-        <version>7.0.1-SNAPSHOT</version>
+        <version>8.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>s3tbx-meris-sdr</artifactId>
@@ -53,6 +53,11 @@
             <artifactId>s3tbx-meris-ops</artifactId>
             <version>${project.version}</version>
         </dependency>
+		<dependency>
+            <groupId>com.bc.jnn</groupId>
+            <artifactId>jnn</artifactId>
+			<version>1.7</version>
+        </dependency>
 
         <dependency>
             <groupId>ncsa.hdf</groupId>
@@ -64,12 +69,19 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-test-utils</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>

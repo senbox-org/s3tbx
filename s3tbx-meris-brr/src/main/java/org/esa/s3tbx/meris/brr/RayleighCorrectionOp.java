@@ -85,19 +85,8 @@ public class RayleighCorrectionOp extends MerisBasisOp implements Constants {
     @Parameter
     boolean exportRhoR = false;
 
-
     @Override
     public void initialize() throws OperatorException {
-        try {
-            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
-            rayleighCorrection = new RayleighCorrection(auxData);
-        } catch (Exception e) {
-            throw new OperatorException("could not load L2Auxdata", e);
-        }
-        createTargetProduct();
-    }
-
-    private void createTargetProduct() throws OperatorException {
         targetProduct = createCompatibleProduct(l1bProduct, "MER", "MER_L2");
 
         brrBands = addBandGroup(BRR_BAND_PREFIX);
@@ -132,11 +121,24 @@ public class RayleighCorrectionOp extends MerisBasisOp implements Constants {
         }
     }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Reading in auxiliary data", 1);
+        try {
+            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
+            rayleighCorrection = new RayleighCorrection(auxData);
+            pm.worked(1);
+        } catch (Exception e) {
+            throw new OperatorException("Could not load L2Auxdata", e);
+        } finally {
+            pm.done();
+        }
+    }
+
     private Band[] addBandGroup(String prefix) {
         Band[] bands = new Band[L1_BAND_NUM];
         for(int bandId : RayleighCorrection.BANDS_TO_CORRECT) {
             Band targetBand = targetProduct.addBand(prefix + "_" + (bandId + 1), ProductData.TYPE_FLOAT32);
-//            ProductUtils.copySpectralBandProperties(l1bProduct.getBandAt(bandId), targetBand);
             final String srcBandName = RADIANCE_BAND_PREFIX + "_" + (bandId + 1);
             ProductUtils.copySpectralBandProperties(l1bProduct.getBand(srcBandName), targetBand);
             targetBand.setNoDataValueUsed(true);

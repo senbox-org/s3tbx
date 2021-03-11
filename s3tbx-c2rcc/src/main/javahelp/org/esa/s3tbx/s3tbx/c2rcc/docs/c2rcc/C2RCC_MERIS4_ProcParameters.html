@@ -71,22 +71,20 @@
     <li><b>Threshold AC reflectances OOS</b><br>
         Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances
     </li>
-    <li><b>Threshold for cloud flag on transmittance down @865</b><br>
-        Threshold for cloud test based on downwelling transmittance @865
+    <li><b>Threshold for cloud flag on down transmittance @865</b><br>
+        Threshold for cloud test based on downwelling transmittance @865.
     </li>
     <li><b>Atmospheric aux data path</b><br>
-        Path to the atmospheric auxiliary data directory. Use either this or the specific products. If the auxiliary data needed for interpolation is
-        not available in this path, the data will automatically downloaded.
+        Path to the atmospheric auxiliary data directory. Use either this or the specified products on the I/O Parameters (ozone, air pressure) tab. If the auxiliary data is
+        not available at this path, the data will automatically be downloaded.
     </li>
     <li><b>Alternative NN Path</b><br>
-        Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets with the ones in the given directory. This
-        is a parameter which should only used during the development of new neural nets.
-    </li>
-    <li><b>Set of neuronal nets</b><br>
-        Set of neuronal nets for the algorithm. Selectable is either C2RCC_Nets or C2X_Nets.
+        Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets.
+        For MERIS there exits a neural net where ranges of parameters was extended to moderate-to-extreme cases (C2X-Nets).
+        However, this is a parameter which should only used during the development of new neural nets.
     </li>
     <li><b>Output AC reflectances as rrs instead of rhow</b><br>
-        Reflectance values in the target product shall be written as remote sensing reflectances and not as water leaving reflectances
+        Write remote sensing reflectances instead of water leaving reflectances.
     </li>
     <li><b>Derive water reflectance from path radiance and transmittance</b><br>
         Alternative way of calculating water reflectance. <span style="background-color:yellow">Still experimental.</span>

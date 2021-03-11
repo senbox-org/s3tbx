@@ -24,15 +24,22 @@ import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.subset.PixelSubsetRegion;
 import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.test.LongTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+@RunWith(LongTestRunner.class)
 public class BowtiePixelGeoCodingTest {
 
     @Test
@@ -57,7 +64,7 @@ public class BowtiePixelGeoCodingTest {
         assertTrue(sourcceGeoCoding instanceof BowtiePixelGeoCoding);
 
         ProductSubsetDef subsetDef = new ProductSubsetDef();
-        subsetDef.setRegion(50, 50, 10, 10);
+        subsetDef.setSubsetRegion(new PixelSubsetRegion(50, 50, 10, 10, 0));
         subsetDef.addNodeName("chlor_a");
         Product targetProduct = product.createSubset(subsetDef, "subset", "");
 
@@ -104,9 +111,9 @@ public class BowtiePixelGeoCodingTest {
         testScanlineOffsetOnSubset(product, 10, 30, 0);
     }
 
-    private static void testScanlineOffsetOnSubset(Product product, int yStart, int heigth, int scanlineOffset) throws IOException {
+    private static void testScanlineOffsetOnSubset(Product product, int yStart, int height, int scanlineOffset) throws IOException {
         ProductSubsetDef subsetDef = new ProductSubsetDef();
-        subsetDef.setRegion(0, yStart, product.getSceneRasterWidth(), heigth);
+        subsetDef.setSubsetRegion(new PixelSubsetRegion(0, yStart, product.getSceneRasterWidth(), height, 0));
         Product subsetProduct = ProductSubsetBuilder.createProductSubset(product, subsetDef, "s", "s");
         BowtiePixelGeoCoding bowtiePixelGeoCoding = (BowtiePixelGeoCoding) subsetProduct.getSceneGeoCoding();
         assertEquals("for y=" + yStart + " scanlineOffset", scanlineOffset, bowtiePixelGeoCoding.getScanlineOffset());

@@ -1,9 +1,9 @@
+dist: xenial
+
 language: java
 
-sudo: false
-
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 env:
   global:
@@ -17,18 +17,9 @@ addons:
       name: "senbox-org/s3tbx"
       description: "Build submitted via Travis CI"
     notification_email: stb-coverity@thor.si.c-s.fr
-    build_command_prepend: ""
+    # build_command_prepend: ""
     build_command: "mvn -DskipTests=true clean compile"
     branch_pattern: coverity_scan
-
-before_install:
-  # Work around discontinued nexus.codehaus.org (see https://github.com/travis-ci/travis-ci/issues/4629)
-  # For building, everything is available in nexus.senbox.net, which is stored in pom.xml,
-  # so we just completely remove the default repositories settings
-  - sed -i -n '/<repositories>/{p; :a; N; /<\/repositories>/!ba; s/.*\n//}; p' ~/.m2/settings.xml
-
-install:
-  - true
 
 script:
   - mvn clean install -B -V

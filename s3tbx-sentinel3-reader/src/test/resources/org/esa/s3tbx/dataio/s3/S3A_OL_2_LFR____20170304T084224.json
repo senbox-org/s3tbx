@@ -21,7 +21,7 @@
           "lon": -7.374686491017621
         }
       ],
-      "reverseAccuracy": 0.060910801922091196
+      "reverseAccuracy": 0.062
     },
     "flagCodings": [
       {
@@ -2507,7 +2507,7 @@
         "description": "Classification flags, quality and science flags for Land pixels",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "4.294967295E9",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -2617,7 +2617,7 @@
         "description": "OLCI Terrestrial Vegetation Index Quality Flag of the land pixel",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -2935,10 +2935,6 @@
       {
         "path": "frame_offset/long_name",
         "value": "Re-sampling along-track frame offset "
-      },
-      {
-        "path": "reference_pressure_level/_ChunkSize",
-        "value": "25"
       },
       {
         "path": "Manifest/metadataSection/olciProductInformation/classificationSummary/landPixels/percentage",

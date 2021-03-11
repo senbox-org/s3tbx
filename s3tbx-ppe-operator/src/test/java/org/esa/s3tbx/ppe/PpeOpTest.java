@@ -2,7 +2,9 @@ package org.esa.s3tbx.ppe;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.internal.TileImpl;
@@ -10,9 +12,15 @@ import org.junit.Test;
 
 import java.awt.Rectangle;
 import java.awt.image.Raster;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class PpeOpTest {
@@ -21,9 +29,9 @@ public class PpeOpTest {
     private static final String TESTFILENAME2 = "ppetest2.nc";
 
     @Test
-    public void testPpeOp() throws IOException {
+    public void testPpeOp() throws IOException, URISyntaxException {
         Operator ppeOp = new PpeOp();
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
+        String testFilePath = getTestFilePath(TESTFILENAME);
         Product sourceProduct = ProductIO.readProduct(testFilePath);
         ppeOp.setSourceProduct(sourceProduct);
         Product targetProduct = ppeOp.getTargetProduct();
@@ -32,6 +40,12 @@ public class PpeOpTest {
         assertTrue(targetProduct.containsBand("ppe_flags"));
         assertTrue(targetProduct.getBand("ppe_flags").isFlagBand());
         assertEquals("ppe_flags.PPE_Oa09_radiance", targetProduct.getAllFlagNames()[40]);
+        int masksOfSourceProduct = 32;
+        int ppeMaskAdded = 1;
+        assertEquals(masksOfSourceProduct + ppeMaskAdded, targetProduct.getMaskGroup().getNodeCount());
+        assertTrue(targetProduct.getMaskGroup().contains("PPE_operator_applied"));
+        assertTrue(targetProduct.getMaskGroup().contains("quality_flags_land"));
+        assertTrue(targetProduct.getMaskGroup().contains("quality_flags_coastline"));
     }
 
     @Test
@@ -56,8 +70,8 @@ public class PpeOpTest {
     }
 
     @Test
-    public void getPixelValueTest() throws IOException {
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
+    public void getPixelValueTest() throws IOException, URISyntaxException {
+        String testFilePath = getTestFilePath(TESTFILENAME);
         Product sourceProduct = ProductIO.readProduct(testFilePath);
         RasterDataNode rasterDataNode = sourceProduct.getRasterDataNode("Oa11_radiance");
         Rectangle expectedRect = new Rectangle(0, 0, 20, 20);
@@ -83,8 +97,8 @@ public class PpeOpTest {
     }
 
     @Test
-    public void getPixelListTest() throws IOException {
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
+    public void getPixelListTest() throws IOException, URISyntaxException {
+        String testFilePath = getTestFilePath(TESTFILENAME);
         Product sourceProduct = ProductIO.readProduct(testFilePath);
 
 
@@ -107,34 +121,47 @@ public class PpeOpTest {
 
 
     @Test
-    public void testWithProduct() throws IOException {
+    public void testWithProduct() throws IOException, URISyntaxException {
         Operator ppeOp = new PpeOp();
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME).getFile();
+        String testFilePath = getTestFilePath(TESTFILENAME);
         Product product = ProductIO.readProduct(testFilePath);
+        ProductData.UTC startTime = product.getStartTime();
+        ProductData.UTC endTime = product.getEndTime();
         ppeOp.setSourceProduct(product);
         ppeOp.setParameterDefaultValues();
         Product result = ppeOp.getTargetProduct();
         result.getBand("Oa10_radiance").readRasterDataFully();
         result.getBand("ppe_flags").readRasterDataFully();
+        Mask ppeMask = result.getMaskGroup().get("PPE_operator_applied");
+        ppeMask.readRasterDataFully();
 
         assertEquals(93, result.getNumBands());
         assertEquals(20, result.getSceneRasterHeight());
         assertEquals(20, result.getSceneRasterWidth());
+        assertEquals(startTime, result.getStartTime());
+        assertEquals(endTime, result.getEndTime());
+        assertNotNull(ppeMask);
         assertEquals(13.20930, result.getBand("Oa10_radiance").getPixelDouble(0, 3), 1e-5);
+        assertEquals(1306560, result.getBand("ppe_flags").getPixelInt(0, 3), 1e-5);
+        assertEquals(255, ppeMask.getPixelInt(0, 3));
         assertEquals(13.20930, result.getBand("Oa10_radiance").getPixelDouble(0, 4), 1e-5);
+        assertEquals(0, result.getBand("ppe_flags").getPixelInt(0, 4), 1e-5);
+        assertEquals(0, ppeMask.getPixelInt(0, 4));
+
         assertEquals(13.10102, result.getBand("Oa10_radiance").getPixelDouble(7, 9), 1e-5);
-        assertEquals(1306560, result.getBand("ppe_flags").getPixelDouble(0, 3), 1e-5);
-        assertEquals(0, result.getBand("ppe_flags").getPixelDouble(0, 4), 1e-5);
-        assertEquals(249728, result.getBand("ppe_flags").getPixelDouble(6, 9), 1e-5);
-        assertEquals(519872, result.getBand("ppe_flags").getPixelDouble(18, 6), 1e-5);
-        assertEquals(0, result.getBand("ppe_flags").getPixelDouble(19, 19), 1e-5);
+        assertEquals(249728, result.getBand("ppe_flags").getPixelInt(6, 9), 1e-5);
+        assertEquals(255, ppeMask.getPixelInt(6, 9));
+        assertEquals(519872, result.getBand("ppe_flags").getPixelInt(18, 6), 1e-5);
+        assertEquals(255, ppeMask.getPixelInt(18, 6));
+        assertEquals(0, result.getBand("ppe_flags").getPixelInt(19, 19), 1e-5);
+        assertEquals(0, ppeMask.getPixelInt(19, 19));
 
     }
 
     @Test
-    public void testLandTransform() throws IOException {
+    public void testWithProduct2() throws IOException, URISyntaxException {
         Operator ppeOp = new PpeOp();
-        String testFilePath = PpeOpTest.class.getResource(TESTFILENAME2).getFile();
+        String testFilePath = getTestFilePath(TESTFILENAME2);
         Product product = ProductIO.readProduct(testFilePath);
         ppeOp.setSourceProduct(product);
         ppeOp.setParameterDefaultValues();
@@ -155,5 +182,11 @@ public class PpeOpTest {
         assertEquals(2096128, result.getBand("ppe_flags").getPixelDouble(25, 0), 1e-5);
         assertEquals(0, result.getBand("ppe_flags").getPixelDouble(34, 22), 1e-5);
 
+    }
+
+    private String getTestFilePath(String name) throws URISyntaxException {
+        URL url = getClass().getResource(name);
+        URI uri = new URI(url.toString());
+        return uri.getPath();
     }
 }

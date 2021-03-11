@@ -1,119 +1,88 @@
 package org.esa.s3tbx.slstr.pdu.stitching;
 
-import edu.ucar.ral.nujan.netcdf.NhDimension;
-import edu.ucar.ral.nujan.netcdf.NhException;
-import edu.ucar.ral.nujan.netcdf.NhFileWriter;
-import edu.ucar.ral.nujan.netcdf.NhGroup;
-import edu.ucar.ral.nujan.netcdf.NhVariable;
 import org.esa.snap.core.util.jai.JAIUtils;
-import org.esa.snap.dataio.netcdf.nc.N4Variable;
+import org.esa.snap.dataio.netcdf.NetCDF4Chunking;
 import ucar.ma2.DataType;
+import ucar.nc2.Attribute;
+import ucar.nc2.Dimension;
+import ucar.nc2.NetcdfFileWriter;
+import ucar.nc2.Variable;
 
-import java.awt.Dimension;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SlstrNFileWritable {
 
-    private static final int DEFAULT_COMPRESSION = 6;
-    private final NhFileWriter nhFileWriter;
-    private Map<String, SlstrN4Variable> variables;
+    private String dimensions = "";
+    protected Map<String, Dimension> dimensionsMap = new HashMap<>();
 
-    public static SlstrNFileWritable create(String filename) throws IOException {
-        try {
-            return new SlstrNFileWritable(new NhFileWriter(filename, NhFileWriter.OPT_OVERWRITE));
-        } catch (NhException e) {
-            throw new IOException(e);
-        }
-    }
+    protected NetcdfFileWriter netcdfFileWriter;
+    protected Map<String, SlstrN4Variable> variables = new HashMap<>();
 
-    private SlstrNFileWritable(NhFileWriter nhFileWriter) {
-        this.nhFileWriter = nhFileWriter;
-        this.variables = new HashMap<>();
+    SlstrNFileWritable(String filename) throws IOException {
+        netcdfFileWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf4, filename, new NetCDF4Chunking());
     }
 
     void addDimension(String name, int length) throws IOException {
         try {
-            nhFileWriter.getRootGroup().addDimension(name, length);
-        } catch (NhException e) {
+            dimensionsMap.put(name, netcdfFileWriter.addDimension(null, name, length));
+        } catch (Exception e) {
             throw new IOException(e);
         }
-    }
-
-    void addGlobalAttribute(String name, String value) throws IOException {
-        try {
-            nhFileWriter.getRootGroup().addAttribute(name, NhVariable.TP_STRING_VAR,
-                    cropStringToMaxAttributeLength(name, value));
-        } catch (NhException e) {
-            throw new IOException(e);
+        boolean firstDimension = dimensions.length() == 0;
+        if (firstDimension) {
+            dimensions = name;
+        } else {
+            dimensions = dimensions + " " + name;
         }
     }
 
-    private static String cropStringToMaxAttributeLength(String name,  String value) {
-        if(value.length() > N4Variable.MAX_ATTRIBUTE_LENGTH) {
-            value = value.substring(0, N4Variable.MAX_ATTRIBUTE_LENGTH);
-            String msg = String.format("Metadata attribute '%s' has been cropped. Exceeded maximum length of %d", name, N4Variable.MAX_ATTRIBUTE_LENGTH);
-            Logger.getLogger(N4Variable.class.getSimpleName()).log(Level.WARNING, msg);
-        }
-        return value;
-    }
-
-    SlstrN4Variable addVariable(String name, DataType dataType, boolean unsigned, int[] chunkLens, String dims) throws IOException {
-        return addVariable(name, dataType, unsigned, chunkLens, dims, DEFAULT_COMPRESSION);
-    }
-
-    SlstrN4Variable addVariable(String name, DataType dataType, boolean unsigned, int[] chunkLens, String dimensions, int compressionLevel) throws
-            IOException {
-        NhGroup rootGroup = nhFileWriter.getRootGroup();
-        int nhType = SlstrNetcdfUtils.convert(dataType, unsigned);
+    SlstrN4Variable addVariable(String name, DataType dataType, boolean unsigned, String dimensions) {
         String[] dims = dimensions.split(" ");
         int numDims = dims.length;
-        NhDimension[] nhDims = new NhDimension[numDims];
-        for (int i = 0; i < numDims; i++) {
-            nhDims[i] = rootGroup.findLocalDimension(dims[i]);
+        ucar.nc2.Dimension[] nhDims = new ucar.nc2.Dimension[dims.length];
+        for (int i = 0; i < dims.length; i++) {
+            nhDims[i] = dimensionsMap.get(dims[i]);
         }
-        if (chunkLens != null) {
-            if (chunkLens.length != nhDims.length) {
-                throw new IllegalArgumentException("Number of chunk sizes must be same as number of dimensions");
-            }
-            int imageSize = 1;
-            int chunkSize = 1;
-            for (int i = 0; i < numDims; i++) {
-                imageSize *= nhDims[i].getLength();
-                chunkSize *= chunkLens[i];
-            }
-            while (imageSize / chunkSize > Short.MAX_VALUE / 2) {
-                chunkSize = 1;
-                for (int i = 0; i < numDims; i++) {
-                    chunkLens[i] *= 2;
-                    chunkLens[i] = Math.min(nhDims[i].getLength(), chunkLens[i]);
-                    chunkSize *= chunkLens[i];
-                }
-            }
-        } else {
-            chunkLens = new int[numDims];
+        int[] chunkLens = new int[numDims];
+        if (!dims[0].equals("")) {
             if (numDims == 1) {
                 chunkLens[0] = nhDims[0].getLength();
             } else {
                 for (int i = 0; i < numDims - 1; i++) {
-                    Dimension tileSize = JAIUtils.computePreferredTileSize(nhDims[i].getLength(),
+                    java.awt.Dimension tileSize = JAIUtils.computePreferredTileSize(nhDims[i].getLength(),
                             nhDims[i + 1].getLength(), 1);
                     chunkLens[i] = (int) tileSize.getWidth();
                     chunkLens[i + 1] = (int) tileSize.getHeight();
                 }
             }
+        } else {
+            chunkLens[0] = 1;
         }
-        Object fillValue = null; // TODO
+        Variable variable = netcdfFileWriter.addVariable(null, name,
+                dataType.withSignedness((unsigned ? DataType.Signedness.UNSIGNED : DataType.Signedness.SIGNED)), dimensions);
+        SlstrN4Variable nVariable = new SlstrN4Variable(variable, chunkLens, netcdfFileWriter);
+        variables.put(name, nVariable);
+        return nVariable;
+    }
+
+    void addGlobalAttribute(String name, String value) throws IOException {
         try {
-            NhVariable variable = rootGroup.addVariable(name, nhType, nhDims, chunkLens, fillValue,
-                    compressionLevel);
-            SlstrN4Variable nVariable = new SlstrN4Variable(variable, chunkLens);
-            variables.put(name, nVariable);
-            return nVariable;
-        } catch (NhException e) {
+            Attribute attribute = new Attribute(name, value);
+            if (value!=null) {
+                netcdfFileWriter.addGroupAttribute(null, attribute);
+            }
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
+
+    void addGlobalAttribute(String name, Number value) throws IOException {
+        try {
+            Attribute attribute = new Attribute(name, value);
+            netcdfFileWriter.addGroupAttribute(null, attribute);
+        } catch (Exception e) {
             throw new IOException(e);
         }
     }
@@ -123,17 +92,13 @@ public class SlstrNFileWritable {
     }
 
     public void create() throws IOException {
-        try {
-            nhFileWriter.endDefine();
-        } catch (NhException e) {
-            throw new IOException(e);
-        }
+        netcdfFileWriter.create();
     }
 
     void close() throws IOException {
         try {
-            nhFileWriter.close();
-        } catch (NhException e) {
+            netcdfFileWriter.close();
+        } catch (Exception e) {
             throw new IOException(e);
         }
     }

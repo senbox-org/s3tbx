@@ -20,8 +20,7 @@
           "lat": -30.139825970277457,
           "lon": -37.8477338974373
         }
-      ],
-      "reverseAccuracy": 0.09319142617277976
+      ]
     },
     "flagCodings": [
       {
@@ -2951,7 +2950,7 @@
         "description": "Classification and quality flags",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "4.294967295E9",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",

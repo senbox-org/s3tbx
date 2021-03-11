@@ -16,7 +16,6 @@ package org.esa.s3tbx.dataio.s3;/*
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.TiePointGrid;
 
 import java.io.IOException;
 
@@ -26,5 +25,5 @@ public interface ProductFactory {
 
     void dispose() throws IOException;
 
-    MultiLevelImage getImageForTpg(TiePointGrid tpg);
+    MultiLevelImage getImageForTpg(String tpgName);
 }

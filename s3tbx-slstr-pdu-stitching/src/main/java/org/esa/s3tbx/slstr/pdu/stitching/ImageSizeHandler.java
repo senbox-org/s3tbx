@@ -10,11 +10,15 @@ import org.w3c.dom.NodeList;
 public class ImageSizeHandler {
 
     public static ImageSize createTargetImageSize(ImageSize[] imageSizes) {
+        String identifier = "";
         int startOffset = Integer.MAX_VALUE;
         int trackOffset = Integer.MAX_VALUE;
         int highestStart = Integer.MIN_VALUE;
         int highestTrack = Integer.MIN_VALUE;
         for (ImageSize imageSize : imageSizes) {
+            if (imageSize == null) {
+                continue;
+            }
             if (imageSize.getStartOffset() < startOffset) {
                 startOffset = imageSize.getStartOffset();
             }
@@ -27,14 +31,15 @@ public class ImageSizeHandler {
             if (imageSize.getTrackOffset() + imageSize.getColumns() > highestTrack) {
                 highestTrack = imageSize.getTrackOffset() + imageSize.getColumns();
             }
+            identifier = imageSize.getIdentifier();
         }
-        return new ImageSize(imageSizes[0].getIdentifier(), startOffset, trackOffset, highestStart - startOffset, highestTrack - trackOffset);
+        return new ImageSize(identifier, startOffset, trackOffset, highestStart - startOffset, highestTrack - trackOffset);
     }
 
     public static ImageSize[] extractImageSizes(Document manifestDocument) {
         final NodeList nadirElements = manifestDocument.getElementsByTagName("slstr:nadirImageSize");
         final NodeList obliqueElements = manifestDocument.getElementsByTagName("slstr:obliqueImageSize");
-        final ImageSize[] imageSizes = new ImageSize[obliqueElements.getLength() + obliqueElements.getLength()];
+        final ImageSize[] imageSizes = new ImageSize[nadirElements.getLength() + obliqueElements.getLength()];
         for (int i = 0; i < nadirElements.getLength(); i++) {
             imageSizes[i] = extractImageSizeFromNode(nadirElements.item(i), "n");
         }
@@ -69,7 +74,7 @@ public class ImageSizeHandler {
     private static String getId(String gridName) {
         switch (gridName) {
             //todo adapt this when grid is contained in metadata file
-            case "Fire":
+            case "F1":
                 return "f";
             case "1 km":
                 return "i";

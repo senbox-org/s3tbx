@@ -9,10 +9,10 @@
     "geoCoding": {
       "coordinates": [
         {
-          "x": 524.0,
+          "x": 523.9174077425912,
           "y": 584.0,
-          "lat": 42.96504183516778,
-          "lon": 8.010345076346242
+          "lat": 42.9652209668073,
+          "lon": 8.00932066540693
         },
         {
           "x": 903.0,
@@ -2125,8 +2125,8 @@
         "description": "Classification flags, quality and science flags for Marine and Inland Waters pixels(least significant bytes)",
         "bandWidth": 1217,
         "bandHeight": 1088,
-        "noDataValue": "4.294967294E9",
-        "noDataValueUsed": "true",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
         "expectedPixels": [
@@ -2147,8 +2147,8 @@
         "description": "Classification flags, quality and science flags for Marine and Inland Waters pixels(most significant bytes)",
         "bandWidth": 1217,
         "bandHeight": 1088,
-        "noDataValue": "4.294967294E9",
-        "noDataValueUsed": "true",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
         "expectedPixels": [

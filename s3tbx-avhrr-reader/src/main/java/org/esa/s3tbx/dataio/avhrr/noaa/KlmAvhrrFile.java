@@ -16,11 +16,7 @@
 
 package org.esa.s3tbx.dataio.avhrr.noaa;
 
-import com.bc.ceres.binio.CompoundData;
-import com.bc.ceres.binio.CompoundType;
-import com.bc.ceres.binio.DataContext;
-import com.bc.ceres.binio.DataFormat;
-import com.bc.ceres.binio.SequenceData;
+import com.bc.ceres.binio.*;
 import com.bc.ceres.core.Assert;
 import org.esa.s3tbx.dataio.avhrr.AvhrrConstants;
 import org.esa.s3tbx.dataio.avhrr.AvhrrFile;
@@ -53,6 +49,20 @@ public class KlmAvhrrFile extends AvhrrFile implements AvhrrConstants {
         this.file = file;
     }
 
+    public static boolean canDecode(File file) {
+        KlmFormatDetector formatDetector = null;
+        try {
+            formatDetector = new KlmFormatDetector(file);
+            return formatDetector.canDecode();
+        } catch (Throwable e) {
+            return false;
+        } finally {
+            if (formatDetector != null) {
+                formatDetector.dispose();
+            }
+        }
+    }
+
     @Override
     public void readHeader() throws IOException {
         KlmFormatDetector detector = new KlmFormatDetector(file);
@@ -80,7 +90,7 @@ public class KlmAvhrrFile extends AvhrrFile implements AvhrrConstants {
         productHeight = (dataRecordCount - toSkip);
 
         if (getFormatVersion() >= 4 &&
-            getHeader().getInt("CLAVR_STATUS") == 1) {
+                getHeader().getInt("CLAVR_STATUS") == 1) {
             hasCloudBand = true;
         }
         analyzeScanLineBitfield();
@@ -91,8 +101,9 @@ public class KlmAvhrrFile extends AvhrrFile implements AvhrrConstants {
     }
 
     private void analyzeScanLineBitfield() throws IOException {
+        final int productHeight = getProductHeight();
         final int first = getScanlineBitfield(0);
-        final int last = getScanlineBitfield(getProductHeight() - 1);
+        final int last = getScanlineBitfield(productHeight - 1);
 
         final boolean isFirstSouthBound = ((first & (1 << 15)) >> 15) == 1;
         final boolean isLastSouthBound = ((last & (1 << 15)) >> 15) == 1;
@@ -103,18 +114,26 @@ public class KlmAvhrrFile extends AvhrrFile implements AvhrrConstants {
             northbound = !isFirstSouthBound && !isLastSouthBound;
         }
 
+        // take samples at five points in the file to not miss in-between sections of 3b data tb 2019-11-25
+        final int step = productHeight / 4;
+        final int second = getScanlineBitfield(step);
+        final int third = getScanlineBitfield(2 * step);
+        final int fourth = getScanlineBitfield(3 * step);
         final int firstChannel3ab = first & 3;
+        final int secondChannel3ab = second & 3;
+        final int thirdChannel3ab = third & 3;
+        final int fourthChannel3ab = fourth & 3;
         final int lastChannel3ab = last & 3;
-        if (firstChannel3ab == 1 && lastChannel3ab == 1) {
+        if (firstChannel3ab == 1 && secondChannel3ab == 1 && thirdChannel3ab == 1 && fourthChannel3ab == 1 && lastChannel3ab == 1) {
             channel3ab = AvhrrConstants.CH_3A;
-        } else if (firstChannel3ab == 0 && lastChannel3ab == 0) {
+        } else if (firstChannel3ab == 0 && secondChannel3ab == 0 && thirdChannel3ab == 0 && fourthChannel3ab == 0 && lastChannel3ab == 0) {
             channel3ab = AvhrrConstants.CH_3B;
         } else {
             channel3ab = -1;
         }
     }
 
-    private int getDataRecordCount(long blockSize) throws IOException {
+    private int getDataRecordCount(long blockSize) {
         long realFileSize = file.length() - blockSize;
         if (hasArsHeader) {
             realFileSize -= AvhrrConstants.ARS_LENGTH;
@@ -147,15 +166,13 @@ public class KlmAvhrrFile extends AvhrrFile implements AvhrrConstants {
     @Override
     public ProductData.UTC getStartDate() throws IOException {
         CompoundData compound = getHeader().getCompound("FILE_IDENTIFICATION").getCompound("START_OF_DATA_SET");
-        ProductData.UTC date = HeaderWrapper.createDate(compound);
-        return date;
+        return HeaderWrapper.createDate(compound);
     }
 
     @Override
     public ProductData.UTC getEndDate() throws IOException {
         CompoundData compound = getHeader().getCompound("FILE_IDENTIFICATION").getCompound("END_OF_DATA_SET");
-        ProductData.UTC date = HeaderWrapper.createDate(compound);
-        return date;
+        return HeaderWrapper.createDate(compound);
     }
 
     @Override
@@ -174,9 +191,9 @@ public class KlmAvhrrFile extends AvhrrFile implements AvhrrConstants {
         String channelString = CH_STRINGS[channel].toUpperCase();
         calibrator.setHeaderConstants(
                 HeaderWrapper.getValue(getHeader().getCompound("RADIANCE_CONVERSION"),
-                                       String.format("CHANNEL_%s_EQUIVALENT_WIDTH", channelString)),
+                        String.format("CHANNEL_%s_EQUIVALENT_WIDTH", channelString)),
                 HeaderWrapper.getValue(getHeader().getCompound("RADIANCE_CONVERSION"),
-                                       String.format("CHANNEL_%s_SOLAR_IRRADIANCE", channelString)),
+                        String.format("CHANNEL_%s_SOLAR_IRRADIANCE", channelString)),
                 HeaderWrapper.getValue(getHeader().getCompound("NAVIGATION"), "EARTH_SUN_DISTANCE_RATIO")
         );
         return productFormat.createCountReader(channel, this, calibrator);
@@ -196,11 +213,11 @@ public class KlmAvhrrFile extends AvhrrFile implements AvhrrConstants {
         String channelString = CH_STRINGS[channel].toUpperCase();
         calibrator.setHeaderConstants(
                 HeaderWrapper.getValue(getHeader().getCompound("RADIANCE_CONVERSION"),
-                                       String.format("CHANNEL_%s_CONSTANT_1", channelString)),
+                        String.format("CHANNEL_%s_CONSTANT_1", channelString)),
                 HeaderWrapper.getValue(getHeader().getCompound("RADIANCE_CONVERSION"),
-                                       String.format("CHANNEL_%s_CONSTANT_2", channelString)),
+                        String.format("CHANNEL_%s_CONSTANT_2", channelString)),
                 HeaderWrapper.getValue(getHeader().getCompound("RADIANCE_CONVERSION"),
-                                       String.format("CHANNEL_%s_CENTRAL_WAVENUMBER", channelString))
+                        String.format("CHANNEL_%s_CENTRAL_WAVENUMBER", channelString))
         );
         return productFormat.createCountReader(channel, this, calibrator);
     }
@@ -302,19 +319,5 @@ public class KlmAvhrrFile extends AvhrrFile implements AvhrrConstants {
             context = null;
         }
         noaaData = null;
-    }
-
-    public static boolean canDecode(File file) {
-        KlmFormatDetector formatDetector = null;
-        try {
-            formatDetector = new KlmFormatDetector(file);
-            return formatDetector.canDecode();
-        } catch (Throwable e) {
-            return false;
-        } finally {
-            if (formatDetector != null) {
-                formatDetector.dispose();
-            }
-        }
     }
 }

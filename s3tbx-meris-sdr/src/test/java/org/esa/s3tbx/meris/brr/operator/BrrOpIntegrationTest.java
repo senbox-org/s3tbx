@@ -4,9 +4,11 @@ package org.esa.s3tbx.meris.brr.operator;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.test.LongTestRunner;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,14 +18,15 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@RunWith(LongTestRunner.class)
 public class BrrOpIntegrationTest {
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         boolean internetAvailable;
         try {
             URLConnection urlConnection = new URL("http://www.google.com").openConnection();
-            urlConnection.setConnectTimeout(5);
+            urlConnection.setConnectTimeout(2000);
             urlConnection.getContent();
             internetAvailable = true;
         } catch (IOException e) {
@@ -34,7 +37,7 @@ public class BrrOpIntegrationTest {
     }
 
     @Test
-    public void testProcessMerisL1B() throws IOException {
+    public void testProcessMerisL1B() {
         final Product merisL1BProduct = MerisL1BProduct.create();
 
         final Product target = GPF.createProduct("Meris.Brr", createParameter(), merisL1BProduct);

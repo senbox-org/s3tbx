@@ -32,6 +32,7 @@ import java.awt.RenderingHints;
  */
 @OperatorMetadata(alias = "MphChl",
         version = "1.0",
+        category = "Optical/Thematic Water Processing",
         authors = "Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne",
         copyright = "(c) 2013, 2014, 2017 by Brockmann Consult",
         description = "This operator computes maximum peak height of chlorophyll (MPH/CHL).")

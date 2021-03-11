@@ -3,12 +3,7 @@ package org.esa.s3tbx.slstr.pdu.stitching.manifest;
 import org.esa.s3tbx.slstr.pdu.stitching.ImageSize;
 import org.esa.s3tbx.slstr.pdu.stitching.ImageSizeHandler;
 import org.esa.s3tbx.slstr.pdu.stitching.PDUStitchingException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,12 +14,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,15 +59,17 @@ public class ManifestMerger {
         this.creationTime = creationTime;
         this.productDir = productDir;
         this.productSize = productSize;
-        List<Node> manifestList = new ArrayList<>();
+
+        final List<Node> manifestList = new ArrayList<>();
         imageSizes = new ImageSize[manifestFiles.length][];
         for (int i = 0; i < manifestFiles.length; i++) {
-            File manifestFile = manifestFiles[i];
-            final Document xmlDocument = createXmlDocument(new FileInputStream(manifestFile));
+            final FileInputStream inputStream = new FileInputStream(manifestFiles[i]);
+            final Document xmlDocument = createXmlDocument(inputStream);
             imageSizes[i] = ImageSizeHandler.extractImageSizes(xmlDocument);
             manifestList.add(xmlDocument);
+            inputStream.close();
         }
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        final Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         defaultMerger = new DefaultMerger();
         defaultMerger.mergeNodes(manifestList, document, document);
         return document;
@@ -92,7 +84,7 @@ public class ManifestMerger {
         }
     }
 
-    private ElementMerger getElementMerger(String elementName) throws PDUStitchingException {
+    private ElementMerger getElementMerger(String elementName) {
         switch (elementName) {
             case "dataObject":
                 return new DataObjectMerger(productDir.getAbsolutePath());
@@ -204,7 +196,7 @@ public class ManifestMerger {
                                         (otherNodeValue == null && nodeValue != null) ||
                                         (otherNodeValue != null && !otherNodeValue.trim().equals(nodeValue.trim()))) {
                                     throw new PDUStitchingException("Different values for node " + child.getParentNode().getNodeName() + ": "
-                                                                            + otherNodeValue + ", " + nodeValue);
+                                            + otherNodeValue + ", " + nodeValue);
                                 } else {
                                     itemNodes.add(childNodeLists[k].item(l));
                                     break;

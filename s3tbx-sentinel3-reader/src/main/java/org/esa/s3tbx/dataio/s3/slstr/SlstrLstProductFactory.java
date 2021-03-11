@@ -16,16 +16,33 @@ package org.esa.s3tbx.dataio.s3.slstr;/*
 
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.ForwardCoding;
+import org.esa.snap.core.dataio.geocoding.GeoChecks;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.InverseCoding;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
+import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.runtime.Config;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 public class SlstrLstProductFactory extends SlstrProductFactory {
+
+    private static final double RESOLUTION_IN_KM = 1.0;
+    private final static String SYSPROP_SLSTR_LST_TIE_POINT_FORWARD = "s3tbx.reader.slstr.lst.tiePointGeoCoding.forward";
+    private final static String SYSPROP_SLSTR_LST_PIXEL_FORWARD = "s3tbx.reader.slstr.lst.pixelGeoCoding.forward";
+    private final static String SYSPROP_SLSTR_LST_PIXEL_INVERSE = "s3tbx.reader.slstr.lst.pixelGeoCoding.inverse";
 
     public SlstrLstProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
@@ -53,23 +70,70 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
     }
 
     @Override
-    protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {}
+    protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
+    }
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
-        final Band latBand = targetProduct.getBand("latitude_in");
         final Band lonBand = targetProduct.getBand("longitude_in");
-        if (latBand != null && lonBand != null) {
-            targetProduct.setSceneGeoCoding(
-                    GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, "!confidence_in_duplicate", 5));
-        }
-        if (targetProduct.getSceneGeoCoding() == null) {
-            if (targetProduct.getTiePointGrid("latitude_tx") != null && targetProduct.getTiePointGrid(
-                    "longitude_tx") != null) {
-                targetProduct.setSceneGeoCoding(new TiePointGeoCoding(targetProduct.getTiePointGrid("latitude_tx"),
-                                                                      targetProduct.getTiePointGrid("longitude_tx")));
+        final Band latBand = targetProduct.getBand("latitude_in");
+
+        if (lonBand != null && latBand != null) {
+            setPixelGeoCoding(targetProduct, lonBand, latBand);
+        } else {
+            final TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
+            final TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
+            if (lonGrid == null || latGrid == null) {
+                // no way to create a geo-coding tb 2020-01-22
+                return;
             }
+
+            setTiePointGeoCoding(targetProduct, lonGrid, latGrid);
         }
+    }
+
+    private void setPixelGeoCoding(Product targetProduct, Band lonBand, Band latBand) throws IOException {
+        final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+        lonBand.unloadRasterData();
+        final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+        latBand.unloadRasterData();
+
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonBand.getName(), latBand.getName(),
+                                                  targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_FORWARD, PixelForward.KEY);
+        final String inverseKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_INVERSE, PixelQuadTreeInverse.KEY);
+
+        final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+        final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
+    }
+
+    private void setTiePointGeoCoding(Product targetProduct, TiePointGrid lonGrid, TiePointGrid latGrid) {
+        final double[] longitudes = loadTiePointData(lonGrid.getName());
+        final double[] latitudes = loadTiePointData(latGrid.getName());
+
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonGrid.getName(), latGrid.getName(),
+                                                  lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+                                                  targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM,
+                                                  lonGrid.getOffsetX(), lonGrid.getOffsetY(),
+                                                  lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_TIE_POINT_FORWARD, TiePointBilinearForward.KEY);
+
+        final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+        final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
     }
 
     @Override
@@ -80,6 +144,22 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
     @Override
     protected Double getTrackOffset(String gridIndex) {
         return 0.0;
+    }
+
+    @Override
+    protected short[] getResolutions(String gridIndex) {
+        short[] resolutions;
+        if (gridIndex.equals("tx") || gridIndex.equals("tn")) {
+            resolutions = new short[]{16000, 1000};
+        } else {
+            resolutions = new short[]{1000, 1000};
+        }
+        return resolutions;
+    }
+
+    @Override
+    protected short[] getReferenceResolutions() {
+        return new short[]{1000, 1000};
     }
 
     @Override

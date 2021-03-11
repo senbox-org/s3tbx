@@ -9,10 +9,10 @@
     "geoCoding": {
       "coordinates": [
         {
-          "x": 524.0,
+          "x": 523.9174077425912,
           "y": 584.0,
-          "lat": 42.96504183516778,
-          "lon": 8.010345076346242
+          "lat": 42.9652209668073,
+          "lon": 8.00932066540693
         },
         {
           "x": 903.0,
@@ -1004,7 +1004,7 @@
         "description": "Classification flags, quality and science flags for Land pixels",
         "bandWidth": 1217,
         "bandHeight": 1088,
-        "noDataValue": "4.294967295E9",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -2844,10 +2844,6 @@
       {
         "path": "Manifest/metadataSection/processing/resource[7]/processing/resource/name",
         "value": "S3IPF.PDS.007 - i1r4 - Auxiliary Data Format Specification"
-      },
-      {
-        "path": "time_stamp/_ChunkSize",
-        "value": "1088"
       },
       {
         "path": "solar_flux/Solar fluxes for band 2/Solar flux",

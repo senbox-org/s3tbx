@@ -455,14 +455,6 @@
         "value": "S3IPF PDS 006 - i1r2 - Product Data Format Specification - SYN"
       },
       {
-        "path": "longitude/_ChunkSize",
-        "value": "360"
-      },
-      {
-        "path": "longitude/_ChunkSize",
-        "value": "360"
-      },
-      {
         "path": "crs/grid_mappring_name",
         "value": "latitude_longitude "
       },

@@ -59,20 +59,18 @@ import java.util.stream.Collectors;
  */
 public class RayleighAux {
 
-    public static final String GETASSE_30 = "GETASSE30";
-    public static final String COEFF_MATRIX_TXT = "coeffMatrix.txt";
-    public static final String TAU_RAY = "tau_ray";
-    public static final String THETA = "theta";
-    public static final String RAY_COEFF_MATRIX = "ray_coeff_matrix";
-    public static final String RAY_ALBEDO_LUT = "ray_albedo_lut";
-    public static PolynomialSplineFunction linearInterpolate;
-    public static double[] tau_ray;
+    private static final String GETASSE_30 = "GETASSE30";
+    private static final String COEFF_MATRIX_TXT = "coeffMatrix.txt";
+    private static final String TAU_RAY = "tau_ray";
+    private static final String THETA = "theta";
+    private static final String RAY_COEFF_MATRIX = "ray_coeff_matrix";
+    private static final String RAY_ALBEDO_LUT = "ray_albedo_lut";
     private static ElevationModel elevationModel;
     private static double[] thetas;
-    private static double[][][] rayCooefMatrixA;
-    private static double[][][] rayCooefMatrixB;
-    private static double[][][] rayCooefMatrixC;
-    private static double[][][] rayCooefMatrixD;
+    private static double[][][] rayCoeffMatrixA;
+    private static double[][][] rayCoeffMatrixB;
+    private static double[][][] rayCoeffMatrixC;
+    private static double[][][] rayCoeffMatrixD;
     private double[] sunZenithAngles;
     private double[] viewZenithAngles;
     private double[] sunAzimuthAngles;
@@ -98,36 +96,34 @@ public class RayleighAux {
     private double[] cosOZARads;
     private double[] airMass;
 
+    static PolynomialSplineFunction linearInterpolate;
+    static double[] tau_ray;
+
     public static double[] parseJSON1DimArray(JSONObject parse, String ray_coeff_matrix) {
         JSONArray theta = (JSONArray) parse.get(ray_coeff_matrix);
         List<Double> collect = (List<Double>) theta.stream().collect(Collectors.toList());
         return Doubles.toArray(collect);
     }
 
-    public static void initDefaultAuxiliary() {
-        try {
-            ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor(GETASSE_30);
-            elevationModel = getasse30.createDem(Resampling.NEAREST_NEIGHBOUR);
-            Path coeffMatrix = installAuxdata().resolve(COEFF_MATRIX_TXT);
-            JSONParser jsonObject = new JSONParser();
-            JSONObject parse = (JSONObject) jsonObject.parse(new FileReader(coeffMatrix.toString()));
+    public static void initDefaultAuxiliary() throws IOException, ParseException {
+        ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor(GETASSE_30);
+        elevationModel = getasse30.createDem(Resampling.NEAREST_NEIGHBOUR);
+        Path coeffMatrix = installAuxdata().resolve(COEFF_MATRIX_TXT);
+        JSONParser jsonObject = new JSONParser();
+        JSONObject parse = (JSONObject) jsonObject.parse(new FileReader(coeffMatrix.toString()));
 
-            tau_ray = parseJSON1DimArray(parse, TAU_RAY);
-            thetas = parseJSON1DimArray(parse, THETA);
+        tau_ray = parseJSON1DimArray(parse, TAU_RAY);
+        thetas = parseJSON1DimArray(parse, THETA);
 
-            ArrayList<double[][][]> ray_coeff_matrix = parseJSON3DimArray(parse, RAY_COEFF_MATRIX);
-            rayCooefMatrixA = ray_coeff_matrix.get(0);
-            rayCooefMatrixB = ray_coeff_matrix.get(1);
-            rayCooefMatrixC = ray_coeff_matrix.get(2);
-            rayCooefMatrixD = ray_coeff_matrix.get(3);
+        ArrayList<double[][][]> ray_coeff_matrix = parseJSON3DimArray(parse, RAY_COEFF_MATRIX);
+        rayCoeffMatrixA = ray_coeff_matrix.get(0);
+        rayCoeffMatrixB = ray_coeff_matrix.get(1);
+        rayCoeffMatrixC = ray_coeff_matrix.get(2);
+        rayCoeffMatrixD = ray_coeff_matrix.get(3);
 
-            double[] lineSpace = getLineSpace(0, 1, 17);
-            double[] rayAlbedoLuts = parseJSON1DimArray(parse, RAY_ALBEDO_LUT);
-            linearInterpolate = new LinearInterpolator().interpolate(lineSpace, rayAlbedoLuts);
-
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
+        double[] lineSpace = getLineSpace(0, 1, 17);
+        double[] rayAlbedoLuts = parseJSON1DimArray(parse, RAY_ALBEDO_LUT);
+        linearInterpolate = new LinearInterpolator().interpolate(lineSpace, rayAlbedoLuts);
     }
 
     public void setSolarFluxs(double[] solarFluxs) {
@@ -135,7 +131,7 @@ public class RayleighAux {
     }
 
     public void setAltitudes(Tile altitude) {
-        this.altitudes = altitude.getSamplesDouble(); 
+        this.altitudes = altitude.getSamplesDouble();
     }
 
     public double[] getTaur() {
@@ -174,11 +170,11 @@ public class RayleighAux {
     }
 
     //for test only
-    public void setInterpolation(HashMap<Integer, List<double[]>> integerHashMap) {
+    void setInterpolation(HashMap<Integer, List<double[]>> integerHashMap) {
         this.interpolateMap = integerHashMap;
     }
 
-    public Map<Integer, List<double[]>> getSpikeInterpolation() {
+    private Map<Integer, List<double[]>> getSpikeInterpolation() {
         double[] sunZenithAngles = getSunZenithAngles();
         double[] viewZenithAngles = getViewZenithAngles();
         Map<Integer, List<double[]>> interpolate = new HashMap<>();
@@ -187,32 +183,17 @@ public class RayleighAux {
             for (int index = 0; index < sunZenithAngles.length; index++) {
                 double vzaVal = viewZenithAngles[index];
                 double szaVal = sunZenithAngles[index];
-
-                double thetaMin = thetas[0];
-                double thetaMax = thetas[thetas.length - 1];
+                if (Double.isNaN(szaVal) || Double.isNaN(vzaVal)) {
+                    continue;
+                }
                 List<double[]> valueList = new ArrayList<>();
-                for (int i = 0; i < rayCooefMatrixA.length; i++) {
+                for (int i = 0; i < rayCoeffMatrixA.length; i++) {
                     double[] values = new double[4];
-                    if (vzaVal >= thetaMin && vzaVal <= thetaMax && szaVal >= thetaMin && szaVal <= thetaMax) {
-                        values[0] = SpikeInterpolation.interpolate2D(rayCooefMatrixA[i], thetas, thetas, szaVal, vzaVal);
-                        values[1] = SpikeInterpolation.interpolate2D(rayCooefMatrixB[i], thetas, thetas, szaVal, vzaVal);
-                        values[2] = SpikeInterpolation.interpolate2D(rayCooefMatrixC[i], thetas, thetas, szaVal, vzaVal);
-                        values[3] = SpikeInterpolation.interpolate2D(rayCooefMatrixD[i], thetas, thetas, szaVal, vzaVal);
-                        valueList.add(values);
-                    } else {
-                        if (vzaVal < thetaMin && szaVal < thetaMax) {
-                            valueList.add(getGridValueAt(0, 0));
-                        } else {
-                            int len = thetas.length - 1;
-                            if (vzaVal > thetaMax && szaVal > thetaMin) {
-                                valueList.add(getGridValueAt(0, len));
-                            } else if (szaVal < thetaMin && vzaVal < thetaMax) {
-                                valueList.add(getGridValueAt(0, 0));
-                            } else if (vzaVal > thetaMax && szaVal < thetaMin) {
-                                valueList.add(getGridValueAt(len, len));
-                            }
-                        }
-                    }
+                    values[0] = SpikeInterpolation.interpolate2D(rayCoeffMatrixA[i], thetas, thetas, szaVal, vzaVal);
+                    values[1] = SpikeInterpolation.interpolate2D(rayCoeffMatrixB[i], thetas, thetas, szaVal, vzaVal);
+                    values[2] = SpikeInterpolation.interpolate2D(rayCoeffMatrixC[i], thetas, thetas, szaVal, vzaVal);
+                    values[3] = SpikeInterpolation.interpolate2D(rayCoeffMatrixD[i], thetas, thetas, szaVal, vzaVal);
+                    valueList.add(values);
                 }
                 interpolate.put(index, valueList);
             }
@@ -220,7 +201,7 @@ public class RayleighAux {
         return interpolate;
     }
 
-    public Map<Integer, double[]> getFourier() {
+    Map<Integer, double[]> getFourier() {
         if (Objects.isNull(fourierPoly)) {
             return fourierPoly = getFourierMap();
         }
@@ -362,7 +343,7 @@ public class RayleighAux {
     }
 
     public void setSunZenithAngles(Tile sourceTile) {
-        this.sunZenithAngles = sourceTile.getSamplesDouble(); 
+        this.sunZenithAngles = sourceTile.getSamplesDouble();
         setSunZenithAnglesRad(sunZenithAngles);
     }
 
@@ -381,7 +362,7 @@ public class RayleighAux {
     }
 
     public void setViewZenithAngles(Tile sourceTile) {
-        this.viewZenithAngles = sourceTile.getSamplesDouble(); 
+        this.viewZenithAngles = sourceTile.getSamplesDouble();
         setViewZenithAnglesRad(viewZenithAngles);
     }
 
@@ -391,7 +372,7 @@ public class RayleighAux {
     }
 
     public void setSunAzimuthAngles(Tile sourceTile) {
-        this.sunAzimuthAngles = sourceTile.getSamplesDouble(); 
+        this.sunAzimuthAngles = sourceTile.getSamplesDouble();
         setSunAzimuthAnglesRad(sunAzimuthAngles);
     }
 
@@ -404,7 +385,7 @@ public class RayleighAux {
     }
 
     public void setLatitudes(Tile sourceTile) {
-        this.latitudes = sourceTile.getSamplesDouble(); 
+        this.latitudes = sourceTile.getSamplesDouble();
     }
 
     public void setViewAzimuthAngles(double... viewAzimuthAngles) {
@@ -413,7 +394,7 @@ public class RayleighAux {
     }
 
     public void setViewAzimuthAngles(Tile sourceTile) {
-        this.viewAzimuthAngles = sourceTile.getSamplesDouble(); 
+        this.viewAzimuthAngles = sourceTile.getSamplesDouble();
         setViewAzimuthAnglesRad(viewAzimuthAngles);
     }
 
@@ -449,7 +430,7 @@ public class RayleighAux {
     }
 
     public void setSeaLevels(Tile sourceTile) {
-        this.seaLevels = sourceTile.getSamplesDouble(); 
+        this.seaLevels = sourceTile.getSamplesDouble();
     }
 
     public double[] getTotalOzones() {
@@ -461,7 +442,7 @@ public class RayleighAux {
     }
 
     public void setTotalOzones(Tile sourceTile) {
-        this.totalOzones = sourceTile.getSamplesDouble(); 
+        this.totalOzones = sourceTile.getSamplesDouble();
     }
 
     public void setOlciTotalOzones(Tile sourceTile) {
@@ -477,7 +458,7 @@ public class RayleighAux {
     }
 
     public void setSolarFluxs(Tile sourceTile) {
-        this.solarFluxs = sourceTile.getSamplesDouble(); 
+        this.solarFluxs = sourceTile.getSamplesDouble();
     }
 
     public double[] getSourceSampleRad() {
@@ -485,7 +466,7 @@ public class RayleighAux {
     }
 
     public void setSourceSampleRad(Tile sourceTile) {
-        this.sourceSampleRad = sourceTile.getSamplesDouble(); 
+        this.sourceSampleRad = sourceTile.getSamplesDouble();
     }
 
     public double[] getLongitudes() {
@@ -521,10 +502,10 @@ public class RayleighAux {
 
     private double[] getGridValueAt(int x, int y) {
         double[] values = new double[4];
-        values[0] = rayCooefMatrixA[x][y][0];
-        values[1] = rayCooefMatrixB[x][y][0];
-        values[2] = rayCooefMatrixC[x][y][0];
-        values[3] = rayCooefMatrixD[x][y][0];
+        values[0] = rayCoeffMatrixA[x][y][0];
+        values[1] = rayCoeffMatrixB[x][y][0];
+        values[2] = rayCoeffMatrixC[x][y][0];
+        values[3] = rayCoeffMatrixD[x][y][0];
         return values;
     }
 
@@ -556,7 +537,7 @@ public class RayleighAux {
 
                 double[] fourierSeries = new double[3];
                 //Rayleigh Phase function, 3 Fourier terms
-                fourierSeries[0] = (3.0 * 0.9587256 / 4.0 * (1 + (cosSZARad * cosSZARad) * (cosOZARad * cosOZARad) + (sinSZA2 * sinOZA2) / 2.0) + (1.0 - 0.9587256));
+                fourierSeries[0] = (3.0 * 0.9587256 / 4.0 * (1 + Math.pow(cosSZARad, 2) * Math.pow(cosOZARad, 2) + (sinSZA2 * sinOZA2) / 2.0) + (1.0 - 0.9587256));
                 fourierSeries[1] = (-3.0 * 0.9587256 / 4.0 * cosSZARad * cosOZARad * sinSZARad * sinOZARad);
                 fourierSeries[2] = (3.0 * 0.9587256 / 16.0 * sinSZA2 * sinOZA2);
 

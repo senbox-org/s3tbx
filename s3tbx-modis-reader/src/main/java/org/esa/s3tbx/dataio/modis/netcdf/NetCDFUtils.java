@@ -34,6 +34,8 @@ public class NetCDFUtils {
 
             case BYTE:
             case INT:
+            case UBYTE:
+            case UINT:
                 final int[] intValues = getIntValues(attribute);
                 prodData = ProductData.createInstance(intValues);
                 break;

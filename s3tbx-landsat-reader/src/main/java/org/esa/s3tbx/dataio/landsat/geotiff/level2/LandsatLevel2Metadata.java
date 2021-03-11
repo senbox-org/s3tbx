@@ -6,8 +6,8 @@ import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
-import org.geotools.graph.util.geom.Coordinate2D;
 
+import java.awt.geom.Point2D;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -206,7 +206,7 @@ public class LandsatLevel2Metadata extends XmlMetadata {
     }
 
 
-    public Coordinate2D getUpperLeft() {
+    public Point2D.Double getUpperLeft() {
         MetadataElement[] metadataElements = getRootElement().getElement("global_metadata").getElement("projection_information").getElements();
         for (MetadataElement corner_point : metadataElements) {
             if(!corner_point.getName().equals("corner_point")) {
@@ -215,7 +215,7 @@ public class LandsatLevel2Metadata extends XmlMetadata {
             if(corner_point.getAttribute("location").getData().toString().equals("UL")) {
                 double x = Double.parseDouble(corner_point.getAttribute("x").getData().toString());
                 double y = Double.parseDouble(corner_point.getAttribute("y").getData().toString());
-                return new Coordinate2D(x, y);
+                return new Point2D.Double(x, y);
             }
         }
 

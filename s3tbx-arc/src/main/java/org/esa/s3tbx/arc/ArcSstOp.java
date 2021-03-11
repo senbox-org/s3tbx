@@ -16,7 +16,11 @@
 package org.esa.s3tbx.arc;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.ProductNode;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
@@ -32,14 +36,9 @@ import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 import org.esa.snap.core.util.converters.GeneralExpressionConverter;
-import org.esa.snap.dataio.envisat.EnvisatConstants;
 
-import javax.media.jai.OpImage;
-import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -52,11 +51,11 @@ import java.util.stream.Stream;
  * @author Owen Embury
  */
 @OperatorMetadata(alias = "Arc.SST",
-                  category = "Optical/Thematic Water Processing",
-                  authors = "Owen Embury, Marco Peters",
-                  copyright = "University of Reading, Brockmann Consult GmbH",
-                  version = "0.1",
-                  description = "Computes sea surface temperature (SST) from (A)ATSR products.")
+        category = "Optical/Thematic Water Processing",
+        authors = "Owen Embury, Marco Peters",
+        copyright = "University of Reading, Brockmann Consult GmbH",
+        version = "1.0",
+        description = "Computes sea surface temperature (SST) from (A)ATSR and SLSTR products.")
 public class ArcSstOp extends PixelOperator {
 
     private Sensor sensor;
@@ -64,69 +63,69 @@ public class ArcSstOp extends PixelOperator {
     @SuppressWarnings("unused")
 
     @SourceProduct(alias = "source",
-                   description = "The path of the (A)ATSR source product",
-                   label = "(A)ATSR source product")
+            description = "The path of the (A)ATSR or SLSTR source product",
+            label = "(A)ATSR or SLSTR")
     private Product sourceProduct;
 
     @Parameter(defaultValue = "30.0", label = "Total Column Water Vapour",
-               description = "TCWV value to use in SST retrieval",
-               converter = GeneralExpressionConverter.class)
+            description = "TCWV value to use in SST retrieval",
+            converter = GeneralExpressionConverter.class)
     private String tcwvExpression;
 
     @Parameter(defaultValue = "true",
-               label = ArcConstants.PROCESS_ASDI_LABELTEXT,
-               description = ArcConstants.PROCESS_ASDI_DESCRIPTION)
+            label = ArcConstants.PROCESS_ASDI_LABELTEXT,
+            description = ArcConstants.PROCESS_ASDI_DESCRIPTION)
     private boolean asdi;
 
     @Parameter(defaultValue = "ASDI_AATSR", label = "ASDI coefficient file",
-               description = ArcConstants.ASDI_COEFF_FILE_DESCRIPTION,
-               valueSet = {
-                       "ASDI_ATSR1", "ASDI_ATSR2", "ASDI_AATSR",
-               })
+            description = ArcConstants.ASDI_COEFF_FILE_DESCRIPTION,
+            valueSet = {
+                    "ASDI_ATSR1", "ASDI_ATSR2", "ASDI_AATSR",
+            })
     private ArcFiles asdiCoefficientsFile;
 
     @Parameter(defaultValue = ArcConstants.DEFAULT_ASDI_BITMASK, label = "ASDI mask",
-               description = "ROI-mask used for the ASDI",
-               converter = BooleanExpressionConverter.class)
+            description = "ROI-mask used for the ASDI",
+            converter = BooleanExpressionConverter.class)
     private String asdiMaskExpression;
 
     @Parameter(defaultValue = "true",
-               label = ArcConstants.PROCESS_DUAL_VIEW_SST_LABELTEXT,
-               description = ArcConstants.PROCESS_DUAL_VIEW_SST_DESCRIPTION)
+            label = ArcConstants.PROCESS_DUAL_VIEW_SST_LABELTEXT,
+            description = ArcConstants.PROCESS_DUAL_VIEW_SST_DESCRIPTION)
     private boolean dual;
 
     @Parameter(defaultValue = "ARC_D2_AATSR", label = "Dual-view coefficient file",
-               description = ArcConstants.DUAL_VIEW_COEFF_FILE_DESCRIPTION,
-               valueSet = {
-                       "ARC_D2_ATSR1", "ARC_D2_ATSR2", "ARC_D2_AATSR", "ARC_D2_SLSTR",
-                       "ARC_D3_ATSR1", "ARC_D3_ATSR2", "ARC_D3_AATSR", "ARC_D3_SLSTR"
-               })
+            description = ArcConstants.DUAL_VIEW_COEFF_FILE_DESCRIPTION,
+            valueSet = {
+                    "ARC_D2_ATSR1", "ARC_D2_ATSR2", "ARC_D2_AATSR", "ARC_D2_SLSTR",
+                    "ARC_D3_ATSR1", "ARC_D3_ATSR2", "ARC_D3_AATSR", "ARC_D3_SLSTR"
+            })
     private ArcFiles dualCoefficientsFile;
 
     @Parameter(defaultValue = ArcConstants.DEFAULT_DUAL_VIEW_BITMASK, label = "Dual-view mask",
-               description = "ROI-mask used for the dual-view SST",
-               converter = BooleanExpressionConverter.class)
+            description = "ROI-mask used for the dual-view SST",
+            converter = BooleanExpressionConverter.class)
     private String dualMaskExpression;
 
     @Parameter(defaultValue = "true", label = ArcConstants.PROCESS_NADIR_VIEW_SST_LABELTEXT,
-               description = ArcConstants.PROCESS_NADIR_VIEW_SST_DESCRIPTION)
+            description = ArcConstants.PROCESS_NADIR_VIEW_SST_DESCRIPTION)
     private boolean nadir;
 
     @Parameter(defaultValue = "ARC_N2_AATSR", label = "Nadir-view coefficient file",
-               description = ArcConstants.NADIR_VIEW_COEFF_FILE_DESCRIPTION,
-               valueSet = {
-                       "ARC_N2_ATSR1", "ARC_N2_ATSR2", "ARC_N2_AATSR", "ARC_N2_SLSTR",
-                       "ARC_N3_ATSR1", "ARC_N3_ATSR2", "ARC_N3_AATSR", "ARC_N3_SLSTR"
-               })
+            description = ArcConstants.NADIR_VIEW_COEFF_FILE_DESCRIPTION,
+            valueSet = {
+                    "ARC_N2_ATSR1", "ARC_N2_ATSR2", "ARC_N2_AATSR", "ARC_N2_SLSTR",
+                    "ARC_N3_ATSR1", "ARC_N3_ATSR2", "ARC_N3_AATSR", "ARC_N3_SLSTR"
+            })
     private ArcFiles nadirCoefficientsFile;
 
     @Parameter(defaultValue = ArcConstants.DEFAULT_NADIR_VIEW_BITMASK, label = "Nadir-view mask",
-               description = "ROI-mask used for the nadir-view SST",
-               converter = BooleanExpressionConverter.class)
+            description = "ROI-mask used for the nadir-view SST",
+            converter = BooleanExpressionConverter.class)
     private String nadirMaskExpression;
 
     @Parameter(defaultValue = "-999.0f", label = "Invalid SST value",
-               description = "Value used to fill invalid SST pixels")
+            description = "Value used to fill invalid SST pixels")
     private float invalidSstValue;
 
     private transient ArcCoefficients coeff1;
@@ -167,7 +166,7 @@ public class ArcSstOp extends PixelOperator {
             } else {
                 final double coeff[] = coeff1.get_Coeffs().getValues(ntcwv, 1.75, secnad);
                 final double nadirSst = coeff[0]*ir37N + coeff[1]*ir11N + coeff[2]*ir12N +
-                                        coeff[6];
+                        coeff[6];
 
                 targetSamples[0].set(nadirSst);
             }
@@ -180,8 +179,8 @@ public class ArcSstOp extends PixelOperator {
             } else {
                 final double coeff[] = coeff2.get_Coeffs().getValues(ntcwv, secfwd, secnad);
                 final double dualSst = coeff[0]*ir37N + coeff[1]*ir11N + coeff[2]*ir12N +
-                                       coeff[3]*ir37F + coeff[4]*ir11F + coeff[5]*ir12F +
-                                       coeff[6];
+                        coeff[3]*ir37F + coeff[4]*ir11F + coeff[5]*ir12F +
+                        coeff[6];
 
                 targetSamples[1].set(dualSst);
             }
@@ -194,8 +193,8 @@ public class ArcSstOp extends PixelOperator {
             } else {
                 final double coeff[] = coeff3.get_Coeffs().getValues(ntcwv, secfwd, secnad);
                 final double asdi = coeff[0] * ir37N + coeff[1] * ir11N + coeff[2] * ir12N +
-                                    coeff[3] * ir37F + coeff[4] * ir11F + coeff[5] * ir12F +
-                                    coeff[6];
+                        coeff[3] * ir37F + coeff[4] * ir11F + coeff[5] * ir12F +
+                        coeff[6];
                 targetSamples[2].set(asdi);
             }
         }
@@ -240,13 +239,13 @@ public class ArcSstOp extends PixelOperator {
     @Override
     protected void configureTargetSamples(TargetSampleConfigurer sc) throws OperatorException {
         if (nadir) {
-            sc.defineSample(0, coeff1.getName());
+            sc.defineSample(0, nadirCoefficientsFile.getCoefficientsName());
         }
         if (dual) {
-            sc.defineSample(1, coeff2.getName());
+            sc.defineSample(1, dualCoefficientsFile.getCoefficientsName());
         }
         if (asdi) {
-            sc.defineSample(2, coeff3.getName());
+            sc.defineSample(2, asdiCoefficientsFile.getCoefficientsName());
         }
     }
 
@@ -255,18 +254,18 @@ public class ArcSstOp extends PixelOperator {
         super.configureTargetProduct(productConfigurer);
 
         if (nadir) {
-            createBand(productConfigurer, coeff1);
+            createBand(productConfigurer, nadirCoefficientsFile);
         }
         if (dual) {
-            createBand(productConfigurer, coeff2);
+            createBand(productConfigurer, dualCoefficientsFile);
         }
         if (asdi) {
-            createBand(productConfigurer, coeff3);
+            createBand(productConfigurer, asdiCoefficientsFile);
         }
-   }
+    }
 
-    private void createBand(ProductConfigurer productConfigurer, ArcCoefficients coeff) {
-        final Band nadirSstBand = productConfigurer.addBand(coeff.getName(), ProductData.TYPE_FLOAT32);
+    private void createBand(ProductConfigurer productConfigurer, ArcFiles coeff) {
+        final Band nadirSstBand = productConfigurer.addBand(coeff.getCoefficientsName(), ProductData.TYPE_FLOAT32);
         nadirSstBand.setUnit(ArcConstants.OUT_BAND_UNIT);
         nadirSstBand.setDescription(coeff.getDescription());
         nadirSstBand.setGeophysicalNoDataValue(invalidSstValue);
@@ -277,11 +276,28 @@ public class ArcSstOp extends PixelOperator {
     protected void prepareInputs() throws OperatorException {
         super.prepareInputs();
         sensor = getSensor();
-
-        final File auxdataDir = installAuxiliaryData();
-        initNadirCoefficients(auxdataDir);
     }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Read in auxiliary data", 2);
+        try {
+            final File auxdataDir = installAuxiliaryData();
+            pm.worked(1);
+            initNadirCoefficients(auxdataDir);
+            pm.worked(1);
+        } finally {
+            pm.done();
+        }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        coeff1 = null;
+        coeff2 = null;
+        coeff3 = null;
+    }
 
     private void initNadirCoefficients(File auxdataDir) throws OperatorException {
         final ArcCoefficientLoader loader = new ArcCoefficientLoader();
@@ -306,17 +322,6 @@ public class ArcSstOp extends PixelOperator {
         }
 
         return auxDataDir.toFile();
-    }
-
-    private static boolean isMasked(final OpImage maskOpImage, final int x, final int y) {
-        if (maskOpImage == null) {
-            return true;
-        }
-        final int tileX = maskOpImage.XToTileX(x);
-        final int tileY = maskOpImage.YToTileY(y);
-        final Raster tile = maskOpImage.getTile(tileX, tileY);
-
-        return tile.getSample(x, y, 0) != 0;
     }
 
     public static class Spi extends OperatorSpi {

@@ -19,10 +19,17 @@ import com.bc.ceres.glevel.support.DefaultMultiLevelModel;
 import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.ForwardCoding;
+import org.esa.snap.core.dataio.geocoding.GeoChecks;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.InverseCoding;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.BasicPixelGeoCoding;
 import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
 import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
@@ -41,10 +48,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 public class SlstrSstProductFactory extends SlstrProductFactory {
 
     public final static String SLSTR_L2_SST_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl2sst.pixelGeoCodings";
+    private final static String SLSTR_L2_SST_PIXEL_CODING_FORWARD = "s3tbx.reader.slstrl2sst.pixelGeoCodings.forward";
+    private final static String SLSTR_L2_SST_PIXEL_CODING_INVERSE = "s3tbx.reader.slstrl2sst.pixelGeoCodings.inverse";
 
     private Map<String, GeoCoding> geoCodingMap;
     private Double nadirStartOffset;
@@ -111,14 +121,14 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
     }
 
     protected Double getStartOffset(String gridIndex) {
-        if(gridIndex.endsWith("o")) {
+        if (gridIndex.endsWith("o")) {
             return obliqueStartOffset;
         }
         return nadirStartOffset;
     }
 
     protected Double getTrackOffset(String gridIndex) {
-        if(gridIndex.endsWith("o")) {
+        if (gridIndex.endsWith("o")) {
             return obliqueTrackOffset;
         }
         return nadirTrackOffset;
@@ -128,7 +138,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
     protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
         final String sourceBandName = sourceBand.getName();
         final String sourceProductName = sourceBand.getProduct().getName();
-        final String gridIndex = (sourceProductName).substring(sourceProductName.length() - 2);
+        final String gridIndex = getGridIndex(sourceProductName);
         Double sourceStartOffset = getStartOffset(gridIndex);
         Double sourceTrackOffset = getTrackOffset(gridIndex);
         final short[] sourceResolutions = getResolutions(gridIndex);
@@ -234,7 +244,7 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
         }
     }
 
-    private void setPixelBandGeoCodings(Product product) {
+    private void setPixelBandGeoCodings(Product product) throws IOException {
         final Band[] bands = product.getBands();
         for (Band band : bands) {
             final GeoCoding bandGeoCoding = getBandGeoCoding(product, getIdentifier(band.getName()));
@@ -258,29 +268,53 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
         return "";
     }
 
-    private GeoCoding getBandGeoCoding(Product product, String end) {
+    private GeoCoding getBandGeoCoding(Product product, String end) throws IOException {
         if (geoCodingMap.containsKey(end)) {
             return geoCodingMap.get(end);
         } else {
-            Band latBand = null;
-            Band lonBand = null;
+            // @todo 1 tb/tb add test for the switch 2020-02-14
+            String lonVariableName = null;
+            String latVariableName = null;
             switch (end) {
                 case "in":
-                    latBand = product.getBand("latitude_in");
-                    lonBand = product.getBand("longitude_in");
+                    lonVariableName = "longitude_in";
+                    latVariableName = "latitude_in";
                     break;
                 case "io":
-                    latBand = product.getBand("latitude_io");
-                    lonBand = product.getBand("longitude_io");
+                    lonVariableName = "longitude_io";
+                    latVariableName = "latitude_io";
                     break;
             }
-            if (latBand != null && lonBand != null) {
-                final BasicPixelGeoCoding geoCoding = GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, "", 5);
-                geoCodingMap.put(end, geoCoding);
-                return geoCoding;
+
+            final Band lonBand = product.getBand(lonVariableName);
+            final Band latBand = product.getBand(latVariableName);
+            if (latBand == null || lonBand == null) {
+                return null;
             }
+
+            final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+            lonBand.unloadRasterData();
+            final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+            latBand.unloadRasterData();
+
+            final int width = product.getSceneRasterWidth();
+            final int height = product.getSceneRasterHeight();
+            final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                                                      width, height, 1.0);
+
+            final Preferences preferences = Config.instance("s3tbx").preferences();
+            final String fwdKey = preferences.get(SLSTR_L2_SST_PIXEL_CODING_FORWARD, PixelForward.KEY);
+            final String inverseKey = preferences.get(SLSTR_L2_SST_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
+
+            final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+            final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+
+            final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+            geoCoding.initialize();
+
+            geoCodingMap.put(end, geoCoding);
+            return geoCoding;
         }
-        return null;
     }
 
     private String getGridIndexFromMask(Mask mask) {

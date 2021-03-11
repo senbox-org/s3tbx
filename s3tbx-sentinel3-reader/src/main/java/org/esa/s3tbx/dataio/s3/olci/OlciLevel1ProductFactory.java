@@ -16,9 +16,7 @@ package org.esa.s3tbx.dataio.s3.olci;/*
 
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductNodeGroup;
 import org.esa.snap.runtime.Config;
 
 public class OlciLevel1ProductFactory extends OlciProductFactory {
@@ -41,11 +39,6 @@ public class OlciLevel1ProductFactory extends OlciProductFactory {
     @Override
     protected String getValidExpression() {
         return validExpression;
-    }
-
-    @Override
-    protected ProductNodeGroup<Mask> prepareMasksForCopying(ProductNodeGroup<Mask> maskGroup) {
-        return maskGroup;
     }
 
     private boolean applyCustomCalibration() {
@@ -77,5 +70,4 @@ public class OlciLevel1ProductFactory extends OlciProductFactory {
             }
         }
     }
-
 }

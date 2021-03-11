@@ -21,7 +21,7 @@
 
     <groupId>org.esa.s3tbx</groupId>
     <artifactId>s3tbx</artifactId>
-    <version>7.0.1-SNAPSHOT</version>
+    <version>8.0.1-SNAPSHOT</version>
     <name>Sentinel-3 Toolbox</name>
     <description>Tools for the Sentinel-3 Satellite</description>
     <url>https://github.com/senbox-org/s3tbx</url>
@@ -35,7 +35,6 @@
         <module>s3tbx-atsr-reader</module>
         <module>s3tbx-avhrr-reader</module>
         <module>s3tbx-c2rcc</module>
-        <module>s3tbx-chris-reader</module>
         <module>s3tbx-flhmci</module>
         <module>s3tbx-flhmci-ui</module>
         <module>s3tbx-fub-wew</module>
@@ -74,19 +73,19 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>7.0.1-SNAPSHOT</snap.version>
+        <snap.version>8.0.1-SNAPSHOT</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <s3tbx.version>7.0.1-SNAPSHOT</s3tbx.version>
+        <s3tbx.version>8.0.1-SNAPSHOT</s3tbx.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
-        <netcdf.version>4.3.22</netcdf.version>
-        <seadas.reader.version>1.8.1-SNAPSHOT</seadas.reader.version>
-        <seadas.reader.ui.version>1.8.1-SNAPSHOT</seadas.reader.ui.version>
+        <netcdf.version>5.3.1</netcdf.version>
+        <seadas.reader.version>1.9.1-SNAPSHOT</seadas.reader.version>
+        <seadas.reader.ui.version>1.9.1-SNAPSHOT</seadas.reader.ui.version>
         <brandingToken>s3tbx</brandingToken>
         <user.language>en</user.language>
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
@@ -252,6 +251,14 @@
                 <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.esa.snap</groupId>
+                <artifactId>snap-test-utils</artifactId>
+                <version>${snap.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
 
 
             <!-- NetBeans Modules -->
@@ -303,19 +310,13 @@
                 <version>${netbeans.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>23.0</version>
-            </dependency>
-
-
             <!-- TAR archive support  -->
             <dependency>
                 <groupId>edu.ucar</groupId>
-                <artifactId>netcdf</artifactId>
+                <artifactId>netcdfAll</artifactId>
                 <version>${netcdf.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.xeustechnologies</groupId>
                 <artifactId>jtar</artifactId>
@@ -357,7 +358,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.2.5,3.6.0]</version>
+                                    <version>[3.2.5,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>1.8</version>
@@ -441,9 +442,9 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
+                    <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>4.1</version>
+                    <version>4.4</version>
                     <extensions>true</extensions>
                     <dependencies>
                         <dependency>
@@ -568,12 +569,21 @@
 
     <developers>
         <developer>
+            <id>marcop</id>
+            <name>Marco Peters</name>
+            <email>marco.peters@brockmann-consult.de</email>
+            <organization>Brockmann Consult</organization>
+            <roles>
+                <role>Project Manager</role>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
             <id>norman</id>
             <name>Norman Fomferra</name>
             <email>norman.fomferra@brockmann-consult.de</email>
             <organization>Brockmann Consult</organization>
             <roles>
-                <role>Project Manager</role>
                 <role>Java Developer</role>
             </roles>
         </developer>
@@ -590,15 +600,6 @@
             <id>tonio</id>
             <name>Tonio Fincke</name>
             <email>tonio.fincke@brockmann-consult.de</email>
-            <organization>Brockmann Consult</organization>
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>marcop</id>
-            <name>Marco Peters</name>
-            <email>marco.peters@brockmann-consult.de</email>
             <organization>Brockmann Consult</organization>
             <roles>
                 <role>Java Developer</role>

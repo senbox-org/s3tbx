@@ -16,21 +16,28 @@
 
 package org.esa.s3tbx.dataio.modis;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ModisUtilsTest_CreateDateFromString {
+    private Calendar cal;
+
+    @Before
+    public void setUp() {
+        cal = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
+    }
 
     @Test
     public void testOk_MoreThanMillisecondsSnipped() throws ParseException {
-        final Calendar cal = GregorianCalendar.getInstance();
         final String date = "2004-07-10";
         // pareable time = "21:55:11.123"
         final String time = "21:55:11.123456";
@@ -51,7 +58,6 @@ public class ModisUtilsTest_CreateDateFromString {
 
     @Test
     public void testOk_exact() throws ParseException {
-        final Calendar cal = GregorianCalendar.getInstance();
         final String date = "2005-08-22";
         final String time = "12:22:09.887";
 
@@ -70,7 +76,6 @@ public class ModisUtilsTest_CreateDateFromString {
 
     @Test
     public void testOk_WithoutMilliseconds() throws ParseException {
-        final Calendar cal = GregorianCalendar.getInstance();
         final String date = "2007-03-25";
         final String time = "15:16:17";
 
@@ -89,7 +94,6 @@ public class ModisUtilsTest_CreateDateFromString {
 
     @Test
     public void testOk_WithMillisecondsFragment() throws ParseException {
-        final Calendar cal = GregorianCalendar.getInstance();
         final String date = "2001-09-13";
         final String time = "07:08:09.4";
 
@@ -108,7 +112,6 @@ public class ModisUtilsTest_CreateDateFromString {
 
     @Test
     public void testOk_WithoutSeconds() throws ParseException {
-        final Calendar cal = GregorianCalendar.getInstance();
         final String date = "2008-04-21";
         final String time = "17:18";
 

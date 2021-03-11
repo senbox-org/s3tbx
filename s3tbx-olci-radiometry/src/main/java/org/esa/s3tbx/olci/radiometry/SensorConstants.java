@@ -22,7 +22,7 @@ public class SensorConstants {
     public static final String MERIS_SLP_NAME = "atm_press";
     public static final String MERIS_L1B_FLAGS_NAME = "l1_flags";
     public static final int MERIS_INVALID_BIT = 7;
-    public static final int[] MERIS_BOUNDS = {13, 14};
+    public static final int[] MERIS_BOUNDS = {15, 14};
     public static final String MERIS_NAME_FORMAT = "radiance_%d";
     public static final String MERIS_NAME_PATTERN = "radiance_\\d+";
     public static final String MERIS_BAND_INFO_FILE_NAME = "band_info_meris.txt";
@@ -63,7 +63,7 @@ public class SensorConstants {
     public static final String OLCI_SLP_NAME = "sea_level_pressure";
     public static final String OLCI_L1B_FLAGS_NAME = "quality_flags";
     public static final int OLCI_INVALID_BIT = 25;
-    public static final int[] OLCI_BOUNDS = {17, 18};
+    public static final int[] OLCI_BOUNDS = {19, 18}; //these are the actual band numbers for WV absorption 900nm = band 19, WV reference 885nm = band 18
     public static final String OLCI_NAME_FORMAT = "Oa%02d_radiance";
     public static final String OLCI_NAME_PATTERN = "Oa\\d+_radiance";
     public static final String OLCI_BAND_INFO_FILE_NAME = "band_info_olci.txt";

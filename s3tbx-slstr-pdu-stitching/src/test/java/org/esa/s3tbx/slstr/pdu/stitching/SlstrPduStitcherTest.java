@@ -10,11 +10,11 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,7 +53,7 @@ public class SlstrPduStitcherTest {
     @Test
     public void testStitchPDUs_NotEmpty() {
         try {
-            SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, new File[0], ProgressMonitor.NULL);
+            SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, new File[0], null, ProgressMonitor.NULL);
             fail("Exception expected");
         } catch (Exception e) {
             assertEquals("No product files provided", e.getMessage());
@@ -64,9 +64,11 @@ public class SlstrPduStitcherTest {
     public void testStitchPDUs_OnlyOneSlstrL1BProductFile() throws Exception {
         final File firstSlstrFile = TestUtils.getFirstSlstrFile();
 
-        final File stitchedProductFile = SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, new File[]{firstSlstrFile}, ProgressMonitor.NULL);
+        final File stitchedProductFile = SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory,
+                new File[]{firstSlstrFile}, null, ProgressMonitor.NULL);
 
         final File slstrFileParentDirectory = firstSlstrFile.getParentFile();
+        assertNotNull(stitchedProductFile);
         final File stitchedProductFileParentDirectory = stitchedProductFile.getParentFile();
         assertEquals(slstrFileParentDirectory.getName(), stitchedProductFileParentDirectory.getName());
         assertEquals(targetDirectory, stitchedProductFileParentDirectory.getParentFile());
@@ -78,20 +80,7 @@ public class SlstrPduStitcherTest {
     }
 
     @Test
-    public void testStitchPDUs_AllSlstrL1BProductFiles() throws IOException, PDUStitchingException, TransformerException, ParserConfigurationException {
-        final File[] slstrFiles = TestUtils.getSlstrFiles();
-        final File stitchedProductFile = SlstrPduStitcher.createStitchedSlstrL1BFile(targetDirectory, slstrFiles, ProgressMonitor.NULL);
-
-        final File stitchedProductFileParentDirectory = stitchedProductFile.getParentFile();
-        assert(new File(stitchedProductFileParentDirectory, "xfdumanifest.xml").exists());
-        assert(new File(stitchedProductFileParentDirectory, "F1_BT_io.nc").exists());
-        assert(new File(stitchedProductFileParentDirectory, "met_tx.nc").exists());
-        assert(new File(stitchedProductFileParentDirectory, "viscal.nc").exists());
-        assertEquals(targetDirectory, stitchedProductFileParentDirectory.getParentFile());
-    }
-
-    @Test
-    public void testDecomposeSlstrName() {
+    public void testDecomposeSlstrName() throws URISyntaxException, PDUStitchingException {
         final SlstrPduStitcher.SlstrNameDecomposition firstSlstrNameDecomposition =
                 SlstrPduStitcher.decomposeSlstrName(TestUtils.getFirstSlstrFile().getParentFile().getName());
 
@@ -110,22 +99,23 @@ public class SlstrPduStitcherTest {
     }
 
     @Test
-    public void testCreateParentDirectoryNameOfStitchedFile() {
+    public void testCreateParentDirectoryNameOfStitchedFile() throws URISyntaxException, PDUStitchingException {
         SlstrPduStitcher.SlstrNameDecomposition[] decompositions = new SlstrPduStitcher.SlstrNameDecomposition[3];
         decompositions[0] = SlstrPduStitcher.decomposeSlstrName(TestUtils.getFirstSlstrFile().getParentFile().getName());
         decompositions[1] = SlstrPduStitcher.decomposeSlstrName(TestUtils.getSecondSlstrFile().getParentFile().getName());
         decompositions[2] = SlstrPduStitcher.decomposeSlstrName(TestUtils.getThirdSlstrFile().getParentFile().getName());
 
+        Date time = Calendar.getInstance().getTime();
         final String parentDirectoryNameOfStitchedFile =
-                SlstrPduStitcher.createParentDirectoryNameOfStitchedFile(decompositions, Calendar.getInstance().getTime());
+                SlstrPduStitcher.createParentDirectoryNameOfStitchedFile(decompositions, time);
 
-        final String now = new SimpleDateFormat("yyyyMMdd'T'HHmmss").format(Calendar.getInstance().getTime());
+        final String now = new SimpleDateFormat("yyyyMMdd'T'HHmmss").format(time);
         assertEquals("S3A_SL_1_RBT____20130707T153252_20130707T154752_" + now + "_0299_158_182______SVL_O_NR_001.SEN3",
                               parentDirectoryNameOfStitchedFile);
     }
 
     @Test
-    public void testCollectFiles() throws IOException {
+    public void testCollectFiles() throws IOException, URISyntaxException {
         List<String> ncFiles = new ArrayList<>();
         final File[] slstrFiles = TestUtils.getSlstrFiles();
         for (File slstrFile : slstrFiles) {

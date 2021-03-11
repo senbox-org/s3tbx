@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Display-Category: Sentinel-3 Toolbox
+OpenIDE-Module-Display-Category: SNAP Toolboxes
 OpenIDE-Module-Specification-Version: ${s3tbx.nbmSpecVersion}
 OpenIDE-Module-Implementation-Version: ${s3tbx.nbmImplVersion}
 OpenIDE-Module-Layer: org/esa/s3tbx/layer.xml

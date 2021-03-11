@@ -1,0 +1,169 @@
+<graph id="S1-S3-Collocation">
+    <version>1.0</version>
+    <node id="ReadGrd">
+        <operator>Read</operator>
+        <sources/>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement"/>
+    </node>
+    <node id="CalibrateGrd">
+        <operator>Calibration</operator>
+        <sources>
+            <source refid="ReadGrd"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands/>
+            <auxFile>Latest Auxiliary File</auxFile>
+            <externalAuxFile/>
+            <outputImageInComplex>false</outputImageInComplex>
+            <outputImageScaleInDb>false</outputImageScaleInDb>
+            <createGammaBand>false</createGammaBand>
+            <createBetaBand>false</createBetaBand>
+            <selectedPolarisations>VH,VV</selectedPolarisations>
+            <outputSigmaBand>true</outputSigmaBand>
+            <outputGammaBand>false</outputGammaBand>
+            <outputBetaBand>false</outputBetaBand>
+        </parameters>
+    </node>
+    <node id="DespeckleGrD">
+        <operator>Speckle-Filter</operator>
+        <sources>
+            <source refid="CalibrateGrd"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands/>
+            <filter>Lee Sigma</filter>
+            <filterSizeX>3</filterSizeX>
+            <filterSizeY>3</filterSizeY>
+            <dampingFactor>2</dampingFactor>
+            <estimateENL>true</estimateENL>
+            <enl>1.0</enl>
+            <numLooksStr>1</numLooksStr>
+            <windowSize>7x7</windowSize>
+            <targetWindowSizeStr>3x3</targetWindowSizeStr>
+            <sigmaStr>0.9</sigmaStr>
+            <anSize>50</anSize>
+        </parameters>
+    </node>
+    <node id="TerrainCorrectGrd">
+        <operator>Terrain-Correction</operator>
+        <sources>
+            <source refid="DespeckleGrd"/>
+            <sourceProduct.1 refid="DespeckleGrD"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands/>
+            <demName>SRTM 1Sec HGT</demName>
+            <externalDEMFile/>
+            <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
+            <externalDEMApplyEGM/>
+            <demResamplingMethod>BILINEAR_INTERPOLATION</demResamplingMethod>
+            <imgResamplingMethod>BILINEAR_INTERPOLATION</imgResamplingMethod>
+            <pixelSpacingInMeter>10.0</pixelSpacingInMeter>
+            <pixelSpacingInDegree>0.0</pixelSpacingInDegree>
+            <mapProjection>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
+                DATUM[&quot;WGS84&quot;, &#xd;
+                SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
+                PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
+                UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+                AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+                AXIS[&quot;Geodetic latitude&quot;, NORTH]]
+            </mapProjection>
+            <alignToStandardGrid>false</alignToStandardGrid>
+            <standardGridOriginX>0.0</standardGridOriginX>
+            <standardGridOriginY>0.0</standardGridOriginY>
+            <nodataValueAtSea>true</nodataValueAtSea>
+            <saveDEM>true</saveDEM>
+            <saveLatLon>true</saveLatLon>
+            <saveIncidenceAngleFromEllipsoid>false</saveIncidenceAngleFromEllipsoid>
+            <saveLocalIncidenceAngle>false</saveLocalIncidenceAngle>
+            <saveProjectedLocalIncidenceAngle>false</saveProjectedLocalIncidenceAngle>
+            <saveSelectedSourceBand>true</saveSelectedSourceBand>
+            <outputComplex>false</outputComplex>
+            <applyRadiometricNormalization>false</applyRadiometricNormalization>
+            <saveSigmaNought>false</saveSigmaNought>
+            <saveGammaNought>false</saveGammaNought>
+            <saveBetaNought>false</saveBetaNought>
+            <incidenceAngleForSigma0>Use projected local incidence angle from DEM</incidenceAngleForSigma0>
+            <incidenceAngleForGamma0>Use projected local incidence angle from DEM</incidenceAngleForGamma0>
+            <auxFile>Latest Auxiliary File</auxFile>
+            <externalAuxFile/>
+        </parameters>
+    </node>
+    <node id="ReadS3">
+        <operator>Read</operator>
+        <sources/>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement"/>
+    </node>
+    <node id="SubsetS3">
+        <operator>Subset</operator>
+        <sources>
+            <source refid="ReadS3"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands/>
+            <region>0,0,0,0</region>
+            <referenceBand/>
+            <geoRegion/>
+            <subSamplingX>1</subSamplingX>
+            <subSamplingY>1</subSamplingY>
+            <fullSwath>false</fullSwath>
+            <tiePointGridNames/>
+            <copyMetadata>true</copyMetadata>
+        </parameters>
+    </node>
+    <node id="Collocate">
+        <operator>Collocate</operator>
+        <sources>
+            <master refid="TerrainCorrectGrd"/>
+            <slave refid="SubsetS3"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceProductPaths/>
+            <masterProductName/>
+            <targetProductName>_collocated</targetProductName>
+            <targetProductType>COLLOCATED</targetProductType>
+            <renameMasterComponents>true</renameMasterComponents>
+            <renameSlaveComponents>true</renameSlaveComponents>
+            <masterComponentPattern>${ORIGINAL_NAME}_M</masterComponentPattern>
+            <slaveComponentPattern>${ORIGINAL_NAME}_S${SLAVE_NUMBER_ID}</slaveComponentPattern>
+            <resamplingType>NEAREST_NEIGHBOUR</resamplingType>
+        </parameters>
+    </node>
+    <node id="Write">
+        <operator>Write</operator>
+        <sources>
+            <sourceProduct refid="Collocate"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file>C:\Users\Marco\target.nc</file>
+            <formatName>NetCDF4-CF</formatName>
+        </parameters>
+    </node>
+    <applicationData id="Presentation">
+        <Description/>
+        <node id="ReadGrd">
+            <displayPosition x="10.0" y="252.0"/>
+        </node>
+        <node id="CalibrateGrd">
+            <displayPosition x="104.0" y="250.0"/>
+        </node>
+        <node id="DespeckleGrD">
+            <displayPosition x="213.0" y="250.0"/>
+        </node>
+        <node id="TerrainCorrectGrd">
+            <displayPosition x="345.0" y="249.0"/>
+        </node>
+        <node id="ReadS3">
+            <displayPosition x="17.0" y="158.0"/>
+        </node>
+        <node id="SubsetS3">
+            <displayPosition x="104.0" y="158.0"/>
+        </node>
+        <node id="Collocate">
+            <displayPosition x="372.0" y="157.0"/>
+        </node>
+        <node id="Write">
+            <displayPosition x="505.0" y="158.0"/>
+        </node>
+    </applicationData>
+</graph>

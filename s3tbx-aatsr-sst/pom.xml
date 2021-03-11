@@ -20,14 +20,15 @@
     <parent>
         <groupId>org.esa.s3tbx</groupId>
         <artifactId>s3tbx</artifactId>
-        <version>7.0.1-SNAPSHOT</version>
+        <version>8.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>s3tbx-aatsr-sst</artifactId>
     <packaging>nbm</packaging>
 
     <name>AATSR SST Processor</name>
-    <description>The AATSR SST Processor is aimed to enable the user to calculate the sea-surface temperature from (A)ATSR brightness temperatures.
+    <description>The AATSR SST Processor is aimed to enable the user to calculate the sea-surface temperature from
+        (A)ATSR brightness temperatures.
         The implementation is explicitly opened for the addition of new coefficient sets.
     </description>
 
@@ -62,7 +63,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
             </plugin>
             <plugin>

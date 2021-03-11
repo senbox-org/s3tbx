@@ -18,17 +18,13 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.SourceImageScaler;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -69,17 +65,17 @@ public class VgtProductFactory extends AbstractProductFactory {
     protected Band addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
         final Band targetBand = copyBand(sourceBand, targetProduct, false);
         final RenderingHints renderingHints = new RenderingHints(JAI.KEY_BORDER_EXTENDER,
-                                                                 BorderExtender.createInstance(
-                                                                         BorderExtender.BORDER_COPY)
+                BorderExtender.createInstance(
+                        BorderExtender.BORDER_COPY)
         );
         final MultiLevelImage sourceImage = sourceBand.getSourceImage();
         float[] scalings = new float[]{((float) targetBand.getRasterWidth()) / sourceBand.getRasterWidth(),
                 ((float) targetBand.getRasterHeight()) / sourceBand.getRasterHeight()};
         final MultiLevelImage scaledImage = SourceImageScaler.scaleMultiLevelImage(targetBand.getSourceImage(),
-                                                                                   sourceImage, scalings, null,
-                                                                                   renderingHints, sourceBand.getNoDataValue(),
-                                                                                   Interpolation.getInstance(
-                                                                                           Interpolation.INTERP_NEAREST)
+                sourceImage, scalings, null,
+                renderingHints, sourceBand.getNoDataValue(),
+                Interpolation.getInstance(
+                        Interpolation.INTERP_NEAREST)
         );
         targetBand.setSourceImage(scaledImage);
         return targetBand;
@@ -93,5 +89,4 @@ public class VgtProductFactory extends AbstractProductFactory {
         }
         return new VgtReader().readProductNodes(file, null);
     }
-
 }

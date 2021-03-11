@@ -22,12 +22,14 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.jdom.Element;
 
+import java.awt.Dimension;
+
 public class PodGeoCodingPersistable implements DimapPersistable {
 
     static final String POD_GEO_CODING_TAG = "PodGeoCoding";
 
     @Override
-    public Object createObjectFromXml(Element element, Product product) {
+    public Object createObjectFromXml(Element element, Product product, Dimension regionRasterSize) {
         Element podGeoCodingElement = element.getChild(POD_GEO_CODING_TAG);
 
         String tpgNameLat = podGeoCodingElement.getChildTextTrim(DimapProductConstants.TAG_TIE_POINT_GRID_NAME_LAT);

@@ -20,6 +20,9 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -30,49 +33,55 @@ public class LandsatMetadataFactoryTest {
 
     @Test
     public void testCreate_L1_MSS_reproc() throws Exception {
-        File testFile = new File(getClass().getResource("test_L1_MSS_MTL.txt").getFile());
+        File testFile = getTestFile("test_L1_MSS_MTL.txt");
         LandsatMetadata landsatMetadata = LandsatMetadataFactory.create(testFile);
         assertTrue(landsatMetadata instanceof LandsatReprocessedMetadata);
     }
 
     @Test
     public void testCreate_L3_MSS_reproc() throws Exception {
-        File testFile = new File(getClass().getResource("test_L3_MSS_MTL.txt").getFile());
+        File testFile = getTestFile("test_L3_MSS_MTL.txt");
         LandsatMetadata landsatMetadata = LandsatMetadataFactory.create(testFile);
         assertTrue(landsatMetadata instanceof LandsatReprocessedMetadata);
     }
 
     @Test
     public void testCreate_5_reproc() throws Exception {
-        File testFile = new File(getClass().getResource("test_5_reproc_MTL.txt").getFile());
+        File testFile = getTestFile("test_5_reproc_MTL.txt");
         LandsatMetadata landsatMetadata = LandsatMetadataFactory.create(testFile);
         assertTrue(landsatMetadata instanceof LandsatReprocessedMetadata);
     }
 
     @Test
     public void testCreate_7_reproc() throws Exception {
-        File testFile = new File(getClass().getResource("test_7_reproc_MTL.txt").getFile());
+        File testFile = getTestFile("test_7_reproc_MTL.txt");
         LandsatMetadata landsatMetadata = LandsatMetadataFactory.create(testFile);
         assertTrue(landsatMetadata instanceof LandsatReprocessedMetadata);
     }
 
     @Test
     public void testCreate_8() throws Exception {
-        File testFile = new File(getClass().getResource("test_L8_MTL.txt").getFile());
+        File testFile = getTestFile("test_L8_MTL.txt");
         LandsatMetadata landsatMetadata = LandsatMetadataFactory.create(testFile);
         assertTrue(landsatMetadata instanceof Landsat8Metadata);
     }
 
     @Test
     public void testCreate_Legacy() throws Exception {
-        File testFile = new File(getClass().getResource("test_L7_MTL.txt").getFile());
+        File testFile = getTestFile("test_L7_MTL.txt");
         LandsatMetadata landsatMetadata = LandsatMetadataFactory.create(testFile);
         assertTrue(landsatMetadata instanceof LandsatLegacyMetadata);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testFail() throws IOException {
-        File testFile = new File(getClass().getResource("test_broken_MTL.txt").getFile());
+    public void testFail() throws Exception {
+        File testFile = getTestFile("test_broken_MTL.txt");
         LandsatMetadataFactory.create(testFile);
+    }
+
+    private File getTestFile(String name) throws URISyntaxException {
+        URL url = getClass().getResource(name);
+        URI uri = new URI(url.toString());
+        return new File(uri.getPath());
     }
 }

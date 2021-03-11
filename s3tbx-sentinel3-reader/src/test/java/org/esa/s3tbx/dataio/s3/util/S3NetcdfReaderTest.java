@@ -5,6 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -14,7 +17,6 @@ import static junit.framework.TestCase.assertNotNull;
  */
 public class S3NetcdfReaderTest {
 
-    private static final String NETCDF_FILE_PATH = S3NetcdfReader.class.getResource("../../s3/FRP_in.nc").getPath();
     private S3NetcdfReader reader;
 
     @Before
@@ -24,12 +26,18 @@ public class S3NetcdfReaderTest {
 
     @Test
     public void testReadProduct() throws Exception {
-        final Product product = reader.readProductNodes(NETCDF_FILE_PATH, null);
+        final Product product = reader.readProductNodes(getTestFilePath("../../s3/FRP_in.nc"), null);
         assertNotNull(product);
         assertEquals("FRP_in", product.getName());
         assertEquals("NetCDF", product.getProductType());
         assertEquals(1568, product.getSceneRasterWidth());
         assertEquals(266, product.getSceneRasterHeight());
+    }
+
+    private String getTestFilePath(String name) throws URISyntaxException {
+        URL url = getClass().getResource(name);
+        URI uri = new URI(url.toString());
+        return uri.getPath();
     }
 
 }

@@ -15,13 +15,13 @@
  */
 package org.esa.s3tbx.dataio.spot;
 
-public class SpotVgtConstants {
+class SpotVgtConstants {
 
-    public static final String PHYS_VOL_FILENAME = "PHYS_VOL.TXT";
-    public static final String READER_DESCRIPTION = "SPOT VGT Data Products";
-    public static final String FORMAT_NAME = "SPOT-VGT";
+    static final String PHYS_VOL_FILENAME = "PHYS_VOL.TXT";
+    static final String READER_DESCRIPTION = "SPOT VGT Data Products";
+    static final String FORMAT_NAME = "SPOT-VGT";
     // copied from http://www.vgt.vito.be/pdf/Reflectance_communication_letter_V1.0.pdf
-    public static final double[] SOLAR_ILLUMINATION_FACTOR = new double[]{
+    static final double[] SOLAR_ILLUMINATION_FACTOR = new double[]{
             1.0000, 1.0000, 1.0000, 0.9999, 0.9999, 1.0000, 1.0000, 1.0000, 1.0001, 1.0001,
             1.0002, 1.0003, 1.0004, 1.0005, 1.0006, 1.0007, 1.0008, 1.0009, 1.0011, 1.0013,
             1.0014, 1.0016, 1.0018, 1.0020, 1.0022, 1.0024, 1.0026, 1.0029, 1.0031, 1.0034,
@@ -58,5 +58,22 @@ public class SpotVgtConstants {
             1.0073, 1.0069, 1.0066, 1.0062, 1.0059, 1.0056, 1.0052, 1.0049, 1.0046, 1.0043,
             1.0040, 1.0038, 1.0035, 1.0032, 1.0030, 1.0028, 1.0025, 1.0023, 1.0021, 1.0019,
             1.0017, 1.0015, 1.0013, 1.0012, 1.0010, 1.0009, 1.0007, 1.0006, 1.0005, 1.0004,
-            1.0003, 1.0002, 1.0002, 1.0001, 1.0000, 1.0000 };
+            1.0003, 1.0002, 1.0002, 1.0001, 1.0000, 1.0000};
+
+    static final String[] BANDS_IN_VGT_P_COLLECTION3_PRODUCT = {
+            "1BL",
+            "1BO",
+            "AG",
+            "B0",
+            "B2",
+            "B3",
+            "MIR",
+            "OG",
+            "SAA",
+            "SM",
+            "SZA",
+            "VAA",
+            "VZA",
+            "WVG"
+    };
 }

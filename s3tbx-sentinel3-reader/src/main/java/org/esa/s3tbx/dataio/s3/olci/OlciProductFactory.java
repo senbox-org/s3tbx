@@ -1,24 +1,38 @@
 package org.esa.s3tbx.dataio.s3.olci;
 
+import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReaderFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.ForwardCoding;
+import org.esa.snap.core.dataio.geocoding.GeoChecks;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.InverseCoding;
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.forward.PixelInterpolatingForward;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.runtime.Config;
 
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,8 +50,12 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
     private int subSamplingY;
 
     public final static String OLCI_USE_PIXELGEOCODING = "s3tbx.reader.olci.pixelGeoCoding";
+    final static String SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY = "s3tbx.reader.olci.fractionAccuracy";
+    final static String SYSPROP_OLCI_PIXEL_CODING_FORWARD = "s3tbx.reader.olci.pixelGeoCoding.forward";
+    final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
+    final static String SYSPROP_OLCI_TIE_POINT_CODING_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
 
-    public OlciProductFactory(Sentinel3ProductReader productReader) {
+    OlciProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
         nameToWavelengthMap = new HashMap<>();
         nameToBandwidthMap = new HashMap<>();
@@ -101,29 +119,68 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         }
     }
 
-    private void setPixelGeoCoding(Product targetProduct) {
-        final Band latBand = targetProduct.getBand("latitude");
-        final Band lonBand = targetProduct.getBand("longitude");
-        if (latBand != null && lonBand != null) {
-            targetProduct.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
+    private void setPixelGeoCoding(Product targetProduct) throws IOException {
+        final String lonVariableName = "longitude";
+        final String latVariableName = "latitude";
+        final Band lonBand = targetProduct.getBand(lonVariableName);
+        final Band latBand = targetProduct.getBand(latVariableName);
+        if (lonBand == null || latBand == null) {
+            return;
         }
+
+        final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
+        lonBand.unloadRasterData();
+        final double[] latitudes = RasterUtils.loadDataScaled(latBand);
+        latBand.unloadRasterData();
+
+        final double resolutionInKilometers = getResolutionInKm(targetProduct.getProductType());
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                                                  lonBand.getRasterWidth(), lonBand.getRasterHeight(), resolutionInKilometers);
+
+        final String[] codingKeys = getForwardAndInverseKeys_pixelCoding();
+        final ForwardCoding forward = ComponentFactory.getForward(codingKeys[0]);
+        final InverseCoding inverse = ComponentFactory.getInverse(codingKeys[1]);
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
     }
 
     private void setTiePointGeoCoding(Product targetProduct) {
-        if (targetProduct.getSceneGeoCoding() == null) {
-            if (targetProduct.getTiePointGrid("latitude") != null && targetProduct.getTiePointGrid(
-                    "longitude") != null) {
-                targetProduct.setSceneGeoCoding(new TiePointGeoCoding(targetProduct.getTiePointGrid("latitude"),
-                                                                      targetProduct.getTiePointGrid("longitude")));
+        String lonVarName = "longitude";
+        String latVarName = "latitude";
+        TiePointGrid lonGrid = targetProduct.getTiePointGrid(lonVarName);
+        TiePointGrid latGrid = targetProduct.getTiePointGrid(latVarName);
+
+        if (latGrid == null || lonGrid == null) {
+            lonVarName = "TP_longitude";
+            latVarName = "TP_latitude";
+            lonGrid = targetProduct.getTiePointGrid(lonVarName);
+            latGrid = targetProduct.getTiePointGrid(latVarName);
+            if (latGrid == null || lonGrid == null) {
+                return;
             }
         }
-        if (targetProduct.getSceneGeoCoding() == null) {
-            if (targetProduct.getTiePointGrid("TP_latitude") != null && targetProduct.getTiePointGrid(
-                    "TP_longitude") != null) {
-                targetProduct.setSceneGeoCoding(new TiePointGeoCoding(targetProduct.getTiePointGrid("TP_latitude"),
-                                                                      targetProduct.getTiePointGrid("TP_longitude")));
-            }
-        }
+
+        final double[] longitudes = loadTiePointData(lonVarName);
+        final double[] latitudes = loadTiePointData(latVarName);
+        final double resolutionInKilometers = getResolutionInKm(targetProduct.getProductType());
+
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVarName, latVarName,
+                                                  lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+                                                  targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), resolutionInKilometers,
+                                                  lonGrid.getOffsetX(), lonGrid.getOffsetY(),
+                                                  lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
+
+        final String[] codingKeys = getForwardAndInverseKeys_tiePointCoding();
+        final ForwardCoding forward = ComponentFactory.getForward(codingKeys[0]);
+        final InverseCoding inverse = ComponentFactory.getInverse(codingKeys[1]);
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
     }
 
     @Override
@@ -182,6 +239,53 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         return reader.readProductNodes(file, null);
     }
 
+    static double getResolutionInKm(String productType) {
+        switch (productType) {
+            case "OL_1_EFR":
+            case "OL_2_LFR":
+            case "OL_2_WFR":
+                return 0.3;
 
+            case "OL_1_ERR":
+            case "OL_2_LRR":
+            case "OL_2_WRR":
+                return 1.2;
 
+            default:
+                throw new IllegalArgumentException("unsupported product of type: " + productType);
+        }
+    }
+
+    static String[] getForwardAndInverseKeys_pixelCoding() {
+        final String[] codingNames = new String[2];
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        final boolean useFractAccuracy = preferences.getBoolean(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, false);
+        if (useFractAccuracy) {
+            codingNames[0] = PixelInterpolatingForward.KEY;
+        } else {
+            codingNames[0] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_FORWARD, PixelForward.KEY);
+        }
+        codingNames[1] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
+
+        return codingNames;
+    }
+
+    static String[] getForwardAndInverseKeys_tiePointCoding() {
+        final String[] codingNames = new String[2];
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        codingNames[0] = preferences.get(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, TiePointBilinearForward.KEY);
+        codingNames[1] = TiePointInverse.KEY;
+
+        return codingNames;
+    }
+
+    protected double[] loadTiePointData(String tpgName) {
+        final MultiLevelImage mlImage = getImageForTpg(tpgName);
+        final Raster tpData = mlImage.getImage(0).getData();
+        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
+        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
+        return tiePoints;
+    }
 }

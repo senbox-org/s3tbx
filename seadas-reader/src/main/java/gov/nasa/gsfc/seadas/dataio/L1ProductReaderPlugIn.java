@@ -18,8 +18,6 @@ package gov.nasa.gsfc.seadas.dataio;
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
-import org.esa.snap.core.datamodel.RGBImageProfile;
-import org.esa.snap.core.datamodel.RGBImageProfileManager;
 import org.esa.snap.core.util.io.SnapFileFilter;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.nc2.Attribute;
@@ -61,13 +59,9 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
             "OCTS Level-1A GAC Data",
             "SeaWiFS Level-1B",
             "SeaWiFS Level-1A Data",
+            "PACE OCI Level-1B Data",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<>(Arrays.asList(supportedProductTypes));
-
-
-    static {
-        registerRGBProfiles();
-    }
 
     /**
      * Checks whether the given object is an acceptable input for this product reader and if so, the method checks if it
@@ -232,10 +226,5 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
         return inputFile;
     }
 
-    private static void registerRGBProfiles() {
-        RGBImageProfileManager manager = RGBImageProfileManager.getInstance();
-        manager.addProfile(new RGBImageProfile("NASA L1 True Color",
-                                               new String[]{"Red", "Green", "Blue"}));
-    }
 
 }

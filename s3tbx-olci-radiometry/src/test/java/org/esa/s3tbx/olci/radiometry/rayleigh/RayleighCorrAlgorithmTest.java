@@ -131,7 +131,7 @@ public class RayleighCorrAlgorithmTest {
         double seaLevelPressure = 0.8;
         double sigma = 0.5;
         double rayThickness = algo.getRayleighOpticalThickness(sigma, seaLevelPressure, altitude, latitude);
-        assertEquals(8.497244949908416E21, rayThickness, 1e-8);
+        assertEquals(8.496979944265044E21, rayThickness, 1e-8);
     }
 
     @Test

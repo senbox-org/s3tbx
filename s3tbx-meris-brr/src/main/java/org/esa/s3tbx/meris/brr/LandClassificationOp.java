@@ -69,22 +69,25 @@ public class LandClassificationOp extends MerisBasisOp implements Constants {
 
     @Override
     public void initialize() throws OperatorException {
-        try {
-            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
-        } catch (Exception e) {
-            throw new OperatorException("could not load L2Auxdata", e);
-        }
-        createTargetProduct();
-    }
-
-    private void createTargetProduct() {
         targetProduct = createCompatibleProduct(l1bProduct, "MER", "MER_L2");
-
         Band band = targetProduct.addBand(LAND_FLAGS, ProductData.TYPE_INT8);
         FlagCoding flagCoding = createFlagCoding();
         band.setSampleCoding(flagCoding);
         targetProduct.getFlagCodingGroup().add(flagCoding);        if (l1bProduct.getPreferredTileSize() != null) {
             targetProduct.setPreferredTileSize(l1bProduct.getPreferredTileSize());
+        }
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Reading in auxiliary data", 1);
+        try {
+            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
+            pm.worked(1);
+        } catch (Exception e) {
+            throw new OperatorException("could not load L2Auxdata", e);
+        } finally {
+            pm.done();
         }
     }
 

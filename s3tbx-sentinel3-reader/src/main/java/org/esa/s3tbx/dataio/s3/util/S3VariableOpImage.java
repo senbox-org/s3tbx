@@ -5,7 +5,7 @@ import org.esa.snap.core.image.SingleBandedOpImage;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.Section;
-import ucar.nc2.VariableIF;
+import ucar.nc2.Variable;
 
 import javax.media.jai.PlanarImage;
 import java.awt.Dimension;
@@ -17,14 +17,14 @@ import java.awt.image.WritableRaster;
  */
 public class S3VariableOpImage extends SingleBandedOpImage {
 
-    private final VariableIF variable;
+    private final Variable variable;
     private ArrayConverter converter;
     private int xIndex;
     private int yIndex;
     private int[] additionalDimensionIndexes;
     private String[] additionalDimensionNames;
 
-    public S3VariableOpImage(VariableIF variable, int dataBufferType, int sourceWidth, int sourceHeight,
+    public S3VariableOpImage(Variable variable, int dataBufferType, int sourceWidth, int sourceHeight,
                              Dimension tileSize, ResolutionLevel level,
                              String[] additionalDimensionNames, int[] additionalDimensionIndexes,
                              int xIndex, int yIndex
@@ -34,7 +34,7 @@ public class S3VariableOpImage extends SingleBandedOpImage {
              ArrayConverter.IDENTITY);
     }
 
-    static S3VariableOpImage createS3VariableOpImage(VariableIF variable, int dataBufferType, int sourceWidth, int sourceHeight,
+    static S3VariableOpImage createS3VariableOpImage(Variable variable, int dataBufferType, int sourceWidth, int sourceHeight,
                                                      Dimension tileSize, ResolutionLevel level,
                                                      String[] additionalDimensionNames, int[] additionalDimensionIndexes,
                                                      int xIndex, int yIndex,
@@ -50,7 +50,7 @@ public class S3VariableOpImage extends SingleBandedOpImage {
         }
     }
 
-    public S3VariableOpImage(VariableIF variable, int dataBufferType, int sourceWidth, int sourceHeight,
+    public S3VariableOpImage(Variable variable, int dataBufferType, int sourceWidth, int sourceHeight,
                              Dimension tileSize, ResolutionLevel level,
                              String[] additionalDimensionNames, int[] additionalDimensionIndexes,
                              int xIndex, int yIndex, ArrayConverter converter) {
@@ -65,8 +65,6 @@ public class S3VariableOpImage extends SingleBandedOpImage {
 
     @Override
     protected void computeRect(PlanarImage[] sourceImages, WritableRaster tile, Rectangle rectangle) {
-//        System.out.println(variable.getFullName() + ": " + tile.getMinX() + ", " + tile.getMinY() + ", " +
-//                                   tile.getWidth() + ", " + tile.getHeight());
         final int rank = variable.getRank();
         final int[] origin = new int[rank];
         final int[] shape = new int[rank];

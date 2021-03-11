@@ -19,27 +19,40 @@
 package org.esa.s3tbx.olci.radiometry.rayleigh;
 
 import com.google.common.primitives.Doubles;
-import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolatingFunction;
-import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator;
-
-import javax.media.jai.Interpolation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 
 /**
  * @author muhammad.bc.
  */
-public class SpikeInterpolation {
-    public static double interpolate2D(double[][] doubles2D, double[] xCoordinate, double[] yCoordinate,
-                                       double x, double y) {
+class SpikeInterpolation {
+    static double interpolate2D(double[][] doubles2D, double[] xCoordinate, double[] yCoordinate,
+                                double x, double y) {
 
 //        https://en.wikipedia.org/wiki/Bilinear_interpolation
-        double x1 = getLowerBound(xCoordinate, x);
-        double y1 = getLowerBound(yCoordinate, y);
+        double x1;
+        double x2;
+        double y1;
+        double y2;
+        if (x < xCoordinate[0]) {
+            x1 = xCoordinate[0];
+            x2 = xCoordinate[1];
+        } else if (x > xCoordinate[xCoordinate.length - 1]) {
+            x1 = xCoordinate[xCoordinate.length - 2];
+            x2 = xCoordinate[xCoordinate.length - 1];
+        } else {
+            x1 = getLowerBound(xCoordinate, x);
+            x2 = getUpperValue(xCoordinate, x);
+        }
 
-        double x2 = getUpperValue(xCoordinate, x);
-        double y2 = getUpperValue(yCoordinate, y);
+        if (y < yCoordinate[0]) {
+            y1 = yCoordinate[0];
+            y2 = yCoordinate[1];
+        } else if (y > yCoordinate[yCoordinate.length - 1]) {
+            y1 = yCoordinate[yCoordinate.length - 2];
+            y2 = yCoordinate[yCoordinate.length - 1];
+        } else {
+            y1 = getLowerBound(yCoordinate, y);
+            y2 = getUpperValue(yCoordinate, y);
+        }
 
         int ix1 = arrayIndex(xCoordinate, x1);
         int ix2 = arrayIndex(xCoordinate, x2);
@@ -58,56 +71,42 @@ public class SpikeInterpolation {
         return interBetween(q11, q12, y2, y1, y);
     }
 
-    public static double[] useLibJAI(double[][] samples, float xfrac, float yfrac) {
-        Interpolation interpolation = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
-        double interpolateBI = interpolation.interpolate(samples, xfrac, yfrac);
-        return new double[]{interpolateBI};
-    }
-
-    public static double useApacheMath(double[] xval, double[] yval, double[][] fval, double x, double y) {
-        BicubicSplineInterpolator interpolator = new BicubicSplineInterpolator();
-        BicubicSplineInterpolatingFunction interpolate = interpolator.interpolate(xval, yval, fval);
-        return interpolate.value(x, y);
-
-    }
-
-    public static double interBetween(double lowerY, double upperY, double upperX, double lowerX, double position) {
+    static double interBetween(double lowerY, double upperY, double upperX, double lowerX, double position) {
         if (upperX - lowerX == 0) {
             return lowerY;
         }
         return lowerY + ((upperY - lowerY) * (position - lowerX)) / (upperX - lowerX);
     }
 
-    public static int arrayIndex(double[] values, double val) {
+    static int arrayIndex(double[] values, double val) {
         return Doubles.asList(values).indexOf(val);
     }
 
-    public static double getUpperValue(double[] doubles, double val) {
-        final List<Double> xMin = new ArrayList<>();
-        int length = doubles.length;
-        IntStream.range(0, length).forEach(i -> {
-            double v = doubles[i];
-            if (v >= val) {
-                xMin.add(v);
+    static double getUpperValue(double[] doubles, double val) {
+        double lowestUpper = Double.MAX_VALUE;
+
+        for (double current : doubles) {
+            if (current >= val && current <= lowestUpper) {
+                lowestUpper = current;
             }
-        });
-        double[] allMax = Doubles.toArray(xMin);
-        if (allMax.length == 0) {
-            throw new IllegalArgumentException("Can fine the closest max value of " + val);
         }
-        return Doubles.min(allMax);
+        if (lowestUpper == Double.MAX_VALUE) {
+            throw new IllegalArgumentException("Can't find the closest max value of " + val);
+        }
+
+        return lowestUpper;
     }
 
-    public static double getLowerBound(double[] doubles, double val) {
-        final double[] xMin = new double[1];
-        int length = doubles.length;
-        IntStream.range(0, length).forEach(i -> {
-            double v = doubles[i];
-            xMin[0] = v <= val ? v : xMin[0];
-        });
-        if (xMin[0] > val) {
-            throw new IllegalArgumentException("Can find the closest min value of " + val);
+    static double getLowerBound(double[] doubles, double val) {
+        double xMin = Double.MAX_VALUE;
+
+        for (double current : doubles) {
+            xMin = current <= val ? current : xMin;
         }
-        return xMin[0];
+        if (xMin > val) {
+            throw new IllegalArgumentException("Can't find the closest min value of " + val);
+        }
+
+        return xMin;
     }
 }

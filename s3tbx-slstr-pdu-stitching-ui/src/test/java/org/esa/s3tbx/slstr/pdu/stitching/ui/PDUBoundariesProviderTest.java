@@ -4,6 +4,9 @@ import org.esa.snap.core.datamodel.GeoPos;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -50,10 +53,10 @@ public class PDUBoundariesProviderTest {
     @Test
     public void extractGeoBoundariesFromFile() throws Exception {
         final PDUBoundariesProvider provider = new PDUBoundariesProvider();
-        final File firstFile = new File(PDUBoundariesProviderTest.class.getResource(FIRST_FILE).getFile());
-        final File secondFile = new File(PDUBoundariesProviderTest.class.getResource(SECOND_FILE + "/xfdumanifest.xml").getFile());
-        final File nonsense1File = new File(PDUBoundariesProviderTest.class.getResource(NONSENSE_1_FILE + "/xfdumanifest.xml").getFile());
-        final File nonsense2File = new File(PDUBoundariesProviderTest.class.getResource(NONSENSE_2_FILE).getFile());
+        final File firstFile = new File(getResourceFilePath(FIRST_FILE));
+        final File secondFile = new File(getResourceFilePath(SECOND_FILE + "/xfdumanifest.xml"));
+        final File nonsense1File = new File(getResourceFilePath(NONSENSE_1_FILE + "/xfdumanifest.xml"));
+        final File nonsense2File = new File(getResourceFilePath(NONSENSE_2_FILE));
 
         provider.extractBoundaryFromFile(firstFile, firstFile, false);
         assertEquals(1, provider.getNumberOfElements());
@@ -82,6 +85,12 @@ public class PDUBoundariesProviderTest {
 
         provider.clear();
         assertEquals(0, provider.getNumberOfElements());
+    }
+
+    private String getResourceFilePath(String name) throws URISyntaxException {
+        final URL resource = PDUBoundariesProviderTest.class.getResource(name);
+        final URI uri = new URI(resource.toString());
+        return uri.getPath();
     }
 
 }

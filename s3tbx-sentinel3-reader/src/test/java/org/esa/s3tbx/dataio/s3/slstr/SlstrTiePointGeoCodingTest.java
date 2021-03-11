@@ -1,5 +1,6 @@
 package org.esa.s3tbx.dataio.s3.slstr;
 
+import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.GeoPos;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.TiePointGeoCoding;
@@ -9,8 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 /**
  * @author Tonio Fincke
@@ -20,39 +22,37 @@ public class SlstrTiePointGeoCodingTest {
     private TiePointGrid lat;
     private TiePointGrid lon;
     private TiePointGeoCoding referenceGeoCoding;
+    private SlstrTiePointGeoCoding slstrCoding;
 
     @Before
-    public void setUp() {
+    public void setUp() throws NoninvertibleTransformException {
         lat = new TiePointGrid("lat", 2, 2, 0, 0, 16, 16, new float[]{1f, 9f, 1f, 9f});
         lon = new TiePointGrid("lon", 2, 2, 0, 0, 16, 16, new float[]{1f, 1f, 9f, 9f});
         referenceGeoCoding = new TiePointGeoCoding(lat, lon);
+        slstrCoding = new SlstrTiePointGeoCoding(lat, lon, new AffineTransform2D(new AffineTransform()));
     }
 
     @Test
-    public void testGetGeoPos_IdentityTransform() throws Exception {
+    public void testGetGeoPos_IdentityTransform() {
         final PixelPos pixelPos = new PixelPos(6, 6);
         final GeoPos referenceGeoPos = new GeoPos();
         referenceGeoCoding.getGeoPos(pixelPos, referenceGeoPos);
 
-        final SlstrTiePointGeoCoding slstrTiePointGeoCoding =
-                new SlstrTiePointGeoCoding(lat, lon, new AffineTransform2D(new AffineTransform()));
         final GeoPos slstrGeoPos = new GeoPos();
-        slstrTiePointGeoCoding.getGeoPos(pixelPos, slstrGeoPos);
+        slstrCoding.getGeoPos(pixelPos, slstrGeoPos);
 
         assertEquals(referenceGeoPos.getLat(), slstrGeoPos.getLat(), 1e-8);
         assertEquals(referenceGeoPos.getLon(), slstrGeoPos.getLon(), 1e-8);
     }
 
     @Test
-    public void testGetPixelPos_IdentityTransform() throws Exception {
+    public void testGetPixelPos_IdentityTransform() {
         final GeoPos geoPos = new GeoPos(6, 6);
         final PixelPos referencePixelPos = new PixelPos();
         referenceGeoCoding.getPixelPos(geoPos, referencePixelPos);
 
-        final SlstrTiePointGeoCoding slstrTiePointGeoCoding =
-                new SlstrTiePointGeoCoding(lat, lon, new AffineTransform2D(new AffineTransform()));
         final PixelPos slstrPixelPos = new PixelPos();
-        slstrTiePointGeoCoding.getPixelPos(geoPos, slstrPixelPos);
+        slstrCoding.getPixelPos(geoPos, slstrPixelPos);
 
         assertEquals(referencePixelPos.getX(), slstrPixelPos.getX(), 1e-8);
         assertEquals(referencePixelPos.getY(), slstrPixelPos.getY(), 1e-8);
@@ -126,4 +126,78 @@ public class SlstrTiePointGeoCodingTest {
         assertEquals((referencePixelPos3.getY() / 2) - 1, slstrPixelPos3.getY(), 1e-8);
     }
 
+    @Test
+    public void testCanClone() {
+        assertTrue(slstrCoding.canClone());
+    }
+
+    @Test
+    public void testClone() {
+        final PixelPos pixelPos = new PixelPos(1.4, 1.5);
+
+        GeoPos geoPos = slstrCoding.getGeoPos(pixelPos, null);
+        assertEquals(1.75, geoPos.lon, 1e-8);
+        assertEquals(1.7, geoPos.lat, 1e-8);
+
+        final GeoCoding clone = slstrCoding.clone();
+        geoPos = clone.getGeoPos(pixelPos, null);
+        assertEquals(1.75, geoPos.lon, 1e-8);
+        assertEquals(1.7, geoPos.lat, 1e-8);
+    }
+
+    @Test
+    public void testClone_disposeOriginal() {
+        final PixelPos pixelPos = new PixelPos(1.4, 1.5);
+
+        GeoPos geoPos = slstrCoding.getGeoPos(pixelPos, null);
+        assertEquals(1.75, geoPos.lon, 1e-8);
+        assertEquals(1.7, geoPos.lat, 1e-8);
+
+        final GeoCoding clone = slstrCoding.clone();
+        slstrCoding.dispose();
+
+        geoPos = clone.getGeoPos(pixelPos, null);
+        assertEquals(1.75, geoPos.lon, 1e-8);
+        assertEquals(1.7, geoPos.lat, 1e-8);
+    }
+
+    @Test
+    public void testClone_withTransform() throws NoninvertibleTransformException {
+        final AffineTransform transform = new AffineTransform();
+        transform.scale(1.8, 1.7);
+        transform.translate(1.0, 1.0);
+        final SlstrTiePointGeoCoding slstrTiePointGeoCoding = new SlstrTiePointGeoCoding(lat, lon, new AffineTransform2D(transform));
+
+        final PixelPos pixelPos = new PixelPos(1.4, 1.5);
+
+        GeoPos geoPos = slstrTiePointGeoCoding.getGeoPos(pixelPos, null);
+        assertEquals(3.125, geoPos.lon, 1e-8);
+        assertEquals(3.16, geoPos.lat, 1e-8);
+
+        final GeoCoding clone = slstrTiePointGeoCoding.clone();
+        geoPos = clone.getGeoPos(pixelPos, null);
+        assertEquals(3.125, geoPos.lon, 1e-8);
+        assertEquals(3.16, geoPos.lat, 1e-8);
+    }
+
+    @Test
+    public void testClone_withTransform_disposeOriginal() throws NoninvertibleTransformException {
+        final AffineTransform transform = new AffineTransform();
+        transform.scale(1.8, 1.7);
+        transform.translate(1.0, 1.0);
+        final SlstrTiePointGeoCoding slstrTiePointGeoCoding = new SlstrTiePointGeoCoding(lat, lon, new AffineTransform2D(transform));
+
+        final PixelPos pixelPos = new PixelPos(1.4, 1.5);
+
+        GeoPos geoPos = slstrTiePointGeoCoding.getGeoPos(pixelPos, null);
+        assertEquals(3.125, geoPos.lon, 1e-8);
+        assertEquals(3.16, geoPos.lat, 1e-8);
+
+        final GeoCoding clone = slstrTiePointGeoCoding.clone();
+        slstrTiePointGeoCoding.dispose();
+
+        geoPos = clone.getGeoPos(pixelPos, null);
+        assertEquals(3.125, geoPos.lon, 1e-8);
+        assertEquals(3.16, geoPos.lat, 1e-8);
+    }
 }

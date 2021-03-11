@@ -5,12 +5,7 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReaderFactory;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCodingFactory;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.runtime.Config;
 
 import java.io.File;
@@ -96,7 +91,7 @@ public class MerisProductFactory extends AbstractProductFactory {
                         !product.getName().contains("flags") &&
                         !product.getName().contains("time") &&
                         !product.getName().contains("tie")
-                        ) {
+                ) {
                     masterProduct = product;
                     masterproductWidth = product.getSceneRasterWidth();
                     masterproductHeight = product.getSceneRasterHeight();
@@ -116,7 +111,8 @@ public class MerisProductFactory extends AbstractProductFactory {
     }
 
     @Override
-    protected void setGeoCoding(Product targetProduct) throws IOException {
+    protected void setGeoCoding(Product targetProduct) {
+        // @todo 1 tb/tb replace this with the new implementation 2020-01-27
         if (Config.instance("s3tbx").load().preferences().getBoolean(MERIS_SAFE_USE_PIXELGEOCODING, false)) {
             final Band latBand = targetProduct.getBand("latitude");
             final Band lonBand = targetProduct.getBand("longitude");
@@ -129,14 +125,14 @@ public class MerisProductFactory extends AbstractProductFactory {
             if (targetProduct.getTiePointGrid("latitude") != null && targetProduct.getTiePointGrid(
                     "longitude") != null) {
                 targetProduct.setSceneGeoCoding(new TiePointGeoCoding(targetProduct.getTiePointGrid("latitude"),
-                                                                      targetProduct.getTiePointGrid("longitude")));
+                        targetProduct.getTiePointGrid("longitude")));
             }
         }
         if (targetProduct.getSceneGeoCoding() == null) {
             if (targetProduct.getTiePointGrid("TP_latitude") != null && targetProduct.getTiePointGrid(
                     "TP_longitude") != null) {
                 targetProduct.setSceneGeoCoding(new TiePointGeoCoding(targetProduct.getTiePointGrid("TP_latitude"),
-                                                                      targetProduct.getTiePointGrid("TP_longitude")));
+                        targetProduct.getTiePointGrid("TP_longitude")));
             }
         }
     }
@@ -167,5 +163,4 @@ public class MerisProductFactory extends AbstractProductFactory {
     protected int getBandindex(String name) {
         return nameToIndexMap.get(name);
     }
-
 }

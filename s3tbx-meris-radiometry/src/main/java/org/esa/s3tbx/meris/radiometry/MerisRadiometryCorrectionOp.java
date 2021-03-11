@@ -16,6 +16,7 @@
 
 package org.esa.s3tbx.meris.radiometry;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.meris.radiometry.calibration.CalibrationAlgorithm;
 import org.esa.s3tbx.meris.radiometry.calibration.Resolution;
 import org.esa.s3tbx.meris.radiometry.equalization.EqualizationAlgorithm;
@@ -74,7 +75,7 @@ import static org.esa.snap.dataio.envisat.EnvisatConstants.*;
         description = "Performs radiometric corrections on MERIS L1b data products.",
         authors = "Marc Bouvet (ESTEC); Marco Peters, Ralf Quast, Thomas Storm, Marco Zuehlke (Brockmann Consult)",
         copyright = "(c) 2015 by Brockmann Consult",
-        category = "Optical/Pre-Processing",
+        category = "Optical/Preprocessing",
         version = "1.2")
 public class MerisRadiometryCorrectionOp extends SampleOperator {
 
@@ -157,7 +158,6 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
     protected void prepareInputs() throws OperatorException {
         super.prepareInputs();
         validateSourceProduct();
-        initAlgorithms();
     }
 
     @Override
@@ -304,46 +304,52 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
 
     }
 
-    private void initAlgorithms() {
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
         final String productType = getSourceProduct().getProductType();
+        int workload = 0;
         if (doCalibration) {
-            InputStream sourceRacStream = null;
-            InputStream targetRacStream = null;
-            try {
-                sourceRacStream = openStream(sourceRacFile, DEFAULT_SOURCE_RAC_RESOURCE);
-                targetRacStream = openStream(targetRacFile, DEFAULT_TARGET_RAC_RESOURCE);
-                final double cntJD = 0.5 * (getSourceProduct().getStartTime().getMJD() + getSourceProduct().getEndTime().getMJD());
-                final Resolution resolution = productType.contains("RR") ? Resolution.RR : Resolution.FR;
-                calibrationAlgorithm = new CalibrationAlgorithm(resolution, cntJD, sourceRacStream, targetRacStream);
-            } catch (IOException e) {
-                throw new OperatorException(e);
-            } finally {
-                try {
-                    if (sourceRacStream != null) {
-                        sourceRacStream.close();
-                    }
-                    if (targetRacStream != null) {
-                        targetRacStream.close();
-                    }
-                } catch (IOException ignore) {
-                }
-            }
-            // If calibration is performed the equalization  has to use the LUTs of Reprocessing 3
-            reproVersion = ReprocessingVersion.REPROCESSING_3;
+            workload++;
         }
         if (doSmile) {
-            try {
-                smileCorrAlgorithm = new SmileCorrectionAlgorithm(SmileCorrectionAuxdata.loadAuxdata(productType));
-            } catch (Exception e) {
-                throw new OperatorException(e);
-            }
+            workload++;
         }
         if (doEqualization) {
-            try {
-                equalizationAlgorithm = new EqualizationAlgorithm(getSourceProduct(), reproVersion);
-            } catch (Exception e) {
-                throw new OperatorException(e);
+            workload++;
+        }
+        pm.beginTask("Initializing algorithms", workload);
+        try {
+            if (doCalibration) {
+                pm.setSubTaskName("Initializing calibration algorithm");
+                try (
+                        InputStream sourceRacStream = openStream(sourceRacFile, DEFAULT_SOURCE_RAC_RESOURCE);
+                        InputStream targetRacStream = openStream(targetRacFile, DEFAULT_TARGET_RAC_RESOURCE)
+                ) {
+                    final double cntJD = 0.5 * (getSourceProduct().getStartTime().getMJD() +
+                                                getSourceProduct().getEndTime().getMJD());
+                    final Resolution resolution = productType.contains("RR") ? Resolution.RR : Resolution.FR;
+                    calibrationAlgorithm = new CalibrationAlgorithm(resolution, cntJD, sourceRacStream, targetRacStream);
+                } catch (IOException e) {
+                    throw new OperatorException(e);
+                }
+                // If calibration is performed the equalization  has to use the LUTs of Reprocessing 3
+                reproVersion = ReprocessingVersion.REPROCESSING_3;
+                pm.worked(1);
             }
+            if (doSmile) {
+                pm.setSubTaskName("Initializing smile correction algorithm");
+                smileCorrAlgorithm = new SmileCorrectionAlgorithm(SmileCorrectionAuxdata.loadAuxdata(productType));
+                pm.worked(1);
+            }
+            if (doEqualization) {
+                pm.setSubTaskName("Initializing equalization algorithm");
+                equalizationAlgorithm = new EqualizationAlgorithm(getSourceProduct(), reproVersion);
+                pm.worked(1);
+            }
+        } catch (Exception e) {
+            throw new OperatorException(e);
+        } finally {
+            pm.done();
         }
     }
 

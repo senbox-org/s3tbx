@@ -48,7 +48,7 @@ public class FillAerosolOp extends MerisBasisOp {
     private Product validProduct;
     private double[][] weights;
     private Rectangle sourceProductRect;
-    
+
     @SourceProduct(alias="input")
     private Product sourceProduct;
     @SourceProduct(alias="default")
@@ -57,7 +57,7 @@ public class FillAerosolOp extends MerisBasisOp {
     private Product maskProduct;
     @TargetProduct
     private Product targetProduct;
-    
+
     private Configuration config;
 
     /**
@@ -88,43 +88,57 @@ public class FillAerosolOp extends MerisBasisOp {
     @Override
     public void initialize() throws OperatorException {
         targetProduct = createCompatibleProduct(sourceProduct, "fill_aerosol", "MER_L2");
-        sourceBands = new HashMap<>(config.bands.size());
-        defaultBands = new HashMap<>(config.bands.size());
-        
-        Map<String, Object> parameters = new HashMap<>();
-        BandMathsOp.BandDescriptor[] bandDescriptors = new BandMathsOp.BandDescriptor[config.bands.size()];
-        int i = 0;
-        for (BandDesc bandDesc : config.bands) {
-            Band srcBand = sourceProduct.getBand(bandDesc.inputBand);
-            Band targetBand = targetProduct.addBand(bandDesc.name, ProductData.TYPE_FLOAT32);
-            targetBand.setNoDataValue(-1);
-            targetBand.setNoDataValueUsed(true);
-            
-            sourceBands.put(targetBand, srcBand);
-            Band defaultBand = defaultProduct.getBand(bandDesc.defaultBand);
-            defaultBands.put(targetBand, defaultBand);
-            
-            BandMathsOp.BandDescriptor bandDescriptor = new BandMathsOp.BandDescriptor();
-    		bandDescriptor.name = bandDesc.name;
-    		bandDescriptor.expression = bandDesc.validExp;
-    		bandDescriptor.type = ProductData.TYPESTRING_INT8;
-    		bandDescriptors[i] = bandDescriptor;
-            
-    		i++;
-        }
-		
-        parameters.put("targetBands", bandDescriptors);
-        validProduct = GPF.createProduct("BandMaths", parameters, sourceProduct);
-		
-		sourceProductRect = new Rectangle(sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
-        if (config.frs) {
-            rectCalculator = new RectangleExtender(sourceProductRect, (config.pixelWidth+1)*4, (config.pixelWidth+1)*4);
-		} else {
-			rectCalculator = new RectangleExtender(sourceProductRect, config.pixelWidth, config.pixelWidth);
-		}
-        computeWeightMatrix();
     }
-    
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", config.bands.size() + 2);
+        try {
+            sourceBands = new HashMap<>(config.bands.size());
+            defaultBands = new HashMap<>(config.bands.size());
+
+            Map<String, Object> parameters = new HashMap<>();
+            BandMathsOp.BandDescriptor[] bandDescriptors = new BandMathsOp.BandDescriptor[config.bands.size()];
+            pm.setSubTaskName("Creating band descriptors ...");
+            int i = 0;
+            for (BandDesc bandDesc : config.bands) {
+                Band srcBand = sourceProduct.getBand(bandDesc.inputBand);
+                Band targetBand = targetProduct.addBand(bandDesc.name, ProductData.TYPE_FLOAT32);
+                targetBand.setNoDataValue(-1);
+                targetBand.setNoDataValueUsed(true);
+
+                sourceBands.put(targetBand, srcBand);
+                Band defaultBand = defaultProduct.getBand(bandDesc.defaultBand);
+                defaultBands.put(targetBand, defaultBand);
+
+                BandMathsOp.BandDescriptor bandDescriptor = new BandMathsOp.BandDescriptor();
+                bandDescriptor.name = bandDesc.name;
+                bandDescriptor.expression = bandDesc.validExp;
+                bandDescriptor.type = ProductData.TYPESTRING_INT8;
+                bandDescriptors[i] = bandDescriptor;
+                pm.worked(1);
+                i++;
+            }
+            pm.setSubTaskName("Creating band maths product ...");
+            parameters.put("targetBands", bandDescriptors);
+            validProduct = GPF.createProduct("BandMaths", parameters, sourceProduct);
+            pm.worked(1);
+
+            sourceProductRect = new Rectangle(sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
+            if (config.frs) {
+                rectCalculator = new RectangleExtender(sourceProductRect,
+                        (config.pixelWidth + 1) * 4, (config.pixelWidth + 1) * 4);
+            } else {
+                rectCalculator = new RectangleExtender(sourceProductRect, config.pixelWidth, config.pixelWidth);
+            }
+            pm.setSubTaskName("Computing weights matrix ...");
+            computeWeightMatrix();
+            pm.worked(1);
+        } finally {
+            pm.done();
+        }
+    }
+
     private void computeWeightMatrix() {
     	weights = new double[config.pixelWidth][config.pixelWidth];
 		for (int y = 0; y < config.pixelWidth; y++) {
@@ -135,17 +149,17 @@ public class FillAerosolOp extends MerisBasisOp {
 		}
 		weights[0][0] = 0;
 	}
-    
+
     private float computeInterpolatedValue(final int x, final int y, Rectangle sourceRect, float[] srcValues, boolean[] valid, float defaultValue) {
 		double weigthSum = 0;
 		double weigthSumTotal = 0;
         double tauSum = 0;
-        
+
         final int iyStart = Math.max(y - config.pixelWidth + 1,sourceRect.y);
         final int iyEnd = Math.min(y + config.pixelWidth - 1,sourceRect.y+sourceRect.height);
         final int ixStart = Math.max(x - config.pixelWidth + 1,sourceRect.x);
         final int ixEnd = Math.min(x + config.pixelWidth - 1,sourceRect.x+sourceRect.width);
-        
+
         for (int iy = iyStart; iy < iyEnd; iy++) {
             final int yDist = Math.abs(iy - y);
             int index = convertToIndex(ixStart, iy, sourceRect);
@@ -175,11 +189,11 @@ public class FillAerosolOp extends MerisBasisOp {
         }
         return mean;
 	}
-    
+
     private static int convertToIndex(int x, int y, Rectangle rectangle) {
         return (y - rectangle.y) * rectangle.width + (x - rectangle.x);
     }
-    
+
     private float[] getScaledArrayFromTile(Tile tile) {
         ProductData valueDataBuffer = tile.getRawSamples();
         float[] scaledValues = new float[valueDataBuffer.getNumElems()];
@@ -192,17 +206,17 @@ public class FillAerosolOp extends MerisBasisOp {
 			}
 			scaledValues[i] = value;
 		}
-		
+
 		return scaledValues;
     }
-    
+
     private float[] getScaledArrayFromTileFRS(Tile tile) {
         ProductData valueDataBuffer = tile.getRawSamples();
         final int frsWidth = tile.getRectangle().width;
         final int frsHeight = tile.getRectangle().height;
         final int width = MathUtils.ceilInt(frsWidth / 4.0);
         final int height = MathUtils.ceilInt(frsHeight / 4.0);
-        
+
         float[] scaledValues = new float[width * height];
         RasterDataNode srcRasterDataNode = tile.getRasterDataNode();
 		boolean scaled = srcRasterDataNode.isScalingApplied();
@@ -221,14 +235,14 @@ public class FillAerosolOp extends MerisBasisOp {
 		}
 		return scaledValues;
     }
-    
+
     private boolean[] getArrayFromTileFRS(Tile tile) {
         ProductData dataBuffer = tile.getRawSamples();
         final int frsWidth = tile.getRectangle().width;
         final int frsHeight = tile.getRectangle().height;
         final int width = MathUtils.ceilInt(frsWidth / 4.0);
         final int height = MathUtils.ceilInt(frsHeight / 4.0);
-        
+
         boolean[] values = new boolean[width * height];
 		int scaledIndex = 0;
 		for (int y = 0; y < frsHeight; y+=4) {
@@ -242,7 +256,7 @@ public class FillAerosolOp extends MerisBasisOp {
 		}
 		return values;
     }
-    
+
     private boolean isMaskSetInRegion(int x, int y, int maxX, int maxY, Tile mask) {
     	final int ixEnd = Math.min(x+4, maxX);
     	final int iyEnd = Math.min(y+4, maxY);
@@ -255,7 +269,7 @@ public class FillAerosolOp extends MerisBasisOp {
 		}
     	return false;
     }
-    
+
     private void setValueInRegion(int x, int y, int maxX, int maxY, float v, SimpleTile simpleTile) {
     	final int ixEnd = Math.min(x+4, maxX);
     	final int iyEnd = Math.min(y+4, maxY);
@@ -265,7 +279,7 @@ public class FillAerosolOp extends MerisBasisOp {
     		}
 		}
     }
-    
+
     @Override
     public void computeTile(Band band, Tile targetTile, ProgressMonitor pm) throws OperatorException {
 
@@ -282,11 +296,11 @@ public class FillAerosolOp extends MerisBasisOp {
             Tile defaultTile = getSourceTile(defaultBands.get(band), sourceRect);
             Tile validDataTile = getSourceTile(validProduct.getBand(band.getName()), sourceRect);
             Tile dataTile = getSourceTile(sourceBands.get(band), sourceRect);
-            
+
             if (!config.frs) {
             	float[] scaledData = getScaledArrayFromTile(dataTile);
                 boolean[] validData = (boolean[]) validDataTile.getRawSamples().getElems();
-                
+
 				for (int y = targetRect.y; y < targetRect.y + targetRect.height; y++) {
 					for (int x = targetRect.x; x < targetRect.x
 							+ targetRect.width; x++) {
@@ -313,15 +327,15 @@ public class FillAerosolOp extends MerisBasisOp {
 				boolean[] validData = getArrayFromTileFRS(validDataTile);
 	            Rectangle sourceRectFRS = new Rectangle(MathUtils.ceilInt(sourceRect.x/4.0), MathUtils.ceilInt(sourceRect.y/4.0),
 	            		MathUtils.ceilInt(sourceRect.width/4.0), MathUtils.ceilInt(sourceRect.height/4.0));
-	            
+
 	            Rectangle intermediateRectangle = new Rectangle(targetRect.x - 4, targetRect.y - 4, targetRect.width + 8, targetRect.height + 8);
 	            Rectangle productRect = sourceProductRect;
 	            intermediateRectangle = intermediateRectangle.intersection(productRect);
 	            SimpleTile intermediateRaster = new SimpleTile(intermediateRectangle);
-	                
+
 	            final int maxX = intermediateRectangle.x + intermediateRectangle.width;
 	            final int maxY = intermediateRectangle.y + intermediateRectangle.height;
-	            
+
 				for (int y = intermediateRectangle.y; y < maxY; y += 4) {
 					for (int x = intermediateRectangle.x; x < maxX; x += 4) {
 						if (!useMask || isMaskSetInRegion(x, y, maxX, maxY, maskTile)) {
@@ -344,7 +358,7 @@ public class FillAerosolOp extends MerisBasisOp {
 					}
 					pm.worked(1);
 				}
-				
+
 				//now smooth this
                 final int maxtX = targetRect.x + targetRect.width;
                 final int maxtY = targetRect.y + targetRect.height;
@@ -383,7 +397,7 @@ public class FillAerosolOp extends MerisBasisOp {
             pm.done();
         }
     }
-    
+
     private static class SimpleTile {
 
         private final ProductData productData;
@@ -403,7 +417,7 @@ public class FillAerosolOp extends MerisBasisOp {
             final int index = computeIndex(x, y);
             productData.setElemFloatAt(index, v);
         }
-        
+
         private int computeIndex(int x, int y) {
             return (y - rectangle.y) * rectangle.width + (x - rectangle.x);
         }

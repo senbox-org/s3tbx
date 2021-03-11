@@ -86,13 +86,12 @@ public class ModisAerosolOp extends MerisBasisOp {
         gapFiller = new GapFiller();
         gapFiller.setWidthHeight(MOD08_WIDTH, MOD08_HEIGHT);
 
-
-        try {
-            readMod08();
-        } catch (IOException e) {
-            throw new OperatorException("Could not load MOD08 data files", e);
-        }
         createTargetProduct();
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        readMod08(pm);
     }
 
     private void createTargetProduct() {
@@ -220,40 +219,50 @@ public class ModisAerosolOp extends MerisBasisOp {
                          (float) (0.5 + 0.5 * Math.sin(a + bf1 * Math.PI)));
     }
 
-    private void readMod08() throws IOException {
-        final ProductData.UTC meanTime = getSceneRasterMeanTime(sourceProduct);
-        if (meanTime == null) {
-            throw new IOException("failed to retrieve sensing time information from input product");
+    private void readMod08(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Load MOD08 files", 4);
+        try {
+            final ProductData.UTC meanTime = getSceneRasterMeanTime(sourceProduct);
+            if (meanTime == null) {
+                throw new IOException("failed to retrieve sensing time information from input product");
+            }
+            final Date sensingDate = meanTime.getAsDate();
+            final TemporalFile[] mod08Files = mod08FileArray.getTemporalFilesSorted(sensingDate, 2);
+            pm.worked(1);
+            gapFilled = new boolean[4][MOD08_HEIGHT][MOD08_WIDTH];
+            final float[][][] aot470Data = createFromAuxData(mod08Files, 0);
+            pm.worked(1);
+            final float[][][] aot660Data = createFromAuxData(mod08Files, 2);
+            pm.worked(1);
+
+            final double[] timeTab = new double[2];
+            timeTab[0] = ProductData.UTC.create(mod08Files[1].getMeanDate(), 0).getMJD();
+            timeTab[1] = ProductData.UTC.create(mod08Files[0].getMeanDate(), 0).getMJD();
+
+            final double[] latTab = new double[MOD08_HEIGHT];
+            for (int i = 0; i < latTab.length; i++) {
+                latTab[i] = 90.0 - i - 0.5;
+            }
+            final double[] lonTab = new double[MOD08_WIDTH];
+            for (int i = 0; i < lonTab.length; i++) {
+                lonTab[i] = i - 180.0 + 0.5;
+            }
+
+            _aot470LUT = new LUT(aot470Data);
+            _aot470LUT.setTab(0, timeTab);
+            _aot470LUT.setTab(1, latTab);
+            _aot470LUT.setTab(2, lonTab);
+
+            _aot660LUT = new LUT(aot660Data);
+            _aot660LUT.setTab(0, timeTab);
+            _aot660LUT.setTab(1, latTab);
+            _aot660LUT.setTab(2, lonTab);
+            pm.worked(1);
+        } catch (IOException e) {
+            throw new OperatorException("Could not load MOD08 data files", e);
+        } finally {
+            pm.done();
         }
-        final Date sensingDate = meanTime.getAsDate();
-
-        final TemporalFile[] mod08Files = mod08FileArray.getTemporalFilesSorted(sensingDate, 2);
-        gapFilled = new boolean[4][MOD08_HEIGHT][MOD08_WIDTH];
-        final float[][][] aot470Data = createFromAuxData(mod08Files, 0);
-        final float[][][] aot660Data = createFromAuxData(mod08Files, 2);
-
-        final double[] timeTab = new double[2];
-        timeTab[0] = ProductData.UTC.create(mod08Files[1].getMeanDate(), 0).getMJD();
-        timeTab[1] = ProductData.UTC.create(mod08Files[0].getMeanDate(), 0).getMJD();
-
-        final double[] latTab = new double[MOD08_HEIGHT];
-        for (int i = 0; i < latTab.length; i++) {
-            latTab[i] = 90.0 - i - 0.5;
-        }
-        final double[] lonTab = new double[MOD08_WIDTH];
-        for (int i = 0; i < lonTab.length; i++) {
-            lonTab[i] = i - 180.0 + 0.5;
-        }
-
-        _aot470LUT = new LUT(aot470Data);
-        _aot470LUT.setTab(0, timeTab);
-        _aot470LUT.setTab(1, latTab);
-        _aot470LUT.setTab(2, lonTab);
-
-        _aot660LUT = new LUT(aot660Data);
-        _aot660LUT.setTab(0, timeTab);
-        _aot660LUT.setTab(1, latTab);
-        _aot660LUT.setTab(2, lonTab);
     }
 
     private static ProductData.UTC getSceneRasterMeanTime(Product product) {

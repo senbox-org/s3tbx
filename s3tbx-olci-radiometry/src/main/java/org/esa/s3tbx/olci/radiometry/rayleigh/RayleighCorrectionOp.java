@@ -35,14 +35,41 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
+import org.json.simple.parser.ParseException;
 
 import java.awt.Rectangle;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
-import static org.esa.s3tbx.olci.radiometry.SensorConstants.*;
-import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_OZONE_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_SLP_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_VZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_LAT_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_LON_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_OZONE_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_SLP_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_VZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_OZONE_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_SLP_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_VZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_VZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSampleDoubles;
+import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSensorType;
+import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSourceBandIndex;
 
 /**
  * This operator performs radiometric corrections on OLCI, MERIS L1b and S2 MSI data products.
@@ -53,8 +80,8 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
         description = "Performs radiometric corrections on OLCI, MERIS L1B and S2 MSI L1C data products.",
         authors = "Marco Peters, Muhammad Bala, Olaf Danne (Brockmann Consult)",
         copyright = "(c) 2016 by Brockmann Consult",
-        category = "Optical/Pre-Processing",
-        version = "1.3")
+        category = "Optical/Preprocessing",
+        version = "1.4")
 public class RayleighCorrectionOp extends Operator {
 
     private static final String AUTO_GROUPING = "rtoa:taur:rtoa_ng:rtoaRay:rBRR";
@@ -73,12 +100,14 @@ public class RayleighCorrectionOp extends Operator {
             "taur_%02d",
             "rBRR_%02d",
             "rtoa_ng_%02d",
-            "rtoa_%02d",
+            "rtoa_%02d"
     };
+
     static final String R_BRR_PATTERN = "rBRR_\\d{2}";
     static final String RTOA_PATTERN = "rtoa_\\d{2}";
     static final String TAUR_PATTERN = "taur_\\d{2}";
     static final String RTOA_NG_PATTERN = "rtoa_ng_\\d{2}";
+    private static final String RRAY_PATTERN = "rRay_\\d{2}";
 
     @SourceProduct(label = "OLCI, MERIS or S2 MSI L1C product")
     Product sourceProduct;
@@ -105,11 +134,9 @@ public class RayleighCorrectionOp extends Operator {
 
     @Parameter(defaultValue = "20",
             valueSet = {"10", "20", "60"},
-            label = "Image resolution in m in target product (S2 MSI only)")
+            label = "Image resolution in m in target product. Resampling is only applied if source product is not resampled yet (S2 MSI only)")
     private int s2MsiTargetResolution;
 
-//    @Parameter(defaultValue = "true", label = "Add geometry bands to the target product (S2 MSI only)")
-//    private boolean s2AddGeometryBands;
 
     @Parameter(defaultValue = "1013.25", label = "Sea level pressure in hPa (S2 MSI only)")
     private double s2MsiSeaLevelPressure;
@@ -117,6 +144,10 @@ public class RayleighCorrectionOp extends Operator {
     @Parameter(defaultValue = "300.0", label = "Ozone in DU (S2 MSI only)")
     private double s2MsiOzone;
 
+
+    // for debugging set to true
+    private boolean addRrayDebug = false;
+    private boolean addS2GeometryBandsDebug = false;
 
     private RayleighCorrAlgorithm algorithm;
     private Sensor sensor;
@@ -128,11 +159,9 @@ public class RayleighCorrectionOp extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-
         if (this.sourceBandNames == null || this.sourceBandNames.length == 0) {
             throw new OperatorException("Please select at least one source band.");
         }
-
         sensor = getSensorType(sourceProduct);
         productToProcess = sourceProduct;
         if (sensor == Sensor.S2_MSI) {
@@ -146,23 +175,33 @@ public class RayleighCorrectionOp extends Operator {
                                                                                    s2MsiTargetResolution);
             }
         }
-
-        algorithm = new RayleighCorrAlgorithm(sensor);
-        absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
-        crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getNameFormat());
-
         Product targetProduct = new Product(productToProcess.getName() + "_rayleigh", productToProcess.getProductType(),
                                             productToProcess.getSceneRasterWidth(), productToProcess.getSceneRasterHeight());
-
-        RayleighAux.initDefaultAuxiliary();
         addTargetBands(productToProcess, targetProduct);
         ProductUtils.copyProductNodes(productToProcess, targetProduct);
         ProductUtils.copyFlagBands(productToProcess, targetProduct, true);
-
-        targetProduct.setAutoGrouping(AUTO_GROUPING);
+        targetProduct.setAutoGrouping(AUTO_GROUPING + (addRrayDebug ? ":rRay" : ""));
         setTargetProduct(targetProduct);
     }
 
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Initializing auxiliary data", 4);
+        try {
+            algorithm = new RayleighCorrAlgorithm(sensor);
+            pm.worked(1);
+            absorpOzone = GaseousAbsorptionAux.getInstance().absorptionOzone(sensor.getName());
+            pm.worked(1);
+            crossSectionSigma = getCrossSectionSigma(sourceProduct, sensor.getNumBands(), sensor.getNameFormat());
+            pm.worked(1);
+            RayleighAux.initDefaultAuxiliary();
+            pm.worked(1);
+        } catch (IOException | ParseException e) {
+            throw new OperatorException("Could not initialize default auxiliary data", e);
+        } finally {
+            pm.done();
+        }
+    }
 
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {
@@ -226,6 +265,11 @@ public class RayleighCorrectionOp extends Operator {
                             targetData = getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
                         }
                     }
+                    if (addRrayDebug && targetBandNameMatches(targetBandName, RRAY_PATTERN) && computeRBrr) {
+                        //for debugging.
+                        rayleighOpticalThickness = algorithm.getRayleighThickness(rayleighAux, crossSectionSigma, sourceBandIndex, targetBandName);
+                        targetData = getRhoRayleigh(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
+                    }
                 }
 
                 setTargetSamples(qualityFlagsTile, targetTile, targetData);
@@ -283,6 +327,10 @@ public class RayleighCorrectionOp extends Operator {
         return algorithm.getRhoBrr(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
     }
 
+    private double[] getRhoRayleigh(RayleighAux rayleighAux, double[] rayleighOpticalThickness, double[] corrOzoneRefl) {
+        return algorithm.getRhoRayleigh(rayleighAux, rayleighOpticalThickness, corrOzoneRefl);
+    }
+
     private double[] getCorrectOzone(RayleighAux rayleighAux, double[] reflectance, int sourceBandIndex,
                                      String targetBandName) {
 
@@ -318,6 +366,10 @@ public class RayleighCorrectionOp extends Operator {
         }
         if (computeRBrr) {
             addTargetBands(sourceProduct, targetProduct, BAND_CATEGORIES[1]);
+            //for debugging: adding rRay, the Rayleigh reflectance from LUT
+            if (addRrayDebug) {
+                addTargetBands(sourceProduct, targetProduct, "rRay_%02d");
+            }
         }
         if (computeRtoaNg) {
             addTargetBands(sourceProduct, targetProduct, BAND_CATEGORIES[2]);
@@ -330,11 +382,11 @@ public class RayleighCorrectionOp extends Operator {
             targetBand.setNoDataValue(RayleighConstants.INVALID_VALUE);
             targetBand.setNoDataValueUsed(true);
         }
-//        if (sensor == Sensor.S2_MSI && s2AddGeometryBands) {
-//            for (String s2GeometryBand : SensorConstants.S2_GEOMETRY_BANDS) {
-//                ProductUtils.copyBand(s2GeometryBand, sourceProduct, targetProduct, true);
-//            }
-//        }
+        if (sensor == Sensor.S2_MSI && addS2GeometryBandsDebug) {
+            for (String s2GeometryBand : SensorConstants.S2_GEOMETRY_BANDS) {
+                ProductUtils.copyBand(s2GeometryBand, sourceProduct, targetProduct, true);
+            }
+        }
         for (String s2GeometryBand : SensorConstants.S2_GEOMETRY_BANDS) {
             ProductUtils.copyBand(s2GeometryBand, sourceProduct, targetProduct, true);
         }
@@ -347,8 +399,7 @@ public class RayleighCorrectionOp extends Operator {
                 final int spectralBandIndex = getSpectralBandIndex(sourceBand);
                 if (spectralBandIndex >= 0 && spectralBandIndex < sensor.getNumBands()) {
                     final String targetBandName = getTargetBandName(bandCategory, sourceBand);
-                    Band targetBand = targetProduct.addBand(targetBandName,
-                                                            ProductData.TYPE_FLOAT32);
+                    Band targetBand = targetProduct.addBand(targetBandName, ProductData.TYPE_FLOAT32);
                     targetBand.setNoDataValue(RayleighConstants.INVALID_VALUE);
                     targetBand.setNoDataValueUsed(true);
                     ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
@@ -459,13 +510,13 @@ public class RayleighCorrectionOp extends Operator {
             rayleighAux.setSunAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(OLCI_SAA_NAME), rectangle));
             rayleighAux.setViewAzimuthAngles(getSourceTile(sourceProduct.getRasterDataNode(OLCI_VAA_NAME), rectangle));
             rayleighAux.setSeaLevels(getSourceTile(sourceProduct.getRasterDataNode(OLCI_SLP_NAME), rectangle));
-            rayleighAux.setOlciTotalOzones(getSourceTile(sourceProduct.getTiePointGrid(OLCI_OZONE_NAME), rectangle));
-            if (sourceProduct.getTiePointGrid(TP_LATITUDE) != null) {
+            rayleighAux.setOlciTotalOzones(getSourceTile(sourceProduct.getRasterDataNode(OLCI_OZONE_NAME), rectangle));
+            if (sourceProduct.getRasterDataNode(TP_LATITUDE) != null) {
                 rayleighAux.setLatitudes(getSourceTile(sourceProduct.getRasterDataNode(TP_LATITUDE), rectangle));
             } else {
                 rayleighAux.setLatitudes(getSourceTile(sourceProduct.getRasterDataNode(LATITUDE), rectangle));
             }
-            if (sourceProduct.getTiePointGrid(TP_LONGITUDE) != null) {
+            if (sourceProduct.getRasterDataNode(TP_LONGITUDE) != null) {
                 rayleighAux.setLongitude(getSourceTile(sourceProduct.getRasterDataNode(TP_LONGITUDE), rectangle));
             } else {
                 rayleighAux.setLongitude(getSourceTile(sourceProduct.getRasterDataNode(LONGITUDE), rectangle));

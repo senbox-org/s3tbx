@@ -18,17 +18,18 @@ import java.util.logging.Logger;
  */
 class InstrumentDataReader extends S3NetcdfReader {
 
-    private final static String detector_index_name = "detector_index";
-    private Variable detectorIndexVariable;
+    private final static String DETECTOR_INDEX_NAME = "detector_index";
+    private Band detectorIndexBand;
 
     @Override
     protected void addBands(Product product) {
         final NetcdfFile netcdfFile = getNetcdfFile();
-        detectorIndexVariable = netcdfFile.findVariable(detector_index_name);
+        Variable detectorIndexVariable = netcdfFile.findVariable(DETECTOR_INDEX_NAME);
         if (detectorIndexVariable == null) {
             return;
         }
-        addVariableAsBand(product, detectorIndexVariable, detector_index_name, false);
+        addVariableAsBand(product, detectorIndexVariable, DETECTOR_INDEX_NAME, false);
+        detectorIndexBand = product.getBand(DETECTOR_INDEX_NAME);
         addVariableMetadata(detectorIndexVariable, product);
         final List<Variable> variables = netcdfFile.getVariables();
         for (final Variable variable : variables) {
@@ -48,7 +49,7 @@ class InstrumentDataReader extends S3NetcdfReader {
 
     @Override
     protected RenderedImage createSourceImage(Band band) {
-        if (band.getName().equals(detector_index_name)) {
+        if (band.getName().equals(DETECTOR_INDEX_NAME)) {
             return super.createSourceImage(band);
         }
         final String bandName = band.getName();
@@ -66,7 +67,7 @@ class InstrumentDataReader extends S3NetcdfReader {
             variable = getNetcdfFile().findVariable(variableName);
         }
         return new S3MultiLevelOpImage(band, variable, new String[]{dimensionName}, new int[]{dimensionIndex},
-                                       detectorIndexVariable, "detectors", dimensionName);
+                detectorIndexBand, "detectors", dimensionName);
     }
 
     @Override
@@ -81,7 +82,7 @@ class InstrumentDataReader extends S3NetcdfReader {
 
                 for (int i = 0; i < length; i++) {
                     final MetadataElement xElement = new MetadataElement(getMetadataElementName(variableName) +
-                                                                                 " for band " + (i + 1));
+                            " for band " + (i + 1));
                     final ProductData content = ProductData.createInstance(contentMatrix[i]);
                     final MetadataAttribute covarianceAttribute =
                             new MetadataAttribute(getMetadataAttributeName(variableName), content, true);

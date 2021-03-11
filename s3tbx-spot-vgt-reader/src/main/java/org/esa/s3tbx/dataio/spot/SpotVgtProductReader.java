@@ -19,6 +19,7 @@ import com.bc.ceres.binding.Property;
 import com.bc.ceres.core.Assert;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.VirtualDir;
+import org.apache.commons.io.FilenameUtils;
 import org.esa.snap.core.dataio.AbstractProductReader;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
@@ -29,6 +30,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.util.ImageUtils;
 import org.esa.snap.core.util.jai.JAIUtils;
+import org.esa.snap.dataio.netcdf.util.DataTypeUtils;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
@@ -58,13 +60,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.esa.s3tbx.dataio.spot.SpotVgtProductReaderPlugIn.*;
+import static org.esa.s3tbx.dataio.spot.SpotVgtProductReaderPlugIn.getBandName;
+import static org.esa.s3tbx.dataio.spot.SpotVgtProductReaderPlugIn.getFileInput;
 
 /**
- * Reader for SPOT VGT products.
+ * Reader for SPOT VGT P products from Collection 2 and Collection 3.
+ * See Product User Manual for more details (http://www.spot-vegetation.com/pages/SPOT_VGT_PUM_v1.0.pdf).
  *
  * @author Norman Fomferra
- * @version 1.0
+ * @author Olaf Danne
+ * @version 1.1
  */
 public class SpotVgtProductReader extends AbstractProductReader {
 
@@ -81,13 +86,16 @@ public class SpotVgtProductReader extends AbstractProductReader {
             "MEASURE VALUE",
     };
 
+    private boolean isVgtPCollection3Product;
+
     /**
      * Constructor.
      *
      * @param productReaderPlugIn the product reader plug-in used to create this reader instance.
      */
-    SpotVgtProductReader(final SpotVgtProductReaderPlugIn productReaderPlugIn) {
+    SpotVgtProductReader(final SpotVgtProductReaderPlugIn productReaderPlugIn, boolean isVgtPCollection3Product) {
         super(productReaderPlugIn);
+        this.isVgtPCollection3Product = isVgtPCollection3Product;
         initBandInfos();
     }
 
@@ -95,7 +103,9 @@ public class SpotVgtProductReader extends AbstractProductReader {
     protected Product readProductNodesImpl() throws IOException {
         File inputFile = getFileInput(getInput());
         virtualDir = VirtualDir.create(inputFile);
-        return createProduct();
+        fileVars = new HashMap<>(33);
+
+        return isVgtPCollection3Product ? createVgtPCollection3Product(inputFile) : createProduct();
     }
 
     private Product createProduct() throws IOException {
@@ -105,21 +115,13 @@ public class SpotVgtProductReader extends AbstractProductReader {
                 virtualDir.getReader(physVolDescriptor.getLogVolDescriptorFileName()));
 
         Rectangle imageBounds = logVolDescriptor.getImageBounds();
-
-        fileVars = new HashMap<Band, FileVar>(33);
-
+        if (imageBounds == null) {
+            throw new IOException("SpotVgtProductReader: Cannot read image bounds from product LOG descriptor.");
+        }
         int targetWidth = imageBounds.width;
         int targetHeight = imageBounds.height;
-        Product product = new Product(logVolDescriptor.getProductId(),
-                                      physVolDescriptor.getFormatReference(),
-                                      targetWidth,
-                                      targetHeight, this);
-        Dimension tileSize = JAIUtils.computePreferredTileSize(targetWidth, targetHeight, 1);
-        product.setPreferredTileSize(tileSize);
-        product.setFileLocation(new File(virtualDir.getBasePath()));
-        addGeoCoding(product, logVolDescriptor);
-        addTimeCoding(product, logVolDescriptor);
-        addMetadata(product, physVolDescriptor, logVolDescriptor);
+
+        Product product = createVgtBasisProduct(physVolDescriptor, logVolDescriptor, imageBounds);
 
         String[] logVolFileNames = virtualDir.list(physVolDescriptor.getLogVolDirName());
         for (String logVolFileName : logVolFileNames) {
@@ -128,49 +130,7 @@ public class SpotVgtProductReader extends AbstractProductReader {
 
                 File hdfFile = virtualDir.getFile(physVolDescriptor.getLogVolDirName() + "/" + logVolFileName);
                 NetcdfFile netcdfFile = NetcdfFileOpener.open(hdfFile.getPath());
-                if (netcdfFile == null) {
-                    throw new IOException("Failed to open file " + hdfFile.getPath());
-                }
-
-                Variable variable = findPixelDataVariable(netcdfFile);
-                if (isPotentialPixelDataVariable(variable)) {
-                    DataType netCdfDataType = variable.getDataType();
-                    int bandDataType = convertNetcdfTypeToProductDataType(netCdfDataType, variable.isUnsigned());
-                    if (bandDataType != ProductData.TYPE_UNDEFINED) {
-                        String bandName = getBandName(logVolFileName);
-                        BandInfo bandInfo = getBandInfo(bandName);
-
-                        // Check if we know about this variable (bandInfo != null)
-                        //
-                        if (bandInfo != null) {
-                            // SPOT VGT P Products contain sub-sampled variables.
-                            // Need to check whether source raster resolution is at target raster resolution.
-                            //
-                            int sourceWidth = variable.getDimension(1).getLength();
-                            int sourceHeight = variable.getDimension(0).getLength();
-                            int sampling = bandInfo.pSampling;
-                            if (sampling == 1 || sourceWidth == targetWidth || sourceHeight == targetHeight) {
-                                // Source raster resolution is at target raster resolution.
-                                addBand(product, bandDataType, bandInfo, netcdfFile, variable);
-                            } else if (sampling > 1 || sourceWidth <= targetWidth || sourceHeight <= targetHeight) {
-                                // Source raster resolution is a sub-sampling.
-                                try {
-                                    ProductData data = readData(variable, bandDataType, sourceWidth, sourceHeight);
-                                    RenderedOp dstImg = createScaledImage(targetWidth, targetHeight, sourceWidth,
-                                                                          sourceHeight, sampling, data, tileSize);
-                                    Band band = addBand(product, bandDataType, bandInfo, netcdfFile, variable);
-                                    band.setSourceImage(dstImg);
-                                } catch (IOException e) {
-                                    // band not added
-                                } catch (InvalidRangeException e) {
-                                    // band not added
-                                }
-                            } else {
-                                // band not added
-                            }
-                        }
-                    }
-                }
+                setProductRasterData(targetWidth, targetHeight, product, logVolFileName, hdfFile, netcdfFile);
             }
         }
 
@@ -180,19 +140,119 @@ public class SpotVgtProductReader extends AbstractProductReader {
         return product;
     }
 
-    private int convertNetcdfTypeToProductDataType(DataType netCdfDataType, boolean unsigned) {
-        if (netCdfDataType == DataType.BYTE) {
-            return unsigned ? ProductData.TYPE_UINT8 : ProductData.TYPE_INT8;
-        } else if (netCdfDataType == DataType.SHORT) {
-            return unsigned ? ProductData.TYPE_UINT16 : ProductData.TYPE_INT16;
-        } else if (netCdfDataType == DataType.INT) {
-            return unsigned ? ProductData.TYPE_UINT32 : ProductData.TYPE_INT32;
-        } else if (netCdfDataType == DataType.FLOAT) {
-            return ProductData.TYPE_FLOAT32;
-        } else if (netCdfDataType == DataType.DOUBLE) {
-            return ProductData.TYPE_FLOAT64;
+    private Product createVgtPCollection3Product(File inputFile) throws IOException {
+        final boolean isZipFile = inputFile.getName().toUpperCase().endsWith("ZIP");
+        final String productName = FilenameUtils.getBaseName(inputFile.getName());
+
+        PhysVolDescriptor physVolDescriptor = null;
+        LogVolDescriptor logVolDescriptor;
+        if (isZipFile) {
+            logVolDescriptor = new LogVolDescriptor(virtualDir.getReader(productName + "/" + productName + "_LOG.TXT"));
+        } else {
+            logVolDescriptor = new LogVolDescriptor(virtualDir.getReader(inputFile.getName() + "_LOG.TXT"));
         }
-        return ProductData.TYPE_UNDEFINED;
+
+        Rectangle imageBounds = logVolDescriptor.getImageBounds();
+        if (imageBounds == null) {
+            throw new IOException("SpotVgtProductReader: Cannot read image bounds from product LOG descriptor.");
+        }
+        int targetWidth = imageBounds.width;
+        int targetHeight = imageBounds.height;
+
+        Product product = createVgtBasisProduct(physVolDescriptor, logVolDescriptor, imageBounds);
+
+        String[] productFileNames;
+        if (isZipFile) {
+            productFileNames = virtualDir.list(productName);
+        } else {
+            productFileNames = inputFile.list();
+        }
+
+        for (String productFileName : productFileNames) {
+            if (productFileName.toUpperCase().endsWith(".HDF")) {
+
+                final String hdfFilePathInProduct = isZipFile ? productName + "/" + productFileName : productFileName;
+                File hdfFile = virtualDir.getFile(hdfFilePathInProduct);
+                NetcdfFile netcdfFile = NetcdfFileOpener.open(hdfFile.getPath());
+                setProductRasterData(targetWidth, targetHeight, product, productFileName, hdfFile, netcdfFile);
+            }
+        }
+
+        addFlagsAndMasks(product);
+        addSpectralInfo(product);
+
+        return product;
+    }
+
+    private Product createVgtBasisProduct(PhysVolDescriptor physVolDescriptor,
+                                          LogVolDescriptor logVolDescriptor,
+                                          Rectangle imageBounds) {
+
+        int targetWidth = imageBounds.width;
+        int targetHeight = imageBounds.height;
+        final String productType = "VGT P COLLECTION3 PRODUCT";
+        Product product = new Product(logVolDescriptor.getProductId(),
+                                      productType,
+                                      targetWidth,
+                                      targetHeight, this);
+        Dimension tileSize = JAIUtils.computePreferredTileSize(targetWidth, targetHeight, 1);
+        product.setPreferredTileSize(tileSize);
+        addGeoCoding(product, logVolDescriptor);
+        addTimeCoding(product, logVolDescriptor);
+        addMetadata(product, physVolDescriptor, logVolDescriptor);
+        product.setFileLocation(new File(virtualDir.getBasePath()));
+
+        return product;
+    }
+
+    private void setProductRasterData(int targetWidth, int targetHeight, Product product,
+                                      String hdfFileName, File hdfFile, NetcdfFile netcdfFile) throws IOException {
+        if (netcdfFile == null) {
+            throw new IOException("Failed to open file " + hdfFile.getPath());
+        }
+
+        Variable variable = findPixelDataVariable(netcdfFile);
+        if (isPotentialPixelDataVariable(variable)) {
+            DataType netCdfDataType = variable.getDataType();
+            int bandDataType = convertNetcdfTypeToProductDataType(netCdfDataType, variable.getDataType().isUnsigned());
+            if (bandDataType != ProductData.TYPE_UNDEFINED) {
+                String bandName = getBandName(hdfFileName);
+                BandInfo bandInfo = getBandInfo(bandName);
+
+                // Check if we know about this variable (bandInfo != null)
+                //
+                if (bandInfo != null) {
+                    // SPOT VGT P Products contain sub-sampled variables.
+                    // Need to check whether source raster resolution is at target raster resolution.
+                    //
+                    int sourceWidth = variable.getDimension(1).getLength();
+                    int sourceHeight = variable.getDimension(0).getLength();
+                    int sampling = bandInfo.pSampling;
+                    if (sampling == 1 || sourceWidth == targetWidth || sourceHeight == targetHeight) {
+                        // Source raster resolution is at target raster resolution.
+                        addBand(product, bandDataType, bandInfo, netcdfFile, variable);
+                    } else if (sampling > 1 || sourceWidth <= targetWidth || sourceHeight <= targetHeight) {
+                        // Source raster resolution is a sub-sampling.
+                        try {
+                            ProductData data = readData(variable, bandDataType, sourceWidth, sourceHeight);
+                            final Dimension tileSize = product.getPreferredTileSize();
+                            RenderedOp dstImg = createScaledImage(targetWidth, targetHeight, sourceWidth,
+                                                                  sourceHeight, sampling, data, tileSize);
+                            Band band = addBand(product, bandDataType, bandInfo, netcdfFile, variable);
+                            band.setSourceImage(dstImg);
+                        } catch (IOException | InvalidRangeException e) {
+                            // band not added
+                        }
+                    }  // band not added
+
+                }
+            }
+        }
+    }
+
+    private int convertNetcdfTypeToProductDataType(DataType netCdfDataType, boolean unsigned) {
+        int rasterDataType = DataTypeUtils.getRasterDataType(netCdfDataType, unsigned);
+        return rasterDataType == -1 ? ProductData.TYPE_UNDEFINED : rasterDataType;
     }
 
     private boolean isPotentialPixelDataVariable(Variable variable) {
@@ -200,8 +260,8 @@ public class SpotVgtProductReader extends AbstractProductReader {
     }
 
     private static ProductData readData(Variable variable, int bandDataType, int rasterWidth, int rasterHeight) throws
-                                                                                                                IOException,
-                                                                                                                InvalidRangeException {
+            IOException,
+            InvalidRangeException {
         ProductData data = ProductData.createInstance(bandDataType, rasterWidth * rasterHeight);
         read(variable, 0, 0, rasterWidth, rasterHeight, data);
         return data;
@@ -232,11 +292,11 @@ public class SpotVgtProductReader extends AbstractProductReader {
                          Variable variable) {
         Band band = product.addBand(bandInfo.name, bandDataType);
         if (!Boolean.getBoolean("s3tbx.spotvgt.donotapplysolarilluminationfactor") &&
-            product.getName().matches("V.KRNP.*") &&
-            ("B0".equals(bandInfo.name) ||
-             "B2".equals(bandInfo.name) ||
-             "B3".equals(bandInfo.name) ||
-             "MIR".equals(bandInfo.name))) {
+                product.getName().matches("V.KRNP.*") &&
+                ("B0".equals(bandInfo.name) ||
+                        "B2".equals(bandInfo.name) ||
+                        "B3".equals(bandInfo.name) ||
+                        "MIR".equals(bandInfo.name))) {
             int doy = product.getStartTime().getAsCalendar().get(Calendar.DAY_OF_YEAR);
             band.setScalingFactor(bandInfo.coefA * SpotVgtConstants.SOLAR_ILLUMINATION_FACTOR[doy - 1]);
         } else {
@@ -327,12 +387,16 @@ public class SpotVgtProductReader extends AbstractProductReader {
     }
 
     private void addMetadata(Product product, PhysVolDescriptor physVolDescriptor, LogVolDescriptor logVolDescriptor) {
-        product.getMetadataRoot().addElement(createMetadataElement("PHYS_VOL",
-                                                                   "Physical volume descriptor",
-                                                                   physVolDescriptor.getPropertySet().getProperties()));
-        product.getMetadataRoot().addElement(createMetadataElement("LOG_VOL",
-                                                                   "Logical volume descriptor",
-                                                                   logVolDescriptor.getPropertySet().getProperties()));
+        if (physVolDescriptor != null) {
+            product.getMetadataRoot().addElement(createMetadataElement("PHYS_VOL",
+                                                                       "Physical volume descriptor",
+                                                                       physVolDescriptor.getPropertySet().getProperties()));
+        }
+        if (logVolDescriptor != null) {
+            product.getMetadataRoot().addElement(createMetadataElement("LOG_VOL",
+                                                                       "Logical volume descriptor",
+                                                                       logVolDescriptor.getPropertySet().getProperties()));
+        }
     }
 
     private void addFlagsAndMasks(Product product) {
@@ -447,7 +511,7 @@ public class SpotVgtProductReader extends AbstractProductReader {
 
     }
 
-    BandInfo getBandInfo(String name) {
+    private BandInfo getBandInfo(String name) {
         final String coefA = bandInfos.getProperty(name + ".COEF_A");
         final String offsetB = bandInfos.getProperty(name + ".OFFSET_B");
         final String sampling = bandInfos.getProperty(name + ".SAMPLING");

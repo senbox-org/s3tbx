@@ -36,7 +36,7 @@ import java.util.Map;
                   authors = "R. Santer, M. Zuehlke, T. Block, O. Danne",
                   copyright = "(c) European Space Agency",
                   description = "Performs the Rayleigh correction on a MERIS L1b product.",
-                  category = "Optical/Pre-Processing")
+                  category = "Optical/Preprocessing")
 public class BrrOp extends BrrBasisOp {
 
     private static final float NODATA_VALUE = -1.0f;
@@ -91,10 +91,7 @@ public class BrrOp extends BrrBasisOp {
 
     @Override
     public void initialize() throws OperatorException {
-
         checkInputProduct(sourceProduct);
-        prepareSourceProducts();
-
         targetProduct = createCompatibleProduct(sourceProduct, "BRR", "BRR");
         // set tile-size smaller than the one that GPF might associate. We need to allocate A LOT of memory per tile.
         // preferred tile-size must be odd in x-direction to cope with the 4x4 window required by the algo and the odd
@@ -108,15 +105,22 @@ public class BrrOp extends BrrBasisOp {
         if (outputToar) {
             createOutputBands(toaReflecBands, "toar");
         }
-
-        initAlgorithms(sourceProduct);
     }
 
-    private void initAlgorithms(Product inputProduct) throws OperatorException {
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 2);
         try {
-            auxData = L2AuxDataProvider.getInstance().getAuxdata(inputProduct);
+            pm.setSubTaskName("Preparing source products");
+            prepareSourceProducts();
+            pm.worked(1);
+            pm.setSubTaskName("Initializing L2 Auxdata");
+            auxData = L2AuxDataProvider.getInstance().getAuxdata(sourceProduct);
+            pm.worked(1);
         } catch (Exception e) {
             throw new OperatorException("Cannot initialize L2 Auxdata:" + e.getMessage(), e);
+        } finally {
+            pm.done();
         }
     }
 

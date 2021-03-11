@@ -17,6 +17,7 @@ package org.esa.s3tbx.smac;
 
 import com.bc.ceres.core.Assert;
 import com.bc.ceres.core.ProgressMonitor;
+import com.bc.ceres.core.SubProgressMonitor;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.Product;
@@ -161,7 +162,10 @@ public class SmacOperator extends Operator {
     @Override
     public void initialize() throws OperatorException {
         try {
-            prepareProcessing();
+            // create a vector of input bands
+            // ------------------------------
+            loadInputProduct();
+            createMask();
             createOutputProduct();
         } catch (IOException e) {
             throw new OperatorException(e);
@@ -235,14 +239,20 @@ public class SmacOperator extends Operator {
     }
 
     // package private for testing reasons only
-    void installAuxdata() {
-        auxdataInstallDir = initAuxdataInstallDir();
+    void installAuxdata(ProgressMonitor pm) {
+        pm.beginTask("Preparing SMAC processing", 100);
         try {
-            Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(getClass()).resolve("auxdata");
-            new ResourceInstaller(sourceDirPath, auxdataInstallDir).install(".*", ProgressMonitor.NULL);
-        } catch (IOException e) {
-            throw new OperatorException("Failed to install auxdata into " + auxdataInstallDir.toString(), e);
+            auxdataInstallDir = initAuxdataInstallDir();
+            try {
+                Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(getClass()).resolve("auxdata");
+                new ResourceInstaller(sourceDirPath, auxdataInstallDir).install(".*", new SubProgressMonitor(pm, 100));
+            } catch (IOException e) {
+                throw new OperatorException("Failed to install auxdata into " + auxdataInstallDir.toString(), e);
+            }
+        } finally {
+            pm.done();
         }
+
     }
 
     // package private for testing reasons only
@@ -250,20 +260,13 @@ public class SmacOperator extends Operator {
         return auxdataInstallDir;
     }
 
-    private void prepareProcessing() throws IOException {
-        logger.info("Preparing SMAC processing");
 
-        // create a vector of input bands
-        // ------------------------------
-        loadInputProduct();
-
-        // create a bitmask expression for input
-        // -------------------------------------
-        createMask();
-        installAuxdata();
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        installAuxdata(pm);
     }
 
-    private void loadInputProduct() throws IOException {
+    private void loadInputProduct() {
         // check what product type the input is and load the appropriate tie point ADS
         // ---------------------------------------------------------------------------
         sensorType = SmacUtils.getSensorType(sourceProduct.getProductType());

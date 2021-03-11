@@ -155,7 +155,6 @@ class CloudPN extends ProcessingNode {
         // get the scene size from the input product
         final int sceneWidth = l1Product.getSceneRasterWidth();
         final int sceneHeight = l1Product.getSceneRasterHeight();
-        centralWavelength = centralWavelengthProvider.getCentralWavelength(l1Product.getProductType());
 
         // create the output product
         Product outputProduct = new Product(DEFAULT_OUTPUT_PRODUCT_NAME, PRODUCT_TYPE, sceneWidth, sceneHeight);
@@ -229,8 +228,15 @@ class CloudPN extends ProcessingNode {
                          (float) (0.5 + 0.5 * Math.sin(a + bf1 * Math.PI)));
     }
 
+    private void ensureCentralWavelengthIsSet() {
+        if (centralWavelength == null) {
+            centralWavelength = centralWavelengthProvider.getCentralWavelength(getSourceProduct().getProductType());
+        }
+    }
+
     @Override
     protected void processFrame(int frameX, int frameY, int frameW, int frameH, ProgressMonitor pm) throws IOException {
+        ensureCentralWavelengthIsSet();
         final int frameSize = frameW * frameH;
         final int numBands = radianceBands.length;
         final double[] cloudIn = new double[15];
@@ -396,7 +402,7 @@ class CloudPN extends ProcessingNode {
     }
 
     @Override
-    public void startProcessing() throws ParseException {
+    public void startProcessing() {
         final Product l1bProduct = getSourceProduct();
 
         szaGrid = getRasterData(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);

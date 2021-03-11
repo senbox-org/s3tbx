@@ -360,7 +360,7 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
+        "spectralWavelength": "550.0",
         "spectralBandwidth": "0.0",
         "expectedPixels": [
           {
@@ -382,7 +382,7 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
+        "spectralWavelength": "550.0",
         "spectralBandwidth": "0.0",
         "expectedPixels": [
           {
@@ -404,7 +404,7 @@
         "bandHeight": 4091,
         "noDataValue": "-1.0",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
+        "spectralWavelength": "550.0",
         "spectralBandwidth": "0.0",
         "expectedPixels": [
           {
@@ -426,8 +426,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "400.0",
+        "spectralBandwidth": "15.0",
         "expectedPixels": [
           {
             "x": 3678,
@@ -448,8 +448,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "400.0",
+        "spectralBandwidth": "15.0",
         "expectedPixels": [
           {
             "x": 1656,
@@ -470,8 +470,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "412.5",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 1592,
@@ -492,8 +492,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "412.5",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 4726,
@@ -514,8 +514,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "442.5",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 1128,
@@ -536,8 +536,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "442.5",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 1742,
@@ -558,8 +558,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "490.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 2795,
@@ -580,8 +580,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "490.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 4744,
@@ -602,8 +602,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "510.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 539,
@@ -624,8 +624,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "510.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 2460,
@@ -646,8 +646,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "560.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 70,
@@ -668,8 +668,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "560.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 1443,
@@ -690,8 +690,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "620.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 4059,
@@ -712,8 +712,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "620.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 2972,
@@ -734,8 +734,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "665.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 2313,
@@ -756,8 +756,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "665.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 467,
@@ -778,8 +778,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "673.75",
+        "spectralBandwidth": "7.5",
         "expectedPixels": [
           {
             "x": 2262,
@@ -800,8 +800,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "673.75",
+        "spectralBandwidth": "7.5",
         "expectedPixels": [
           {
             "x": 4680,
@@ -822,8 +822,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "681.25",
+        "spectralBandwidth": "7.5",
         "expectedPixels": [
           {
             "x": 3577,
@@ -844,8 +844,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "681.25",
+        "spectralBandwidth": "7.5",
         "expectedPixels": [
           {
             "x": 2239,
@@ -866,8 +866,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "708.75",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 3112,
@@ -888,8 +888,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "708.75",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 1925,
@@ -910,8 +910,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "753.75",
+        "spectralBandwidth": "7.5",
         "expectedPixels": [
           {
             "x": 4600,
@@ -932,8 +932,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "753.75",
+        "spectralBandwidth": "7.5",
         "expectedPixels": [
           {
             "x": 2727,
@@ -954,8 +954,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "778.75",
+        "spectralBandwidth": "15.0",
         "expectedPixels": [
           {
             "x": 526,
@@ -976,8 +976,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "778.75",
+        "spectralBandwidth": "15.0",
         "expectedPixels": [
           {
             "x": 886,
@@ -998,8 +998,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "865.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 1000,
@@ -1020,8 +1020,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "865.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 3414,
@@ -1042,8 +1042,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "885.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 2662,
@@ -1064,8 +1064,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "885.0",
+        "spectralBandwidth": "10.0",
         "expectedPixels": [
           {
             "x": 2228,
@@ -1086,8 +1086,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "1020.0",
+        "spectralBandwidth": "40.0",
         "expectedPixels": [
           {
             "x": 499,
@@ -1108,8 +1108,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "1020.0",
+        "spectralBandwidth": "40.0",
         "expectedPixels": [
           {
             "x": 696,
@@ -1130,8 +1130,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "555.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 2881,
@@ -1152,8 +1152,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "555.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 1054,
@@ -1174,8 +1174,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "555.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 1374,
@@ -1196,8 +1196,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "555.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 3984,
@@ -1218,8 +1218,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "659.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 1349,
@@ -1240,8 +1240,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "659.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 508,
@@ -1262,8 +1262,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "659.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 1800,
@@ -1284,8 +1284,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "659.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 1642,
@@ -1306,8 +1306,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "865.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 1585,
@@ -1328,8 +1328,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "865.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 2579,
@@ -1350,8 +1350,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "865.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 3903,
@@ -1372,8 +1372,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "865.0",
+        "spectralBandwidth": "20.0",
         "expectedPixels": [
           {
             "x": 4325,
@@ -1394,8 +1394,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "1610.0",
+        "spectralBandwidth": "60.0",
         "expectedPixels": [
           {
             "x": 4778,
@@ -1416,8 +1416,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "1610.0",
+        "spectralBandwidth": "60.0",
         "expectedPixels": [
           {
             "x": 4084,
@@ -1438,8 +1438,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "1610.0",
+        "spectralBandwidth": "60.0",
         "expectedPixels": [
           {
             "x": 1919,
@@ -1460,8 +1460,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "1610.0",
+        "spectralBandwidth": "60.0",
         "expectedPixels": [
           {
             "x": 4566,
@@ -1482,8 +1482,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "2250.0",
+        "spectralBandwidth": "50.0",
         "expectedPixels": [
           {
             "x": 1593,
@@ -1504,8 +1504,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "2250.0",
+        "spectralBandwidth": "50.0",
         "expectedPixels": [
           {
             "x": 2726,
@@ -1526,8 +1526,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "2250.0",
+        "spectralBandwidth": "50.0",
         "expectedPixels": [
           {
             "x": 3418,
@@ -1548,8 +1548,8 @@
         "bandHeight": 4091,
         "noDataValue": "-0.9999999747378752",
         "noDataValueUsed": "true",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
+        "spectralWavelength": "2250.0",
+        "spectralBandwidth": "50.0",
         "expectedPixels": [
           {
             "x": 4069,
@@ -1568,7 +1568,7 @@
         "description": "Synergy cloud flags",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -1590,7 +1590,7 @@
         "description": "Selected quality and classification flags for OLCI SYN channels",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "65535.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -1612,7 +1612,7 @@
         "description": "Exception summary and confidence flags for SLSTR nadir-view SYN channels",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "4.294967295E9",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -1634,7 +1634,7 @@
         "description": "Exception summary and confidence flags for SLSTR oblique-view SYN channels",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "4.294967295E9",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -1656,7 +1656,7 @@
         "description": "Synergy classification and aerosol retrieval flags",
         "bandWidth": 4865,
         "bandHeight": 4091,
-        "noDataValue": "65535.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -1739,397 +1739,6 @@
             "x": 1052,
             "y": 3520,
             "value": 125.301575
-          }
-        ]
-      },
-      {
-        "name": "OLC_TP_lat",
-        "description": "Latitude (WGS-84)",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees_north",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 611,
-            "y": 415,
-            "value": 40.70207
-          },
-          {
-            "x": 419,
-            "y": 468,
-            "value": 40.630894
-          }
-        ]
-      },
-      {
-        "name": "OLC_TP_lon",
-        "description": "Longitude (WGS-84)",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees_east",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 3386,
-            "y": 285,
-            "value": 134.30127
-          },
-          {
-            "x": 2341,
-            "y": 3551,
-            "value": 136.87321
-          }
-        ]
-      },
-      {
-        "name": "OLC_VAA",
-        "description": "OLCI view azimuth angle",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 814,
-            "y": 967,
-            "value": 98.74408
-          },
-          {
-            "x": 1221,
-            "y": 3973,
-            "value": -74.449196
-          }
-        ]
-      },
-      {
-        "name": "OLC_VZA",
-        "description": "OLCI view zenith angle",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 3482,
-            "y": 1390,
-            "value": 18.137512
-          },
-          {
-            "x": 3135,
-            "y": 2088,
-            "value": 18.137512
-          }
-        ]
-      },
-      {
-        "name": "SAA",
-        "description": "Sun Azimuth Angle",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 4412,
-            "y": 2082,
-            "value": 137.34557
-          },
-          {
-            "x": 4189,
-            "y": 2284,
-            "value": 137.34557
-          }
-        ]
-      },
-      {
-        "name": "SZA",
-        "description": "Sun Zenith Angle",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 3894,
-            "y": 3114,
-            "value": 29.780561
-          },
-          {
-            "x": 4063,
-            "y": 3010,
-            "value": 29.780561
-          }
-        ]
-      },
-      {
-        "name": "air_pressure",
-        "description": "Mean air pressure at sea-level",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "hPa",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 3061,
-            "y": 1743,
-            "value": 1005.6393
-          },
-          {
-            "x": 2628,
-            "y": 3122,
-            "value": 1005.6393
-          }
-        ]
-      },
-      {
-        "name": "ozone",
-        "description": "Total columnar ozone",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "Kg.m-2",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 3084,
-            "y": 621,
-            "value": 0.008204274
-          },
-          {
-            "x": 4292,
-            "y": 1288,
-            "value": 0.0069363387
-          }
-        ]
-      },
-      {
-        "name": "water_vapour",
-        "description": "Total column water vapour",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "g.cm-2",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 1330,
-            "y": 1573,
-            "value": 2.139805
-          },
-          {
-            "x": 3319,
-            "y": 762,
-            "value": 1.570165
-          }
-        ]
-      },
-      {
-        "name": "SLN_TP_lat",
-        "description": "Latitude (WGS-84)",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees_north",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 707,
-            "y": 4037,
-            "value": 31.339554
-          },
-          {
-            "x": 1911,
-            "y": 3083,
-            "value": 33.303078
-          }
-        ]
-      },
-      {
-        "name": "SLN_TP_lon",
-        "description": "Longitude (WGS-84)",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees_east",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 343,
-            "y": 2851,
-            "value": 123.63341
-          },
-          {
-            "x": 2957,
-            "y": 3530,
-            "value": 130.66368
-          }
-        ]
-      },
-      {
-        "name": "SLN_VAA",
-        "description": "SLSTR nadir view azimuth angle",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 2852,
-            "y": 1359,
-            "value": 88.462234
-          },
-          {
-            "x": 2127,
-            "y": 70,
-            "value": 103.43794
-          }
-        ]
-      },
-      {
-        "name": "SLN_VZA",
-        "description": "SLSTR nadir view zenith angle",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 2925,
-            "y": 2731,
-            "value": 15.660313
-          },
-          {
-            "x": 3818,
-            "y": 365,
-            "value": 7.1518054
-          }
-        ]
-      },
-      {
-        "name": "SLO_TP_lat",
-        "description": "Latitude (WGS-84)",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees_north",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 4381,
-            "y": 339,
-            "value": 39.007618
-          },
-          {
-            "x": 375,
-            "y": 3371,
-            "value": 33.187263
-          }
-        ]
-      },
-      {
-        "name": "SLO_TP_lon",
-        "description": "Longitude (WGS-84)",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees_east",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 620,
-            "y": 3736,
-            "value": 123.896614
-          },
-          {
-            "x": 942,
-            "y": 1317,
-            "value": 126.1451
-          }
-        ]
-      },
-      {
-        "name": "SLO_VAA",
-        "description": "SLSTR oblique view azimuth angle",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 2652,
-            "y": 2919,
-            "value": 176.42453
-          },
-          {
-            "x": 572,
-            "y": 893,
-            "value": "NaN"
-          }
-        ]
-      },
-      {
-        "name": "SLO_VZA",
-        "description": "SLSTR oblique view zenith angle",
-        "bandWidth": 4865,
-        "bandHeight": 4091,
-        "geophysicalUnit": "degrees",
-        "noDataValue": "0.0",
-        "noDataValueUsed": "false",
-        "spectralWavelength": "0.0",
-        "spectralBandwidth": "0.0",
-        "expectedPixels": [
-          {
-            "x": 1988,
-            "y": 3080,
-            "value": 54.912807
-          },
-          {
-            "x": 395,
-            "y": 3061,
-            "value": "NaN"
           }
         ]
       }
@@ -2558,44 +2167,44 @@
     ],
     "metadata": [
       {
+        "path": "Manifest/metadataSection/acquisitionPeriod/startTime",
+        "value": "2019-04-26T01:28:43.106413Z"
+      },
+      {
+        "path": "Manifest/metadataSection/synProductInformation/bandDescriptions/band[5]/centralWavelength",
+        "value": "510"
+      },
+      {
+        "path": "Manifest/metadataSection/orbitReference/relativeOrbitNumber/groundTrackDirection",
+        "value": "descending"
+      },
+      {
+        "path": "Manifest/metadataSection/olciProductInformation/bandDescriptions/band[12]/bandwidth",
+        "value": "7.5"
+      },
+      {
+        "path": "Manifest/metadataSection/orbitReference/relativePassNumber/groundTrackDirection",
+        "value": "descending"
+      },
+      {
+        "path": "Manifest/metadataSection/slstrProductInformation/resolution[2]/spatialResolution",
+        "value": "500"
+      },
+      {
+        "path": "Manifest/metadataSection/generalProductInformation/productUnit/type",
+        "value": "FRAME"
+      },
+      {
+        "path": "Manifest/metadataSection/generalProductInformation/productUnit/type",
+        "value": "FRAME"
+      },
+      {
         "path": "Manifest/metadataSection/qualityInformation/extension/productQuality/onlineQualityCheck",
         "value": "PASSED"
       },
       {
-        "path": "Manifest/metadataSection/olciProductInformation/bandDescriptions/band[11]/centralWavelength",
-        "value": "708.75"
-      },
-      {
-        "path": "Manifest/metadataSection/acquisitionPeriod/stopTime",
-        "value": "2019-04-26T01:31:43.106413Z"
-      },
-      {
-        "path": "Manifest/metadataSection/frameSet/footPrint/srsName",
-        "value": "http://www.opengis.net/def/crs/EPSG/0/4326"
-      },
-      {
-        "path": "Manifest/metadataSection/slstrProductInformation/resolution[5]/grid",
-        "value": "Tie Points"
-      },
-      {
-        "path": "Manifest/metadataSection/qualityInformation/extension/productQuality/degradationFlags",
-        "value": "INPUT_GAPS"
-      },
-      {
-        "path": "Manifest/metadataSection/processing/facility/hardware/name",
-        "value": "OPE"
-      },
-      {
-        "path": "Manifest/metadataSection/slstrProductInformation/temperatureSummary/temperature[6]/max",
-        "value": "86.1422"
-      },
-      {
-        "path": "Manifest/metadataSection/qualityInformation/extension/productQuality/degradationFlags",
-        "value": "INPUT_GAPS"
-      },
-      {
-        "path": "Manifest/metadataSection/acquisitionPeriod/startTime",
-        "value": "2019-04-26T01:28:43.106413Z"
+        "path": "Manifest/metadataSection/slstrProductInformation/temperatureSummary/temperature/max",
+        "value": "266.395"
       }
     ]
   }

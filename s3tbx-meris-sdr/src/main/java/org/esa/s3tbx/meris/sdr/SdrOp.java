@@ -1,6 +1,7 @@
 package org.esa.s3tbx.meris.sdr;
 
 import com.bc.ceres.core.ProgressMonitor;
+import com.bc.ceres.core.SubProgressMonitor;
 import com.bc.jnn.Jnn;
 import com.bc.jnn.JnnException;
 import com.bc.jnn.JnnNet;
@@ -79,12 +80,20 @@ public class SdrOp extends MerisBasisOp {
         if (StringUtils.isNullOrEmpty(aot470Name)) {
             throw new OperatorException("No aot470 band specified.");
         }
+        createTargetProduct();
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Loading in Neural Net", 200);
         try {
-            loadNeuralNet();
+            loadNeuralNet(pm);
+            pm.worked(100);
         } catch (Exception e) {
             throw new OperatorException("Failed to load neural net " + neuralNetFile + ":\n" + e.getMessage());
+        } finally {
+            pm.done();
         }
-        createTargetProduct();
     }
 
     private void createTargetProduct() {
@@ -216,7 +225,7 @@ public class SdrOp extends MerisBasisOp {
         }
     }
 
-    private void loadNeuralNet() throws IOException, JnnException {
+    private void loadNeuralNet(ProgressMonitor pm) throws IOException, JnnException {
         // OLD Beam:
 //        String auxdataSrcPath = "auxdata/sdr";
 //        final String auxdataDestPath = ".beam/" +
@@ -231,12 +240,8 @@ public class SdrOp extends MerisBasisOp {
         final Path auxdataDirPath = SystemUtils.getAuxDataPath().resolve("ctp").toAbsolutePath();
         File auxdataTargetDir = auxdataDirPath.toFile();
         Path sourcePath = ResourceInstaller.findModuleCodeBasePath(getClass()).resolve("auxdata");
-        try {
-            new ResourceInstaller(sourcePath, auxdataDirPath).install(".*", ProgressMonitor.NULL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
+        new ResourceInstaller(sourcePath, auxdataDirPath).install(".*", new SubProgressMonitor(pm, 100));
+
         File nnFile = new File(auxdataTargetDir, neuralNetFile);
         final JnnNet neuralNet;
         try (InputStreamReader reader = new FileReader(nnFile)) {

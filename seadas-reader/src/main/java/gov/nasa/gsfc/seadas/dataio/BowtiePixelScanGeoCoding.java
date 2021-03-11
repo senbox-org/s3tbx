@@ -89,25 +89,29 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
 
             GeoPos geoPos1 = new GeoPos();
             GeoPos geoPos2 = new GeoPos();
-            for(int y=0; y<height; y++) {
+            for (int y = 0; y < height; y++) {
                 geoPos1.setInvalid();
                 geoPos2.setInvalid();
-                for(int x=0; x<width/2; x++) {
+                for (int x = 0; x < width / 2; x++) {
                     getGeoPosInternal(x, y, geoPos1);
-                    if(geoPos1.isValid())
+                    if (geoPos1.isValid()) {
                         break;
+                    }
                 }
-                if(!geoPos1.isValid())
+                if (!geoPos1.isValid()) {
                     continue;
-                for(int x=width-1; x>width/2; x--) {
+                }
+                for (int x = width - 1; x > width / 2; x--) {
                     getGeoPosInternal(x, y, geoPos2);
-                    if(geoPos2.isValid())
+                    if (geoPos2.isValid()) {
                         break;
+                    }
                 }
-                if(!geoPos2.isValid())
+                if (!geoPos2.isValid()) {
                     continue;
+                }
 
-                if(geoPos1.lon > geoPos2.lon) {
+                if (geoPos1.lon > geoPos2.lon) {
                     crossingMeridianAt180 = true;
                     break;
                 }
@@ -127,9 +131,9 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
     }
 
     private void getGeoPosInternal(int pixelX, int pixelY, GeoPos geoPos) {
-        if(pixelX >= 0 && pixelX < width && pixelY >= 0 && pixelY < height) {
-            int i = pixelY*width + pixelX;
-            if(lats[i] >= -90 && lats[i] <= 90 && lons[i] >= -180 && lons[i] <= 180) {
+        if (pixelX >= 0 && pixelX < width && pixelY >= 0 && pixelY < height) {
+            int i = pixelY * width + pixelX;
+            if (lats[i] >= -90 && lats[i] <= 90 && lons[i] >= -180 && lons[i] <= 180) {
                 geoPos.setLocation(lats[i], lons[i]);
                 return;
             }
@@ -143,29 +147,33 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
             geoPos = new GeoPos();
         }
         if (pixelPos.isValid()) {
-            int x0 = (int) Math.floor(pixelPos.getX());
-            int y0 = (int) Math.floor(pixelPos.getY());
+            final double pipoX = pixelPos.getX();
+            final double pipoY = pixelPos.getY();
+
+            // TODO: 20.02.2020 SE fixed -- Marked GETGEOPOS abort condition
+            int x0 = (int) Math.floor(pipoX) - (pipoX == width ? 1 : 0);
+            int y0 = (int) Math.floor(pipoY) - (pipoY == height ? 1 : 0);
             if (x0 >= 0 && x0 < width && y0 >= 0 && y0 < height) {
-                if (x0 > 0 && pixelPos.x - x0 < 0.5f || x0 == width - 1) {
+                if (x0 > 0 && pipoX - x0 < 0.5f || x0 == width - 1) {
                     x0 -= 1;
                 }
-                if (y0 > 0 && pixelPos.y - y0 < 0.5f || y0 == height - 1) {
+                if (y0 > 0 && pipoY - y0 < 0.5f || y0 == height - 1) {
                     y0 -= 1;
                 }
-                final double wx = pixelPos.x - (x0 + 0.5f);
-                final double wy = pixelPos.y - (y0 + 0.5f);
+                final double wx = pipoX - (x0 + 0.5f);
+                final double wy = pipoY - (y0 + 0.5f);
 
                 GeoPos d00 = new GeoPos();
                 GeoPos d10 = new GeoPos();
                 GeoPos d01 = new GeoPos();
                 GeoPos d11 = new GeoPos();
 
-                getGeoPosInternal(x0,   y0,   d00);
-                getGeoPosInternal(x0+1, y0,   d10);
-                getGeoPosInternal(x0,   y0+1, d01);
+                getGeoPosInternal(x0, y0, d00);
+                getGeoPosInternal(x0 + 1, y0, d10);
+                getGeoPosInternal(x0, y0 + 1, d01);
                 getGeoPosInternal(x0 + 1, y0 + 1, d11);
 
-                if(d00.isValid() && d10.isValid() && d01.isValid() && d11.isValid()) {
+                if (d00.isValid() && d10.isValid() && d01.isValid() && d11.isValid()) {
                     double lat = MathUtils.interpolate2D(wx, wy, d00.lat, d10.lat, d01.lat, d11.lat);
                     double lon = GeoCodingFactory.interpolateLon(wx, wy, d00.lon, d10.lon, d01.lon, d11.lon);
                     geoPos.setLocation(lat, lon);
@@ -175,6 +183,21 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         }
         geoPos.setInvalid();
         return geoPos;
+    }
+
+    /**
+     * Creates a shallow clone of this geocoding. Geolocation raster data is shared.
+     *
+     * @return the cloned geocoding
+     */
+    @Override
+    public GeoCoding clone() {
+        throw new IllegalStateException("not implemented");
+    }
+
+
+    public boolean canClone() {
+        return false;
     }
 
     private boolean quadTreeRecursion(final int depth,

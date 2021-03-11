@@ -21,8 +21,14 @@
 <h3>Algorithm Specification</h3>
 
 <p>
+    Radiance is the variable directly measured by remote sensing instruments and has units of watt/(steradian/square meter).
+    Reflectance is the proportion of the radiation striking a surface to the radiation reflected off of it, and it is dimensionless.
+    Top-Of-Atmosphere reflectance is the reflectance measured by a sensor that is located higher than the earth's atmosphere,
+    and it includes contributions from clouds and atmospheric aerosols and gases.
+    With this correction, the cosine effect of different solar zenith angles due to the time difference between data acquisitions
+    are removed. It also compensates for different values of the solar irradiance arising from spectral band differences.
     The conversion from TOA radiance (<i>L</i><sub>TOA</sub>) to TOA reflectances (<i>R</i><sub>TOA</sub>) done by the
-    following equation:
+   equation:
 </p>
 
 <p align="center">
@@ -32,6 +38,7 @@
 <p>
     where <i>E</i><sub>0</sub> and &theta; are the solar spectral
     irradiance and the sun zenith angle, respectively.
+
 </p>
 
 <p>
@@ -40,7 +47,7 @@
 
 <p>
     For all sensors supported by the Radiance-to-Reflectance Processor, the sun zenith angle is provided per pixel
-    with the L1b products. The solar spectral irradiance values are provided per pixel in case of OLCI L1b products,
+    within the L1b products. The solar spectral irradiance values are provided per pixel in case of OLCI L1b products,
     taken from the L1 product metadata in case of SLSTR products, and taken from auxiliary data in case of MERIS products.
 </p>
 

@@ -1,13 +1,14 @@
 package org.esa.s3tbx.slstr.pdu.stitching;
 
 import com.bc.ceres.binding.converters.DateFormatConverter;
-import edu.ucar.ral.nujan.netcdf.NhException;
 import org.esa.snap.core.util.io.FileUtils;
+import org.esa.snap.dataio.netcdf.NetCdfActivator;
 import org.esa.snap.dataio.netcdf.nc.NFileWriteable;
 import org.esa.snap.dataio.netcdf.nc.NVariable;
 import org.esa.snap.dataio.netcdf.nc.NWritableFactory;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,23 +25,32 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
  * @author Tonio Fincke
  */
 public class NcFileStitcherTest {
+
+    static {
+        NetCdfActivator.activate();
+    }
 
     private File targetDirectory;
     private NetcdfFile netcdfFile;
@@ -67,7 +77,7 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testStitchViscal() throws IOException, PDUStitchingException {
+    public void testStitchViscal() throws IOException, PDUStitchingException, URISyntaxException {
         final String ncFileName = "viscal.nc";
         final ImageSize targetImageSize = new ImageSize("xx", 0, 0, 0, 0);
         final ImageSize[] imageSizes = new ImageSize[3];
@@ -80,8 +90,8 @@ public class NcFileStitcherTest {
         final File stitchedFile = NcFileStitcher.stitchNcFiles(ncFileName, targetDirectory, now, ncFiles,
                                                                targetImageSize, imageSizes);
 
-        assert (stitchedFile != null);
-        assert (stitchedFile.exists());
+        Assert.assertNotNull(stitchedFile);
+        assertTrue(stitchedFile.exists());
         assertEquals(ncFileName, stitchedFile.getName());
         netcdfFile = NetcdfFileOpener.open(stitchedFile);
         assertNotNull(netcdfFile);
@@ -95,7 +105,7 @@ public class NcFileStitcherTest {
 
     @Test
     @Ignore("takes a few seconds")
-    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException {
+    public void testStitchMet_tx() throws IOException, PDUStitchingException, InvalidRangeException, URISyntaxException {
         final String ncFileName = "met_tx.nc";
         final ImageSize targetImageSize = new ImageSize("in", 21687, 64, 6000, 130);
         final ImageSize[] imageSizes = new ImageSize[3];
@@ -225,8 +235,8 @@ public class NcFileStitcherTest {
         assertEquals("F1_BT_orphan_io", variables.get(2).getFullName());
 
         assertEquals("F1_exception_orphan_io", variables.get(3).getFullName());
-        assertEquals(DataType.BYTE, variables.get(3).getDataType());
-        assertEquals(true, variables.get(3).isUnsigned());
+        assertEquals(DataType.UBYTE, variables.get(3).getDataType());
+        assertEquals(true, variables.get(3).getDataType().isUnsigned());
         assertEquals("rows orphan_pixels", variables.get(3).getDimensionsString());
         final List<Attribute> F1_exception_orphan_io_attributes = variables.get(3).getAttributes();
         assertEquals("_ChunkSize", F1_exception_orphan_io_attributes.get(0).getFullName());
@@ -241,6 +251,7 @@ public class NcFileStitcherTest {
         assertEquals(true, F1_exception_orphan_io_attributes.get(2).isArray());
         final Array F1_exception_orphan_io_values = F1_exception_orphan_io_attributes.get(2).getValues();
         assertEquals(8, F1_exception_orphan_io_values.getSize());
+        assertEquals(DataType.UBYTE, F1_exception_orphan_io_values.getDataType());
         assertEquals(true, F1_exception_orphan_io_values.isUnsigned());
         assertEquals((byte) 1, F1_exception_orphan_io_values.getByte(0));
         assertEquals((byte) 2, F1_exception_orphan_io_values.getByte(1));
@@ -283,15 +294,14 @@ public class NcFileStitcherTest {
     @Test
     public void testSetGlobalAttributes() throws IOException {
         final File file = new File(targetDirectory, "something.nc");
-        SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
+        SlstrNFileWritable netcdfWriteable = new SlstrNFileWritable(file.getAbsolutePath());
         List<Attribute>[] attributeLists = new List[2];
         attributeLists[0] = new ArrayList<>();
         attributeLists[0].add(new Attribute("xyz", "yz"));
         attributeLists[0].add(new Attribute("abc", "23"));
-        final ArrayByte someArray = new ArrayByte(new int[]{2});
+        final ArrayByte someArray = new ArrayByte(new int[]{2}, true);
         someArray.setByte(0, (byte) 5);
         someArray.setByte(0, (byte) 5);
-        someArray.setUnsigned(true);
         attributeLists[0].add(new Attribute("def", someArray));
         attributeLists[1] = new ArrayList<>();
         attributeLists[1].add(new Attribute("xyz", "yz"));
@@ -311,7 +321,7 @@ public class NcFileStitcherTest {
         assertNotNull(netcdfFile);
         final List<Attribute> globalAttributes = netcdfFile.getGlobalAttributes();
 
-        assertEquals(6, globalAttributes.size());
+        assertEquals(7, globalAttributes.size());
         assertEquals("xyz", globalAttributes.get(0).getFullName());
         assertEquals("yz", globalAttributes.get(0).getStringValue());
         assertEquals("abc_1", globalAttributes.get(1).getFullName());
@@ -327,20 +337,20 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testSetDimensions() throws IOException, NhException, PDUStitchingException {
+    public void testSetDimensions() throws IOException, PDUStitchingException {
         List<Dimension>[] dimensionLists = new ArrayList[2];
         List<Variable>[] variableLists = new ArrayList[2];
 
         final File inputFile1 = new File(targetDirectory, "input_1.nc");
-        SlstrNFileWritable inputWriteable1 = SlstrNFileWritable.create(inputFile1.getAbsolutePath());
+        SlstrNFileWritable inputWriteable1 = new SlstrNFileWritable(inputFile1.getAbsolutePath());
         inputWriteable1.addDimension("rows", 5);
         inputWriteable1.addDimension("columns", 7);
         inputWriteable1.addDimension("the_twilight_zone", 12);
-        final SlstrN4Variable abVariable1 = inputWriteable1.addVariable("ab", DataType.BYTE, true, null, "rows columns");
-        final SlstrN4Variable cdVariable1 = inputWriteable1.addVariable("cd", DataType.LONG, false, null, "columns the_twilight_zone");
+        final SlstrN4Variable abVariable1 = inputWriteable1.addVariable("ab", DataType.BYTE, true, "rows columns");
+        final SlstrN4Variable cdVariable1 = inputWriteable1.addVariable("cd", DataType.LONG, false, "columns the_twilight_zone");
         inputWriteable1.create();
-        abVariable1.writeFullyInSections(new ArrayByte(new int[]{5, 7}));
-        cdVariable1.writeFullyInSections(new ArrayLong(new int[]{7, 12}));
+        abVariable1.writeFullyInSections(new ArrayByte(new int[]{5, 7}, false));
+        cdVariable1.writeFullyInSections(new ArrayLong(new int[]{7, 12}, false));
         inputWriteable1.close();
         final NetcdfFile inputnc1 = NetcdfFileOpener.open(inputFile1);
         assertNotNull(inputnc1);
@@ -356,8 +366,8 @@ public class NcFileStitcherTest {
         final NVariable abVariable2 = inputWriteable2.addVariable("ab", DataType.BYTE, true, null, "rows columns");
         final NVariable cdVariable2 = inputWriteable2.addVariable("ef", DataType.LONG, false, null, "columns outer_limits");
         inputWriteable2.create();
-        abVariable2.writeFully(new ArrayByte(new int[]{5, 7}));
-        cdVariable2.writeFully(new ArrayLong(new int[]{7, 25}));
+        abVariable2.writeFully(new ArrayByte(new int[]{5, 7}, false));
+        cdVariable2.writeFully(new ArrayLong(new int[]{7, 25}, false));
         inputWriteable2.close();
         final NetcdfFile inputnc2 = NetcdfFileOpener.open(inputFile2);
         assertNotNull(inputnc2);
@@ -366,7 +376,7 @@ public class NcFileStitcherTest {
         inputnc2.close();
 
         final File file = new File(targetDirectory, "something.nc");
-        SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
+        SlstrNFileWritable netcdfWriteable = new SlstrNFileWritable(file.getAbsolutePath());
         ImageSize targetImageSize = new ImageSize("id", 10, 20, 10, 20);
         NcFileStitcher.setDimensions(netcdfWriteable, dimensionLists, targetImageSize, variableLists);
         netcdfWriteable.create();
@@ -375,18 +385,19 @@ public class NcFileStitcherTest {
         assertNotNull(netcdfFile);
         final List<Dimension> dimensions = netcdfFile.getDimensions();
         assertEquals(4, dimensions.size());
-        assertEquals("rows", dimensions.get(0).getFullName());
-        assertEquals(10, dimensions.get(0).getLength());
-        assertEquals("columns", dimensions.get(1).getFullName());
-        assertEquals(20, dimensions.get(1).getLength());
-        assertEquals("the_twilight_zone", dimensions.get(2).getFullName());
-        assertEquals(12, dimensions.get(2).getLength());
-        assertEquals("outer_limits", dimensions.get(3).getFullName());
-        assertEquals(25, dimensions.get(3).getLength());
+        Map<String, Integer> expectedDimensions = new HashMap<>();
+        expectedDimensions.put("rows", 10);
+        expectedDimensions.put("columns", 20);
+        expectedDimensions.put("the_twilight_zone", 12);
+        expectedDimensions.put("outer_limits", 25);
+        for (Dimension dimension : dimensions) {
+            assertTrue(expectedDimensions.containsKey(dimension.getFullName()));
+            assertEquals(expectedDimensions.get(dimension.getFullName()).intValue(), dimension.getLength());
+        }
     }
 
     @Test
-    public void testSetDimensions_VaryingDimensionLengths() throws IOException, NhException, PDUStitchingException {
+    public void testSetDimensions_VaryingDimensionLengths() throws IOException {
         List<Dimension>[] dimensionLists = new ArrayList[2];
         List<Variable>[] variableLists = new ArrayList[2];
 
@@ -398,8 +409,8 @@ public class NcFileStitcherTest {
         final NVariable abVariable1 = inputWriteable1.addVariable("ab", DataType.BYTE, true, null, "rows columns");
         final NVariable cdVariable1 = inputWriteable1.addVariable("cd", DataType.LONG, false, null, "columns the_twilight_zone");
         inputWriteable1.create();
-        abVariable1.writeFully(new ArrayByte(new int[]{5, 7}));
-        cdVariable1.writeFully(new ArrayLong(new int[]{7, 12}));
+        abVariable1.writeFully(new ArrayByte(new int[]{5, 7}, false));
+        cdVariable1.writeFully(new ArrayLong(new int[]{7, 12}, false));
         inputWriteable1.close();
         final NetcdfFile inputnc1 = NetcdfFileOpener.open(inputFile1);
         assertNotNull(inputnc1);
@@ -415,8 +426,8 @@ public class NcFileStitcherTest {
         final NVariable abVariable2 = inputWriteable2.addVariable("ab", DataType.BYTE, true, null, "rows columns");
         final NVariable cdVariable2 = inputWriteable2.addVariable("ef", DataType.LONG, false, null, "columns the_twilight_zone");
         inputWriteable2.create();
-        abVariable2.writeFully(new ArrayByte(new int[]{5, 7}));
-        cdVariable2.writeFully(new ArrayLong(new int[]{7, 25}));
+        abVariable2.writeFully(new ArrayByte(new int[]{5, 7}, false));
+        cdVariable2.writeFully(new ArrayLong(new int[]{7, 25}, false));
         inputWriteable2.close();
         final NetcdfFile inputnc2 = NetcdfFileOpener.open(inputFile2);
         assertNotNull(inputnc2);
@@ -425,8 +436,7 @@ public class NcFileStitcherTest {
         inputnc2.close();
 
         final File file = new File(targetDirectory, "something.nc");
-        SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
-        netcdfWriteable.create();
+        SlstrNFileWritable netcdfWriteable = new SlstrNFileWritable(file.getAbsolutePath());
         ImageSize targetImageSize = new ImageSize("id", 10, 20, 10, 20);
         try {
             NcFileStitcher.setDimensions(netcdfWriteable, dimensionLists, targetImageSize, variableLists);
@@ -434,12 +444,13 @@ public class NcFileStitcherTest {
         } catch (Exception e) {
             assertEquals("Dimension the_twilight_zone has different lengths across input files", e.getMessage());
         } finally {
+            netcdfWriteable.create();
             netcdfWriteable.close();
         }
     }
 
     @Test
-    public void testSetDimensions_VaryingValues() throws IOException, NhException, PDUStitchingException {
+    public void testSetDimensions_VaryingValues() throws IOException {
         List<Dimension>[] dimensionLists = new ArrayList[2];
         List<Variable>[] variableLists = new ArrayList[2];
 
@@ -451,8 +462,8 @@ public class NcFileStitcherTest {
         final NVariable abVariable1 = inputWriteable1.addVariable("ab", DataType.BYTE, true, null, "rows columns");
         final NVariable cdVariable1 = inputWriteable1.addVariable("cd", DataType.LONG, false, null, "cd");
         inputWriteable1.create();
-        abVariable1.writeFully(new ArrayByte(new int[]{5, 7}));
-        cdVariable1.writeFully(new ArrayLong(new int[]{12}));
+        abVariable1.writeFully(new ArrayByte(new int[]{5, 7}, false));
+        cdVariable1.writeFully(new ArrayLong(new int[]{12}, false));
         inputWriteable1.close();
         final NetcdfFile inputnc1 = NetcdfFileOpener.open(inputFile1);
         assertNotNull(inputnc1);
@@ -467,8 +478,8 @@ public class NcFileStitcherTest {
         final NVariable abVariable2 = inputWriteable2.addVariable("ab", DataType.BYTE, true, null, "rows columns");
         final NVariable cdVariable2 = inputWriteable2.addVariable("cd", DataType.LONG, false, null, "cd");
         inputWriteable2.create();
-        abVariable2.writeFully(new ArrayByte(new int[]{5, 7}));
-        final ArrayLong values = new ArrayLong(new int[]{12});
+        abVariable2.writeFully(new ArrayByte(new int[]{5, 7}, false));
+        final ArrayLong values = new ArrayLong(new int[]{12}, false);
         values.setLong(10, 10);
         cdVariable2.writeFully(values);
         inputWriteable2.close();
@@ -478,8 +489,7 @@ public class NcFileStitcherTest {
         variableLists[1] = inputnc2.getVariables();
 
         final File file = new File(targetDirectory, "something.nc");
-        SlstrNFileWritable netcdfWriteable = SlstrNFileWritable.create(file.getAbsolutePath());
-        netcdfWriteable.create();
+        SlstrNFileWritable netcdfWriteable = new SlstrNFileWritable(file.getAbsolutePath());
         ImageSize targetImageSize = new ImageSize("id", 10, 20, 10, 20);
         try {
             NcFileStitcher.setDimensions(netcdfWriteable, dimensionLists, targetImageSize, variableLists);
@@ -487,6 +497,7 @@ public class NcFileStitcherTest {
         } catch (Exception e) {
             assertEquals("Values for cd are different across input files", e.getMessage());
         } finally {
+            netcdfWriteable.create();
             inputnc1.close();
             inputnc2.close();
             netcdfWriteable.close();
@@ -494,10 +505,10 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testDetermineDestinationOffsets_f1_BT_in() throws IOException {
+    public void testDetermineDestinationOffsets_f1_BT_in() {
         int[][] expected_f1_BT_in_DestinationOffsets = {{0}, {3000000}, {6000000}};
 
-        int[] rowOffsets = new int[] {0, 2000, 4000};
+        int[] rowOffsets = new int[]{0, 2000, 4000};
         int[] numberOfRows = new int[]{2000, 2000, 2000};
         int[] sectionSizes_f1_BT_in = new int[]{3000000, 3000000, 3000000};
         int[][] sourceOffsets = new int[][]{{0}, {0}, {0}};
@@ -511,11 +522,11 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testDetermineDestinationOffsets_met_tx() throws IOException {
+    public void testDetermineDestinationOffsets_met_tx() {
         int[][] expected_met_tx_DestinationOffsets = {{0, 780000, 1560000, 2340000, 3120000},
                 {260000, 1040000, 1820000, 2600000, 3380000}, {520000, 1300000, 2080000, 2860000, 3640000}};
         int[] sectionSizes_met_tx = new int[]{260000, 260000, 260000};
-        int[] rowOffsets = new int[] {0, 2000, 4000};
+        int[] rowOffsets = new int[]{0, 2000, 4000};
         int[] numberOfRows = new int[]{2000, 2000, 2000};
         int[][] sourceOffsets = new int[][]{{0, 260000, 520000, 780000, 1040000}, {0, 260000, 520000, 780000, 1040000},
                 {0, 260000, 520000, 780000, 1040000}};
@@ -529,13 +540,13 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testDetermineDestinationOffsets_S1_quality_an() throws IOException {
+    public void testDetermineDestinationOffsets_S1_quality_an() {
         int[][] expectedDestinationOffsets =
                 {{0, 3396, 6792, 10188, 13584, 16980, 20376, 23772},
-                {1601, 4997, 8393, 11789, 15185, 18581, 21977, 25373},
-                {3201, 6597, 9993, 13389, 16785, 20181, 23577, 26973}};
+                        {1601, 4997, 8393, 11789, 15185, 18581, 21977, 25373},
+                        {3201, 6597, 9993, 13389, 16785, 20181, 23577, 26973}};
         int[] sectionSizes = new int[]{1601, 1600, 195};
-        int[] rowOffsets = new int[] {0, 1601, 3201};
+        int[] rowOffsets = new int[]{0, 1601, 3201};
         int[] numberOfRows = new int[]{1601, 1600, 195};
         int[][] sourceOffsets = new int[][]{{0, 1601, 3202, 4803, 6404, 8005, 9606, 11207},
                 {0, 1600, 3200, 4800, 6400, 8000, 9600, 11200}, {0, 195, 390, 585, 780, 975, 1170, 1365}};
@@ -549,9 +560,9 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testDetermineDestinationOffsets_differentSectionSizes() throws IOException {
+    public void testDetermineDestinationOffsets_differentSectionSizes() {
         int[][] expectedDestinationOffsets = {{0}, {2000000}, {6500000}};
-        int[] rowOffsets = new int[] {0, 2000, 6500};
+        int[] rowOffsets = new int[]{0, 2000, 6500};
         int[] numberOfRows = new int[]{2000, 4500, 1500};
         int[] sectionSizes = new int[]{2000000, 4500000, 1500000};
         int[][] sourceOffsets = new int[][]{{0}, {0}, {0}};
@@ -565,7 +576,7 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testDetermineSourceOffsets() throws IOException {
+    public void testDetermineSourceOffsets() throws IOException, URISyntaxException {
         final File f1_BT_io_file = getSecondNcFile("F1_BT_io.nc");
         final NetcdfFile f1_BT_io_netcdfFile = NetcdfFileOpener.open(f1_BT_io_file);
         assertNotNull(f1_BT_io_netcdfFile);
@@ -583,7 +594,7 @@ public class NcFileStitcherTest {
     }
 
     @Test
-    public void testDetermineSectionSize() throws IOException {
+    public void testDetermineSectionSize() throws IOException, URISyntaxException {
         final File f1_BT_io_file = getSecondNcFile("F1_BT_io.nc");
         final NetcdfFile f1_BT_io_netcdfFile = NetcdfFileOpener.open(f1_BT_io_file);
         assertNotNull(f1_BT_io_netcdfFile);
@@ -599,25 +610,27 @@ public class NcFileStitcherTest {
         assertEquals(260000, NcFileStitcher.determineSectionSize(2, u_wind_tx_variable));
     }
 
-    private static File[] getNcFiles(String fileName) {
+    static File[] getNcFiles(String fileName) throws URISyntaxException {
         return new File[]{getFirstNcFile(fileName), getSecondNcFile(fileName), getThirdNcFile(fileName)};
     }
 
-    private static File getFirstNcFile(String fileName) {
+    private static File getFirstNcFile(String fileName) throws URISyntaxException {
         return getNcFile(TestUtils.FIRST_FILE_NAME, fileName);
     }
 
-    private static File getSecondNcFile(String fileName) {
+    static File getSecondNcFile(String fileName) throws URISyntaxException {
         return getNcFile(TestUtils.SECOND_FILE_NAME, fileName);
     }
 
-    private static File getThirdNcFile(String fileName) {
+    private static File getThirdNcFile(String fileName) throws URISyntaxException {
         return getNcFile(TestUtils.THIRD_FILE_NAME, fileName);
     }
 
-    private static File getNcFile(String fileName, String name) {
+    private static File getNcFile(String fileName, String name) throws URISyntaxException {
         final String fullFileName = fileName + "/" + name;
         final URL resource = NcFileStitcherTest.class.getResource(fullFileName);
-        return new File(resource.getFile());
+        URI uri = new URI(resource.toString());
+        return new File(uri.getPath());
     }
+
 }

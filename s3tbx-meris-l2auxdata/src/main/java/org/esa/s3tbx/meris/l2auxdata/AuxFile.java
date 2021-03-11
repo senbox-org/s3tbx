@@ -72,33 +72,6 @@ public class AuxFile {
         return _file;
     }
 
-
-    /**
-     * Gets the underlying input stream used to readRecord data from the database file. The method returns
-     * <code>null</code>, if this file has not been opened so far.
-     *
-     * @return the input stream or <code>null</code>
-     */
-    public ImageInputStream getInputStream() {
-        return _inputStream;
-    }
-
-    /**
-     * Returns the computed file size.
-     *
-     * @return the computed file size, zero if this file has not been opened so far
-     */
-    public long getComputedFileSize() {
-        return _computedFileSize;
-    }
-
-    /**
-     * Checks if the file is open or not.
-     */
-    public boolean isOpen() {
-        return _inputStream != null;
-    }
-
     /**
      * Opens a database file.
      *
@@ -153,7 +126,7 @@ public class AuxFile {
         _recordCounts = null;
         _datasetOffsets = null;
         _computedFileSize = 0;
-        AuxDatabase.getLogger().info("closed auxiliary database file '" + _file.getPath() + "'");
+        AuxDatabase.getLogger().fine("closed auxiliary database file '" + _file.getPath() + "'");
     }
 
     /**
@@ -325,7 +298,7 @@ public class AuxFile {
         if (memoryDataType == storageDataType) {
             storageData = memoryData;
         } else {
-            AuxDatabase.getLogger().warning(createDataConversionMessage(variableInfo, storageDataType, memoryDataType));
+            AuxDatabase.getLogger().fine(createDataConversionMessage(variableInfo, storageDataType, memoryDataType));
             storageData = allocate(variableInfo, storageDataType, storageElemsCount);
         }
 
@@ -358,7 +331,6 @@ public class AuxFile {
         }
     }
 
-    // todo - Olaf fragen, wie man private methoden testet
     private long getOffset(final AuxDatasetInfo datasetInfo, final AuxVariableInfo variableInfo, int recordIndex) {
         final long datasetOffset = _datasetOffsets[datasetInfo.getIndex()];
         final int variableOffset = variableInfo.getOffset();
@@ -454,7 +426,7 @@ public class AuxFile {
         final int byteCount = ProductData.getElemSize(dataType) * numElems;
         final int mbyteCount = byteCount / (1024 * 1024);
         if (mbyteCount > 10) {
-            AuxDatabase.getLogger().info(createHugeBufferMessage(variableInfo, mbyteCount));
+            AuxDatabase.getLogger().warning(createHugeBufferMessage(variableInfo, mbyteCount));
         }
         try {
             return ProductData.createInstance(dataType, numElems);

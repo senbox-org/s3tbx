@@ -74,7 +74,8 @@ public class SynL1CSceneTransformGeoCoding extends AbstractGeoCoding {
             modelToSceneTransform.transform(pixelPos, modelPixelPos);
             geoPos = wrappedGeoCoding.getGeoPos(modelPixelPos, geoPos);
         } catch (TransformException e) {
-            geoPos.setLocation(Double.NaN, Double.NaN);
+            // TODO: 20.02.2020 SE fixed -- Marked GETGEOPOS setInvalid instead?
+            geoPos.setInvalid();
         }
         return geoPos;
     }
@@ -90,12 +91,23 @@ public class SynL1CSceneTransformGeoCoding extends AbstractGeoCoding {
 
     @Override
     public boolean transferGeoCoding(Scene srcScene, Scene destScene, ProductSubsetDef subsetDef) {
-        //todo maybe improve this method if necessary - tf 20160127
         if (subsetDef != null || srcScene.getProduct() != destScene.getProduct()) {
             return false;
         }
-        destScene.setGeoCoding(new SynL1CSceneTransformGeoCoding(wrappedGeoCoding, sceneToModelTransform, modelToSceneTransform));
+        destScene.setGeoCoding(clone());
         return true;
     }
 
+    @Override
+    public boolean canClone() {
+        return true;
+    }
+
+    @Override
+    public GeoCoding clone() {
+        if (wrappedGeoCoding.canClone()) {
+            return new SynL1CSceneTransformGeoCoding(wrappedGeoCoding.clone(), sceneToModelTransform, modelToSceneTransform);
+        }
+        return new SynL1CSceneTransformGeoCoding(wrappedGeoCoding, sceneToModelTransform, modelToSceneTransform);
+    }
 }

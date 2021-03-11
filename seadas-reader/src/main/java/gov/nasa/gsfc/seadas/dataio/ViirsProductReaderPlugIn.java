@@ -23,6 +23,7 @@ import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,14 +70,20 @@ public class ViirsProductReaderPlugIn implements ProductReaderPlugIn {
                 Attribute platformShortName = ncfile.findGlobalAttribute("Platform_Short_Name");
                 if (platformShortName != null) {
                     String platformName = platformShortName.getStringValue();
-                    if (platformName.equals("NPP")) {
+                    if (platformName.equals("NPP") || platformName.equals("J01")) {
                         Group dataProduct = ncfile.findGroup("Data_Products");
                         String dataProductList0 = dataProduct.getGroups().get(0).getShortName();
                         if (dataProductList0.matches("VIIRS.*DR")
                                 || dataProductList0.matches("VIIRS.*IP")
                                 || dataProductList0.matches("VIIRS.*GEO.*")) {
-                            ncfile.close();
+                            Variable firstVar = dataProduct.getGroups().get(0).getVariables().get(0);
+                            String beginningGranuleID = firstVar.findAttribute("AggregateBeginningGranuleID").getStringValue();
+                            String endingGranuleID = firstVar.findAttribute("AggregateEndingGranuleID").getStringValue();
+                            if(beginningGranuleID.equals(endingGranuleID)) {
                             return DecodeQualification.INTENDED;
+                            } else {
+                                return DecodeQualification.UNABLE; // don't handle Aggrigated granules
+                            }
                         }
 
                     } else {

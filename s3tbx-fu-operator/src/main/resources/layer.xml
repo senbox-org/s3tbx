@@ -33,4 +33,12 @@
         </folder>
     </folder>
 
+    <folder name="OperatorUIs">
+        <file name="org.esa.s3tbx.fuOp">
+            <attr name="operatorName" stringvalue="FuClassification"/>
+            <attr name="disableFromGraphBuilder" stringvalue="true"/>
+        </file>
+    </folder>
+
+
 </filesystem>

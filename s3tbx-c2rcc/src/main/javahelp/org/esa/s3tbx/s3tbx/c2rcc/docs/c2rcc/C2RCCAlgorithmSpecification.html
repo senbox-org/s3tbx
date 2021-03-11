@@ -33,23 +33,53 @@
 
 <h3>Algorithm Specification</h3>
 
-<p>Retrieval of water constituents, or its optical properties, requires inversion of the water leaving reflectance spectrum, measured at top of
-    atmosphere by ocean colour satellites. The C2RCC processor uses a large database of radiative transfer simulations inverted by
-    neural networks as basic technology.</p>
+<p>The C2RCC processor is based on deep learning approaches. Neural networks are trained in order to perform the
+    inversion of spectrum for the atmospheric correction, i.e. the determination of the water leaving radiance from the
+    top of atmosphere radiances, as well as the retrieval of inherent optical properties of the water body.
+    The C2RCC processor relies on a large database of simulated water leaving reflectances, and related top-of- atmosphere radiances.
+    A careful characterisation of optically complex waters through its IOPs as well as of coastal atmospheres is used
+    to parameterise radiative transfer models for the water body and the atmosphere. Covariances between the water
+    constituents are taken into account and a large database of reflectances at the water surface is calculated.
+    These reflectances are further used as lower boundary conditions for the radiative transfer calculation in the atmosphere.
+    Finally, a database of 5 million cases is generated, which is the basis for training neural nets.
+    For example, the top-of-atmosphere full spectrum is input to a neural net, and the water leaving reflectance in the visible
+    and near-infrared bands is the output. The training can be understood as a nonlinear multiple regression.</p>
+<p>The input spectra are corrected for gaseous absorption. Air pressure, and thus a proper altitude correction,
+    is inherent part of the neural network processing. The main output of the atmosphere part are directional water
+    leaving
+    reflectances produced by the atmospheric correction neural net. The atmosphere part contains out-of-range tests
+    and out-of-scope tests of the TOA reflectances, resulting in corresponding quality flags.
+    Optionally the output of the auto-associative neural net used of the out-of-scope test can be written to the output
+    file
+    in the SNAP version of the processor. The output from the transmittance NN is also used to raise a cloud-risk flag.
+    The in-water part gets as input the directional water leaving reflectances from the atmosphere part.</p>
 
-<p>The general concept described in ATBD for MERIS 4th reprocessing data is also applicable to the other sensor like, S2-MCI, S3-OLCI and Landsat8:<br>
-<object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
-    <param name="content" value="http://step.esa.int/docs/extra/CRCC_MERIS_ATBD_4Reproc_20150319.pdf">
-    <param name="text"
-           value="Algorithm Theoretical Bases Document (ATBD) for L2 processing of MERIS data of case 2 waters, 4th reprocessing">
-    <param name="textFontSize" value="bigger">
-</object></p>
+<h4>References</h4>
+<p>The general concept is described in the ATBD for OLCI L2 Ocean data, but also applicable to other sensors like,
+    S2-MCI and Landsat8:<br>
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="http://step.esa.int/docs/extra/OLCI_L2_ATBD_Ocean_Colour_Turbid_Water.pdf">
+        <param name="text"
+               value="OLCI Level 2 Algorithm Theoretical Basis Document Ocean Colour Turbid Water">
+        <param name="textFontSize" value="bigger">
+    </object>
+</p>
+
+<p>The general concept is described in ATBD for MERIS 4th reprocessing data:<br>
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="http://step.esa.int/docs/extra/CRCC_MERIS_ATBD_4Reproc_20150319.pdf">
+        <param name="text"
+               value="Algorithm Theoretical Bases Document (ATBD) for L2 processing of MERIS data of case 2 waters, 4th reprocessing">
+        <param name="textFontSize" value="bigger">
+    </object>
+</p>
 
 <p>Description of the evolution of the algorithm:<br>
-<object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
-    <param name="content" value="http://step.esa.int/docs/extra/Evolution%20of%20the%20C2RCC_LPS16.pdf">
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="http://step.esa.int/docs/extra/Evolution%20of%20the%20C2RCC_LPS16.pdf">
     <param name="text"
-           value="Evolution of the C2RCC neural network for SENTINEL-2 and 3 for the retrieval of ocean colour products in normal and extreme optically complex waters">
+           value="Evolution of the C2RCC neural network for SENTINEL-2 and 3 for the retrieval of ocean colour products
+           in normal and extreme optically complex waters">
     <param name="textFontSize" value="bigger">
 </object></p>
 

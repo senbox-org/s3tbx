@@ -61,28 +61,11 @@ public class Rad2ReflOp extends MerisBasisOp implements Constants {
 
     private transient L2AuxData auxData;
     private transient RasterDataNode detectorIndexBand;
-    private transient RasterDataNode sunZenihTPG;
+    private transient RasterDataNode sunZenithTPG;
     private VirtualBandOpImage invalidImage;
 
     @Override
     public void initialize() throws OperatorException {
-        try {
-            auxData = L2AuxDataProvider.getInstance().getAuxdata(sourceProduct);
-        } catch (L2AuxDataException e) {
-            throw new OperatorException(e.getMessage(), e);
-        }
-
-        detectorIndexBand = sourceProduct.getBand(EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME);
-        sunZenihTPG = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
-//        invalidImage = VirtualBandOpImage.createMask("l1_flags.INVALID", sourceProduct, ResolutionLevel.MAXRES);
-        invalidImage = VirtualBandOpImage.builder("l1_flags.INVALID", sourceProduct)
-                .dataType(ProductData.TYPE_FLOAT32)
-                .fillValue(0.0f)
-                .tileSize(sourceProduct.getPreferredTileSize())
-                .mask(false)
-                .level(ResolutionLevel.MAXRES)
-                .create();
-
         targetProduct = createCompatibleProduct(sourceProduct, "MER", "MER_L2");
         int spectralBandIndex = 0;
         for (int i = 0; i < sourceProduct.getNumBands(); i++) {
@@ -102,10 +85,34 @@ public class Rad2ReflOp extends MerisBasisOp implements Constants {
     }
 
     @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Reading in auxiliary data", 2);
+        try {
+            auxData = L2AuxDataProvider.getInstance().getAuxdata(sourceProduct);
+            pm.worked(1);
+            pm.setSubTaskName("Setting up auxiliary images");
+            detectorIndexBand = sourceProduct.getBand(EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME);
+            sunZenithTPG = sourceProduct.getTiePointGrid(EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME);
+            invalidImage = VirtualBandOpImage.builder("l1_flags.INVALID", sourceProduct)
+                    .dataType(ProductData.TYPE_FLOAT32)
+                    .fillValue(0.0f)
+                    .tileSize(sourceProduct.getPreferredTileSize())
+                    .mask(false)
+                    .level(ResolutionLevel.MAXRES)
+                    .create();
+            pm.worked(1);
+        } catch (L2AuxDataException e) {
+            throw new OperatorException(e.getMessage(), e);
+        } finally {
+            pm.done();
+        }
+    }
+
+    @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
         final Rectangle rectangle = targetTile.getRectangle();
         Tile detectorTile = getSourceTile(detectorIndexBand, rectangle);
-        Tile sza = getSourceTile(sunZenihTPG, rectangle);
+        Tile sza = getSourceTile(sunZenithTPG, rectangle);
         Raster isInvalid = invalidImage.getData(rectangle);
         final int spectralBandIndex = targetBand.getSpectralBandIndex();
         final String srcBandName = RADIANCE_BAND_PREFIX + "_" + (spectralBandIndex + 1);

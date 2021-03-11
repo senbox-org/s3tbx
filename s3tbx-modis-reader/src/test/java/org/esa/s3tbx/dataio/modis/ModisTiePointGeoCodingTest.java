@@ -1,6 +1,7 @@
 package org.esa.s3tbx.dataio.modis;
 
 import org.esa.snap.core.dataio.ProductSubsetDef;
+import org.esa.snap.core.subset.PixelSubsetRegion;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,7 +16,7 @@ public class ModisTiePointGeoCodingTest {
         Assert.assertFalse(ModisTiePointGeoCoding.mustRecalculateTiePointGrids(null));
         Assert.assertFalse(ModisTiePointGeoCoding.mustRecalculateTiePointGrids(subsetDef));
 
-        subsetDef.setRegion(new Rectangle(0, 3, 4, 5));
+        subsetDef.setSubsetRegion(new PixelSubsetRegion(0, 3, 4, 5, 0));
         Assert.assertTrue(ModisTiePointGeoCoding.mustRecalculateTiePointGrids(subsetDef));
     }
 

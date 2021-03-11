@@ -26,56 +26,40 @@ public class RayleighInput {
     private float[] lowerRefls;
     private float[] upperRefls;
 
-    float sourceReflectance;
-    float lowerReflectance;
-    float upperReflectance;
-
-    int sourceIndex;
-    int lowerWaterIndex;
-    int upperWaterIndex;
-
-    public RayleighInput(float sourceReflectance, float lowerReflectance, float upperReflectance, int sourceIndex, int lowerWaterIndex, int upperWaterIndex) {
-        this.sourceReflectance = sourceReflectance;
-        this.lowerReflectance = lowerReflectance;
-        this.upperReflectance = upperReflectance;
-
-        this.sourceIndex = sourceIndex;
-        this.lowerWaterIndex = lowerWaterIndex;
-        this.upperWaterIndex = upperWaterIndex;
-    }
+    private int sourceIndex;
+    private int lowerWaterIndex;
+    private int upperWaterIndex;
 
     public RayleighInput(float[] sourceRefl, float[] lowerRefl, float[] upperRefl, int sourceIndx, int lowerWaterIndx, int upperWaterIndx) {
-
         this.sourceRefls = sourceRefl;
         this.lowerRefls = lowerRefl;
         this.upperRefls = upperRefl;
         this.sourceIndex = sourceIndx;
         this.lowerWaterIndex = lowerWaterIndx;
         this.upperWaterIndex = upperWaterIndx;
-
     }
 
-    public int getSourceIndex() {
+    int getSourceIndex() {
         return sourceIndex;
     }
 
-    public int getLowerWaterIndex() {
+    int getLowerWaterIndex() {
         return lowerWaterIndex;
     }
 
-    public int getUpperWaterIndex() {
+    int getUpperWaterIndex() {
         return upperWaterIndex;
     }
 
-    public float[] getSourceReflectences() {
+    float[] getSourceReflectences() {
         return sourceRefls;
     }
 
-    public float[] getLowerReflectences() {
+    float[] getLowerReflectences() {
         return lowerRefls;
     }
 
-    public float[] getUpperReflectences() {
+    float[] getUpperReflectences() {
         return upperRefls;
     }
 }

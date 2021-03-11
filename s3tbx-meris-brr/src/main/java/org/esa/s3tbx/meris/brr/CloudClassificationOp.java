@@ -94,17 +94,6 @@ public class CloudClassificationOp extends MerisBasisOp implements Constants {
 
     @Override
     public void initialize() throws OperatorException {
-        try {
-            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
-        } catch (L2AuxDataException e) {
-            throw new OperatorException("Could not load L2Auxdata", e);
-        }
-        pixelId = new PixelId(auxData);
-        rayleighCorrection = new RayleighCorrection(auxData);
-        createTargetProduct();
-    }
-
-    private void createTargetProduct() {
         targetProduct = createCompatibleProduct(l1bProduct, "MER", "MER_L2");
 
         Band cloudFlagBand = targetProduct.addBand(CLOUD_FLAGS, ProductData.TYPE_INT16);
@@ -120,6 +109,22 @@ public class CloudClassificationOp extends MerisBasisOp implements Constants {
 
         if (l1bProduct.getPreferredTileSize() != null) {
             targetProduct.setPreferredTileSize(l1bProduct.getPreferredTileSize());
+        }
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Reading in auxiliary data", 2);
+        try {
+            auxData = L2AuxDataProvider.getInstance().getAuxdata(l1bProduct);
+            pm.worked(1);
+            pixelId = new PixelId(auxData);
+            rayleighCorrection = new RayleighCorrection(auxData);
+            pm.worked(1);
+        } catch (L2AuxDataException e) {
+            throw new OperatorException("Could not load L2Auxdata", e);
+        } finally {
+            pm.done();
         }
     }
 

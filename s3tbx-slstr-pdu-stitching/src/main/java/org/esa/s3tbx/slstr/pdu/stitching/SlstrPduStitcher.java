@@ -5,6 +5,7 @@ import com.bc.ceres.binding.converters.DateFormatConverter;
 import com.bc.ceres.core.Assert;
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.slstr.pdu.stitching.manifest.ManifestMerger;
+import org.esa.snap.runtime.EngineConfig;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -36,36 +37,28 @@ import java.util.regex.Pattern;
  */
 public class SlstrPduStitcher {
 
-    private static final String SLSTR_L1B_NAME_PATTERN = "S3.?_SL_1_RBT_.*(.SEN3)?";
     private static final DateFormatConverter SLSTR_DATE_FORMAT_CONVERTER =
             new DateFormatConverter(new SimpleDateFormat("yyyyMMdd'T'HHmmss"));
     private static final ImageSize NULL_IMAGE_SIZE = new ImageSize("null", 0, 0, 0, 0);
 
-    public static File createStitchedSlstrL1BFile(File targetDirectory, File[] slstrProductFiles, ProgressMonitor pm) throws IllegalArgumentException, IOException, PDUStitchingException, ParserConfigurationException, TransformerException {
+    public static File createStitchedSlstrL1BFile(File targetDirectory, File[] slstrProductFiles, String productName,
+                                                  ProgressMonitor pm)
+            throws IllegalArgumentException, IOException, PDUStitchingException,
+            ParserConfigurationException,  TransformerException {
         Assert.notNull(slstrProductFiles);
-        final Logger logger = Logger.getLogger(SlstrPduStitcher.class.getName());
-        if (slstrProductFiles.length == 0) {
-            throw new IllegalArgumentException("No product files provided");
-        }
-        final Pattern slstrNamePattern = Pattern.compile(SLSTR_L1B_NAME_PATTERN);
-        for (int i = 0; i < slstrProductFiles.length; i++) {
-            if (slstrProductFiles[i] == null) {
-                throw new PDUStitchingException("File must not be null");
-            }
-            if (!slstrProductFiles[i].getName().equals("xfdumanifest.xml")) {
-                slstrProductFiles[i] = new File(slstrProductFiles[i], "xfdumanifest.xml");
-            }
-            if (!slstrProductFiles[i].getName().equals("xfdumanifest.xml") ||
-                    slstrProductFiles[i].getParentFile() == null ||
-                    !slstrNamePattern.matcher(slstrProductFiles[i].getParentFile().getName()).matches()) {
-                throw new IllegalArgumentException("The PDU Stitcher only supports SLSTR L1B products");
-            }
-        }
+        final Logger logger = EngineConfig.instance().logger();
+        Validator.validateSlstrProductFiles(slstrProductFiles);
+
         final Date now = Calendar.getInstance().getTime();
         if (slstrProductFiles.length == 1) {
             final File originalParentDirectory = slstrProductFiles[0].getParentFile();
             final String parentDirectoryName = originalParentDirectory.getName();
-            final File stitchedParentDirectory = new File(targetDirectory, parentDirectoryName);
+            File stitchedParentDirectory;
+            if (productName == null) {
+                stitchedParentDirectory = new File(targetDirectory, parentDirectoryName);
+            } else {
+                stitchedParentDirectory = new File(targetDirectory, productName);
+            }
             if (stitchedParentDirectory.exists()) {
                 throw new PDUStitchingException("Target file directory already exists");
             }
@@ -102,7 +95,10 @@ public class SlstrPduStitcher {
         }
         Validator.validateOrbitReference(manifestDocuments);
         Validator.validateAdjacency(manifestDocuments);
-        final String stitchedProductFileName = createParentDirectoryNameOfStitchedFile(slstrNameDecompositions, now);
+        String stitchedProductFileName = productName;
+        if (stitchedProductFileName == null) {
+            stitchedProductFileName = createParentDirectoryNameOfStitchedFile(slstrNameDecompositions, now);
+        }
         File stitchedProductFileParentDirectory = new File(targetDirectory, stitchedProductFileName);
         if (stitchedProductFileParentDirectory.exists()) {
             throw new PDUStitchingException("Target file directory already exists");
@@ -115,49 +111,57 @@ public class SlstrPduStitcher {
             idToTargetImageSize.put(id, ImageSizeHandler.createTargetImageSize(idToImageSizes.get(id)));
         }
         long productSize = 0;
+        File manifestFile;
         pm.beginTask("Stitching SLSTR L1B Product Dissemination Units", ncFileNames.size() + 1);
-        for (int i = 0; i < ncFileNames.size(); i++) {
-            final String ncFileName = ncFileNames.get(i);
-            String[] splitFileName = ncFileName.split("/");
-            final String displayFileName = splitFileName[splitFileName.length - 1];
-            pm.setSubTaskName(MessageFormat.format("Stitching ''{0}''", displayFileName));
-            List<File> ncFiles = new ArrayList<>();
-            List<ImageSize> imageSizeList = new ArrayList<>();
-            String id = ncFileName.substring(ncFileName.length() - 5, ncFileName.length() - 3);
-            if (id.equals("tx")) {
-                id = "tn";
-            }
-            ImageSize targetImageSize = idToTargetImageSize.get(id);
-            if (targetImageSize == null) {
-                targetImageSize = NULL_IMAGE_SIZE;
-            }
-            ImageSize[] imageSizes = idToImageSizes.get(id);
-            if (imageSizes == null) {
-                imageSizes = new ImageSize[ncFileNames.size()];
-                Arrays.fill(imageSizes, NULL_IMAGE_SIZE);
-            }
-            for (int j = 0; j < slstrProductFiles.length; j++) {
-                File slstrProductFile = slstrProductFiles[j];
-                File ncFile = new File(slstrProductFile.getParentFile(), ncFileName);
-                if (ncFile.exists()) {
-                    ncFiles.add(ncFile);
-                    imageSizeList.add(imageSizes[j]);
+        try {
+            for (int i = 0; i < ncFileNames.size(); i++) {
+                final String ncFileName = ncFileNames.get(i);
+                String[] splitFileName = ncFileName.split("/");
+                final String displayFileName = splitFileName[splitFileName.length - 1];
+                pm.setSubTaskName(MessageFormat.format("Stitching ''{0}''", displayFileName));
+                List<File> ncFiles = new ArrayList<>();
+                List<ImageSize> imageSizeList = new ArrayList<>();
+                String id = ncFileName.substring(ncFileName.length() - 5, ncFileName.length() - 3);
+                if (id.equals("tx")) {
+                    id = "tn";
                 }
+                ImageSize targetImageSize = idToTargetImageSize.get(id);
+                if (targetImageSize == null) {
+                    targetImageSize = NULL_IMAGE_SIZE;
+                }
+                ImageSize[] imageSizes = idToImageSizes.get(id);
+                if (imageSizes == null) {
+                    imageSizes = new ImageSize[ncFileNames.size()];
+                    Arrays.fill(imageSizes, NULL_IMAGE_SIZE);
+                }
+                for (int j = 0; j < slstrProductFiles.length; j++) {
+                    File slstrProductFile = slstrProductFiles[j];
+                    File ncFile = new File(slstrProductFile.getParentFile(), ncFileName);
+                    if (ncFile.exists()) {
+                        ncFiles.add(ncFile);
+                        imageSizeList.add(imageSizes[j]);
+                    }
+                }
+                if (ncFiles.size() > 0) {
+                    final File[] ncFilesArray = ncFiles.toArray(new File[ncFiles.size()]);
+                    final ImageSize[] imageSizeArray = imageSizeList.toArray(new ImageSize[imageSizeList.size()]);
+                    logger.log(Level.INFO, "Stitch " + displayFileName);
+                    NcFileStitcher.stitchNcFiles(ncFileName, stitchedProductFileParentDirectory, now,
+                            ncFilesArray, targetImageSize, imageSizeArray);
+                    productSize += new File(stitchedProductFileParentDirectory, ncFileName).length();
+                }
+                if (pm.isCanceled()) {
+                    return null;
+                }
+                pm.worked(1);
             }
-            if (ncFiles.size() > 0) {
-                final File[] ncFilesArray = ncFiles.toArray(new File[ncFiles.size()]);
-                final ImageSize[] imageSizeArray = imageSizeList.toArray(new ImageSize[imageSizeList.size()]);
-                logger.log(Level.INFO, "Stitch " + displayFileName);
-                NcFileStitcher.stitchNcFiles(ncFileName, stitchedProductFileParentDirectory, now,
-                                             ncFilesArray, targetImageSize, imageSizeArray);
-                productSize += new File(stitchedProductFileParentDirectory, ncFileName).length();
-            }
+            pm.setSubTaskName("Stitching manifest");
+            logger.log(Level.INFO, "Stitch manifest");
+            manifestFile = createManifestFile(slstrProductFiles, stitchedProductFileParentDirectory, now, productSize);
             pm.worked(1);
+        } finally {
+            pm.done();
         }
-        pm.setSubTaskName("Stitching manifest");
-        logger.log(Level.INFO, "Stitch manifest");
-        final File manifestFile = createManifestFile(slstrProductFiles, stitchedProductFileParentDirectory, now, productSize);
-//        pm.done();
         return manifestFile;
     }
 
@@ -176,7 +180,7 @@ public class SlstrPduStitcher {
         }
     }
 
-    private static Document createXmlDocument(InputStream inputStream) throws IOException {
+    static Document createXmlDocument(InputStream inputStream) throws IOException {
         final String msg = "Cannot create document from manifest XML file.";
         try {
             return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream);
@@ -223,17 +227,13 @@ public class SlstrPduStitcher {
         return latestDate;
     }
 
-    static SlstrNameDecomposition decomposeSlstrName(String slstrName) {
+    static SlstrNameDecomposition decomposeSlstrName(String slstrName) throws PDUStitchingException {
         final SlstrNameDecomposition slstrNameDecomposition = new SlstrNameDecomposition();
         try {
             slstrNameDecomposition.startTime = SLSTR_DATE_FORMAT_CONVERTER.parse(slstrName.substring(16, 31));
-        } catch (ConversionException e) {
-            e.printStackTrace();
-        }
-        try {
             slstrNameDecomposition.stopTime = SLSTR_DATE_FORMAT_CONVERTER.parse(slstrName.substring(32, 47));
         } catch (ConversionException e) {
-            e.printStackTrace();
+            throw new PDUStitchingException(e.getMessage());
         }
         slstrNameDecomposition.duration = slstrName.substring(64, 68);
         slstrNameDecomposition.cycleNumber = slstrName.substring(69, 72);

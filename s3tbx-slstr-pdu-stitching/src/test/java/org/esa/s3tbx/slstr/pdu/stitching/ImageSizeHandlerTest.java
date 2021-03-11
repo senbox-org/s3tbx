@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static junit.framework.TestCase.assertEquals;
@@ -21,48 +23,25 @@ import static junit.framework.TestCase.assertEquals;
 public class ImageSizeHandlerTest {
 
     @Test
-    public void testExtractImageSizes() throws IOException {
+    public void testExtractImageSizes() throws IOException, URISyntaxException {
         final ImageSize[] imageSizes1 =
                 ImageSizeHandler.extractImageSizes(createXmlDocument(new FileInputStream(getFirstSlstrFile())));
-        assertEquals(10, imageSizes1.length);
-        assert (new ImageSize("in", 21687, 998, 2000, 1500).equals(imageSizes1[0]));
-        assertEquals(new ImageSize("an", 43374, 1996, 4000, 3000), imageSizes1[1]);
-        assertEquals(new ImageSize("bn", 43374, 1996, 4000, 3000), imageSizes1[2]);
-        assertEquals(new ImageSize("cn", 43374, 1996, 4000, 3000), imageSizes1[3]);
-        assertEquals(new ImageSize("tn", 21687, 64, 2000, 130), imageSizes1[4]);
-        assertEquals(new ImageSize("io", 21687, 450, 2000, 900), imageSizes1[5]);
-        assertEquals(new ImageSize("ao", 43374, 900, 4000, 1800), imageSizes1[6]);
-        assertEquals(new ImageSize("bo", 43374, 900, 4000, 1800), imageSizes1[7]);
-        assertEquals(new ImageSize("co", 43374, 900, 4000, 1800), imageSizes1[8]);
-        assertEquals(new ImageSize("to", 21687, 64, 2000, 130), imageSizes1[9]);
+        assertEquals(2, imageSizes1.length);
+        assertEquals(new ImageSize("tn", 21687, 64, 2000, 130), imageSizes1[0]);
+        assertEquals(new ImageSize("to", 21687, 64, 2000, 130), imageSizes1[1]);
 
         final ImageSize[] imageSizes2 =
                 ImageSizeHandler.extractImageSizes(createXmlDocument(new FileInputStream(getSecondSlstrFile())));
-        assertEquals(10, imageSizes2.length);
-        assertEquals(new ImageSize("in", 23687, 998, 2000, 1500), imageSizes2[0]);
-        assertEquals(new ImageSize("an", 47374, 1996, 4000, 3000), imageSizes2[1]);
-        assertEquals(new ImageSize("bn", 47374, 1996, 4000, 3000), imageSizes2[2]);
-        assertEquals(new ImageSize("cn", 47374, 1996, 4000, 3000), imageSizes2[3]);
-        assertEquals(new ImageSize("tn", 23687, 64, 2000, 130), imageSizes2[4]);
-        assertEquals(new ImageSize("io", 23687, 450, 2000, 900), imageSizes2[5]);
-        assertEquals(new ImageSize("ao", 47374, 900, 4000, 1800), imageSizes2[6]);
-        assertEquals(new ImageSize("bo", 47374, 900, 4000, 1800), imageSizes2[7]);
-        assertEquals(new ImageSize("co", 47374, 900, 4000, 1800), imageSizes2[8]);
-        assertEquals(new ImageSize("to", 23687, 64, 2000, 130), imageSizes2[9]);
+        assertEquals(3, imageSizes2.length);
+        assertEquals(new ImageSize("tn", 23687, 64, 2000, 130), imageSizes2[0]);
+        assertEquals(new ImageSize("io", 23687, 450, 2000, 900), imageSizes2[1]);
+        assertEquals(new ImageSize("to", 23687, 64, 2000, 130), imageSizes2[2]);
 
         final ImageSize[] imageSizes3 =
                 ImageSizeHandler.extractImageSizes(createXmlDocument(new FileInputStream(getThirdSlstrFile())));
-        assertEquals(10, imageSizes3.length);
-        assertEquals(new ImageSize("in", 25687, 998, 2000, 1500), imageSizes3[0]);
-        assertEquals(new ImageSize("an", 51374, 1996, 4000, 3000), imageSizes3[1]);
-        assertEquals(new ImageSize("bn", 51374, 1996, 4000, 3000), imageSizes3[2]);
-        assertEquals(new ImageSize("cn", 51374, 1996, 4000, 3000), imageSizes3[3]);
-        assertEquals(new ImageSize("tn", 25687, 64, 2000, 130), imageSizes3[4]);
-        assertEquals(new ImageSize("io", 25687, 450, 2000, 900), imageSizes3[5]);
-        assertEquals(new ImageSize("ao", 51374, 900, 4000, 1800), imageSizes3[6]);
-        assertEquals(new ImageSize("bo", 51374, 900, 4000, 1800), imageSizes3[7]);
-        assertEquals(new ImageSize("co", 51374, 900, 4000, 1800), imageSizes3[8]);
-        assertEquals(new ImageSize("to", 25687, 64, 2000, 130), imageSizes3[9]);
+        assertEquals(2, imageSizes3.length);
+        assertEquals(new ImageSize("tn", 25687, 64, 2000, 130), imageSizes3[0]);
+        assertEquals(new ImageSize("to", 25687, 64, 2000, 130), imageSizes3[1]);
     }
 
     @Test
@@ -91,22 +70,23 @@ public class ImageSizeHandlerTest {
         }
     }
 
-    private static File getFirstSlstrFile() {
+    private static File getFirstSlstrFile() throws URISyntaxException {
         return getResource(TestUtils.FIRST_FILE_NAME);
     }
 
-    private static File getSecondSlstrFile() {
+    private static File getSecondSlstrFile() throws URISyntaxException {
         return getResource(TestUtils.SECOND_FILE_NAME);
     }
 
-    private static File getThirdSlstrFile() {
+    private static File getThirdSlstrFile() throws URISyntaxException {
         return getResource(TestUtils.THIRD_FILE_NAME);
     }
 
-    private static File getResource(String fileName) {
+    private static File getResource(String fileName) throws URISyntaxException {
         final String fullFileName = fileName + "/xfdumanifest.xml";
         final URL resource = ImageSizeHandlerTest.class.getResource(fullFileName);
-        return new File(resource.getFile());
+        URI uri = new URI(resource.toString());
+        return new File(uri.getPath());
     }
 
 }

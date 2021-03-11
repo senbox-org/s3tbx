@@ -64,14 +64,15 @@ public class SlstrRadReflConverter implements RadReflConverter {
         return map;
     }
 
-    static VirtualBandOpImage[] createInvalidImages(Product sourceProduct) {
-        VirtualBandOpImage[] invalidImages = new VirtualBandOpImage[Sensor.SLSTR_500m.getNumSpectralBands()];
-
-        for (int i = 0; i < Sensor.SLSTR_500m.getNumSpectralBands(); i++) {
-            final String bandName = Sensor.SLSTR_500m.getRadBandNames()[i];
-            String unfilledPixelExpression = bandName.replace("radiance", "exception") + ".unfilled_pixel";
-            String saturationExpression = bandName.replace("radiance", "exception") + ".saturation";
-            String invalidRadianceExpression = bandName.replace("radiance", "exception") + ".invalid_radiance";
+    static VirtualBandOpImage[] createInvalidImages(Product sourceProduct, String[] inputBandNames,
+                                                    boolean isRad2ReflMode) {
+        VirtualBandOpImage[] invalidImages = new VirtualBandOpImage[inputBandNames.length];
+        String replacer = isRad2ReflMode ? "radiance" : "reflectance";
+        for (int i = 0; i < inputBandNames.length; i++) {
+            final String bandName = inputBandNames[i];
+            String unfilledPixelExpression = bandName.replace(replacer, "exception") + ".unfilled_pixel";
+            String saturationExpression = bandName.replace(replacer, "exception") + ".saturation";
+            String invalidRadianceExpression = bandName.replace(replacer, "exception") + ".invalid_radiance";
             String invalidExpression = unfilledPixelExpression + " || " +
                     saturationExpression + " || " + invalidRadianceExpression;
             invalidImages[i] = VirtualBandOpImage.builder(invalidExpression, sourceProduct)

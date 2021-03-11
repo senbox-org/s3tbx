@@ -54,43 +54,48 @@
     <li><b>Air Pressure</b><br>
         The surface air pressure at sea level if not provided by auxiliary data.
     </li>
-    <li><b>TSM factor bpart</b><br>
-        Conversion factor bpart. (TSM = bpart * <b>TSMfakBpart</b> + bwit * TSMfakBwit)
+    <li><b>TSM factor</b><br>
+        TSM conversion factor (TSM = <b>TSMfac</b> * iop_btot^TSMexp).
+        <b>Note:</b> This parameter was formerly named TSMfakBpart.
+        Also the equation to derive TSM from the IOPs has been changed in version 7.0.1 of S3TBX.
     </li>
-    <li><b>TSM factor bwit</b><br>
-        Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * <b>TSMfakBwit</b>)
+    <li><b>TSM exponent</b><br>
+        TSM conversion exponent (TSM = TSMfac * iop_btot^<b>TSMexp</b>).
+        <b>Note:</b> This parameter was formerly named TSMfakBwit.
+        Also the equation to derive TSM from the IOPs has been changed in version 7.0.1 of S3TBX.
     </li>
     <li><b>CHL exponent</b><br>
-        Chlorophyll exponent (CHL = iop-apig^<b>CHLexp</b> * CHLfak)
+        Chlorophyll exponent (CHL = iop-apig^<b>CHLexp</b> * CHLfak).
     </li>
     <li><b>CHL factor</b><br>
-        Chlorophyll factor (CHL = iop-apig^CHLexp * <b>CHLfak</b>)
+        Chlorophyll factor (CHL = iop-apig^CHLexp * <b>CHLfak</b>).
     </li>
     <li><b>Threshold rtosa OOS</b><br>
-        Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances
+        Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances.
     </li>
     <li><b>Threshold AC reflectances OOS</b><br>
-        Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances
+        Threshold for out of scope of nn training dataset flag for atmospherically corrected reflectances.
     </li>
-    <li><b>Threshold for cloud flag on transmittance down @865</b><br>
-        Threshold for cloud test based on downwelling transmittance @865
+    <li><b>Threshold for cloud flag on down transmittance @865</b><br>
+        Threshold for cloud test based on downwelling transmittance @865.
     </li>
     <li><b>Atmospheric aux data path</b><br>
-        Path to the atmospheric auxiliary data directory. Use either this or the specific products. If the auxiliary data needed for interpolation is
-        not available in this path, the data will automatically downloaded.
+        Path to the atmospheric auxiliary data directory. Use either this or the specified products on the I/O Parameters (ozone, air pressure) tab. If the auxiliary data is
+        not available at this path, the data will automatically be downloaded.
     </li>
     <li><b>Alternative NN Path</b><br>
-        Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets with the ones in the given directory. This
-        is a parameter which should only used during the development of new neural nets.
+        Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets.
+        For MSI there exits a neural net where ranges of parameters was extended to moderate-to-extreme cases (C2X-Nets).
+        However, this is a parameter which should only used during the development of new neural nets.
     </li>
     <li><b>Output AC reflectances as rrs instead of rhow</b><br>
-        Reflectance values in the target product shall be written as remote sensing reflectances and not as water leaving reflectances
+        Write remote sensing reflectances instead of water leaving reflectances.
     </li>
     <li><b>Derive water reflectance from path radiance and transmittance</b><br>
         Alternative way of calculating water reflectance. <span style="background-color:yellow">Still experimental.</span>
     </li>
     <li><b>Use ECMWF aux data of source product</b><br>
-        If selected, the ECMWF auxiliary data (total_ozone, sea_level_pressure) of the source product is used
+        Use ECMWF auxiliary data (total_ozone, sea_level_pressure) from the source product.
     </li>
     <li><b>Output TOA reflectances</b><br>
         Add TOA reflectances to the target product.

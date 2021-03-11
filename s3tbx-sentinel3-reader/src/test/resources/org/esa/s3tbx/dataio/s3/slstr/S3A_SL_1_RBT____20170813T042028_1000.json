@@ -9,10 +9,10 @@
     "geoCoding": {
       "coordinates": [
         {
-          "x": 646.0,
+          "x": 646.1622545049187,
           "y": 645.0,
-          "lat": 38.0806196258335,
-          "lon": -98.24040949786792
+          "lat": 38.080325229631676,
+          "lon": -98.24222090408857
         },
         {
           "x": 1113.0,
@@ -20,8 +20,7 @@
           "lat": 38.28780111714461,
           "lon": -103.77825557269878
         }
-      ],
-      "reverseAccuracy": 0.07381444320265018
+      ]
     },
     "flagCodings": [
       {
@@ -823,7 +822,7 @@
       {
         "name": "x_tx",
         "description": "Geolocated x (across track) coordinate of detector FOV centre",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -843,7 +842,7 @@
       {
         "name": "y_tx",
         "description": "Geolocated y (along track) coordinate of detector FOV centre",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -863,7 +862,7 @@
       {
         "name": "latitude_tx",
         "description": "Latitude of detector FOV centre on the earth's surface",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -883,7 +882,7 @@
       {
         "name": "longitude_tx",
         "description": "Longitude of detector FOV centre on the earth's surface",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -903,7 +902,7 @@
       {
         "name": "sat_azimuth_tn",
         "description": "Satellite azimuth angle",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -923,7 +922,7 @@
       {
         "name": "sat_path_tn",
         "description": "Distance from satellite to surface",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -943,7 +942,7 @@
       {
         "name": "sat_zenith_tn",
         "description": "Satellite zenith angle",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -963,7 +962,7 @@
       {
         "name": "solar_azimuth_tn",
         "description": "Solar azimuth angle",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -983,7 +982,7 @@
       {
         "name": "solar_path_tn",
         "description": "Distance from sun to surface",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1003,7 +1002,7 @@
       {
         "name": "solar_zenith_tn",
         "description": "Solar zenith angle",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1023,7 +1022,7 @@
       {
         "name": "sat_azimuth_to",
         "description": "Satellite azimuth angle",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1043,7 +1042,7 @@
       {
         "name": "sat_path_to",
         "description": "Distance from satellite to surface",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1063,7 +1062,7 @@
       {
         "name": "sat_zenith_to",
         "description": "Satellite zenith angle",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1083,7 +1082,7 @@
       {
         "name": "solar_azimuth_to",
         "description": "Solar azimuth angle",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1103,7 +1102,7 @@
       {
         "name": "solar_path_to",
         "description": "Distance from sun to surface",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1123,7 +1122,7 @@
       {
         "name": "solar_zenith_to",
         "description": "Solar zenith angle",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1143,7 +1142,7 @@
       {
         "name": "cloud_fraction_tx",
         "description": "Fractional cloud cover (500 m)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1163,7 +1162,7 @@
       {
         "name": "dew_point_tx",
         "description": "2m dew point",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1183,7 +1182,7 @@
       {
         "name": "east_west_stress_tx_time_1_tx",
         "description": "East-west integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1203,7 +1202,7 @@
       {
         "name": "east_west_stress_tx_time_2_tx",
         "description": "East-west integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1223,7 +1222,7 @@
       {
         "name": "east_west_stress_tx_time_3_tx",
         "description": "East-west integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1243,7 +1242,7 @@
       {
         "name": "east_west_stress_tx_time_4_tx",
         "description": "East-west integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1263,7 +1262,7 @@
       {
         "name": "east_west_stress_tx_time_5_tx",
         "description": "East-west integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1283,7 +1282,7 @@
       {
         "name": "latent_heat_tx_time_1_tx",
         "description": "Integrated surface latent heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1303,7 +1302,7 @@
       {
         "name": "latent_heat_tx_time_2_tx",
         "description": "Integrated surface latent heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1323,7 +1322,7 @@
       {
         "name": "latent_heat_tx_time_3_tx",
         "description": "Integrated surface latent heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1343,7 +1342,7 @@
       {
         "name": "latent_heat_tx_time_4_tx",
         "description": "Integrated surface latent heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1363,7 +1362,7 @@
       {
         "name": "latent_heat_tx_time_5_tx",
         "description": "Integrated surface latent heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1383,7 +1382,7 @@
       {
         "name": "north_south_stress_tx_time_1_tx",
         "description": "North-south integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1403,7 +1402,7 @@
       {
         "name": "north_south_stress_tx_time_2_tx",
         "description": "North-south integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1423,7 +1422,7 @@
       {
         "name": "north_south_stress_tx_time_3_tx",
         "description": "North-south integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1443,7 +1442,7 @@
       {
         "name": "north_south_stress_tx_time_4_tx",
         "description": "North-south integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1463,7 +1462,7 @@
       {
         "name": "north_south_stress_tx_time_5_tx",
         "description": "North-south integrated surface wind stress",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1483,7 +1482,7 @@
       {
         "name": "sea_ice_fraction_tx",
         "description": "Sea ice fraction",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1503,7 +1502,7 @@
       {
         "name": "sea_surface_temperature_tx",
         "description": "Sea surface temperature",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1523,7 +1522,7 @@
       {
         "name": "sensible_heat_tx_time_1_tx",
         "description": "Integrated surface sensible heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1543,7 +1542,7 @@
       {
         "name": "sensible_heat_tx_time_2_tx",
         "description": "Integrated surface sensible heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1563,7 +1562,7 @@
       {
         "name": "sensible_heat_tx_time_3_tx",
         "description": "Integrated surface sensible heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1583,7 +1582,7 @@
       {
         "name": "sensible_heat_tx_time_4_tx",
         "description": "Integrated surface sensible heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1596,14 +1595,14 @@
           {
             "x": 1496,
             "y": 90,
-            "value": -102263.875
+            "value": -124273.1171875
           }
         ]
       },
       {
         "name": "sensible_heat_tx_time_5_tx",
         "description": "Integrated surface sensible heat flux",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1623,7 +1622,7 @@
       {
         "name": "skin_temperature_tx",
         "description": "Skin temperature",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1643,7 +1642,7 @@
       {
         "name": "snow_albedo_tx",
         "description": "Snow albedo",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1663,7 +1662,7 @@
       {
         "name": "snow_depth_tx",
         "description": "Snow liquid water equivalent depth",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1683,7 +1682,7 @@
       {
         "name": "soil_wetness_tx",
         "description": "Soil wetness (level 1)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1703,7 +1702,7 @@
       {
         "name": "solar_radiation_tx_time_1_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1723,7 +1722,7 @@
       {
         "name": "solar_radiation_tx_time_2_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1743,7 +1742,7 @@
       {
         "name": "solar_radiation_tx_time_3_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1763,7 +1762,7 @@
       {
         "name": "solar_radiation_tx_time_4_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1783,7 +1782,7 @@
       {
         "name": "solar_radiation_tx_time_5_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1803,7 +1802,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_1_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1823,7 +1822,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_2_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1843,7 +1842,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_3_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1863,7 +1862,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_4_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1883,7 +1882,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_5_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1903,7 +1902,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_6_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1923,7 +1922,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_7_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1943,7 +1942,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_8_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1963,7 +1962,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_9_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -1983,7 +1982,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_10_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2003,7 +2002,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_11_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2023,7 +2022,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_12_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2043,7 +2042,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_13_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2063,7 +2062,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_14_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2083,7 +2082,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_15_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2103,7 +2102,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_16_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2123,7 +2122,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_17_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2143,7 +2142,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_18_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2163,7 +2162,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_19_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2183,7 +2182,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_20_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2203,7 +2202,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_21_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2223,7 +2222,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_22_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2243,7 +2242,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_23_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2263,7 +2262,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_24_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2283,7 +2282,7 @@
       {
         "name": "specific_humidity_tx_pressure_level_25_tx",
         "description": "Specific humidity profile (kg/kg)",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2303,7 +2302,7 @@
       {
         "name": "surface_pressure_tx",
         "description": "Surface pressure",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2323,7 +2322,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_1_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2343,7 +2342,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_2_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2363,7 +2362,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_3_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2383,7 +2382,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_4_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2403,7 +2402,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_5_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2423,7 +2422,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_6_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2443,7 +2442,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_7_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2463,7 +2462,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_8_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2483,7 +2482,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_9_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2503,7 +2502,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_10_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2523,7 +2522,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_11_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2543,7 +2542,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_12_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2563,7 +2562,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_13_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2583,7 +2582,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_14_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2603,7 +2602,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_15_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2623,7 +2622,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_16_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2643,7 +2642,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_17_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2663,7 +2662,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_18_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2683,7 +2682,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_19_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2703,7 +2702,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_20_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2723,7 +2722,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_21_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2743,7 +2742,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_22_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2763,7 +2762,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_23_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2783,7 +2782,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_24_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2803,7 +2802,7 @@
       {
         "name": "temperature_profile_tx_pressure_level_25_tx",
         "description": "Atmospheric temperature profile",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2823,7 +2822,7 @@
       {
         "name": "temperature_tx",
         "description": "2m air temperature",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2843,7 +2842,7 @@
       {
         "name": "thermal_radiation_tx_time_1_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2863,7 +2862,7 @@
       {
         "name": "thermal_radiation_tx_time_2_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2883,7 +2882,7 @@
       {
         "name": "thermal_radiation_tx_time_3_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2903,7 +2902,7 @@
       {
         "name": "thermal_radiation_tx_time_4_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2923,7 +2922,7 @@
       {
         "name": "thermal_radiation_tx_time_5_tx",
         "description": "Integrated surface solar radiation",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2943,7 +2942,7 @@
       {
         "name": "total_column_ozone_tx",
         "description": "Total column ozone",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2963,7 +2962,7 @@
       {
         "name": "total_column_water_vapour_tx",
         "description": "Total column water vapour",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -2983,7 +2982,7 @@
       {
         "name": "u_wind_tx_time_1_tx",
         "description": "10m U wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3003,7 +3002,7 @@
       {
         "name": "u_wind_tx_time_2_tx",
         "description": "10m U wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3023,7 +3022,7 @@
       {
         "name": "u_wind_tx_time_3_tx",
         "description": "10m U wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3043,7 +3042,7 @@
       {
         "name": "u_wind_tx_time_4_tx",
         "description": "10m U wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3063,7 +3062,7 @@
       {
         "name": "u_wind_tx_time_5_tx",
         "description": "10m U wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3083,7 +3082,7 @@
       {
         "name": "v_wind_tx_time_1_tx",
         "description": "10m V wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3103,7 +3102,7 @@
       {
         "name": "v_wind_tx_time_2_tx",
         "description": "10m V wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3123,7 +3122,7 @@
       {
         "name": "v_wind_tx_time_3_tx",
         "description": "10m V wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3143,7 +3142,7 @@
       {
         "name": "v_wind_tx_time_4_tx",
         "description": "10m V wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3163,7 +3162,7 @@
       {
         "name": "v_wind_tx_time_5_tx",
         "description": "10m V wind component",
-        "offsetX": "-26.0",
+        "offsetX": "-10.0",
         "offsetY": "0.0",
         "subSamplingX": "16.0",
         "subSamplingY": "1.0",
@@ -3302,7 +3301,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "3742.0",
         "spectralBandwidth": "398.0",
@@ -3347,7 +3346,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "3742.0",
         "spectralBandwidth": "398.0",
@@ -3355,12 +3354,12 @@
           {
             "x": 317,
             "y": 1191,
-            "value": 255.0
+            "value": 0.0
           },
           {
             "x": 182,
             "y": 1122,
-            "value": 255.0
+            "value": 0.0
           }
         ]
       },
@@ -3392,7 +3391,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "10854.0",
         "spectralBandwidth": "776.0",
@@ -3437,7 +3436,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "10854.0",
         "spectralBandwidth": "776.0",
@@ -3445,12 +3444,12 @@
           {
             "x": 402,
             "y": 233,
-            "value": 255.0
+            "value": 0.0
           },
           {
             "x": 91,
             "y": 1052,
-            "value": 255.0
+            "value": 0.0
           }
         ]
       },
@@ -3459,7 +3458,7 @@
         "description": "(1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -3481,7 +3480,7 @@
         "description": "(1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "65535.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -3503,7 +3502,7 @@
         "description": "(1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "65535.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -3525,7 +3524,7 @@
         "description": "(1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -3547,7 +3546,7 @@
         "description": "(1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -3569,7 +3568,7 @@
         "description": "(1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "65535.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -3591,7 +3590,7 @@
         "description": "(1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "65535.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -3604,7 +3603,7 @@
           {
             "x": 272,
             "y": 367,
-            "value": 65535.0
+            "value": 0.0
           }
         ]
       },
@@ -3613,7 +3612,7 @@
         "description": "(1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "0.0",
         "spectralBandwidth": "0.0",
@@ -3928,7 +3927,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "3742.0",
         "spectralBandwidth": "398.0",
@@ -3973,7 +3972,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "3742.0",
         "spectralBandwidth": "398.0",
@@ -3986,7 +3985,7 @@
           {
             "x": 1468,
             "y": 351,
-            "value": 255.0
+            "value": 0.0
           }
         ]
       },
@@ -4018,7 +4017,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "10854.0",
         "spectralBandwidth": "776.0",
@@ -4063,7 +4062,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "10854.0",
         "spectralBandwidth": "776.0",
@@ -4108,7 +4107,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "12022.5",
         "spectralBandwidth": "905.0",
@@ -4153,7 +4152,7 @@
         "description": "toa_brightness_temperature_status_flag (1 km)",
         "bandWidth": 1500,
         "bandHeight": 1200,
-        "noDataValue": "255.0",
+        "noDataValue": "0.0",
         "noDataValueUsed": "false",
         "spectralWavelength": "12022.5",
         "spectralBandwidth": "905.0",
@@ -5231,43 +5230,43 @@
     ],
     "metadata": [
       {
-        "path": "Nadir_Minimal_ts_i/value",
-        "value": "555913234660940,555913234960926,555913234960926,555913235260910,555913235260910,555913235560895,555913235560895,555913235860881,555913235860881,555913236160865,555913236160865,555913236460851,555913236460851,555913236760837,555913236760837,555913237060821,555913237060821,555913237360807,555913237360807,555913237660792,555913237660792,555913237960778,555913237960778,555913238260762,555913238260762,555913238560748,555913238560748,555913238860734,555913238860734,555913239160718,555913239160718,555913239460704,555913239460704,555913239760690,555913239760690,555913240060674,555913240060674,555913240360659,555913240360659,555913240660645,555913240660645,555913240960631,555913240960631,555913241260615,555913241260615,555913241560601,555913241560601,555913241860587,555913241860587,555913242160571,555913242160571,555913242460557,555913242460557,555913242760542,555913242760542,555913243060527,555913243060527,555913243360512,555913243360512,555913243660498,555913243660498,555913243960484,555913243960484,555913244260468,555913244260468,555913244560454,555913244560454,555913244860440,555913244860440,555913245160424,555913245160424,555913245460409,555913245460409,555913245760395,555913245760395,555913246060379,555913246060379,555913246360365,555913246360365,555913246660351,555913246660351,555913246960337,555913246960337,555913247260321,555913247260321,555913247560307,555913247560307,555913247860292,555913247860292,555913248160276,555913248160276,555913248460262,555913248460262,555913248760248,555913248760248,555913249060232,555913249060232,555913249360218,555913249360218,555913249660204,555913249660204,555913249960189,555913249960189,555913250260174,555913250260174,555913250560159,555913250560159,555913250860145,555913250860145,555913251160129,555913251160129,555913251460115,555913251460115,555913251760101,555913251760101,555913252060085,555913252060085,555913252360071,555913252360071,555913252660056,555913252660056,555913252960042,555913252960042,555913253260026,555913253260026,555913253560012,555913253560012,555913253859998,555913253859998,555913254159982,555913254159982,555913254459968,555913254459968,555913254759954,555913254759954,555913255059938,555913255059938,555913255359923,555913255359923,555913255659909,555913255659909,555913255959895,555913255959895,555913256259879,555913256259879,555913256559865,555913256559865,555913256859851,555913256859851,555913257159835,555913257159835,555913257459821,555913257459821,555913257759806,555913257759806,555913258059790,555913258059790,555913258359776,555913258359776,555913258659762,555913258659762,555913258959748,555913258959748,555913259259732,555913259259732,555913259559718,555913259559718,555913259859703,555913259859703,555913260159687,555913260159687,555913260459673,555913260459673,555913260759659,555913260759659,555913261059643,555913261059643,555913261359629,555913261359629,555913261659615,555913261659615,555913261959601,555913261959601,555913262259585,555913262259585,555913262559570,555913262559570,555913262859556,555913262859556,555913263159540,555913263159540,555913263459526,555913263459526,555913263759512,555913263759512,555913264059496,555913264059496,555913264359482,555913264359482,555913264659467,555913264659467,555913264959453,555913264959453,555913265259437,555913265259437,555913265559423,555913265559423,555913265859409,555913265859409,555913266159393,555913266159393,555913266459379,555913266459379,555913266759365,555913266759365,555913267059349,555913267059349,555913267359335,555913267359335,555913267659320,555913267659320,555913267959306,555913267959306,555913268259290,555913268259290,555913268559276,555913268559276,555913268859262,555913268859262,555913269159246,555913269159246,555913269459232,555913269459232,555913269759217,555913269759217,555913270059201,555913270059201,555913270359187,555913270359187,555913270659173,555913270659173,555913270959159,555913270959159,555913271259143,555913271259143,555913271559129,555913271559129,555913271859114,555913271859114,555913272159098,555913272159098,555913272459084,555913272459084,555913272759070,555913272759070,555913273059054,555913273059054,555913273359040,555913273359040,555913273659026,555913273659026,555913273959011,555913273959011,555913274258995,555913274258995,555913274558981,555913274558981,555913274858967,555913274858967,555913275158951,555913275158951,555913275458937,555913275458937,555913275758923,555913275758923,555913276058907,555913276058907,555913276358893,555913276358893,555913276658878,555913276658878,555913276958864,555913276958864,555913277258848,555913277258848,555913277558834,555913277558834,555913277858820,555913277858820,555913278158804,555913278158804,555913278458790,555913278458790,555913278758775,555913278758775,555913279058759,555913279058759,555913279358745,555913279358745,555913279658731,555913279658731,555913279958717,555913279958717,555913280258701,555913280258701,555913280558687,555913280558687,555913280858672,555913280858672,555913281158657,555913281158657,555913281458642,555913281458642,555913281758628,555913281758628,555913282058612,555913282058612,555913282358598,555913282358598,555913282658584,555913282658584,555913282958570,555913282958570,555913283258554,555913283258554,555913283558539,555913283558539,555913283858525,555913283858525,555913284158509,555913284158509,555913284458495,555913284458495,555913284758481,555913284758481,555913285058465,555913285058465,555913285358451,555913285358451,555913285658436,555913285658436,555913285958422,555913285958422,555913286258406,555913286258406,555913286558392,555913286558392,555913286858378,555913286858378,555913287158362,555913287158362,555913287458348,555913287458348,555913287758333,555913287758333,555913288058317,555913288058317,555913288358303,555913288358303,555913288658289,555913288658289,555913288958275,555913288958275,555913289258259,555913289258259,555913289558245,555913289558245,555913289858231,555913289858231,555913290158215,555913290158215,555913290458200,555913290458200,555913290758186,555913290758186,555913291058170,555913291058170,555913291358156,555913291358156,555913291658142,555913291658142,555913291958128,555913291958128,555913292258111,555913292258111,555913292558097,555913292558097,555913292858083,555913292858083,555913293158067,555913293158067,555913293458053,555913293458053,555913293758039,555913293758039,555913294058023,555913294058023,555913294358009,555913294358009,555913294657994,555913294657994,555913294957980,555913294957980,555913295257964,555913295257964,555913295557950,555913295557950,555913295857936,555913295857936,555913296157920,555913296157920,555913296457906,555913296457906,555913296757892,555913296757892,555913297057876,555913297057876,555913297357861,555913297357861,555913297657847,555913297657847,555913297957833,555913297957833,555913298257817,555913298257817,555913298557803,555913298557803,555913298857789,555913298857789,555913299157772,555913299157772,555913299457758,555913299457758,555913299757744,555913299757744,555913300057728,555913300057728,555913300357714,555913300357714,555913300657700,555913300657700,555913300957686,555913300957686,555913301257670,555913301257670,555913301557655,555913301557655,555913301857641,555913301857641,555913302157625,555913302157625,555913302457611,555913302457611,555913302757597,555913302757597,555913303057581,555913303057581,555913303357567,555913303357567,555913303657552,555913303657552,555913303957538,555913303957538,555913304257522,555913304257522,555913304557508,555913304557508,555913304857494,555913304857494,555913305157478,555913305157478,555913305457464,555913305457464,555913305757449,555913305757449,555913306057433,555913306057433,555913306357419,555913306357419,555913306657405,555913306657405,555913306957391,555913306957391,555913307257375,555913307257375,555913307557361,555913307557361,555913307857346,555913307857346,555913308157331,555913308157331,555913308457316,555913308457316,555913308757302,555913308757302,555913309057286,555913309057286,555913309357272,555913309357272,555913309657258,555913309657258,555913309957244,555913309957244,555913310257227,555913310257227,555913310557213,555913310557213,555913310857199,555913310857199,555913311157183,555913311157183,555913311457169,555913311457169,555913311757155,555913311757155,555913312057139,555913312057139,555913312357124,555913312357124,555913312657110,555913312657110,555913312957096,555913312957096,555913313257080,555913313257080,555913313557066,555913313557066,555913313857052,555913313857052,555913314157036,555913314157036,555913314457022,555913314457022,555913314757007,555913314757007,555913315056991,555913315056991,555913315356977,555913315356977,555913315656963,555913315656963,555913315956949,555913315956949,555913316256933,555913316256933,555913316556919,555913316556919,555913316856904,555913316856904,555913317156888,555913317156888,555913317456874,555913317456874,555913317756860,555913317756860,555913318056844,555913318056844,555913318356830,555913318356830,555913318656816,555913318656816,555913318956801,555913318956801,555913319256785,555913319256785,555913319556771,555913319556771,555913319856757,555913319856757,555913320156741,555913320156741,555913320456727,555913320456727,555913320756713,555913320756713,555913321056697,555913321056697,555913321356682,555913321356682,555913321656668,555913321656668,555913321956654,555913321956654,555913322256638,555913322256638,555913322556624,555913322556624,555913322856610,555913322856610,555913323156593,555913323156593,555913323456579,555913323456579,555913323756565,555913323756565,555913324056549,555913324056549,555913324356535,555913324356535,555913324656521,555913324656521,555913324956506,555913324956506,555913325256491,555913325256491,555913325556476,555913325556476,555913325856462,555913325856462,555913326156446,555913326156446,555913326456432,555913326456432,555913326756418,555913326756418,555913327056402,555913327056402,555913327356387,555913327356387,555913327656373,555913327656373,555913327956359,555913327956359,555913328256343,555913328256343,555913328556329,555913328556329,555913328856315,555913328856315,555913329156299,555913329156299,555913329456284,555913329456284,555913329756270,555913329756270,555913330056254,555913330056254,555913330356240,555913330356240,555913330656226,555913330656226,555913330956212,555913330956212,555913331256196,555913331256196,555913331556181,555913331556181,555913331856167,555913331856167,555913332156151,555913332156151,555913332456137,555913332456137,555913332756123,555913332756123,555913333056107,555913333056107,555913333356093,555913333356093,555913333656078,555913333656078,555913333956064,555913333956064,555913334256048,555913334256048,555913334556034,555913334556034,555913334856020,555913334856020,555913335156004,555913335156004,555913335455990,555913335455990,555913335755975,555913335755975,555913336055959,555913336055959,555913336355945,555913336355945,555913336655931,555913336655931,555913336955917,555913336955917,555913337255901,555913337255901,555913337555887,555913337555887,555913337855872,555913337855872,555913338155856,555913338155856,555913338455842,555913338455842,555913338755828,555913338755828,555913339055812,555913339055812,555913339355798,555913339355798,555913339655784,555913339655784,555913339955769,555913339955769,555913340255753,555913340255753,555913340555739,555913340555739,555913340855725,555913340855725,555913341155709,555913341155709,555913341455695,555913341455695,555913341755681,555913341755681,555913342055665,555913342055665,555913342355650,555913342355650,555913342655636,555913342655636,555913342955622,555913342955622,555913343255606,555913343255606,555913343555592,555913343555592,555913343855578,555913343855578,555913344155561,555913344155561,555913344455547,555913344455547,555913344755533,555913344755533,555913345055517,555913345055517,555913345355503,555913345355503,555913345655489,555913345655489,555913345955475,555913345955475,555913346255458,555913346255458,555913346555444,555913346555444,555913346855430,555913346855430,555913347155414,555913347155414,555913347455400,555913347455400,555913347755386,555913347755386,555913348055370,555913348055370,555913348355355,555913348355355,555913348655341,555913348655341,555913348955327,555913348955327,555913349255311,555913349255311,555913349555297,555913349555297,555913349855283,555913349855283,555913350155267,555913350155267,555913350455252,555913350455252,555913350755238,555913350755238,555913351055222,555913351055222,555913351355208,555913351355208,555913351655194,555913351655194,555913351955180,555913351955180,555913352255164,555913352255164,555913352555149,555913352555149,555913352855135,555913352855135,555913353155119,555913353155119,555913353455105,555913353455105,555913353755091,555913353755091,555913354055075,555913354055075,555913354355061,555913354355061,555913354655046,555913354655046,555913354955032,555913354955032,555913355255016,555913355255016,555913355555002,555913355555002,555913355854988,555913355854988,555913356154972,555913356154972,555913356454957,555913356454957,555913356754943,555913356754943,555913357054927,555913357054927,555913357354913,555913357354913,555913357654899,555913357654899,555913357954885,555913357954885,555913358254869,555913358254869,555913358554854,555913358554854,555913358854840,555913358854840,555913359154824,555913359154824,555913359454810,555913359454810,555913359754796,555913359754796,555913360054780,555913360054780,555913360354765,555913360354765,555913360654751,555913360654751,555913360954737,555913360954737,555913361254721,555913361254721,555913361554707,555913361554707,555913361854693,555913361854693,555913362154677,555913362154677,555913362454662,555913362454662,555913362754648,555913362754648,555913363054632,555913363054632,555913363354618,555913363354618,555913363654604,555913363654604,555913363954590,555913363954590,555913364254574,555913364254574,555913364554559,555913364554559,555913364854545,555913364854545,555913365154529,555913365154529,555913365454515,555913365454515,555913365754501,555913365754501,555913366054485,555913366054485,555913366354470,555913366354470,555913366654456,555913366654456,555913366954442,555913366954442,555913367254426,555913367254426,555913367554412,555913367554412,555913367854398,555913367854398,555913368154382,555913368154382,555913368454367,555913368454367,555913368754353,555913368754353,555913369054337,555913369054337,555913369354323,555913369354323,555913369654309,555913369654309,555913369954295,555913369954295,555913370254279,555913370254279,555913370554264,555913370554264,555913370854250,555913370854250,555913371154234,555913371154234,555913371454220,555913371454220,555913371754206,555913371754206,555913372054190,555913372054190,555913372354176,555913372354176,555913372654161,555913372654161,555913372954147,555913372954147,555913373254131,555913373254131,555913373554117,555913373554117,555913373854103,555913373854103,555913374154087,555913374154087,555913374454072,555913374454072,555913374754058,555913374754058,555913375054042,555913375054042,555913375354028,555913375354028,555913375654014,555913375654014,555913375954000,555913375954000,555913376253984,555913376253984,555913376553969,555913376553969,555913376853955,555913376853955,555913377153939,555913377153939,555913377453925,555913377453925,555913377753911,555913377753911,555913378053895,555913378053895,555913378353880,555913378353880,555913378653866,555913378653866,555913378953852,555913378953852,555913379253836,555913379253836,555913379553822,555913379553822,555913379853808,555913379853808,555913380153792,555913380153792,555913380453777,555913380453777,555913380753763,555913380753763,555913381053747,555913381053747,555913381353733,555913381353733,555913381653719,555913381653719,555913381953705,555913381953705,555913382253688,555913382253688,555913382553674,555913382553674,555913382853660,555913382853660,555913383153644,555913383153644,555913383453630,555913383453630,555913383753616,555913383753616,555913384053600,555913384053600,555913384353585,555913384353585,555913384653571,555913384653571,555913384953557,555913384953557,555913385253541,555913385253541,555913385553527,555913385553527,555913385853512,555913385853512,555913386153497,555913386153497,555913386453482,555913386453482,555913386753468,555913386753468,555913387053452,555913387053452,555913387353438,555913387353438,555913387653424,555913387653424,555913387953410,555913387953410,555913388253393,555913388253393,555913388553379,555913388553379,555913388853365,555913388853365,555913389153349,555913389153349,555913389453335,555913389453335,555913389753321,555913389753321,555913390053304,555913390053304,555913390353290,555913390353290,555913390653276,555913390653276,555913390953262,555913390953262,555913391253246,555913391253246,555913391553232,555913391553232,555913391853217,555913391853217,555913392153201,555913392153201,555913392453187,555913392453187,555913392753173,555913392753173,555913393053157,555913393053157,555913393353143,555913393353143,555913393653128,555913393653128,555913393953114,555913393953114,555913394253098,555913394253098,555913394553084,555913394553084,555913394853070,555913394853070,555913395153054,555913395153054,555913395453040,555913395453040,555913395753025,555913395753025,555913396053009,555913396053009,555913396352995,555913396352995,555913396652981,555913396652981,555913396952967,555913396952967,555913397252951,555913397252951,555913397552936,555913397552936,555913397852922,555913397852922,555913398152906,555913398152906,555913398452892,555913398452892,555913398752878,555913398752878,555913399052862,555913399052862,555913399352848,555913399352848,555913399652833,555913399652833,555913399952819,555913399952819,555913400252803,555913400252803,555913400552789,555913400552789,555913400852775,555913400852775,555913401152759,555913401152759,555913401452744,555913401452744,555913401752730,555913401752730,555913402052714,555913402052714,555913402352700,555913402352700,555913402652686,555913402652686,555913402952672,555913402952672,555913403252656,555913403252656,555913403552641,555913403552641,555913403852627,555913403852627,555913404152611,555913404152611,555913404452597,555913404452597,555913404752583,555913404752583,555913405052567,555913405052567,555913405352552,555913405352552,555913405652538,555913405652538,555913405952524,555913405952524,555913406252508,555913406252508,555913406552494,555913406552494,555913406852480,555913406852480,555913407152463,555913407152463,555913407452449,555913407452449,555913407752435,555913407752435,555913408052419,555913408052419,555913408352405,555913408352405,555913408652391,555913408652391,555913408952376,555913408952376,555913409252360,555913409252360,555913409552346,555913409552346,555913409852332,555913409852332,555913410152316,555913410152316,555913410452302,555913410452302,555913410752287,555913410752287,555913411052271,555913411052271,555913411352257,555913411352257,555913411652243,555913411652243,555913411952229,555913411952229,555913412252213,555913412252213,555913412552199,555913412552199,555913412852184,555913412852184,555913413152168,555913413152168,555913413452154,555913413452154,555913413752140,555913413752140,555913414052124,555913414052124,555913414352109,555913414352109,555913414652095"
+        "path": "l0_scan_offset_io/value",
+        "value": "51988"
       },
       {
-        "path": "Oblique_First_scan_i/valid_max",
-        "value": "19353"
+        "path": "p_atmos/long_name",
+        "value": "Pressure level coordinates "
       },
       {
-        "path": "z_atmos/value",
-        "value": "2"
+        "path": "S8/S8_band_centre_io/long_name",
+        "value": "Detector filter band centre for channel S8 (1km TIR grid, oblique view) "
       },
       {
-        "path": "t_single/standard_name",
+        "path": "Nadir/Nadir_Maximal_ts_i/standard_name",
         "value": "time "
       },
       {
-        "path": "Nadir_Minimal_ts_i/standard_name",
-        "value": "time "
+        "path": "p_atmos/long_name",
+        "value": "Pressure level coordinates "
       },
       {
-        "path": "Oblique_First_scan_i/valid_max",
-        "value": "19353"
+        "path": "SCANSYNC/value",
+        "value": "299985"
       },
       {
-        "path": "time_stamp_i/value",
-        "value": "555913246660351,555913246660351,555913246960337,555913246960337,555913247260321,555913247260321,555913247560307,555913247560307,555913247860292,555913247860292,555913248160276,555913248160276,555913248460262,555913248460262,555913248760248,555913248760248,555913249060232,555913249060232,555913249360218,555913249360218,555913249660204,555913249660204,555913249960189,555913249960189,555913250260174,555913250260174,555913250560159,555913250560159,555913250860145,555913250860145,555913251160129,555913251160129,555913251460115,555913251460115,555913251760101,555913251760101,555913252060085,555913252060085,555913252360071,555913252360071,555913252660056,555913252660056,555913252960042,555913252960042,555913253260026,555913253260026,555913253560012,555913253560012,555913253859998,555913253859998,555913254159982,555913254159982,555913254459968,555913254459968,555913254759954,555913254759954,555913255059938,555913255059938,555913255359923,555913255359923,555913255659909,555913255659909,555913255959895,555913255959895,555913256259879,555913256259879,555913256559865,555913256559865,555913256859851,555913256859851,555913257159835,555913257159835,555913257459821,555913257459821,555913257759806,555913257759806,555913258059790,555913258059790,555913258359776,555913258359776,555913258659762,555913258659762,555913258959748,555913258959748,555913259259732,555913259259732,555913259559718,555913259559718,555913259859703,555913259859703,555913260159687,555913260159687,555913260459673,555913260459673,555913260759659,555913260759659,555913261059643,555913261059643,555913261359629,555913261359629,555913261659615,555913261659615,555913261959601,555913261959601,555913262259585,555913262259585,555913262559570,555913262559570,555913262859556,555913262859556,555913263159540,555913263159540,555913263459526,555913263459526,555913263759512,555913263759512,555913264059496,555913264059496,555913264359482,555913264359482,555913264659467,555913264659467,555913264959453,555913264959453,555913265259437,555913265259437,555913265559423,555913265559423,555913265859409,555913265859409,555913266159393,555913266159393,555913266459379,555913266459379,555913266759365,555913266759365,555913267059349,555913267059349,555913267359335,555913267359335,555913267659320,555913267659320,555913267959306,555913267959306,555913268259290,555913268259290,555913268559276,555913268559276,555913268859262,555913268859262,555913269159246,555913269159246,555913269459232,555913269459232,555913269759217,555913269759217,555913270059201,555913270059201,555913270359187,555913270359187,555913270659173,555913270659173,555913270959159,555913270959159,555913271259143,555913271259143,555913271559129,555913271559129,555913271859114,555913271859114,555913272159098,555913272159098,555913272459084,555913272459084,555913272759070,555913272759070,555913273059054,555913273059054,555913273359040,555913273359040,555913273659026,555913273659026,555913273959011,555913273959011,555913274258995,555913274258995,555913274558981,555913274558981,555913274858967,555913274858967,555913275158951,555913275158951,555913275458937,555913275458937,555913275758923,555913275758923,555913276058907,555913276058907,555913276358893,555913276358893,555913276658878,555913276658878,555913276958864,555913276958864,555913277258848,555913277258848,555913277558834,555913277558834,555913277858820,555913277858820,555913278158804,555913278158804,555913278458790,555913278458790,555913278758775,555913278758775,555913279058759,555913279058759,555913279358745,555913279358745,555913279658731,555913279658731,555913279958717,555913279958717,555913280258701,555913280258701,555913280558687,555913280558687,555913280858672,555913280858672,555913281158657,555913281158657,555913281458642,555913281458642,555913281758628,555913281758628,555913282058612,555913282058612,555913282358598,555913282358598,555913282658584,555913282658584,555913282958570,555913282958570,555913283258554,555913283258554,555913283558539,555913283558539,555913283858525,555913283858525,555913284158509,555913284158509,555913284458495,555913284458495,555913284758481,555913284758481,555913285058465,555913285058465,555913285358451,555913285358451,555913285658436,555913285658436,555913285958422,555913285958422,555913286258406,555913286258406,555913286558392,555913286558392,555913286858378,555913286858378,555913287158362,555913287158362,555913287458348,555913287458348,555913287758333,555913287758333,555913288058317,555913288058317,555913288358303,555913288358303,555913288658289,555913288658289,555913288958275,555913288958275,555913289258259,555913289258259,555913289558245,555913289558245,555913289858231,555913289858231,555913290158215,555913290158215,555913290458200,555913290458200,555913290758186,555913290758186,555913291058170,555913291058170,555913291358156,555913291358156,555913291658142,555913291658142,555913291958128,555913291958128,555913292258111,555913292258111,555913292558097,555913292558097,555913292858083,555913292858083,555913293158067,555913293158067,555913293458053,555913293458053,555913293758039,555913293758039,555913294058023,555913294058023,555913294358009,555913294358009,555913294657994,555913294657994,555913294957980,555913294957980,555913295257964,555913295257964,555913295557950,555913295557950,555913295857936,555913295857936,555913296157920,555913296157920,555913296457906,555913296457906,555913296757892,555913296757892,555913297057876,555913297057876,555913297357861,555913297357861,555913297657847,555913297657847,555913297957833,555913297957833,555913298257817,555913298257817,555913298557803,555913298557803,555913298857789,555913298857789,555913299157772,555913299157772,555913299457758,555913299457758,555913299757744,555913299757744,555913300057728,555913300057728,555913300357714,555913300357714,555913300657700,555913300657700,555913300957686,555913300957686,555913301257670,555913301257670,555913301557655,555913301557655,555913301857641,555913301857641,555913302157625,555913302157625,555913302457611,555913302457611,555913302757597,555913302757597,555913303057581,555913303057581,555913303357567,555913303357567,555913303657552,555913303657552,555913303957538,555913303957538,555913304257522,555913304257522,555913304557508,555913304557508,555913304857494,555913304857494,555913305157478,555913305157478,555913305457464,555913305457464,555913305757449,555913305757449,555913306057433,555913306057433,555913306357419,555913306357419,555913306657405,555913306657405,555913306957391,555913306957391,555913307257375,555913307257375,555913307557361,555913307557361,555913307857346,555913307857346,555913308157331,555913308157331,555913308457316,555913308457316,555913308757302,555913308757302,555913309057286,555913309057286,555913309357272,555913309357272,555913309657258,555913309657258,555913309957244,555913309957244,555913310257227,555913310257227,555913310557213,555913310557213,555913310857199,555913310857199,555913311157183,555913311157183,555913311457169,555913311457169,555913311757155,555913311757155,555913312057139,555913312057139,555913312357124,555913312357124,555913312657110,555913312657110,555913312957096,555913312957096,555913313257080,555913313257080,555913313557066,555913313557066,555913313857052,555913313857052,555913314157036,555913314157036,555913314457022,555913314457022,555913314757007,555913314757007,555913315056991,555913315056991,555913315356977,555913315356977,555913315656963,555913315656963,555913315956949,555913315956949,555913316256933,555913316256933,555913316556919,555913316556919,555913316856904,555913316856904,555913317156888,555913317156888,555913317456874,555913317456874,555913317756860,555913317756860,555913318056844,555913318056844,555913318356830,555913318356830,555913318656816,555913318656816,555913318956801,555913318956801,555913319256785,555913319256785,555913319556771,555913319556771,555913319856757,555913319856757,555913320156741,555913320156741,555913320456727,555913320456727,555913320756713,555913320756713,555913321056697,555913321056697,555913321356682,555913321356682,555913321656668,555913321656668,555913321956654,555913321956654,555913322256638,555913322256638,555913322556624,555913322556624,555913322856610,555913322856610,555913323156593,555913323156593,555913323456579,555913323456579,555913323756565,555913323756565,555913324056549,555913324056549,555913324356535,555913324356535,555913324656521,555913324656521,555913324956506,555913324956506,555913325256491,555913325256491,555913325556476,555913325556476,555913325856462,555913325856462,555913326156446,555913326156446,555913326456432,555913326456432,555913326756418,555913326756418,555913327056402,555913327056402,555913327356387,555913327356387,555913327656373,555913327656373,555913327956359,555913327956359,555913328256343,555913328256343,555913328556329,555913328556329,555913328856315,555913328856315,555913329156299,555913329156299,555913329456284,555913329456284,555913329756270,555913329756270,555913330056254,555913330056254,555913330356240,555913330356240,555913330656226,555913330656226,555913330956212,555913330956212,555913331256196,555913331256196,555913331556181,555913331556181,555913331856167,555913331856167,555913332156151,555913332156151,555913332456137,555913332456137,555913332756123,555913332756123,555913333056107,555913333056107,555913333356093,555913333356093,555913333656078,555913333656078,555913333956064,555913333956064,555913334256048,555913334256048,555913334556034,555913334556034,555913334856020,555913334856020,555913335156004,555913335156004,555913335455990,555913335455990,555913335755975,555913335755975,555913336055959,555913336055959,555913336355945,555913336355945,555913336655931,555913336655931,555913336955917,555913336955917,555913337255901,555913337255901,555913337555887,555913337555887,555913337855872,555913337855872,555913338155856,555913338155856,555913338455842,555913338455842,555913338755828,555913338755828,555913339055812,555913339055812,555913339355798,555913339355798,555913339655784,555913339655784,555913339955769,555913339955769,555913340255753,555913340255753,555913340555739,555913340555739,555913340855725,555913340855725,555913341155709,555913341155709,555913341455695,555913341455695,555913341755681,555913341755681,555913342055665,555913342055665,555913342355650,555913342355650,555913342655636,555913342655636,555913342955622,555913342955622,555913343255606,555913343255606,555913343555592,555913343555592,555913343855578,555913343855578,555913344155561,555913344155561,555913344455547,555913344455547,555913344755533,555913344755533,555913345055517,555913345055517,555913345355503,555913345355503,555913345655489,555913345655489,555913345955475,555913345955475,555913346255458,555913346255458,555913346555444,555913346555444,555913346855430,555913346855430,555913347155414,555913347155414,555913347455400,555913347455400,555913347755386,555913347755386,555913348055370,555913348055370,555913348355355,555913348355355,555913348655341,555913348655341,555913348955327,555913348955327,555913349255311,555913349255311,555913349555297,555913349555297,555913349855283,555913349855283,555913350155267,555913350155267,555913350455252,555913350455252,555913350755238,555913350755238,555913351055222,555913351055222,555913351355208,555913351355208,555913351655194,555913351655194,555913351955180,555913351955180,555913352255164,555913352255164,555913352555149,555913352555149,555913352855135,555913352855135,555913353155119,555913353155119,555913353455105,555913353455105,555913353755091,555913353755091,555913354055075,555913354055075,555913354355061,555913354355061,555913354655046,555913354655046,555913354955032,555913354955032,555913355255016,555913355255016,555913355555002,555913355555002,555913355854988,555913355854988,555913356154972,555913356154972,555913356454957,555913356454957,555913356754943,555913356754943,555913357054927,555913357054927,555913357354913,555913357354913,555913357654899,555913357654899,555913357954885,555913357954885,555913358254869,555913358254869,555913358554854,555913358554854,555913358854840,555913358854840,555913359154824,555913359154824,555913359454810,555913359454810,555913359754796,555913359754796,555913360054780,555913360054780,555913360354765,555913360354765,555913360654751,555913360654751,555913360954737,555913360954737,555913361254721,555913361254721,555913361554707,555913361554707,555913361854693,555913361854693,555913362154677,555913362154677,555913362454662,555913362454662,555913362754648,555913362754648,555913363054632,555913363054632,555913363354618,555913363354618,555913363654604,555913363654604,555913363954590,555913363954590,555913364254574,555913364254574,555913364554559,555913364554559,555913364854545,555913364854545,555913365154529,555913365154529,555913365454515,555913365454515,555913365754501,555913365754501,555913366054485,555913366054485,555913366354470,555913366354470,555913366654456,555913366654456,555913366954442,555913366954442,555913367254426,555913367254426,555913367554412,555913367554412,555913367854398,555913367854398,555913368154382,555913368154382,555913368454367,555913368454367,555913368754353,555913368754353,555913369054337,555913369054337,555913369354323,555913369354323,555913369654309,555913369654309,555913369954295,555913369954295,555913370254279,555913370254279,555913370554264,555913370554264,555913370854250,555913370854250,555913371154234,555913371154234,555913371454220,555913371454220,555913371754206,555913371754206,555913372054190,555913372054190,555913372354176,555913372354176,555913372654161,555913372654161,555913372954147,555913372954147,555913373254131,555913373254131,555913373554117,555913373554117,555913373854103,555913373854103,555913374154087,555913374154087,555913374454072,555913374454072,555913374754058,555913374754058,555913375054042,555913375054042,555913375354028,555913375354028,555913375654014,555913375654014,555913375954000,555913375954000,555913376253984,555913376253984,555913376553969,555913376553969,555913376853955,555913376853955,555913377153939,555913377153939,555913377453925,555913377453925,555913377753911,555913377753911,555913378053895,555913378053895,555913378353880,555913378353880,555913378653866,555913378653866,555913378953852,555913378953852,555913379253836,555913379253836,555913379553822,555913379553822,555913379853808,555913379853808,555913380153792,555913380153792,555913380453777,555913380453777,555913380753763,555913380753763,555913381053747,555913381053747,555913381353733,555913381353733,555913381653719,555913381653719,555913381953705,555913381953705,555913382253688,555913382253688,555913382553674,555913382553674,555913382853660,555913382853660,555913383153644,555913383153644,555913383453630,555913383453630,555913383753616,555913383753616,555913384053600,555913384053600,555913384353585,555913384353585,555913384653571,555913384653571,555913384953557,555913384953557,555913385253541,555913385253541,555913385553527,555913385553527,555913385853512,555913385853512,555913386153497,555913386153497,555913386453482,555913386453482,555913386753468,555913386753468,555913387053452,555913387053452,555913387353438,555913387353438,555913387653424,555913387653424,555913387953410,555913387953410,555913388253393,555913388253393,555913388553379,555913388553379,555913388853365,555913388853365,555913389153349,555913389153349,555913389453335,555913389453335,555913389753321,555913389753321,555913390053304,555913390053304,555913390353290,555913390353290,555913390653276,555913390653276,555913390953262,555913390953262,555913391253246,555913391253246,555913391553232,555913391553232,555913391853217,555913391853217,555913392153201,555913392153201,555913392453187,555913392453187,555913392753173,555913392753173,555913393053157,555913393053157,555913393353143,555913393353143,555913393653128,555913393653128,555913393953114,555913393953114,555913394253098,555913394253098,555913394553084,555913394553084,555913394853070,555913394853070,555913395153054,555913395153054,555913395453040,555913395453040,555913395753025,555913395753025,555913396053009,555913396053009,555913396352995,555913396352995,555913396652981,555913396652981,555913396952967,555913396952967,555913397252951,555913397252951,555913397552936,555913397552936,555913397852922,555913397852922,555913398152906,555913398152906,555913398452892,555913398452892,555913398752878,555913398752878,555913399052862,555913399052862,555913399352848,555913399352848,555913399652833,555913399652833,555913399952819,555913399952819,555913400252803,555913400252803,555913400552789,555913400552789,555913400852775,555913400852775,555913401152759,555913401152759,555913401452744,555913401452744,555913401752730,555913401752730,555913402052714,555913402052714,555913402352700,555913402352700,555913402652686,555913402652686,555913402952672,555913402952672,555913403252656,555913403252656,555913403552641,555913403552641,555913403852627,555913403852627,555913404152611,555913404152611,555913404452597,555913404452597,555913404752583,555913404752583,555913405052567,555913405052567,555913405352552,555913405352552,555913405652538,555913405652538,555913405952524,555913405952524,555913406252508,555913406252508,555913406552494,555913406552494,555913406852480,555913406852480,555913407152463,555913407152463,555913407452449,555913407452449,555913407752435,555913407752435,555913408052419,555913408052419,555913408352405,555913408352405,555913408652391,555913408652391,555913408952376,555913408952376,555913409252360,555913409252360,555913409552346,555913409552346,555913409852332,555913409852332,555913410152316,555913410152316,555913410452302,555913410452302,555913410752287,555913410752287,555913411052271,555913411052271,555913411352257,555913411352257,555913411652243,555913411652243,555913411952229,555913411952229,555913412252213,555913412252213,555913412552199,555913412552199,555913412852184,555913412852184,555913413152168,555913413152168,555913413452154,555913413452154,555913413752140,555913413752140,555913414052124,555913414052124,555913414352109,555913414352109,555913414652095,555913414652095,555913414952081,555913414952081,555913415252065,555913415252065,555913415552051,555913415552051,555913415852037,555913415852037,555913416152021,555913416152021,555913416452006,555913416452006,555913416751992,555913416751992,555913417051976,555913417051976,555913417351962,555913417351962,555913417651948,555913417651948,555913417951933,555913417951933,555913418251917,555913418251917,555913418551903,555913418551903,555913418851889,555913418851889,555913419151873,555913419151873,555913419451859,555913419451859,555913419751845,555913419751845,555913420051828,555913420051828,555913420351814,555913420351814,555913420651800,555913420651800,555913420951786,555913420951786,555913421251770,555913421251770,555913421551756,555913421551756,555913421851741,555913421851741,555913422151725,555913422151725,555913422451711,555913422451711,555913422751697,555913422751697,555913423051681,555913423051681,555913423351667,555913423351667,555913423651652,555913423651652,555913423951638,555913423951638,555913424251622,555913424251622,555913424551608,555913424551608,555913424851594,555913424851594,555913425151578,555913425151578,555913425451563,555913425451563,555913425751549,555913425751549,555913426051533,555913426051533,555913426351519,555913426351519"
+        "path": "S7/S7_VDG_io/_FillValue",
+        "value": "NaN"
       },
       {
-        "path": "z_atmos/value",
-        "value": "2"
+        "path": "z_soil/axis",
+        "value": "Z "
       },
       {
-        "path": "Manifest/metadataSection/platform/instrument/mode/mode",
-        "value": "Earth Observation"
+        "path": "t_series/bounds",
+        "value": "t_bound "
       },
       {
-        "path": "SCANSYNC/_FillValue",
+        "path": "PIXSYNC_i/_FillValue",
         "value": "-2147483648"
       }
     ]

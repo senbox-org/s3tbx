@@ -33,9 +33,10 @@ import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.core.image.VirtualBandOpImage;
 import org.esa.snap.core.util.ProductUtils;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.image.Raster;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_DETECTOR_INDEX_
 @OperatorMetadata(alias = "Rad2Refl",
         authors = "Olaf Danne, Marco Peters",
         copyright = "Brockmann Consult GmbH",
-        category = "Optical/Pre-Processing",
+        category = "Optical/Preprocessing",
         version = "2.0",
         description = "Provides conversion from radiances to reflectances or backwards.")
 public class Rad2ReflOp extends Operator {
@@ -96,12 +97,7 @@ public class Rad2ReflOp extends Operator {
     @Override
     public void initialize() throws OperatorException {
         spectralInputBandPrefix = isRadToReflMode() ? "radiance" : "reflectance";
-        spectralInputBandNames = isRadToReflMode() ? sensor.getRadBandNames() : sensor.getReflBandNames();
-        spectralOutputBandNames = isRadToReflMode() ? sensor.getReflBandNames() : sensor.getRadBandNames();
-
-        Product targetProduct = createTargetProduct();
-        setTargetProduct(targetProduct);
-
+        setInputAndOutputBands();
         boolean spectralBandsAvailable = productHasAllSpectralBands(spectralInputBandNames);
         if (sensor == Sensor.MERIS && spectralBandsAvailable) {
             setupInvalidImage(Sensor.MERIS.getInvalidPixelExpression());
@@ -109,22 +105,44 @@ public class Rad2ReflOp extends Operator {
             try {
                 rad2ReflAuxdata = Rad2ReflAuxdata.loadMERISAuxdata(sourceProduct.getProductType());
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new OperatorException(e);
             }
         } else if (sensor == Sensor.OLCI && spectralBandsAvailable) {
             setupInvalidImage(Sensor.OLCI.getInvalidPixelExpression());
             converter = new OlciRadReflConverter(conversionMode);
-        } else if (sensor == Sensor.SLSTR_500m && spectralBandsAvailable) {
+        } else if (sensor == Sensor.SLSTR_500m) {
             slstrSolarFluxMap = SlstrRadReflConverter.getSolarFluxMapFromQualityMetadata(sourceProduct,
                                                                                          spectralInputBandNames,
                                                                                          isRadToReflMode());
-            slstrInvalidImages = SlstrRadReflConverter.createInvalidImages(sourceProduct);
+            slstrInvalidImages = SlstrRadReflConverter.
+                    createInvalidImages(sourceProduct, spectralInputBandNames, isRadToReflMode());
             converter = new SlstrRadReflConverter(conversionMode);
         } else {
             throw new OperatorException
                     ("Sensor '" + sensor.getName() + "' not compliant with input product. Please check your selection.");
         }
+        Product targetProduct = createTargetProduct();
+        setTargetProduct(targetProduct);
+    }
 
+    private void setInputAndOutputBands() {
+        if (sensor == Sensor.SLSTR_500m) {
+            String[] allSpectralInputBandNames = isRadToReflMode() ? sensor.getRadBandNames() : sensor.getReflBandNames();
+            String[] allSpectralOutputBandNames = isRadToReflMode() ? sensor.getReflBandNames() : sensor.getRadBandNames();
+            List<String> spectralInputBandNameList = new ArrayList<>();
+            List<String> spectralOutputBandNameList = new ArrayList<>();
+            for (int i = 0; i < allSpectralInputBandNames.length; i++) {
+                if (sourceProduct.containsBand(allSpectralInputBandNames[i])) {
+                    spectralInputBandNameList.add(allSpectralInputBandNames[i]);
+                    spectralOutputBandNameList.add(allSpectralOutputBandNames[i]);
+                }
+            }
+            spectralInputBandNames = spectralInputBandNameList.toArray(new String[0]);
+            spectralOutputBandNames = spectralOutputBandNameList.toArray(new String[0]);
+        } else {
+            spectralInputBandNames = isRadToReflMode() ? sensor.getRadBandNames() : sensor.getReflBandNames();
+            spectralOutputBandNames = isRadToReflMode() ? sensor.getReflBandNames() : sensor.getRadBandNames();
+        }
     }
 
     @Override
@@ -248,17 +266,12 @@ public class Rad2ReflOp extends Operator {
         targetProduct = new Product(sourceProduct.getName(), sourceProduct.getProductType(),
                                     sourceProduct.getSceneRasterWidth(), sourceProduct.getSceneRasterHeight());
 
-        for (int i = 0; i < sensor.getNumSpectralBands(); i++) {
+        for (int i = 0; i < spectralInputBandNames.length; i++) {
+            Band sourceBand = sourceProduct.getBand(spectralInputBandNames[i]);
             if (isRadToReflMode()) {
-                Band sourceBand = sourceProduct.getBand(sensor.getRadBandNames()[i]);
-                if (sourceBand != null) {
-                    createReflectanceBand(sourceBand, sensor.getReflBandNames()[i]);
-                }
+                createReflectanceBand(sourceBand, spectralOutputBandNames[i]);
             } else {
-                Band sourceBand = sourceProduct.getBand(sensor.getReflBandNames()[i]);
-                if (sourceBand != null) {
-                    createRadianceBand(sourceBand, sensor.getRadBandNames()[i]);
-                }
+                createRadianceBand(sourceBand, spectralOutputBandNames[i]);
             }
         }
 

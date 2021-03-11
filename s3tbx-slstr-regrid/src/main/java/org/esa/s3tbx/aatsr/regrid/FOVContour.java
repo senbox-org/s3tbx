@@ -20,7 +20,7 @@
  */
 package org.esa.s3tbx.aatsr.regrid;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;

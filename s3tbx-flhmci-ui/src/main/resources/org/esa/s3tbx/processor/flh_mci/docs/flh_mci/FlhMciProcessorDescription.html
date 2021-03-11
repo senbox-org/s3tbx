@@ -85,20 +85,76 @@
 
 <p class="i1">
     <b>Preset:</b> Select one of the available presets from the predefined list.
+    The specific parameters override the values of the preset.
     Available presets are:
 </p>
-<dl class="i1">
-    <dt>MERIS L1b MCI</dt>
-    <dd>MERIS L1b maximum chlorophyll index (lower=radiance_8, upper=radiance_10, signla=radiance_9)</dd>
-    <dt>MERIS L2 FLH</dt>
-    <dd>MERIS L2 product fluorescence line height(lower=reflec_7, upper=reflec_9, signla=reflec_8)</dd>
-    <dt>MERIS L2 MCI</dt>
-    <dd>MERIS L2 maximum chlorophyll index(lower=reflec_8, upper=reflec_10, signla=reflec_9)</dd>
-</dl>
-<p class="i1">
-    A preset selects the bands used to calculate the baseline, the signal band,
-    the line height band and the slope band.
-</p>
+<table>
+    <tr>
+        <th>Preset</th>
+        <th>Lower Baseline Band Name</th>
+        <th>Upper Baseline Band Name</th>
+        <th>Signal Band Name</th>
+        <th>Line Height Band Name</th>
+        <th>Slope Band Name</th>
+        <th>Mask Expression</th>
+    </tr>
+    <tr>
+        <th>MERIS L1b MCI</th>
+        <td>radiance_08</td>
+        <td>radiance_10</td>
+        <td>radiance_9</td>
+        <td>MCI</td>
+        <td>MCI_slope</td>
+        <td>NOT l1_flags.LAND_OCEAN AND NOT l1_flags.BRIGHT AND NOT l1_flags.INVALID</td>
+    </tr>
+
+    <tr>
+        <th>MERIS L2 FLH</th>
+        <td>reflec_9</td>
+        <td>reflec_7</td>
+        <td>reflec_8</td>
+        <td>FLH</td>
+        <td>FLH_slope</td>
+        <td>l2_flags.WATER</td>
+    </tr>
+    <tr>
+        <th>MERIS L2 MCI</th>
+        <td>reflec_10</td>
+        <td>reflec_8</td>
+        <td>reflec_9</td>
+        <td>MCI</td>
+        <td>MCI_slope</td>
+        <td>l2_flags.WATER</td>
+    </tr>
+    <tr>
+        <th>OLCI L1b MCI</th>
+        <td>Oa12_radiance</td>
+        <td>Oa10_radiance</td>
+        <td>Oa11_radiance</td>
+        <td>MCI</td>
+        <td>MCI_slope</td>
+        <td>(!quality_flags.land || quality_flags.fresh_inland_water) && ! quality_flags.invalid</td>
+    </tr>
+    <tr>
+        <th>OLCI L2 FLH</th>
+        <td>Oa11_reflectance</td>
+        <td>Oa08_reflectance</td>
+        <td>Oa10_reflectance</td>
+        <td>FLH</td>
+        <td>FLH_slope</td>
+        <td>WQSF_lsb.WATER || WQSF_lsb.INLAND_WATER</td>
+    </tr>
+    <tr>
+        <th>OLCI L2 MCI</th>
+        <td>Oa12_reflectance</td>
+        <td>Oa10_reflectance</td>
+        <td>Oa11_reflectance</td>
+        <td>MCI</td>
+        <td>MCI_slope</td>
+        <td>WQSF_lsb.WATER || WQSF_lsb.INLAND_WATER</td>
+    </tr>
+</table>
+
 
 <p class="i1">
     <b>Lower baseline band name:</b> The name for the lower wavelength band defining

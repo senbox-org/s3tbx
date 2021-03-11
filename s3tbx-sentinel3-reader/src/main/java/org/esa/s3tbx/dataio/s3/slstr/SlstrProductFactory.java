@@ -19,22 +19,28 @@ import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGeoCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.SourceImageScaler;
+import org.esa.snap.core.util.ArrayUtils;
+import org.esa.snap.runtime.Config;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
-import java.awt.RenderingHints;
+import java.awt.*;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 public abstract class SlstrProductFactory extends AbstractProductFactory {
 
@@ -42,8 +48,36 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
     private double referenceTrackOffset;
     private short[] referenceResolutions;
 
-    protected SlstrProductFactory(Sentinel3ProductReader productReader) {
+    private final static String SYSPROP_SLSTR_PIXEL_TIE_POINT_FORWARD = "s3tbx.reader.slstr.tiePointGeoCoding.forward";
+
+    SlstrProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
+    }
+
+    private static final String[] SLSTR_GRID_INDEXES = new String[]{
+            "an", "ao", "bn", "bo", "cn", "co", "in", "io", "fn", "fo", "tn", "to", "tx"
+    };
+
+    static String getGridIndex(String bandName) {
+        String[] nameParts = bandName.split("_");
+        int lastPartIndex = nameParts.length - 1;
+        int index = lastPartIndex;
+        int firstIndexOfPartWithTwoLetters = -1;
+        while (index >= 0) {
+            if (ArrayUtils.isMemberOf(nameParts[index], SLSTR_GRID_INDEXES)) {
+                return nameParts[index];
+            } else if (firstIndexOfPartWithTwoLetters < 0 && nameParts[index].length() == 2) {
+                firstIndexOfPartWithTwoLetters = index;
+            }
+            index--;
+        }
+        if (firstIndexOfPartWithTwoLetters >= 0) {
+            return nameParts[firstIndexOfPartWithTwoLetters];
+        }
+        if (nameParts[lastPartIndex].length() > 1) {
+            return nameParts[lastPartIndex].substring(nameParts[lastPartIndex].length() - 2);
+        }
+        return nameParts[lastPartIndex];
     }
 
     protected abstract Double getStartOffset(String gridIndex);
@@ -62,15 +96,15 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         return resolutions;
     }
 
-    protected void setReferenceStartOffset(double startOffset) {
+    void setReferenceStartOffset(double startOffset) {
         referenceStartOffset = startOffset;
     }
 
-    protected void setReferenceTrackOffset(double trackOffset) {
+    void setReferenceTrackOffset(double trackOffset) {
         referenceTrackOffset = trackOffset;
     }
 
-    protected void setReferenceResolutions(short[] resolutions) {
+    void setReferenceResolutions(short[] resolutions) {
         referenceResolutions = resolutions;
     }
 
@@ -78,13 +112,22 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         return referenceResolutions;
     }
 
-    protected RenderedImage createSourceImage(Product masterProduct, Band sourceBand, float[] offsets,
-                                              Band targetBand, short[] sourceResolutions) {
+    @Override
+    protected boolean isNodeSpecial(Band sourceBand, Product targetProduct) {
+        String identifier = getGridIndex(sourceBand.getName());
+        return super.isNodeSpecial(sourceBand, targetProduct) || getStartOffset(identifier) != referenceStartOffset ||
+                getTrackOffset(identifier) != referenceTrackOffset ||
+                getResolutions(identifier)[0] != getReferenceResolutions()[0] ||
+                getResolutions(identifier)[1] != getReferenceResolutions()[1];
+    }
+
+    RenderedImage createSourceImage(Product masterProduct, Band sourceBand, float[] offsets,
+                                    Band targetBand, short[] sourceResolutions) {
         final ImageLayout imageLayout = ImageManager.createSingleBandedImageLayout(targetBand);
         final RenderingHints renderingHints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, imageLayout);
         renderingHints.add(new RenderingHints(JAI.KEY_BORDER_EXTENDER,
-                                              BorderExtender.createInstance(
-                                                      BorderExtender.BORDER_COPY)
+                BorderExtender.createInstance(
+                        BorderExtender.BORDER_COPY)
         ));
         final MultiLevelImage sourceImage = sourceBand.getSourceImage();
         final float[] scalings = new float[]{
@@ -93,28 +136,28 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         };
         final MultiLevelImage masterImage = masterProduct.getBandAt(0).getSourceImage();
         return SourceImageScaler.scaleMultiLevelImage(masterImage, sourceImage, scalings, offsets, renderingHints,
-                                                      targetBand.getNoDataValue(),
-                                                      Interpolation.getInstance(Interpolation.INTERP_NEAREST));
+                targetBand.getNoDataValue(),
+                Interpolation.getInstance(Interpolation.INTERP_NEAREST));
     }
 
-    protected float[] getOffsets(double sourceStartOffset, double sourceTrackOffset, short[] sourceResolutions) {
+    float[] getOffsets(double sourceStartOffset, double sourceTrackOffset, short[] sourceResolutions) {
         float offsetX = (float) (referenceTrackOffset - sourceTrackOffset * (sourceResolutions[0] / (float) referenceResolutions[0]));
         float offsetY = (float) (sourceStartOffset * (sourceResolutions[1] / (float) referenceResolutions[1]) - referenceStartOffset);
         return new float[]{offsetX, offsetY};
     }
 
-    protected RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset,
-                                              double sourceTrackOffset, short[] sourceResolutions) {
+    RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset,
+                                    double sourceTrackOffset, short[] sourceResolutions) {
         final int subSamplingX = sourceResolutions[0] / referenceResolutions[0];
         final int subSamplingY = sourceResolutions[1] / referenceResolutions[1];
         final float[] tiePointGridOffsets = getTiePointGridOffsets(sourceStartOffset, sourceTrackOffset,
-                                                                   subSamplingX, subSamplingY, sourceResolutions);
+                subSamplingX, subSamplingY);
         return copyBandAsTiePointGrid(sourceBand, targetProduct, subSamplingX, subSamplingY,
-                                      tiePointGridOffsets[0], tiePointGridOffsets[1]);
+                tiePointGridOffsets[0], tiePointGridOffsets[1]);
     }
 
-    protected float[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
-                                             int subSamplingX, int subSamplingY, short[] sourceResolutions) {
+    private float[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
+                                           int subSamplingX, int subSamplingY) {
         float[] tiePointGridOffsets = new float[2];
         tiePointGridOffsets[0] = (float) (referenceTrackOffset - sourceTrackOffset * subSamplingX);
         tiePointGridOffsets[1] = (float) (sourceStartOffset * subSamplingY - referenceStartOffset);
@@ -123,19 +166,33 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) throws IOException {
-        TiePointGrid latGrid = null;
-        TiePointGrid lonGrid = null;
-        for (final TiePointGrid grid : targetProduct.getTiePointGrids()) {
-            if (latGrid == null && grid.getName().endsWith("latitude_tx")) {
-                latGrid = grid;
-            }
-            if (lonGrid == null && grid.getName().endsWith("longitude_tx")) {
-                lonGrid = grid;
-            }
+        final String lonVariableName = "longitude_tx";
+        final String latVariableName = "latitude_tx";
+        final TiePointGrid lonGrid = targetProduct.getTiePointGrid(lonVariableName);
+        final TiePointGrid latGrid = targetProduct.getTiePointGrid(latVariableName);
+        if (latGrid == null || lonGrid == null) {
+            return;
         }
-        if (latGrid != null && lonGrid != null) {
-            targetProduct.setSceneGeoCoding(new TiePointGeoCoding(latGrid, lonGrid));
-        }
+
+        final double[] longitudes = loadTiePointData(lonVariableName);
+        final double[] latitudes = loadTiePointData(latVariableName);
+
+        final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
+                lonGrid.getGridWidth(), lonGrid.getGridHeight(),
+                targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), 0.5,
+                lonGrid.getOffsetX(), lonGrid.getOffsetY(),
+                lonGrid.getSubSamplingX(), lonGrid.getSubSamplingY());
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        final String fwdKey = preferences.get(SYSPROP_SLSTR_PIXEL_TIE_POINT_FORWARD, TiePointBilinearForward.KEY);
+
+        final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
+        final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
+
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        geoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(geoCoding);
     }
 
     @Override
@@ -189,5 +246,13 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         final S3NetcdfReader slstrNetcdfReader = SlstrNetcdfReaderFactory.createSlstrNetcdfReader(file, manifest);
         addSeparatingDimensions(slstrNetcdfReader.getSuffixesForSeparatingDimensions());
         return slstrNetcdfReader.readProductNodes(file, null);
+    }
+
+    protected double[] loadTiePointData(String tpgName) {
+        final MultiLevelImage mlImage = getImageForTpg(tpgName);
+        final Raster tpData = mlImage.getImage(0).getData();
+        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
+        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
+        return tiePoints;
     }
 }

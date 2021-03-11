@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.modis;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccCommons;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
@@ -406,18 +407,28 @@ public class C2rccModisOperator extends PixelOperator implements C2rccConfigurab
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
-
-        try {
-            algorithm = new C2rccModisAlgorithm();
-        } catch (IOException e) {
-            throw new OperatorException(e);
-        }
-
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-
         timeCoding = C2rccCommons.getTimeCoding(sourceProduct);
-        initAtmosphericAuxdata();
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 2);
+        try {
+            pm.setSubTaskName("Defining algorithm ...");
+            try {
+                algorithm = new C2rccModisAlgorithm();
+            } catch (IOException e) {
+                throw new OperatorException(e);
+            }
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.worked(1);
+        } finally {
+            pm.done();
+        }
     }
 
     private void initAtmosphericAuxdata() {

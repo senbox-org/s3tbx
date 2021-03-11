@@ -1,5 +1,6 @@
 package org.esa.s3tbx.c2rcc.msi;
 
+import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.c2rcc.C2rccConfigurable;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdata;
 import org.esa.s3tbx.c2rcc.ancillary.AtmosphericAuxdataBuilder;
@@ -50,8 +51,46 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
-import static org.esa.s3tbx.c2rcc.C2rccCommons.*;
-import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.*;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.addVirtualBand;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.ensureTimeInformation;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.fetchOzone;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.fetchSurfacePressure;
+import static org.esa.s3tbx.c2rcc.C2rccCommons.getTimeCoding;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_ADET_AT_MAX;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_ADET_AT_MIN;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_AGELB_AT_MAX;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_AGELB_AT_MIN;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_APIG_AT_MAX;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_APIG_AT_MIN;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_BPART_AT_MAX;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_BPART_AT_MIN;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_BWIT_AT_MAX;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_BWIT_AT_MIN;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_CLOUD;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_IOP_OOR;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_KD489_AT_MAX;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_KD489_OOR;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_KDMIN_AT_MAX;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_KDMIN_OOR;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RHOW_OOR;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RHOW_OOS;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RTOSA_OOR;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_RTOSA_OOS;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.FLAG_INDEX_VALID_PE;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_rw;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_unciop;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_iop_uncsumiop_unckd;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_aann;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_rpath;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_rw;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rtosa_trans;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_iop;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_kd;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.IDX_rw_rwnorm;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.NN_SOURCE_BAND_REFL_NAMES;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.Result;
+import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES;
 
 // todo (nf) - Add min/max values of NN inputs and outputs to metadata (https://github.com/bcdev/s3tbx-c2rcc/issues/3)
 
@@ -129,6 +168,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final String STANDARD_NETS = "C2RCC-Nets";
     private static final String EXTREME_NETS = "C2X-Nets";
     private static final Map<String, String[]> c2rccNetSetMap = new HashMap<>();
+
     static {
         String[] standardNets = new String[10];
         standardNets[IDX_iop_rw] = "msi/std_s2_20160502/iop_rw/17x97x47_125.5.net";
@@ -193,40 +233,40 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     @Parameter(label = "Valid-pixel expression",
             defaultValue = "B8 > 0 && B8 < 0.1",
-            description = "Defines the pixels which are valid for processing",
+            description = "Defines the pixels which are valid for processing.",
             converter = BooleanExpressionConverter.class)
     private String validPixelExpression;
 
     @Parameter(defaultValue = "35.0", unit = "PSU", interval = "(0.000028, 43)",
-            description = "The value used as salinity for the scene")
+            description = "The value used as salinity for the scene.")
     private double salinity;
 
     @Parameter(defaultValue = "15.0", unit = "C", interval = "(0.000111, 36)",
-            description = "The value used as temperature for the scene")
+            description = "The value used as temperature for the scene.")
     private double temperature;
 
     @Parameter(defaultValue = "330", unit = "DU", interval = "(0, 1000)",
-            description = "The value used as ozone if not provided by auxiliary data")
+            description = "The value used as ozone if not provided by auxiliary data.")
     private double ozone;
 
     @Parameter(defaultValue = "1000", unit = "hPa", interval = "(800, 1040)", label = "Air Pressure at Sea Level",
-            description = "The surface air pressure at sea level if not provided by auxiliary data")
+            description = "The surface air pressure at sea level if not provided by auxiliary data.")
     private double press;
 
     @Parameter(defaultValue = "0", unit = "m", interval = "(0, 8500)", label = "Elevation",
-            description = "Used as fallback if elevation could not be taken from GETASSE30 DEM")
+            description = "Used as fallback if elevation could not be taken from GETASSE30 DEM.")
     private double elevation;
 
-    @Parameter(defaultValue = "1.72", description = "Conversion factor bpart. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bpart")
+    @Parameter(alias = "TSMfac", defaultValue = "1.72", description = "TSM factor (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM factor")
     private double TSMfakBpart;
 
-    @Parameter(defaultValue = "3.1", description = "Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * TSMfakBwit)", label = "TSM factor bwit")
+    @Parameter(alias = "TSMexp", defaultValue = "3.1", description = "TSM exponent (TSM = TSMfac * iop_btot^TSMexp).", label = "TSM exponent")
     private double TSMfakBwit;
 
-    @Parameter(defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL exponent")
+    @Parameter(alias = "CHLexp", defaultValue = "1.04", description = "Chlorophyll exponent ( CHL = iop_apig^CHLexp * CHLfac).", label = "CHL exponent")
     private double CHLexp;
 
-    @Parameter(defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop-apig^CHLexp * CHLfak ) ", label = "CHL factor")
+    @Parameter(alias = "CHLfac", defaultValue = "21.0", description = "Chlorophyll factor ( CHL = iop_apig^CHLexp * CHLfac).", label = "CHL factor")
     private double CHLfak;
 
     @Parameter(defaultValue = "0.05", description = "Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances",
@@ -238,15 +278,14 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private double thresholdAcReflecOos;
 
     @Parameter(defaultValue = "0.955", description = "Threshold for cloud test based on downwelling transmittance @865",
-            label = "Threshold for cloud flag on transmittance down @865")
+            label = "Threshold for cloud flag on down transmittance @865")
     private double thresholdCloudTDown865;
 
-    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specific products. " +
-            "If the auxiliary data needed for interpolation is not available in this path, the data will automatically downloaded.")
+    @Parameter(description = "Path to the atmospheric auxiliary data directory. Use either this or the specified products on the I/O Parameters tab. " +
+            "If the auxiliary data is not available at this path, the data will automatically be downloaded.")
     private String atmosphericAuxDataPath;
 
-    @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard " +
-            "set of neuronal nets with the ones in the given directory.",
+    @Parameter(description = "Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets.",
             label = "Alternative NN Path")
     private String alternativeNNPath;
 
@@ -256,8 +295,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             label = "Set of neuronal nets")
     private String netSet = STANDARD_NETS;
 
-    @Parameter(defaultValue = "false", description =
-            "Reflectance values in the target product shall be either written as remote sensing or water leaving reflectances",
+    @Parameter(defaultValue = "false", description = "Write remote sensing reflectances instead of water leaving reflectances.",
             label = "Output AC reflectances as rrs instead of rhow")
     private boolean outputAsRrs;
 
@@ -289,10 +327,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     @Parameter(defaultValue = "true", label = "Output normalized water leaving reflectances")
     private boolean outputRhown;
 
-    @Parameter(defaultValue = "false", label = "Output of out of scope values")
+    @Parameter(defaultValue = "false", label = "Output out of scope values")
     private boolean outputOos;
 
-    @Parameter(defaultValue = "true", label = "Output of irradiance attenuation coefficients")
+    @Parameter(defaultValue = "true", label = "Output irradiance attenuation coefficients")
     private boolean outputKd;
 
     @Parameter(defaultValue = "true", label = "Output uncertainties")
@@ -671,7 +709,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         targetProduct.setProductType(PRODUCT_TYPE);
         ensureTimeInformation(targetProduct, getStartTime(), getEndTime(), timeCoding);
 
-        targetProduct.setPreferredTileSize(128, 128);
+        targetProduct.setPreferredTileSize(610, 610);
         ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
 
         final StringBuilder autoGrouping = new StringBuilder("iop");
@@ -749,7 +787,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
             if (outputAsRrs) {
                 autoGrouping.append(":rrs");
-            }else {
+            } else {
                 autoGrouping.append(":rhow");
             }
         }
@@ -812,20 +850,20 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
 
         Band conc_tsm = addVirtualBand(targetProduct, "conc_tsm", "iop_bpart * " + TSMfakBpart + " + iop_bwit * " + TSMfakBwit, "g m^-3", "Total suspended matter dry weight concentration");
-        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophylll concentration");
+        Band conc_chl = addVirtualBand(targetProduct, "conc_chl", "pow(iop_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Chlorophyll concentration");
 
         conc_tsm.setValidPixelExpression(validPixelExpression);
         conc_chl.setValidPixelExpression(validPixelExpression);
 
         if (outputUncertainties) {
-            Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "uncertainty of pigment absorption coefficient");
-            Band unc_adet = addBand(targetProduct, "unc_adet", "m^-1", "uncertainty of detritus absorption coefficient");
-            Band unc_agelb = addBand(targetProduct, "unc_agelb", "m^-1", "uncertainty of dissolved gelbstoff absorption coefficient");
-            Band unc_bpart = addBand(targetProduct, "unc_bpart", "m^-1", "uncertainty of particle scattering coefficient");
-            Band unc_bwit = addBand(targetProduct, "unc_bwit", "m^-1", "uncertainty of white particle scattering coefficient");
-            Band unc_adg = addBand(targetProduct, "unc_adg", "m^-1", "uncertainty of total gelbstoff absorption coefficient");
-            Band unc_atot = addBand(targetProduct, "unc_atot", "m^-1", "uncertainty of total water constituent absorption coefficient");
-            Band unc_btot = addBand(targetProduct, "unc_btot", "m^-1", "uncertainty of total water constituent scattering coefficient");
+            Band unc_apig = addBand(targetProduct, "unc_apig", "m^-1", "Uncertainty of pigment absorption coefficient");
+            Band unc_adet = addBand(targetProduct, "unc_adet", "m^-1", "Uncertainty of detritus absorption coefficient");
+            Band unc_agelb = addBand(targetProduct, "unc_agelb", "m^-1", "Uncertainty of dissolved gelbstoff absorption coefficient");
+            Band unc_bpart = addBand(targetProduct, "unc_bpart", "m^-1", "Uncertainty of particle scattering coefficient");
+            Band unc_bwit = addBand(targetProduct, "unc_bwit", "m^-1", "Uncertainty of white particle scattering coefficient");
+            Band unc_adg = addBand(targetProduct, "unc_adg", "m^-1", "Uncertainty of total gelbstoff absorption coefficient");
+            Band unc_atot = addBand(targetProduct, "unc_atot", "m^-1", "Uncertainty of total water constituent absorption coefficient");
+            Band unc_btot = addBand(targetProduct, "unc_btot", "m^-1", "Uncertainty of total water constituent scattering coefficient");
 
             iop_apig.addAncillaryVariable(unc_apig, "uncertainty");
             iop_adet.addAncillaryVariable(unc_adet, "uncertainty");
@@ -845,8 +883,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             unc_atot.setValidPixelExpression(validPixelExpression);
             unc_btot.setValidPixelExpression(validPixelExpression);
 
-            Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "uncertainty of total suspended matter (TSM) dry weight concentration");
-            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "uncertainty of chlorophylll concentration");
+            Band unc_tsm = addVirtualBand(targetProduct, "unc_tsm", "unc_btot * " + TSMfakBpart, "g m^-3", "Uncertainty of total suspended matter (TSM) dry weight concentration");
+            Band unc_chl = addVirtualBand(targetProduct, "unc_chl", "pow(unc_apig, " + CHLexp + ") * " + CHLfak, "mg m^-3", "Uncertainty of chlorophyll concentration");
 
             conc_tsm.addAncillaryVariable(unc_tsm, "uncertainty");
             conc_chl.addAncillaryVariable(unc_chl, "uncertainty");
@@ -855,9 +893,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             unc_chl.setValidPixelExpression(validPixelExpression);
 
             if (outputKd) {
-                Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "uncertainty of irradiance attenuation coefficient");
-                Band unc_kdmin = addBand(targetProduct, "unc_kdmin", "m^-1", "uncertainty of mean irradiance attenuation coefficient");
-                Band unc_kd_z90max = addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
+                Band unc_kd489 = addBand(targetProduct, "unc_kd489", "m^-1", "Uncertainty of irradiance attenuation coefficient");
+                Band unc_kdmin = addBand(targetProduct, "unc_kdmin", "m^-1", "Uncertainty of mean irradiance attenuation coefficient");
+                Band unc_kd_z90max = addVirtualBand(targetProduct, "unc_kd_z90max", "abs(kd_z90max - 1.0 / abs(kdmin - unc_kdmin))", "m", "Uncertainty of depth of the water column from which 90% of the water leaving irradiance comes from");
 
                 kd489.addAncillaryVariable(unc_kd489, "uncertainty");
                 kdmin.addAncillaryVariable(unc_kdmin, "uncertainty");
@@ -915,8 +953,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             targetProduct.addMask(flagName, "c2rcc_flags." + flagName, flag.getDescription(), color, transparency);
         }
         targetProduct.setAutoGrouping(autoGrouping.toString());
-
-        targetProduct.addProductNodeListener(getNnNamesMetadataAppender());
     }
 
     @Override
@@ -949,41 +985,6 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
         // (mp/20160504) - SolarFlux is not used so we set it to 0
         solflux = new double[SOURCE_BAND_REFL_NAMES.length]; //getSolarFluxValues();
-
-
-
-        try {
-            if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
-                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath), NNUtils.ALTERNATIVE_NET_DIR_NAMES);
-                algorithm = new C2rccMsiAlgorithm(nnFilePaths, false);
-            } else {
-                String[] nnFilePaths = c2rccNetSetMap.get(netSet);
-                if(nnFilePaths == null) {
-                    throw new OperatorException(String.format("Unknown set '%s' of neural nets specified.", netSet));
-                }
-                algorithm = new C2rccMsiAlgorithm(nnFilePaths, true);
-            }
-        } catch (IOException e) {
-            throw new OperatorException(e);
-        }
-
-        algorithm.setTemperature(temperature);
-        algorithm.setSalinity(salinity);
-        algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
-        algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
-        algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
-
-        algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
-        algorithm.setOutputRpath(outputRpath);
-        algorithm.setOutputTdown(outputTdown);
-        algorithm.setOutputTup(outputTup);
-        algorithm.setOutputRhow(outputAcReflectance);
-        algorithm.setOutputRhown(outputRhown);
-        algorithm.setOutputOos(outputOos);
-        algorithm.setOutputKd(outputKd);
-        algorithm.setOutputUncertainties(outputUncertainties);
-        algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
-
         timeCoding = sourceProduct.getSceneTimeCoding();
         if (timeCoding == null) {
             // if not time coding is set, create one
@@ -996,7 +997,49 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             }
 
         }
-        initAtmosphericAuxdata();
+    }
+
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Preparing computation", 2);
+        try {
+            pm.setSubTaskName("Defining algorithm ...");
+            if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
+                String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath),
+                        NNUtils.ALTERNATIVE_NET_DIR_NAMES);
+                algorithm = new C2rccMsiAlgorithm(nnFilePaths, false);
+            } else {
+                String[] nnFilePaths = c2rccNetSetMap.get(netSet);
+                if (nnFilePaths == null) {
+                    throw new OperatorException(String.format("Unknown set '%s' of neural nets specified.", netSet));
+                }
+                algorithm = new C2rccMsiAlgorithm(nnFilePaths, true);
+            }
+            algorithm.setTemperature(temperature);
+            algorithm.setSalinity(salinity);
+            algorithm.setThresh_absd_log_rtosa(thresholdRtosaOOS);
+            algorithm.setThresh_rwlogslope(thresholdAcReflecOos);
+            algorithm.setThresh_cloudTransD(thresholdCloudTDown865);
+            algorithm.setOutputRtoaGcAann(outputRtosaGcAann);
+            algorithm.setOutputRpath(outputRpath);
+            algorithm.setOutputTdown(outputTdown);
+            algorithm.setOutputTup(outputTup);
+            algorithm.setOutputRhow(outputAcReflectance);
+            algorithm.setOutputRhown(outputRhown);
+            algorithm.setOutputOos(outputOos);
+            algorithm.setOutputKd(outputKd);
+            algorithm.setOutputUncertainties(outputUncertainties);
+            algorithm.setDeriveRwFromPathAndTransmittance(deriveRwFromPathAndTransmittance);
+            addNnNamesMetadata();
+            pm.worked(1);
+            pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            initAtmosphericAuxdata();
+            pm.worked(1);
+        } catch (IOException e) {
+            throw new OperatorException(e);
+        } finally {
+            pm.done();
+        }
     }
 
     private ProductData.UTC getStartTime() {
@@ -1087,40 +1130,23 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     }
 
-    private ProductNodeListener getNnNamesMetadataAppender() {
-        final String processingGraphName = "Processing_Graph";
+    private void addNnNamesMetadata() {
         final String[] nnNames = algorithm.getUsedNeuronalNetNames();
         final String alias = getSpi().getOperatorAlias();
-        return new ProductNodeListenerAdapter() {
-
-            private MetadataElement operatorNode;
-
-            @Override
-            public void nodeAdded(ProductNodeEvent event) {
-                final ProductNode sourceNode = event.getSourceNode();
-                if (!(sourceNode instanceof MetadataAttribute)) {
-                    return;
+        MetadataElement pgElement = getTargetProduct().getMetadataRoot().getElement("Processing_Graph");
+        if (pgElement == null) {
+            return;
+        }
+        for (MetadataElement nodeElement : pgElement.getElements()) {
+            if (nodeElement.containsAttribute("operator") && alias.equals(nodeElement.getAttributeString("operator"))) {
+                final MetadataElement neuronalNetsElem = new MetadataElement("neuronalNets");
+                nodeElement.addElement(neuronalNetsElem);
+                for (String nnName : nnNames) {
+                    neuronalNetsElem.addAttribute(new MetadataAttribute("usedNeuralNet", ProductData.createInstance(nnName), true));
                 }
-                final MetadataAttribute ma = (MetadataAttribute) sourceNode;
-                final MetadataElement pe = ma.getParentElement();
-                if ("operator".equals(ma.getName())
-                        && pe.getName().startsWith("node")
-                        && processingGraphName.equals(pe.getParentElement().getName())) {
-                    if (operatorNode == null) {
-                        if (alias.equals(ma.getData().getElemString())) {
-                            operatorNode = pe;
-                        }
-                    } else {
-                        sourceNode.getProduct().removeProductNodeListener(this);
-                        final MetadataElement neuronalNetsElem = new MetadataElement("neuronalNets");
-                        operatorNode.addElement(neuronalNetsElem);
-                        for (String nnName : nnNames) {
-                            neuronalNetsElem.addAttribute(new MetadataAttribute("usedNeuralNet", ProductData.createInstance(nnName), true));
-                        }
-                    }
-                }
+                return;
             }
-        };
+        }
     }
 
     private void initAtmosphericAuxdata() {
