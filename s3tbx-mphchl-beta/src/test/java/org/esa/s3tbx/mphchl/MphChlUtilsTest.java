@@ -4,7 +4,9 @@ import org.esa.snap.core.gpf.Operator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MphChlUtilsTest {
 
@@ -143,9 +145,9 @@ public class MphChlUtilsTest {
 
     @Test
     public void testSpi() {
-        final MphChlOlciOp.Spi spi = new MphChlOlciOp.Spi();
+        final MphChlOlciBetaOp.Spi spi = new MphChlOlciBetaOp.Spi();
         final Class<? extends Operator> operatorClass = spi.getOperatorClass();
-        assertTrue(operatorClass.isAssignableFrom(MphChlOlciOp.class));
+        assertTrue(operatorClass.isAssignableFrom(MphChlOlciBetaOp.class));
     }
 
     private static TestSample[] createSampleArray(int numSamples) {

@@ -14,9 +14,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
-public class MphChlMerisOpAcceptanceTest {
+public class MphChlOlciBetaOpAcceptanceTest {
     private File testOutDirectory;
 
     @Before
@@ -38,18 +41,18 @@ public class MphChlMerisOpAcceptanceTest {
 
     @Test
     public void testComputeMphChlProduct() throws IOException {
-        final Product brrProduct = MerisBrrProduct.create();
+        final Product brrProduct = OlciBrrProduct.create();
 
-        MphChlMerisOp mphChlOp = new MphChlMerisOp();
-        mphChlOp.setParameterDefaultValues();
+        MphChlOlciBetaOp mphChlOp = new MphChlOlciBetaOp();
         mphChlOp.setSourceProduct(brrProduct);
+        mphChlOp.setParameterDefaultValues();
         mphChlOp.setParameter("applyLowPassFilter", false);
-        mphChlOp.setParameter("validPixelExpression", Sensor.MERIS_3RD.getValidPixelExpression());
+        mphChlOp.setParameter("validPixelExpression", Sensor.OLCI.getValidPixelExpression());
         final Product mphChlProduct = mphChlOp.getTargetProduct();
 
         Product savedProduct = null;
         try {
-            final String targetProductPath = testOutDirectory.getAbsolutePath() + File.separator + "MERIS_MPHCHL.dim";
+            final String targetProductPath = testOutDirectory.getAbsolutePath() + File.separator + "OLCI_MPHCHL.dim";
             ProductIO.writeProduct(mphChlProduct, targetProductPath, "BEAM-DIMAP");
 
             savedProduct = ProductIO.readProduct(targetProductPath);
@@ -57,10 +60,10 @@ public class MphChlMerisOpAcceptanceTest {
 
             final Band chlBand = savedProduct.getBand("chl");
             assertNotNull(chlBand);
-            // old MERIS:
             assertEquals(5.063526153564453f, chlBand.getSampleFloat(0, 0), 1e-8);
             assertEquals(4.94189977645874f, chlBand.getSampleFloat(1, 0), 1e-8);
             assertEquals(25.435853958129883f, chlBand.getSampleFloat(0, 1), 1e-8);
+            assertEquals(Double.NaN, chlBand.getSampleFloat(1, 1), 1e-8);
 
             final Band flagBand = savedProduct.getBand("mph_chl_flags");
             assertNotNull(flagBand);
@@ -93,7 +96,7 @@ public class MphChlMerisOpAcceptanceTest {
             final Band mphBand = savedProduct.getBand("mph");
             assertNull(mphBand);
 
-            final Band l1_flagband = savedProduct.getBand("l1_flags");
+            final Band l1_flagband = savedProduct.getBand("quality_flags");
             assertNotNull(l1_flagband);
             assertEquals(2, l1_flagband.getSampleInt(0, 0));
             assertEquals(0, l1_flagband.getSampleInt(1, 0));
@@ -107,21 +110,21 @@ public class MphChlMerisOpAcceptanceTest {
     }
 
     @Test
-    public void testComputeMphChlAddProduct_withAddBands() throws IOException {
-        final Product brrProduct = MerisBrrProduct.create();
+    public void testComputeMphChlProduct_withAddBands() throws IOException {
+        final Product brrProduct = OlciBrrProduct.create();
 
-        MphChlMerisOp mphChlOp = new MphChlMerisOp();
-        mphChlOp.setParameterDefaultValues();
+        MphChlOlciBetaOp mphChlOp = new MphChlOlciBetaOp();
         mphChlOp.setSourceProduct(brrProduct);
+        mphChlOp.setParameterDefaultValues();
         mphChlOp.setParameter("applyLowPassFilter", false);
         mphChlOp.setParameter("exportAddBands", true);
         mphChlOp.setParameter("exportMph", true);
-        mphChlOp.setParameter("validPixelExpression", Sensor.MERIS_3RD.getValidPixelExpression());
+        mphChlOp.setParameter("validPixelExpression", Sensor.OLCI.getValidPixelExpression());
         final Product mphChlProduct = mphChlOp.getTargetProduct();
 
         Product savedProduct = null;
         try {
-            final String targetProductPath = testOutDirectory.getAbsolutePath() + File.separator + "MERIS_MPHCHL.dim";
+            final String targetProductPath = testOutDirectory.getAbsolutePath() + File.separator + "OLCI_MPHCHL.dim";
             ProductIO.writeProduct(mphChlProduct, targetProductPath, "BEAM-DIMAP");
 
             savedProduct = ProductIO.readProduct(targetProductPath);
@@ -129,10 +132,10 @@ public class MphChlMerisOpAcceptanceTest {
 
             final Band chlBand = savedProduct.getBand("chl");
             assertNotNull(chlBand);
-            // old MERIS:
             assertEquals(5.063526153564453f, chlBand.getSampleFloat(0, 0), 1e-8);
             assertEquals(4.94189977645874f, chlBand.getSampleFloat(1, 0), 1e-8);
             assertEquals(25.435853958129883f, chlBand.getSampleFloat(0, 1), 1e-8);
+            assertEquals(Double.NaN, chlBand.getSampleFloat(1, 1), 1e-8);
 
             final Band chlMatthewsBand = savedProduct.getBand("chl_matthews");
             assertNotNull(chlMatthewsBand);
@@ -179,7 +182,7 @@ public class MphChlMerisOpAcceptanceTest {
             final Band mphBand = savedProduct.getBand("mph");
             assertNotNull(mphBand);
 
-            final Band l1_flagband = savedProduct.getBand("l1_flags");
+            final Band l1_flagband = savedProduct.getBand("quality_flags");
             assertNotNull(l1_flagband);
             assertEquals(2, l1_flagband.getSampleInt(0, 0));
             assertEquals(0, l1_flagband.getSampleInt(1, 0));
@@ -194,18 +197,18 @@ public class MphChlMerisOpAcceptanceTest {
 
     @Test
     public void testComputeMphChlProduct_withMph() throws IOException {
-        final Product brrProduct = MerisBrrProduct.create();
+        final Product brrProduct = OlciBrrProduct.create();
 
-        MphChlMerisOp mphChlOp = new MphChlMerisOp();
+        MphChlOlciBetaOp mphChlOp = new MphChlOlciBetaOp();
         mphChlOp.setSourceProduct(brrProduct);
         mphChlOp.setParameterDefaultValues();
         mphChlOp.setParameter("exportMph", true);
-        mphChlOp.setParameter("validPixelExpression", Sensor.MERIS_3RD.getValidPixelExpression());
+        mphChlOp.setParameter("validPixelExpression", Sensor.OLCI.getValidPixelExpression());
         final Product mphChlProduct = mphChlOp.getTargetProduct();
 
                 Product savedProduct = null;
         try {
-            final String targetProductPath = testOutDirectory.getAbsolutePath() + File.separator + "MERIS_MPHCHL.dim";
+            final String targetProductPath = testOutDirectory.getAbsolutePath() + File.separator + "OLCI_MPHCHL.dim";
             ProductIO.writeProduct(mphChlProduct, targetProductPath, "BEAM-DIMAP");
 
             savedProduct = ProductIO.readProduct(targetProductPath);
@@ -213,7 +216,6 @@ public class MphChlMerisOpAcceptanceTest {
 
             final Band mphBand = savedProduct.getBand("mph");
             assertNotNull(mphBand);
-            // old MERIS:
             assertEquals(-1.1474395432742313E-4f, mphBand.getSampleFloat(0, 0), 1e-8);
             assertEquals(-4.521883383858949E-4f, mphBand.getSampleFloat(1, 0), 1e-8);
             assertEquals(0.003501386847347021f, mphBand.getSampleFloat(0, 1), 1e-8);
@@ -226,13 +228,13 @@ public class MphChlMerisOpAcceptanceTest {
 
     @Test
     public void testWithFaultyValidPixelExpression() {
-        final Product brrProduct = MerisBrrProduct.create();
+        final Product brrProduct = OlciBrrProduct.create();
 
         HashMap<String, Object> params = new HashMap<>();
         params.put("validPixelExpression", "extremely INVALID");
 
         try {
-            GPF.createProduct("MphChlMeris", params, brrProduct);
+            GPF.createProduct("MphChlOlci-beta", params, brrProduct);
             fail("OperatorException expected");
         } catch (OperatorException ignored) {
         }

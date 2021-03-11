@@ -22,7 +22,7 @@ public class MphChlOpTest {
     public void testOperatorMetadata() {
         final OperatorMetadata operatorMetadata = MphChlOp.class.getAnnotation(OperatorMetadata.class);
         assertNotNull(operatorMetadata);
-        assertEquals("MphChl", operatorMetadata.alias());
+        assertEquals("MphChl-beta", operatorMetadata.alias());
         assertEquals("1.0", operatorMetadata.version());
         assertEquals("Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne", operatorMetadata.authors());
         assertEquals("(c) 2013, 2014, 2017 by Brockmann Consult", operatorMetadata.copyright());

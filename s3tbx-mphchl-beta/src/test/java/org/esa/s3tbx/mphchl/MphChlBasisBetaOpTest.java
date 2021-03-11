@@ -1,6 +1,12 @@
 package org.esa.s3tbx.mphchl;
 
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.FlagCoding;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.ProductNodeGroup;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
@@ -8,25 +14,28 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
+import java.awt.Color;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
-public class MphChlBasisOpTest {
-    private MphChlBasisOp mphChlOp;
+public class MphChlBasisBetaOpTest {
+    private MphChlBasisBetaOp mphChlOp;
 
     @Before
     public void setUp() {
-        mphChlOp = new MphChlBasisOp();
+        mphChlOp = new MphChlBasisBetaOp();
     }
 
     @Test
     public void testOperatorMetadata() {
-        final OperatorMetadata operatorMetadata = MphChlBasisOp.class.getAnnotation(OperatorMetadata.class);
+        final OperatorMetadata operatorMetadata = MphChlBasisBetaOp.class.getAnnotation(OperatorMetadata.class);
         assertNotNull(operatorMetadata);
-        assertEquals("MphChlBasis", operatorMetadata.alias());
+        assertEquals("MphChlBasis-beta", operatorMetadata.alias());
         assertEquals("1.0", operatorMetadata.version());
         assertEquals("Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne", operatorMetadata.authors());
         assertEquals("(c) 2013, 2014, 2017 by Brockmann Consult", operatorMetadata.copyright());
@@ -36,7 +45,7 @@ public class MphChlBasisOpTest {
 
     @Test
     public void testSourceProductAnnotation() throws NoSuchFieldException {
-        final Field productField = MphChlBasisOp.class.getDeclaredField("sourceProduct");
+        final Field productField = MphChlBasisBetaOp.class.getDeclaredField("sourceProduct");
         assertNotNull(productField);
 
         final SourceProduct productFieldAnnotation = productField.getAnnotation(SourceProduct.class);
@@ -46,7 +55,7 @@ public class MphChlBasisOpTest {
 
     @Test
     public void testInvalidPixelExpressionAnnotation() throws NoSuchFieldException {
-        final Field validPixelField = MphChlBasisOp.class.getDeclaredField("validPixelExpression");
+        final Field validPixelField = MphChlBasisBetaOp.class.getDeclaredField("validPixelExpression");
 
         final Parameter annotation = validPixelField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
@@ -57,7 +66,7 @@ public class MphChlBasisOpTest {
 
     @Test
     public void testCyanoMaxValueAnnotation() throws NoSuchFieldException {
-        final Field cyanoMaxValueField = MphChlBasisOp.class.getDeclaredField("cyanoMaxValue");
+        final Field cyanoMaxValueField = MphChlBasisBetaOp.class.getDeclaredField("cyanoMaxValue");
 
         final Parameter annotation = cyanoMaxValueField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
@@ -67,7 +76,7 @@ public class MphChlBasisOpTest {
 
     @Test
     public void testExportAddBandsAnnotation() throws NoSuchFieldException {
-        final Field exportAddBandsField = MphChlBasisOp.class.getDeclaredField("exportAddBands");
+        final Field exportAddBandsField = MphChlBasisBetaOp.class.getDeclaredField("exportAddBands");
 
         final Parameter annotation = exportAddBandsField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
@@ -77,7 +86,7 @@ public class MphChlBasisOpTest {
 
     @Test
     public void testChlThreshForFloatFlagAnnotation() throws NoSuchFieldException {
-        final Field chlThreshForFloatFlagField = MphChlBasisOp.class.getDeclaredField("chlThreshForFloatFlag");
+        final Field chlThreshForFloatFlagField = MphChlBasisBetaOp.class.getDeclaredField("chlThreshForFloatFlag");
 
         final Parameter annotation = chlThreshForFloatFlagField.getAnnotation(Parameter.class);
         assertNotNull(annotation);
@@ -87,7 +96,7 @@ public class MphChlBasisOpTest {
 
     @Test
     public void testExportMphAnnotation() throws NoSuchFieldException {
-        final Field exportMphField = MphChlBasisOp.class.getDeclaredField("exportMph");
+        final Field exportMphField = MphChlBasisBetaOp.class.getDeclaredField("exportMph");
 
         final Parameter annotation = exportMphField.getAnnotation(Parameter.class);
         assertNotNull(annotation);

@@ -6,7 +6,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.pointop.WritableSample;
 import org.esa.snap.core.util.BitSetter;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Utility class for MPH CHL retrieval

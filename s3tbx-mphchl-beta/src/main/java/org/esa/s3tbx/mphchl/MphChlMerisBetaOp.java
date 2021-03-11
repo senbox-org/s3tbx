@@ -7,13 +7,13 @@ import org.esa.snap.core.gpf.pointop.Sample;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
 
-@OperatorMetadata(alias = "MphChlMeris",
+@OperatorMetadata(alias = "MphChlMeris-beta",
         version = "1.0",
         internal = true,
         authors = "Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne",
         copyright = "(c) 2013, 2014, 2017 by Brockmann Consult",
         description = "Computes maximum peak height of chlorophyll for MERIS. Implements MERIS-specific parts.")
-public class MphChlMerisOp extends MphChlBasisOp {
+public class MphChlMerisBetaOp extends MphChlBasisBetaOp {
 
     private static final int REFL_6_IDX = 0;
     private static final int REFL_7_IDX = 1;
@@ -177,7 +177,7 @@ public class MphChlMerisOp extends MphChlBasisOp {
     public static class Spi extends OperatorSpi {
 
         public Spi() {
-            super(MphChlMerisOp.class);
+            super(MphChlMerisBetaOp.class);
         }
     }
 }

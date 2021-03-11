@@ -1,6 +1,13 @@
 package org.esa.s3tbx.mphchl;
 
-import static org.esa.s3tbx.mphchl.MphChlConstants.*;
+import static org.esa.s3tbx.mphchl.MphChlConstants.MERIS_REQUIRED_BRR_BAND_NAMES;
+import static org.esa.s3tbx.mphchl.MphChlConstants.MERIS_REQUIRED_RADIANCE_BAND_NAMES;
+import static org.esa.s3tbx.mphchl.MphChlConstants.MERIS_REQUIRED_RADIANCE_BAND_NAMES_4TH;
+import static org.esa.s3tbx.mphchl.MphChlConstants.MERIS_VALID_PIXEL_EXPR_3RD;
+import static org.esa.s3tbx.mphchl.MphChlConstants.MERIS_VALID_PIXEL_EXPR_4TH;
+import static org.esa.s3tbx.mphchl.MphChlConstants.OLCI_REQUIRED_BRR_BAND_NAMES;
+import static org.esa.s3tbx.mphchl.MphChlConstants.OLCI_REQUIRED_RADIANCE_BAND_NAMES;
+import static org.esa.s3tbx.mphchl.MphChlConstants.OLCI_VALID_PIXEL_EXPR;
 
 /**
  * Enumeration for supported sensors (OLCI, MERIS 3rd and 4th reprocessing)

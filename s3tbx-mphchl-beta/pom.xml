@@ -14,7 +14,8 @@
   ~ You should have received a copy of the GNU General Public License along
   ~ with this program; if not, see http://www.gnu.org/licenses/
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.esa.s3tbx</groupId>
@@ -22,9 +23,14 @@
         <version>8.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>s3tbx-mphchl</artifactId>
-    <packaging>nbm</packaging>
+    <artifactId>s3tbx-mphchl-beta</artifactId>
+    <version>8.0.0.1-SNAPSHOT</version>
 
+    <packaging>nbm</packaging>
+    <properties>
+        <snap.version>8.0.0</snap.version>
+        <s3tbx.version>8.0.0</s3tbx.version>
+    </properties>
     <name>MPH/CHL Processor</name>
     <description>The MPH/CHL Processor calculates maximum peak height of chlorophyll.</description>
 

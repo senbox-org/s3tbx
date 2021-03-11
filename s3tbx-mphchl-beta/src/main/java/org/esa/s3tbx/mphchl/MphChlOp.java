@@ -30,7 +30,7 @@ import java.awt.RenderingHints;
  *
  * @author olafd
  */
-@OperatorMetadata(alias = "MphChl",
+@OperatorMetadata(alias = "MphChl-beta",
         version = "1.0",
         category = "Optical/Thematic Water Processing",
         authors = "Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne",
@@ -141,15 +141,15 @@ public class MphChlOp extends Operator {
     }
 
     private Product createMphChlPixelProduct() {
-        MphChlBasisOp mphChlOp = null;
+        MphChlBasisBetaOp mphChlOp = null;
         Sensor sensor = getSensorType(sourceProduct);
         switch (sensor) {
             case OLCI:
-                mphChlOp = new MphChlOlciOp();
+                mphChlOp = new MphChlOlciBetaOp();
                 break;
             case MERIS_3RD:
             case MERIS_4TH:
-                mphChlOp = new MphChlMerisOp();
+                mphChlOp = new MphChlMerisBetaOp();
                 break;
         }
 

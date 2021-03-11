@@ -23,11 +23,11 @@
             <file name="org-esa-s3tbx-mph_chl-MphChlOpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="MPH/CHL Processor"/>
-                <attr name="dialogTitle" stringvalue="MPH/CHL Processor"/>
-                <attr name="operatorName" stringvalue="MphChl"/>
+                <attr name="displayName" stringvalue="MPH/CHL BETA Processor"/>
+                <attr name="dialogTitle" stringvalue="MPH/CHL BETA Processor"/>
+                <attr name="operatorName" stringvalue="MphChl-beta"/>
                 <attr name="helpId" stringvalue="mphChlProcessor"/>
-                <attr name="targetProductNameSuffix" stringvalue="_mphchl"/>
+                <attr name="targetProductNameSuffix" stringvalue="_mphchl-beta"/>
             </file>
 
         </folder>
@@ -49,7 +49,7 @@
     <folder name="Services">
         <folder name="javahelp">
             <file name="org-esa-s3tbx-MphChlOp-helpset.xml" url="helpset.xml">
-                <attr name="position" intvalue="4620"/>
+                <attr name="position" intvalue="4621"/>
             </file>
         </folder>
     </folder>

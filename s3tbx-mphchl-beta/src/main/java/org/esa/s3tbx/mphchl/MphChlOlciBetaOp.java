@@ -7,13 +7,13 @@ import org.esa.snap.core.gpf.pointop.Sample;
 import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
 
-@OperatorMetadata(alias = "MphChlOlci",
+@OperatorMetadata(alias = "MphChlOlci-beta",
         version = "1.0",
         internal = true,
         authors = "Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne",
         copyright = "(c) 2013, 2014, 2017 by Brockmann Consult",
         description = "Computes maximum peak height of chlorophyll for OLCI. Implements OLCI-specific parts.")
-public class MphChlOlciOp extends MphChlBasisOp {
+public class MphChlOlciBetaOp extends MphChlBasisBetaOp {
 
     private static final int BRR_7_IDX = 0;
     private static final int BRR_8_IDX = 1;
@@ -176,7 +176,7 @@ public class MphChlOlciOp extends MphChlBasisOp {
     public static class Spi extends OperatorSpi {
 
         public Spi() {
-            super(MphChlOlciOp.class);
+            super(MphChlOlciBetaOp.class);
         }
     }
 }

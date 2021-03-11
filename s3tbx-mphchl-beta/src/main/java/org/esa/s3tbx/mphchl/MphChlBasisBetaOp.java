@@ -9,22 +9,27 @@ import org.esa.snap.core.gpf.OperatorSpi;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
-import org.esa.snap.core.gpf.pointop.*;
+import org.esa.snap.core.gpf.pointop.PixelOperator;
+import org.esa.snap.core.gpf.pointop.ProductConfigurer;
+import org.esa.snap.core.gpf.pointop.Sample;
+import org.esa.snap.core.gpf.pointop.SourceSampleConfigurer;
+import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
+import org.esa.snap.core.gpf.pointop.WritableSample;
 import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.core.image.VirtualBandOpImage;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
-@OperatorMetadata(alias = "MphChlBasis",
+@OperatorMetadata(alias = "MphChlBasis-beta",
         version = "1.0",
         internal = true,
         authors = "Mark William Matthews, Daniel Odermatt, Tom Block, Olaf Danne",
         copyright = "(c) 2013, 2014, 2017 by Brockmann Consult",
         description = "Computes maximum peak height of chlorophyll. Basis class, contains sensor-independent parts.")
-public class MphChlBasisOp extends PixelOperator {
+public class MphChlBasisBetaOp extends PixelOperator {
 
     @SourceProduct(alias = "Name")
     Product sourceProduct;
@@ -172,7 +177,7 @@ public class MphChlBasisOp extends PixelOperator {
     public static class Spi extends OperatorSpi {
 
         public Spi() {
-            super(MphChlBasisOp.class);
+            super(MphChlBasisBetaOp.class);
         }
     }
 }
