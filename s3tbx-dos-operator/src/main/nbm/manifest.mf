@@ -4,5 +4,6 @@ AutoUpdate-Essential-Module: false
 OpenIDE-Module-Java-Dependencies: Java > 1.8
 OpenIDE-Module-Display-Category: SNAP Toolboxes
 OpenIDE-Module-Specification-Version: ${s3tbx.nbmSpecVersion}
+OpenIDE-Module-Implementation-Version: ${s3tbx.nbmImplVersion}
 OpenIDE-Module-Layer: layer.xml
 OpenIDE-Module-Requires: org.netbeans.api.javahelp.Help
