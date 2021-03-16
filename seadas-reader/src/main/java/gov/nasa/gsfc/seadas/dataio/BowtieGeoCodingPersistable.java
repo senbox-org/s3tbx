@@ -23,8 +23,6 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.jdom.Element;
 
-import java.awt.Dimension;
-
 public class BowtieGeoCodingPersistable implements DimapPersistable {
 
     static final String BOWTIE_PIXEL_GEO_CODING_TAG = "BowtiePixelGeoCoding";
@@ -32,7 +30,7 @@ public class BowtieGeoCodingPersistable implements DimapPersistable {
     static final String BOWTIE_SCANLINE_HEIGHT_TAG = "BowtieScanlineHeight";
 
     @Override
-    public Object createObjectFromXml(Element element, Product product, Dimension regionRasterSize) {
+    public Object createObjectFromXml(Element element, Product product) {
         Element pixelElement = element.getChild(BOWTIE_PIXEL_GEO_CODING_TAG);
         Element tiepointElement = element.getChild(BOWTIE_TIEPOINT_GEO_CODING_TAG);
         if (pixelElement != null) {
