@@ -1,0 +1,89 @@
+<!--
+  ~ Copyright (C) 2011 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - MERIS L1b Fourth to Third Reprocessing Adaptation Processor - Command Line Description</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            MERIS L1b Fourth to Third Reprocessing Adaptation Processor - Command Line Description
+        </td>
+        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="images/snap_header.jpg"
+                                                                                     border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h3>Command Line Description</h3>
+
+Since the MERIS L1b Fourth to Third Reprocessing Adaptation  processor makes use of the SNAP graph processing framework, it can be
+used also as a command line tool. The graph processing is invoked
+by the command
+<ul>
+    <li>
+        ${SNAP-INSTALL-DIR}/bin/gpt
+    </li>
+</ul>
+
+To obtain general help on the graph processing, use the command
+<ul>
+    <li>
+        ${SNAP-INSTALL-DIR}/bin/gpt -h
+    </li>
+</ul>
+
+Specific help on the MERIS L1b Fourth to Third Reprocessing Adaptation processor can be obtained with
+<ul>
+    <li>
+        ${SNAP-INSTALL-DIR}/bin/gpt -h Meris.Reprocessing.Adapter.4To3
+    </li>
+</ul>
+
+In this case, information on the usage of this particular processor is given.<br><br>
+
+The MERIS L1b Fourth to Third Reprocessing Adaptation processor does not provide any user parameters.
+However, as for all gpt processors, the processing setup can also be specified via a graph xml file which
+    could look like the following:
+<pre>
+
+    &lt;graph id="Meris4thTo3rdReprocessingAdaptationTest"&gt;
+        &lt;version&gt;1.0&lt;/version&gt;
+        &lt;node id="reprocessingAdaptation"&gt;
+            &lt;operator&gt;Meris.Reprocessing.Adapter.4To3&lt;/operator&gt;
+            &lt;sources&gt;
+                &lt;source&gt;${sourceProduct}&lt;/source&gt;
+            &lt;/sources&gt;
+        &lt;/node&gt;
+    &lt;/graph&gt;
+
+</pre>
+
+This graph can be invoked by the following call on the command line:
+<ul>
+    <li>
+        ${SNAP-INSTALL-DIR}/bin/gpt &lt;graph-file.xml&gt; -SsourceProduct=&lt;path-to-source-file&gt;
+    </li>
+</ul>
+
+<hr>
+</body>
+</html>

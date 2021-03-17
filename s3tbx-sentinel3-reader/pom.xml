@@ -87,6 +87,7 @@
                     <publicPackages>
                         <publicPackage>org.esa.s3tbx.dataio.s3.slstr</publicPackage>
                         <publicPackage>org.esa.s3tbx.dataio.s3.meris</publicPackage>
+                        <publicPackage>org.esa.s3tbx.dataio.s3.meris.reprocessing</publicPackage>
                         <publicPackage>org.esa.s3tbx.dataio.s3.olci</publicPackage>
                         <publicPackage>org.esa.s3tbx.dataio.s3.util</publicPackage>
                     </publicPackages>

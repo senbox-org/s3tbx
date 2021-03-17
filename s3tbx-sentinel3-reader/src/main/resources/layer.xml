@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+
+    <folder name="Actions">
+        <folder name="Operators">
+            <file name="org-esa-s3tbx-dataio-s3-meris-reprocessing-Meris4thTo3rdReprocessingOpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="4th-->3rd"/>
+                <attr name="operatorName" stringvalue="Meris.Reprocessing.Adapter.4To3"/>
+                <attr name="dialogTitle" stringvalue="MERIS 4th-->3rd Reprocessing Adaptation"/>
+                <attr name="targetProductNameSuffix" stringvalue="_3RP"/>
+                <attr name="helpId" stringvalue="meris4thTo3rdReprocessingAdaptationTool"/>
+            </file>
+        </folder>
+    </folder>
+
+    <folder name="Menu">
+        <folder name="Optical">
+            <folder name="Preprocessing">
+                <folder name="MERIS Reprocessing Adaptation">
+                    <file name="org-esa-s3tbx-dataio-s3-meris-reprocessing-Meris4thTo3rdReprocessingOpAction.shadow">
+                        <attr name="originalFile"
+                              stringvalue="Actions/Operators/org-esa-s3tbx-dataio-s3-meris-reprocessing-Meris4thTo3rdReprocessingOpAction.instance"/>
+                        <attr name="position" intvalue="16"/>
+                        <attr name="displayName" stringvalue="4th-->3rd Reprocessing"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+
+    <folder name="Services">
+        <folder name="JavaHelp">
+            <file name="org-esa-s3tbx-s3tbx-sentinel3-reader-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="4600"/>
+            </file>
+        </folder>
+    </folder>
+
+</filesystem>
