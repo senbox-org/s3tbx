@@ -2,7 +2,6 @@ package org.esa.s3tbx.dos;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
@@ -28,7 +27,6 @@ import java.awt.image.renderable.ParameterBlock;
 
 /**
  * Performs dark object subtraction for spectral bands in source product.
- *
  */
 @OperatorMetadata(alias = "DarkObjectSubtraction",
         version = "1.0",
@@ -68,8 +66,6 @@ public class DarkObjectSubtractionOp extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-        sourceProduct = getSourceProduct();
-
         // validation
         if (sourceProduct.isMultiSize()) {
             throw new OperatorException("Cannot (yet) handle multisize products. Consider resampling the product first.");
@@ -77,10 +73,16 @@ public class DarkObjectSubtractionOp extends Operator {
         if (this.sourceBandNames == null || this.sourceBandNames.length == 0) {
             throw new OperatorException("Please select at least one source band.");
         }
-
-        GeoCoding sourceGeoCoding = sourceProduct.getSceneGeoCoding();
-        if (sourceGeoCoding == null) {
-            throw new OperatorException("Source product has no geo-coding");
+        boolean spectralBandFound = false;
+        for (String sourceBandName : sourceBandNames) {
+            final Band band = sourceProduct.getBand(sourceBandName);
+            if (band.getSpectralWavelength() > 0) {
+                spectralBandFound = true;
+                break;
+            }
+        }
+        if (!spectralBandFound) {
+            throw new OperatorException("Source product does not contain spectral bands. DOS cannot be applied.");
         }
 
         darkObjectValues = new double[sourceBandNames.length];
@@ -177,7 +179,7 @@ public class DarkObjectSubtractionOp extends Operator {
                     final long t1 = System.currentTimeMillis();
                     System.out.println("computing histogram with Mask...");
                     Mask mask = new Mask("m", sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
-                            Mask.BandMathsType.INSTANCE);
+                                         Mask.BandMathsType.INSTANCE);
                     Mask.BandMathsType.setExpression(mask, maskExpression);
                     sourceProduct.getMaskGroup().add(mask);
                     stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
@@ -188,12 +190,12 @@ public class DarkObjectSubtractionOp extends Operator {
                 System.out.println("darkObjectValue for '" + sourceBandName + "' : " + darkObjectValues[i]);
 
                 final RenderedOp subtractedImage = subtractConstantFromImage(sourceBand.getGeophysicalImage(),
-                        darkObjectValues[i]);
+                                                                             darkObjectValues[i]);
                 targetProduct.getBand(sourceBandName).setSourceImage(subtractedImage);
 
                 // add dark object value to metadata
                 final MetadataAttribute dosAttr = new MetadataAttribute(sourceBandName,
-                        ProductData.createInstance(new double[]{darkObjectValues[i]}), true);
+                                                                        ProductData.createInstance(new double[]{darkObjectValues[i]}), true);
                 targetProduct.getMetadataRoot().getElement(DARK_OBJECT_METADATA_GROUP_NAME).addAttribute(dosAttr);
             }
             if (pm != null) {
