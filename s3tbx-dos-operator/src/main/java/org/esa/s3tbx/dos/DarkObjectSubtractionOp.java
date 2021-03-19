@@ -164,30 +164,20 @@ public class DarkObjectSubtractionOp extends Operator {
         for (int i = 0; i < sourceBandNames.length; i++) {
             final String sourceBandName = sourceBandNames[i];
             checkForCancellation();
-            System.out.println("sourceBandName = " + sourceBandName);
             Band sourceBand = sourceProduct.getBand(sourceBandName);
 
             if (sourceBand.getSpectralWavelength() > 0) {
                 Stx stx;
                 if (maskExpression == null || maskExpression.isEmpty()) {
-                    final long t1 = System.currentTimeMillis();
-                    System.out.println("computing histogram without Mask...");
                     stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
-                    final long t2 = System.currentTimeMillis();
-                    System.out.println("computation time for stx without Mask: " + (t2 - t1) + " ms");
                 } else {
-                    final long t1 = System.currentTimeMillis();
-                    System.out.println("computing histogram with Mask...");
                     Mask mask = new Mask("m", sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
                                          Mask.BandMathsType.INSTANCE);
                     Mask.BandMathsType.setExpression(mask, maskExpression);
                     sourceProduct.getMaskGroup().add(mask);
                     stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
-                    final long t2 = System.currentTimeMillis();
-                    System.out.println("computation time for stx with Mask: " + (t2 - t1) + " ms");
                 }
                 darkObjectValues[i] = getHistogramMinAtPercentile(stx, histogramMinimumPercentile);
-                System.out.println("darkObjectValue for '" + sourceBandName + "' : " + darkObjectValues[i]);
 
                 final RenderedOp subtractedImage = subtractConstantFromImage(sourceBand.getGeophysicalImage(),
                                                                              darkObjectValues[i]);
