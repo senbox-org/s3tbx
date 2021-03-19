@@ -68,7 +68,7 @@ public class DarkObjectSubtractionOp extends Operator {
     public void initialize() throws OperatorException {
         // validation
         if (sourceProduct.isMultiSize()) {
-            throw new OperatorException("Cannot (yet) handle multisize products. Consider resampling the product first.");
+            throw new OperatorException("Cannot (yet) handle multi-size products. Consider resampling the product first.");
         }
         if (this.sourceBandNames == null || this.sourceBandNames.length == 0) {
             throw new OperatorException("Please select at least one source band.");
@@ -92,7 +92,7 @@ public class DarkObjectSubtractionOp extends Operator {
 
         setTargetProduct(targetProduct);
 
-        applyDarkObjectSubtraction(null);
+        applyDarkObjectSubtraction(ProgressMonitor.NULL);
     }
 
     // todo:
@@ -117,16 +117,19 @@ public class DarkObjectSubtractionOp extends Operator {
 //        }
 //    }
 
-    static RenderedOp subtractConstantFromImage(RenderedImage image, double constantValue) {
-        // Create the constant values.
-        ParameterBlock pb1 = new ParameterBlock();
-        pb1.addSource(image);
+    static RenderedOp subtractConstantFromImage(Band spectralBand, double constantValue) {
+        // todo - replace no-data value by NaN in geophysicalImage.
+        // todo - see ImageManager.createMaskedGeophysicalImage(rasterDataNode, noData)
+        final RenderedImage geophysicalImage = spectralBand.getGeophysicalImage();
+
+        ParameterBlock parameterBlock = new ParameterBlock();
+        parameterBlock.addSource(geophysicalImage);
         double[] constants = new double[1]; // we have one band per image
         constants[0] = constantValue;
-        pb1.add(constants);
+        parameterBlock.add(constants);
 
         // Construct the SubtractConst operation.
-        return JAI.create("subtractconst", pb1, null);
+        return JAI.create("SubtractConst", parameterBlock, null);
     }
 
     static double getHistogramMinimum(Stx stx) {
@@ -158,39 +161,49 @@ public class DarkObjectSubtractionOp extends Operator {
 
     private void applyDarkObjectSubtraction(ProgressMonitor pm) {
         // add new metadata group for dark object values
-        final MetadataElement darkObjectSpectralValueMetadataElement = new MetadataElement(DARK_OBJECT_METADATA_GROUP_NAME);
-        targetProduct.getMetadataRoot().addElement(darkObjectSpectralValueMetadataElement);
+        pm.beginTask("Applying DOS...", sourceBandNames.length);
+        try {
+            final MetadataElement darkObjectSpectralValueMetadataElement = new MetadataElement(DARK_OBJECT_METADATA_GROUP_NAME);
+            targetProduct.getMetadataRoot().addElement(darkObjectSpectralValueMetadataElement);
 
-        for (int i = 0; i < sourceBandNames.length; i++) {
-            final String sourceBandName = sourceBandNames[i];
-            checkForCancellation();
-            Band sourceBand = sourceProduct.getBand(sourceBandName);
+            for (int i = 0; i < sourceBandNames.length; i++) {
+                checkForCancellation();
+                final String sourceBandName = sourceBandNames[i];
+                pm.setSubTaskName(String.format("Applying DOS to band '%s'", sourceBandName));
+                Band sourceBand = sourceProduct.getBand(sourceBandName);
 
-            if (sourceBand.getSpectralWavelength() > 0) {
-                Stx stx;
-                if (maskExpression == null || maskExpression.isEmpty()) {
-                    stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
-                } else {
-                    Mask mask = new Mask("m", sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
-                                         Mask.BandMathsType.INSTANCE);
-                    Mask.BandMathsType.setExpression(mask, maskExpression);
-                    sourceProduct.getMaskGroup().add(mask);
-                    stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
+                if (sourceBand.getSpectralWavelength() > 0) {
+                    Stx stx;
+                    if (maskExpression == null || maskExpression.isEmpty()) {
+                        stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
+                    } else {
+                        // todo - Don't create mask for each band, it can be reused
+                        Mask mask = new Mask("m", sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
+                                             Mask.BandMathsType.INSTANCE);
+                        Mask.BandMathsType.setExpression(mask, maskExpression);
+
+                        sourceProduct.getMaskGroup().add(mask); // not good to modify the source
+                        // todo - test this alternative to the above line
+                        // mask.setOwner(sourceProduct);
+
+                        stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
+                    }
+                    darkObjectValues[i] = getHistogramMinAtPercentile(stx, histogramMinimumPercentile);
+
+                    final RenderedOp subtractedImage = subtractConstantFromImage(sourceBand,
+                                                                                 darkObjectValues[i]);
+                    targetProduct.getBand(sourceBandName).setSourceImage(subtractedImage);
+
+                    // add dark object value to metadata
+                    final MetadataAttribute dosAttr = new MetadataAttribute(sourceBandName,
+                                                                            ProductData.createInstance(new double[]{darkObjectValues[i]}), true);
+                    targetProduct.getMetadataRoot().getElement(DARK_OBJECT_METADATA_GROUP_NAME).addAttribute(dosAttr);
                 }
-                darkObjectValues[i] = getHistogramMinAtPercentile(stx, histogramMinimumPercentile);
-
-                final RenderedOp subtractedImage = subtractConstantFromImage(sourceBand.getGeophysicalImage(),
-                                                                             darkObjectValues[i]);
-                targetProduct.getBand(sourceBandName).setSourceImage(subtractedImage);
-
-                // add dark object value to metadata
-                final MetadataAttribute dosAttr = new MetadataAttribute(sourceBandName,
-                                                                        ProductData.createInstance(new double[]{darkObjectValues[i]}), true);
-                targetProduct.getMetadataRoot().getElement(DARK_OBJECT_METADATA_GROUP_NAME).addAttribute(dosAttr);
-            }
-            if (pm != null) {
                 pm.worked(1);
             }
+        } finally {
+            pm.done();
+
         }
     }
 
@@ -215,8 +228,16 @@ public class DarkObjectSubtractionOp extends Operator {
                 ProductUtils.copyGeoCoding(sourceBand, targetBand);
                 targetBand.setDescription(sourceBand.getDescription());
                 targetBand.setUnit(sourceBand.getUnit());
+                // todo - might work to use the geophysical no-data value
+                // todo - Alternatively, don't use the settings here and mask the source images. Where no-data set NaN.
+                // todo - Result wil be NaN. So we would ne to set NaN as No-data value
                 targetBand.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
-                targetBand.setNoDataValue(sourceBand.getNoDataValue());
+                targetBand.setNoDataValue(sourceBand.getGeophysicalNoDataValue());
+
+                // todo - Consider the valid pixel expression. Ensure the referenced raster are copied.
+                // todo - For example see: GeoCodingFactory.copyReferencedRasters
+                // todo - but here the implementation can be simplified
+
             } else {
                 ProductUtils.copyBand(sourceBand.getName(), sourceProduct, targetProduct, true);
             }

@@ -1,8 +1,15 @@
 package org.esa.s3tbx.dos;
 
 import com.bc.ceres.core.ProgressMonitor;
-import com.bc.ceres.glevel.MultiLevelImage;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.MetadataElement;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.Stx;
+import org.esa.snap.core.datamodel.StxFactory;
+import org.esa.snap.core.datamodel.VirtualBand;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,9 +52,7 @@ public class DarkObjectSubtractionOpTest {
         testBand.setDataElems(dataElems);
 
         final double constValue = 0.1;
-        final MultiLevelImage origImage = testBand.getGeophysicalImage();
-        final RenderedOp subtractedImage = DarkObjectSubtractionOp.subtractConstantFromImage(origImage,
-                                                                                             constValue);
+        final RenderedOp subtractedImage = DarkObjectSubtractionOp.subtractConstantFromImage(testBand, constValue);
 
         assertNotNull(dataElems);
         final DataBuffer subtractedDataBuffer = subtractedImage.getData().getDataBuffer();
@@ -73,9 +78,7 @@ public class DarkObjectSubtractionOpTest {
         testBand.setDataElems(dataElems);
 
         final double constValue = 0.1;
-        final MultiLevelImage origImage = testBand.getGeophysicalImage();
-        final RenderedOp subtractedImage = DarkObjectSubtractionOp.subtractConstantFromImage(origImage,
-                                                                                             constValue);
+        final RenderedOp subtractedImage = DarkObjectSubtractionOp.subtractConstantFromImage(testBand, constValue);
 
         assertNotNull(dataElems);
         final DataBuffer subtractedDataBuffer = subtractedImage.getData().getDataBuffer();
@@ -103,9 +106,7 @@ public class DarkObjectSubtractionOpTest {
         testBand.setDataElems(dataElems);
 
         final double constValue = 0.1;
-        final MultiLevelImage origImage = testBand.getGeophysicalImage();
-        final RenderedOp subtractedImage = DarkObjectSubtractionOp.subtractConstantFromImage(origImage,
-                                                                                             constValue);
+        final RenderedOp subtractedImage = DarkObjectSubtractionOp.subtractConstantFromImage(testBand, constValue);
 
         // add subtracted elements to metadata:
         final MetadataElement metadataRoot = product.getMetadataRoot();

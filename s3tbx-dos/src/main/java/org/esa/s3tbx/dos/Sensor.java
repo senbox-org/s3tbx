@@ -1,6 +1,7 @@
 package org.esa.s3tbx.dos;
 
-import static org.esa.s3tbx.dos.SensorConstants.*;
+import static org.esa.s3tbx.dos.SensorConstants.LANDSAT_TM_SPECTRAL_BANDS;
+import static org.esa.s3tbx.dos.SensorConstants.S2_MSI_SPECTRAL_BANDS;
 
 /**
  * Enumeration for supported sensors for Dark Object Subtraction operator.

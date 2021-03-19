@@ -24,10 +24,10 @@
         <version>9.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>s3tbx-dos-operator</artifactId>
-    <name>Sentinel-3 Dark Object Subtraction operator</name>
+    <artifactId>s3tbx-dos</artifactId>
+    <name>Dark Object Subtraction Operator</name>
     <packaging>nbm</packaging>
-    <description>SNAP operator implementing an algorithm for Dark Object Subtraction.
+    <description>Operator implementing an algorithm for Dark Object Subtraction.
     </description>
 
     <properties>

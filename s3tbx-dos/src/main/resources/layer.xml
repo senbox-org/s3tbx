@@ -19,7 +19,7 @@
     <folder name="Menu">
         <folder name="Optical">
             <folder name="Preprocessing">
-                <file name="org-esa-s3tbx-DarkObjectSubtractionOpAction.shadow">
+                <file name="org-esa-s3tbx-dos-DarkObjectSubtractionOpAction.shadow">
                     <attr name="originalFile"
                           stringvalue="Actions/Operators/org-esa-s3tbx-dos-DarkObjectSubtractionOpAction.instance"/>
                     <attr name="position" intvalue="12"/>
