@@ -56,17 +56,17 @@
     <li><b>Elevation</b><br>
         The value used as elevation for scene.
     </li>
-    <li><b>TSM factor bpart</b><br>
-        Conversion factor bpart. (TSM = bpart * <b>TSMfakBpart</b> + bwit * TSMfakBwit)
+    <li><b>TSM factor</b><br>
+        Conversion factor bpart. (TSM = <b>TSMfac</b> * iop_btot^TSMexp)
     </li>
-    <li><b>TSM factor bwit</b><br>
-        Conversion factor bwit. (TSM = bpart * TSMfakBpart + bwit * <b>TSMfakBwit</b>)
+    <li><b>TSM exponent</b><br>
+        Conversion factor bwit. (TSM = TSMfac * iop_btot^<b>TSMexp</b>)
     </li>
     <li><b>CHL exponent</b><br>
-        Chlorophyll exponent (CHL = iop-apig^<b>CHLexp</b> * CHLfak)
+        Chlorophyll exponent (CHL = iop_apig^<b>CHLexp</b> * CHLfac)
     </li>
     <li><b>CHL factor</b><br>
-        Chlorophyll factor (CHL = iop-apig^CHLexp * <b>CHLfak</b>)
+        Chlorophyll factor (CHL = iop_apig^CHLexp * <b>CHLfac</b>)
     </li>
     <li><b>Threshold rtosa OOS</b><br>
         Threshold for out of scope of nn training dataset flag for gas corrected top-of-atmosphere reflectances
@@ -85,6 +85,31 @@
         Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets.
         For MSI there exits a neural net where ranges of parameters was extended to moderate-to-extreme cases (C2X-Nets).
         However, this is a parameter which should only used during the development of new neural nets.
+    </li>
+    <li><b>Set of neural nets.</b><br>
+        On of the pre-defined sets of neural nets can be selected.
+        Currently you can select between three different sets.
+        <table>
+            <thead>
+            <tr>
+                <td><b>Name</b></td>
+                <td><b>Description</b></td>
+            </tr>
+            </thead>
+            <tr>
+                <td>C2RCC-Nets</td>
+                <td>Standard NNs preferably to be used for eutrophic to mesotrophic water types</td>
+            </tr>
+            <tr>
+                <td>C2X-Nets</td>
+                <td>Special NNs for high concentrations of suspended material and chlorophyll concentration</td>
+            </tr>
+            <tr>
+                <td>C2X-COMPLEX-Nets</td>
+                <td>Special NNs for optically complex water types, preferably to be used for inland waters.</td>
+            </tr>
+        </table>
+
     </li>
     <li><b>Output AC reflectances as rrs instead of rhow</b><br>
         Write remote sensing reflectances instead of water leaving reflectances.

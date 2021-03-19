@@ -19,7 +19,6 @@ import org.esa.snap.core.datamodel.ProductManager;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.util.ProgressHandleMonitor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -334,7 +333,6 @@ class InsituClientModel {
         }
     }
 
-    @NotNull
     private String createExceptionMessage(InsituResponse insituResponse) {
         List<String> reasons = insituResponse.getFailureReasons();
 

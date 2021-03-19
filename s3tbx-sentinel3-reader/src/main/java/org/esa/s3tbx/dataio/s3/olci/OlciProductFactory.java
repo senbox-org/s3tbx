@@ -1,10 +1,8 @@
 package org.esa.s3tbx.dataio.s3.olci;
 
-import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.s3tbx.dataio.s3.SentinelTimeCoding;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReaderFactory;
 import org.esa.snap.core.dataio.geocoding.ComponentFactory;
@@ -13,10 +11,7 @@ import org.esa.snap.core.dataio.geocoding.ForwardCoding;
 import org.esa.snap.core.dataio.geocoding.GeoChecks;
 import org.esa.snap.core.dataio.geocoding.GeoRaster;
 import org.esa.snap.core.dataio.geocoding.InverseCoding;
-import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
-import org.esa.snap.core.dataio.geocoding.forward.PixelInterpolatingForward;
 import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
-import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
@@ -24,13 +19,8 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGrid;
-import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import org.esa.snap.runtime.Config;
-import ucar.ma2.Array;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
 
-import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,25 +36,48 @@ import java.util.regex.Pattern;
  */
 public abstract class OlciProductFactory extends AbstractProductFactory {
 
+    public final static String OLCI_USE_PIXELGEOCODING = "s3tbx.reader.olci.pixelGeoCoding";
+    final static String SYSPROP_OLCI_TIE_POINT_CODING_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
+    private final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
     private final static String[] excludedIDs = new String[]{"removedPixelsData"};
-
     private Map<String, Float> nameToWavelengthMap;
     private Map<String, Float> nameToBandwidthMap;
     private Map<String, Integer> nameToIndexMap;
     private int subSamplingX;
     private int subSamplingY;
 
-    public final static String OLCI_USE_PIXELGEOCODING = "s3tbx.reader.olci.pixelGeoCoding";
-    final static String SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY = "s3tbx.reader.olci.fractionAccuracy";
-    final static String SYSPROP_OLCI_PIXEL_CODING_FORWARD = "s3tbx.reader.olci.pixelGeoCoding.forward";
-    final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
-    final static String SYSPROP_OLCI_TIE_POINT_CODING_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
-
     OlciProductFactory(Sentinel3ProductReader productReader) {
         super(productReader);
         nameToWavelengthMap = new HashMap<>();
         nameToBandwidthMap = new HashMap<>();
         nameToIndexMap = new HashMap<>();
+    }
+
+    static double getResolutionInKm(String productType) {
+        switch (productType) {
+            case "OL_1_EFR":
+            case "OL_2_LFR":
+            case "OL_2_WFR":
+                return 0.3;
+
+            case "OL_1_ERR":
+            case "OL_2_LRR":
+            case "OL_2_WRR":
+                return 1.2;
+
+            default:
+                throw new IllegalArgumentException("unsupported product of type: " + productType);
+        }
+    }
+
+    static String[] getForwardAndInverseKeys_tiePointCoding() {
+        final String[] codingNames = new String[2];
+
+        final Preferences preferences = Config.instance("s3tbx").preferences();
+        codingNames[0] = preferences.get(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, TiePointBilinearForward.KEY);
+        codingNames[1] = TiePointInverse.KEY;
+
+        return codingNames;
     }
 
     @Override
@@ -142,7 +155,7 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
                                                   lonBand.getRasterWidth(), lonBand.getRasterHeight(), resolutionInKilometers);
 
-        final String[] codingKeys = getForwardAndInverseKeys_pixelCoding();
+        final String[] codingKeys = getForwardAndInverseKeys_pixelCoding(SYSPROP_OLCI_PIXEL_CODING_INVERSE);
         final ForwardCoding forward = ComponentFactory.getForward(codingKeys[0]);
         final InverseCoding inverse = ComponentFactory.getInverse(codingKeys[1]);
 
@@ -247,55 +260,5 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
         final S3NetcdfReader reader = S3NetcdfReaderFactory.createS3NetcdfProduct(file);
         addSeparatingDimensions(reader.getSuffixesForSeparatingDimensions());
         return reader.readProductNodes(file, null);
-    }
-
-    static double getResolutionInKm(String productType) {
-        switch (productType) {
-            case "OL_1_EFR":
-            case "OL_2_LFR":
-            case "OL_2_WFR":
-                return 0.3;
-
-            case "OL_1_ERR":
-            case "OL_2_LRR":
-            case "OL_2_WRR":
-                return 1.2;
-
-            default:
-                throw new IllegalArgumentException("unsupported product of type: " + productType);
-        }
-    }
-
-    static String[] getForwardAndInverseKeys_pixelCoding() {
-        final String[] codingNames = new String[2];
-
-        final Preferences preferences = Config.instance("s3tbx").preferences();
-        final boolean useFractAccuracy = preferences.getBoolean(SYSPROP_OLCI_USE_FRACTIONAL_ACCURACY, false);
-        if (useFractAccuracy) {
-            codingNames[0] = PixelInterpolatingForward.KEY;
-        } else {
-            codingNames[0] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_FORWARD, PixelForward.KEY);
-        }
-        codingNames[1] = preferences.get(SYSPROP_OLCI_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
-
-        return codingNames;
-    }
-
-    static String[] getForwardAndInverseKeys_tiePointCoding() {
-        final String[] codingNames = new String[2];
-
-        final Preferences preferences = Config.instance("s3tbx").preferences();
-        codingNames[0] = preferences.get(SYSPROP_OLCI_TIE_POINT_CODING_FORWARD, TiePointBilinearForward.KEY);
-        codingNames[1] = TiePointInverse.KEY;
-
-        return codingNames;
-    }
-
-    protected double[] loadTiePointData(String tpgName) {
-        final MultiLevelImage mlImage = getImageForTpg(tpgName);
-        final Raster tpData = mlImage.getImage(0).getData();
-        final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
-        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
-        return tiePoints;
     }
 }

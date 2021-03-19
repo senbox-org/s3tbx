@@ -22,16 +22,12 @@ import org.esa.snap.core.dataio.geocoding.ForwardCoding;
 import org.esa.snap.core.dataio.geocoding.GeoChecks;
 import org.esa.snap.core.dataio.geocoding.GeoRaster;
 import org.esa.snap.core.dataio.geocoding.InverseCoding;
-import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
-import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.runtime.Config;
 
 import java.io.IOException;
-import java.util.prefs.Preferences;
 
 public class SlstrWstProductFactory extends SlstrSstProductFactory {
 
@@ -62,11 +58,9 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
                                                   targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);
 
-        final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String invKey = preferences.get(SYSPROP_SLSTR_WST_PIXEL_INVERSE, PixelQuadTreeInverse.KEY);
-
-        final ForwardCoding forward = ComponentFactory.getForward(PixelForward.KEY);
-        final InverseCoding inverse = ComponentFactory.getInverse(invKey);
+        final String[] keys = getForwardAndInverseKeys_pixelCoding(SYSPROP_SLSTR_WST_PIXEL_INVERSE);
+        final ForwardCoding forward = ComponentFactory.getForward(keys[0]);
+        final InverseCoding inverse = ComponentFactory.getInverse(keys[1]);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();

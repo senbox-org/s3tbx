@@ -1,0 +1,105 @@
+<html>
+<head>
+    <title>SNAP Data Processors - MERIS L1b Fourth to Third Reprocessing Adaptation Algorithm Specification</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            SNAP Data Processors - MERIS L1b Fourth to Third Reprocessing Adaptation Algorithm Specification
+        </td>
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+                src="images/snap_header.jpg"
+                border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h3>Algorithm Specification</h3>
+
+<h4>Adaptation of spectral bands</h4>
+
+<p>
+    The 15 spectral bands in the MERIS L1b Fourth Reprocessing product, M01_radiance,.., M15_radiance are simply
+    adapted by band name to the 15 spectral bands as specified in the MERIS L1b Third Reprocessing product,
+    radiance_1,..., radiance_15. Spectral band properties, such as description, unit no data value etc., are
+    also adapted to the third reprocessing conventions. A solar flux value is also set as property for each
+    radiance_* band: For each spectral band, the mean of the corresponding solar flux band
+    in the fourth reprocessing product is computed.
+</p>
+
+<h4>Adaptation of the 'detector_index' band</h4>
+
+<p>
+    The 'detector_index' band is simply copied from the fourth into the third reprocessing product.
+    The band properties are set following the third reprocessing conventions.
+</p>
+
+<h4>Adaptation of tie point grids</h4>
+
+<p>
+    The tie point grids are simply copied from the fourth into the third reprocessing product and adapted by name
+    where possible. However, there are a few specific differences to be considered, as listed below:
+    <ul>
+        <li>
+            For the sun and view azimuth angles, the value range needs to be converted from [-180..180] to
+            [0..360]. I.e., negative values need to be increased by 360 in the third reprocessing product.
+        </li>
+        <li>
+            For total ozone, the values need to be converted from kg/m2 to DU.
+        </li>
+        <li>
+            The 'rel_hum' tie point grid in the third reprocessing product provides the relative humidity at 850 hPa.
+            This is obtained from the 'humidity_pressure_level_14' tie point grid in the fourth reprocessing product.
+            The fourth reprocessing product provides the relative humidity as a 20-level profile.
+        </li>
+        <li>
+            The fourth reprocessing product does not provide equivalent tie point grids for the 'dem_rough',
+            'lat_corr' and 'lon_corr' tie point grids in the third reprocessing product. Therefore, these
+            tie point grids are not provided in the result product of this adaptation.
+        </li>
+    </ul>
+
+</p>
+
+<h4>Adaptation of the quality flag</h4>
+
+<p>
+    The 'quality_flags' band in the MERIS L1b Fourth Reprocessing product is converted to a 'l1_flags' band as
+    specified in the MERIS L1b Third Reprocessing product. All single flags in the 'l1_flags' band are also
+    available in the 'quality_flags', thus the adaptation is a simple extraction of the relevant bits and
+    mapping them into the 'l1_flags' coding.
+</p>
+
+<h4>Adaptation of the product metadata</h4>
+
+<p>
+    The product metadata structure is complex and rather different for the fourth and third reprocessing products.
+    In the current processor version, just a small metadata subset is extracted from the fourth reprocessing product
+    and written into the 'MPH' metadata section of the third reprocessing product. In a future processor version,
+    the metadata of the third reprocessing product will be extended, depending on user demands.
+</p>
+
+<h3>References</h3>
+
+<p class="i1">
+    <b>[1]</b>
+    European Space Agency: MERIS Product Handbook, Issue 3.0, 1 August 2011
+    (http://envisat.esa.int/handbooks/meris/CNTR.html).
+    <br><br>
+    
+    <b>[2]</b>
+    European Space Agency: Release notes of Envisat MERIS 4th reprocessing data, 14 Jul 2020.
+    (https://earth.esa.int/eogateway/news/release-of-envisat-meris-4th-reprocessing-data-new-online-dissemination-service)
+    <br><br>
+
+</p>
+<br>
+
+<hr>
+</body>
+</html>
