@@ -1,7 +1,15 @@
 package org.esa.s3tbx.dos;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.MetadataElement;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.Stx;
+import org.esa.snap.core.datamodel.StxFactory;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -21,24 +29,28 @@ import java.awt.image.renderable.ParameterBlock;
 /**
  * Performs dark object subtraction for spectral bands in source product.
  *
- * @author olafd
  */
 @OperatorMetadata(alias = "DarkObjectSubtraction",
-        version = "1.0-SNAPSHOT",
+        version = "1.0",
         category = "Optical/Preprocessing",
-//        internal = true,
-        authors = "Olaf Danne",
+        authors = "Olaf Danne, Roman Shevchuk",
         copyright = "(c) 2019 by Brockmann Consult",
         description = "Performs dark object subtraction for spectral bands in source product.")
 public class DarkObjectSubtractionOp extends Operator {
 
-    @Parameter(label = "Source bands",
-            description = "The source bands to be considered for the dark object subtraction.",
+    @SourceProduct(description = "Source product containing spectral bands.")
+    private Product sourceProduct;
+
+    @TargetProduct
+    private Product targetProduct;
+
+    @Parameter(label = "Bands to copy",
+            description = "Bands to be copied to the target. DOS will be applied on spectral bands only.",
             rasterDataNodeType = Band.class)
     private String[] sourceBandNames;
 
-    @Parameter(label = "Mask expression for dark object search area", converter = BooleanExpressionConverter.class,
-            description = "Mask expression for dark object search area.")
+    @Parameter(label = "Dark object search area", converter = BooleanExpressionConverter.class,
+            description = "Mask expression defining search area for dark object.")
     private String maskExpression;
 
     @Parameter(label = "Percentile of minimum in image data", valueSet = {"0", "1", "5"},
@@ -46,12 +58,6 @@ public class DarkObjectSubtractionOp extends Operator {
                     "(the number means how many percent of the image data are lower than detected minimum.")
     private int histogramMinimumPercentile;
 
-
-    @SourceProduct(description = "Source product containing spectral bands.")
-    private Product sourceProduct;
-
-    @TargetProduct
-    private Product targetProduct;
 
     private final static String DARK_OBJECT_METADATA_GROUP_NAME = "Dark Object Spectral Values";
 
