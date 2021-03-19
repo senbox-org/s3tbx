@@ -4,12 +4,12 @@
 
     <folder name="Actions">
         <folder name="Operators">
-            <file name="org-esa-s3tbx-DarkObjectSubtractionOpAction.instance">
+            <file name="org-esa-s3tbx-dos-DarkObjectSubtractionOpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="Dark Object Subtraction"/>
-                <attr name="operatorName" stringvalue="Snap.DarkObjectSubtraction"/>
-                <attr name="dialogTitle" stringvalue="Dark Object Subtraction v1.0-SNAPSHOT"/>
+                <attr name="operatorName" stringvalue="DarkObjectSubtraction"/>
+                <attr name="dialogTitle" stringvalue="Dark Object Subtraction"/>
                 <attr name="targetProductNameSuffix" stringvalue="_dos"/>
                 <attr name="helpId" stringvalue="darkObjectSubtraction"/>
             </file>
@@ -23,8 +23,7 @@
                 <file name="org-esa-s3tbx-DarkObjectSubtractionOpAction.shadow">
                     <attr name="originalFile"
                           stringvalue="Actions/Operators/org-esa-s3tbx-dos-DarkObjectSubtractionOpAction.instance"/>
-                    <attr name="position" intvalue="1"/>
-                    <attr name="displayName" stringvalue="Dark Object Subtraction"/>
+                    <attr name="position" intvalue="12"/>
                 </file>
             </folder>
         </folder>
