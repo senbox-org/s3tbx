@@ -105,10 +105,9 @@ public class DarkObjectSubtractionOp extends Operator {
     // initialize, which works fine. A cleaner way would be just to retrieve the DOS constants in doExecute,
     // and to implement computeTile and do the subtraction manually there.
 
-    // ANSWER: It can't work. The images must be set in the initialise method. Only then it can work. This is intended.
-    // The calculating the subtraction value takes time and should be done in the doExecute. So, we can't use this approach
-    // todo(mp, MAR2021) - when all other todos are done, then the computation of the subtraction value can be done in the
-    // todo(mp, MAR2021) - doExecute and the subtraction itself can be done in computeTile and not in the JAI image.
+    // todo(mp, MAR2021) - when all other todos are done, then the above should be implemented. The computation of
+    // todo(mp, MAR2021) - the subtraction value can be done in the doExecute and the subtraction itself
+    // todo(mp, MAR2021) - can be done in computeTile and not in the JAI images.
 
 //    @Override
 //    public void doExecute(ProgressMonitor pm) throws OperatorException {
