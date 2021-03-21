@@ -105,6 +105,11 @@ public class DarkObjectSubtractionOp extends Operator {
     // initialize, which works fine. A cleaner way would be just to retrieve the DOS constants in doExecute,
     // and to implement computeTile and do the subtraction manually there.
 
+    // ANSWER: It can't work. The images must be set in the initialise method. Only then it can work. This is intended.
+    // The calculating the subtraction value takes time and should be done in the doExecute. So, we can't use this approach
+    // todo(mp, MAR2021) - when all other todos are done, then the computation of the subtraction value can be done in the
+    // todo(mp, MAR2021) - doExecute and the subtraction itself can be done in computeTile and not in the JAI image.
+
 //    @Override
 //    public void doExecute(ProgressMonitor pm) throws OperatorException {
 //        try {
@@ -118,8 +123,8 @@ public class DarkObjectSubtractionOp extends Operator {
 //    }
 
     static RenderedOp subtractConstantFromImage(Band spectralBand, double constantValue) {
-        // todo - replace no-data value by NaN in geophysicalImage.
-        // todo - see ImageManager.createMaskedGeophysicalImage(rasterDataNode, noData)
+        // todo(mp, MAR2021) - replace no-data value by NaN in geophysicalImage.
+        // todo(mp, MAR2021) - see ImageManager.createMaskedGeophysicalImage(rasterDataNode, noData)
         final RenderedImage geophysicalImage = spectralBand.getGeophysicalImage();
 
         ParameterBlock parameterBlock = new ParameterBlock();
@@ -177,13 +182,13 @@ public class DarkObjectSubtractionOp extends Operator {
                     if (maskExpression == null || maskExpression.isEmpty()) {
                         stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
                     } else {
-                        // todo - Don't create mask for each band, it can be reused
+                        // todo(mp, MAR2021) - Don't create mask for each band, it can be reused
                         Mask mask = new Mask("m", sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
                                              Mask.BandMathsType.INSTANCE);
                         Mask.BandMathsType.setExpression(mask, maskExpression);
 
                         sourceProduct.getMaskGroup().add(mask); // not good to modify the source
-                        // todo - test this alternative to the above line
+                        // todo(mp, MAR2021) - test this alternative to the above line
                         // mask.setOwner(sourceProduct);
 
                         stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
@@ -228,15 +233,16 @@ public class DarkObjectSubtractionOp extends Operator {
                 ProductUtils.copyGeoCoding(sourceBand, targetBand);
                 targetBand.setDescription(sourceBand.getDescription());
                 targetBand.setUnit(sourceBand.getUnit());
-                // todo - might work to use the geophysical no-data value
-                // todo - Alternatively, don't use the settings here and mask the source images. Where no-data set NaN.
-                // todo - Result wil be NaN. So we would ne to set NaN as No-data value
+                // todo(mp, MAR2021) - it might work to use the geophysical no-data value
+                // todo(mp, MAR2021) - if not, alternatively, don't use the settings here but mask the source images. Replace no-data with NaN.
+                // todo(mp, MAR2021) - see comment at line 125
+                // todo(mp, MAR2021) - Result wil be NaN. So we would need to set NaN as No-data value
                 targetBand.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
                 targetBand.setNoDataValue(sourceBand.getGeophysicalNoDataValue());
 
-                // todo - Consider the valid pixel expression. Ensure the referenced raster are copied.
-                // todo - For example see: GeoCodingFactory.copyReferencedRasters
-                // todo - but here the implementation can be simplified
+                // todo(mp, MAR2021) - Consider the valid pixel expression. Ensure that the referenced rasters are copied.
+                // todo(mp, MAR2021) - For example see: GeoCodingFactory.copyReferencedRasters
+                // todo(mp, MAR2021) - here the implementation can be simplified
 
             } else {
                 ProductUtils.copyBand(sourceBand.getName(), sourceProduct, targetProduct, true);
