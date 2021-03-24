@@ -1,14 +1,8 @@
 package org.esa.s3tbx.dos;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.Mask;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.Stx;
-import org.esa.snap.core.datamodel.StxFactory;
+
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -122,10 +116,7 @@ public class DarkObjectSubtractionOp extends Operator {
 //    }
 
     static RenderedOp subtractConstantFromImage(Band spectralBand, double constantValue) {
-        // todo(mp, MAR2021) - replace no-data value by NaN in geophysicalImage.
-        // todo(mp, MAR2021) - see ImageManager.createMaskedGeophysicalImage(rasterDataNode, noData)
-        final RenderedImage geophysicalImage = spectralBand.getGeophysicalImage();
-
+        RenderedImage geophysicalImage = spectralBand.getGeophysicalImage();
         ParameterBlock parameterBlock = new ParameterBlock();
         parameterBlock.addSource(geophysicalImage);
         double[] constants = new double[1]; // we have one band per image
@@ -170,6 +161,16 @@ public class DarkObjectSubtractionOp extends Operator {
             final MetadataElement darkObjectSpectralValueMetadataElement = new MetadataElement(DARK_OBJECT_METADATA_GROUP_NAME);
             targetProduct.getMetadataRoot().addElement(darkObjectSpectralValueMetadataElement);
 
+            Mask mask = new Mask("m",0,0, Mask.BandMathsType.INSTANCE);
+            if (! (maskExpression == null || maskExpression.isEmpty() )) {
+                if (sourceBandNames.length > 0) {
+                    int width = sourceProduct.getBand(sourceBandNames[0]).getRasterWidth();
+                    int height = sourceProduct.getBand(sourceBandNames[0]).getRasterHeight();
+                    mask = new Mask("m", width, height, Mask.BandMathsType.INSTANCE);
+                    Mask.BandMathsType.setExpression(mask, maskExpression);
+                }
+            }
+
             for (int i = 0; i < sourceBandNames.length; i++) {
                 checkForCancellation();
                 final String sourceBandName = sourceBandNames[i];
@@ -181,14 +182,8 @@ public class DarkObjectSubtractionOp extends Operator {
                     if (maskExpression == null || maskExpression.isEmpty()) {
                         stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
                     } else {
-                        // todo(mp, MAR2021) - Don't create mask for each band, it can be reused
-                        Mask mask = new Mask("m", sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
-                                             Mask.BandMathsType.INSTANCE);
                         Mask.BandMathsType.setExpression(mask, maskExpression);
-
-                        sourceProduct.getMaskGroup().add(mask); // not good to modify the source
-                        // todo(mp, MAR2021) - test this alternative to the above line
-                        // mask.setOwner(sourceProduct);
+                        mask.setOwner(sourceProduct);
 
                         stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
                     }
@@ -232,16 +227,9 @@ public class DarkObjectSubtractionOp extends Operator {
                 ProductUtils.copyGeoCoding(sourceBand, targetBand);
                 targetBand.setDescription(sourceBand.getDescription());
                 targetBand.setUnit(sourceBand.getUnit());
-                // todo(mp, MAR2021) - it might work to use the geophysical no-data value
-                // todo(mp, MAR2021) - if not, alternatively, don't use the settings here but mask the source images. Replace no-data with NaN.
-                // todo(mp, MAR2021) - see comment at line 125
-                // todo(mp, MAR2021) - Result wil be NaN. So we would need to set NaN as No-data value
                 targetBand.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
                 targetBand.setNoDataValue(sourceBand.getGeophysicalNoDataValue());
-
-                // todo(mp, MAR2021) - Consider the valid pixel expression. Ensure that the referenced rasters are copied.
-                // todo(mp, MAR2021) - For example see: GeoCodingFactory.copyReferencedRasters
-                // todo(mp, MAR2021) - here the implementation can be simplified
+                targetBand.setValidPixelExpression(sourceBand.getValidPixelExpression());
 
             } else {
                 ProductUtils.copyBand(sourceBand.getName(), sourceProduct, targetProduct, true);
