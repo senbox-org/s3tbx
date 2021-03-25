@@ -52,6 +52,7 @@ public class SeadasProductReader extends AbstractProductReader {
         Level2_Aquarius("Aquarius Level 2"),
         Level1A_CZCS("CZCS Level 1A"),
         Level2_CZCS("Level 2"),
+        Level1A_Hawkeye("Hawkeye Level 1A"),
         Level1A_OCTS("OCTS Level 1A"),
         Level1A_Seawifs("SeaWiFS Level 1A"),
         Level1B("Generic Level 1B"),
@@ -123,6 +124,9 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case Level2_DscovrEpic:
                     seadasFileReader = new L2DscovrEpicFileReader(this);
+                    break;
+                case Level1A_Hawkeye:
+                    seadasFileReader = new L1AHawkeyeFileReader(this);
                     break;
                 case Level1A_OCTS:
                     seadasFileReader = new L1AOctsFileReader(this);
@@ -334,6 +338,8 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Level1B;
             } else if (title.equals("CZCS Level-1A Data")) {
                 return ProductType.Level1A_CZCS;
+            } else if (title.contains("Hawkeye Level-1A Data")) {
+                return ProductType.Level1A_Hawkeye;
             } else if (title.equals("OCTS Level-1A GAC Data")) {
                 return ProductType.Level1A_OCTS;
             } else if (title.contains("Browse")) {
