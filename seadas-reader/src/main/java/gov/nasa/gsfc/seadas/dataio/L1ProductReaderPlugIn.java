@@ -45,6 +45,7 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
     private static final String DEFAULT_FILE_EXTENSION_L1B_LAC = ".L1B_LAC";
     private static final String DEFAULT_FILE_EXTENSION_L1A_MLAC = ".L1A_MLAC";
     private static final String DEFAULT_FILE_EXTENSION_L1A_HRPT = ".L1A_H*";
+    private static final String DEFAULT_FILE_EXTENSION_L1A_NC = ".L1A.nc";
 
 
     public static final String READER_DESCRIPTION = "SeaDAS-Supported Level 1 Products";
@@ -59,6 +60,7 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
             "OCTS Level-1A GAC Data",
             "SeaWiFS Level-1B",
             "SeaWiFS Level-1A Data",
+            "Hawkeye Level-1A Data",
             "PACE OCI Level-1B Data",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<>(Arrays.asList(supportedProductTypes));
@@ -186,7 +188,8 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
                 DEFAULT_FILE_EXTENSION_L1B_GAC,
                 DEFAULT_FILE_EXTENSION_L1B_LAC,
                 DEFAULT_FILE_EXTENSION_L1A_MLAC,
-                DEFAULT_FILE_EXTENSION_L1A_HRPT
+                DEFAULT_FILE_EXTENSION_L1A_HRPT,
+                DEFAULT_FILE_EXTENSION_L1A_NC
         };
     }
 
