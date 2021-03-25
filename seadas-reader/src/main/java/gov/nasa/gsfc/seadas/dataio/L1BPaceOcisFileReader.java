@@ -82,8 +82,7 @@ public class L1BPaceOcisFileReader extends SeadasFileReader {
 
             // somehow there are duplicate bands in the test file.
             // fixme
-            swir_wavlengths = Array.factory(DataType.INT, new int[]{940, 1038, 1250, 1251, 1378, 1615, 1616, 2130, 2260});
-
+            swir_wavlengths = Array.makeArray(DataType.DOUBLE, new String[] {"940", "1038", "1250", "1251", "1378", "1615", "1616", "2130", "2260"});
 
 
         } catch (IOException e) {
