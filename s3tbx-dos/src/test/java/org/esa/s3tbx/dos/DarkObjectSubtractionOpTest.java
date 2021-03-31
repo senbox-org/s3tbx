@@ -10,9 +10,11 @@ import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.Stx;
 import org.esa.snap.core.datamodel.StxFactory;
 import org.esa.snap.core.datamodel.VirtualBand;
+import org.esa.snap.core.gpf.Operator;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.media.jai.OperationDescriptor;
 import javax.media.jai.RenderedOp;
 import java.awt.image.DataBuffer;
 
@@ -42,31 +44,43 @@ public class DarkObjectSubtractionOpTest {
     }
 
     @Test
-    public void testSubtractConstantFromImage() {
+    public void testDarkSubtractionOpConstantFromProduct() {
+        Product testProduct = new Product("TestProduct","Test",4,3);
         Band testBand = new Band("test", targetBand1.getDataType(), width, height);
         final float[] dataElems = new float[]{
                 0.02f, 0.03f, Float.NaN, 0.05f,
                 0.06f, Float.NaN, 0.08f, 0.09f,
                 0.1f, 0.11f, 0.12f, 0.13f
         };
-        testBand.setDataElems(dataElems);
+        final float[] expectedElems = new float[]{
+                0.0f, 0.01f, 0.02f, 0.03f,
+                0.04f, 0.05f, 0.06f, 0.07f,
+                0.08f, 0.09f, 0.10f, 0.11f
+        };
 
-        final double constValue = 0.1;
-        final RenderedOp subtractedImage = DarkObjectSubtractionOp.subtractConstantFromImage(testBand, constValue);
+        testBand.setDataElems(dataElems);
+        testBand.setSpectralWavelength(100);
+        testProduct.addBand(testBand);
+        Operator dosOp = new DarkObjectSubtractionOp();
+        dosOp.setSourceProduct(testProduct);
+        dosOp.setParameter("sourceBandNames", "test");
+        dosOp.setParameter("histogramMinimumPercentile", "0");
+        Product targetProduct = dosOp.getTargetProduct();
 
         assertNotNull(dataElems);
-        final DataBuffer subtractedDataBuffer = subtractedImage.getData().getDataBuffer();
+        final DataBuffer subtractedDataBuffer = targetProduct.getBand("test").getSourceImage().getData().getDataBuffer();
         assertNotNull(subtractedDataBuffer);
-        for (int i = 0; i < dataElems.length; i++) {
+        for (int i = 0; i < subtractedDataBuffer.getSize(); i++) {
             if (!Float.isNaN((dataElems[i]))) {
                 final float subtractedDataElem = subtractedDataBuffer.getElemFloat(i);
-                assertEquals(dataElems[i] - constValue, subtractedDataElem, 1.E-6);
+                assertEquals(expectedElems[i], subtractedDataElem, 1.E-6);
             }
         }
     }
 
     @Test
-    public void testSubtractConstantFromImage_withScalingFactor() {
+    public void testDarkSubtractionOpConstantFromProduct_withScalingFactor() {
+        Product testProduct = new Product("TestProduct","Test",4,3);
         Band testBand = new Band("test", targetBand1.getDataType(), width, height);
         final double scalingFactor = 1.E-4;
         testBand.setScalingFactor(scalingFactor);
@@ -75,24 +89,34 @@ public class DarkObjectSubtractionOpTest {
                 600, 700, 800, 900,
                 1000, 1100, 1200, 1300
         };
+        final float[] expectedElems = new float[]{
+                0.0f, 0.01f, 0.02f, 0.03f,
+                0.04f, 0.05f, 0.06f, 0.07f,
+                0.08f, 0.09f, 0.10f, 0.11f
+        };
         testBand.setDataElems(dataElems);
+        testBand.setSpectralWavelength(100);
+        testProduct.addBand(testBand);
+        Operator dosOp = new DarkObjectSubtractionOp();
+        dosOp.setSourceProduct(testProduct);
+        dosOp.setParameter("sourceBandNames", "test");
+        dosOp.setParameter("histogramMinimumPercentile", "1");
+        Product targetProduct = dosOp.getTargetProduct();
 
         final double constValue = 0.1;
-        final RenderedOp subtractedImage = DarkObjectSubtractionOp.subtractConstantFromImage(testBand, constValue);
-
         assertNotNull(dataElems);
-        final DataBuffer subtractedDataBuffer = subtractedImage.getData().getDataBuffer();
+        final DataBuffer subtractedDataBuffer = targetProduct.getBand("test").getSourceImage().getData().getDataBuffer();
         assertNotNull(subtractedDataBuffer);
-        for (int i = 0; i < dataElems.length; i++) {
+        for (int i = 0; i < subtractedDataBuffer.getSize(); i++) {
             if (!Float.isNaN((dataElems[i]))) {
-                final float subtractedDataElem = subtractedDataBuffer.getElemFloat(i);
-                assertEquals(scalingFactor * dataElems[i] - constValue, subtractedDataElem, 1.E-6);
+                assertEquals(subtractedDataBuffer.getElemFloat(i) , expectedElems[i], 1.E-6);
             }
         }
     }
 
     @Test
-    public void testSubtractConstantFromImage_withScalingFactorAndOffset() {
+    public void testDarkSubtractionConstantFromProduct_withScalingFactorAndOffset() {
+        Product testProduct = new Product("TestProduct","Test",4,3);
         Band testBand = new Band("test", targetBand1.getDataType(), width, height);
         final double scalingFactor = 1.E-4;
         final double scalingOffset = 0.01;
@@ -103,24 +127,33 @@ public class DarkObjectSubtractionOpTest {
                 700, 800, 900, 1000,
                 1100, 1200, 1300, 1400
         };
+        final float[] expectedElems = new float[]{
+                0.0f, 0.01f, 0.02f, 0.03f,
+                0.04f, 0.05f, 0.06f, 0.07f,
+                0.08f, 0.09f, 0.10f, 0.11f
+        };
         testBand.setDataElems(dataElems);
 
-        final double constValue = 0.1;
-        final RenderedOp subtractedImage = DarkObjectSubtractionOp.subtractConstantFromImage(testBand, constValue);
+        testBand.setSpectralWavelength(100);
+        testProduct.addBand(testBand);
+        Operator dosOp = new DarkObjectSubtractionOp();
+        dosOp.setSourceProduct(testProduct);
+        dosOp.setParameter("sourceBandNames", "test");
+        dosOp.setParameter("histogramMinimumPercentile", "1");
+        Product targetProduct = dosOp.getTargetProduct();
 
-        // add subtracted elements to metadata:
         final MetadataElement metadataRoot = product.getMetadataRoot();
         assertNotNull(metadataRoot);
         final MetadataElement darkObjectSpectralValueMetadataElement = new MetadataElement("Dark Object Spectral Value");
         metadataRoot.addElement(darkObjectSpectralValueMetadataElement);
 
         assertNotNull(dataElems);
-        final DataBuffer subtractedDataBuffer = subtractedImage.getData().getDataBuffer();
+        final DataBuffer subtractedDataBuffer = targetProduct.getBand("test").getSourceImage().getData().getDataBuffer();
         assertNotNull(subtractedDataBuffer);
-        for (int i = 0; i < dataElems.length; i++) {
+        for (int i = 0; i < subtractedDataBuffer.getSize(); i++) {
             if (!Float.isNaN((dataElems[i]))) {
                 final float subtractedDataElem = subtractedDataBuffer.getElemFloat(i);
-                assertEquals((scalingFactor * dataElems[i] + scalingOffset) - constValue, subtractedDataElem, 1.E-6);
+                assertEquals(expectedElems[i], subtractedDataElem, 1.E-6);
 
                 final MetadataAttribute dosAttr =
                         new MetadataAttribute("B_" + i,

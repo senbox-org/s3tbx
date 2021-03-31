@@ -6,6 +6,7 @@ import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
@@ -14,10 +15,8 @@ import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import javax.media.jai.Histogram;
-import javax.media.jai.JAI;
-import javax.media.jai.RenderedOp;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
+import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Performs dark object subtraction for spectral bands in source product.
@@ -85,8 +84,6 @@ public class DarkObjectSubtractionOp extends Operator {
         targetProduct = createTargetProduct();
 
         setTargetProduct(targetProduct);
-
-        applyDarkObjectSubtraction(ProgressMonitor.NULL);
     }
 
     // todo:
@@ -103,28 +100,42 @@ public class DarkObjectSubtractionOp extends Operator {
     // todo(mp, MAR2021) - the subtraction value can be done in the doExecute and the subtraction itself
     // todo(mp, MAR2021) - can be done in computeTile and not in the JAI images.
 
-//    @Override
-//    public void doExecute(ProgressMonitor pm) throws OperatorException {
-//        try {
-//            pm.beginTask("Executing dark object subtraction...", 0);
-//            applyDarkObjectSubtraction(pm);
-//        } catch (Exception e) {
-//            throw new OperatorException(e.getMessage(), e);
-//        } finally {
-//            pm.done();
-//        }
-//    }
+    @Override
+    public void doExecute(ProgressMonitor pm) throws OperatorException {
+        try {
+            pm.beginTask("Executing dark object subtraction...", 0);
+            calculateDarkObjectSubtraction(pm);
+            final MetadataElement darkObjectSpectralValueMetadataElement = new MetadataElement(DARK_OBJECT_METADATA_GROUP_NAME);
+            targetProduct.getMetadataRoot().addElement(darkObjectSpectralValueMetadataElement);
+            for (int i = 0; i < sourceBandNames.length; i++) {
+                final String sourceBandName = sourceBandNames[i];
+                //Band sourceBand = sourceProduct.getBand(sourceBandName);
+                final MetadataAttribute dosAttr = new MetadataAttribute(sourceBandName,
+                        ProductData.createInstance(new double[]{darkObjectValues[i]}), true);
+                targetProduct.getMetadataRoot().getElement(DARK_OBJECT_METADATA_GROUP_NAME).addAttribute(dosAttr);
+            }
+       } catch (Exception e) {
+           throw new OperatorException(e.getMessage(), e);
+       } finally {
+            pm.done();
+        }
+   }
 
-    static RenderedOp subtractConstantFromImage(Band spectralBand, double constantValue) {
-        RenderedImage geophysicalImage = spectralBand.getGeophysicalImage();
-        ParameterBlock parameterBlock = new ParameterBlock();
-        parameterBlock.addSource(geophysicalImage);
-        double[] constants = new double[1]; // we have one band per image
-        constants[0] = constantValue;
-        parameterBlock.add(constants);
-
-        // Construct the SubtractConst operation.
-        return JAI.create("SubtractConst", parameterBlock, null);
+    @Override
+    public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
+        int bandIndex =  Arrays.asList(sourceBandNames).indexOf(targetBand.getName());
+        String sourceBandName = targetBand.getName();
+        Band sourceBand = sourceProduct.getBand(sourceBandName);
+        Rectangle targetRectangle = targetTile.getRectangle();
+        double subtraction = darkObjectValues[bandIndex];
+        if (sourceBand.getSpectralWavelength() > 0) {
+            for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+                for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+                    double value = sourceBand.getSampleFloat(x,y) - subtraction;
+                    targetTile.setSample(x, y,value);
+                }
+            }
+        }
     }
 
     static double getHistogramMinimum(Stx stx) {
@@ -154,55 +165,38 @@ public class DarkObjectSubtractionOp extends Operator {
         return 0;
     }
 
-    private void applyDarkObjectSubtraction(ProgressMonitor pm) {
-        // add new metadata group for dark object values
-        pm.beginTask("Applying DOS...", sourceBandNames.length);
-        try {
-            final MetadataElement darkObjectSpectralValueMetadataElement = new MetadataElement(DARK_OBJECT_METADATA_GROUP_NAME);
-            targetProduct.getMetadataRoot().addElement(darkObjectSpectralValueMetadataElement);
-
-            Mask mask = new Mask("m",0,0, Mask.BandMathsType.INSTANCE);
-            if (! (maskExpression == null || maskExpression.isEmpty() )) {
-                if (sourceBandNames.length > 0) {
-                    int width = sourceProduct.getBand(sourceBandNames[0]).getRasterWidth();
-                    int height = sourceProduct.getBand(sourceBandNames[0]).getRasterHeight();
-                    mask = new Mask("m", width, height, Mask.BandMathsType.INSTANCE);
+    //This calculates darkObjectValues
+    //todo : add this to doExecute
+    private void calculateDarkObjectSubtraction(ProgressMonitor pm){
+        pm.beginTask("Calculating DOS...", sourceBandNames.length);
+        Mask mask = new Mask("m",0,0, Mask.BandMathsType.INSTANCE);
+        if (! (maskExpression == null || maskExpression.isEmpty() )) {
+            if (sourceBandNames.length > 0) {
+                int width = sourceProduct.getBand(sourceBandNames[0]).getRasterWidth();
+                int height = sourceProduct.getBand(sourceBandNames[0]).getRasterHeight();
+                mask = new Mask("m", width, height, Mask.BandMathsType.INSTANCE);
+                Mask.BandMathsType.setExpression(mask, maskExpression);
+            }
+        }
+        for (int i = 0; i < sourceBandNames.length; i++) {
+            checkForCancellation();
+            final String sourceBandName = sourceBandNames[i];
+            pm.setSubTaskName(String.format("Calculating DOS to band '%s'", sourceBandName));
+            Band sourceBand = sourceProduct.getBand(sourceBandName);
+            if (sourceBand.getSpectralWavelength() > 0) {
+                Stx stx;
+                if (maskExpression == null || maskExpression.isEmpty()) {
+                    stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
+                } else {
+                    //mask = new Mask("m", width, height, Mask.BandMathsType.INSTANCE);
                     Mask.BandMathsType.setExpression(mask, maskExpression);
+                    Mask.BandMathsType.setExpression(mask, maskExpression);
+                    mask.setOwner(sourceProduct);
+
+                    stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
                 }
+                darkObjectValues[i] = getHistogramMinAtPercentile(stx, histogramMinimumPercentile);
             }
-
-            for (int i = 0; i < sourceBandNames.length; i++) {
-                checkForCancellation();
-                final String sourceBandName = sourceBandNames[i];
-                pm.setSubTaskName(String.format("Applying DOS to band '%s'", sourceBandName));
-                Band sourceBand = sourceProduct.getBand(sourceBandName);
-
-                if (sourceBand.getSpectralWavelength() > 0) {
-                    Stx stx;
-                    if (maskExpression == null || maskExpression.isEmpty()) {
-                        stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
-                    } else {
-                        Mask.BandMathsType.setExpression(mask, maskExpression);
-                        mask.setOwner(sourceProduct);
-
-                        stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
-                    }
-                    darkObjectValues[i] = getHistogramMinAtPercentile(stx, histogramMinimumPercentile);
-
-                    final RenderedOp subtractedImage = subtractConstantFromImage(sourceBand,
-                                                                                 darkObjectValues[i]);
-                    targetProduct.getBand(sourceBandName).setSourceImage(subtractedImage);
-
-                    // add dark object value to metadata
-                    final MetadataAttribute dosAttr = new MetadataAttribute(sourceBandName,
-                                                                            ProductData.createInstance(new double[]{darkObjectValues[i]}), true);
-                    targetProduct.getMetadataRoot().getElement(DARK_OBJECT_METADATA_GROUP_NAME).addAttribute(dosAttr);
-                }
-                pm.worked(1);
-            }
-        } finally {
-            pm.done();
-
         }
     }
 
