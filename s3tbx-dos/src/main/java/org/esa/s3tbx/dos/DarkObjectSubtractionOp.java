@@ -109,7 +109,6 @@ public class DarkObjectSubtractionOp extends Operator {
             targetProduct.getMetadataRoot().addElement(darkObjectSpectralValueMetadataElement);
             for (int i = 0; i < sourceBandNames.length; i++) {
                 final String sourceBandName = sourceBandNames[i];
-                //Band sourceBand = sourceProduct.getBand(sourceBandName);
                 final MetadataAttribute dosAttr = new MetadataAttribute(sourceBandName,
                         ProductData.createInstance(new double[]{darkObjectValues[i]}), true);
                 targetProduct.getMetadataRoot().getElement(DARK_OBJECT_METADATA_GROUP_NAME).addAttribute(dosAttr);
@@ -188,7 +187,6 @@ public class DarkObjectSubtractionOp extends Operator {
                 if (maskExpression == null || maskExpression.isEmpty()) {
                     stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
                 } else {
-                    //mask = new Mask("m", width, height, Mask.BandMathsType.INSTANCE);
                     Mask.BandMathsType.setExpression(mask, maskExpression);
                     Mask.BandMathsType.setExpression(mask, maskExpression);
                     mask.setOwner(sourceProduct);
