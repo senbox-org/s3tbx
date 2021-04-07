@@ -38,7 +38,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,6 +48,16 @@ import java.util.logging.Logger;
 
 import static java.lang.String.format;
 import static java.lang.System.arraycopy;
+
+/**
+ * NASA SeaDAS File Reader.
+ *
+ * @author NASA OBPG
+ * @version $Revision$ $Date$
+ * @since 
+ */
+//APR2021 - Bing Yang - added capability to read 3d products
+
 
 public abstract class SeadasFileReader {
 
@@ -792,7 +801,6 @@ public abstract class SeadasFileReader {
         final int sceneRasterWidth = product.getSceneRasterWidth();
         final int sceneRasterHeight = product.getSceneRasterHeight();
 
-//        Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
         int spectralBandIndex = 0;
         Array wavelengths = null;
 
