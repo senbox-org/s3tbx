@@ -86,19 +86,6 @@ public class DarkObjectSubtractionOp extends Operator {
         setTargetProduct(targetProduct);
     }
 
-    // todo:
-    // The setup with applying the DOS in doExecute with JAI imaging does not yet work reliably.
-    // The reason is that we have not implemented computeTile nor computeTileStack here because it is not needed,
-    // but the framework calls computeTile although it should not do so, and at the time of the call the
-    // source image of the target tile might not yet be set, so we may have empty tiles in the target product.
-
-    // The issue must be fixed in GPF. For the time being, the 'applyDarkObjectSubtraction' method is just moved into
-    // initialize, which works fine. A cleaner way would be just to retrieve the DOS constants in doExecute,
-    // and to implement computeTile and do the subtraction manually there.
-
-    // todo(mp, MAR2021) - when all other todos are done, then the above should be implemented. The computation of
-    // todo(mp, MAR2021) - the subtraction value can be done in the doExecute and the subtraction itself
-    // todo(mp, MAR2021) - can be done in computeTile and not in the JAI images.
 
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
@@ -164,8 +151,7 @@ public class DarkObjectSubtractionOp extends Operator {
         return 0;
     }
 
-    //This calculates darkObjectValues
-    //todo : add this to doExecute
+    //This method calculates darkObjectValues
     private void calculateDarkObjectSubtraction(ProgressMonitor pm){
         pm.beginTask("Calculating DOS...", sourceBandNames.length);
         Mask mask = new Mask("m",0,0, Mask.BandMathsType.INSTANCE);
