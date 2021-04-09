@@ -35,7 +35,7 @@
 <p>MODIS L1C data is not a standard format. It has been defined in the the frame of ESA OC-CCI project. It contains all the data required by the
     processor,
     the more accurate geo-location and also the sun and view angles.<br>
-    The data can be generated with l1gen of SeaDAS (
+    The data can be generated with l2gen of SeaDAS (
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
         <param name="content" value="https://seadas.gsfc.nasa.gov/">
         <param name="text" value="https://seadas.gsfc.nasa.gov/">
@@ -53,7 +53,8 @@
 
 
 <b>Command Line</b>
-<p style="font-family:monospace">l2gen ifile=&lt;inputFilePath&gt; geofile=&lt;gelocationFilePath&gtY ofile=&lt;outputFilePath&gt;.L1C.nc <br>
+<p style="font-family:monospace">l2gen ifile=&lt;inputFilePath&gt; geofile=&lt;gelocationFilePath&gt; ofile=&lt;outputFilePath&gt;.L1C.nc
+    <br>
     gain=1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0 <br>
     l2prod="rhot_nnn polcor_nnn sena senz sola solz latitude longitude"</p>
 
