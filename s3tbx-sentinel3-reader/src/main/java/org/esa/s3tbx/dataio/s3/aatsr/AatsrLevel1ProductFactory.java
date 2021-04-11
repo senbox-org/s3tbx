@@ -4,7 +4,12 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.util.MetTxReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
-import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.ForwardCoding;
+import org.esa.snap.core.dataio.geocoding.GeoChecks;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.InverseCoding;
 import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
 import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
@@ -129,6 +134,11 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
     }
 
     @Override
+    protected void setTimeCoding(Product targetProduct) throws IOException {
+        setTimeCoding(targetProduct, "time_in.nc", "time_stamp_i");
+    }
+
+    @Override
     protected void fixTiePointGrids(Product targetProduct) {
 
         String[] ANGLE_NAMES = new String[]{
@@ -159,18 +169,18 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
         TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
 
-        TiePointGrid fixedLatGrid = getFixedLatLonGrid(latGrid, false);
+        TiePointGrid fixedLatGrid = getFixedTiePointGrid(latGrid, false);
         targetProduct.getTiePointGridGroup().remove(latGrid);
         targetProduct.getTiePointGridGroup().add(fixedLatGrid);
 
-        TiePointGrid fixedLonGrid = getFixedLatLonGrid(lonGrid, false);
+        TiePointGrid fixedLonGrid = getFixedTiePointGrid(lonGrid, false);
         targetProduct.getTiePointGridGroup().remove(lonGrid);
         targetProduct.getTiePointGridGroup().add(fixedLonGrid);
     }
 
     private TiePointGrid getFixedAngleGrid(TiePointGrid grid) {
         // first, remove filled pixels at the end
-        TiePointGrid endFixedGrid = getFixedLatLonGrid(grid, true);
+        TiePointGrid endFixedGrid = getFixedTiePointGrid(grid, true);
         int gridWidth = endFixedGrid.getGridWidth() - 5;
         int gridHeight = endFixedGrid.getGridHeight() - 1;
 
@@ -185,7 +195,7 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         return new TiePointGrid(grid.getName(), gridWidth, gridHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
     }
 
-    private static TiePointGrid getFixedLatLonGrid(TiePointGrid grid, boolean isAngle) {
+    private static TiePointGrid getFixedTiePointGrid(TiePointGrid grid, boolean isAngle) {
         int firstFillIndex = -1;
         int gridWidth = grid.getGridWidth();
         float[] originalTiePoints = grid.getTiePoints();
