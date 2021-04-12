@@ -22,6 +22,7 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.gpf.OperatorException;
+import org.esa.snap.core.gpf.Tile;
 import org.junit.Test;
 
 import java.util.Date;
@@ -32,6 +33,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 public class OlciAnomalyFlaggingOpTest {
 
@@ -203,6 +209,32 @@ public class OlciAnomalyFlaggingOpTest {
         assertEquals(0, bandIndex.getSpectralWavelength(), 1e-8);
         assertEquals(0, bandIndex.getSpectralBandwidth(), 1e-8);
         assertEquals("Band index where the maximal slope is detected", bandIndex.getDescription());
+    }
+
+    @Test
+    public void testSetOutOfRangeFlag() {
+        assertEquals(2, OlciAnomalyFlaggingOp.setOutOfRangeFlag(0));
+        assertEquals(3, OlciAnomalyFlaggingOp.setOutOfRangeFlag(1));
+    }
+
+    @Test
+    public void testProcessAltitudeOutlierPixel() {
+        final Tile altitudeTile = mock(Tile.class);
+        when(altitudeTile.getSampleFloat(0, 0)).thenReturn(178.f);
+        when(altitudeTile.getSampleFloat(1, 0)).thenReturn(-2343562.f);
+        when(altitudeTile.getSampleFloat(0, 1)).thenReturn(108976.f);
+        when(altitudeTile.getSampleFloat(1, 1)).thenReturn(38.5f);
+
+        final Tile flagTile = mock(Tile.class);
+
+        OlciAnomalyFlaggingOp.processAltitudeOutlierPixel(flagTile, altitudeTile, 0, 0);
+        OlciAnomalyFlaggingOp.processAltitudeOutlierPixel(flagTile, altitudeTile, 1, 0);
+        OlciAnomalyFlaggingOp.processAltitudeOutlierPixel(flagTile, altitudeTile, 0, 1);
+        OlciAnomalyFlaggingOp.processAltitudeOutlierPixel(flagTile, altitudeTile, 1, 1);
+
+
+        verify(flagTile, times(1)).setSample(1, 0, 2);
+        verify(flagTile, times(1)).setSample(0, 1, 2);
     }
 
     private Product createTestProduct() {

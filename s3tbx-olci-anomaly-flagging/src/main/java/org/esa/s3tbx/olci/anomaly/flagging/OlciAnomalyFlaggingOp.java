@@ -32,6 +32,8 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
 
+import java.awt.Rectangle;
+
 @OperatorMetadata(alias = "OlciAnomalyFlagging",
         version = "1.0",
         authors = "T. Block",
@@ -41,6 +43,9 @@ import org.esa.snap.core.util.ProductUtils;
 public class OlciAnomalyFlaggingOp extends Operator {
 
     private static final String SUFFIX = "_ANOM_FLAG";
+    private static final float ALTITUDE_MAX = 8850.f;
+    private static final float ALTITUDE_MIN = -11050.f;
+    private static final int ALT_OUT_OF_RANGE = 2;
 
     @SourceProduct(description = "OLCI L1b or fully compatible product.",
             label = "OLCI L1b product")
@@ -147,6 +152,20 @@ public class OlciAnomalyFlaggingOp extends Operator {
         }
     }
 
+    static void processAltitudeOutlierPixel(Tile targetTile, Tile altitudeTile, int y, int x) {
+        final float altitude = altitudeTile.getSampleFloat(x, y);
+        if (altitude >= ALTITUDE_MAX || altitude <= ALTITUDE_MIN) {
+            final int flagValue = targetTile.getSampleInt(x, y);
+
+            final int flaggedValue = setOutOfRangeFlag(flagValue);
+            targetTile.setSample(x, y, flaggedValue);
+        }
+    }
+
+    static int setOutOfRangeFlag(int flagValue) {
+        return flagValue | ALT_OUT_OF_RANGE;
+    }
+
     @Override
     public void initialize() throws OperatorException {
         validateInputProduct(l1bProduct);
@@ -157,7 +176,28 @@ public class OlciAnomalyFlaggingOp extends Operator {
 
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
+        final Rectangle targetRectangle = targetTile.getRectangle();
 
+        // processRadiometricSaturation
+        // - processSlope of all Band-combinations
+        // - compare with threshold (and set flag)
+        // - if writeSlope
+        // -- detect band with highest spectral slope value
+        // -- write slope value and bandIndex
+
+        processAltitudeOutliers(targetTile, targetRectangle);
+    }
+
+    private void processAltitudeOutliers(Tile targetTile, Rectangle targetRectangle) {
+        final Band altitudeBand = l1bProduct.getBand("altitude");
+        final Tile altitudeTile = getSourceTile(altitudeBand, targetRectangle);
+        for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+            checkForCancellation();
+
+            for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+                processAltitudeOutlierPixel(targetTile, altitudeTile, y, x);
+            }
+        }
     }
 
     public static class Spi extends OperatorSpi {
