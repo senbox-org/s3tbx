@@ -16,7 +16,7 @@
 
 <html>
 <head>
-    <title>SNAP Data Processors - Slope Calculation</title>
+    <title>SNAP Data Processors - Dark Object Subtraction</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -25,24 +25,23 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Slope Calculation</td>
+            Dark Object Subtraction</td>
         <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg" border=0></a>
         </td>
     </tr>
 </table>
 
 <p>
-    The Slope Calculation processor provides the computation of terrain slope and aspect angle from
-    a given altitude band in the source product. Slope and aspect are simply computed from the altitudes
-    in a moving 3x3 pixel window around the considered pixel.
+    The Dark Object Subtraction processor implements the computation of simple empirical atmospheric correction
+    method in the source product. Dark object subtraction searches each band for the darkest pixel value.
+    The scattering is removed by subtracting this value from every pixel in the band.
 
-    The computation is completely sensor independent. The source product just needs to contain an altitude band,
-    a geocoding, and its format must be supported by SNAP.
+    The computation is completely sensor independent. The user just needs to select a band with spectral wavelength from a source product,
+     and its format must be supported by SNAP.
 </p>
 <br>
 
-<p><a href="DosProcessorDescription.html">Slope Calculation Processor Description</a></p>
-<p><a href="DosAlgorithmDescription.html">Slope Calculation Algorithm Specification</a></p>
+<p><a href="DosProcessorDescription.html">Dark Object Subtraction Processor Description</a></p>
 <p><a href="DosCommandLine.html">Processing from the Command Line</a></p>
 
 </body>

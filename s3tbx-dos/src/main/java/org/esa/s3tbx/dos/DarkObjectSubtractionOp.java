@@ -89,8 +89,8 @@ public class DarkObjectSubtractionOp extends Operator {
 
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
+        pm.beginTask("Executing dark object subtraction...", 0);
         try {
-            pm.beginTask("Executing dark object subtraction...", 0);
             calculateDarkObjectSubtraction(pm);
             final MetadataElement darkObjectSpectralValueMetadataElement = new MetadataElement(DARK_OBJECT_METADATA_GROUP_NAME);
             targetProduct.getMetadataRoot().addElement(darkObjectSpectralValueMetadataElement);
@@ -109,18 +109,24 @@ public class DarkObjectSubtractionOp extends Operator {
 
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
-        int bandIndex =  Arrays.asList(sourceBandNames).indexOf(targetBand.getName());
-        String sourceBandName = targetBand.getName();
-        Band sourceBand = sourceProduct.getBand(sourceBandName);
-        Rectangle targetRectangle = targetTile.getRectangle();
-        double subtraction = darkObjectValues[bandIndex];
-        if (sourceBand.getSpectralWavelength() > 0) {
-            for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
-                for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
-                    double value = sourceBand.getSampleFloat(x,y) - subtraction;
-                    targetTile.setSample(x, y,value);
+        pm.beginTask("Calculating DOS...", sourceBandNames.length);
+        try {
+            int bandIndex = Arrays.asList(sourceBandNames).indexOf(targetBand.getName());
+            String sourceBandName = targetBand.getName();
+            Band sourceBand = sourceProduct.getBand(sourceBandName);
+            Rectangle targetRectangle = targetTile.getRectangle();
+            double subtraction = darkObjectValues[bandIndex];
+            if (sourceBand.getSpectralWavelength() > 0) {
+                for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+                    for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+                        double value = sourceBand.getSampleFloat(x, y) - subtraction;
+                        targetTile.setSample(x, y, value);
+                    }
                 }
             }
+        }
+        finally {
+            pm.done();
         }
     }
 
@@ -153,7 +159,7 @@ public class DarkObjectSubtractionOp extends Operator {
 
     //This method calculates darkObjectValues
     private void calculateDarkObjectSubtraction(ProgressMonitor pm){
-        pm.beginTask("Calculating DOS...", sourceBandNames.length);
+
         Mask mask = new Mask("m",0,0, Mask.BandMathsType.INSTANCE);
         if (! (maskExpression == null || maskExpression.isEmpty() )) {
             if (sourceBandNames.length > 0) {

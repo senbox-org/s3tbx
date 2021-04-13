@@ -16,7 +16,7 @@
 
 <html>
 <head>
-    <title>SNAP Data Processors - Slope Calculation</title>
+    <title>SNAP Data Processors - Dark Object Subtraction</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -25,7 +25,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Slope Calculation</td>
+            Dark Object Subtraction</td>
         <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg" border=0></a>
         </td>
     </tr>
@@ -40,7 +40,7 @@
 <h5>Source Product Group</h5>
 
 <p class="i1">
-    Used to select the Slope Calculation source product. Use the <b>...</b> buttons to
+    Used to select the Dark Object Subtraction correction. Use the <b>...</b> buttons to
     open a data product currently not opened in the Sentinel Toolbox.
 </p>
 
@@ -49,7 +49,7 @@
     The following source products are supported for Slope Calculation:
 <ul>
     <li>
-        Any product which contain an elevation band, a geocoding, and which is supported by SNAP.
+        Any product which contain a band with spectral wavelength, and which is supported by SNAP.
     </li>
 
 </ul>
@@ -78,35 +78,29 @@
 <p align="center"><img src="../images/dos_parms.png"></p>
 
 <p class="i1">
-    <b>Elevation band name: </b><br>
-    The name of the elevation band in the source product. Default is 'elevation'.
+    <b>Bands to copy: </b><br>
+    The name of the spectral wavelength band(s) in the source product for which dark object subtraction correction will be performed.
 </p>
 
 <p class="i1">
-    <b>Copy elevation band: </b><br>
-    If selected, the elevation band is copied into the target product. Default is 'false'.
+    <b>Dark object search area: </b><br>
+    Mask expression, which specifies the area of the source product, which will be used to calculate the value of dark object correction.
+</p>
+
+<p class="i1">
+    <b>Percentile of minimum in image data: </b><br>
+    A bottom reflectance percentile which will be considered as a dark object.
 </p>
 
 <h3>The Processing Result</h3>
 
 <p>
-    The Slope Calculation processor provides the following outputs:
+    The Dark Object Subtraction processor creates a target product
+    which contains only spectral wavelength bands specified by the user.
+    The Dark Object Subtraction correction is applied to these bands.
 </p>
 
-<p class="i1">
-    <b>slope: </b><br>
-    The terrain slope for the given pixel in degrees, from zero (flat) to 90 degrees.
-</p>
 
-<p class="i1">
-    <b>aspect: </b><br>
-    Aspect of each pixel as angle between North direction and steepest slope, from zero to 360 degrees.
-</p>
-
-<p class="i1">
-    <b>elevation_variance: </b><br>
-    Variance of elevation over a 3x3 pixel window.
-</p>
 
 </body>
 </html>

@@ -4,10 +4,7 @@
         "http://java.sun.com/products/javahelp/map_2_0.dtd">
 
 <map version="2.0">
-
     <mapID target="darkObjectSubtraction" url="dos/DosIntro.html"/>
-    <mapID target="darkObjectSubtractionAlgorithm" url="dos/DosAlgorithmDescription.html"/>
     <mapID target="darkObjectSubtractionProcessor" url="dos/DosProcessorDescription.html"/>
     <mapID target="darkObjectSubtractionCommandLine" url="dos/DosCommandLine.html"/>
-
 </map>
