@@ -115,7 +115,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
 
         final FlagCoding flagCoding = new FlagCoding("anomaly_flags");
         flagCoding.addFlag("ANOM_SPECTRAL_MEASURE", 1, "Anomalous spectral sample due to saturation of single microbands");
-        flagCoding.addFlag("ALT_OUT_OF_RANGE", 2, "Altitude values are out of nominal data range");
+        flagCoding.addFlag("ALT_OUT_OF_RANGE", ALT_OUT_OF_RANGE, "Altitude values are out of nominal data range");
         anomalyFlags.setSampleCoding(flagCoding);
 
         if (writeSlopeInformation) {
@@ -179,7 +179,10 @@ public class OlciAnomalyFlaggingOp extends Operator {
         final Rectangle targetRectangle = targetTile.getRectangle();
 
         // processRadiometricSaturation
-        // - processSlope of all Band-combinations
+        // - load relevant data
+        // - convert to reflectance
+        // - calculate slope / processSlope of all Band-combinations
+        //
         // - compare with threshold (and set flag)
         // - if writeSlope
         // -- detect band with highest spectral slope value
