@@ -46,6 +46,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
     private static final float ALTITUDE_MAX = 8850.f;
     private static final float ALTITUDE_MIN = -11050.f;
     private static final int ALT_OUT_OF_RANGE = 2;
+    private static int[] bandIndices = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 21};
 
     @SourceProduct(description = "OLCI L1b or fully compatible product.",
             label = "OLCI L1b product")
@@ -136,11 +137,16 @@ public class OlciAnomalyFlaggingOp extends Operator {
 
     private static void checkRadianceBands(Product input, int lower, int upper) {
         for (int i = lower; i <= upper; i++) {
-            final String variableName = "Oa" + String.format("%02d", i) + "_radiance";
+            final String variableName = getRadianceBandName(i);
             if (!input.containsBand(variableName)) {
                 throw new OperatorException("Input variable '" + variableName + "' missing.");
             }
         }
+    }
+
+    // package access for testing only tb 2021-04-13
+    static String getRadianceBandName(int i) {
+        return "Oa" + String.format("%02d", i) + "_radiance";
     }
 
     private static void checkSimpleIndexedBands(Product input, String prefix, int lower, int upper) {
@@ -177,16 +183,45 @@ public class OlciAnomalyFlaggingOp extends Operator {
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
         final Rectangle targetRectangle = targetTile.getRectangle();
+        final Tile[] radianceTiles = new Tile[bandIndices.length];
+        final Tile[] solarFluxTiles = new Tile[bandIndices.length];
+        final Tile[] lambdaTiles = new Tile[bandIndices.length];
 
         // processRadiometricSaturation
         // - load relevant data
-        // - convert to reflectance
-        // - calculate slope / processSlope of all Band-combinations
-        //
-        // - compare with threshold (and set flag)
-        // - if writeSlope
-        // -- detect band with highest spectral slope value
-        // -- write slope value and bandIndex
+        for (int i = 0; i < bandIndices.length; i++) {
+            final Band radianceBand = l1bProduct.getBand(getRadianceBandName(bandIndices[i]));
+            radianceTiles[i] = getSourceTile(radianceBand, targetRectangle);
+
+            final Band solarFluxBand = l1bProduct.getBand("solar_flux_band_" + Integer.toString(i));
+            solarFluxTiles[i] = getSourceTile(solarFluxBand, targetRectangle);
+
+            final Band lambdaBand = l1bProduct.getBand("lambda0_band_" + Integer.toString(i));
+            lambdaTiles[i] = getSourceTile(lambdaBand, targetRectangle);
+        }
+        final TiePointGrid szaGrid = l1bProduct.getTiePointGrid("SZA");
+        final Tile szaTile = getSourceTile(szaGrid, targetRectangle);
+
+        final double[] reflectances = new double[bandIndices.length];
+        final double[] solarFluxes = new double[bandIndices.length];
+        for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+            checkForCancellation();
+
+            for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+                // - convert to reflectance
+                for (int i = 0; i < bandIndices.length; i++) {
+                    reflectances[i] = radianceTiles[i].getSampleDouble(x, y);
+                    solarFluxes[i] = solarFluxTiles[i].getSampleDouble(x, y);
+                }
+                final double invSza = 1.0 / szaTile.getSampleDouble(x, y);
+                // - calculate slope / processSlope of all Band-combinations
+                //
+                // - compare with threshold (and set flag)
+                // - if writeSlope
+                // -- detect band with highest spectral slope value
+                // -- write slope value and bandIndex
+            }
+        }
 
         processAltitudeOutliers(targetTile, targetRectangle);
     }

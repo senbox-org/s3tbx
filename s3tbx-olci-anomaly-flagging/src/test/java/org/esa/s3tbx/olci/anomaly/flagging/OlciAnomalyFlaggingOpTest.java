@@ -237,6 +237,13 @@ public class OlciAnomalyFlaggingOpTest {
         verify(flagTile, times(1)).setSample(0, 1, 2);
     }
 
+    @Test
+    public void testGetRadianceBandName() {
+        assertEquals("Oa02_radiance", OlciAnomalyFlaggingOp.getRadianceBandName(2));
+        assertEquals("Oa11_radiance", OlciAnomalyFlaggingOp.getRadianceBandName(11));
+        assertEquals("Oa21_radiance", OlciAnomalyFlaggingOp.getRadianceBandName(21));
+    }
+
     private Product createTestProduct() {
         final Product product = new Product("test_me", "test_type", 3, 5);
         product.setStartTime(ProductData.UTC.create(new Date(1611514251000L), 0));
