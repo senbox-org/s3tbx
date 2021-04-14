@@ -104,19 +104,19 @@ public class DarkObjectSubtractionOp extends Operator {
             for (int i = 0; i < sourceBandNames.length; i++) {
                 final String sourceBandName = sourceBandNames[i];
                 final MetadataAttribute dosAttr = new MetadataAttribute(sourceBandName,
-                        ProductData.createInstance(new double[]{darkObjectValues[i]}), true);
+                                                                        ProductData.createInstance(new double[]{darkObjectValues[i]}), true);
                 targetProduct.getMetadataRoot().getElement(DARK_OBJECT_METADATA_GROUP_NAME).addAttribute(dosAttr);
             }
-       } catch (Exception e) {
-           throw new OperatorException(e.getMessage(), e);
-       } finally {
+        } catch (Exception e) {
+            throw new OperatorException("Not able to prepare dark object subtraction", e);
+        } finally {
             pm.done();
         }
-   }
+    }
 
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
-        pm.beginTask("Calculating DOS...", sourceBandNames.length);
+        pm.beginTask("Applying dark object subtraction...", sourceBandNames.length);
         try {
             int bandIndex = Arrays.asList(sourceBandNames).indexOf(targetBand.getName());
             String sourceBandName = targetBand.getName();
@@ -132,8 +132,7 @@ public class DarkObjectSubtractionOp extends Operator {
                 }
                 pm.worked(1);
             }
-        }
-        finally {
+        } finally {
             pm.done();
         }
     }
@@ -166,7 +165,7 @@ public class DarkObjectSubtractionOp extends Operator {
     }
 
     //This method calculates darkObjectValues
-    private void calculateDarkObjectSubtraction(ProgressMonitor pm){
+    private void calculateDarkObjectSubtraction(ProgressMonitor pm) {
 
         Mask mask = new Mask("m", 0, 0, Mask.BandMathsType.INSTANCE);
         if (!(maskExpression == null || maskExpression.isEmpty())) {
@@ -177,6 +176,7 @@ public class DarkObjectSubtractionOp extends Operator {
                 Mask.BandMathsType.setExpression(mask, maskExpression);
             }
         }
+
         pm.beginTask("Calculating darkest object value...", sourceBandNames.length);
         try {
             for (int i = 0; i < sourceBandNames.length; i++) {
