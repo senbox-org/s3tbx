@@ -169,12 +169,10 @@ public class DarkObjectSubtractionOp extends Operator {
 
         Mask mask = new Mask("m", 0, 0, Mask.BandMathsType.INSTANCE);
         if (!(maskExpression == null || maskExpression.isEmpty())) {
-            if (sourceBandNames.length > 0) {
-                int width = sourceProduct.getBand(sourceBandNames[0]).getRasterWidth();
-                int height = sourceProduct.getBand(sourceBandNames[0]).getRasterHeight();
-                mask = new Mask("m", width, height, Mask.BandMathsType.INSTANCE);
-                Mask.BandMathsType.setExpression(mask, maskExpression);
-            }
+            int width = sourceProduct.getBand(sourceBandNames[0]).getRasterWidth();
+            int height = sourceProduct.getBand(sourceBandNames[0]).getRasterHeight();
+            mask = new Mask("m", width, height, Mask.BandMathsType.INSTANCE);
+            Mask.BandMathsType.setExpression(mask, maskExpression);
         }
 
         pm.beginTask("Calculating darkest object value...", sourceBandNames.length);
