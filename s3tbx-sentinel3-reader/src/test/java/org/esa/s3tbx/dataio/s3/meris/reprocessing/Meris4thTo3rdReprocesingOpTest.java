@@ -23,7 +23,9 @@ import org.junit.Test;
 
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 public class Meris4thTo3rdReprocesingOpTest {
 
@@ -34,9 +36,9 @@ public class Meris4thTo3rdReprocesingOpTest {
     @Test
     public void testOperatorSpiIsLoaded() {
         OperatorSpiRegistry registry = GPF.getDefaultInstance().getOperatorSpiRegistry();
-        OperatorSpi operatorSpi = registry.getOperatorSpi("Meris.Reprocessing.Adapter.4To3");
+        OperatorSpi operatorSpi = registry.getOperatorSpi("Meris.Adapt.4To3");
         assertNotNull(operatorSpi);
-        assertEquals("Meris.Reprocessing.Adapter.4To3", operatorSpi.getOperatorAlias());
+        assertEquals("Meris.Adapt.4To3", operatorSpi.getOperatorAlias());
         assertNotNull(operatorSpi.getOperatorDescriptor());
         assertSame(operatorSpi.getOperatorClass(), operatorSpi.getOperatorDescriptor().getOperatorClass());
     }

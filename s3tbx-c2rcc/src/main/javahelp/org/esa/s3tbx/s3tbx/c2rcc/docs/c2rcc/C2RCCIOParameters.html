@@ -25,7 +25,8 @@
 <table class="header">
     <tr class="header">
         <td class="header">C2RCC I/O Parameters</td>
-        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
                 src="../images/snap_header.jpg"
                 border=0></a>
         </td>
@@ -34,7 +35,8 @@
 
 <h3>I/O Parameters</h3>
 
-<p>The I/O parameters define which sources data is loaded and where the result is written to. These parameters are common to all C2RCC operators,
+<p>The I/O parameters define which sources data is loaded and where the result is written to. These parameters are
+    common to all C2RCC operators,
     independent of the specific sensors</p>
 
 <p align="center"><img src="images/C2RCC_IO_Params.png"/><br>
@@ -43,12 +45,15 @@
 <h4>Source Products</h4>
 
 <b>Sensor specific source product</b>
-<p>The first parameter is the sensor specific source product. A validation is performed if the specified product is compatible with the current
+<p>The first parameter is the sensor specific source product. A validation is performed if the specified product is
+    compatible with the current
     processor.</p>
-<p>The required MODIS L1C data is not a standard format. It can be generated with l2gen of SeaDAS. See <a href="Create_MODIS_L1C.html">Create MODIS L1C</a></p>
+<p>The required MODIS L1C data is not a standard format. It can be generated with l2gen of SeaDAS. See <a
+        href="Create_MODIS_L1C.html">Create MODIS L1C</a></p>
 
 <b>Ancillary data products</b>
-<p>The four ancillary products, two for ozone and two for air pressure are optional. Here either all or none of the products must be given. They can
+<p>The four ancillary products, two for ozone and two for air pressure are optional. Here either all or none of the
+    products must be given. They can
     be downloaded from the following web page.
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
         <param name="content" value="https://oceandata.sci.gsfc.nasa.gov/Ancillary/Meteorological">
@@ -56,10 +61,23 @@
         <param name="textFontSize" value="bigger">
     </object>
 </p>
-<p>If these products are specified these products are used to retrieve ozone and air pressure. If the atmospheric auxdata path in the Processing
-    Parameters tab is specified the data is taken from this auxdata path or appropriate data is automatically downloaded. If the source product
-    contains these variables the data from the source product is preferred. As a fall back value, in case of missing values in the auxdata sources or
-    they have not been specified at all, the parameters Air Pressure and Ozone are used.
+<p>If these products are specified these products are used to retrieve ozone and air pressure. If the atmospheric
+    auxdata path in the Processing
+    Parameters tab is specified the data is taken from this auxdata path or appropriate data is automatically
+    downloaded. If the source product
+    contains these variables the data from the source product is preferred. As a fall back value, in case of missing
+    values in the auxdata sources or
+    they have not been specified at all, the parameters Air Pressure and Ozone are used. <br>
+    When you create the directory by your own, then please note that the directory structure needs to follow the
+    convention:
+<pre>
+    {root_ancillary_dir}
+      - {year}
+        - {doy}
+           - {files for this day}
+</pre>
+<P>
+    So the path would be for example: "H:\c2rcc_ancillary\2020\172\N202017200_O3_AURAOMI_24h.hdf"
 </p>
 
 <h4>Target Product</h4>
@@ -68,7 +86,8 @@
 <p>Used to specify the name of the target product.</p>
 
 <b>Save as</b>
-<p>Used to specify whether the target product should be saved to the file system. The combo-box presents a list of available file formats.
+<p>Used to specify whether the target product should be saved to the file system. The combo-box presents a list of
+    available file formats.
     The text field or the button next to it allow to specify a target directory.</p>
 
 <b>Open in SNAP</b>

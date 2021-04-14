@@ -183,7 +183,7 @@ public class SynLevel2ProductFactory extends AbstractProductFactory {
         final ForwardCoding forward = ComponentFactory.getForward(keys[0]);
         final InverseCoding inverse = ComponentFactory.getInverse(keys[1]);
 
-        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.POLES);
         geoCoding.initialize();
 
         targetProduct.setSceneGeoCoding(geoCoding);
