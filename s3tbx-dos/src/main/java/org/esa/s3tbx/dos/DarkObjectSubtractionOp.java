@@ -218,7 +218,6 @@ public class DarkObjectSubtractionOp extends Operator {
                 final Band targetBand = new Band(sourceBand.getName(), ProductData.TYPE_FLOAT32, sceneWidth, sceneHeight);
                 targetProduct.addBand(targetBand);
                 ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
-                ProductUtils.copyGeoCoding(sourceBand, targetBand);
                 targetBand.setDescription(sourceBand.getDescription());
                 targetBand.setUnit(sourceBand.getUnit());
                 targetBand.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
