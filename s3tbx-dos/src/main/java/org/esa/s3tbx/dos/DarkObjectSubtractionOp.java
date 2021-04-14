@@ -2,6 +2,7 @@ package org.esa.s3tbx.dos;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.SubProgressMonitor;
+import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Mask;
 import org.esa.snap.core.datamodel.MetadataAttribute;
@@ -22,8 +23,13 @@ import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import javax.media.jai.Histogram;
+import javax.media.jai.PlanarImage;
+import javax.media.jai.operator.ConstantDescriptor;
 import java.awt.Rectangle;
+import java.awt.image.Raster;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Performs dark object subtraction for spectral bands in source product.
@@ -63,6 +69,7 @@ public class DarkObjectSubtractionOp extends Operator {
     private final static String TARGET_PRODUCT_TYPE = "dark-object-subtraction";
 
     private double[] darkObjectValues;
+    private Map<Band, PlanarImage> validMaskImages;
 
     @Override
     public void initialize() throws OperatorException {
@@ -87,10 +94,28 @@ public class DarkObjectSubtractionOp extends Operator {
 
         darkObjectValues = new double[sourceBandNames.length];
 
+        validMaskImages = createValidMaskImages(sourceBandNames);
+
         // set up target product
         targetProduct = createTargetProduct();
 
         setTargetProduct(targetProduct);
+    }
+
+    private Map<Band, PlanarImage> createValidMaskImages(String[] sourceBandNames) {
+        final HashMap<Band, PlanarImage> map = new HashMap<>();
+        for (String sourceBandName : sourceBandNames) {
+            final Band band = getSourceProduct().getBand(sourceBandName);
+            if (band.getSpectralWavelength() > 0) {
+                final MultiLevelImage validMaskImage = band.getValidMaskImage();
+                if (validMaskImage != null) {
+                    map.put(band, validMaskImage);
+                } else {
+                    map.put(band, ConstantDescriptor.create((float) band.getRasterWidth(), (float) band.getRasterHeight(), new Byte[]{1}, null));
+                }
+            }
+        }
+        return map;
     }
 
 
@@ -124,10 +149,12 @@ public class DarkObjectSubtractionOp extends Operator {
             Rectangle targetRectangle = targetTile.getRectangle();
             double subtraction = darkObjectValues[bandIndex];
             final Tile sourceTile = getSourceTile(sourceBand, targetRectangle);
+            final PlanarImage validMaskImage = validMaskImages.get(sourceBand);
+            final Raster validMaskData = validMaskImage.getData(targetRectangle);
             if (sourceBand.getSpectralWavelength() > 0) {
                 for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
                     for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
-                        if (sourceBand.isPixelValid(x, y)) {
+                        if (validMaskData.getSample(x, y, 0) != 0) {
                             targetTile.setSample(x, y, sourceTile.getSampleFloat(x, y) - subtraction);
                         } else {
                             targetTile.setSample(x, y, Float.NaN);
