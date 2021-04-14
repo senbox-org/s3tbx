@@ -127,8 +127,11 @@ public class DarkObjectSubtractionOp extends Operator {
             if (sourceBand.getSpectralWavelength() > 0) {
                 for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
                     for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
-                        double value = sourceTile.getSampleFloat(x, y) - subtraction;
-                        targetTile.setSample(x, y, value);
+                        if (sourceBand.isPixelValid(x, y)) {
+                            targetTile.setSample(x, y, sourceTile.getSampleFloat(x, y) - subtraction);
+                        } else {
+                            targetTile.setSample(x, y, Float.NaN);
+                        }
                     }
                 }
                 pm.worked(1);
@@ -182,9 +185,9 @@ public class DarkObjectSubtractionOp extends Operator {
             for (int i = 0; i < sourceBandNames.length; i++) {
                 checkForCancellation();
                 final String sourceBandName = sourceBandNames[i];
-                pm.setSubTaskName(String.format("Calculating darkest object value for band '%s'", sourceBandName));
                 Band sourceBand = sourceProduct.getBand(sourceBandName);
                 if (sourceBand.getSpectralWavelength() > 0) {
+                    pm.setSubTaskName(String.format("Calculating darkest object value for band '%s'", sourceBandName));
                     Stx stx;
                     StxFactory stxFactory = new StxFactory();
                     if (mask != null) {
@@ -222,8 +225,7 @@ public class DarkObjectSubtractionOp extends Operator {
                 targetBand.setDescription(sourceBand.getDescription());
                 targetBand.setUnit(sourceBand.getUnit());
                 targetBand.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
-                targetBand.setNoDataValue(sourceBand.getGeophysicalNoDataValue());
-                targetBand.setValidPixelExpression(sourceBand.getValidPixelExpression());
+                targetBand.setNoDataValue(Double.NaN);
             } else {
                 ProductUtils.copyBand(sourceBand.getName(), sourceProduct, targetProduct, true);
             }
