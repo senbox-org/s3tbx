@@ -186,6 +186,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         final String description = sourceBand.getDescription();
         tiePointGrid.setDescription(description);
         tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
+        tiePointGrid.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
         tiePointGrid.setUnit(unit);
         targetProduct.addTiePointGrid(tiePointGrid);
         sourceImage.dispose();
