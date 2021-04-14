@@ -82,7 +82,7 @@ public class DarkObjectSubtractionOp extends Operator {
             }
         }
         if (!spectralBandFound) {
-            throw new OperatorException("Source product does not contain spectral bands. DOS cannot be applied.");
+            throw new OperatorException("No spectral bands selected. DOS cannot be applied.");
         }
 
         darkObjectValues = new double[sourceBandNames.length];
