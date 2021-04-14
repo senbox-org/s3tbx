@@ -1,8 +1,15 @@
 package org.esa.s3tbx.dos;
 
 import com.bc.ceres.core.ProgressMonitor;
-
-import org.esa.snap.core.datamodel.*;
+import com.bc.ceres.core.SubProgressMonitor;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.MetadataElement;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.Stx;
+import org.esa.snap.core.datamodel.StxFactory;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -15,7 +22,7 @@ import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import javax.media.jai.Histogram;
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.Arrays;
 
 /**
@@ -89,9 +96,9 @@ public class DarkObjectSubtractionOp extends Operator {
 
     @Override
     public void doExecute(ProgressMonitor pm) throws OperatorException {
-        pm.beginTask("Executing dark object subtraction...", 0);
+        pm.beginTask("Executing dark object subtraction...", 1);
         try {
-            calculateDarkObjectSubtraction(pm);
+            calculateDarkObjectSubtraction(SubProgressMonitor.create(pm, 1));
             final MetadataElement darkObjectSpectralValueMetadataElement = new MetadataElement(DARK_OBJECT_METADATA_GROUP_NAME);
             targetProduct.getMetadataRoot().addElement(darkObjectSpectralValueMetadataElement);
             for (int i = 0; i < sourceBandNames.length; i++) {
@@ -123,6 +130,7 @@ public class DarkObjectSubtractionOp extends Operator {
                         targetTile.setSample(x, y, value);
                     }
                 }
+                pm.worked(1);
             }
         }
         finally {
@@ -160,8 +168,8 @@ public class DarkObjectSubtractionOp extends Operator {
     //This method calculates darkObjectValues
     private void calculateDarkObjectSubtraction(ProgressMonitor pm){
 
-        Mask mask = new Mask("m",0,0, Mask.BandMathsType.INSTANCE);
-        if (! (maskExpression == null || maskExpression.isEmpty() )) {
+        Mask mask = new Mask("m", 0, 0, Mask.BandMathsType.INSTANCE);
+        if (!(maskExpression == null || maskExpression.isEmpty())) {
             if (sourceBandNames.length > 0) {
                 int width = sourceProduct.getBand(sourceBandNames[0]).getRasterWidth();
                 int height = sourceProduct.getBand(sourceBandNames[0]).getRasterHeight();
@@ -169,24 +177,30 @@ public class DarkObjectSubtractionOp extends Operator {
                 Mask.BandMathsType.setExpression(mask, maskExpression);
             }
         }
-        for (int i = 0; i < sourceBandNames.length; i++) {
-            checkForCancellation();
-            final String sourceBandName = sourceBandNames[i];
-            pm.setSubTaskName(String.format("Calculating DOS to band '%s'", sourceBandName));
-            Band sourceBand = sourceProduct.getBand(sourceBandName);
-            if (sourceBand.getSpectralWavelength() > 0) {
-                Stx stx;
-                if (maskExpression == null || maskExpression.isEmpty()) {
-                    stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
-                } else {
-                    Mask.BandMathsType.setExpression(mask, maskExpression);
-                    Mask.BandMathsType.setExpression(mask, maskExpression);
-                    mask.setOwner(sourceProduct);
+        pm.beginTask("Calculating darkest object value...", sourceBandNames.length);
+        try {
+            for (int i = 0; i < sourceBandNames.length; i++) {
+                checkForCancellation();
+                final String sourceBandName = sourceBandNames[i];
+                pm.setSubTaskName(String.format("Calculating darkest object value for band '%s'", sourceBandName));
+                Band sourceBand = sourceProduct.getBand(sourceBandName);
+                if (sourceBand.getSpectralWavelength() > 0) {
+                    Stx stx;
+                    if (maskExpression == null || maskExpression.isEmpty()) {
+                        stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
+                    } else {
+                        Mask.BandMathsType.setExpression(mask, maskExpression);
+                        Mask.BandMathsType.setExpression(mask, maskExpression);
+                        mask.setOwner(sourceProduct);
 
-                    stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
+                        stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
+                    }
+                    darkObjectValues[i] = getHistogramMinAtPercentile(stx, histogramMinimumPercentile);
                 }
-                darkObjectValues[i] = getHistogramMinAtPercentile(stx, histogramMinimumPercentile);
+                pm.worked(1);
             }
+        } finally {
+            pm.done();
         }
     }
 
