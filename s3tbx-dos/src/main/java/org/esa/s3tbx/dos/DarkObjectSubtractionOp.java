@@ -123,10 +123,11 @@ public class DarkObjectSubtractionOp extends Operator {
             Band sourceBand = sourceProduct.getBand(sourceBandName);
             Rectangle targetRectangle = targetTile.getRectangle();
             double subtraction = darkObjectValues[bandIndex];
+            final Tile sourceTile = getSourceTile(sourceBand, targetRectangle);
             if (sourceBand.getSpectralWavelength() > 0) {
                 for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
                     for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
-                        double value = sourceBand.getSampleFloat(x, y) - subtraction;
+                        double value = sourceTile.getSampleFloat(x, y) - subtraction;
                         targetTile.setSample(x, y, value);
                     }
                 }
@@ -223,7 +224,6 @@ public class DarkObjectSubtractionOp extends Operator {
                 targetBand.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
                 targetBand.setNoDataValue(sourceBand.getGeophysicalNoDataValue());
                 targetBand.setValidPixelExpression(sourceBand.getValidPixelExpression());
-
             } else {
                 ProductUtils.copyBand(sourceBand.getName(), sourceProduct, targetProduct, true);
             }
