@@ -167,12 +167,13 @@ public class DarkObjectSubtractionOp extends Operator {
     //This method calculates darkObjectValues
     private void calculateDarkObjectSubtraction(ProgressMonitor pm) {
 
-        Mask mask = new Mask("m", 0, 0, Mask.BandMathsType.INSTANCE);
+        Mask mask = null;
         if (!(maskExpression == null || maskExpression.isEmpty())) {
             int width = sourceProduct.getBand(sourceBandNames[0]).getRasterWidth();
             int height = sourceProduct.getBand(sourceBandNames[0]).getRasterHeight();
-            mask = new Mask("m", width, height, Mask.BandMathsType.INSTANCE);
+            mask = new Mask("__m", width, height, Mask.BandMathsType.INSTANCE);
             Mask.BandMathsType.setExpression(mask, maskExpression);
+            mask.setOwner(sourceProduct);
         }
 
         pm.beginTask("Calculating darkest object value...", sourceBandNames.length);
@@ -184,18 +185,15 @@ public class DarkObjectSubtractionOp extends Operator {
                 Band sourceBand = sourceProduct.getBand(sourceBandName);
                 if (sourceBand.getSpectralWavelength() > 0) {
                     Stx stx;
-                    if (maskExpression == null || maskExpression.isEmpty()) {
-                        stx = new StxFactory().create(sourceBand, ProgressMonitor.NULL);
-                    } else {
-                        Mask.BandMathsType.setExpression(mask, maskExpression);
-                        Mask.BandMathsType.setExpression(mask, maskExpression);
-                        mask.setOwner(sourceProduct);
-
-                        stx = new StxFactory().withRoiMask(mask).create(sourceBand, ProgressMonitor.NULL);
+                    StxFactory stxFactory = new StxFactory();
+                    if (mask != null) {
+                        stxFactory = stxFactory.withRoiMask(mask);
                     }
+                    stx = stxFactory.create(sourceBand, SubProgressMonitor.create(pm, 1));
                     darkObjectValues[i] = getHistogramMinAtPercentile(stx, histogramMinimumPercentile);
+                } else {
+                    pm.worked(1);
                 }
-                pm.worked(1);
             }
         } finally {
             pm.done();
