@@ -37,7 +37,7 @@ import java.awt.Rectangle;
 @OperatorMetadata(alias = "OlciAnomalyFlagging",
         version = "1.0",
         authors = "T. Block",
-        category = "Optical/Preprocessing",
+        category = "Optical/Masking",
         copyright = "Copyright (C) 2021 by Brockmann Consult",
         description = "Adds a flagging band indicating saturated pixels and altitude data overflows")
 public class OlciAnomalyFlaggingOp extends Operator {
@@ -61,8 +61,23 @@ public class OlciAnomalyFlaggingOp extends Operator {
     private boolean writeSlopeInformation;
 
     // package access for testing only tb 2021-04-08
-    static double toReflectance(double radiance, double invSolarFlux, double invCosSZA) {
-        return radiance * Math.PI * invSolarFlux * invCosSZA;
+
+    /**
+     * converts radiances to reflectances, in-place. The incoming array is overwritten.
+     *
+     * @param radiances   vector of radiances to convert
+     * @param solarFluxes solar fluxes for each radiance channel
+     * @param invCosSZA   inverted cos solar zenith angle
+     * @return reflectance vector
+     */
+    static double[] toReflectance(double[] radiances, double[] solarFluxes, double invCosSZA) {
+        for (int i = 0; i < radiances.length; i++) {
+            final double invSolarFlux = 1.0 / solarFluxes[i];
+
+            radiances[i] = radiances[i] * Math.PI * invSolarFlux * invCosSZA;
+
+        }
+        return radiances;
     }
 
     static void validateInputProduct(Product input) {
@@ -172,6 +187,35 @@ public class OlciAnomalyFlaggingOp extends Operator {
         return flagValue | ALT_OUT_OF_RANGE;
     }
 
+    // package access for testing only tb 20201-04-14
+    static double getInvCosSza(double sza) {
+        final double szaRad = Math.toRadians(sza);
+        final double cosSza = Math.cos(szaRad);
+        return 1.0 / cosSza;
+    }
+
+    // package access for testing only tb 2021-04-14
+    static SlopeIndex getMaxSlope(double[] reflectances, double[] wavelengths) {
+        final int numSlopes = reflectances.length - 1;
+        double maxSlope = 0.0;
+        byte index = -1;
+        for (int i = 0; i < numSlopes; i++) {
+            final double wlDelta = wavelengths[i + 1] - wavelengths[i];
+            final double invWlDelta = 1.0 / wlDelta;
+            final double reflectanceDelta = reflectances[i + 1] - reflectances[i];
+            final double slope = reflectanceDelta * invWlDelta;
+            if (Math.abs(slope) > Math.abs(maxSlope)) {
+                maxSlope = slope;
+                index = (byte) i;
+            }
+        }
+
+        final SlopeIndex slopeIndex = new SlopeIndex();
+        slopeIndex.slope = maxSlope;
+        slopeIndex.slopeIndex = index;
+        return slopeIndex;
+    }
+
     @Override
     public void initialize() throws OperatorException {
         validateInputProduct(l1bProduct);
@@ -187,39 +231,61 @@ public class OlciAnomalyFlaggingOp extends Operator {
         final Tile[] solarFluxTiles = new Tile[bandIndices.length];
         final Tile[] lambdaTiles = new Tile[bandIndices.length];
 
+        Tile slopeTile = null;
+        Tile slopeIndexTile = null;
+        if (writeSlopeInformation) {
+            final Band slopeBand = targetBand.getProduct().getBand("max_spectral_slope");
+            slopeTile = getSourceTile(slopeBand, targetRectangle);
+
+            final Band slopeIndexBand = targetBand.getProduct().getBand("max_slope_band_index");
+            slopeIndexTile = getSourceTile(slopeIndexBand, targetRectangle);
+        }
+
         // processRadiometricSaturation
         // - load relevant data
         for (int i = 0; i < bandIndices.length; i++) {
             final Band radianceBand = l1bProduct.getBand(getRadianceBandName(bandIndices[i]));
             radianceTiles[i] = getSourceTile(radianceBand, targetRectangle);
 
-            final Band solarFluxBand = l1bProduct.getBand("solar_flux_band_" + Integer.toString(i));
+            final int bandIndex = i + 1;
+            final Band solarFluxBand = l1bProduct.getBand("solar_flux_band_" + Integer.toString(bandIndex));
             solarFluxTiles[i] = getSourceTile(solarFluxBand, targetRectangle);
 
-            final Band lambdaBand = l1bProduct.getBand("lambda0_band_" + Integer.toString(i));
+            final Band lambdaBand = l1bProduct.getBand("lambda0_band_" + Integer.toString(bandIndex));
             lambdaTiles[i] = getSourceTile(lambdaBand, targetRectangle);
         }
+
         final TiePointGrid szaGrid = l1bProduct.getTiePointGrid("SZA");
         final Tile szaTile = getSourceTile(szaGrid, targetRectangle);
 
         final double[] reflectances = new double[bandIndices.length];
         final double[] solarFluxes = new double[bandIndices.length];
+        final double[] wavelengths = new double[bandIndices.length];
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
             checkForCancellation();
 
             for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
-                // - convert to reflectance
+                // read vector data for complete spectrum
                 for (int i = 0; i < bandIndices.length; i++) {
                     reflectances[i] = radianceTiles[i].getSampleDouble(x, y);
                     solarFluxes[i] = solarFluxTiles[i].getSampleDouble(x, y);
+                    wavelengths[i] = lambdaTiles[i].getSampleDouble(x, y);
                 }
-                final double invSza = 1.0 / szaTile.getSampleDouble(x, y);
+
+                final double invCosSza = getInvCosSza(szaTile.getSampleDouble(x, y));
+
+                toReflectance(reflectances, solarFluxes, invCosSza);
                 // - calculate slope / processSlope of all Band-combinations
+                final SlopeIndex slopeIndex = getMaxSlope(reflectances, wavelengths);
+
                 //
                 // - compare with threshold (and set flag)
-                // - if writeSlope
-                // -- detect band with highest spectral slope value
-                // -- write slope value and bandIndex
+                if (writeSlopeInformation) {
+                    slopeTile.setSample(x, y, slopeIndex.slope);
+                    // @todo 1 tb check for valid range 2021-04-14
+                    final byte bandIndex = (byte) bandIndices[slopeIndex.slopeIndex];
+                    slopeIndexTile.setSample(x, y, bandIndex);
+                }
             }
         }
 
@@ -243,5 +309,10 @@ public class OlciAnomalyFlaggingOp extends Operator {
         public Spi() {
             super(OlciAnomalyFlaggingOp.class);
         }
+    }
+
+    static class SlopeIndex {
+        double slope;
+        byte slopeIndex;
     }
 }

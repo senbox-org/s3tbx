@@ -36,23 +36,20 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class OlciAnomalyFlaggingOpTest {
 
     @Test
     public void testToReflectance() {
-        double invSolarFlux = 1.0 / 1284.2445;
+        double[] solarFlux = new double[]{1284.2445, 1194.77, 1657.9};
+        double[] radiance = new double[]{46.044, 202.502, 7.4218};
         double invCosSZA = 1.0 / Math.cos(Math.toRadians(37.220443));
 
-        double reflectance = OlciAnomalyFlaggingOp.toReflectance(46.044, invSolarFlux, invCosSZA);
-        assertEquals(0.14144603301041955, reflectance, 1e-8);
-
-        invSolarFlux = 1.0 / 1518.9329;
-        invCosSZA = 1.0 / Math.cos(Math.toRadians(30.307082));
-        reflectance = OlciAnomalyFlaggingOp.toReflectance(46.044, invSolarFlux, invCosSZA);
-        assertEquals(0.1103077168290055, reflectance, 1e-8);
+        double[] reflectance = OlciAnomalyFlaggingOp.toReflectance(radiance, solarFlux, invCosSZA);
+        assertEquals(0.14144603301041955, reflectance[0], 1e-8);
+        assertEquals(0.6686678594204847, reflectance[1], 1e-8);
+        assertEquals(0.01766104334391852, reflectance[2], 1e-8);
     }
 
     @Test
@@ -242,6 +239,35 @@ public class OlciAnomalyFlaggingOpTest {
         assertEquals("Oa02_radiance", OlciAnomalyFlaggingOp.getRadianceBandName(2));
         assertEquals("Oa11_radiance", OlciAnomalyFlaggingOp.getRadianceBandName(11));
         assertEquals("Oa21_radiance", OlciAnomalyFlaggingOp.getRadianceBandName(21));
+    }
+
+    @Test
+    public void testGetInvCosSza() {
+        assertEquals(1.780467494581093, OlciAnomalyFlaggingOp.getInvCosSza(55.83), 1e-8);
+        assertEquals(1.5400837855709208, OlciAnomalyFlaggingOp.getInvCosSza(49.51), 1e-8);
+        assertEquals(6.687382240014953, OlciAnomalyFlaggingOp.getInvCosSza(81.4), 1e-8);
+        assertEquals(1.0783067772491086, OlciAnomalyFlaggingOp.getInvCosSza(21.97), 1e-8);
+    }
+
+    @Test
+    public void testGetMaxSlope() {
+        double[] reflectances = new double[]{0.23, 0.003765, 0.28645, 0.10988};
+        double[] wavelengths = new double[]{400.26569, 411.82013, 442.95026, 490.50098};
+
+         OlciAnomalyFlaggingOp.SlopeIndex slopeIndex = OlciAnomalyFlaggingOp.getMaxSlope(reflectances, wavelengths);
+        assertEquals(-0.019579919061417084, slopeIndex.slope, 1e-8);
+        assertEquals(0, slopeIndex.slopeIndex);
+
+        double[] solarFlux = new double[]{1425.37476, 1361.47449, 1229.18555, 1138.59583};
+        double invCosSZA = 1.0 / Math.cos(Math.toRadians(39.75679));
+        reflectances = new double[]{37.39283, 56.71691, 92.09728, 89.20682};
+        OlciAnomalyFlaggingOp.toReflectance(reflectances, solarFlux, invCosSZA);
+
+        wavelengths = new double[]{681.64404, 709.19409, 754.27936, 779.35913};
+
+        slopeIndex = OlciAnomalyFlaggingOp.getMaxSlope(reflectances, wavelengths);
+        assertEquals(0.0030153289893280447, slopeIndex.slope, 1e-8);
+        assertEquals(1, slopeIndex.slopeIndex);
     }
 
     private Product createTestProduct() {
