@@ -23,6 +23,7 @@ import org.esa.snap.core.dataio.persistence.PersistenceConverter;
 import org.esa.snap.core.dataio.persistence.PersistenceSpi;
 
 /**
+ * @author Marco Zuehlke
  * @author Sabine Embacher
  */
 public class PodGeoCodingPersistenceSpi implements PersistenceSpi {

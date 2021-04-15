@@ -99,11 +99,7 @@ public class BowtieGeoCodingPersistenceConverter implements PersistenceConverter
                 return null;
             }
 
-            // TODO: 24.03.2021 SE -- show MARCO
-            // The following "if" should not be needed because of the TiePointGrid's ability to load data lazy.
-            // if (latGrid.hasRasterData() && lonGrid.hasRasterData()) {
             return new BowtieTiePointGeoCoding(latGrid, lonGrid, scanlineHeight);
-            // }
         }
     }
 

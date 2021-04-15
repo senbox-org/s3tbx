@@ -41,7 +41,6 @@ import java.awt.Rectangle;
 final class PodGeoCoding extends TiePointGeoCoding {
 
     private transient PixelPosEstimator pixelPosEstimator;
-    private transient PodPixelFinder pixelFinder;
     private transient GeoApproximation[] approximations;
     private transient PlanarImage latImage;
 
@@ -53,12 +52,10 @@ final class PodGeoCoding extends TiePointGeoCoding {
         super(latGrid, lonGrid);
         this.approximations = approximations;
 
-        final PlanarImage lonImage = lonGrid.getGeophysicalImage();
         latImage = latGrid.getGeophysicalImage();
 
         final Rectangle bounds = new Rectangle(0, 0, lonGrid.getRasterWidth(), lonGrid.getRasterHeight());
         pixelPosEstimator = new PixelPosEstimator(approximations, bounds);
-        pixelFinder = new PodPixelFinder(lonImage, latImage, null, 0.01);
     }
 
     @Override
@@ -87,9 +84,6 @@ final class PodGeoCoding extends TiePointGeoCoding {
                 }
 
             }
-//            if (pixelPos.isValid()) {
-//                pixelFinder.findPixelPos(geoPos, pixelPos);
-//            }
         } else {
             super.getPixelPos(geoPos, pixelPos);
         }
@@ -132,7 +126,6 @@ final class PodGeoCoding extends TiePointGeoCoding {
     public void dispose() {
         super.dispose();
 
-        pixelFinder = null;
         pixelPosEstimator = null;
         approximations = null;
         latImage = null;

@@ -18,7 +18,6 @@
 
 package org.esa.s3tbx.dataio.avhrr.noaa.pod;
 
-import org.esa.snap.core.dataio.dimap.DimapProductConstants;
 import org.esa.snap.core.dataio.dimap.spi.DimapHistoricalDecoder;
 import org.esa.snap.core.dataio.persistence.Container;
 import org.esa.snap.core.dataio.persistence.HistoricalDecoder;
@@ -28,8 +27,11 @@ import org.esa.snap.core.dataio.persistence.Property;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.util.SystemUtils;
-import org.jdom.Element;
 
+/**
+ * @author Marco Zuehlke
+ * @author Sabine Embacher
+ */
 public class PodGeoCodingPersistenceConverter implements PersistenceConverter<PodGeoCoding> {
 
     public static final String NAME_POD_GEO_CODING = "PodGeoCoding";
@@ -69,11 +71,7 @@ public class PodGeoCodingPersistenceConverter implements PersistenceConverter<Po
             return null;
         }
 
-        // TODO: 24.03.2021 SE -- show MARCO
-        // The following "if" should not be needed because of the TiePointGrid's ability to load data lazy.
-        // if (latGrid.hasRasterData() && lonGrid.hasRasterData()) {
         return new PodGeoCoding(latGrid, lonGrid);
-        // }
     }
 
     @Override
