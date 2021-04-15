@@ -251,9 +251,8 @@ public class DarkObjectSubtractionOp extends Operator {
                 ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
                 targetBand.setDescription(sourceBand.getDescription());
                 targetBand.setUnit(sourceBand.getUnit());
-                targetBand.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
                 targetBand.setNoDataValue(Double.NaN);
-                targetBand.setValidPixelExpression(sourceBand.getValidPixelExpression());
+                targetBand.setNoDataValueUsed(true);
             } else {
                 ProductUtils.copyBand(sourceBand.getName(), sourceProduct, targetProduct, true);
             }
