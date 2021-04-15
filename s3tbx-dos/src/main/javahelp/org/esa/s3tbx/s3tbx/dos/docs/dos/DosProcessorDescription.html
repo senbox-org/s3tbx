@@ -1,0 +1,106 @@
+<!--
+  ~ Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - Dark Object Subtraction</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Dark Object Subtraction</td>
+        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg" border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h3>Processor Description</h3>
+
+<h4>I/O Parameters Tab</h4>
+
+<p align="center"><img src="../images/dos_io.png"></p>
+
+<h5>Source Product Group</h5>
+
+<p class="i1">
+    Used to select the Dark Object Subtraction correction. Use the <b>...</b> buttons to
+    open a data product currently not opened in the Sentinel Toolbox.
+</p>
+
+<h5>Supported Source Products</h5>
+<p class="i1">
+    The following source products are supported for Slope Calculation:
+<ul>
+    <li>
+        Any product which contain a band with spectral wavelength, and which is supported by SNAP.
+    </li>
+
+</ul>
+
+<h5>Target Product Group</h5>
+
+<p class="i1">
+    <b>Name:</b>
+    Used to specify the name of the target product.
+</p>
+
+<p class="i1">
+    <b>Save to:</b>
+    Used to specify whether the target product should be saved to the file system. The
+    combo box presents a list of file formats.
+</p>
+
+<p class="i1">
+    <b>Open in SNAP:</b>
+    Used to specify whether the target product should be opened in the Sentinel Toolbox.
+    When the target product is not saved, it is opened in the Sentinel Toolbox automatically.
+</p>
+
+<h3>The Processing Parameters</h3>
+
+<p align="center"><img src="../images/dos_parms.png"></p>
+
+<p class="i1">
+    <b>Bands to copy: </b><br>
+    The name of the spectral wavelength band(s) in the source product for which dark object subtraction correction will be performed.
+</p>
+
+<p class="i1">
+    <b>Dark object search area: </b><br>
+    Mask expression, which specifies the area of the source product, which will be used to calculate the value of dark object correction.
+</p>
+
+<p class="i1">
+    <b>Percentile of minimum in image data: </b><br>
+    A bottom reflectance percentile which will be considered as a dark object.
+</p>
+
+<h3>The Processing Result</h3>
+
+<p>
+    The Dark Object Subtraction processor creates a target product
+    which contains only the bands selected by the user. The spectral wavelength bands are computed by the operator
+    while the other bands are just copied from the source.
+</p>
+
+
+
+</body>
+</html>

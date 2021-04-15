@@ -35,6 +35,7 @@
         <module>s3tbx-atsr-reader</module>
         <module>s3tbx-avhrr-reader</module>
         <module>s3tbx-c2rcc</module>
+        <module>s3tbx-dos</module>
         <module>s3tbx-flhmci</module>
         <module>s3tbx-flhmci-ui</module>
         <module>s3tbx-fub-wew</module>
@@ -445,7 +446,7 @@
                 <plugin>
                     <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>4.4</version>
+                    <version>4.5</version>
                     <extensions>true</extensions>
                     <dependencies>
                         <dependency>

@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - Dark Object Subtraction</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Dark Object Subtraction</td>
+        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg" border=0></a>
+        </td>
+    </tr>
+</table>
+
+<p>
+    The Dark Object Subtraction processor implements the computation of simple empirical "atmospheric correction"
+    method of the source product. Dark object subtraction searches each band for the darkest pixel value.
+    The scattering is removed by subtracting this value from every pixel in the band.
+
+    The computation is completely sensor independent. The user just needs to select bands with spectral wavelength from
+    a source product.
+</p>
+<br>
+
+<p><a href="DosProcessorDescription.html">Dark Object Subtraction Processor Description</a></p>
+<p><a href="DosCommandLine.html">Processing from the Command Line</a></p>
+
+</body>
+</html>
