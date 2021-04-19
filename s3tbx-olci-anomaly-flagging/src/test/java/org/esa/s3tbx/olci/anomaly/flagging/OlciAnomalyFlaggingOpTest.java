@@ -178,9 +178,10 @@ public class OlciAnomalyFlaggingOpTest {
         assertEquals("Flags indicating OLCI data anomalies", anomalyFlags.getDescription());
 
         final FlagCoding flagCoding = anomalyFlags.getFlagCoding();
-        assertEquals(2, flagCoding.getFlagNames().length);
+        assertEquals(3, flagCoding.getFlagNames().length);
         assertEquals(1, flagCoding.getFlagMask("ANOM_SPECTRAL_MEASURE"));
         assertEquals(2, flagCoding.getFlagMask("ALT_OUT_OF_RANGE"));
+        assertEquals(4, flagCoding.getFlagMask("INPUT_DATA_INVALID"));
     }
 
     @Test
@@ -217,7 +218,7 @@ public class OlciAnomalyFlaggingOpTest {
     @Test
     public void testSetAnomalMeasureFlag() {
         assertEquals(1, OlciAnomalyFlaggingOp.setAnomalMeasureFlag(0));
-        assertEquals(5, OlciAnomalyFlaggingOp.setOutOfRangeFlag(4));
+        assertEquals(5, OlciAnomalyFlaggingOp.setAnomalMeasureFlag(4));
     }
 
     @Test
@@ -260,7 +261,7 @@ public class OlciAnomalyFlaggingOpTest {
         double[] reflectances = new double[]{0.23, 0.003765, 0.28645, 0.10988};
         double[] wavelengths = new double[]{400.26569, 411.82013, 442.95026, 490.50098};
 
-         OlciAnomalyFlaggingOp.SlopeIndex slopeIndex = OlciAnomalyFlaggingOp.getMaxSlope(reflectances, wavelengths);
+        OlciAnomalyFlaggingOp.SlopeIndex slopeIndex = OlciAnomalyFlaggingOp.getMaxSlope(reflectances, wavelengths);
         assertEquals(-0.019579919061417084, slopeIndex.slope, 1e-8);
         assertEquals(0, slopeIndex.slopeIndex);
 
@@ -274,6 +275,20 @@ public class OlciAnomalyFlaggingOpTest {
         slopeIndex = OlciAnomalyFlaggingOp.getMaxSlope(reflectances, wavelengths);
         assertEquals(0.0030153289893280447, slopeIndex.slope, 1e-8);
         assertEquals(1, slopeIndex.slopeIndex);
+    }
+
+    @Test
+    public void testCanComputeTile() {
+        OlciAnomalyFlaggingOp flaggingOp = new OlciAnomalyFlaggingOp();
+
+        assertFalse(flaggingOp.canComputeTile());
+    }
+
+    @Test
+    public void testCanComputeTileStack() {
+        OlciAnomalyFlaggingOp flaggingOp = new OlciAnomalyFlaggingOp();
+
+        assertTrue(flaggingOp.canComputeTileStack());
     }
 
     private Product createTestProduct() {

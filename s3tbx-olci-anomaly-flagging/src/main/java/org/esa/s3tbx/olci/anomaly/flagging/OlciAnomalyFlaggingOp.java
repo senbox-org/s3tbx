@@ -47,6 +47,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
     private static final float ALTITUDE_MAX = 8850.f;
     private static final float ALTITUDE_MIN = -11050.f;
     private static final int ALT_OUT_OF_RANGE = 2;
+    private static final int INPUT_DATA_INVALID = 4;
     public static final int ANOM_SPECTRAL_MEASURE = 1;
     private static int[] bandIndices = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 21};
 
@@ -134,6 +135,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
         final FlagCoding flagCoding = new FlagCoding("anomaly_flags");
         flagCoding.addFlag("ANOM_SPECTRAL_MEASURE", ANOM_SPECTRAL_MEASURE, "Anomalous spectral sample due to saturation of single microbands");
         flagCoding.addFlag("ALT_OUT_OF_RANGE", ALT_OUT_OF_RANGE, "Altitude values are out of nominal data range");
+        flagCoding.addFlag("INPUT_DATA_INVALID", INPUT_DATA_INVALID, "Input data to algorithms is out of range/invalid");
         anomalyFlags.setSampleCoding(flagCoding);
 
         if (writeSlopeInformation) {
@@ -284,6 +286,8 @@ public class OlciAnomalyFlaggingOp extends Operator {
 
                 final double invCosSza = getInvCosSza(szaTile.getSampleDouble(x, y));
 
+                // @todo - check for fill values and skip calculation if present
+
                 toReflectance(reflectances, solarFluxes, invCosSza);
                 // - calculate slope / processSlope of all Band-combinations
                 final SlopeIndex slopeIndex = getMaxSlope(reflectances, wavelengths);
@@ -291,8 +295,12 @@ public class OlciAnomalyFlaggingOp extends Operator {
                 //
                 // - compare with threshold (and set flag)
                 if (slopeIndex.slope > 0.8) {
+                    final int flagValue = anomalyFlagsTile.getSampleInt(x, y);
 
+                    final int flaggedValue = setAnomalMeasureFlag(flagValue);
+                    anomalyFlagsTile.setSample(x, y, flaggedValue);
                 }
+
                 if (writeSlopeInformation) {
                     slopeTile.setSample(x, y, slopeIndex.slope);
                     // @todo 1 tb check for valid range 2021-04-14
@@ -306,13 +314,11 @@ public class OlciAnomalyFlaggingOp extends Operator {
     }
 
     @Override
-    // @todo 1 tb/tb add test 2021-04-19
     public boolean canComputeTile() {
         return false;
     }
 
     @Override
-    // @todo 1 tb/tb add test 2021-04-19
     public boolean canComputeTileStack() {
         return true;
     }
