@@ -19,6 +19,7 @@
 package org.esa.s3tbx.dataio.s3.aatsr;
 
 import org.esa.snap.core.dataio.ProductIO;
+import org.junit.Assume;
 import org.junit.Test;
 
 import java.io.File;
@@ -34,8 +35,10 @@ public class ReadingTest {
 
     @Test
     public void read() throws IOException {
+        final File p1File = new File(P1);
+        Assume.assumeTrue(p1File.exists());
 
-        ProductIO.readProduct(new File(P1));
+        ProductIO.readProduct(p1File);
 
     }
 }
