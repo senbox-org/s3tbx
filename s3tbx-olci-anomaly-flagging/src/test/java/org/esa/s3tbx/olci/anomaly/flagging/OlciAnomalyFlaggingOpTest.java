@@ -215,6 +215,12 @@ public class OlciAnomalyFlaggingOpTest {
     }
 
     @Test
+    public void testSetAnomalMeasureFlag() {
+        assertEquals(1, OlciAnomalyFlaggingOp.setAnomalMeasureFlag(0));
+        assertEquals(5, OlciAnomalyFlaggingOp.setOutOfRangeFlag(4));
+    }
+
+    @Test
     public void testProcessAltitudeOutlierPixel() {
         final Tile altitudeTile = mock(Tile.class);
         when(altitudeTile.getSampleFloat(0, 0)).thenReturn(178.f);

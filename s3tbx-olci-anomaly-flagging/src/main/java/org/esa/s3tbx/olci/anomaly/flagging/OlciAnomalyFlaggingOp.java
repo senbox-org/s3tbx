@@ -33,6 +33,7 @@ import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
 
 import java.awt.Rectangle;
+import java.util.Map;
 
 @OperatorMetadata(alias = "OlciAnomalyFlagging",
         version = "1.0",
@@ -46,6 +47,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
     private static final float ALTITUDE_MAX = 8850.f;
     private static final float ALTITUDE_MIN = -11050.f;
     private static final int ALT_OUT_OF_RANGE = 2;
+    public static final int ANOM_SPECTRAL_MEASURE = 1;
     private static int[] bandIndices = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 21};
 
     @SourceProduct(description = "OLCI L1b or fully compatible product.",
@@ -130,7 +132,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
         anomalyFlags.setDescription("Flags indicating OLCI data anomalies");
 
         final FlagCoding flagCoding = new FlagCoding("anomaly_flags");
-        flagCoding.addFlag("ANOM_SPECTRAL_MEASURE", 1, "Anomalous spectral sample due to saturation of single microbands");
+        flagCoding.addFlag("ANOM_SPECTRAL_MEASURE", ANOM_SPECTRAL_MEASURE, "Anomalous spectral sample due to saturation of single microbands");
         flagCoding.addFlag("ALT_OUT_OF_RANGE", ALT_OUT_OF_RANGE, "Altitude values are out of nominal data range");
         anomalyFlags.setSampleCoding(flagCoding);
 
@@ -187,6 +189,10 @@ public class OlciAnomalyFlaggingOp extends Operator {
         return flagValue | ALT_OUT_OF_RANGE;
     }
 
+    static int setAnomalMeasureFlag(int flagValue) {
+        return flagValue | ANOM_SPECTRAL_MEASURE;
+    }
+
     // package access for testing only tb 20201-04-14
     static double getInvCosSza(double sza) {
         final double szaRad = Math.toRadians(sza);
@@ -225,8 +231,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
     }
 
     @Override
-    public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
-        final Rectangle targetRectangle = targetTile.getRectangle();
+    public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {
         final Tile[] radianceTiles = new Tile[bandIndices.length];
         final Tile[] solarFluxTiles = new Tile[bandIndices.length];
         final Tile[] lambdaTiles = new Tile[bandIndices.length];
@@ -234,11 +239,12 @@ public class OlciAnomalyFlaggingOp extends Operator {
         Tile slopeTile = null;
         Tile slopeIndexTile = null;
         if (writeSlopeInformation) {
-            final Band slopeBand = targetBand.getProduct().getBand("max_spectral_slope");
-            slopeTile = getSourceTile(slopeBand, targetRectangle);
+            Product targetProduct = getTargetProduct();
+            final Band slopeBand = targetProduct.getBand("max_spectral_slope");
+            slopeTile = targetTiles.get(slopeBand);
 
-            final Band slopeIndexBand = targetBand.getProduct().getBand("max_slope_band_index");
-            slopeIndexTile = getSourceTile(slopeIndexBand, targetRectangle);
+            final Band slopeIndexBand = targetProduct.getBand("max_slope_band_index");
+            slopeIndexTile = targetTiles.get(slopeIndexBand);
         }
 
         // processRadiometricSaturation
@@ -261,6 +267,10 @@ public class OlciAnomalyFlaggingOp extends Operator {
         final double[] reflectances = new double[bandIndices.length];
         final double[] solarFluxes = new double[bandIndices.length];
         final double[] wavelengths = new double[bandIndices.length];
+
+        final Band anomalyFlags = targetProduct.getBand("anomaly_flags");
+        final Tile anomalyFlagsTile = targetTiles.get(anomalyFlags);
+
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
             checkForCancellation();
 
@@ -280,6 +290,9 @@ public class OlciAnomalyFlaggingOp extends Operator {
 
                 //
                 // - compare with threshold (and set flag)
+                if (slopeIndex.slope > 0.8) {
+
+                }
                 if (writeSlopeInformation) {
                     slopeTile.setSample(x, y, slopeIndex.slope);
                     // @todo 1 tb check for valid range 2021-04-14
@@ -289,7 +302,19 @@ public class OlciAnomalyFlaggingOp extends Operator {
             }
         }
 
-        processAltitudeOutliers(targetTile, targetRectangle);
+        processAltitudeOutliers(anomalyFlagsTile, targetRectangle);
+    }
+
+    @Override
+    // @todo 1 tb/tb add test 2021-04-19
+    public boolean canComputeTile() {
+        return false;
+    }
+
+    @Override
+    // @todo 1 tb/tb add test 2021-04-19
+    public boolean canComputeTileStack() {
+        return true;
     }
 
     private void processAltitudeOutliers(Tile targetTile, Rectangle targetRectangle) {
