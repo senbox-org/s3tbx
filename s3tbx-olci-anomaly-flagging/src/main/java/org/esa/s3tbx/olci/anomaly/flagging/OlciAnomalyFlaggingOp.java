@@ -48,8 +48,9 @@ public class OlciAnomalyFlaggingOp extends Operator {
     private static final float ALTITUDE_MIN = -11050.f;
     private static final int ALT_OUT_OF_RANGE = 2;
     private static final int INPUT_DATA_INVALID = 4;
-    public static final int ANOM_SPECTRAL_MEASURE = 1;
-    private static int[] bandIndices = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 21};
+    private static final int ANOM_SPECTRAL_MEASURE = 1;
+    private static final int[] bandIndices = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 21};
+    private static final double SLOPE_THRESHOLD = 0.15;
 
     @SourceProduct(description = "OLCI L1b or fully compatible product.",
             label = "OLCI L1b product")
@@ -111,9 +112,9 @@ public class OlciAnomalyFlaggingOp extends Operator {
         final String inputProductType = input.getProductType();
         final String inputName = input.getName();
         final Product outputProduct = new Product(inputName + SUFFIX,
-                                                  inputProductType + SUFFIX,
-                                                  input.getSceneRasterWidth(),
-                                                  input.getSceneRasterHeight());
+                inputProductType + SUFFIX,
+                input.getSceneRasterWidth(),
+                input.getSceneRasterHeight());
 
         outputProduct.setDescription("OLCI anomaly flagged L1b");
         outputProduct.setStartTime(input.getStartTime());
@@ -135,8 +136,9 @@ public class OlciAnomalyFlaggingOp extends Operator {
         final FlagCoding flagCoding = new FlagCoding("anomaly_flags");
         flagCoding.addFlag("ANOM_SPECTRAL_MEASURE", ANOM_SPECTRAL_MEASURE, "Anomalous spectral sample due to saturation of single microbands");
         flagCoding.addFlag("ALT_OUT_OF_RANGE", ALT_OUT_OF_RANGE, "Altitude values are out of nominal data range");
-        flagCoding.addFlag("INPUT_DATA_INVALID", INPUT_DATA_INVALID, "Input data to algorithms is out of range/invalid");
+        flagCoding.addFlag("INPUT_DATA_INVALID", INPUT_DATA_INVALID, "Input data to detection algorithms is out of range/invalid");
         anomalyFlags.setSampleCoding(flagCoding);
+        outputProduct.getFlagCodingGroup().add(flagCoding);
 
         if (writeSlopeInformation) {
             final Band maxSpectralSlope = outputProduct.addBand("max_spectral_slope", ProductData.TYPE_FLOAT32);
@@ -195,6 +197,10 @@ public class OlciAnomalyFlaggingOp extends Operator {
         return flagValue | ANOM_SPECTRAL_MEASURE;
     }
 
+    static int setInvalidInputFlag(int flagValue) {
+        return flagValue | INPUT_DATA_INVALID;
+    }
+
     // package access for testing only tb 20201-04-14
     static double getInvCosSza(double sza) {
         final double szaRad = Math.toRadians(sza);
@@ -224,6 +230,23 @@ public class OlciAnomalyFlaggingOp extends Operator {
         return slopeIndex;
     }
 
+    public static boolean isFillValue(double value, double fillValue) {
+        if (Double.isNaN(fillValue)) {
+            return Double.isNaN(value);
+        } else {
+            return Math.abs(value - fillValue) < 1e-8;
+        }
+    }
+
+    public static boolean isFillValue(double[] values, double fillValue) {
+        for (final double value : values) {
+            if (isFillValue(value, fillValue)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void initialize() throws OperatorException {
         validateInputProduct(l1bProduct);
@@ -234,6 +257,15 @@ public class OlciAnomalyFlaggingOp extends Operator {
 
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {
+        final Band anomalyFlags = targetProduct.getBand("anomaly_flags");
+        final Tile anomalyFlagsTile = targetTiles.get(anomalyFlags);
+
+        processSlopeDetection(targetTiles, targetRectangle, anomalyFlagsTile);
+
+        processAltitudeOutliers(anomalyFlagsTile, targetRectangle);
+    }
+
+    private void processSlopeDetection(Map<Band, Tile> targetTiles, Rectangle targetRectangle, Tile anomalyFlagsTile) {
         final Tile[] radianceTiles = new Tile[bandIndices.length];
         final Tile[] solarFluxTiles = new Tile[bandIndices.length];
         final Tile[] lambdaTiles = new Tile[bandIndices.length];
@@ -249,29 +281,37 @@ public class OlciAnomalyFlaggingOp extends Operator {
             slopeIndexTile = targetTiles.get(slopeIndexBand);
         }
 
-        // processRadiometricSaturation
-        // - load relevant data
+        // Load relevant data
         for (int i = 0; i < bandIndices.length; i++) {
             final Band radianceBand = l1bProduct.getBand(getRadianceBandName(bandIndices[i]));
             radianceTiles[i] = getSourceTile(radianceBand, targetRectangle);
 
             final int bandIndex = i + 1;
-            final Band solarFluxBand = l1bProduct.getBand("solar_flux_band_" + Integer.toString(bandIndex));
+            final Band solarFluxBand = l1bProduct.getBand("solar_flux_band_" + bandIndex);
             solarFluxTiles[i] = getSourceTile(solarFluxBand, targetRectangle);
 
-            final Band lambdaBand = l1bProduct.getBand("lambda0_band_" + Integer.toString(bandIndex));
+            final Band lambdaBand = l1bProduct.getBand("lambda0_band_" + bandIndex);
             lambdaTiles[i] = getSourceTile(lambdaBand, targetRectangle);
         }
 
+        // load fill values
+        final Band radianceBand = l1bProduct.getBand(getRadianceBandName(bandIndices[0]));
+        final double radianceFillValue = radianceBand.getGeophysicalNoDataValue();
+
+        final Band solarFluxBand = l1bProduct.getBand("solar_flux_band_1");
+        final double solarFluxFillValue = solarFluxBand.getGeophysicalNoDataValue();
+
+        final Band lambdaBand = l1bProduct.getBand("lambda0_band_1");
+        final double wavelengthFillValue = lambdaBand.getGeophysicalNoDataValue();
+
         final TiePointGrid szaGrid = l1bProduct.getTiePointGrid("SZA");
+        final double szaFillValue = szaGrid.getGeophysicalNoDataValue();
         final Tile szaTile = getSourceTile(szaGrid, targetRectangle);
 
+        // allocate spectrum data vectors
         final double[] reflectances = new double[bandIndices.length];
         final double[] solarFluxes = new double[bandIndices.length];
         final double[] wavelengths = new double[bandIndices.length];
-
-        final Band anomalyFlags = targetProduct.getBand("anomaly_flags");
-        final Tile anomalyFlagsTile = targetTiles.get(anomalyFlags);
 
         for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
             checkForCancellation();
@@ -283,18 +323,24 @@ public class OlciAnomalyFlaggingOp extends Operator {
                     solarFluxes[i] = solarFluxTiles[i].getSampleDouble(x, y);
                     wavelengths[i] = lambdaTiles[i].getSampleDouble(x, y);
                 }
+                final double sza = szaTile.getSampleDouble(x, y);
 
-                final double invCosSza = getInvCosSza(szaTile.getSampleDouble(x, y));
+                boolean hasFillValue = checkFillValues(reflectances, radianceFillValue, solarFluxes, solarFluxFillValue,
+                        wavelengths, wavelengthFillValue, szaFillValue, sza);
 
-                // @todo - check for fill values and skip calculation if present
+                if (hasFillValue) {
+                    handleFillValue(anomalyFlagsTile, slopeTile, slopeIndexTile, y, x);
+                    continue;
+                }
+
+                final double invCosSza = getInvCosSza(sza);
 
                 toReflectance(reflectances, solarFluxes, invCosSza);
                 // - calculate slope / processSlope of all Band-combinations
                 final SlopeIndex slopeIndex = getMaxSlope(reflectances, wavelengths);
 
-                //
-                // - compare with threshold (and set flag)
-                if (slopeIndex.slope > 0.8) {
+                // compare with threshold (and set flag)
+                if (Math.abs(slopeIndex.slope) > SLOPE_THRESHOLD) {
                     final int flagValue = anomalyFlagsTile.getSampleInt(x, y);
 
                     final int flaggedValue = setAnomalMeasureFlag(flagValue);
@@ -303,14 +349,33 @@ public class OlciAnomalyFlaggingOp extends Operator {
 
                 if (writeSlopeInformation) {
                     slopeTile.setSample(x, y, slopeIndex.slope);
-                    // @todo 1 tb check for valid range 2021-04-14
+
                     final byte bandIndex = (byte) bandIndices[slopeIndex.slopeIndex];
                     slopeIndexTile.setSample(x, y, bandIndex);
                 }
             }
         }
+    }
 
-        processAltitudeOutliers(anomalyFlagsTile, targetRectangle);
+    private void handleFillValue(Tile anomalyFlagsTile, Tile slopeTile, Tile slopeIndexTile, int y, int x) {
+        final int flagValue = anomalyFlagsTile.getSampleInt(x, y);
+
+        final int flaggedValue = setInvalidInputFlag(flagValue);
+        anomalyFlagsTile.setSample(x, y, flaggedValue);
+        if (writeSlopeInformation) {
+            slopeTile.setSample(x, y, Float.NaN);
+            slopeIndexTile.setSample(x, y, -1);
+        }
+    }
+
+    // package access for testing only tb 2021-04-20
+    static boolean checkFillValues(double[] radiances, double radianceFillValue, double[] solarFluxes, double solarFluxFillValue,
+                                   double[] wavelengths, double wavelengthFillValue, double szaFillValue, double sza) {
+        boolean hasFillValue = isFillValue(sza, szaFillValue);
+        hasFillValue |= isFillValue(radiances, radianceFillValue);
+        hasFillValue |= isFillValue(solarFluxes, solarFluxFillValue);
+        hasFillValue |= isFillValue(wavelengths, wavelengthFillValue);
+        return hasFillValue;
     }
 
     @Override

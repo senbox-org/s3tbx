@@ -163,8 +163,8 @@ public class OlciAnomalyFlaggingOpTest {
 
         for (int i = 1; i < 22; i++) {
             assertNotNull(outputProduct.getBand("Oa" + String.format("%02d", i) + "_radiance"));
-            assertNotNull(outputProduct.getBand("solar_flux_band_" + Integer.toString(i)));
-            assertNotNull(outputProduct.getBand("lambda0_band_" + Integer.toString(i)));
+            assertNotNull(outputProduct.getBand("solar_flux_band_" + i));
+            assertNotNull(outputProduct.getBand("lambda0_band_" + i));
         }
 
         assertNotNull(outputProduct.getTiePointGrid("SZA"));
@@ -219,6 +219,12 @@ public class OlciAnomalyFlaggingOpTest {
     public void testSetAnomalMeasureFlag() {
         assertEquals(1, OlciAnomalyFlaggingOp.setAnomalMeasureFlag(0));
         assertEquals(5, OlciAnomalyFlaggingOp.setAnomalMeasureFlag(4));
+    }
+
+    @Test
+    public void testSetInvalidInputFlag() {
+        assertEquals(4, OlciAnomalyFlaggingOp.setInvalidInputFlag(0));
+        assertEquals(6, OlciAnomalyFlaggingOp.setInvalidInputFlag(2));
     }
 
     @Test
@@ -289,6 +295,57 @@ public class OlciAnomalyFlaggingOpTest {
         OlciAnomalyFlaggingOp flaggingOp = new OlciAnomalyFlaggingOp();
 
         assertTrue(flaggingOp.canComputeTileStack());
+    }
+
+    @Test
+    public void testIsFillValue() {
+        assertTrue(OlciAnomalyFlaggingOp.isFillValue(-1.0, -1.0));
+        assertTrue(OlciAnomalyFlaggingOp.isFillValue(Float.NaN, Float.NaN));
+
+        assertFalse(OlciAnomalyFlaggingOp.isFillValue(-1.0, 0.0));
+        assertFalse(OlciAnomalyFlaggingOp.isFillValue(-1.0, Double.NaN));
+    }
+
+    @Test
+    public void testIsFillValue_vectorVersion() {
+        assertTrue(OlciAnomalyFlaggingOp.isFillValue(new double[]{0.3, -1.0, 11.5}, -1.0));
+        assertTrue(OlciAnomalyFlaggingOp.isFillValue(new double[]{0.3, 0.9, Double.NaN}, Float.NaN));
+
+        assertFalse(OlciAnomalyFlaggingOp.isFillValue(new double[]{0.3, 0.6, 11.5}, 0.0));
+        assertFalse(OlciAnomalyFlaggingOp.isFillValue(new double[]{-0.8, -0.45, 8.2}, Double.NaN));
+    }
+
+    @Test
+    public void testCheckFillValues() {
+        final double radianceFill = Double.NaN;
+        final double wavelengthFill = -1.0;
+        final double solarFluxFill = -1.0;
+        final double szaFill = -1.0;
+
+        final double[] radiances = {2.0, 3.0, 4.0};
+        final double[] wavelengths = {5.0, 6.0, 7.0};
+        final double[] solarFluxes = {8.0, 9.0, 10.0};
+        double sza = 33.8;
+
+        assertFalse(OlciAnomalyFlaggingOp.checkFillValues(radiances, radianceFill, solarFluxes, solarFluxFill, wavelengths, wavelengthFill, sza, szaFill));
+
+        radiances[0] = radianceFill;
+        assertTrue(OlciAnomalyFlaggingOp.checkFillValues(radiances, radianceFill, solarFluxes, solarFluxFill, wavelengths, wavelengthFill, sza, szaFill));
+        radiances[0] = 2.0;
+
+        wavelengths[1] = wavelengthFill;
+        assertTrue(OlciAnomalyFlaggingOp.checkFillValues(radiances, radianceFill, solarFluxes, solarFluxFill, wavelengths, wavelengthFill, sza, szaFill));
+        wavelengths[1] = 6.0;
+
+        solarFluxes[2] = solarFluxFill;
+        assertTrue(OlciAnomalyFlaggingOp.checkFillValues(radiances, radianceFill, solarFluxes, solarFluxFill, wavelengths, wavelengthFill, sza, szaFill));
+        solarFluxes[2] = 10.0;
+
+        sza = szaFill;
+        assertTrue(OlciAnomalyFlaggingOp.checkFillValues(radiances, radianceFill, solarFluxes, solarFluxFill, wavelengths, wavelengthFill, sza, szaFill));
+
+        sza = 18.65;
+        assertFalse(OlciAnomalyFlaggingOp.checkFillValues(radiances, radianceFill, solarFluxes, solarFluxFill, wavelengths, wavelengthFill, sza, szaFill));
     }
 
     private Product createTestProduct() {
