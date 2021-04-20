@@ -40,7 +40,6 @@
                         <attr name="originalFile"
                               stringvalue="Actions/Operators/org-esa-s3tbx-olci-anomaly-flagging-OlciAnomalyFlaggingOpAction.instance"/>
                         <attr name="position" intvalue="4"/>
-                        <attr name="displayName" stringvalue="OLCI Anomaly Flagging"/>
                     </file>
                 </folder>
             </folder>
