@@ -27,7 +27,7 @@
                 <attr name="operatorName" stringvalue="OlciAnomalyFlagging"/>
                 <attr name="dialogTitle" stringvalue="OLCI Anomaly Flagging - v1.0"/>
                 <attr name="targetProductNameSuffix" stringvalue="_ANOM_FLAG"/>
-                <!--<attr name="helpId" stringvalue="olciSensorHarmonisationTool"/>-->
+                <attr name="helpId" stringvalue="olciAnomalyFlaggingTool"/>
             </file>
         </folder>
     </folder>
