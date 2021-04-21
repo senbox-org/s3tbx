@@ -210,6 +210,11 @@
         </dependency>
         <dependency>
             <groupId>org.esa.s3tbx</groupId>
+            <artifactId>s3tbx-olci-anomaly-flagging</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.s3tbx</groupId>
             <artifactId>s3tbx-olci-o2aharmonisation</artifactId>
             <version>${project.version}</version>
         </dependency>
