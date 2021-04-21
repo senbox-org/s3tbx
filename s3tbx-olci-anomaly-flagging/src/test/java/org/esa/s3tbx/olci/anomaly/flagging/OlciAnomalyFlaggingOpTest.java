@@ -197,7 +197,7 @@ public class OlciAnomalyFlaggingOpTest {
         assertEquals("1/nm", maxSpectralSlope.getUnit());
         assertEquals(0, maxSpectralSlope.getSpectralWavelength(), 1e-8);
         assertEquals(0, maxSpectralSlope.getSpectralBandwidth(), 1e-8);
-        assertEquals("Absolute value of maximal spectral slope for bands 1-12, 16-18, 21", maxSpectralSlope.getDescription());
+        assertEquals("Value of maximal spectral slope for bands 1-12, 16-18, 21 in [reflectance/nm]", maxSpectralSlope.getDescription());
 
         final Band bandIndex = outputProduct.getBand("max_slope_band_index");
         assertEquals(ProductData.TYPE_INT8, bandIndex.getDataType());

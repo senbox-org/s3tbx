@@ -35,6 +35,7 @@ import org.esa.snap.core.util.ProductUtils;
 import java.awt.Rectangle;
 import java.util.Map;
 
+@SuppressWarnings("ConstantConditions")
 @OperatorMetadata(alias = "OlciAnomalyFlagging",
         version = "1.0",
         authors = "T. Block",
@@ -145,7 +146,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
             maxSpectralSlope.setNoDataValue(Float.NaN);
             maxSpectralSlope.setNoDataValueUsed(true);
             maxSpectralSlope.setUnit("1/nm");
-            maxSpectralSlope.setDescription("Absolute value of maximal spectral slope for bands 1-12, 16-18, 21");
+            maxSpectralSlope.setDescription("Value of maximal spectral slope for bands 1-12, 16-18, 21 in [reflectance/nm]");
 
             final Band maxSlopeBandIndex = outputProduct.addBand("max_slope_band_index", ProductData.TYPE_INT8);
             maxSlopeBandIndex.setNoDataValue(-1);
