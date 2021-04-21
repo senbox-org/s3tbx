@@ -46,12 +46,12 @@
         </folder>
     </folder>
 
-    <!--<folder name="Services">-->
-    <!--<folder name="JavaHelp">-->
-    <!--<file name="org-esa-s3tbx-s3tbx-olci-sensor-harmonisation-helpset.xml" url="helpset.xml">-->
-    <!--<attr name="position" intvalue="4700"/>-->
-    <!--</file>-->
-    <!--</folder>-->
-    <!--</folder>-->
+    <folder name="Services">
+        <folder name="JavaHelp">
+            <file name="org-esa-s3tbx-s3tbx-olci-anomaly-flagging-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="4900"/>
+            </file>
+        </folder>
+    </folder>
 
 </filesystem>
