@@ -1,21 +1,12 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import org.esa.snap.core.dataio.ProductIOException;
-import org.esa.snap.core.dataio.geocoding.ComponentFactory;
-import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
-import org.esa.snap.core.dataio.geocoding.ForwardCoding;
-import org.esa.snap.core.dataio.geocoding.GeoChecks;
-import org.esa.snap.core.dataio.geocoding.GeoRaster;
-import org.esa.snap.core.dataio.geocoding.InverseCoding;
-import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
-import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
-import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCodingFactory;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.ma2.Array;
-import ucar.ma2.DataType;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -117,19 +108,18 @@ public class L1AHawkeyeFileReader extends SeadasFileReader {
                 lats = geoNcFile.findVariable("geolocation_data/latitude");
                 lons = geoNcFile.findVariable("geolocation_data/longitude");
 
-                //Use lat/lon with TiePointGeoCoding
+                //Use lat/lon with PixelGeoCoding
                 int[] dims = lats.getShape();
-                double[] latValues;
-                double[] lonValues;
+                float[] latTiePoints;
+                float[] lonTiePoints;
                 Array latarr = lats.read();
                 Array lonarr = lons.read();
 
-                // todo - is the conversion from float to double working this way?
-                latValues = (double[]) latarr.get1DJavaArray(DataType.DOUBLE);
-                lonValues = (double[]) lonarr.get1DJavaArray(DataType.DOUBLE);
+                latTiePoints = (float[]) latarr.getStorage();
+                lonTiePoints = (float[]) lonarr.getStorage();
 
-                Band latBand = new Band("latitude", ProductData.TYPE_FLOAT64, numPixels, numScans);
-                Band lonBand = new Band("longitude", ProductData.TYPE_FLOAT64, numPixels, numScans);
+                Band latBand = new Band("latitude", ProductData.TYPE_FLOAT32, numPixels, numScans);
+                Band lonBand = new Band("longitude", ProductData.TYPE_FLOAT32, numPixels, numScans);
                 latBand.setNoDataValue(999.0);
                 latBand.setNoDataValueUsed(true);
                 lonBand.setNoDataValue(999.0);
@@ -137,25 +127,11 @@ public class L1AHawkeyeFileReader extends SeadasFileReader {
                 product.addBand(latBand);
                 product.addBand(lonBand);
 
-                latBand.setData(ProductData.createInstance(latValues));
-                lonBand.setData(ProductData.createInstance(lonValues));
-
-                // todo - if you know the resolution you can set a fixed value
-                final double resolutionInKm = RasterUtils.computeResolutionInKm(lonValues, latValues, numPixels, numScans);
-
-                final GeoRaster geoRaster = new GeoRaster(lonValues, latValues,
-                                                          lonBand.getName(), latBand.getName(),
-                                                          numPixels, numScans, resolutionInKm);
-
-                final ForwardCoding forward = ComponentFactory.getForward(PixelForward.KEY);
-                final InverseCoding inverse = ComponentFactory.getInverse(PixelQuadTreeInverse.KEY);
-
-                final ComponentGeoCoding geoCoding = new ComponentGeoCoding(
-                        geoRaster, forward, inverse,
-                        GeoChecks.ANTIMERIDIAN // todo- check which tests are necessary for this data
-                );
-                geoCoding.initialize();
-
+                ProductData lattitudes = ProductData.createInstance(latTiePoints);
+                latBand.setData(lattitudes);
+                ProductData longitudes = ProductData.createInstance(lonTiePoints);
+                lonBand.setData(longitudes);
+                product.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 10));
                 geoNcFile.close();
 
             }
