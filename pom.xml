@@ -24,8 +24,7 @@
     <version>9.0.0-SNAPSHOT</version>
     <name>Sentinel-3 Toolbox</name>
     <description>Tools for the Sentinel-3 Satellite</description>
-    <url>https://github.com/senbox-org/s3tbx</url>
-
+    <url>https://sentinel.esa.int/web/sentinel/toolboxes/sentinel-3</url>
     <modules>
         <module>s3tbx-aatsr-sst</module>
         <module>s3tbx-aatsr-sst-ui</module>
@@ -459,6 +458,7 @@
                     <configuration>
                         <moduleType>normal</moduleType>
                         <licenseName>GPL 3</licenseName>
+                        <homePageUrl>https://sentinel.esa.int/web/sentinel/toolboxes/sentinel-3</homePageUrl>
                         <licenseFile>${project.basedir}/../LICENSE.html</licenseFile>
                         <cluster>${brandingToken}</cluster>
                         <brandingToken>${brandingToken}</brandingToken>
