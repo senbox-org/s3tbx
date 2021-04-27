@@ -30,6 +30,7 @@ import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.util.SystemUtils;
 
 /**
+ * @author Marco Zühlke
  * @author Sabine Embacher
  */
 public class BowtieGeoCodingPersistenceConverter implements PersistenceConverter<AbstractBowtieGeoCoding> {
@@ -41,7 +42,6 @@ public class BowtieGeoCodingPersistenceConverter implements PersistenceConverter
     private static final String NAME_LONGITUDE_BAND = "LONGITUDE_BAND";
     private static final String NAME_TIE_POINT_GRID_NAME_LAT = "TIE_POINT_GRID_NAME_LAT";
     private static final String NAME_TIE_POINT_GRID_NAME_LON = "TIE_POINT_GRID_NAME_LON";
-
 
     // Never change this constant! Instead, create a new one with the
     // name ID_VERSION_2, as ID_VERSION_1 is used in HistoricalDecoder0.
