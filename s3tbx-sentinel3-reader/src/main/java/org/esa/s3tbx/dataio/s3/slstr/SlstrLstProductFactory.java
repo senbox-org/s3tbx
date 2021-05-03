@@ -95,10 +95,8 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
     }
 
     private void setPixelGeoCoding(Product targetProduct, Band lonBand, Band latBand) throws IOException {
-        final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
-        lonBand.unloadRasterData();
-        final double[] latitudes = RasterUtils.loadDataScaled(latBand);
-        latBand.unloadRasterData();
+        final double[] longitudes = RasterUtils.loadGeoData(lonBand);
+        final double[] latitudes = RasterUtils.loadGeoData(latBand);
 
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonBand.getName(), latBand.getName(),
                                                   targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);

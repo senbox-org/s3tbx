@@ -57,10 +57,8 @@ public class AODProductFactory extends AbstractProductFactory {
             return;
         }
 
-        final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
-        lonBand.unloadRasterData();
-        final double[] latitudes = RasterUtils.loadDataScaled(latBand);
-        latBand.unloadRasterData();
+        final double[] longitudes = RasterUtils.loadGeoData(lonBand);
+        final double[] latitudes = RasterUtils.loadGeoData(latBand);
 
         // replace fill value with NaN
         for (int i = 0; i < longitudes.length; i++) {

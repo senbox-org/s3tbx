@@ -214,10 +214,8 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
             final Band latBand = product.getBand(latVariableName);
 
             if (latBand != null && lonBand != null) {
-                final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
-                lonBand.unloadRasterData();
-                final double[] latitudes = RasterUtils.loadDataScaled(latBand);
-                latBand.unloadRasterData();
+                final double[] longitudes = RasterUtils.loadGeoData(lonBand);
+                final double[] latitudes = RasterUtils.loadGeoData(latBand);
 
                 final int sceneRasterWidth = product.getSceneRasterWidth();
                 final int sceneRasterHeight = product.getSceneRasterHeight();
