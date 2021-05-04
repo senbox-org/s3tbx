@@ -100,8 +100,8 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
             if (slstrElementName.endsWith("ImageSize")) {
                 MetadataAttribute startOffsetElem = slstrElement.getAttribute("startOffset");
                 MetadataAttribute trackOffsetElem = slstrElement.getAttribute("trackOffset");
-                Double startOffset = startOffsetElem != null ? Double.parseDouble(startOffsetElem.getData().getElemString()) : 0.0;
-                Double trackOffset = trackOffsetElem != null ? Double.parseDouble(trackOffsetElem.getData().getElemString()) : 0.0;
+                double startOffset = startOffsetElem != null ? Double.parseDouble(startOffsetElem.getData().getElemString()) : 0.0;
+                double trackOffset = trackOffsetElem != null ? Double.parseDouble(trackOffsetElem.getData().getElemString()) : 0.0;
                 if (slstrElementName.equals("nadirImageSize")) {
                     nadirStartOffset = startOffset;
                     nadirTrackOffset = trackOffset;
@@ -293,10 +293,8 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
                 return null;
             }
 
-            final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
-            lonBand.unloadRasterData();
-            final double[] latitudes = RasterUtils.loadDataScaled(latBand);
-            latBand.unloadRasterData();
+            final double[] longitudes = RasterUtils.loadGeoData(lonBand);
+            final double[] latitudes = RasterUtils.loadGeoData(latBand);
 
             final int width = product.getSceneRasterWidth();
             final int height = product.getSceneRasterHeight();
