@@ -3,11 +3,10 @@ package org.esa.s3tbx.dataio.s3;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-public class SentinelTimeCodingTest {
+public class
+SentinelTimeCodingTest {
 
     @Test
     public void testCanGetPixelPos() {
@@ -70,5 +69,37 @@ public class SentinelTimeCodingTest {
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException expected) {
         }
+    }
+
+    @Test
+    public void testGetMaxDelta_RR() {
+        final long[] timeStamps = {573547550874421L,
+                573547551050457L,
+                573547551226456L,
+                573547551402454L,
+                573547551578452L,
+                573547551754450L
+        };
+
+        final SentinelTimeCoding timeCoding = new SentinelTimeCoding(timeStamps);
+
+        final int delta = timeCoding.getMaxDelta();
+        assertEquals(176036, delta);
+    }
+
+    @Test
+    public void testGetMaxDelta_FR() {
+        final long[] timeStamps = {576377323831920L,
+                576377323875919L,
+                576377323919919L,
+                576377323963918L,
+                576377324007956L,
+                576377324051955L
+        };
+
+        final SentinelTimeCoding timeCoding = new SentinelTimeCoding(timeStamps);
+
+        final int delta = timeCoding.getMaxDelta();
+        assertEquals(44038, delta);
     }
 }
