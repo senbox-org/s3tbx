@@ -3,22 +3,14 @@ package org.esa.s3tbx.dataio.s3.olci;
 import org.esa.s3tbx.dataio.s3.AbstractProductFactory;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
+import org.esa.s3tbx.dataio.s3.SentinelTimeCoding;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReaderFactory;
-import org.esa.snap.core.dataio.geocoding.ComponentFactory;
-import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
-import org.esa.snap.core.dataio.geocoding.ForwardCoding;
-import org.esa.snap.core.dataio.geocoding.GeoChecks;
-import org.esa.snap.core.dataio.geocoding.GeoRaster;
-import org.esa.snap.core.dataio.geocoding.InverseCoding;
+import org.esa.snap.core.dataio.geocoding.*;
 import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
 import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.runtime.Config;
 
 import java.io.File;
@@ -40,9 +32,9 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
     final static String SYSPROP_OLCI_TIE_POINT_CODING_FORWARD = "s3tbx.reader.olci.tiePointGeoCoding.forward";
     private final static String SYSPROP_OLCI_PIXEL_CODING_INVERSE = "s3tbx.reader.olci.pixelGeoCoding.inverse";
     private final static String[] excludedIDs = new String[]{"removedPixelsData"};
-    private Map<String, Float> nameToWavelengthMap;
-    private Map<String, Float> nameToBandwidthMap;
-    private Map<String, Integer> nameToIndexMap;
+    private final Map<String, Float> nameToWavelengthMap;
+    private final Map<String, Float> nameToBandwidthMap;
+    private final Map<String, Integer> nameToIndexMap;
     private int subSamplingX;
     private int subSamplingY;
 
@@ -64,6 +56,23 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
             case "OL_2_LRR":
             case "OL_2_WRR":
                 return 1.2;
+
+            default:
+                throw new IllegalArgumentException("unsupported product of type: " + productType);
+        }
+    }
+
+    static int getMaxLineTimeDelta(String productType) {
+        switch (productType) {
+            case "OL_1_EFR":
+            case "OL_2_LFR":
+            case "OL_2_WFR":
+                return 66057; // nominal time delta + 50%
+
+            case "OL_1_ERR":
+            case "OL_2_LRR":
+            case "OL_2_WRR":
+                return 264054; // nominal time delta + 50%
 
             default:
                 throw new IllegalArgumentException("unsupported product of type: " + productType);
@@ -245,6 +254,13 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
     @Override
     protected void setTimeCoding(Product targetProduct) throws IOException {
         setTimeCoding(targetProduct, "time_coordinates.nc", "time_stamp");
+
+        final SentinelTimeCoding sceneTimeCoding = (SentinelTimeCoding) targetProduct.getSceneTimeCoding();
+        final int maxDelta = sceneTimeCoding.getMaxDelta();
+        final int maxLineTimeDelta = getMaxLineTimeDelta(targetProduct.getProductType());
+        if (maxDelta > maxLineTimeDelta) {
+            throw new IOException("Data gap detected - product rejected");
+        }
     }
 
     protected abstract String getValidExpression();
