@@ -41,7 +41,7 @@ public class PodGeoCodingPersistenceConverter implements PersistenceConverter<Po
     // Never change this constant! Instead, create a new one with the
     // name ID_VERSION_2, as ID_VERSION_1 is used in HistoricalDecoder0.
     // And so on ...
-    private static final String ID_VERSION_1 = "PodGeoCoding:1";
+    private static final String ID_VERSION_1 = "PodGC:1";
 
     @Override
     public String getID() {
