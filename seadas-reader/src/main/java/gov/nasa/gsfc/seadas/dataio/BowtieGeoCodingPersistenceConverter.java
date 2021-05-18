@@ -46,7 +46,7 @@ public class BowtieGeoCodingPersistenceConverter implements PersistenceConverter
     // Never change this constant! Instead, create a new one with the
     // name ID_VERSION_2, as ID_VERSION_1 is used in HistoricalDecoder0.
     // And so on ...
-    public static final String ID_VERSION_1 = "BowtieGeoCoding:1";
+    public static final String ID_VERSION_1 = "BowtieGC:1";
 
     @Override
     public String getID() {
