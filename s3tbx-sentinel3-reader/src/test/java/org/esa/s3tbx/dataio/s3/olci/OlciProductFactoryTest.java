@@ -43,12 +43,12 @@ public class OlciProductFactoryTest {
 
     @Test
     public void testGetMaxLineTimeDelta() {
-        assertEquals(264054, OlciProductFactory.getMaxLineTimeDelta("OL_1_EFR"));
-        assertEquals(264054, OlciProductFactory.getMaxLineTimeDelta("OL_2_LFR"));
-        assertEquals(264054, OlciProductFactory.getMaxLineTimeDelta("OL_2_WFR"));
-        assertEquals(66057, OlciProductFactory.getMaxLineTimeDelta("OL_1_ERR"));
-        assertEquals(66057, OlciProductFactory.getMaxLineTimeDelta("OL_2_LRR"));
-        assertEquals(66057, OlciProductFactory.getMaxLineTimeDelta("OL_2_WRR"));
+        assertEquals(66057, OlciProductFactory.getMaxLineTimeDelta("OL_1_EFR"));
+        assertEquals(66057, OlciProductFactory.getMaxLineTimeDelta("OL_2_LFR"));
+        assertEquals(66057, OlciProductFactory.getMaxLineTimeDelta("OL_2_WFR"));
+        assertEquals(264054, OlciProductFactory.getMaxLineTimeDelta("OL_1_ERR"));
+        assertEquals(264054, OlciProductFactory.getMaxLineTimeDelta("OL_2_LRR"));
+        assertEquals(264054, OlciProductFactory.getMaxLineTimeDelta("OL_2_WRR"));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

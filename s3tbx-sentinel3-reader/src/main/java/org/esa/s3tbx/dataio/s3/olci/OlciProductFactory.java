@@ -67,12 +67,12 @@ public abstract class OlciProductFactory extends AbstractProductFactory {
             case "OL_1_EFR":
             case "OL_2_LFR":
             case "OL_2_WFR":
-                return 264054; // nominal time delta + 50%
+                return 66057; // nominal time delta + 50%
 
             case "OL_1_ERR":
             case "OL_2_LRR":
             case "OL_2_WRR":
-                return 66057; // nominal time delta + 50%
+                return 264054; // nominal time delta + 50%
 
             default:
                 throw new IllegalArgumentException("unsupported product of type: " + productType);
