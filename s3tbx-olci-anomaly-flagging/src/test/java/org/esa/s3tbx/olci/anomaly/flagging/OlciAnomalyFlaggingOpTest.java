@@ -16,27 +16,15 @@
 
 package org.esa.s3tbx.olci.anomaly.flagging;
 
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.Tile;
 import org.junit.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class OlciAnomalyFlaggingOpTest {
 
@@ -152,8 +140,8 @@ public class OlciAnomalyFlaggingOpTest {
         final Product testProduct = createTestProduct();
 
         final Product outputProduct = OlciAnomalyFlaggingOp.createOutputProduct(testProduct, false);
-        assertEquals("test_type_ANOM_FLAG", outputProduct.getProductType());
-        assertEquals("test_me_ANOM_FLAG", outputProduct.getName());
+        assertEquals("test_type_ANOM", outputProduct.getProductType());
+        assertEquals("test_me_ANOM", outputProduct.getName());
         assertEquals(3, outputProduct.getSceneRasterWidth());
         assertEquals(5, outputProduct.getSceneRasterHeight());
 
@@ -360,8 +348,8 @@ public class OlciAnomalyFlaggingOpTest {
             band.setSpectralBandwidth(0.8f * i);
             band.setDescription("whatever");
 
-            product.addBand("solar_flux_band_" + Integer.toString(i), ProductData.TYPE_FLOAT32);
-            product.addBand("lambda0_band_" + Integer.toString(i), ProductData.TYPE_FLOAT32);
+            product.addBand("solar_flux_band_" + i, ProductData.TYPE_FLOAT32);
+            product.addBand("lambda0_band_" + i, ProductData.TYPE_FLOAT32);
         }
 
         product.addBand("altitude", ProductData.TYPE_FLOAT32);

@@ -17,11 +17,7 @@
 package org.esa.s3tbx.olci.anomaly.flagging;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -32,7 +28,7 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.Map;
 
 @SuppressWarnings("ConstantConditions")
@@ -44,7 +40,7 @@ import java.util.Map;
         description = "Adds a flagging band indicating saturated pixels and altitude data overflows")
 public class OlciAnomalyFlaggingOp extends Operator {
 
-    private static final String SUFFIX = "_ANOM_FLAG";
+    private static final String SUFFIX = "_ANOM";
     private static final float ALTITUDE_MAX = 8850.f;
     private static final float ALTITUDE_MIN = -11050.f;
     private static final int ALT_OUT_OF_RANGE = 2;
@@ -131,6 +127,9 @@ public class OlciAnomalyFlaggingOp extends Operator {
         ProductUtils.copyGeoCoding(input, outputProduct);
         ProductUtils.copyMetadata(input, outputProduct);
 
+        Product.AutoGrouping autoGrouping = input.getAutoGrouping();
+        outputProduct.setAutoGrouping(autoGrouping);
+
         final Band anomalyFlags = outputProduct.addBand("anomaly_flags", ProductData.TYPE_INT8);
         anomalyFlags.setDescription("Flags indicating OLCI data anomalies");
 
@@ -173,7 +172,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
 
     private static void checkSimpleIndexedBands(Product input, String prefix, int lower, int upper) {
         for (int i = lower; i <= upper; i++) {
-            final String variableName = prefix + Integer.toString(i);
+            final String variableName = prefix + i;
             if (!input.containsBand(variableName)) {
                 throw new OperatorException("Input variable '" + variableName + "' missing.");
             }
