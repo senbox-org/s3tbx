@@ -21,6 +21,7 @@ abstract class BandDefinition {
     private static final String HUE_BAND_NAME = "hue_band";
     private static final String POLY_CORR_BAND_NAME = "poly_corr";
     private static final String HUE_ANGLE_BAND_NAME = "hue_angle";
+    private static final String DOMINANT_LAMBDA_BAND_NAME = "dominant_wvl";
     private static final String FU_VALUE_BAND_NAME = "FU";
 
     final String name;
@@ -51,7 +52,7 @@ abstract class BandDefinition {
     }
 
 
-    static BandDefinition[] create(boolean includeIntermediateResults, Instrument instrument) {
+    static BandDefinition[] create(Instrument instrument, boolean includeIntermediateResults, boolean includeDominantLambda) {
         List<BandDefinition> list = new ArrayList<>();
         if (includeIntermediateResults) {
             String bandNameSuffix = "_" + instrument.name();
@@ -104,6 +105,15 @@ abstract class BandDefinition {
                 targetSample.set(result.getHueAngle());
             }
         });
+        if (includeDominantLambda) {
+            list.add(new BandDefinition("The dominant wavelength derived from hue_angle", DOMINANT_LAMBDA_BAND_NAME, ProductData.TYPE_FLOAT32, Float.NaN, true) {
+                @Override
+                public void setTargetSample(FuResult result, WritableSample targetSample) {
+                    targetSample.set(result.getDominantLambda());
+                }
+            });
+
+        }
         list.add(new BandDefinition("", FU_VALUE_BAND_NAME, ProductData.TYPE_INT8, Byte.MAX_VALUE, true) {
             @Override
             public void setTargetSample(FuResult result, WritableSample targetSample) {

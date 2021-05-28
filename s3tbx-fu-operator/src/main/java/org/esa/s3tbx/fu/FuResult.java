@@ -23,4 +23,6 @@ interface FuResult {
     double getHue();
 
     double getPolyCorr();
+
+    double getDominantLambda();
 }

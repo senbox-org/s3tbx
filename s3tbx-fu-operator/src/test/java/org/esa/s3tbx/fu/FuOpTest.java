@@ -152,12 +152,15 @@ public class FuOpTest {
         HashMap<String, Object> fuParams = new HashMap<>();
         fuParams.put("validExpression", "true");
         fuParams.put("instrument", Instrument.MERIS);
+        fuParams.put("includeDominantLambda", true);
         Product fuResult = GPF.createProduct("FuClassification", fuParams, radianceProduct);
 
         int radianceFuValue = fuResult.getBand("FU").getSampleInt(0, 0);
-        float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
         assertEquals(5, radianceFuValue);
+        float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
         assertEquals(171.025528, radianceHueValue, 1e-6);
+        float domLambda = fuResult.getBand("dominant_wvl").getSampleFloat(0, 0);
+        assertEquals(493.73907470, domLambda, 1e-8);
     }
 
 

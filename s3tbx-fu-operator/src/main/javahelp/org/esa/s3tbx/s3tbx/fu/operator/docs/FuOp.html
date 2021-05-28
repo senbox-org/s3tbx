@@ -41,8 +41,10 @@ FU classification can be invoked in the Sentinel Toolbox from tool menu by selec
 
 <h4>Source Product Group</h4>
 
-<b>Source product:</b> Here the user specifies the source product reflectance. The combo box presents a list of all products opened
-in the Sentinel Toolbox. The user may select one of these or, by clicking on the button next to the combo box, choose a product
+<b>Source product:</b> Here the user specifies the source product reflectance. The combo box presents a list of all
+products opened
+in the Sentinel Toolbox. The user may select one of these or, by clicking on the button next to the combo box, choose a
+product
 from the file system.
 <br>
 
@@ -51,7 +53,8 @@ from the file system.
 <br>
 <br>
 
-<b>Save as:</b> checkbox to specify whether the target product should be saved to the file system. The combo box presents a
+<b>Save as:</b> checkbox to specify whether the target product should be saved to the file system. The combo box
+presents a
 list of available file formats. The text field or the button next to it allow to specify a target directory.
 <br>
 <br>
@@ -71,10 +74,13 @@ target product is not saved, it is opened in the Sentinel Toolbox automatically.
 <p><b>Multiply input reflectance with PI:</b><br>
     Checking this option will multiply the reflectance with PI.</p>
 <p><b>Valid pixel expression:</b><br>
-    This expression is used to validate pixels. Only valid pixels will be considerd for processing. If no expression is specified
-    the first applicable expression for the input product will be applied as in <a href="#valid_expressions"> Valid expressions</a>. If the
+    This expression is used to validate pixels. Only valid pixels will be considerd for processing. If no expression is
+    specified
+    the first applicable expression for the input product will be applied as in <a href="#valid_expressions"> Valid
+        expressions</a>. If the
     expression is set to
-    <b>TRUE</b>, then all pixels are considered to be valid. The ellipsis-button can be used to create a valid expression.</p>
+    <b>TRUE</b>, then all pixels are considered to be valid. The ellipsis-button can be used to create a valid
+    expression.</p>
 <br>
 <p>Default valid expressions</p>
 <table id="valid_expressions">
@@ -112,11 +118,14 @@ target product is not saved, it is opened in the Sentinel Toolbox automatically.
 
 <br>
 <p><b>Reflectance band name pattern:</b><br>
-    The used reflectance band names must match the given pattern. Useful, if there is more then one spectrum in the product.
-    Here a regular expression can be used.  There is a nice tutorial on <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+    The used reflectance band names must match the given pattern. Useful, if there is more then one spectrum in the
+    product.
+    Here a regular expression can be used. There is a nice tutorial on
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
         <param name="content" value="http://www.vogella.com/tutorials/JavaRegularExpressions/article.html">
         <param name="text" value="vogella.com">
-    </object>.
+    </object>
+    .
 </p>
 <p>Example expressions:</p>
 <table>
@@ -126,15 +135,29 @@ target product is not saved, it is opened in the Sentinel Toolbox automatically.
     </tr>
     <tr>
         <td>reflec_\d\d_band</td>
-        <td>Will match any name witch starts with 'reflec_' and ends with '_band'. in the middle must be two digits. E.g.: reflec_12_band</td>
+        <td>Will match any name witch starts with 'reflec_' and ends with '_band'. in the middle must be two digits.
+            E.g.: reflec_12_band
+        </td>
     </tr>
 
 </table>
 
-<p><b>Instrument:</b><br> Allows to select which instrument specific settings shall be used, if the auto detection fails.</p>
+<p><b>Instrument:</b><br> Allows to select which instrument specific settings shall be used, if the auto detection
+    fails.</p>
 
+<p><b>Include dominant wavelength:</b><br>
+    Whether or not to compute and include the dominant wavelength in the output. The default value is "false".<br><br>
+    A laser emits light at just one wavelength. When this pure light is observed by the human eye we can calculate the
+    chromaticity coordinates and the hue angle in the x-y diagram. The wavelength is called the "dominant wavelength"
+    and is positioned on the locus, the outer boundary in the x-y diagram that can be observed.<br><br>
+    The conversion from the hue angle to the dominant wavelength is done by a look-up-table.
+</p>
 <p><b>Include intermediate results in output:</b><br>
-    Whether or not the intermediate results shall be written to the target output. The default value is "true".</p>
+    Whether or not the intermediate results shall be written to the target output. The default value is "true".<br>
+    Intermediate results are results which are calculated during the computation of the hue angle.
+    The following bands belong to the intermediate results:<br>
+    X3, Y3, Z3, chrX, chrY, hue_band, poly_corr
+</p>
 
 
 <br>
