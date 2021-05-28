@@ -22,4 +22,19 @@ public class OlciLevel2LProductFactory extends OlciProductFactory {
         targetProduct.setAutoGrouping("IWV:OGVI:OTCI:RC681:RC865:atmospheric_temperature_profile:" +
                 "lambda0:FWHM:solar_flux");
     }
+
+    @Override
+    protected void setMasks(Product targetProduct) {
+        super.setMasks(targetProduct);
+        String octiMaskName = "OCTI_Unreliable_RECOM";
+        targetProduct.addMask(octiMaskName, "LQSF.CLOUD or LQSF.CLOUD_AMBIGUOUS or LQSF.CLOUD_MARGIN or " +
+                "LQSF.SNOW_ICE or LQSF.OTCI_FAIL or LQSF.OTCI_CLASS_CLSN",
+                "Excluding pixels that are deemed unreliable for OCTI. Flag recommended by QWG.",
+                getColorProvider().getMaskColor(octiMaskName), 0.5);
+        String ogviMaskName = "OGVI_Unreliable_RECOM";
+        targetProduct.addMask(ogviMaskName, "LQSF.CLOUD or LQSF.CLOUD_AMBIGUOUS or LQSF.CLOUD_MARGIN or " +
+                        "LQSF.SNOW_ICE or LQSF.OGVI_FAIL",
+                "Excluding pixels that are  deemed unreliable for OGVI. Flag recommended by QWG.",
+                getColorProvider().getMaskColor(ogviMaskName), 0.5);
+    }
 }
