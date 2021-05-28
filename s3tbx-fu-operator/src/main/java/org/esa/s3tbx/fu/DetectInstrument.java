@@ -121,7 +121,7 @@ class DetectInstrument {
     }
 
     private static boolean s2bmsi(Product product) {
-        return spacecraftEquals(product, "Sentinel-2A");
+        return spacecraftEquals(product, "Sentinel-2B");
     }
 
     private static boolean spacecraftEquals(Product product, String spacecraftName) {
@@ -142,7 +142,7 @@ class DetectInstrument {
         MetadataElement current = root;
         for (String pathElement : pathElements) {
             if (current.containsElement(pathElement)) {
-                current = root.getElement(pathElement);
+                current = current.getElement(pathElement);
             } else {
                 return null;
             }
