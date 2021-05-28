@@ -48,7 +48,7 @@ import java.awt.Color;
 import java.util.Arrays;
 
 /**
- * The {@code FuOp} performs a MERIS, MODIS, OLCI and SeaWiFS based ocean colour classification
+ * The {@code FuOp} performs a MERIS, MODIS, OLCI, S2A/B and SeaWiFS based ocean colour classification
  * with the discrete Forel-Ule scale.
  *
  * @author Muhammad Bala
@@ -56,9 +56,9 @@ import java.util.Arrays;
  */
 @OperatorMetadata(
         alias = "FuClassification",
-        version = "1.1",
+        version = "1.2",
         category = "Optical/Thematic Water Processing",
-        description = "Colour classification based on the discrete Forel-Ule scale.",
+        description = "Colour classification based on the discrete Forel-Ule scale",
         authors = " H.J van der Woerd (IVM), M.R. Wernand (NIOZ), Muhammad Bala (BC), Marco Peters (BC)",
         copyright = "(c) 2016 by Brockmann Consult GmbH")
 public class FuOp extends PixelOperator {
