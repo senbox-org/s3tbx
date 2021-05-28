@@ -26,13 +26,63 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static org.esa.s3tbx.fu.Instrument.Constants.*;
+import static org.esa.s3tbx.fu.Instrument.Constants.CZCS_BAND_NAME_PATTERN;
+import static org.esa.s3tbx.fu.Instrument.Constants.CZCS_POLYFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.CZCS_VALID_EXPRESSIONS;
+import static org.esa.s3tbx.fu.Instrument.Constants.CZCS_WAVELENGTHS;
+import static org.esa.s3tbx.fu.Instrument.Constants.CZCS_XFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.CZCS_YFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.CZCS_ZFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MERIS_BAND_NAME_PATTERN;
+import static org.esa.s3tbx.fu.Instrument.Constants.MERIS_POLYFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MERIS_VALID_EXPRESSIONS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MERIS_WAVELENGTHS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MERIS_XFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MERIS_YFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MERIS_ZFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS500_BAND_NAME_PATTERN;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS500_POLYFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS500_VALID_EXPRESSIONS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS500_WAVELENGTHS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS500_XFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS500_YFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS500_ZFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS_BAND_NAME_PATTERN;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS_POLYFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS_VALID_EXPRESSIONS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS_WAVELENGTHS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS_XFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS_YFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MODIS_ZFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MSI_BAND_NAME_PATTERN;
+import static org.esa.s3tbx.fu.Instrument.Constants.MSI_VALID_EXPRESSIONS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MSI_WAVELENGTHS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MSI_XFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MSI_YFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.MSI_ZFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.OLCI_BAND_NAME_PATTERN;
+import static org.esa.s3tbx.fu.Instrument.Constants.OLCI_POLYFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.OLCI_VALID_EXPRESSIONS;
+import static org.esa.s3tbx.fu.Instrument.Constants.OLCI_WAVELENGTHS;
+import static org.esa.s3tbx.fu.Instrument.Constants.OLCI_XFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.OLCI_YFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.OLCI_ZFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.S2A_MSI_POLYFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.S2B_MSI_POLYFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.SEAWIFS_BAND_NAME_PATTERN;
+import static org.esa.s3tbx.fu.Instrument.Constants.SEAWIFS_POLYFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.SEAWIFS_VALID_EXPRESSIONS;
+import static org.esa.s3tbx.fu.Instrument.Constants.SEAWIFS_WAVELENGTHS;
+import static org.esa.s3tbx.fu.Instrument.Constants.SEAWIFS_XFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.SEAWIFS_YFACTORS;
+import static org.esa.s3tbx.fu.Instrument.Constants.SEAWIFS_ZFACTORS;
 
-// todo (mp/20170720) - next refactoring should be to extract Instrument objects and in init the enum with the objects. Both might implement the same interface.
+// todo (mp/20170720) - next refactoring should be to extract Instrument objects and init the enum with the objects. Both might implement the same interface.
 enum Instrument {
     AUTO_DETECT(new double[0], new String[0], new double[0], new double[0], new double[0], new double[0], new String[0], false),
     OLCI(OLCI_WAVELENGTHS, OLCI_BAND_NAME_PATTERN, OLCI_XFACTORS, OLCI_YFACTORS, OLCI_ZFACTORS, OLCI_POLYFACTORS, OLCI_VALID_EXPRESSIONS, false),
-    S2_MSI(MSI_WAVELENGTHS, MSI_BAND_NAME_PATTERN, MSI_XFACTORS, MSI_YFACTORS, MSI_ZFACTORS, MSI_POLYFACTORS, MSI_VALID_EXPRESSIONS, true),
+    S2A_MSI(MSI_WAVELENGTHS, MSI_BAND_NAME_PATTERN, MSI_XFACTORS, MSI_YFACTORS, MSI_ZFACTORS, S2A_MSI_POLYFACTORS, MSI_VALID_EXPRESSIONS, true),
+    S2B_MSI(MSI_WAVELENGTHS, MSI_BAND_NAME_PATTERN, MSI_XFACTORS, MSI_YFACTORS, MSI_ZFACTORS, S2B_MSI_POLYFACTORS, MSI_VALID_EXPRESSIONS, true),
     MERIS(MERIS_WAVELENGTHS, MERIS_BAND_NAME_PATTERN, MERIS_XFACTORS, MERIS_YFACTORS, MERIS_ZFACTORS, MERIS_POLYFACTORS, MERIS_VALID_EXPRESSIONS,
           true),
     MODIS(MODIS_WAVELENGTHS, MODIS_BAND_NAME_PATTERN, MODIS_XFACTORS, MODIS_YFACTORS, MODIS_ZFACTORS, MODIS_POLYFACTORS, MODIS_VALID_EXPRESSIONS,
@@ -159,7 +209,8 @@ enum Instrument {
         static final double[] MSI_XFACTORS = new double[]{11.756, 6.423, 53.696, 32.028, 0.529};
         static final double[] MSI_YFACTORS = new double[]{1.744, 22.289, 65.702, 16.808, 0.192};
         static final double[] MSI_ZFACTORS = new double[]{62.696, 31.101, 1.778, 0.015, 0.000};
-        static final double[] MSI_POLYFACTORS = new double[]{-65.74, 477.16, -1279.99, 1524.96, -751.59, 116.56};
+        static final double[] S2A_MSI_POLYFACTORS = new double[]{-68.76, 495.18, -1315.60, 1547.60, -748.36, 113.25};
+        static final double[] S2B_MSI_POLYFACTORS = new double[]{-70.78, 510.49, -1360.3, 1608.6, -785.63, 121.34};
         // MODIS Constants
         static final double[] MODIS_WAVELENGTHS = {412.0, 443.0, 488.0, 531.0, 555.0, 667.0, 678.0};
         static final String[] MODIS_BAND_NAME_PATTERN = {"rrs_\\d{3}"};
