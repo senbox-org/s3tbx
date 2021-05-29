@@ -243,7 +243,7 @@ enum Instrument {
         static final double[] MODIS500_YFACTORS = new double[]{15.756, 67.793, 22.459};
         static final double[] MODIS500_ZFACTORS = new double[]{73.374, 6.111, 0.024};
         static final double[] MODIS500_POLYFACTORS = new double[]{-68.3622, 534.0367, -1552.7614, 2042.4187, -1156.9981, 223.0369};
-        // TODO - DISABLED SENSOR
+        // TODO - DISABLED SENSOR - Actually Landsat L2 is needed. Which is not yet supported by SNAP
         // Landsat-8 Constants
 //        static final double[] LANDSAT8_WAVELENGTHS = {440.0, 480.0, 560.0, 655};
 //        static final String[] LANDSAT8_VALID_EXPRESSIONS = {"water_confidence_mid || water_confidence_high"};
