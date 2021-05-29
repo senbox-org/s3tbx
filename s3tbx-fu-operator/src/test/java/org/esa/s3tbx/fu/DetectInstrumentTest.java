@@ -1,11 +1,12 @@
 package org.esa.s3tbx.fu;
 
+import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author muhammad.bc .
@@ -43,9 +44,30 @@ public class DetectInstrumentTest {
     }
 
     @Test
-    public void testS2MSI() {
+    public void testS2_A_MSI() {
         Product product = new Product("dummy", "S2_MSI_Level-1C", 2, 2);
-        assertEquals(Instrument.S2_MSI, DetectInstrument.getInstrument(product));
+        addS2SpacecraftMetadta(product, "Sentinel-2A");
+        assertEquals(Instrument.S2A_MSI, DetectInstrument.getInstrument(product));
+    }
+
+    @Test
+    public void testS2_B_MSI() {
+        Product product = new Product("dummy", "S2_MSI_Level-1C", 2, 2);
+        addS2SpacecraftMetadta(product, "Sentinel-2B");
+        assertEquals(Instrument.S2B_MSI, DetectInstrument.getInstrument(product));
+    }
+
+    private void addS2SpacecraftMetadta(Product product, String spacecraftName) {
+        final MetadataElement userProduct = new MetadataElement("Level-1C_User_Product");
+        final MetadataElement generalInfo = new MetadataElement("General_Info");
+        final MetadataElement productInfo = new MetadataElement("Product_Info");
+        final MetadataElement datatake = new MetadataElement("Datatake");
+        datatake.addAttribute(new MetadataAttribute("SPACECRAFT_NAME", ProductData.createInstance(spacecraftName), true));
+
+        productInfo.addElement(datatake);
+        generalInfo.addElement(productInfo);
+        userProduct.addElement(generalInfo);
+        product.getMetadataRoot().addElement(userProduct);
     }
 
     // TODO - DISABLED SENSOR

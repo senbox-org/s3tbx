@@ -21,28 +21,34 @@ import com.bc.ceres.core.Assert;
 class FuAlgo {
 
     public static final byte MAX_FU_VALUE = 21;
-    
+
     private static final double CONST_WHITE_POINT = 0.333333;
     private static final double[] ANGLE_OF_TRANSITIONS = new double[]{
             232.0, 227.168, 220.977, 209.994, 190.779, 163.084, 132.999,
             109.054, 94.037, 83.346, 74.572, 67.957, 62.186, 56.435,
             50.665, 45.129, 39.769, 34.906, 30.439, 26.337, 22.741, 19.0, 19.0
     };
+    private DominantLambdaLookup lambdaLookup;
 
     private double[] x3Factors;
     private double[] y3Factors;
     private double[] z3Factors;
     private double[] polyCoeffs;
 
-    public FuAlgo(Instrument instrument) {
+    FuAlgo(Instrument instrument, boolean includeDominantLambda) {
         x3Factors = instrument.getXFactors();
         y3Factors = instrument.getYFactors();
         z3Factors = instrument.getZFactors();
         polyCoeffs = instrument.getPolynomCoefficients();
+        if (includeDominantLambda) {
+            lambdaLookup = new DominantLambdaLookup();
+        }
     }
 
+    // just for testing
     FuAlgo() {
     }
+
 
     void setPolyCoeffs(double[] polyCoeffs) {
         this.polyCoeffs = polyCoeffs;
@@ -84,6 +90,9 @@ class FuAlgo {
         result.polyCorr = polyCorr;
         result.hueAngle = hue + polyCorr;
         result.fuValue = getFuValue(result.hueAngle);
+        if (lambdaLookup != null) {
+            result.domLambda = lambdaLookup.getDominantLambda(result.hueAngle);
+        }
         return result;
     }
 

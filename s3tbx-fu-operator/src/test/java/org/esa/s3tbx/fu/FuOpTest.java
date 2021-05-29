@@ -31,7 +31,9 @@ import javax.media.jai.operator.ConstantDescriptor;
 import java.awt.Color;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Muhammad
@@ -42,24 +44,24 @@ public class FuOpTest {
     private static FuOp.Spi operatorSpi;
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         operatorSpi = new FuOp.Spi();
         GPF.getDefaultInstance().getOperatorSpiRegistry().addOperatorSpi(operatorSpi);
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void tearDown() {
         GPF.getDefaultInstance().getOperatorSpiRegistry().removeOperatorSpi(operatorSpi);
     }
 
     @Test
-    public void testFindInstrument() throws Exception {
+    public void testFindInstrument() {
         Product product = new Product("MER_RR__2P_how_dummy_it_is", "MER_RR__2P");
         assertEquals("MER_RR__2P", product.getProductType());
     }
 
     @Test
-    public void testImageInfoColorPalette() throws Exception {
+    public void testImageInfoColorPalette() {
         ImageInfo indexInfo = FuOp.createImageInfo(new IndexCoding("Forel-Ule Scale"));
         ColorPaletteDef.Point[] points = indexInfo.getColorPaletteDef().getPoints();
         assertEquals(22, points.length);
@@ -69,7 +71,7 @@ public class FuOpTest {
     }
 
     @Test
-    public void testAttachIndexCodingToBand() throws Exception {
+    public void testAttachIndexCodingToBand() {
         final Product product = new Product("test_product", "test", 20, 20);
         final Band fuBand = new Band("test_Band", ProductData.TYPE_INT8, 10, 10);
         product.addBand(fuBand);
@@ -81,9 +83,9 @@ public class FuOpTest {
         assertNotNull(fuBand.getSampleCoding());
         assertNotNull(fuBand.getIndexCoding());
     }
-    
+
     @Test
-    public void testWithCoastColourLikeInput() throws Exception {
+    public void testWithCoastColourLikeInput() {
         Product radianceProduct = new Product("CoastColour_L2R", "cc-dummy", 1, 1);
         addBand(radianceProduct, "reflec_1", 412.691f, 0.0209);
         addBand(radianceProduct, "reflec_2", 442.559f, 0.0257);
@@ -135,7 +137,7 @@ public class FuOpTest {
     }
 
     @Test
-    public void testMerisSourceProduct() throws Exception {
+    public void testMerisSourceProduct() {
         Product radianceProduct = new Product("CoastColour_L2R", "fu-dummy", 1, 1);
         //  SNAP_MERIS.xlsx
         addBand(radianceProduct, "reflec_1", 412.691f, 0.00981);
@@ -150,17 +152,20 @@ public class FuOpTest {
         HashMap<String, Object> fuParams = new HashMap<>();
         fuParams.put("validExpression", "true");
         fuParams.put("instrument", Instrument.MERIS);
+        fuParams.put("includeDominantLambda", true);
         Product fuResult = GPF.createProduct("FuClassification", fuParams, radianceProduct);
 
         int radianceFuValue = fuResult.getBand("FU").getSampleInt(0, 0);
-        float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
         assertEquals(5, radianceFuValue);
+        float radianceHueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
         assertEquals(171.025528, radianceHueValue, 1e-6);
+        float domLambda = fuResult.getBand("dominant_wvl").getSampleFloat(0, 0);
+        assertEquals(493.73907470, domLambda, 1e-8);
     }
 
 
     @Test
-    public void testModisSourceProduct_1km() throws Exception {
+    public void testModisSourceProduct_1km() {
         Product radianceProduct = new Product("Modis FU_Hue_Value", "dummy", 1, 1);
         // SNAP_MODIS.xlsx
         addBand(radianceProduct, "reflec_1", 412, 0.00242);
@@ -187,7 +192,7 @@ public class FuOpTest {
     }
 
     @Test
-    public void testMODIS_500() throws Exception {
+    public void testMODIS_500() {
         Product modis500 = new Product("MODIS 500 FU_Hue_Value ", "modis-dummy", 1, 1);
         //  SNAP_MODIS500.xlsx
         // Yes, the wrong wavelength order is correct
@@ -206,7 +211,7 @@ public class FuOpTest {
     }
 
     @Test
-    public void testCZCS() throws Exception {
+    public void testCZCS() {
         Product CZCS = new Product("CZCS FU_Hue_Value ", "czcs-dummy", 1, 1);
         //  SNAP_CZCS.xlsx
         addBand(CZCS, "reflec_1", 443, 0.00011);
@@ -225,7 +230,7 @@ public class FuOpTest {
     }
 
     @Test
-    public void testOLCISourceProduct() throws Exception {
+    public void testOLCISourceProduct() {
         Product olciProduct = new Product("OLCI FU_Hue_Value ", "fu-dummy", 1, 1);
         //  SNAP_OLCI.xlsx
         addBand(olciProduct, "reflec_1", 400.0f, 0.04376);
@@ -251,7 +256,7 @@ public class FuOpTest {
     }
 
     @Test
-    public void testS2MSISourceProduct() throws Exception {
+    public void testS2MSISourceProduct() {
         Product s2msiProduct = new Product("S2MSI FU_Hue_Value ", "fu-dummy", 1, 1);
         //  SNAP_Sentinel2.xlsx
         addBand(s2msiProduct, "B1", 443, 0.00011);
@@ -261,17 +266,17 @@ public class FuOpTest {
         addBand(s2msiProduct, "B5", 705, 0.00178);
 
         HashMap<String, Object> fuParams = new HashMap<>();
-        fuParams.put("instrument", Instrument.S2_MSI);
+        fuParams.put("instrument", Instrument.S2A_MSI);
         Product fuResult = GPF.createProduct("FuClassification", fuParams, s2msiProduct);
 
         int fuValue = fuResult.getBand("FU").getSampleInt(0, 0);
         float hueValue = fuResult.getBand("hue_angle").getSampleFloat(0, 0);
-        assertEquals(18, fuValue);
-        assertEquals(34.691898, hueValue, 1e-6);
+        assertEquals(17, fuValue);
+        assertEquals(34.919689, hueValue, 1e-6);
     }
 
     @Test
-    public void testSeaWiFSSourceProduct() throws Exception {
+    public void testSeaWiFSSourceProduct() {
         Product seawifsProduct = new Product("SeaWIFS FU_Hue_Value", "cc-dummy", 1, 1);
         //  SNAP_SEAWIFS.xlsx
         addBand(seawifsProduct, "reflec_1", 412, 0.00011);
@@ -372,7 +377,7 @@ public class FuOpTest {
     }
 
     @Test
-    public void testFuValueColor() throws Exception {
+    public void testFuValueColor() {
 
         assertFUColor(0, new Color(0, 0, 0));
         assertFUColor(1, new Color(33, 88, 188));

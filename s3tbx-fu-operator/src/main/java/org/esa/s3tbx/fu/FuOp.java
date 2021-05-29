@@ -48,7 +48,7 @@ import java.awt.Color;
 import java.util.Arrays;
 
 /**
- * The {@code FuOp} performs a MERIS, MODIS, OLCI and SeaWiFS based ocean colour classification
+ * The {@code FuOp} performs a MERIS, MODIS, OLCI, S2A/B and SeaWiFS based ocean colour classification
  * with the discrete Forel-Ule scale.
  *
  * @author Muhammad Bala
@@ -56,9 +56,9 @@ import java.util.Arrays;
  */
 @OperatorMetadata(
         alias = "FuClassification",
-        version = "1.1",
+        version = "1.2",
         category = "Optical/Thematic Water Processing",
-        description = "Colour classification based on the discrete Forel-Ule scale.",
+        description = "Colour classification based on the discrete Forel-Ule scale",
         authors = " H.J van der Woerd (IVM), M.R. Wernand (NIOZ), Muhammad Bala (BC), Marco Peters (BC)",
         copyright = "(c) 2016 by Brockmann Consult GmbH")
 public class FuOp extends PixelOperator {
@@ -109,11 +109,15 @@ public class FuOp extends PixelOperator {
     private String validExpression;
 
     @Parameter(label = "Reflectance band name pattern", description = "The used reflectance band names must match the given pattern. " +
-                                                                      "Useful, if there is more then one spectrum in the product.")
+            "Useful, if there is more then one spectrum in the product.")
     private String reflectanceNamePattern;
 
     @Parameter(defaultValue = "AUTO_DETECT", description = "The instrument to compute FU for.")
     private Instrument instrument;
+
+    @Parameter(label = "Include dominant wavelength", defaultValue = "false",
+            description = "Whether or not the dominant wavelength shall be derived from the hue angle")
+    private boolean includeDominantLambda;
 
     @Parameter(label = "Include intermediate results in output", defaultValue = "true",
             description = "Whether or not the intermediate results shall be written to the target output")
@@ -151,7 +155,7 @@ public class FuOp extends PixelOperator {
 
         if (isValid) {
             RasterDataNode[] sourceNodes = Arrays.stream(sourceSamples).map(Sample::getNode).toArray(RasterDataNode[]::new);
-            double spectrum[] = getInputSpectrum(sourceSamples);
+            double[] spectrum = getInputSpectrum(sourceSamples);
             spectrum = instrument.preProcess(sourceProduct, sourceNodes, spectrum);
             spectrum = applyPiToIrradianceSpectrum(spectrum);
 
@@ -192,10 +196,10 @@ public class FuOp extends PixelOperator {
 
             autoDetectedInstrument = true;
         }
-        fuAlgo = new FuAlgo(instrument);
+        fuAlgo = new FuAlgo(instrument, includeDominantLambda);
         reflecBandNames = instrument.getReflectanceBandNames(sourceProduct, reflectanceNamePattern);
 
-        targetBandDefs = BandDefinition.create(includeIntermediateResults, instrument);
+        targetBandDefs = BandDefinition.create(instrument, includeIntermediateResults, includeDominantLambda);
     }
 
     /**
