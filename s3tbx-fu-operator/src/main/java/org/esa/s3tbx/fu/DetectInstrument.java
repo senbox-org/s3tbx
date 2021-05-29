@@ -45,8 +45,10 @@ class DetectInstrument {
             return Instrument.MODIS;
         } else if (modis500m(product)) {
             return Instrument.MODIS500;
-        } else if (s2msi(product)) {
-            return Instrument.S2_MSI;
+        } else if (s2amsi(product)) {
+            return Instrument.S2A_MSI;
+        } else if (s2bmsi(product)) {
+            return Instrument.S2B_MSI;
         } else if (olci(product)) {
             return Instrument.OLCI;
             //TODO - DISABLED SENSOR
@@ -75,7 +77,7 @@ class DetectInstrument {
     private static boolean modis1km(Product product) {
         MetadataElement globalAttributes = product.getMetadataRoot().getElement(GLOBAL_ATTRIBUTES);
 
-        return globalAttributes != null && isModis(globalAttributes) && hasModisResultion(globalAttributes, MODIS_1KM_RESOLUTION_VALUE);
+        return isModis(globalAttributes) && hasModisResultion(globalAttributes, MODIS_1KM_RESOLUTION_VALUE);
     }
 
     private static boolean modis500m(Product product) {
@@ -88,11 +90,9 @@ class DetectInstrument {
     }
 
     private static boolean hasModisResultion(MetadataElement globalAttributes, String modis500mResolutionValue) {
-        if (globalAttributes.containsAttribute("spatialResolution")) {
+        if (globalAttributes != null && globalAttributes.containsAttribute("spatialResolution")) {
             final String sensor_name = globalAttributes.getAttributeString("spatialResolution");
-            if (sensor_name.contains(modis500mResolutionValue)) {
-                return true;
-            }
+            return sensor_name.contains(modis500mResolutionValue);
         }
         return false;
     }
@@ -101,9 +101,7 @@ class DetectInstrument {
         String attribName = "title";
         if (globalAttributes != null && globalAttributes.containsAttribute(attribName)) {
             final String sensor_name = globalAttributes.getAttributeString(attribName);
-            if (sensor_name.contains(MODIS_TITLE_VALUE)) {
-                return true;
-            }
+            return sensor_name.contains(MODIS_TITLE_VALUE);
         }
         return false;
     }
@@ -118,8 +116,38 @@ class DetectInstrument {
         return isOLCI;
     }
 
-    private static boolean s2msi(Product product) {
-        return product.getProductType().equals("S2_MSI_Level-1C");
+    private static boolean s2amsi(Product product) {
+        return spacecraftEquals(product, "Sentinel-2A");
+    }
+
+    private static boolean s2bmsi(Product product) {
+        return spacecraftEquals(product, "Sentinel-2B");
+    }
+
+    private static boolean spacecraftEquals(Product product, String spacecraftName) {
+        if (product.getProductType().equals("S2_MSI_Level-1C")) {
+            final MetadataElement root = product.getMetadataRoot();
+            MetadataElement datatake = getElement(root, "Level-1C_User_Product", "General_Info", "Product_Info", "Datatake");
+            if (datatake != null) {
+                return spacecraftName.equals(datatake.getAttributeString("SPACECRAFT_NAME"));
+            }
+        }
+        return false;
+    }
+
+    private static MetadataElement getElement(MetadataElement root, String... pathElements) {
+        if (pathElements.length == 0) {
+            return null;
+        }
+        MetadataElement current = root;
+        for (String pathElement : pathElements) {
+            if (current.containsElement(pathElement)) {
+                current = current.getElement(pathElement);
+            } else {
+                return null;
+            }
+        }
+        return current;
     }
 
     private static boolean seawifs(Product product) {
