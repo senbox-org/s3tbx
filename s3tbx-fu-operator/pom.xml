@@ -30,7 +30,7 @@
     <name>Forel-Ule Processor</name>
     <packaging>nbm</packaging>
     <description>SNAP operator implementing an algorithm for true colour classification with the discrete Forel–Ule
-        scale (OLCI, MERIS, SeaWiFS and MODIS).
+        scale (OLCI, MERIS, S2A/B, SeaWiFS and MODIS).
     </description>
 
     <properties>
