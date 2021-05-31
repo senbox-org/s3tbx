@@ -20,7 +20,10 @@ import com.bc.ceres.core.Assert;
 
 class FuAlgo {
 
+    private static final double HUE_MIN = 45.0;
+    private static final double HUE_MAX = 234.0;
     public static final byte MAX_FU_VALUE = 21;
+    public static final byte MIN_FU_VALUE = 0;
 
     private static final double CONST_WHITE_POINT = 0.333333;
     private static final double[] ANGLE_OF_TRANSITIONS = new double[]{
@@ -76,9 +79,15 @@ class FuAlgo {
         final double chrX = x3 / denominator;
         final double chrY = y3 / denominator;
 
-        final double hue = getHue(chrX, chrY);
-        final double hue100 = (hue / 100);
-        double polyCorr = getPolyCorr(hue100, polyCoeffs);
+        double hue = getHue(chrX, chrY);
+        final double polyCorr;
+        if (hue < HUE_MIN || hue > HUE_MAX) {
+            hue = Double.NaN;
+            polyCorr = Double.NaN;
+        } else {
+            final double hue100 = hue / 100;
+            polyCorr = getPolyCorr(hue100, polyCoeffs);
+        }
 
         FuResultImpl result = new FuResultImpl();
         result.x3 = x3;
@@ -97,6 +106,9 @@ class FuAlgo {
     }
 
     static byte getFuValue(final double hueAngle) {
+        if (Double.isNaN(hueAngle)) {
+            return MIN_FU_VALUE;
+        }
         for (byte i = 0; i < ANGLE_OF_TRANSITIONS.length; i++) {
             if (hueAngle > ANGLE_OF_TRANSITIONS[i]) {
                 return i;

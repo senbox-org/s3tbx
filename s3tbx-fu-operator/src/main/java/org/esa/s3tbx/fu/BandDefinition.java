@@ -1,10 +1,17 @@
 package org.esa.s3tbx.fu;
 
 import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.ColorPaletteDef;
+import org.esa.snap.core.datamodel.ImageInfo;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.pointop.WritableSample;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +36,7 @@ abstract class BandDefinition {
     final int dataType;
     final double noDataValue;
     final boolean noDataValueUsed;
+    private ColorPaletteDef colorPaletteDef;
 
     private BandDefinition(String description, String name, int dataType, double noDataValue, boolean noDataValueUsed) {
         this.description = description;
@@ -38,11 +46,18 @@ abstract class BandDefinition {
         this.noDataValueUsed = noDataValueUsed;
     }
 
+    void setColorPalette(ColorPaletteDef cpd) {
+        colorPaletteDef = cpd;
+    }
+
     void addToProduct(Product targetProduct) {
         Band band = targetProduct.addBand(name, dataType);
         band.setDescription(description);
         band.setNoDataValue(noDataValue);
         band.setNoDataValueUsed(noDataValueUsed);
+        if (colorPaletteDef != null) {
+            band.setImageInfo(new ImageInfo(colorPaletteDef));
+        }
     }
 
     abstract void setTargetSample(FuResult result, WritableSample targetSample);
@@ -99,12 +114,14 @@ abstract class BandDefinition {
                 }
             });
         }
-        list.add(new BandDefinition("", HUE_ANGLE_BAND_NAME, ProductData.TYPE_FLOAT32, Float.NaN, true) {
+        final BandDefinition hueAngleDef = new BandDefinition("", HUE_ANGLE_BAND_NAME, ProductData.TYPE_FLOAT32, Float.NaN, true) {
             @Override
             public void setTargetSample(FuResult result, WritableSample targetSample) {
                 targetSample.set(result.getHueAngle());
             }
-        });
+        };
+        hueAngleDef.setColorPalette(loadHueAngleCpd());
+        list.add(hueAngleDef);
         if (includeDominantLambda) {
             list.add(new BandDefinition("The dominant wavelength derived from hue_angle", DOMINANT_LAMBDA_BAND_NAME, ProductData.TYPE_FLOAT32, Float.NaN, true) {
                 @Override
@@ -122,6 +139,20 @@ abstract class BandDefinition {
         });
 
         return list.toArray(new BandDefinition[0]);
+    }
+
+    private static ColorPaletteDef loadHueAngleCpd() {
+        try {
+            URL resource = BandDefinition.class.getResource("/auxdata/color_palettes/hue_angle.cpd");
+            if (resource != null) {
+                final Path path = Paths.get(resource.toURI());
+                return ColorPaletteDef.loadColorPaletteDef(path);
+            } else {
+                throw new IllegalStateException("Not able to load hue_angle CPD. Resource not found.");
+            }
+        } catch (URISyntaxException | IOException e) {
+            throw new IllegalStateException("Not able to load hue_angle CPD.", e);
+        }
     }
 
 }
