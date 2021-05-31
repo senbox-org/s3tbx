@@ -80,7 +80,7 @@ public class OlciLevel2WProductFactory extends OlciProductFactory {
                 maskName("IWV"),
                 "not(" + getExpressionForBand(targetProduct, "IWV") + " and not WQSF_lsb.MEGLINT " +
                         "and not WQSF_lsb.WV_FAIL)",
-                "Not Integrated Water Vapur Column. Flag recommended by QWG");
+                "Not Integrated Water Vapour Column. Flag recommended by QWG");
     }
 
     private String getExpressionForBand(Product targetProduct, String bandName) {
