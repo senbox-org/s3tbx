@@ -26,10 +26,10 @@ public class OlciLevel2LProductFactory extends OlciProductFactory {
     @Override
     protected void setMasks(Product targetProduct) {
         super.setMasks(targetProduct);
-        String octiMaskName = "OCTI_Unreliable_RECOM";
+        String octiMaskName = "OTCI_Unreliable_RECOM";
         targetProduct.addMask(octiMaskName, "LQSF.CLOUD or LQSF.CLOUD_AMBIGUOUS or LQSF.CLOUD_MARGIN or " +
                 "LQSF.SNOW_ICE or LQSF.OTCI_FAIL or LQSF.OTCI_CLASS_CLSN",
-                "Excluding pixels that are deemed unreliable for OCTI. Flag recommended by QWG.",
+                "Excluding pixels that are deemed unreliable for OTCI. Flag recommended by QWG.",
                 getColorProvider().getMaskColor(octiMaskName), 0.5);
         String ogviMaskName = "OGVI_Unreliable_RECOM";
         targetProduct.addMask(ogviMaskName, "LQSF.CLOUD or LQSF.CLOUD_AMBIGUOUS or LQSF.CLOUD_MARGIN or " +
