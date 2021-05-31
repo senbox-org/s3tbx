@@ -6,7 +6,10 @@ import org.esa.snap.core.datamodel.ImageInfo;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.gpf.pointop.WritableSample;
+import org.esa.snap.core.util.DefaultPropertyMap;
+import org.esa.snap.core.util.PropertyMap;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -146,13 +149,45 @@ abstract class BandDefinition {
             URL resource = BandDefinition.class.getResource("/auxdata/color_palettes/hue_angle.cpd");
             if (resource != null) {
                 final Path path = Paths.get(resource.toURI());
-                return ColorPaletteDef.loadColorPaletteDef(path);
+                return loadColorPaletteDef(path);
+                // Method not yet available in 8.x, so it is copied here.
+                // In master it is correctly used.
+//                return ColorPaletteDef.loadColorPaletteDef(path);
             } else {
                 throw new IllegalStateException("Not able to load hue_angle CPD. Resource not found.");
             }
         } catch (URISyntaxException | IOException e) {
             throw new IllegalStateException("Not able to load hue_angle CPD.", e);
         }
+    }
+
+    // Method not yet available in 8.x, so it is copied here:
+    public static ColorPaletteDef loadColorPaletteDef(Path path) throws IOException {
+        final PropertyMap propertyMap = new DefaultPropertyMap();
+        propertyMap.load(path); // Overwrite existing values
+        final int numPoints = propertyMap.getPropertyInt("numPoints");
+        if (numPoints < 2) {
+            throw new IOException("The selected file contains less than\n" +
+                                          "two colour points.");
+        }
+        final ColorPaletteDef.Point[] points = new ColorPaletteDef.Point[numPoints];
+        double lastSample = 0;
+        for (int i = 0; i < points.length; i++) {
+            final ColorPaletteDef.Point point = new ColorPaletteDef.Point();
+            final Color color = propertyMap.getPropertyColor("color" + i);
+            double sample = propertyMap.getPropertyDouble("sample" + i);
+            if (i > 0 && sample < lastSample) {
+                sample = lastSample + 1.0;
+            }
+            point.setColor(color);
+            point.setSample(sample);
+            point.setLabel(path.getFileName().toString());
+            points[i] = point;
+            lastSample = sample;
+        }
+        ColorPaletteDef paletteDef = new ColorPaletteDef(points, 256);
+        paletteDef.setAutoDistribute(propertyMap.getPropertyBool("autoDistribute", false));
+        return paletteDef;
     }
 
 }
