@@ -38,8 +38,9 @@
 
 
 <p>SNAP generates for OLCI Level-2 data a set of recommended flags. Those flags are defined by an group of experts,
-    named the Sentinel-3 Quality Working Group (S3-QWG). This group observes the data and suggests means to
-    ESA/Eumetsat to maintain high quality. It is suggested to consider these flags when working with Sentinel-3 Level-2
+    named the Sentinel-3 Quality Working Group (S3-QWG). This group observes and analysis the data and suggests means to
+    ESA and Eumetsat to maintain high quality data. It is suggested to consider these flags when working with Sentinel-3
+    Level-2
     data.
 </p>
 <p>For Land and for Water level-2 products different sets of flags have been defined. They combine already the existing
@@ -49,40 +50,49 @@
 </p>
 
 <h2>Recommended Water Flags</h2>
+The following recommend flags are defined for the Water products:
+<ul>
+    <li><b>WQSF_REFLECTANCE_RECOM</b></li>
+    <li><b>WQSF_CHL_OC4ME_RECOM</b></li>
+    <li><b>WQSF_KD490_M07_RECOM</b></li>
+    <li><b>WQSF_PAR_RECOM</b></li>
+    <li><b>WQSF_W_AER_RECOM</b></li>
+    <li><b>WQSF_CHL_NN_RECOM</b></li>
+    <li><b>WQSF_TSM_NN_RECOM</b></li>
+    <li><b>WQSF_ADG443_NN_RECOM</b></li>
+    <li><b>WQSF_IWV_NN_RECOM</b></li>
+</ul>
+<p>
+    Detailed information can be obtained from the product notice published on the Eumetsat website:<br>
 
-<dl>
-    <dt><b>WQSF_REFLECTANCE_RECOM</b></dt>
-    <dd></dd>
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content"
+               value="https://www-cdn.eumetsat.int/files/2021-02/S3%20PN-OLCI-L2M_003_00%20-%20Sentinel-3%20Product%20Notice%20%E2%80%93%20OLCI%20Level-2%20Ocean%20Colour.pdf">
+        <param name="text"
+               value="Sentinel-3 Product Notice - OLCI Level-2 Ocean Colour (EUM/OPS-SEN3/DOC/21/1214497 - 16/02/2021)">
+        <param name="textFontSize" value="bigger">
+    </object>
+</p>
 
-    <dt><b>WQSF_CHL_OC4ME_RECOM</b></dt>
-    <dd></dd>
-
-    <dt><b>WQSF_KD490_M07_RECOM</b></dt>
-    <dd></dd>
-
-    <dt><b>WQSF_PAR_RECOM</b></dt>
-    <dd></dd>
-
-    <dt><b>WQSF_T865_RECOM</b></dt>
-    <dd></dd>
-
-    <dt><b>WQSF_A865_RECOM</b></dt>
-    <dd></dd>
-
-    <dt><b>WQSF_CHL_NN_RECOM</b></dt>
-    <dd></dd>
-
-    <dt><b>WQSF_TSM_NN_RECOM</b></dt>
-    <dd></dd>
-
-    <dt><b>WQSF_ADG443_NN_RECOM</b></dt>
-    <dd></dd>
-
-    <dt><b>WQSF_IWV_NN_RECOM</b></dt>
-    <dd></dd>
-
-</dl>
-
+<h2>Recommended Land Flags</h2>
+<ul>
+    <li><b>LQSF_GENERAL_RECOM</b></li>
+    <li><b>LQSF_OTCI_RECOM</b></li>
+    <li><b>LQSF_OGVI_RECOM</b></li>
+    <li><b>LQSF_IWV_RECOM</b></li>
+</ul>
+<p>
+    Detailed information can be obtained from the product notice published on the ESA Sentinel Online website:<br>
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content"
+               value="https://sentinel.esa.int/documents/247904/3588909/Sentinel-3-Product-Notice-OLCI-Level-2-NRT-and-NTC.pdf">
+        <param name="text" value="S3 Product Notice - OLCI (S3.PN-OLCI-L2L.03 - 23/06/2020)">
+        <param name="textFontSize" value="bigger">
+    </object>
+</p>
+<p> The flag <code>LQSF_IWV_RECOM</code> has been added in addition to the product notice. It is defined like
+    the <code>LQSF_GENERAL_RECOM</code> plus the <code>LQSF.WV_FAIL</code> flag.
+</p>
 <hr>
 </body>
 </html>

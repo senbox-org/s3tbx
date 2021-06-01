@@ -1,7 +1,6 @@
 package org.esa.s3tbx.dataio.s3.olci;
 
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
-import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 
 /**
@@ -36,65 +35,48 @@ public class OlciLevel2WProductFactory extends OlciProductFactory {
                 "WQSF_msb.RWNEG_O6 or WQSF_msb.RWNEG_O7 or WQSF_msb.RWNEG_O8)";
 
         addMask(targetProduct,
-                maskName("Oa**reflectance"),
-                "not(" + getExpressionForBand(targetProduct, "Oa01_reflectance") + " and " + oceanColourExpression
-                        + " and " + openWaterExpression + ")",
-                "Not Open Waters Water Leaving Reflectances. Flag recommended by QWG.");
+                createRecommendedMaskName("REFLECTANCE"),
+                "not (" + oceanColourExpression + " and " + openWaterExpression + ")",
+                "Excluding pixels that are deemed unreliable for Water Leaving Reflectances. Flag recommended by QWG.");
         addMask(targetProduct,
-                maskName("CHL_OC4ME"),
-                "not(" + getExpressionForBand(targetProduct, "CHL_OC4ME") + " and " + oceanColourExpression + " and "
-                        + openWaterExpression + " and not WQSF_lsb.OC4ME_FAIL)",
-                "Not Open Waters Algal Pigment Concentration. Flag recommended by QWG.");
+                createRecommendedMaskName("CHL_OC4ME"),
+                "not(" + oceanColourExpression + " and " + openWaterExpression + " and not WQSF_lsb.OC4ME_FAIL)",
+                "Excluding pixels that are deemed unreliable for Algal Pigment Concentration. Flag recommended by QWG.");
         addMask(targetProduct,
-                maskName("KD490_M07"),
-                "not(" + getExpressionForBand(targetProduct, "KD490_M07") + " and " + oceanColourExpression + " and "
-                        + openWaterExpression + " and not WQSF_lsb.KDM_FAIL)",
-                "Not Open Waters Diffuse Attenuation Coefficient. Flag recommended by QWG.");
+                createRecommendedMaskName("KD490_M07"),
+                "not(" + oceanColourExpression + " and " + openWaterExpression + " and not WQSF_lsb.KDM_FAIL)",
+                "Excluding pixels that are deemed unreliable for Diffuse Attenuation Coefficient. Flag recommended by QWG.");
         addMask(targetProduct,
-                maskName("PAR"),
-                "not(" + getExpressionForBand(targetProduct, "PAR") + " and " + oceanColourExpression + " and "
-                        + openWaterExpression + " and not WQSF_lsb.PAR_FAIL)",
-                "Not Open Waters Photosynthetically Active Radiation. Flag recommended by QWG.");
+                createRecommendedMaskName("PAR"),
+                "not(" + oceanColourExpression + " and " + openWaterExpression + " and not WQSF_lsb.PAR_FAIL)",
+                "Excluding pixels that are deemed unreliable for Photosynthetically Active Radiation. Flag recommended by QWG.");
         addMask(targetProduct,
-                maskName("W_AER"),
-                "not(" + getExpressionForBand(targetProduct, "T865") + " and "
-                        + getExpressionForBand(targetProduct, "A865") + " and " + oceanColourExpression + " and "
-                        + openWaterExpression  + ")",
-                "Not Open Waters Aerosol Optical Thickness and Angstrom exponent. Flag recommended by QWG.");
+                createRecommendedMaskName("W_AER"),
+                "not(" + oceanColourExpression + " and " + openWaterExpression + ")",
+                "Excluding pixels that are deemed unreliable for Aerosol Optical Thickness (T865) and Angstrom exponent (A865). Flag recommended by QWG.");
         addMask(targetProduct,
-                maskName("CHL_NN"),
-                "not(" + getExpressionForBand(targetProduct, "CHL_NN") + " and " + oceanColourExpression +
-                        " and not WQSF_lsb.OCNN_FAIL)",
-                "Not Complex Waters Algal Pigment Concentration. Flag recommended by QWG");
+                createRecommendedMaskName("CHL_NN"),
+                "not(" + oceanColourExpression + " and not WQSF_lsb.OCNN_FAIL)",
+                "Excluding pixels that are deemed unreliable for Algal Pigment Concentration. Flag recommended by QWG");
         addMask(targetProduct,
-                maskName("TSM_NN"),
-                "not(" + getExpressionForBand(targetProduct, "TSM_NN") + " and " + oceanColourExpression +
-                        " and not WQSF_lsb.OCNN_FAIL)",
-                "Not Complex Waters Total Suspended Matter Concentration. Flag recommended by QWG");
+                createRecommendedMaskName("TSM_NN"),
+                "not(" + oceanColourExpression + " and not WQSF_lsb.OCNN_FAIL)",
+                "Excluding pixels that are deemed unreliable for Total Suspended Matter Concentration. Flag recommended by QWG");
         addMask(targetProduct,
-                maskName("ADG443_NN"),
-                "not(" + getExpressionForBand(targetProduct, "ADG443_NN") + " and " + oceanColourExpression +
-                        " and not WQSF_lsb.OCNN_FAIL)",
-                "Not Complex Waters Coloured Detrital and Dissolved Material Absorption. Flag recommended by QWG");
+                createRecommendedMaskName("ADG443_NN"),
+                "not(" + oceanColourExpression + " and not WQSF_lsb.OCNN_FAIL)",
+                "Excluding pixels that are deemed unreliable for Coloured Detrital and Dissolved Material Absorption. Flag recommended by QWG");
         addMask(targetProduct,
-                maskName("IWV"),
-                "not(" + getExpressionForBand(targetProduct, "IWV") + " and not WQSF_lsb.MEGLINT " +
-                        "and not WQSF_lsb.WV_FAIL)",
-                "Not Integrated Water Vapour Column. Flag recommended by QWG");
-    }
-
-    private String getExpressionForBand(Product targetProduct, String bandName) {
-        Band band = targetProduct.getBand(bandName);
-        double noDataValue = band.getGeophysicalNoDataValue();
-        // we need to subtract an epsilon to account for rounding errors
-        return bandName + " < " + noDataValue + " - 1e-5";
+                createRecommendedMaskName("IWV"),
+                "not(not WQSF_lsb.MEGLINT and not WQSF_lsb.WV_FAIL)",
+                "Excluding pixels that are deemed unreliable for Integrated Water Vapour Column. Flag recommended by QWG");
     }
 
     private void addMask(Product targetProduct, String maskName, String expression, String description) {
         targetProduct.addMask(maskName, expression, description, getColorProvider().getMaskColor(maskName), 0.5);
     }
 
-    private String maskName(String maskNamePart) {
-        return maskNamePart + "_RECOM";
+    private String createRecommendedMaskName(String maskNamePart) {
+        return "WQSF_" + maskNamePart + "_RECOM";
     }
 }

@@ -86,7 +86,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
     private final List<String> separatingDimensions;
 
     private volatile Manifest manifest;
-    private ColorProvider colorProvider;
+    private final ColorProvider colorProvider;
 
     public AbstractProductFactory(Sentinel3ProductReader productReader) {
         this.productReader = productReader;
@@ -99,11 +99,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
     protected static Band copyBand(Band sourceBand, Product targetProduct, boolean copySourceImage) {
         return ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), targetProduct, copySourceImage);
     }
-
-    protected static Band copyBand(Band sourceBand, Product targetProduct, boolean copySourceImage) {
-        return ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), targetProduct, copySourceImage);
-    }
-
     @Override
     public final Product createProduct() throws IOException {
         manifest = createManifest(getInputFile());
