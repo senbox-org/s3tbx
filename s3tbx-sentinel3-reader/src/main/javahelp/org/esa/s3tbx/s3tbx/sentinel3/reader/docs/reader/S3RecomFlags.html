@@ -1,0 +1,98 @@
+<!--
+  ~ Copyright (c) 2021.  Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  ~
+  ~
+  -->
+
+<html>
+<head>
+    <title>Sentinel Toolbox Help - Sentinel-3 Recommended Flags</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">Sentinel-3 Recommended Flags</td>
+        <td class="header" align="right">
+            <a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html">
+                <img src="../images/snap_header.jpg" border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h1>Sentinel-3 Recommended Flags</h1>
+
+<p>SNAP generates for OLCI Level-2 data a set of recommended flags. Those flags are defined by an group of experts,
+    named the Sentinel-3 Quality Working Group (S3-QWG). This group observes and analyses the data and suggests means to
+    ESA and Eumetsat to maintain high quality data.<br>
+    For building temporal or spatial synthesis, or working in unsupervised mode, it is recommended that the users
+    exclude pixels which are flagged by at least one of the following flags, to exclude unreliable pixels for the
+    individual products.
+</p>
+<p>For Land and for Water level-2 products different sets of flags have been defined. They combine already the existing
+    LQSF/WQSF flags to a new flag. Where LQSF and WQSF stand for Land/Water Quality and Science Flags.
+    The intention is to ensure good data quality when using/processing the Level-2 data. In SNAP they are displayed
+    as masks in the Product Explorer and in the Mask manager.
+</p>
+
+<h2>Recommended Water Flags</h2>
+The following recommend flags are defined for the Water products:
+<ul>
+    <li><b>WQSF_REFLECTANCE_RECOM</b></li>
+    <li><b>WQSF_CHL_OC4ME_RECOM</b></li>
+    <li><b>WQSF_KD490_M07_RECOM</b></li>
+    <li><b>WQSF_PAR_RECOM</b></li>
+    <li><b>WQSF_W_AER_RECOM</b></li>
+    <li><b>WQSF_CHL_NN_RECOM</b></li>
+    <li><b>WQSF_TSM_NN_RECOM</b></li>
+    <li><b>WQSF_ADG443_NN_RECOM</b></li>
+    <li><b>WQSF_IWV_NN_RECOM</b></li>
+</ul>
+<p>
+    Detailed information can be obtained from the product notice published on the Eumetsat website:<br>
+
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content"
+               value="https://www-cdn.eumetsat.int/files/2021-02/S3%20PN-OLCI-L2M_003_00%20-%20Sentinel-3%20Product%20Notice%20%E2%80%93%20OLCI%20Level-2%20Ocean%20Colour.pdf">
+        <param name="text"
+               value="Sentinel-3 Product Notice - OLCI Level-2 Ocean Colour (EUM/OPS-SEN3/DOC/21/1214497 - 16/02/2021)">
+        <param name="textFontSize" value="bigger">
+    </object>
+</p>
+
+<h2>Recommended Land Flags</h2>
+<ul>
+    <li><b>LQSF_GENERAL_RECOM</b></li>
+    <li><b>LQSF_OTCI_RECOM</b></li>
+    <li><b>LQSF_OGVI_RECOM</b></li>
+    <li><b>LQSF_IWV_RECOM</b></li>
+</ul>
+<p>
+    Detailed information can be obtained from the product notice published on the ESA Sentinel Online website:<br>
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content"
+               value="https://sentinel.esa.int/documents/247904/3588909/Sentinel-3-Product-Notice-OLCI-Level-2-NRT-and-NTC.pdf">
+        <param name="text" value="S3 Product Notice - OLCI (S3.PN-OLCI-L2L.03 - 23/06/2020)">
+        <param name="textFontSize" value="bigger">
+    </object>
+</p>
+<p> The flag <code>LQSF_IWV_RECOM</code> has been added in addition to the product notice. It is defined like
+    the <code>LQSF_GENERAL_RECOM</code> plus the <code>LQSF.WV_FAIL</code> flag.
+</p>
+<hr>
+</body>
+</html>

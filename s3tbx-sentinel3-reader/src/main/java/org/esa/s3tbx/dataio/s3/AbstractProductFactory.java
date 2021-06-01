@@ -86,18 +86,19 @@ public abstract class AbstractProductFactory implements ProductFactory {
     private final List<String> separatingDimensions;
 
     private volatile Manifest manifest;
+    private final ColorProvider colorProvider;
 
     public AbstractProductFactory(Sentinel3ProductReader productReader) {
         this.productReader = productReader;
         this.logger = Logger.getLogger(getClass().getSimpleName());
         separatingDimensions = new ArrayList<>();
         tpgImageMap = new HashMap<>();
+        colorProvider = new ColorProvider();
     }
 
     protected static Band copyBand(Band sourceBand, Product targetProduct, boolean copySourceImage) {
         return ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), targetProduct, copySourceImage);
     }
-
     @Override
     public final Product createProduct() throws IOException {
         manifest = createManifest(getInputFile());
@@ -263,7 +264,6 @@ public abstract class AbstractProductFactory implements ProductFactory {
 
     protected void setMasks(Product targetProduct) {
         final Band[] bands = targetProduct.getBands();
-        final ColorProvider colorProvider = new ColorProvider();
         for (Band band : bands) {
             final SampleCoding sampleCoding = band.getSampleCoding();
             if (sampleCoding != null) {
@@ -283,12 +283,16 @@ public abstract class AbstractProductFactory implements ProductFactory {
                             expression = bandName + " == " + sampleValue;
                         }
                         final String maskName = bandName + "_" + sampleName;
-                        final Color maskColor = colorProvider.getMaskColor(sampleName);
+                        final Color maskColor = getColorProvider().getMaskColor(sampleName);
                         targetProduct.addMask(maskName, expression, expression, maskColor, 0.5);
                     }
                 }
             }
         }
+    }
+
+    protected ColorProvider getColorProvider() {
+        return colorProvider;
     }
 
     protected Band addBand(Band sourceBand, Product targetProduct) {
