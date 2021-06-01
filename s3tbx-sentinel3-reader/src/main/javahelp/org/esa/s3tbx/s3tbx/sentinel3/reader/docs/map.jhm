@@ -5,7 +5,8 @@
 
 <map version="2.0">
 
-    <mapID target="importSentinel3Product" url="ImportSentinel3.html"/>
+    <mapID target="importSentinel3Product" url="reader/ImportSentinel3.html"/>
+    <mapID target="importS3RecomFlags" url="reader/S3RecomFlags.html"/>
 
     <mapID target="meris4thTo3rdReprocessingAdaptationTool"
            url="merisReproOp/FourthToThirdReprocessingAdaptationTool.html"/>

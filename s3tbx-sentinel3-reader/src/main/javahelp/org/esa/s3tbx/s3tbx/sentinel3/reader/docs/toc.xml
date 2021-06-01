@@ -12,6 +12,7 @@
             <tocitem text="Import Raster Data">
                 <tocitem text="Optical Sensors">
                     <tocitem text="Sentinel-3" target="importSentinel3Product"/>
+                    <tocitem text="Sentinel-3 Recommended Flags" target="S3RecomFlags"/>
                 </tocitem>
             </tocitem>
         </tocitem>
