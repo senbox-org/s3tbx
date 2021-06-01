@@ -17,6 +17,7 @@ class FuResultImpl implements FuResult {
     double chrY;
     double hue;
     double polyCorr;
+    double domLambda;
 
     @Override
     public double getHueAngle() {
@@ -61,5 +62,10 @@ class FuResultImpl implements FuResult {
     @Override
     public double getPolyCorr() {
         return polyCorr;
+    }
+
+    @Override
+    public double getDominantLambda() {
+        return domLambda;
     }
 }

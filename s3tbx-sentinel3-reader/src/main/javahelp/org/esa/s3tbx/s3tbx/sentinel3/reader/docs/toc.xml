@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='ISO-8859-1'  ?>
+<!DOCTYPE toc
+        PUBLIC
+        "-//Sun Microsystems Inc.//DTD
+     JavaHelp TOC Version 2.0//EN"
+        "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+
+<toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
+
+    <tocitem text="Sentinel Toolbox Application">
+        <tocitem text="Import and Export">
+            <tocitem text="Import Raster Data">
+                <tocitem text="Optical Sensors">
+                    <tocitem text="Sentinel-3" target="importSentinel3Product"/>
+                </tocitem>
+            </tocitem>
+        </tocitem>
+
+        <tocitem text="Optical">
+            <tocitem text="Preprocessing">
+                <tocitem text="MERIS Reprocessing Adaptation">
+                    <tocitem text="4th --> 3rd Reprocessing" target="meris4thTo3rdReprocessingAdaptationTool">
+                        <tocitem text="Processor Description" target="meris4thTo3rdReprocessingProcessorDescription"/>
+                        <tocitem text="Algorithm Specification"
+                                 target="meris4thTo3rdReprocessingAlgorithmSpecification"/>
+                        <tocitem text="Command Line Processing" target="meris4thTo3rdReprocessingCommandLine"/>
+                    </tocitem>
+                </tocitem>
+            </tocitem>
+        </tocitem>
+    </tocitem>
+</toc>

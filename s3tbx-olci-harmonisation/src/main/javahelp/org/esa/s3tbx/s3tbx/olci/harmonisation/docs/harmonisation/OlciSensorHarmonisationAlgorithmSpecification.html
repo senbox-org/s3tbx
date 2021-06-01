@@ -1,0 +1,96 @@
+<!--
+  ~ Copyright (c) 2021.  Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - OLCI Sensor Harmonisation Algorithm Specification</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            SNAP Data Processors - OLCI Sensor Harmonisation Algorithm Specification
+        </td>
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+                src="../images/snap_header.jpg"
+                border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h3>Algorithm Specification</h3>
+
+<p>
+    The two OLCI instruments operating on the Sentinel 3A and 3B platforms share a common instrument design.
+    Nevertheless, there are small differences in the spectral characteristics, between the different cameras of each
+    OLCI instrument, as well as between the OLCI-A and B instruments. Further, the radiometric and spectral calibration
+    has uncertainties which eventually lead to small differences in the instrument measurements. Together this can
+    impact downstream processing.<br>
+
+    To be able to quantify the instrument characteristic deviations ESA maneouvered the Sentinel 3B platform in an early
+    phase of the mission into a "tandem configuration" where it followed the Sentinel 3A platform on the same orbit
+    with a 30 seconds delay. This configuration allows for measurements over the same ground targets with almost the
+    same atmospheric conditions, hence for comparable measurements.<br>
+
+    The recommendations resulting from the analysis of acquisitions taken during the tandem phase are implemented in
+    this processor. These are a "homogenisation" process and a "sensor cross-calibration".
+
+<ul>
+    <li>Homogenisation: the homogenisation aims at correcting the inter-camera differences of each OLCI instrument. It
+        applies a camera specific gain correction on the radiances measured so that measurements of all cameras appear
+        to be measured with the same camera sensitivity (so called "flat fielding").
+    </li>
+
+    <li>
+        Cross calibration: this process applies the homogenisation process and on top of this applies sensor
+        inter-calibration coefficients on the radiances measured. It does this by implementing the linear-regression
+        approach described in reference [1] using the per-pixel detector wavelength.
+    </li>
+</ul>
+
+
+<h3>References</h3>
+<p class="i1">
+    <b>[1]</b>
+    Nicolas Lamquin, Sebastien Clerc, Ludovic Bourg, and Craig Donlon:
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="https://www.mdpi.com/2072-4292/12/11/1804">
+        <param name="text"
+               value="<html><u>OLCI A/B Tandem Phase Analysis, Part 1: Level 1 Homogenisation and Harmonisation</u></html>">
+    </object>
+    <br>
+    Remote Sensing, 12.11 (2020): 1804.
+    <br>
+    <b>[2]</b>
+    Nicolas Lamquin, Alexis Deru, Sebastien Clerc, Ludovic Bourg, and Craig Donlon:
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="https://www.mdpi.com/2072-4292/12/17/2702">
+        <param name="text"
+               value="<html><u>OLCI A/B Tandem Phase Analysis, Part 2: Benefits of Sensors Harmonisation for Level 2 Products</u></html>">
+    </object>
+    <br>
+    Remote Sensing, 12.17 (2020): 2702.
+    <br><br>
+</p>
+<br>
+
+<hr>
+</body>
+</html>

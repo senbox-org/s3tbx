@@ -3,16 +3,14 @@ package org.esa.s3tbx.dataio.modis;
 import org.esa.s3tbx.dataio.modis.hdf.HdfDataField;
 import org.esa.s3tbx.dataio.modis.productdb.ModisBandDescription;
 import org.esa.s3tbx.dataio.modis.productdb.ModisSpectralInfo;
-import org.esa.snap.core.dataio.ProductIOException;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.util.math.Range;
 import org.junit.Test;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -147,47 +145,47 @@ public class ModisFileReaderTest {
     ////////////////////////////////////////////////////////////////////////////////
 
 
-    private class TestGlobalAttributes implements ModisGlobalAttributes {
+    private static class TestGlobalAttributes implements ModisGlobalAttributes {
         private String eosType;
 
         @Override
-        public String getProductName() throws IOException {
-            throw new NotImplementedException();
+        public String getProductName() {
+            throw new IllegalStateException("Not implemented");
         }
 
         @Override
-        public String getProductType() throws IOException {
-            throw new NotImplementedException();
+        public String getProductType() {
+            throw new IllegalStateException("Not implemented");
         }
 
         @Override
         public Dimension getProductDimensions(List<ucar.nc2.Dimension> netcdfFileDimensions) {
-            throw new NotImplementedException();
+            throw new IllegalStateException("Not implemented");
         }
 
         @Override
-        public HdfDataField getDatafield(String name) throws ProductIOException {
-            throw new NotImplementedException();
+        public HdfDataField getDatafield(String name) {
+            throw new IllegalStateException("Not implemented");
         }
 
         @Override
         public Date getSensingStart() {
-            throw new NotImplementedException();
+            throw new IllegalStateException("Not implemented");
         }
 
         @Override
         public Date getSensingStop() {
-            throw new NotImplementedException();
+            throw new IllegalStateException("Not implemented");
         }
 
         @Override
         public int[] getSubsamplingAndOffset(String dimensionName) {
-            throw new NotImplementedException();
+            throw new IllegalStateException("Not implemented");
         }
 
         @Override
         public boolean isImappFormat() {
-            throw new NotImplementedException();
+            throw new IllegalStateException("Not implemented");
         }
 
         @Override
@@ -201,7 +199,7 @@ public class ModisFileReaderTest {
 
         @Override
         public GeoCoding createGeocoding() {
-            throw new NotImplementedException();
+            throw new IllegalStateException("Not implemented");
         }
     }
 }

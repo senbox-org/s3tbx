@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
+AutoUpdate-Essential-Module: false
+OpenIDE-Module-Java-Dependencies: Java > 1.8
+OpenIDE-Module-Display-Category: SNAP Toolboxes
+OpenIDE-Module-Specification-Version: ${s3tbx.nbmSpecVersion}
+OpenIDE-Module-Implementation-Version: ${s3tbx.nbmImplVersion}
+OpenIDE-Module-Layer: layer.xml
+OpenIDE-Module-Long-Description: <p>This operator performs OLCI Anomaly Detection</p
+ ><p><b>Vendor:</b> Brockmann Consult GmbH</p><p><b>Contact address:</
+ b> Chrysanderstr. 1, 21029 Hamburg (Germany)</p><p><b>Copyright:<
+ /b> (C) 2021 by Brockmann Consult GmbH</p><p><b>Vendor:</b> Brockmann
+  Consult GmbH</p><p><b>License:</b> http://www.gnu.org/licenses/gpl.h
+ tml</p>
+

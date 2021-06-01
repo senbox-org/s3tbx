@@ -1,0 +1,82 @@
+<!--
+  ~ Copyright (c) 2021.  Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - OLCI Anomaly Flagging Algorithm Specification</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            SNAP Data Processors - OLCI Anomaly Flagging Algorithm Specification
+        </td>
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+                src="../images/snap_header.jpg"
+                border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h3>Algorithm Specification</h3>
+
+<p>
+    An inconsistency has been identified in OLCI data around areas of saturation. Anomalously low radiances occur in some
+    bands for pixels at the edge of saturated areas, and they do not correspond to geophysical expectations.
+    The issue is present over bright surfaces, and currently detected at the edges of clouds for both OLCI-A and OLCI-B
+    instruments.<br>
+
+    Due to an issue in a base library, it can happen (very rare cases have been observed) that the altitude values
+    calculated are beyond the valid data range (e.g. +29153 m)<br>
+
+    This processor identifies both issues in the data and adds an additional flag-data variable that flags pixels
+    identified being affected by these issues so that these can be excluded from further downstream processing.<br>
+
+<h4>Spectral Inconsistency Detection</h4>
+    Inconsistent spectra are detected by calculating the spectral slope between band-centers and thresholding the maximal
+    absolute value of the slope with an appropriate value (0.15 / nm). For this approach, the spectral measurements in
+    atmospheric absorption bands are excluded form the calculation. The radiances are first converted to reflectances,
+    and a spectral slope is calculated for bands [1-12, 16-18, 21]. If the maximal absolute value of any of the slope
+    values exceeds the threshold, the pixel is flagged.
+
+<h4>Altitude Outlier Detection</h4>
+    Altitude outliers are detected by checking that the data for each pixel is within the geophysical meaningful range of
+    [-11050 m, 8850 m]. If an altitude value is outside of this range, the pixel is flagged.
+
+
+<h3>References</h3>
+<p class="i1">
+    <b>[1]</b>
+    Alexis Deru, and Ludovic Bourg:
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="https://www-cdn.eumetsat.int/files/2021-01/S3MPC_ACR_MEM_087%20-%20i1r0%20-%20OLCI%20anomalous%20spectral%20samples%20-%20user%20note.pdf">
+        <param name="text"
+               value="<html><u>OLCI anomalous spectral samples</u></html>">
+    </object>
+    <br>
+    S3MPC.ACR.MEM.087, 16/10/2020
+    <br>
+    <<br>
+</p>
+<br>
+
+<hr>
+</body>
+</html>

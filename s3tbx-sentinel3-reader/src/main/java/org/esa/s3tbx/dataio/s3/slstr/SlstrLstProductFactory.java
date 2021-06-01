@@ -105,7 +105,7 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
         final ForwardCoding forward = ComponentFactory.getForward(keys[0]);
         final InverseCoding inverse = ComponentFactory.getInverse(keys[1]);
 
-        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.POLES);
         geoCoding.initialize();
 
         targetProduct.setSceneGeoCoding(geoCoding);
@@ -127,7 +127,7 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
         final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
         final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
 
-        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.POLES);
         geoCoding.initialize();
 
         targetProduct.setSceneGeoCoding(geoCoding);

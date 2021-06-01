@@ -1,0 +1,76 @@
+<!--
+  ~ Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - C2RCC Processor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">C2RCC Processor</td>
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+                src="../images/snap_header.jpg" border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h3>Auxiliary Data Directory</h3>
+The C2RCC can make use of auxiliary ozone and pressure data.
+The data can be downloaded from
+<object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+    <param name="content" value="https://oceandata.sci.gsfc.nasa.gov/Ancillary/Meteorological">
+    <param name="text" value="https://oceandata.sci.gsfc.nasa.gov/Ancillary/Meteorological">
+    <param name="textFontSize" value="bigger">
+</object>
+Such data can be specified either specifically for each run of the product vie the TOMSOMI and NCEP source product
+parameters.
+As Alternative a directory can be specified via the 'Atmospheric aux data path' parameter.
+The necessary auxiliary products are taken from this directory or if not found appropriate data is automatically
+downloaded.
+<p>NOTE: Automatic download is currently not working because the download now requires a login.
+    See issue:
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="[SIIITBX-369] Auxillary data is not automatically downloaded anymore in C2RCC">
+        <param name="text" value="https://senbox.atlassian.net/browse/SIIITBX-369">
+        <param name="textFontSize" value="bigger">
+    </object>
+</p>
+If the source product contains these variables the data from the source product is preferred, e.g. SENTINEL-3 OLCI data.
+As a fall back value, in case of missing values in the auxdata sources or they have not been specified at all, the
+parameters Air Pressure and Ozone are used.
+
+<p>
+    When creating the directory by your own, then please note that the directory structure needs to follow the
+    convention:<br>
+</p>
+<pre>
+{root_ancillary_dir}
+    - {year}
+      - {doy}
+        - {files for this day}
+</pre>
+So the path to a file would be would be for example:
+<i>"H:\c2rcc_ancillary\2020\172\N202017200_O3_AURAOMI_24h.hdf"</i><br>
+As parameter you would specify: <i>"H:\c2rcc_ancillary"</i>
+<br>
+<hr>
+</body>
+</html>

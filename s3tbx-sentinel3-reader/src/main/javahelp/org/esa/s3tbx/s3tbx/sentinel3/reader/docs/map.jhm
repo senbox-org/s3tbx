@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map
+        PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
+        "http://java.sun.com/products/javahelp/map_2_0.dtd">
+
+<map version="2.0">
+
+    <mapID target="importSentinel3Product" url="ImportSentinel3.html"/>
+
+    <mapID target="meris4thTo3rdReprocessingAdaptationTool"
+           url="merisReproOp/FourthToThirdReprocessingAdaptationTool.html"/>
+    <mapID target="meris4thTo3rdReprocessingAlgorithmSpecification" url="merisReproOp/AlgorithmSpecification.html"/>
+    <mapID target="meris4thTo3rdReprocessingProcessorDescription" url="merisReproOp/ProcessorDescription.html"/>
+    <mapID target="meris4thTo3rdReprocessingCommandLine" url="merisReproOp/CommandLine.html"/>
+
+</map>

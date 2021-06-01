@@ -1,16 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gov.nasa.gsfc.seadas.dataio;
 
 import org.esa.snap.core.dataio.ProductIOException;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCodingFactory;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.ma2.Array;
-import ucar.ma2.InvalidRangeException;
-import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -19,8 +15,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.lang.String.format;
 
 public class L1AHawkeyeFileReader extends SeadasFileReader {
 
@@ -38,8 +32,8 @@ public class L1AHawkeyeFileReader extends SeadasFileReader {
     public Product createProduct() throws ProductIOException {
 
         String historyName = getStringAttribute("history");
-        String productName ="SEAHAWK1_HAWKEYE20210319T084332.L1A.nc";
-        if (historyName != null){
+        String productName = "SEAHAWK1_HAWKEYE20210319T084332.L1A.nc";
+        if (historyName != null) {
             int indexSEAHAWK = historyName.indexOf("SEAHAWK");
             int indexL1Anc = historyName.indexOf("L1A.nc");
             productName = historyName.substring(indexSEAHAWK, (indexL1Anc + 6));
@@ -114,7 +108,7 @@ public class L1AHawkeyeFileReader extends SeadasFileReader {
                 lats = geoNcFile.findVariable("geolocation_data/latitude");
                 lons = geoNcFile.findVariable("geolocation_data/longitude");
 
-                //Use lat/lon with TiePointGeoCoding
+                //Use lat/lon with PixelGeoCoding
                 int[] dims = lats.getShape();
                 float[] latTiePoints;
                 float[] lonTiePoints;
@@ -138,7 +132,6 @@ public class L1AHawkeyeFileReader extends SeadasFileReader {
                 ProductData longitudes = ProductData.createInstance(lonTiePoints);
                 lonBand.setData(longitudes);
                 product.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 10));
-
                 geoNcFile.close();
 
             }

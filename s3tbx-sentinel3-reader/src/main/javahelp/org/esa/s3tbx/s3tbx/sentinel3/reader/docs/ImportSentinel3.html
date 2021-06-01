@@ -1,0 +1,182 @@
+<!--
+  ~ Copyright (C) 2011 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>Sentinel Toolbox Help - Import Sentinel-3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">Import Sentinel-3</td>
+        <td class="header" align="right">
+            <a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html">
+                <img src="images/snap_header.jpg" border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h1>Sentinel-3</h1>
+
+<p> The Sentinel-3 platform has different sensors onboard. Its mission is to measure sea surface topography, sea and
+    land surface temperature, and ocean and land surface colour with high accuracy and reliability. By these features
+    Sentinel-3 supports ocean forecasting systems, environmental monitoring and climate monitoring.
+</p>
+
+<h2>Sentinel-3 Data</h2>
+<p> Sentinel-3 has 3 different sensors</p>
+<dl>
+    <dt><b>SLSTR</b></dt>
+    <dd><b>S</b>ea and <b>L</b>and <b>S</b>urface <b>T</b>emperature <b>R</b>adiometer - it determines global sea
+        surface temperatures at an accuracy of better than 0.3 K. SLSTR measures in nine spectral channels and
+        two additional bands. A 1.3 micron band aimed at cirrus detection and a 2 micron band aimed at vegetation,
+        mineral and atmospheric corrections for very turbid waters.
+    </dd>
+    <dt><b>OLCI</b></dt>
+    <dd><b>O</b>cean and <b>L</b>and <b>C</b>olour <b>I</b>nstrument - with 21 bands, a design optimised to minimise
+        sun-glint and a resolution of 300 m over all surfaces. OLCI marks a new generation of measurements over the
+        ocean and land. The swath of OLCI and nadir SLSTR fully overlap.
+    </dd>
+    <dt><b>SRAL</b></dt>
+    <dd><b>S</b>ynthetic <b>A</b>perture <b>R</b>adar <b>A</b>ltimeter - provides measurements at a resolution of
+        approximately 300 m in SAR mode along track. SRAL is supported by a MicroWave Radiometer (MWR) and a
+        Precise Orbit Determination (POD) package, a GPS receiver (GNSS), a DORIS instrument and a Laser Retro-Reflector
+        (LRR).<br>
+        <b>Note:</b> This SRAL data is not supported by the Sentinel-3 Toolbox. To work with this data it is recommended
+        to use the
+        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+            <param name="content" value="http://www.altimetry.info/">
+            <param name="text" value="Sentinel Altimetry Toolbox">
+            <param name="textFontSize" value="bigger">
+        </object>
+        .
+    </dd>
+</dl>
+
+<h2>Import Data</h2>
+<p>The data is usually distributed in a zip archive. This needs to be extracted first. Afterwards the data can be
+    imported via the respective entry in the application menu at '<code>File / Import / Optical Sensors /
+        Sentinel-3</code>'.
+    For SLSTR tow special options exist. Sentinel-3 SLSTR L1B (1km) and Sentinel-3 SLSTR L1B (500m).
+    The 500m option will only open the bands which are provided at this resolution. The 1km options will resample all
+    data to the resolution.
+    When using the generic option, then the bands will be imported unmodified at their native resolution.<br>
+    To import the data the <code>xfdumanifest.xml</code> needs to be selected in the import dialog.
+</p>
+<p> Of course it is also possible to simply use the open dialog from the menu '<code>File / Open Product...</code>' or
+    the toolbar. Here by default the generic reader is used. <br><br>
+</p>
+<p> Another option to open Sentinel-3 data is to drag'n'drop the <code>*.SEN3</code> folder or the
+    <code>xfdumanifest.xml</code> files onto the Product Explorer in SNAP.
+</p>
+
+<h2>Recommended Flags</h2>
+<p>SNAP generates for OLCI Level-2 data a set of recommended flags. Those flags are defined by an group of experts,
+    named the Sentinel-33 Quality Working Group (S3-QWG). This group observes the data and suggests means to
+    ESA/Eumetsat to maintain high quality. It is suggested to consider these flags when working with Sentinel-3 Level-2
+    data.<br>
+    Detailed information: <a href="S3RecomFlags.html">Sentinel-3 Recommended Flags</a></p>
+
+<h2>Data Access</h2>
+<p>
+    Sentinel-3 data can be obtained from different sources:
+</p>
+<dl>
+    <dt><b>ESA/Copernicus Open Access hub</b></dt>
+    <dd>
+        The ESA/Copernicus service provides Sentinel-3 data at Level-1 and Level-2 land data. Also Level-2 synergy data
+        is provided.
+        Besides Sentinel-3 data, Sentinel-1 and Sentinel-2 is provided too.<br>
+        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+            <param name="content" value="https://scihub.copernicus.eu/">
+            <param name="text" value="https://scihub.copernicus.eu/">
+            <param name="textFontSize" value="bigger">
+        </object>
+    </dd>
+    <dt><b>EUMETSAT/Copernicus Online Data Access</b></dt>
+    <dd>
+        The EUMETSAT/Copernicus service provides Sentinel-3 data at Level-1 and Level-2 water data.
+        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+            <param name="content" value="https://www.eumetsat.int/coda/">
+            <param name="text" value="https://www.eumetsat.int/coda">
+            <param name="textFontSize" value="bigger">
+        </object>
+    </dd>
+    <dt><b>DIAS cloud environments</b></dt>
+    <dd>
+        The Copernicus Data and Information Access Service (DIAS) cloud environments provide processing resources,
+        tools and complimentary data sources at commercial conditions to further facilitate the access to Sentinel data.
+        <ul>
+            <li>
+                <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+                    <param name="content" value="https://creodias.eu">
+                    <param name="text" value="https://creodias.eu">
+                    <param name="textFontSize" value="bigger">
+                </object>
+            </li>
+            <li>
+                <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+                    <param name="content" value="https://mundiwebservices.com">
+                    <param name="text" value="https://mundiwebservices.com">
+                    <param name="textFontSize" value="bigger">
+                </object>
+            </li>
+            <li>
+                <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+                    <param name="content" value="https://www.onda-dias.eu">
+                    <param name="text" value="https://www.onda-dias.eu">
+                    <param name="textFontSize" value="bigger">
+                </object>
+            </li>
+            <li>
+                <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+                    <param name="content" value="https://sobloo.eu">
+                    <param name="text" value="https://sobloo.eu">
+                    <param name="textFontSize" value="bigger">
+                </object>
+            </li>
+        </ul>
+    </dd>
+    <dt><b>NASA/OBPG Distributed Active Archive Center for satellite Ocean Biology</b></dt>
+    <dd>
+        The service provided by the NASA's Ocean Biology Processing Group distributes Sentinel-3 data at Level-1 and
+        Level-2.
+        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+            <param name="content" value="https://oceancolor.gsfc.nasa.gov/data/overview/">
+            <param name="text" value="https://oceancolor.gsfc.nasa.gov/data/overview/">
+            <param name="textFontSize" value="bigger">
+        </object>
+    </dd>
+</dl>
+
+<h2>References</h2>
+<dl>
+    <dt><b>Sentinel Online</b></dt>
+    <dd>Sentinel Online provides various resources about the Sentinel platforms, the data and tools to work with it.<br>
+        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+            <param name="content" value="https://sentinel.esa.int/web/sentinel/home">
+            <param name="text" value="https://sentinel.esa.int/web/sentinel/home">
+            <param name="textFontSize" value="bigger">
+        </object>
+    </dd>
+</dl>
+
+<hr>
+</body>
+</html>

@@ -6,9 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.esa.s3tbx.dataio.s3.olci.OlciProductFactory.SYSPROP_OLCI_TIE_POINT_CODING_FORWARD;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class OlciProductFactoryTest {
 
@@ -38,6 +36,26 @@ public class OlciProductFactoryTest {
     public void testGetResolutionInKm_invalid() {
         try {
             OlciProductFactory.getResolutionInKm("heffalump");
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException expected) {
+        }
+    }
+
+    @Test
+    public void testGetMaxLineTimeDelta() {
+        assertEquals(66057, OlciProductFactory.getMaxLineTimeDelta("OL_1_EFR"));
+        assertEquals(66057, OlciProductFactory.getMaxLineTimeDelta("OL_2_LFR"));
+        assertEquals(66057, OlciProductFactory.getMaxLineTimeDelta("OL_2_WFR"));
+        assertEquals(264054, OlciProductFactory.getMaxLineTimeDelta("OL_1_ERR"));
+        assertEquals(264054, OlciProductFactory.getMaxLineTimeDelta("OL_2_LRR"));
+        assertEquals(264054, OlciProductFactory.getMaxLineTimeDelta("OL_2_WRR"));
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testGetMaxLineTimeDelta_invalid() {
+        try {
+            OlciProductFactory.getMaxLineTimeDelta("wamafugani");
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException expected) {
         }

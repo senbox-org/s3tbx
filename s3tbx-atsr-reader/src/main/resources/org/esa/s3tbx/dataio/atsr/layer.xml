@@ -31,4 +31,13 @@
             </folder>
         </folder>
     </folder>
+
+    <folder name="Services">
+        <folder name="JavaHelp">
+            <file name="org-esa-s3tbx-s3tbx-atsr-reader-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="4600"/>
+            </file>
+        </folder>
+    </folder>
+
 </filesystem>

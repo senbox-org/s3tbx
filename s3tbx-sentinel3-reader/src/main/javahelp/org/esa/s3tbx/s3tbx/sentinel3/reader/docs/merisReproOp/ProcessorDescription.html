@@ -1,0 +1,127 @@
+<!--
+  ~ Copyright (c) 2021.  Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  ~
+  ~
+  -->
+
+<html>
+<head>
+    <title>SNAP Data Processors - MERIS L1b Fourth to Third Reprocessing Adaptation Processor Description</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            SNAP Data Processors - MERIS L1b Fourth to Third Reprocessing Adaptation Processor Description
+        </td>
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html">
+            <img src="../images/snap_header.jpg" border=0></a>
+        </td>
+    </tr>
+</table>
+
+<h3>Processor Description</h3>
+
+<h4>I/O Parameters Tab</h4>
+
+<p align="center"><img src="images/io_tab.png"></p>
+
+<h5>Source Product Group</h5>
+
+<p class="i1">
+    <b>Name: </b>
+    Used to select the spectral source product. The source product shall
+    contain spectral bands providing a source spectrum at each pixel. Use the <b>...</b> button to
+    open a data product currently not opened in the Sentinel Toolbox.
+</p>
+
+<h5>Supported Envisat MERIS Source Products</h5>
+The following Envisat MERIS source products are supported for IdePix classification:
+<ul>
+    <li>
+        MERIS_RR__1P*.N1:<br>
+        Reduced Resolution Geolocated and Calibrated TOA Radiance (stripline)
+    </li>
+    <li>
+        MERIS_FR__1P*.N1:<br>
+        Full Resolution Geolocated and Calibrated TOA Radiance (stripline)
+    </li>
+    <li>
+        ENV_ME_1_RRG_*.SEN3:<br>
+        Reduced Resolution as above, but from 4th reprocessing
+    </li>
+    <li>
+        ENV_ME_1_FRG_*.SEN31:<br>
+        Full Resolution as above, but from 4th reprocessing
+    </li>
+</ul>
+
+<p>
+    For detailed product descriptions and file naming conventions see MERIS Product Handbook
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="MERIS Product Handbook">
+        <param name="text" value="http://envisat.esa.int/handbooks/meris/CNTR.html">
+        <param name="textFontSize" value="bigger">
+    </object>
+</p>
+<p>
+    For more detailed information on MERIS 4th reprocessing products, see the Release Notes
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="Release Notes">
+        <param name="text"
+               value="https://earth.esa.int/eogateway/news/release-of-envisat-meris-4th-reprocessing-data-new-online-dissemination-service">
+        <param name="textFontSize" value="bigger">
+    </object>
+    as starting point.
+</p>
+
+<h5>Target Product Group</h5>
+
+<p class="i1">
+    <b>Name:</b>
+    Used to specify the name of the target product.
+</p>
+
+<p class="i1">
+    <b>Save to:</b>
+    Used to specify whether the target product should be saved to the file system. The
+    combo box presents a list of file formats.
+</p>
+
+<p class="i1">
+    <b>Open in SNAP:</b>
+    Used to specify whether the target product should be opened in the Sentinel Toolbox.
+    When the target product is not saved, it is opened in the Sentinel Toolbox automatically.
+</p>
+
+<h3>Processing Parameters</h3>
+
+<p>No specific processing parameters are provided for the MERIS Reprocessing Adaptation Processor.</p>
+
+<h3>The Processing Result</h3>
+<p>The target product contains all bands, tie point grids, flags and masks which are available in
+a corresponding ENVISAT MERIS L1b *.N1 product. Details of the adaptation procedure are given
+in the <a href="AlgorithmSpecification.html">Algorithm Specification</a> documentation.
+</p>
+
+<br>
+
+<hr>
+</body>
+</html>

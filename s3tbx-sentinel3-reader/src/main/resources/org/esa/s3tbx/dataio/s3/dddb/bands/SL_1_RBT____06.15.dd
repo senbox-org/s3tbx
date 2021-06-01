@@ -1,0 +1,84 @@
+# band                         | file             | node
+ x_an                          | cartesian_an.nc  | band
+ x_orphan_an                   | cartesian_an.nc  | band
+ y_an                          | cartesian_an.nc  | band
+ y_orphan_an                   | cartesian_an.nc  | band
+#
+ x_ao                          | cartesian_ao.nc  | band
+ x_orphan_ao                   | cartesian_ao.nc  | band
+ y_ao                          | cartesian_ao.nc  | band
+ y_orphan_ao                   | cartesian_ao.nc  | band
+#
+ x_bn                          | cartesian_bn.nc  | band
+ x_orphan_bn                   | cartesian_bn.nc  | band
+ y_bn                          | cartesian_bn.nc  | band
+ y_orphan_bn                   | cartesian_bn.nc  | band
+#
+ x_bo                          | cartesian_bo.nc  | band
+ x_orphan_bo                   | cartesian_bo.nc  | band
+ y_bo                          | cartesian_bo.nc  | band
+ y_orphan_bo                   | cartesian_bo.nc  | band
+#
+ x_cn                          | cartesian_cn.nc  | band
+ x_orphan_cn                   | cartesian_cn.nc  | band
+ y_cn                          | cartesian_cn.nc  | band
+ y_orphan_cn                   | cartesian_cn.nc  | band
+#
+ x_co                          | cartesian_co.nc  | band
+ x_orphan_co                   | cartesian_co.nc  | band
+ y_co                          | cartesian_co.nc  | band
+ y_orphan_co                   | cartesian_co.nc  | band
+#
+ x_in                          | cartesian_in.nc  | band
+ x_orphan_in                   | cartesian_in.nc  | band
+ y_in                          | cartesian_in.nc  | band
+ y_orphan_in                   | cartesian_in.nc  | band
+#
+ x_io                          | cartesian_io.nc  | band
+ x_orphan_io                   | cartesian_io.nc  | band
+ y_io                          | cartesian_io.nc  | band
+ y_orphan_io                   | cartesian_io.nc  | band
+#
+ x_tx                          | cartesian_tx.nc  | tiepoint
+ y_tx                          | cartesian_tx.nc  | tiepoint
+#
+ F1_BT_in                      | F1_BT_in.nc      | band
+ F1_BT_orphan_in               | F1_BT_in.nc      | band
+ F1_exception_in               | F1_BT_in.nc      | band
+ F1_exception_orphan_in        | F1_BT_in.nc      | band
+#
+ F1_BT_io                      | F1_BT_io.nc      | band
+ F1_BT_orphan_io               | F1_BT_io.nc      | band
+ F1_exception_io               | F1_BT_io.nc      | band
+ F1_exception_orphan_io        | F1_BT_io.nc      | band
+#
+ F1_BB1_reference_1_in         | F1_quality_in.nc | metadata
+ F1_BB1_reference_2_in         | F1_quality_in.nc | metadata
+ F1_BB2_reference_1_in         | F1_quality_in.nc | metadata
+ F1_BB2_reference_2_in         | F1_quality_in.nc | metadata
+ F1_BBEU_5VRef_in              | F1_quality_in.nc | metadata
+ F1_BBEU_Bridge_Ref_in         | F1_quality_in.nc | metadata
+ F1_BBEU_ground_in             | F1_quality_in.nc | metadata
+ F1_FEE_offset_in              | F1_quality_in.nc | metadata
+ F1_TAEO_MVPRTH_scale_in       | F1_quality_in.nc | metadata
+ F1_TAEO_PVPRTH_scale_in       | F1_quality_in.nc | metadata
+ F1_TAEO_VPRT_scale_in         | F1_quality_in.nc | metadata
+ F1_T_BB1_in                   | F1_quality_in.nc | metadata
+ F1_T_BB2_in                   | F1_quality_in.nc | metadata
+ F1_T_det_coarse_in            | F1_quality_in.nc | metadata
+ F1_T_detector_in              | F1_quality_in.nc | metadata
+ F1_band_centre_in             | F1_quality_in.nc | metadata
+ F1_bandwidth_in               | F1_quality_in.nc | metadata
+ F1_cal_gain_in                | F1_quality_in.nc | metadata
+ F1_cal_offset_in              | F1_quality_in.nc | metadata
+ F1_dT_BB1_in                  | F1_quality_in.nc | metadata
+ F1_dT_BB2_in                  | F1_quality_in.nc | metadata
+ F1_du_int_Time_in             | F1_quality_in.nc | metadata
+ F1_du_t_start_in              | F1_quality_in.nc | metadata
+ F1_radiometric_uncertainty_in | F1_quality_in.nc | metadata
+ F1_scene_temperature_in       | F1_quality_in.nc | metadata
+ S7_TAEO_5V_scale_in           | F1_quality_in.nc | metadata
+
+
+
+

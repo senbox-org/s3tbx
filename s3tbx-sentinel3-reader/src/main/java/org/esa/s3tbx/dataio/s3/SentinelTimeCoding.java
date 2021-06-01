@@ -46,4 +46,15 @@ public class SentinelTimeCoding implements TimeCoding {
     public PixelPos getPixelPos(double mjd, PixelPos pixelPos) {
         throw new IllegalStateException("not supported");
     }
+
+    public int getMaxDelta() {
+        int maxDelta = Integer.MIN_VALUE;
+        for (int i = 0; i < timeStamps.length - 1; i++) {
+            final int delta = (int) (timeStamps[i+1] - timeStamps[i]);
+            if (delta > maxDelta) {
+                maxDelta = delta;
+            }
+        }
+        return maxDelta;
+    }
 }

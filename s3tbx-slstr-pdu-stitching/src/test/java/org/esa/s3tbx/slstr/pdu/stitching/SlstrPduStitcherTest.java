@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,11 +35,8 @@ public class SlstrPduStitcherTest {
     private File targetDirectory;
 
     @Before
-    public void setUp() {
-        targetDirectory = new File("test_out");
-        if (!targetDirectory.mkdirs()) {
-            fail("Unable to create test target directory");
-        }
+    public void setUp() throws IOException {
+        targetDirectory = Files.createTempDirectory("test_out_").toFile();
     }
 
     @After

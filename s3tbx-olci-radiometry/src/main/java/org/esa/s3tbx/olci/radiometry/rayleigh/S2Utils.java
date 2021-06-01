@@ -109,7 +109,7 @@ class S2Utils {
     }
 
     /**
-     * This methos provides the S2 'true' instead of central wavelengths, considering the spectral response functions.
+     * This method provides the S2 'true' instead of central wavelengths, considering the spectral response functions.
      * The approach follows the CB email from 20170718
      *
      * @return double[] s2TrueWavelengths

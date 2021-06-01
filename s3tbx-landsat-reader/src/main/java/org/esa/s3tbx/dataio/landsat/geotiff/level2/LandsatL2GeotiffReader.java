@@ -175,7 +175,7 @@ public class LandsatL2GeotiffReader extends AbstractProductReader {
             band.setScalingFactor(metadata.getScalingFactor(fileName));
             band.setScalingOffset(metadata.getScalingOffset(fileName));
 
-            band.setNoDataValue(0.0);
+            band.setNoDataValue(metadata.getFillValue(fileName));
             band.setNoDataValueUsed(true);
 
             band.setSpectralWavelength(metadata.getWavelength(fileName));
@@ -203,6 +203,9 @@ public class LandsatL2GeotiffReader extends AbstractProductReader {
             band.setScalingFactor(metadata.getScalingFactor(fileName));
             band.setScalingOffset(metadata.getScalingOffset(fileName));
 
+            band.setNoDataValue(metadata.getFillValue(fileName));
+            band.setNoDataValueUsed(true);
+
             band.setDescription(metadata.getBandDescription(fileName));
             band.setUnit(" ");
 
@@ -225,11 +228,14 @@ public class LandsatL2GeotiffReader extends AbstractProductReader {
             Band band = addBandToProduct(bandName, srcBand, product);
             band.setDescription("Saturation Band");
 
+            band.setNoDataValue(metadata.getFillValue(fileName));
+            band.setNoDataValueUsed(true);
+
             FlagCoding flagCoding = l2saturation.createFlagCoding(bandName);
             band.setSampleCoding(flagCoding);
             product.getFlagCodingGroup().add(flagCoding);
             List<Mask> masks;
-            masks = l2saturation.createMasks(band.getRasterWidth(),band.getRasterHeight());
+            masks = l2saturation.createMasks(band.getRasterWidth(), band.getRasterHeight());
             for (Mask mask : masks) {
                 product.getMaskGroup().add(mask);
             }
@@ -252,11 +258,14 @@ public class LandsatL2GeotiffReader extends AbstractProductReader {
             Band band = addBandToProduct(bandName, srcBand, product);
             band.setDescription("Quality Band");
 
+            band.setNoDataValue(metadata.getFillValue(imageName));
+            band.setNoDataValueUsed(true);
+
             FlagCoding flagCoding = l2qa.createFlagCoding();
             band.setSampleCoding(flagCoding);
             product.getFlagCodingGroup().add(flagCoding);
             List<Mask> masks;
-            masks = l2qa.createMasks(band.getRasterWidth(),band.getRasterHeight());
+            masks = l2qa.createMasks(band.getRasterWidth(), band.getRasterHeight());
             for (Mask mask : masks) {
                 product.getMaskGroup().add(mask);
             }
@@ -279,11 +288,14 @@ public class LandsatL2GeotiffReader extends AbstractProductReader {
             Band band = addBandToProduct(bandName, srcBand, product);
             band.setDescription("Cloud QA Band");
 
+            band.setNoDataValue(metadata.getFillValue(imageName));
+            band.setNoDataValueUsed(true);
+
             FlagCoding flagCoding = l2cloud.createFlagCoding();
             band.setSampleCoding(flagCoding);
             product.getFlagCodingGroup().add(flagCoding);
             List<Mask> masks;
-            masks = l2cloud.createMasks(band.getRasterWidth(),band.getRasterHeight());
+            masks = l2cloud.createMasks(band.getRasterWidth(), band.getRasterHeight());
             for (Mask mask : masks) {
                 product.getMaskGroup().add(mask);
             }
@@ -306,11 +318,14 @@ public class LandsatL2GeotiffReader extends AbstractProductReader {
             Band band = addBandToProduct(bandName, srcBand, product);
             band.setDescription("Aerosol Mask");
 
+            band.setNoDataValue(metadata.getFillValue(imageName));
+            band.setNoDataValueUsed(true);
+
             FlagCoding flagCoding = l2aerosol.createFlagCoding();
             band.setSampleCoding(flagCoding);
             product.getFlagCodingGroup().add(flagCoding);
             List<Mask> masks;
-            masks = l2aerosol.createMasks(band.getRasterWidth(),band.getRasterHeight());
+            masks = l2aerosol.createMasks(band.getRasterWidth(), band.getRasterHeight());
             for (Mask mask : masks) {
                 product.getMaskGroup().add(mask);
             }

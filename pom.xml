@@ -21,11 +21,10 @@
 
     <groupId>org.esa.s3tbx</groupId>
     <artifactId>s3tbx</artifactId>
-    <version>8.0.4-SNAPSHOT</version>
+    <version>9.0.0-SNAPSHOT</version>
     <name>Sentinel-3 Toolbox</name>
     <description>Tools for the Sentinel-3 Satellite</description>
-    <url>https://github.com/senbox-org/s3tbx</url>
-
+    <url>https://sentinel.esa.int/web/sentinel/toolboxes/sentinel-3</url>
     <modules>
         <module>s3tbx-aatsr-sst</module>
         <module>s3tbx-aatsr-sst-ui</module>
@@ -35,6 +34,7 @@
         <module>s3tbx-atsr-reader</module>
         <module>s3tbx-avhrr-reader</module>
         <module>s3tbx-c2rcc</module>
+        <module>s3tbx-dos</module>
         <module>s3tbx-flhmci</module>
         <module>s3tbx-flhmci-ui</module>
         <module>s3tbx-fub-wew</module>
@@ -56,7 +56,9 @@
         <module>s3tbx-mphchl</module>
         <module>s3tbx-rad2refl</module>
         <module>s3tbx-rad2refl-ui</module>
-        <module>s3tbx-o2a-harmonisation</module>
+        <module>s3tbx-olci-anomaly-flagging</module>
+        <module>s3tbx-olci-o2aharmonisation</module>
+        <module>s3tbx-olci-harmonisation</module>
         <module>s3tbx-olci-radiometry</module>
         <module>s3tbx-owt-classification</module>
         <module>s3tbx-ppe-operator</module>
@@ -73,19 +75,19 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>8.0.4-SNAPSHOT</snap.version>
+        <snap.version>9.0.0-SNAPSHOT</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <s3tbx.version>8.0.4-SNAPSHOT</s3tbx.version>
+        <s3tbx.version>9.0.0-SNAPSHOT</s3tbx.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>5.3.1</netcdf.version>
-        <seadas.reader.version>1.9.4-SNAPSHOT</seadas.reader.version>
-        <seadas.reader.ui.version>1.9.4-SNAPSHOT</seadas.reader.ui.version>
+        <seadas.reader.version>1.10.0-SNAPSHOT</seadas.reader.version>
+        <seadas.reader.ui.version>1.10.0-SNAPSHOT</seadas.reader.ui.version>
         <brandingToken>s3tbx</brandingToken>
         <user.language>en</user.language>
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
@@ -229,7 +231,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <version>4.13.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -444,7 +446,7 @@
                 <plugin>
                     <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>4.4</version>
+                    <version>4.5</version>
                     <extensions>true</extensions>
                     <dependencies>
                         <dependency>
@@ -456,6 +458,7 @@
                     <configuration>
                         <moduleType>normal</moduleType>
                         <licenseName>GPL 3</licenseName>
+                        <homePageUrl>https://sentinel.esa.int/web/sentinel/toolboxes/sentinel-3</homePageUrl>
                         <licenseFile>${project.basedir}/../LICENSE.html</licenseFile>
                         <cluster>${brandingToken}</cluster>
                         <brandingToken>${brandingToken}</brandingToken>
