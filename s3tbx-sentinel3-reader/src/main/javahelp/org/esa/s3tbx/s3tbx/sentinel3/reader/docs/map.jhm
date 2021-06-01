@@ -5,9 +5,12 @@
 
 <map version="2.0">
 
-    <mapID target="meris4thTo3rdReprocessingAdaptationTool" url="FourthToThirdReprocessingAdaptationTool.html"/>
-    <mapID target="meris4thTo3rdReprocessingAlgorithmSpecification" url="AlgorithmSpecification.html"/>
-    <mapID target="meris4thTo3rdReprocessingProcessorDescription" url="ProcessorDescription.html"/>
-    <mapID target="meris4thTo3rdReprocessingCommandLine" url="CommandLine.html"/>
+    <mapID target="importSentinel3Product" url="ImportSentinel3.html"/>
+
+    <mapID target="meris4thTo3rdReprocessingAdaptationTool"
+           url="merisReproOp/FourthToThirdReprocessingAdaptationTool.html"/>
+    <mapID target="meris4thTo3rdReprocessingAlgorithmSpecification" url="merisReproOp/AlgorithmSpecification.html"/>
+    <mapID target="meris4thTo3rdReprocessingProcessorDescription" url="merisReproOp/ProcessorDescription.html"/>
+    <mapID target="meris4thTo3rdReprocessingCommandLine" url="merisReproOp/CommandLine.html"/>
 
 </map>
