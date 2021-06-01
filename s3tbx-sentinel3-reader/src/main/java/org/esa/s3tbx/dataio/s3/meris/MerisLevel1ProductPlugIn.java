@@ -11,7 +11,6 @@ import org.esa.snap.core.datamodel.RGBImageProfileManager;
 public class MerisLevel1ProductPlugIn extends Sentinel3ProductReaderPlugIn {
 
     private static final String format_name = "MER_L1_S3";
-
     static {
         registerRGBProfiles();
     }
