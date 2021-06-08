@@ -296,8 +296,8 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
             final double[] longitudes = RasterUtils.loadGeoData(lonBand);
             final double[] latitudes = RasterUtils.loadGeoData(latBand);
 
-            final int width = product.getSceneRasterWidth();
-            final int height = product.getSceneRasterHeight();
+            final int width = lonBand.getRasterWidth();
+            final int height = lonBand.getRasterHeight();
             final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
                                                       width, height, 1.0);
 
