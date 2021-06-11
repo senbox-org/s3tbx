@@ -20,6 +20,7 @@ import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.converters.BooleanExpressionConverter;
 
 import javax.media.jai.Histogram;
@@ -90,6 +91,12 @@ public class DarkObjectSubtractionOp extends Operator {
         }
         if (!spectralBandFound) {
             throw new OperatorException("No spectral bands selected. DOS cannot be applied.");
+        }
+
+        if (StringUtils.isNotNullAndNotEmpty(maskExpression)) {
+            if (!sourceProduct.isCompatibleBandArithmeticExpression(maskExpression)) {
+                throw new OperatorException("Specified mask expression '" + maskExpression + "' is not valid");
+            }
         }
 
         darkObjectValues = new double[sourceBandNames.length];
