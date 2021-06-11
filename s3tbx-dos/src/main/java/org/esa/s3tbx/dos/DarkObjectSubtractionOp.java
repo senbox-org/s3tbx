@@ -38,7 +38,7 @@ import java.util.Map;
         version = "1.0",
         category = "Optical/Preprocessing",
         authors = "Olaf Danne, Roman Shevchuk",
-        copyright = "(c) 2019 by Brockmann Consult",
+        copyright = "(c) 2021 by Brockmann Consult",
         description = "Performs dark object subtraction for spectral bands in source product.")
 public class DarkObjectSubtractionOp extends Operator {
 
@@ -48,7 +48,7 @@ public class DarkObjectSubtractionOp extends Operator {
     @TargetProduct
     private Product targetProduct;
 
-    @Parameter(label = "Bands to copy",
+    @Parameter(label = "Source bands",
             description = "Bands to be copied to the target. DOS will be applied on spectral bands only.",
             rasterDataNodeType = Band.class)
     private String[] sourceBandNames;
