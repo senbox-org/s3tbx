@@ -136,9 +136,6 @@ public class PpeOp extends Operator {
                                     sourceProduct.getSceneRasterWidth(),
                                     sourceProduct.getSceneRasterHeight());
 
-        // TODO: Copy flag bands is necessary because of issue
-        // https://senbox.atlassian.net/browse/SNAP-1232
-        ProductUtils.copyFlagBands(sourceProduct, targetProduct, true);
         ProductUtils.copyProductNodes(sourceProduct, targetProduct);
 
         final FlagCoding flagCoding = new FlagCoding("PPE_Applied");
