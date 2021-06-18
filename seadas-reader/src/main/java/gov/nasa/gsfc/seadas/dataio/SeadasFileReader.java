@@ -1237,6 +1237,8 @@ public abstract class SeadasFileReader {
             } else if (attribute.isArray()) {
                 productData = ProductData.createInstance(productDataType, attribute.getLength());
                 productData.setElems(attribute.getValues().getStorage());
+            } else if (attribute.getValues() == null) {
+                productData = ProductData.createInstance(" ");
             } else {
                 productData = ProductData.createInstance(productDataType, 1);
                 productData.setElems(attribute.getValues().getStorage());
