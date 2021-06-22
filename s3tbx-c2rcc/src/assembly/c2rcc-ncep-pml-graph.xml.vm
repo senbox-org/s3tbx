@@ -85,11 +85,11 @@ $ozone1Calendar.add(5, 1)
         <sources>
             <sourceProduct>input</sourceProduct>
 
-            <tomsomiStartProduct>ozone1</tomsomiStartProduct>
-            <tomsomiEndProduct>ozone2</tomsomiEndProduct>
+            <ozoneStartProduct>ozone1</ozoneStartProduct>
+            <ozoneEndProduct>ozone2</ozoneEndProduct>
 
-            <ncepStartProduct>ncep1</ncepStartProduct>
-            <ncepEndProduct>ncep2</ncepEndProduct>
+            <pressureStartProduct>ncep1</pressureStartProduct>
+            <pressureEndProduct>ncep2</pressureEndProduct>
         </sources>
     </node>
 </graph>
