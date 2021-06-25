@@ -32,7 +32,7 @@ import org.esa.snap.core.util.SystemUtils;
  * @author Marco Zuehlke
  * @author Sabine Embacher
  */
-public class PodGeoCodingPersistenceConverter implements PersistenceConverter<PodGeoCoding> {
+public class PodGeoCodingPersistenceConverter extends PersistenceConverter<PodGeoCoding> {
 
     public static final String NAME_POD_GEO_CODING = "PodGeoCoding";
     public static final String NAME_TIE_POINT_GRID_NAME_LAT = "TIE_POINT_GRID_NAME_LAT";
@@ -49,7 +49,7 @@ public class PodGeoCodingPersistenceConverter implements PersistenceConverter<Po
     }
 
     @Override
-    public PodGeoCoding decode(Item item, Product product) {
+    public PodGeoCoding decodeImpl(Item item, Product product) {
         if (item == null || !item.isContainer() || !NAME_POD_GEO_CODING.equals(item.getName())) {
             SystemUtils.LOG.warning("For decoding a container item with name '" + NAME_POD_GEO_CODING + "' is expected.");
             return null;
