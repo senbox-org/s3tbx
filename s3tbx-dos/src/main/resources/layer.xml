@@ -30,7 +30,7 @@
 
     <folder name="Services">
         <folder name="JavaHelp">
-            <file name="helpset.xml" url="helpset.xml">
+            <file name="org-esa-s3tbx-dos-helpset.xml" url="helpset.xml">
                 <attr name="position" intvalue="4600"/>
             </file>
         </folder>
