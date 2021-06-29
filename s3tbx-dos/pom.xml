@@ -27,8 +27,7 @@
     <artifactId>s3tbx-dos</artifactId>
     <name>Dark Object Subtraction Operator</name>
     <packaging>nbm</packaging>
-    <description>Operator implementing an algorithm for Dark Object Subtraction.
-    </description>
+    <description>Operator performing Dark Object Subtraction</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
