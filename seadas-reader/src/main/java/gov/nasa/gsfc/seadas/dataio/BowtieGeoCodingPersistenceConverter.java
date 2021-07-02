@@ -33,7 +33,7 @@ import org.esa.snap.core.util.SystemUtils;
  * @author Marco Zühlke
  * @author Sabine Embacher
  */
-public class BowtieGeoCodingPersistenceConverter implements PersistenceConverter<AbstractBowtieGeoCoding> {
+public class BowtieGeoCodingPersistenceConverter extends PersistenceConverter<AbstractBowtieGeoCoding> {
 
     private static final String NAME_BOWTIE_PIXEL_GEO_CODING = "BowtiePixelGeoCoding";
     private static final String NAME_BOWTIE_TIEPOINT_GEO_CODING = "BowtieTiePointGeoCoding";
@@ -54,7 +54,7 @@ public class BowtieGeoCodingPersistenceConverter implements PersistenceConverter
     }
 
     @Override
-    public AbstractBowtieGeoCoding decode(Item item, Product product) {
+    public AbstractBowtieGeoCoding decodeImpl(Item item, Product product) {
         if (item == null || !item.isContainer() ||
             !(NAME_BOWTIE_PIXEL_GEO_CODING.equals(item.getName()) || NAME_BOWTIE_TIEPOINT_GEO_CODING.equals(item.getName()))
         ) {
