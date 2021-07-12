@@ -43,11 +43,21 @@ public class OlciAnomalyFlaggingOp extends Operator {
     private static final String SUFFIX = "_ANOM";
     private static final float ALTITUDE_MAX = 8850.f;
     private static final float ALTITUDE_MIN = -11050.f;
-    private static final int ALT_OUT_OF_RANGE = 2;
-    private static final int INPUT_DATA_INVALID = 4;
-    private static final int ANOM_SPECTRAL_MEASURE = 1;
+    private static final int ANOM_SPECTRAL_MEASURE_VALUE = 1;
+    private static final String ANOM_SPECTRAL_MEASURE_NAME = "ANOM_SPECTRAL_MEASURE";
+    private static final String ANOM_SPECTRAL_MEASURE_DESCRIPTION = "Anomalous spectral sample due to saturation of single microbands";
+    private static final int PARTIALLY_SATURATED_VALUE = 2;
+    private static final String PARTIALLY_SATURATED_NAME = "PARTIALLY_SATURATED";
+    private static final String PARTIALLY_SATURATED_DESCIPTION = "Anomalous spectral sample and no saturation flag in spectral bands";
+    private static final int ALT_OUT_OF_RANGE_VALUE = 4;
+    private static final String ALT_OUT_OF_RANGE_NAME = "ALT_OUT_OF_RANGE";
+    private static final String ALT_OUT_OF_RANGE_DESCRIPTION = "Altitude values are out of nominal data range";
+    private static final int INPUT_DATA_INVALID_VALUE = 8;
+    private static final String INPUT_DATA_INVALID_NAME = "INPUT_DATA_INVALID";
+    private static final String INPUT_DATA_INVALID_DESCRIPTION = "Input data to detection algorithms is out of range/invalid";
     private static final int[] bandIndices = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 21};
     private static final double SLOPE_THRESHOLD = 0.15;
+
 
     @SourceProduct(description = "OLCI L1b or fully compatible product.",
             label = "OLCI L1b product")
@@ -61,7 +71,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
             label = "Write spectral slope information")
     private boolean writeSlopeInformation;
 
-    // package access for testing only tb 2021-04-08
+    private int[] saturationFlags;
 
     /**
      * converts radiances to reflectances, in-place. The incoming array is overwritten.
@@ -108,10 +118,13 @@ public class OlciAnomalyFlaggingOp extends Operator {
     static Product createOutputProduct(Product input, boolean writeSlopeInformation) {
         final String inputProductType = input.getProductType();
         final String inputName = input.getName();
+        final int width = input.getSceneRasterWidth();
+        final int height = input.getSceneRasterHeight();
+
         final Product outputProduct = new Product(inputName + SUFFIX,
                 inputProductType + SUFFIX,
-                input.getSceneRasterWidth(),
-                input.getSceneRasterHeight());
+                width,
+                height);
 
         outputProduct.setDescription("OLCI anomaly flagged L1b");
         outputProduct.setStartTime(input.getStartTime());
@@ -126,6 +139,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
         ProductUtils.copyTiePointGrids(input, outputProduct);
         ProductUtils.copyGeoCoding(input, outputProduct);
         ProductUtils.copyMetadata(input, outputProduct);
+        ProductUtils.copyMasks(input, outputProduct);
 
         Product.AutoGrouping autoGrouping = input.getAutoGrouping();
         outputProduct.setAutoGrouping(autoGrouping);
@@ -134,11 +148,18 @@ public class OlciAnomalyFlaggingOp extends Operator {
         anomalyFlags.setDescription("Flags indicating OLCI data anomalies");
 
         final FlagCoding flagCoding = new FlagCoding("anomaly_flags");
-        flagCoding.addFlag("ANOM_SPECTRAL_MEASURE", ANOM_SPECTRAL_MEASURE, "Anomalous spectral sample due to saturation of single microbands");
-        flagCoding.addFlag("ALT_OUT_OF_RANGE", ALT_OUT_OF_RANGE, "Altitude values are out of nominal data range");
-        flagCoding.addFlag("INPUT_DATA_INVALID", INPUT_DATA_INVALID, "Input data to detection algorithms is out of range/invalid");
+        flagCoding.addFlag(ANOM_SPECTRAL_MEASURE_NAME, ANOM_SPECTRAL_MEASURE_VALUE, ANOM_SPECTRAL_MEASURE_DESCRIPTION);
+        flagCoding.addFlag(PARTIALLY_SATURATED_NAME, PARTIALLY_SATURATED_VALUE, PARTIALLY_SATURATED_DESCIPTION);
+        flagCoding.addFlag(ALT_OUT_OF_RANGE_NAME, ALT_OUT_OF_RANGE_VALUE, ALT_OUT_OF_RANGE_DESCRIPTION);
+        flagCoding.addFlag(INPUT_DATA_INVALID_NAME, INPUT_DATA_INVALID_VALUE, INPUT_DATA_INVALID_DESCRIPTION);
         anomalyFlags.setSampleCoding(flagCoding);
         outputProduct.getFlagCodingGroup().add(flagCoding);
+
+        outputProduct.addMask(Mask.BandMathsType.create(ANOM_SPECTRAL_MEASURE_NAME, ANOM_SPECTRAL_MEASURE_DESCRIPTION,
+                width, height, "anomaly_flags." + ANOM_SPECTRAL_MEASURE_NAME, Color.RED, 0.5));
+
+        outputProduct.addMask(Mask.BandMathsType.create(PARTIALLY_SATURATED_NAME, PARTIALLY_SATURATED_DESCIPTION,
+                width, height, "anomaly_flags." + PARTIALLY_SATURATED_NAME, Color.ORANGE, 0.5));
 
         if (writeSlopeInformation) {
             final Band maxSpectralSlope = outputProduct.addBand("max_spectral_slope", ProductData.TYPE_FLOAT32);
@@ -190,15 +211,19 @@ public class OlciAnomalyFlaggingOp extends Operator {
     }
 
     static int setOutOfRangeFlag(int flagValue) {
-        return flagValue | ALT_OUT_OF_RANGE;
+        return flagValue | ALT_OUT_OF_RANGE_VALUE;
     }
 
     static int setAnomalMeasureFlag(int flagValue) {
-        return flagValue | ANOM_SPECTRAL_MEASURE;
+        return flagValue | ANOM_SPECTRAL_MEASURE_VALUE;
+    }
+
+    static int setPartiallySaturatedFlag(int flagValue) {
+        return flagValue | PARTIALLY_SATURATED_VALUE;
     }
 
     static int setInvalidInputFlag(int flagValue) {
-        return flagValue | INPUT_DATA_INVALID;
+        return flagValue | INPUT_DATA_INVALID_VALUE;
     }
 
     // package access for testing only tb 20201-04-14
@@ -215,9 +240,8 @@ public class OlciAnomalyFlaggingOp extends Operator {
         byte index = -1;
         for (int i = 0; i < numSlopes; i++) {
             final double wlDelta = wavelengths[i + 1] - wavelengths[i];
-            final double invWlDelta = 1.0 / wlDelta;
             final double reflectanceDelta = reflectances[i + 1] - reflectances[i];
-            final double slope = reflectanceDelta * invWlDelta;
+            final double slope = reflectanceDelta / wlDelta;
             if (Math.abs(slope) > Math.abs(maxSlope)) {
                 maxSlope = slope;
                 index = (byte) i;
@@ -253,6 +277,14 @@ public class OlciAnomalyFlaggingOp extends Operator {
 
         targetProduct = createOutputProduct(l1bProduct, writeSlopeInformation);
         setTargetProduct(targetProduct);
+
+        final ProductNodeGroup<FlagCoding> flagCodingGroup = l1bProduct.getFlagCodingGroup();
+        final FlagCoding quality_flags = flagCodingGroup.get("quality_flags");
+        saturationFlags = new int[21];
+        for (int i = 1; i <= 21; i++) {
+            MetadataAttribute flag = quality_flags.getFlag("saturated_Oa" + String.format("%02d", i));
+            saturationFlags[i - 1] = flag.getData().getElemInt();
+        }
     }
 
     @Override
@@ -261,8 +293,8 @@ public class OlciAnomalyFlaggingOp extends Operator {
         final Tile anomalyFlagsTile = targetTiles.get(anomalyFlags);
 
         processSlopeDetection(targetTiles, targetRectangle, anomalyFlagsTile);
-
         processAltitudeOutliers(anomalyFlagsTile, targetRectangle);
+        processPartiallySaturatedFlag(anomalyFlagsTile, targetRectangle);
     }
 
     private void processSlopeDetection(Map<Band, Tile> targetTiles, Rectangle targetRectangle, Tile anomalyFlagsTile) {
@@ -398,6 +430,34 @@ public class OlciAnomalyFlaggingOp extends Operator {
                 processAltitudeOutlierPixel(targetTile, altitudeTile, y, x);
             }
         }
+    }
+
+    private void processPartiallySaturatedFlag(Tile anomalyFlagsTile, Rectangle targetRectangle) {
+        final Band l1bFlagsBand = l1bProduct.getBand("quality_flags");
+        final Tile l1bFlagsTile = getSourceTile(l1bFlagsBand, targetRectangle);
+        for (int y = targetRectangle.y; y < targetRectangle.y + targetRectangle.height; y++) {
+            checkForCancellation();
+            for (int x = targetRectangle.x; x < targetRectangle.x + targetRectangle.width; x++) {
+                int anomalyFlag = anomalyFlagsTile.getSampleInt(x, y);
+                if ((anomalyFlag & ANOM_SPECTRAL_MEASURE_VALUE) == ANOM_SPECTRAL_MEASURE_VALUE) {
+                    final int l1bFlags = l1bFlagsTile.getSampleInt(x, y);
+                    if (!hasSaturation(l1bFlags, saturationFlags)) {
+                        anomalyFlag = setPartiallySaturatedFlag(anomalyFlag);
+                    }
+                }
+                anomalyFlagsTile.setSample(x, y, anomalyFlag);
+            }
+        }
+    }
+
+    // package access for testing only tb 2021-07-12
+    static boolean hasSaturation(int l1bFlags, int[] saturationFlagValues) {
+        for (int saturationFlagValue : saturationFlagValues) {
+            if ((l1bFlags & saturationFlagValue) == saturationFlagValue) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static class Spi extends OperatorSpi {
