@@ -21,6 +21,7 @@ import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.Tile;
 import org.junit.Test;
 
+import java.awt.*;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -166,10 +167,27 @@ public class OlciAnomalyFlaggingOpTest {
         assertEquals("Flags indicating OLCI data anomalies", anomalyFlags.getDescription());
 
         final FlagCoding flagCoding = anomalyFlags.getFlagCoding();
-        assertEquals(3, flagCoding.getFlagNames().length);
+        assertEquals(4, flagCoding.getFlagNames().length);
         assertEquals(1, flagCoding.getFlagMask("ANOM_SPECTRAL_MEASURE"));
-        assertEquals(2, flagCoding.getFlagMask("ALT_OUT_OF_RANGE"));
-        assertEquals(4, flagCoding.getFlagMask("INPUT_DATA_INVALID"));
+        assertEquals(2, flagCoding.getFlagMask("PARTIALLY_SATURATED"));
+        assertEquals(4, flagCoding.getFlagMask("ALT_OUT_OF_RANGE"));
+        assertEquals(8, flagCoding.getFlagMask("INPUT_DATA_INVALID"));
+
+        final ProductNodeGroup<Mask> maskGroup = outputProduct.getMaskGroup();
+        assertEquals(3, maskGroup.getNodeCount());
+
+        // copied from input
+        Mask mask = maskGroup.get(0);
+        assertEquals("testing", mask.getName());
+
+        // added by operator
+        mask = maskGroup.get(1);
+        assertEquals("ANOM_SPECTRAL_MEASURE", mask.getName());
+        assertEquals("Anomalous spectral sample due to saturation of single microbands", mask.getDescription());
+
+        mask = maskGroup.get(2);
+        assertEquals("PARTIALLY_SATURATED", mask.getName());
+        assertEquals("Anomalous spectral sample and no saturation flag in spectral bands", mask.getDescription());
     }
 
     @Test
@@ -199,8 +217,8 @@ public class OlciAnomalyFlaggingOpTest {
 
     @Test
     public void testSetOutOfRangeFlag() {
-        assertEquals(2, OlciAnomalyFlaggingOp.setOutOfRangeFlag(0));
-        assertEquals(3, OlciAnomalyFlaggingOp.setOutOfRangeFlag(1));
+        assertEquals(4, OlciAnomalyFlaggingOp.setOutOfRangeFlag(0));
+        assertEquals(5, OlciAnomalyFlaggingOp.setOutOfRangeFlag(1));
     }
 
     @Test
@@ -211,8 +229,8 @@ public class OlciAnomalyFlaggingOpTest {
 
     @Test
     public void testSetInvalidInputFlag() {
-        assertEquals(4, OlciAnomalyFlaggingOp.setInvalidInputFlag(0));
-        assertEquals(6, OlciAnomalyFlaggingOp.setInvalidInputFlag(2));
+        assertEquals(8, OlciAnomalyFlaggingOp.setInvalidInputFlag(0));
+        assertEquals(10, OlciAnomalyFlaggingOp.setInvalidInputFlag(2));
     }
 
     @Test
@@ -231,8 +249,8 @@ public class OlciAnomalyFlaggingOpTest {
         OlciAnomalyFlaggingOp.processAltitudeOutlierPixel(flagTile, altitudeTile, 1, 1);
 
 
-        verify(flagTile, times(1)).setSample(1, 0, 2);
-        verify(flagTile, times(1)).setSample(0, 1, 2);
+        verify(flagTile, times(1)).setSample(0, 1, 4);
+        verify(flagTile, times(1)).setSample(1, 0, 4);
     }
 
     @Test
@@ -336,6 +354,17 @@ public class OlciAnomalyFlaggingOpTest {
         assertFalse(OlciAnomalyFlaggingOp.checkFillValues(radiances, radianceFill, solarFluxes, solarFluxFill, wavelengths, wavelengthFill, sza, szaFill));
     }
 
+    @Test
+    public void testHasSaturation() {
+        final int[] saturationFLagValues = {1, 2, 4, 8, 16, 32};
+        assertFalse(OlciAnomalyFlaggingOp.hasSaturation(0, saturationFLagValues));
+        assertFalse(OlciAnomalyFlaggingOp.hasSaturation(2097152, saturationFLagValues));
+
+        assertTrue(OlciAnomalyFlaggingOp.hasSaturation(1, saturationFLagValues));
+        assertTrue(OlciAnomalyFlaggingOp.hasSaturation(4, saturationFLagValues));
+        assertTrue(OlciAnomalyFlaggingOp.hasSaturation(48, saturationFLagValues));
+    }
+
     private Product createTestProduct() {
         final Product product = new Product("test_me", "test_type", 3, 5);
         product.setStartTime(ProductData.UTC.create(new Date(1611514251000L), 0));
@@ -356,6 +385,8 @@ public class OlciAnomalyFlaggingOpTest {
 
         final TiePointGrid sza = new TiePointGrid("SZA", 2, 2, 0, 0, 5, 5, new float[]{1, 2, 3, 4});
         product.addTiePointGrid(sza);
+
+        product.addMask(Mask.BandMathsType.create("testing", "theMask", 3, 5, "altitude > 23", Color.CYAN, 0.65));
 
         return product;
     }
