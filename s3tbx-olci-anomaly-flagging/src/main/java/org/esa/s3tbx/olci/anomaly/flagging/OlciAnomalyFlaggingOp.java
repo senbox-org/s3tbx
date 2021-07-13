@@ -155,11 +155,17 @@ public class OlciAnomalyFlaggingOp extends Operator {
         anomalyFlags.setSampleCoding(flagCoding);
         outputProduct.getFlagCodingGroup().add(flagCoding);
 
-        outputProduct.addMask(Mask.BandMathsType.create(ANOM_SPECTRAL_MEASURE_NAME, ANOM_SPECTRAL_MEASURE_DESCRIPTION,
+        outputProduct.addMask(Mask.BandMathsType.create("anomaly_flags_anom_spectral_measure", ANOM_SPECTRAL_MEASURE_DESCRIPTION,
                 width, height, "anomaly_flags." + ANOM_SPECTRAL_MEASURE_NAME, Color.RED, 0.5));
 
-        outputProduct.addMask(Mask.BandMathsType.create(PARTIALLY_SATURATED_NAME, PARTIALLY_SATURATED_DESCIPTION,
+        outputProduct.addMask(Mask.BandMathsType.create("anomaly_flags_partially_saturated", PARTIALLY_SATURATED_DESCIPTION,
                 width, height, "anomaly_flags." + PARTIALLY_SATURATED_NAME, Color.ORANGE, 0.5));
+
+        outputProduct.addMask(Mask.BandMathsType.create("anomaly_flags_altitude_out_of_range", ALT_OUT_OF_RANGE_DESCRIPTION,
+                width, height, "anomaly_flags." + ALT_OUT_OF_RANGE_NAME, Color.MAGENTA, 0.5));
+
+        outputProduct.addMask(Mask.BandMathsType.create("anomaly_flags_input_data_invalid", INPUT_DATA_INVALID_DESCRIPTION,
+                width, height, "anomaly_flags." + INPUT_DATA_INVALID_NAME, Color.PINK, 0.5));
 
         if (writeSlopeInformation) {
             final Band maxSpectralSlope = outputProduct.addBand("max_spectral_slope", ProductData.TYPE_FLOAT32);
