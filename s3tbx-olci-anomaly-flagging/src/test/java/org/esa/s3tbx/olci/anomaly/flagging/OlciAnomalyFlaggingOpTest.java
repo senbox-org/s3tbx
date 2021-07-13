@@ -174,7 +174,7 @@ public class OlciAnomalyFlaggingOpTest {
         assertEquals(8, flagCoding.getFlagMask("INPUT_DATA_INVALID"));
 
         final ProductNodeGroup<Mask> maskGroup = outputProduct.getMaskGroup();
-        assertEquals(3, maskGroup.getNodeCount());
+        assertEquals(5, maskGroup.getNodeCount());
 
         // copied from input
         Mask mask = maskGroup.get(0);
@@ -182,12 +182,20 @@ public class OlciAnomalyFlaggingOpTest {
 
         // added by operator
         mask = maskGroup.get(1);
-        assertEquals("ANOM_SPECTRAL_MEASURE", mask.getName());
+        assertEquals("anomaly_flags_anom_spectral_measure", mask.getName());
         assertEquals("Anomalous spectral sample due to saturation of single microbands", mask.getDescription());
 
         mask = maskGroup.get(2);
-        assertEquals("PARTIALLY_SATURATED", mask.getName());
+        assertEquals("anomaly_flags_partially_saturated", mask.getName());
         assertEquals("Anomalous spectral sample and no saturation flag in spectral bands", mask.getDescription());
+
+        mask = maskGroup.get(3);
+        assertEquals("anomaly_flags_altitude_out_of_range", mask.getName());
+        assertEquals("Altitude values are out of nominal data range", mask.getDescription());
+
+        mask = maskGroup.get(4);
+        assertEquals("anomaly_flags_input_data_invalid", mask.getName());
+        assertEquals("Input data to detection algorithms is out of range/invalid", mask.getDescription());
     }
 
     @Test
@@ -231,6 +239,12 @@ public class OlciAnomalyFlaggingOpTest {
     public void testSetInvalidInputFlag() {
         assertEquals(8, OlciAnomalyFlaggingOp.setInvalidInputFlag(0));
         assertEquals(10, OlciAnomalyFlaggingOp.setInvalidInputFlag(2));
+    }
+
+    @Test
+    public void testSetPartiallySaturatedFlag() {
+        assertEquals(2, OlciAnomalyFlaggingOp.setPartiallySaturatedFlag(0));
+        assertEquals(7, OlciAnomalyFlaggingOp.setPartiallySaturatedFlag(5));
     }
 
     @Test
