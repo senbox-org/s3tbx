@@ -45,7 +45,7 @@ public class OlciAnomalyFlaggingOp extends Operator {
     private static final float ALTITUDE_MIN = -11050.f;
     private static final int ANOM_SPECTRAL_MEASURE_VALUE = 1;
     private static final String ANOM_SPECTRAL_MEASURE_NAME = "ANOM_SPECTRAL_MEASURE";
-    private static final String ANOM_SPECTRAL_MEASURE_DESCRIPTION = "Anomalous spectral sample due to saturation of single microbands";
+    private static final String ANOM_SPECTRAL_MEASURE_DESCRIPTION = "Anomalous spectral sample due to saturation of one microband (partial saturation) or all microbands (saturated band)";
     private static final int PARTIALLY_SATURATED_VALUE = 2;
     private static final String PARTIALLY_SATURATED_NAME = "PARTIALLY_SATURATED";
     private static final String PARTIALLY_SATURATED_DESCIPTION = "Anomalous spectral sample and no saturation flag in spectral bands";

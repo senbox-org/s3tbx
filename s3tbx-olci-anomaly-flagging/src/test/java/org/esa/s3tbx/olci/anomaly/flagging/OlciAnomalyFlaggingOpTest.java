@@ -183,7 +183,7 @@ public class OlciAnomalyFlaggingOpTest {
         // added by operator
         mask = maskGroup.get(1);
         assertEquals("anomaly_flags_anom_spectral_measure", mask.getName());
-        assertEquals("Anomalous spectral sample due to saturation of single microbands", mask.getDescription());
+        assertEquals("Anomalous spectral sample due to saturation of one microband (partial saturation) or all microbands (saturated band)", mask.getDescription());
 
         mask = maskGroup.get(2);
         assertEquals("anomaly_flags_partially_saturated", mask.getName());
