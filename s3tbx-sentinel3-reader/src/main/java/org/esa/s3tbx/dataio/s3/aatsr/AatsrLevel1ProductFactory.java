@@ -15,6 +15,7 @@ import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.util.ProductUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -181,9 +182,9 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         targetProduct.getTiePointGridGroup().add(fixedLonGrid);
     }
 
-    private TiePointGrid getFixedAngleGrid(TiePointGrid grid) {
+    private TiePointGrid getFixedAngleGrid(TiePointGrid sourceGrid) {
         // first, remove filled pixels at the end
-        TiePointGrid endFixedGrid = getFixedTiePointGrid(grid, true);
+        TiePointGrid endFixedGrid = getFixedTiePointGrid(sourceGrid, true);
         int gridWidth = endFixedGrid.getGridWidth() - 5;
         int gridHeight = endFixedGrid.getGridHeight() - 1;
 
@@ -195,7 +196,11 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
             System.arraycopy(originalTiePoints, 2 + endFixedGrid.getGridWidth() * y, tiePoints, gridWidth * y, gridWidth);
         }
 
-        return new TiePointGrid(grid.getName(), gridWidth, gridHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
+        final TiePointGrid targetGrid = new TiePointGrid(sourceGrid.getName(), gridWidth, gridHeight,
+                                                         sourceGrid.getOffsetX(), sourceGrid.getOffsetY(), sourceGrid.getSubSamplingX(), sourceGrid.getSubSamplingY(),
+                                                         tiePoints, true);
+        ProductUtils.copyRasterDataNodeProperties(sourceGrid, targetGrid);
+        return targetGrid;
     }
 
     private static TiePointGrid getFixedTiePointGrid(TiePointGrid grid, boolean isAngle) {
