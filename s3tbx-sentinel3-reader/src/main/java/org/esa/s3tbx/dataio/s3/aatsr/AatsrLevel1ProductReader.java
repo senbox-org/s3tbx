@@ -3,7 +3,6 @@ package org.esa.s3tbx.dataio.s3.aatsr;
 import org.esa.s3tbx.dataio.s3.Sentinel3ProductReader;
 import org.esa.snap.core.datamodel.Product;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.esa.s3tbx.dataio.s3.aatsr.AatsrLevel1ProductReaderPlugIn.DIRECTORY_NAME_PATTERN;
@@ -25,8 +24,7 @@ public class AatsrLevel1ProductReader extends Sentinel3ProductReader {
         }
 
         Product product = createProduct();
-        File file = new File(getInput().toString());
-        product.setProductType(file.getParentFile().getName().substring(0, 12));
+        product.setProductType(dirName.substring(0, 12));
 
         return product;
     }
