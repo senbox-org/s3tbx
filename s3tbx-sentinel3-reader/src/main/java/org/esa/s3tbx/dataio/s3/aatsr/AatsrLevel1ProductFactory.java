@@ -130,7 +130,10 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         final ForwardCoding forward = ComponentFactory.getForward(TiePointBilinearForward.KEY);
         final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
 
-        targetProduct.setSceneGeoCoding(new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN));
+        final ComponentGeoCoding sceneGeoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        sceneGeoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(sceneGeoCoding);
     }
 
     @Override
@@ -143,16 +146,16 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
         String[] ANGLE_NAMES = new String[]{
                 "sat_azimuth_tn",
-                "sat_path_tn",
+                "sat_path_tn", // todo - not an angle grid it is in meter
                 "sat_zenith_tn",
                 "solar_azimuth_tn",
-                "solar_path_tn",
+                "solar_path_tn", // todo - not an angle grid it is in meter
                 "solar_zenith_tn",
                 "sat_azimuth_to",
-                "sat_path_to",
+                "sat_path_to", // todo - not an angle grid it is in meter
                 "sat_zenith_to",
                 "solar_azimuth_to",
-                "solar_path_to",
+                "solar_path_to", // todo - not an angle grid it is in meter
                 "solar_zenith_to",
         };
 
