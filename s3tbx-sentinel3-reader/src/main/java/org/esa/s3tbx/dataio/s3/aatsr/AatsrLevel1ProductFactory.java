@@ -1,5 +1,6 @@
 package org.esa.s3tbx.dataio.s3.aatsr;
 
+import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.util.MetTxReader;
@@ -14,6 +15,7 @@ import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
 import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.util.ProductUtils;
 
@@ -108,6 +110,32 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
                 "pointing_in_:pointing_io_:" +
                 "confidence_in_:confidence_io_:" +
                 bandGrouping);
+    }
+
+    @Override
+    protected RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset, double sourceTrackOffset, short[] sourceResolutions) {
+        final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
+        final String tpgName = sourceBand.getName();
+        putTiePointSourceImage(tpgName, sourceImage);
+        final int rasterWidth = sourceBand.getRasterWidth();
+        final int subSamplingXY = 16;
+        final int tpSceneWith = (rasterWidth - 1) * subSamplingXY;
+        final int sceneRasterWidth = targetProduct.getSceneRasterWidth();
+        final int diffX = tpSceneWith - sceneRasterWidth;
+        final double offsetX = diffX / 2.0;
+        final String unit = sourceBand.getUnit();
+
+        final TiePointGrid tiePointGrid = new TiePointGrid(tpgName, sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
+                                                           -offsetX, 0, subSamplingXY, subSamplingXY);
+        if (unit != null && unit.toLowerCase().contains("degree")) {
+            tiePointGrid.setDiscontinuity(TiePointGrid.DISCONT_AUTO);
+        }
+        tiePointGrid.setDescription(sourceBand.getDescription());
+        tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
+        tiePointGrid.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
+        tiePointGrid.setUnit(unit);
+        targetProduct.addTiePointGrid(tiePointGrid);
+        return tiePointGrid;
     }
 
     @Override

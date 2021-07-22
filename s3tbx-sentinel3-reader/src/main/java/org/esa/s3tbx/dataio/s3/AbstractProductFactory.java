@@ -183,9 +183,8 @@ public abstract class AbstractProductFactory implements ProductFactory {
         if (unit != null && unit.toLowerCase().contains("degree")) {
             tiePointGrid.setDiscontinuity(TiePointGrid.DISCONT_AUTO);
         }
-        tpgImageMap.put(bandName, newSourceImage);
-        final String description = sourceBand.getDescription();
-        tiePointGrid.setDescription(description);
+        putTiePointSourceImage(bandName, newSourceImage);
+        tiePointGrid.setDescription(sourceBand.getDescription());
         tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
         tiePointGrid.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
         tiePointGrid.setUnit(unit);
@@ -193,6 +192,10 @@ public abstract class AbstractProductFactory implements ProductFactory {
         sourceImage.dispose();
 
         return tiePointGrid;
+    }
+
+    protected void putTiePointSourceImage(String tpgName, MultiLevelImage newSourceImage) {
+        tpgImageMap.put(tpgName, newSourceImage);
     }
 
     protected void setSceneTransforms(Product product) {
