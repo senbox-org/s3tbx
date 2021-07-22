@@ -162,6 +162,12 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
     }
 
     @Override
+    protected void setBandGeoCodings(Product product) throws IOException {
+        // empty implementation to prevent using pixel-based GeoCodings for AATSR.
+        // They are not usable due to no-data in the bands.
+    }
+
+    @Override
     protected void setTimeCoding(Product targetProduct) throws IOException {
         setTimeCoding(targetProduct, "time_in.nc", "time_stamp_i");
     }
