@@ -17,7 +17,6 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGrid;
-import org.esa.snap.core.util.ProductUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,11 +30,8 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     private Product masterProduct;
 
-    private static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
-    private static final double FILL_VALUE = -1.0E9;
-
-    // todo ideas+ implement valid Expression
-//    private final static String validExpression = "!quality_flags.invalid";
+//    private static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
+//    private static final double FILL_VALUE = -1.0E9;
 
     public AatsrLevel1ProductFactory(AatsrLevel1ProductReader productReader) {
         super(productReader);
@@ -170,102 +166,104 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         setTimeCoding(targetProduct, "time_in.nc", "time_stamp_i");
     }
 
-    @Override
-    protected void fixTiePointGrids(Product targetProduct) {
-
-        String[] ANGLE_NAMES = new String[]{
-                "sat_azimuth_tn",
-                "sat_path_tn", // todo - not an angle grid it is in meter
-                "sat_zenith_tn",
-                "solar_azimuth_tn",
-                "solar_path_tn", // todo - not an angle grid it is in meter
-                "solar_zenith_tn",
-                "sat_azimuth_to",
-                "sat_path_to", // todo - not an angle grid it is in meter
-                "sat_zenith_to",
-                "solar_azimuth_to",
-                "solar_path_to", // todo - not an angle grid it is in meter
-                "solar_zenith_to",
-        };
-
-        for (TiePointGrid grid : targetProduct.getTiePointGrids()) {
-            for (String angleName : ANGLE_NAMES) {
-                if (grid.getName().equals(angleName)) {
-                    TiePointGrid fixedGrid = getFixedAngleGrid(grid);
-                    targetProduct.getTiePointGridGroup().remove(grid);
-                    targetProduct.getTiePointGridGroup().add(fixedGrid);
-                }
-            }
-        }
-
-        TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
-        TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
-
-        TiePointGrid fixedLatGrid = getFixedTiePointGrid(latGrid, false);
-        targetProduct.getTiePointGridGroup().remove(latGrid);
-        targetProduct.getTiePointGridGroup().add(fixedLatGrid);
-
-        TiePointGrid fixedLonGrid = getFixedTiePointGrid(lonGrid, false);
-        targetProduct.getTiePointGridGroup().remove(lonGrid);
-        targetProduct.getTiePointGridGroup().add(fixedLonGrid);
-    }
-
-    private TiePointGrid getFixedAngleGrid(TiePointGrid sourceGrid) {
-        // first, remove filled pixels at the end
-        TiePointGrid endFixedGrid = getFixedTiePointGrid(sourceGrid, true);
-        int gridWidth = endFixedGrid.getGridWidth() - 5;
-        int gridHeight = endFixedGrid.getGridHeight() - 1;
-
-        // second, copy values which are not fill value (everything apart from first 2 and last 3)
-        float[] originalTiePoints = endFixedGrid.getTiePoints();
-        float[] tiePoints = new float[gridWidth * gridHeight];
-
-        for (int y = 0; y < gridHeight; y++) {
-            System.arraycopy(originalTiePoints, 2 + endFixedGrid.getGridWidth() * y, tiePoints, gridWidth * y, gridWidth);
-        }
-
-        final TiePointGrid targetGrid = new TiePointGrid(sourceGrid.getName(), gridWidth, gridHeight,
-                                                         sourceGrid.getOffsetX(), sourceGrid.getOffsetY(), sourceGrid.getSubSamplingX(), sourceGrid.getSubSamplingY(),
-                                                         tiePoints, true);
-        ProductUtils.copyRasterDataNodeProperties(sourceGrid, targetGrid);
-        return targetGrid;
-    }
-
-    private static TiePointGrid getFixedTiePointGrid(TiePointGrid grid, boolean isAngle) {
-        int firstFillIndex = -1;
-        int gridWidth = grid.getGridWidth();
-        float[] originalTiePoints = grid.getTiePoints();
-        for (int i = 0; i < originalTiePoints.length - 6; i++) {
-            if (isAngle) {
-                // check if 6 times fill value in a column: then cut at the end.
-                if (Math.abs(originalTiePoints[i] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 1] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 2] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 3] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 4] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 5] - ANGLE_FILL_VALUE) < 1E-2) {
-                    firstFillIndex = i;
-                    break;
-                }
-            } else {
-                if (originalTiePoints[i] == FILL_VALUE) {
-                    firstFillIndex = i;
-                    break;
-                }
-            }
-        }
-
-        if (firstFillIndex == -1) {
-            return grid;
-        } else {
-            int line = firstFillIndex / grid.getGridWidth();
-            int newHeight = line - 1;
-
-            float[] tiePoints = new float[gridWidth * newHeight];
-            System.arraycopy(originalTiePoints, 0, tiePoints, 0, tiePoints.length);
-            return new TiePointGrid(grid.getName(), gridWidth, newHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
-        }
-    }
+//    @Override
+//    protected void fixTiePointGrids(Product targetProduct) {
+//
+//        String[] ANGLE_NAMES = new String[]{
+//                "sat_azimuth_tn",
+//                "sat_path_tn", // todo - not an angle grid it is in meter
+//                "sat_zenith_tn",
+//                "solar_azimuth_tn",
+//                "solar_path_tn", // todo - not an angle grid it is in meter
+//                "solar_zenith_tn",
+//                "sat_azimuth_to",
+//                "sat_path_to", // todo - not an angle grid it is in meter
+//                "sat_zenith_to",
+//                "solar_azimuth_to",
+//                "solar_path_to", // todo - not an angle grid it is in meter
+//                "solar_zenith_to",
+//        };
+//
+//        for (TiePointGrid grid : targetProduct.getTiePointGrids()) {
+//            for (String angleName : ANGLE_NAMES) {
+//                if (grid.getName().equals(angleName)) {
+//                    TiePointGrid fixedGrid = getFixedAngleGrid(grid);
+//                    targetProduct.getTiePointGridGroup().remove(grid);
+//                    targetProduct.getTiePointGridGroup().add(fixedGrid);
+//                }
+//            }
+//        }
+//
+//        TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
+//        TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
+//
+//        TiePointGrid fixedLatGrid = getFixedTiePointGrid(latGrid, false);
+//        targetProduct.getTiePointGridGroup().remove(latGrid);
+//        targetProduct.getTiePointGridGroup().add(fixedLatGrid);
+//
+//        TiePointGrid fixedLonGrid = getFixedTiePointGrid(lonGrid, false);
+//        targetProduct.getTiePointGridGroup().remove(lonGrid);
+//        targetProduct.getTiePointGridGroup().add(fixedLonGrid);
+//    }
+//
+//    private TiePointGrid getFixedAngleGrid(TiePointGrid sourceGrid) {
+//        // first, remove filled pixels at the end
+//        final String gridName = sourceGrid.getName();
+//        final boolean containsAngles = !gridName.contains("path");
+//        TiePointGrid endFixedGrid = getFixedTiePointGrid(sourceGrid, containsAngles);
+//        int gridWidth = endFixedGrid.getGridWidth() - 5;
+//        int gridHeight = endFixedGrid.getGridHeight() - 1;
+//
+//        // second, copy values which are not fill value (everything apart from first 2 and last 3)
+//        float[] originalTiePoints = endFixedGrid.getTiePoints();
+//        float[] tiePoints = new float[gridWidth * gridHeight];
+//
+//        for (int y = 0; y < gridHeight; y++) {
+//            System.arraycopy(originalTiePoints, 2 + endFixedGrid.getGridWidth() * y, tiePoints, gridWidth * y, gridWidth);
+//        }
+//
+//        final TiePointGrid targetGrid = new TiePointGrid(gridName, gridWidth, gridHeight,
+//                                                         sourceGrid.getOffsetX(), sourceGrid.getOffsetY(), sourceGrid.getSubSamplingX(), sourceGrid.getSubSamplingY(),
+//                                                         tiePoints, containsAngles);
+//        ProductUtils.copyRasterDataNodeProperties(sourceGrid, targetGrid);
+//        return targetGrid;
+//    }
+//
+//    private static TiePointGrid getFixedTiePointGrid(TiePointGrid grid, boolean isAngle) {
+//        int firstFillIndex = -1;
+//        int gridWidth = grid.getGridWidth();
+//        float[] originalTiePoints = grid.getTiePoints();
+//        for (int i = 0; i < originalTiePoints.length - 6; i++) {
+//            if (isAngle) {
+//                // check if 6 times fill value in a column: then cut at the end.
+//                if (Math.abs(originalTiePoints[i] - ANGLE_FILL_VALUE) < 1E-2
+//                        && Math.abs(originalTiePoints[i + 1] - ANGLE_FILL_VALUE) < 1E-2
+//                        && Math.abs(originalTiePoints[i + 2] - ANGLE_FILL_VALUE) < 1E-2
+//                        && Math.abs(originalTiePoints[i + 3] - ANGLE_FILL_VALUE) < 1E-2
+//                        && Math.abs(originalTiePoints[i + 4] - ANGLE_FILL_VALUE) < 1E-2
+//                        && Math.abs(originalTiePoints[i + 5] - ANGLE_FILL_VALUE) < 1E-2) {
+//                    firstFillIndex = i;
+//                    break;
+//                }
+//            } else {
+//                if (originalTiePoints[i] == FILL_VALUE) {
+//                    firstFillIndex = i;
+//                    break;
+//                }
+//            }
+//        }
+//
+//        if (firstFillIndex == -1) {
+//            return grid;
+//        } else {
+//            int line = firstFillIndex / grid.getGridWidth();
+//            int newHeight = line - 1;
+//
+//            float[] tiePoints = new float[gridWidth * newHeight];
+//            System.arraycopy(originalTiePoints, 0, tiePoints, 0, tiePoints.length);
+//            return new TiePointGrid(grid.getName(), gridWidth, newHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
+//        }
+//    }
 
     protected short[] getResolutions(String gridIndex) {
         short[] resolutions;
