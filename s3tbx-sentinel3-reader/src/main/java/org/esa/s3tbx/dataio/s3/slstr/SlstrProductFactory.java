@@ -159,8 +159,8 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
                                       tiePointGridOffsets[0], tiePointGridOffsets[1]);
     }
 
-    private float[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
-                                           int subSamplingX, int subSamplingY) {
+    protected float[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
+                                             int subSamplingX, int subSamplingY) {
         float[] tiePointGridOffsets = new float[2];
         tiePointGridOffsets[0] = (float) (referenceTrackOffset - sourceTrackOffset * subSamplingX);
         tiePointGridOffsets[1] = (float) (sourceStartOffset * subSamplingY - referenceStartOffset);
