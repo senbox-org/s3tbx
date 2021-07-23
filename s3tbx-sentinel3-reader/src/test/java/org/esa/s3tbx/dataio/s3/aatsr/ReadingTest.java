@@ -19,11 +19,15 @@
 package org.esa.s3tbx.dataio.s3.aatsr;
 
 import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
 import org.junit.Assume;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * @author Marco Peters
@@ -38,7 +42,15 @@ public class ReadingTest {
         final File p1File = new File(P1);
         Assume.assumeTrue(p1File.exists());
 
-        ProductIO.readProduct(p1File);
+        final Product product = ProductIO.readProduct(p1File);
+
+        final GeoPos geoPos = product.getSceneGeoCoding().getGeoPos(new PixelPos(316.5, 14379.5), null);
+        // Expected
+        // 58°59'12.60"N
+        // 27°43'57.29"E
+        // --> 58.98683 N, 27.73258 E
+
+        System.out.printf(Locale.ENGLISH, "lat: %f lon: %f", geoPos.getLat(), geoPos.getLon());
 
     }
 }

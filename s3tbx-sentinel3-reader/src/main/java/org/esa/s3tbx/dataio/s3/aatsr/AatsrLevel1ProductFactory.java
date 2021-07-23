@@ -113,23 +113,26 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
         final String tpgName = sourceBand.getName();
         putTiePointSourceImage(tpgName, sourceImage);
-        final int rasterWidth = sourceBand.getRasterWidth();
+        // offset computation is done according to page 9-11 of (A)ATSR Expert Support Laboratory FAST Level 1b Product Definition (Ref: PO-TN-RAL-AT-0568 Issue: 1.4)
+        // https://earth.esa.int/documents/700255/2482719/PO-TN-RAL-AT-0568+-+FAST+Level+1b+Product+Definition+Issue+1.4/ecb0344b-32c4-4172-b7a7-e32bddf40309
         final int subSamplingXY = 16;
-        final int tpSceneWith = (rasterWidth - 1) * subSamplingXY;
-        final int sceneRasterWidth = targetProduct.getSceneRasterWidth();
-        final int diffX = tpSceneWith - sceneRasterWidth;
-        final double offsetX = diffX / 2.0;
-        final String unit = sourceBand.getUnit();
-
+        final float[] tiePointGridOffsets = getTiePointGridOffsets(sourceStartOffset, sourceTrackOffset, subSamplingXY, subSamplingXY);
         final TiePointGrid tiePointGrid = new TiePointGrid(tpgName, sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
-                                                           -offsetX, 0, subSamplingXY, subSamplingXY);
+                                                           tiePointGridOffsets[0] + 0.5, tiePointGridOffsets[1] + 0.5, subSamplingXY, subSamplingXY);
+
+        final String unit = sourceBand.getUnit();
+        tiePointGrid.setUnit(unit);
         if (unit != null && unit.toLowerCase().contains("degree")) {
             tiePointGrid.setDiscontinuity(TiePointGrid.DISCONT_AUTO);
         }
         tiePointGrid.setDescription(sourceBand.getDescription());
-        tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
-        tiePointGrid.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
-        tiePointGrid.setUnit(unit);
+        if (("latitude_tx".equals(tpgName) || "longitude_tx".equals(tpgName)) && !sourceBand.isNoDataValueUsed()) {
+            tiePointGrid.setGeophysicalNoDataValue(-9.99999999E8);
+            tiePointGrid.setNoDataValueUsed(true);
+        } else {
+            tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
+            tiePointGrid.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
+        }
         targetProduct.addTiePointGrid(tiePointGrid);
         return tiePointGrid;
     }
