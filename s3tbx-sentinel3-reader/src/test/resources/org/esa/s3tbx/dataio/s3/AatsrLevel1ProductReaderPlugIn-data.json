@@ -1,0 +1,14 @@
+{
+  "testProducts": [
+    {
+      "id": "ENV_AT_1_RBT____20020810T083508",
+      "relativePath": "sensors_platforms/AATSR/4th_repro/ENV_AT_1_RBT____20020810T083508_20020810T102042_20210303T040313_6334_008_264______DSI_R_NT_004.SEN3",
+      "description": "ENV_AT_1_RBT 4th repro"
+    },
+    {
+      "id": "ENV_AT_1_RBT____20021129T235200",
+      "relativePath": "sensors_platforms/AATSR/4th_repro/ENV_AT_1_RBT____20021129T235200_20021130T013735_20210315T024827_6334_011_359______DSI_R_NT_004.SEN3",
+      "description": "ENV_AT_1_RBT 4th repro"
+    }
+  ]
+}
