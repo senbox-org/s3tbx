@@ -70,7 +70,7 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="4th-->3rd"/>
-                <attr name="operatorName" stringvalue="Meris.Reprocessing.Adapter.4To3"/>
+                <attr name="operatorName" stringvalue="Meris.Adapt.4To3"/>
                 <attr name="dialogTitle" stringvalue="MERIS 4th-->3rd Reprocessing Adaptation"/>
                 <attr name="targetProductNameSuffix" stringvalue="_3RP"/>
                 <attr name="helpId" stringvalue="meris4thTo3rdReprocessingAdaptationTool"/>
