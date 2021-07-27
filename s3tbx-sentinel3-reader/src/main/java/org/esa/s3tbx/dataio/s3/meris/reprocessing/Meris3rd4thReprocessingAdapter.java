@@ -3,6 +3,9 @@ package org.esa.s3tbx.dataio.s3.meris.reprocessing;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.ReprocessingAdapter;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.core.util.ProductUtils;
@@ -39,7 +42,8 @@ public class Meris3rd4thReprocessingAdapter implements ReprocessingAdapter {
                 inputProduct.getSceneRasterWidth(),
                 inputProduct.getSceneRasterHeight());
 
-        ProductUtils.copyGeoCoding(inputProduct, thirdReproProduct);
+        set3rdReprocessingGeoCoding(inputProduct, thirdReproProduct);
+
         adaptProductInformationToThirdRepro(inputProduct, thirdReproProduct);
 
         // adapt band names:
@@ -122,6 +126,121 @@ public class Meris3rd4thReprocessingAdapter implements ReprocessingAdapter {
         return (float) mean[0];
     }
 
+    private static boolean isMerisRR(Product inputProduct) {
+        return inputProduct.getProductType().startsWith("ME_1_R");
+    }
+
+    private static void copyGeneralBandProperties(Band sourceBand, Band targetBand) {
+        targetBand.setUnit(sourceBand.getUnit());
+    }
+
+    private static void copySpectralBandProperties(Band sourceBand, Band targetBand) {
+        targetBand.setDescription("TOA radiance band " + sourceBand.getSpectralBandIndex());
+        targetBand.setSpectralBandIndex(sourceBand.getSpectralBandIndex());
+        targetBand.setSpectralWavelength(sourceBand.getSpectralWavelength());
+        targetBand.setSpectralBandwidth(sourceBand.getSpectralBandwidth());
+        targetBand.setNoDataValueUsed(false);
+        targetBand.setNoDataValue(0.0);
+    }
+
+    private static Band createL1bFlagBand(Product thirdReproProduct) {
+
+        Band l1FlagBand = new Band("l1_flags", ProductData.TYPE_INT32,
+                thirdReproProduct.getSceneRasterWidth(), thirdReproProduct.getSceneRasterHeight());
+        l1FlagBand.setDescription("Level 1b classification and quality flags");
+
+        FlagCoding l1FlagCoding = new FlagCoding("l1_flags");
+        l1FlagCoding.addFlag("COSMETIC", BitSetter.setFlag(0, 0), "Pixel is cosmetic");
+        l1FlagCoding.addFlag("DUPLICATED", BitSetter.setFlag(0, 1), "Pixel has been duplicated (filled in)");
+        l1FlagCoding.addFlag("GLINT_RISK", BitSetter.setFlag(0, 2), "Pixel has glint risk");
+        l1FlagCoding.addFlag("SUSPECT", BitSetter.setFlag(0, 3), "Pixel is suspect");
+        l1FlagCoding.addFlag("LAND_OCEAN", BitSetter.setFlag(0, 4), "Pixel is over land, not ocean");
+        l1FlagCoding.addFlag("BRIGHT", BitSetter.setFlag(0, 5), "Pixel is bright");
+        l1FlagCoding.addFlag("COASTLINE", BitSetter.setFlag(0, 6), "Pixel is part of a coastline");
+        l1FlagCoding.addFlag("INVALID", BitSetter.setFlag(0, 7), "Pixel is invalid");
+
+        l1FlagBand.setSampleCoding(l1FlagCoding);
+        thirdReproProduct.getFlagCodingGroup().add(l1FlagCoding);
+
+        return l1FlagBand;
+    }
+
+    private static void setupL1FlagsBitmask(Product thirdReproProduct) {
+
+        int index = 0;
+        int w = thirdReproProduct.getSceneRasterWidth();
+        int h = thirdReproProduct.getSceneRasterHeight();
+        Mask mask;
+
+        mask = Mask.BandMathsType.create("cosmetic", "Pixel is cosmetic", w, h,
+                "l1_flags.COSMETIC", new Color(204, 153, 255), 0.5f);
+        thirdReproProduct.getMaskGroup().add(index++, mask);
+
+        mask = Mask.BandMathsType.create("duplicated", "Pixel has been duplicated (filled in)", w, h,
+                "l1_flags.DUPLICATED", new Color(255, 200, 0), 0.5f);
+        thirdReproProduct.getMaskGroup().add(index++, mask);
+
+        mask = Mask.BandMathsType.create("glint_risk", "Pixel has glint risk", w, h,
+                "l1_flags.GLINT_RISK", new Color(255, 0, 255), 0.5f);
+        thirdReproProduct.getMaskGroup().add(index++, mask);
+
+        mask = Mask.BandMathsType.create("suspect", "Pixel is suspect", w, h,
+                "l1_flags.SUSPECT", new Color(204, 102, 255), 0.5f);
+        thirdReproProduct.getMaskGroup().add(index++, mask);
+
+        mask = Mask.BandMathsType.create("land", "Pixel is over land, not ocean", w, h,
+                "l1_flags.LAND_OCEAN", new Color(51, 153, 0), 0.5f);
+        thirdReproProduct.getMaskGroup().add(index++, mask);
+
+        mask = Mask.BandMathsType.create("water", "Pixel is over ocean, not land", w, h,
+                "not l1_flags.LAND_OCEAN", new Color(153, 153, 255), 0.5f);
+        thirdReproProduct.getMaskGroup().add(index++, mask);
+
+        mask = Mask.BandMathsType.create("bright", "Pixel is bright", w, h,
+                "l1_flags.BRIGHT", new Color(255, 255, 0), 0.5f);
+        thirdReproProduct.getMaskGroup().add(index++, mask);
+
+        mask = Mask.BandMathsType.create("coastline", "Pixel is part of a coastline", w, h,
+                "l1_flags.COASTLINE", Color.GREEN, 0.5f);
+        thirdReproProduct.getMaskGroup().add(index++, mask);
+
+        mask = Mask.BandMathsType.create("invalid", "Pixel is invaid", w, h,
+                "l1_flags.INVALID", Color.RED, 0.5f);
+        thirdReproProduct.getMaskGroup().add(index, mask);
+    }
+
+    private static void set3rdReprocessingGeoCoding(Product inputProduct, Product thirdReproProduct) {
+        final TiePointGrid latTPG = inputProduct.getTiePointGrid("TP_latitude");
+        final float[] latTiePoints = latTPG.getTiePoints();
+        final double[] latTiePointsD = new double[latTiePoints.length];
+        for (int i = 0; i < latTiePoints.length; i++) {
+            latTiePointsD[i] = latTiePoints[i];
+        }
+        final TiePointGrid lonTPG = inputProduct.getTiePointGrid("TP_longitude");
+        final float[] lonTiePoints = lonTPG.getTiePoints();
+        final double[] lonTiePointsD = new double[lonTiePoints.length];
+        for (int i = 0; i < lonTiePoints.length; i++) {
+            lonTiePointsD[i] = lonTiePoints[i];
+        }
+
+        GeoRaster geoRaster;
+        if (isMerisRR(inputProduct)) {
+            geoRaster = new GeoRaster(lonTiePointsD, latTiePointsD, "longitude", "latitude",
+                    lonTPG.getRasterWidth(), latTPG.getRasterHeight(),
+                    thirdReproProduct.getSceneRasterWidth(), thirdReproProduct.getSceneRasterHeight(),
+                    1.2, 0.5, 0.5, 16.0, 16.0);
+        } else {
+            geoRaster = new GeoRaster(lonTiePointsD, latTiePointsD, "longitude", "latitude",
+                    lonTPG.getRasterWidth(), latTPG.getRasterHeight(),
+                    thirdReproProduct.getSceneRasterWidth(), thirdReproProduct.getSceneRasterHeight(),
+                    0.3, 0.5, 0.5, 64.0, 64.0);
+        }
+
+        thirdReproProduct.setSceneGeoCoding(new ComponentGeoCoding(geoRaster,
+                ComponentFactory.getForward("FWD_TIE_POINT_BILINEAR"),
+                ComponentFactory.getInverse("INV_TIE_POINT")));
+    }
+
     private void adaptProductInformationToThirdRepro(Product inputProduct, Product thirdReproProduct) {
         // we often need the start/stop times for downstream processors...
         thirdReproProduct.setStartTime(inputProduct.getStartTime());
@@ -135,10 +254,6 @@ public class Meris3rd4thReprocessingAdapter implements ReprocessingAdapter {
         } else if (isMerisFR(inputProduct)) {
             thirdReproProduct.setProductType("MER_FRG_1P");
         }
-    }
-
-    private boolean isMerisRR(Product inputProduct) {
-        return inputProduct.getProductType().startsWith("ME_1_R");
     }
 
     private boolean isMerisFR(Product inputProduct) {
@@ -330,41 +445,6 @@ public class Meris3rd4thReprocessingAdapter implements ReprocessingAdapter {
         }
     }
 
-    private static void copyGeneralBandProperties(Band sourceBand, Band targetBand) {
-        targetBand.setUnit(sourceBand.getUnit());
-    }
-
-    private static void copySpectralBandProperties(Band sourceBand, Band targetBand) {
-        targetBand.setDescription("TOA radiance band " + sourceBand.getSpectralBandIndex());
-        targetBand.setSpectralBandIndex(sourceBand.getSpectralBandIndex());
-        targetBand.setSpectralWavelength(sourceBand.getSpectralWavelength());
-        targetBand.setSpectralBandwidth(sourceBand.getSpectralBandwidth());
-        targetBand.setNoDataValueUsed(false);
-        targetBand.setNoDataValue(0.0);
-    }
-
-    private static Band createL1bFlagBand(Product thirdReproProduct) {
-
-        Band l1FlagBand = new Band("l1_flags", ProductData.TYPE_INT32,
-                thirdReproProduct.getSceneRasterWidth(), thirdReproProduct.getSceneRasterHeight());
-        l1FlagBand.setDescription("Level 1b classification and quality flags");
-
-        FlagCoding l1FlagCoding = new FlagCoding("l1_flags");
-        l1FlagCoding.addFlag("COSMETIC", BitSetter.setFlag(0, 0), "Pixel is cosmetic");
-        l1FlagCoding.addFlag("DUPLICATED", BitSetter.setFlag(0, 1), "Pixel has been duplicated (filled in)");
-        l1FlagCoding.addFlag("GLINT_RISK", BitSetter.setFlag(0, 2), "Pixel has glint risk");
-        l1FlagCoding.addFlag("SUSPECT", BitSetter.setFlag(0, 3), "Pixel is suspect");
-        l1FlagCoding.addFlag("LAND_OCEAN", BitSetter.setFlag(0, 4), "Pixel is over land, not ocean");
-        l1FlagCoding.addFlag("BRIGHT", BitSetter.setFlag(0, 5), "Pixel is bright");
-        l1FlagCoding.addFlag("COASTLINE", BitSetter.setFlag(0, 6), "Pixel is part of a coastline");
-        l1FlagCoding.addFlag("INVALID", BitSetter.setFlag(0, 7), "Pixel is invalid");
-
-        l1FlagBand.setSampleCoding(l1FlagCoding);
-        thirdReproProduct.getFlagCodingGroup().add(l1FlagCoding);
-
-        return l1FlagBand;
-    }
-
     private void setupQualityToL1FlagMap() {
         // quality_flags --> l1_flags
         // ##  cosmetic (2^24) --> COSMETIC (1)
@@ -383,50 +463,6 @@ public class Meris3rd4thReprocessingAdapter implements ReprocessingAdapter {
         qualityToL1FlagMap.put(27, 32);
         qualityToL1FlagMap.put(30, 64);
         qualityToL1FlagMap.put(25, 128);
-    }
-
-    private static void setupL1FlagsBitmask(Product thirdReproProduct) {
-
-        int index = 0;
-        int w = thirdReproProduct.getSceneRasterWidth();
-        int h = thirdReproProduct.getSceneRasterHeight();
-        Mask mask;
-
-        mask = Mask.BandMathsType.create("cosmetic", "Pixel is cosmetic", w, h,
-                "l1_flags.COSMETIC", new Color(204, 153, 255), 0.5f);
-        thirdReproProduct.getMaskGroup().add(index++, mask);
-
-        mask = Mask.BandMathsType.create("duplicated", "Pixel has been duplicated (filled in)", w, h,
-                "l1_flags.DUPLICATED", new Color(255, 200, 0), 0.5f);
-        thirdReproProduct.getMaskGroup().add(index++, mask);
-
-        mask = Mask.BandMathsType.create("glint_risk", "Pixel has glint risk", w, h,
-                "l1_flags.GLINT_RISK", new Color(255, 0, 255), 0.5f);
-        thirdReproProduct.getMaskGroup().add(index++, mask);
-
-        mask = Mask.BandMathsType.create("suspect", "Pixel is suspect", w, h,
-                "l1_flags.SUSPECT", new Color(204, 102, 255), 0.5f);
-        thirdReproProduct.getMaskGroup().add(index++, mask);
-
-        mask = Mask.BandMathsType.create("land", "Pixel is over land, not ocean", w, h,
-                "l1_flags.LAND_OCEAN", new Color(51, 153, 0), 0.5f);
-        thirdReproProduct.getMaskGroup().add(index++, mask);
-
-        mask = Mask.BandMathsType.create("water", "Pixel is over ocean, not land", w, h,
-                "not l1_flags.LAND_OCEAN", new Color(153, 153, 255), 0.5f);
-        thirdReproProduct.getMaskGroup().add(index++, mask);
-
-        mask = Mask.BandMathsType.create("bright", "Pixel is bright", w, h,
-                "l1_flags.BRIGHT", new Color(255, 255, 0), 0.5f);
-        thirdReproProduct.getMaskGroup().add(index++, mask);
-
-        mask = Mask.BandMathsType.create("coastline", "Pixel is part of a coastline", w, h,
-                "l1_flags.COASTLINE", Color.GREEN, 0.5f);
-        thirdReproProduct.getMaskGroup().add(index++, mask);
-
-        mask = Mask.BandMathsType.create("invalid", "Pixel is invaid", w, h,
-                "l1_flags.INVALID", Color.RED, 0.5f);
-        thirdReproProduct.getMaskGroup().add(index, mask);
     }
 
 }
