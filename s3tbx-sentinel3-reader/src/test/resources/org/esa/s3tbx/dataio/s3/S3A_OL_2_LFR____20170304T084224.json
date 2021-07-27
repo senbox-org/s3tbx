@@ -1,5 +1,5 @@
 {
-  "id": "S3A_OL_2_LFR____20170304T084224",
+  "id": "S3A_OL_2_LFR____20170304T084224_20170304T084524_20170305T142632_0179_015_078_4139_LN1_O_NT_002_SEN3",
   "decodeQualification": "INTENDED",
   "expectedContent": {
     "sceneWidth": 4865,
@@ -11,17 +11,17 @@
         {
           "x": 2098.0,
           "y": 2199.0,
-          "lat": -68.19845814113572,
-          "lon": -14.478618555701813
+          "lat": -68.19952099999999,
+          "lon": -14.480284999999999
         },
         {
           "x": 3612.0,
           "y": 2654.0,
-          "lat": -71.16485124066736,
-          "lon": -7.374686491017621
+          "lat": -71.163389,
+          "lon": -7.377026
         }
       ],
-      "reverseAccuracy": 0.062
+      "reverseAccuracy": 0.5
     },
     "flagCodings": [
       {
@@ -2901,6 +2901,30 @@
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "0,0,63",
         "description": "OTCI_quality_flags.TCI_flag"
+      },
+      {
+        "name": "LQSF_GENERAL_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,0",
+        "description": "Excluding pixels that are deemed unreliable. Flag recommended by QWG."
+      },
+      {
+        "name": "LQSF_OTCI_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,63",
+        "description": "Excluding pixels that are deemed unreliable for OTCI. Flag recommended by QWG."
+      },
+      {
+        "name": "LQSF_OGVI_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,127",
+        "description": "Excluding pixels that are deemed unreliable for OGVI. Flag recommended by QWG."
+      },
+      {
+        "name": "LQSF_IWV_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,63,191",
+        "description": "Excluding pixels that are deemed unreliable for IWV. Flag recommended by QWG."
       }
     ],
     "metadata": [
@@ -2935,6 +2959,10 @@
       {
         "path": "frame_offset/long_name",
         "value": "Re-sampling along-track frame offset "
+      },
+      {
+        "path": "reference_pressure_level/_ChunkSizes",
+        "value": "25"
       },
       {
         "path": "Manifest/metadataSection/olciProductInformation/classificationSummary/landPixels/percentage",

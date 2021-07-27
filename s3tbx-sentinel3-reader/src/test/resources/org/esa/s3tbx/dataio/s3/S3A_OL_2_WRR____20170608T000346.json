@@ -1,5 +1,5 @@
 {
-  "id": "S3A_OL_2_WRR____20170608T000346",
+  "id": "S3A_OL_2_WRR____20170608T000346_20170608T000546_20171031T064505_0119_018_287______MR1_R_NT_002_SEN3",
   "decodeQualification": "INTENDED",
   "expectedContent": {
     "sceneWidth": 1217,
@@ -9,18 +9,19 @@
     "geoCoding": {
       "coordinates": [
         {
-          "x": 523.9353450562351,
+          "x": 524.0,
           "y": 366.0,
-          "lat": 20.09221291702983,
-          "lon": 148.00796325273666
+          "lat": 20.09106,
+          "lon": 148.00840599999998
         },
         {
           "x": 903.0,
           "y": 442.0,
-          "lat": 18.521099933591763,
-          "lon": 151.63594633630106
+          "lat": 18.521236,
+          "lon": 151.63609499999998
         }
-      ]
+      ],
+      "reverseAccuracy": 0.5
     },
     "flagCodings": [
       {
@@ -4008,6 +4009,60 @@
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "63,63,127",
         "description": "WQSF_msb.RWNEG_O21"
+      },
+      {
+        "name": "WQSF_REFLECTANCE_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,191",
+        "description": "Excluding pixels that are deemed unreliable for Water Leaving Reflectances. Flag recommended by QWG."
+      },
+      {
+        "name": "WQSF_CHL_OC4ME_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,63,255",
+        "description": "Excluding pixels that are deemed unreliable for Algal Pigment Concentration. Flag recommended by QWG."
+      },
+      {
+        "name": "WQSF_KD490_M07_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,0",
+        "description": "Excluding pixels that are deemed unreliable for Diffuse Attenuation Coefficient. Flag recommended by QWG."
+      },
+      {
+        "name": "WQSF_PAR_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,63",
+        "description": "Excluding pixels that are deemed unreliable for Photosynthetically Active Radiation. Flag recommended by QWG."
+      },
+      {
+        "name": "WQSF_W_AER_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,127",
+        "description": "Excluding pixels that are deemed unreliable for Aerosol Optical Thickness (T865) and Angstrom exponent (A865). Flag recommended by QWG."
+      },
+      {
+        "name": "WQSF_CHL_NN_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,191",
+        "description": "Excluding pixels that are deemed unreliable for Algal Pigment Concentration. Flag recommended by QWG"
+      },
+      {
+        "name": "WQSF_TSM_NN_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,127,255",
+        "description": "Excluding pixels that are deemed unreliable for Total Suspended Matter Concentration. Flag recommended by QWG"
+      },
+      {
+        "name": "WQSF_ADG443_NN_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,191,0",
+        "description": "Excluding pixels that are deemed unreliable for Coloured Detrital and Dissolved Material Absorption. Flag recommended by QWG"
+      },
+      {
+        "name": "WQSF_IWV_RECOM",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "63,191,63",
+        "description": "Excluding pixels that are deemed unreliable for Integrated Water Vapour Column. Flag recommended by QWG"
       }
     ],
     "metadata": [
