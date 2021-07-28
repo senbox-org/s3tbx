@@ -5,14 +5,6 @@ import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.util.MetTxReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
-import org.esa.snap.core.dataio.geocoding.ComponentFactory;
-import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
-import org.esa.snap.core.dataio.geocoding.ForwardCoding;
-import org.esa.snap.core.dataio.geocoding.GeoChecks;
-import org.esa.snap.core.dataio.geocoding.GeoRaster;
-import org.esa.snap.core.dataio.geocoding.InverseCoding;
-import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
-import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
@@ -93,19 +85,19 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
         targetProduct.setAutoGrouping("radiance_uncert_in:BT_uncert_in:" +
-                "radiance_in:BT_in:" +
-                "radiance_uncert_io:BT_uncert_io:" +
-                "radiance_io:BT_io:" +
-                "exception_in:exception_io:" +
-                "x_i:y_i:" +
-                "elevation_i:latitude_i:longitude_i:" +
-                "specific_humidity:temperature_profile:" +
-                "cloud_in_:cloud_io_:" +
-                "bayes_in_:bayes_io_:" +
-                "bayes_in_:bayes_io_:" +
-                "pointing_in_:pointing_io_:" +
-                "confidence_in_:confidence_io_:" +
-                bandGrouping);
+                                              "radiance_in:BT_in:" +
+                                              "radiance_uncert_io:BT_uncert_io:" +
+                                              "radiance_io:BT_io:" +
+                                              "exception_in:exception_io:" +
+                                              "x_i:y_i:" +
+                                              "elevation_i:latitude_i:longitude_i:" +
+                                              "specific_humidity:temperature_profile:" +
+                                              "cloud_in_:cloud_io_:" +
+                                              "bayes_in_:bayes_io_:" +
+                                              "bayes_in_:bayes_io_:" +
+                                              "pointing_in_:pointing_io_:" +
+                                              "confidence_in_:confidence_io_:" +
+                                              bandGrouping);
     }
 
     @Override
@@ -139,6 +131,9 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     @Override
     protected void setGeoCoding(Product targetProduct) {
+// Not setting GeoCoding. We can't get a good geolocation with the tie-points and the geo-location bands are not usable
+// because they contain fill_values.
+/*
         final String lonVariableName = "longitude_tx";
         final String latVariableName = "latitude_tx";
         final TiePointGrid lonGrid = targetProduct.getTiePointGrid(lonVariableName);
@@ -162,6 +157,7 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         sceneGeoCoding.initialize();
 
         targetProduct.setSceneGeoCoding(sceneGeoCoding);
+*/
     }
 
     @Override
