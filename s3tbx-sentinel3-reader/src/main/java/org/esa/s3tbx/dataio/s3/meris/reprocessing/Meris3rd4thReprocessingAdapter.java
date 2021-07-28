@@ -3,9 +3,10 @@ package org.esa.s3tbx.dataio.s3.meris.reprocessing;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.ReprocessingAdapter;
-import org.esa.snap.core.dataio.geocoding.ComponentFactory;
-import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
-import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.*;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
+import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.core.util.ProductUtils;
@@ -211,34 +212,23 @@ public class Meris3rd4thReprocessingAdapter implements ReprocessingAdapter {
 
     private static void set3rdReprocessingGeoCoding(Product inputProduct, Product thirdReproProduct) {
         final TiePointGrid latTPG = inputProduct.getTiePointGrid("TP_latitude");
-        final float[] latTiePoints = latTPG.getTiePoints();
-        final double[] latTiePointsD = new double[latTiePoints.length];
-        for (int i = 0; i < latTiePoints.length; i++) {
-            latTiePointsD[i] = latTiePoints[i];
-        }
+        final double[] latTiePointsD = RasterUtils.toDouble(latTPG.getTiePoints());
         final TiePointGrid lonTPG = inputProduct.getTiePointGrid("TP_longitude");
-        final float[] lonTiePoints = lonTPG.getTiePoints();
-        final double[] lonTiePointsD = new double[lonTiePoints.length];
-        for (int i = 0; i < lonTiePoints.length; i++) {
-            lonTiePointsD[i] = lonTiePoints[i];
-        }
+        final double[] lonTiePointsD = RasterUtils.toDouble(lonTPG.getTiePoints());
 
-        GeoRaster geoRaster;
-        if (isMerisRR(inputProduct)) {
-            geoRaster = new GeoRaster(lonTiePointsD, latTiePointsD, "longitude", "latitude",
-                    lonTPG.getRasterWidth(), latTPG.getRasterHeight(),
-                    thirdReproProduct.getSceneRasterWidth(), thirdReproProduct.getSceneRasterHeight(),
-                    1.2, 0.5, 0.5, 16.0, 16.0);
-        } else {
-            geoRaster = new GeoRaster(lonTiePointsD, latTiePointsD, "longitude", "latitude",
-                    lonTPG.getRasterWidth(), latTPG.getRasterHeight(),
-                    thirdReproProduct.getSceneRasterWidth(), thirdReproProduct.getSceneRasterHeight(),
-                    0.3, 0.5, 0.5, 64.0, 64.0);
-        }
+        final double rasterResolutionInKm = isMerisRR(inputProduct) ? 1.2 : 0.3;
+        final double subsamplingXY = isMerisRR(inputProduct) ? 16.0 : 64.0;
+        GeoRaster geoRaster = new GeoRaster(lonTiePointsD, latTiePointsD, "longitude", "latitude",
+                lonTPG.getGridWidth(), lonTPG.getGridHeight(),
+                thirdReproProduct.getSceneRasterWidth(), thirdReproProduct.getSceneRasterHeight(),
+                rasterResolutionInKm, 0.5, 0.5, subsamplingXY, subsamplingXY);
 
-        thirdReproProduct.setSceneGeoCoding(new ComponentGeoCoding(geoRaster,
-                ComponentFactory.getForward("FWD_TIE_POINT_BILINEAR"),
-                ComponentFactory.getInverse("INV_TIE_POINT")));
+        final ForwardCoding forward = ComponentFactory.getForward(TiePointBilinearForward.KEY);
+        final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
+        ComponentGeoCoding sceneGeoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        sceneGeoCoding.initialize();
+
+        thirdReproProduct.setSceneGeoCoding(sceneGeoCoding);
     }
 
     private void adaptProductInformationToThirdRepro(Product inputProduct, Product thirdReproProduct) {
