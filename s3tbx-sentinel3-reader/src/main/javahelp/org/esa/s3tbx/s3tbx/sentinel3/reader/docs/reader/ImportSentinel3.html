@@ -71,17 +71,41 @@
     </dd>
 </dl>
 
+<p> Also Envisat data is provided in Sentinel-3 like format (4th reprocessing)</p>
+<dl>
+    <dt><b>MERIS</b></dt>
+    <dd>The <b>ME</b>dium <b>R</b>esolution <b>I</b>maging <b>S</b>pectrometer (MERIS) was a programmable spectrometer
+        on the Envisat mission, operating in the solar reflective spectral range. Although primarily dedicated to
+        ocean colour observations, MERIS broadened its scope of objectives to atmospheric and land surface
+        related studies. The OLCI sensor can considered as the successor of MERIS.
+    </dd>
+    <dt><b>AATSR</b></dt>
+    <dd>The <b>A</b>dvanced <b>A</b>long-<b>T</b>rack <b>S</b>canning <b>R</b>adiometer (AATSR) was one of nine
+        instruments on board the Envisat satellite. It was the third in a series of instruments designed primarily
+        to measure Sea Surface Temperature (SST) remotely, following on from ATSR-1 and ATSR-2 on board ERS-1 and ERS-2,
+        respectively. All those are the ancestors of the SLSTR sensor onb board of Sentinel-3.
+        <p class="inote">
+            <b>IMPORTANT Note:</b><br>
+            Currently (S3TBX v9.0) the AATSR data in Sentinel-3 like format do not provide geo-location information in
+            SNAP. Applying the provided data (v2.0.5 of 4th reprocessing) does not give good results. Therefore, it is
+            better to provide the data without geo-location information.
+        </p>
+    </dd>
+</dl>
+
 <h2>Import Data</h2>
 <p>The data is usually distributed in a zip archive. This needs to be extracted first. Afterwards the data can be
     imported via the respective entry in the application menu at '<code>File / Import / Optical Sensors /
         Sentinel-3</code>'.
     For SLSTR tow special options exist. Sentinel-3 SLSTR L1B (1km) and Sentinel-3 SLSTR L1B (500m).
-    The 500m option will only open the bands which are provided at this resolution. The 1km options will resample all
+    The 500m option will only open the bands which are provided at this resolution. The 1km options will resample
+    all
     data to the resolution.
     When using the generic option, then the bands will be imported unmodified at their native resolution.<br>
     To import the data the <code>xfdumanifest.xml</code> needs to be selected in the import dialog.
 </p>
-<p> Of course it is also possible to simply use the open dialog from the menu '<code>File / Open Product...</code>' or
+<p> Of course it is also possible to simply use the open dialog from the menu '<code>File / Open Product...</code>'
+    or
     the toolbar. Here by default the generic reader is used. <br><br>
 </p>
 <p> Another option to open Sentinel-3 data is to drag'n'drop the <code>*.SEN3</code> folder or the
@@ -91,7 +115,8 @@
 <h2>Recommended Flags</h2>
 <p>SNAP generates for OLCI Level-2 data a set of recommended flags. Those flags are defined by an group of experts,
     named the Sentinel-33 Quality Working Group (S3-QWG). This group observes the data and suggests means to
-    ESA/Eumetsat to maintain high quality. It is suggested to consider these flags when working with Sentinel-3 Level-2
+    ESA/Eumetsat to maintain high quality. It is suggested to consider these flags when working with Sentinel-3
+    Level-2
     data.<br>
     Detailed information: <a href="S3RecomFlags.html">Sentinel-3 Recommended Flags</a></p>
 
@@ -102,7 +127,8 @@
 <dl>
     <dt><b>ESA/Copernicus Open Access hub</b></dt>
     <dd>
-        The ESA/Copernicus service provides Sentinel-3 data at Level-1 and Level-2 land data. Also Level-2 synergy data
+        The ESA/Copernicus service provides Sentinel-3 data at Level-1 and Level-2 land data. Also Level-2 synergy
+        data
         is provided.
         Besides Sentinel-3 data, Sentinel-1 and Sentinel-2 is provided too.<br>
         <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
@@ -123,7 +149,8 @@
     <dt><b>DIAS cloud environments</b></dt>
     <dd>
         The Copernicus Data and Information Access Service (DIAS) cloud environments provide processing resources,
-        tools and complimentary data sources at commercial conditions to further facilitate the access to Sentinel data.
+        tools and complimentary data sources at commercial conditions to further facilitate the access to Sentinel
+        data.
         <ul>
             <li>
                 <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
