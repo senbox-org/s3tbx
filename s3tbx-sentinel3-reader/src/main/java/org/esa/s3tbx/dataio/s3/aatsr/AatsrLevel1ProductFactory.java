@@ -1,19 +1,13 @@
 package org.esa.s3tbx.dataio.s3.aatsr;
 
+import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.util.MetTxReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
-import org.esa.snap.core.dataio.geocoding.ComponentFactory;
-import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
-import org.esa.snap.core.dataio.geocoding.ForwardCoding;
-import org.esa.snap.core.dataio.geocoding.GeoChecks;
-import org.esa.snap.core.dataio.geocoding.GeoRaster;
-import org.esa.snap.core.dataio.geocoding.InverseCoding;
-import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
-import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGrid;
 
 import java.io.File;
@@ -28,11 +22,8 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     private Product masterProduct;
 
-    private static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
-    private static final double FILL_VALUE = -1.0E9;
-
-    // todo ideas+ implement valid Expression
-//    private final static String validExpression = "!quality_flags.invalid";
+//    private static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
+//    private static final double FILL_VALUE = -1.0E9;
 
     public AatsrLevel1ProductFactory(AatsrLevel1ProductReader productReader) {
         super(productReader);
@@ -94,23 +85,56 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
         String bandGrouping = getAutoGroupingString(sourceProducts);
         targetProduct.setAutoGrouping("radiance_uncert_in:BT_uncert_in:" +
-                "radiance_in:BT_in:" +
-                "radiance_uncert_io:BT_uncert_io:" +
-                "radiance_io:BT_io:" +
-                "exception_in:exception_io:" +
-                "x_i:y_i:" +
-                "elevation_i:latitude_i:longitude_i:" +
-                "specific_humidity:temperature_profile:" +
-                "cloud_in_:cloud_io_:" +
-                "bayes_in_:bayes_io_:" +
-                "bayes_in_:bayes_io_:" +
-                "pointing_in_:pointing_io_:" +
-                "confidence_in_:confidence_io_:" +
-                bandGrouping);
+                                              "radiance_in:BT_in:" +
+                                              "radiance_uncert_io:BT_uncert_io:" +
+                                              "radiance_io:BT_io:" +
+                                              "exception_in:exception_io:" +
+                                              "x_i:y_i:" +
+                                              "elevation_i:latitude_i:longitude_i:" +
+                                              "specific_humidity:temperature_profile:" +
+                                              "cloud_in_:cloud_io_:" +
+                                              "bayes_in_:bayes_io_:" +
+                                              "bayes_in_:bayes_io_:" +
+                                              "pointing_in_:pointing_io_:" +
+                                              "confidence_in_:confidence_io_:" +
+                                              bandGrouping);
+    }
+
+    @Override
+    protected RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset, double sourceTrackOffset, short[] sourceResolutions) {
+        final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
+        final String tpgName = sourceBand.getName();
+        putTiePointSourceImage(tpgName, sourceImage);
+        // offset computation is done according to page 9-11 of (A)ATSR Expert Support Laboratory FAST Level 1b Product Definition (Ref: PO-TN-RAL-AT-0568 Issue: 1.4)
+        // https://earth.esa.int/documents/700255/2482719/PO-TN-RAL-AT-0568+-+FAST+Level+1b+Product+Definition+Issue+1.4/ecb0344b-32c4-4172-b7a7-e32bddf40309
+        final int subSamplingXY = 16;
+        final float[] tiePointGridOffsets = getTiePointGridOffsets(sourceStartOffset, sourceTrackOffset, subSamplingXY, subSamplingXY);
+        final TiePointGrid tiePointGrid = new TiePointGrid(tpgName, sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
+                                                           tiePointGridOffsets[0] + 0.5, tiePointGridOffsets[1] + 0.5, subSamplingXY, subSamplingXY);
+
+        final String unit = sourceBand.getUnit();
+        tiePointGrid.setUnit(unit);
+        if (unit != null && unit.toLowerCase().contains("degree")) {
+            tiePointGrid.setDiscontinuity(TiePointGrid.DISCONT_AUTO);
+        }
+        tiePointGrid.setDescription(sourceBand.getDescription());
+        if (("latitude_tx".equals(tpgName) || "longitude_tx".equals(tpgName)) && !sourceBand.isNoDataValueUsed()) {
+            tiePointGrid.setGeophysicalNoDataValue(-9.99999999E8);
+            tiePointGrid.setNoDataValueUsed(true);
+        } else {
+            tiePointGrid.setGeophysicalNoDataValue(sourceBand.getGeophysicalNoDataValue());
+            tiePointGrid.setNoDataValueUsed(sourceBand.isNoDataValueUsed());
+        }
+        targetProduct.addTiePointGrid(tiePointGrid);
+        return tiePointGrid;
     }
 
     @Override
     protected void setGeoCoding(Product targetProduct) {
+// TODO https://senbox.atlassian.net/browse/SIIITBX-394
+// Not setting GeoCoding. We can't get a good geolocation with the tie-points and the geo-location bands are not usable
+// because they contain fill_values.
+/*
         final String lonVariableName = "longitude_tx";
         final String latVariableName = "latitude_tx";
         final TiePointGrid lonGrid = targetProduct.getTiePointGrid(lonVariableName);
@@ -130,105 +154,22 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         final ForwardCoding forward = ComponentFactory.getForward(TiePointBilinearForward.KEY);
         final InverseCoding inverse = ComponentFactory.getInverse(TiePointInverse.KEY);
 
-        targetProduct.setSceneGeoCoding(new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN));
+        final ComponentGeoCoding sceneGeoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
+        sceneGeoCoding.initialize();
+
+        targetProduct.setSceneGeoCoding(sceneGeoCoding);
+*/
+    }
+
+    @Override
+    protected void setBandGeoCodings(Product product) throws IOException {
+        // empty implementation to prevent using pixel-based GeoCodings for AATSR.
+        // They are not usable due to no-data in the bands.
     }
 
     @Override
     protected void setTimeCoding(Product targetProduct) throws IOException {
         setTimeCoding(targetProduct, "time_in.nc", "time_stamp_i");
-    }
-
-    @Override
-    protected void fixTiePointGrids(Product targetProduct) {
-
-        String[] ANGLE_NAMES = new String[]{
-                "sat_azimuth_tn",
-                "sat_path_tn",
-                "sat_zenith_tn",
-                "solar_azimuth_tn",
-                "solar_path_tn",
-                "solar_zenith_tn",
-                "sat_azimuth_to",
-                "sat_path_to",
-                "sat_zenith_to",
-                "solar_azimuth_to",
-                "solar_path_to",
-                "solar_zenith_to",
-        };
-
-        for (TiePointGrid grid : targetProduct.getTiePointGrids()) {
-            for (String angleName : ANGLE_NAMES) {
-                if (grid.getName().equals(angleName)) {
-                    TiePointGrid fixedGrid = getFixedAngleGrid(grid);
-                    targetProduct.getTiePointGridGroup().remove(grid);
-                    targetProduct.getTiePointGridGroup().add(fixedGrid);
-                }
-            }
-        }
-
-        TiePointGrid latGrid = targetProduct.getTiePointGrid("latitude_tx");
-        TiePointGrid lonGrid = targetProduct.getTiePointGrid("longitude_tx");
-
-        TiePointGrid fixedLatGrid = getFixedTiePointGrid(latGrid, false);
-        targetProduct.getTiePointGridGroup().remove(latGrid);
-        targetProduct.getTiePointGridGroup().add(fixedLatGrid);
-
-        TiePointGrid fixedLonGrid = getFixedTiePointGrid(lonGrid, false);
-        targetProduct.getTiePointGridGroup().remove(lonGrid);
-        targetProduct.getTiePointGridGroup().add(fixedLonGrid);
-    }
-
-    private TiePointGrid getFixedAngleGrid(TiePointGrid grid) {
-        // first, remove filled pixels at the end
-        TiePointGrid endFixedGrid = getFixedTiePointGrid(grid, true);
-        int gridWidth = endFixedGrid.getGridWidth() - 5;
-        int gridHeight = endFixedGrid.getGridHeight() - 1;
-
-        // second, copy values which are not fill value (everything apart from first 2 and last 3)
-        float[] originalTiePoints = endFixedGrid.getTiePoints();
-        float[] tiePoints = new float[gridWidth * gridHeight];
-
-        for (int y = 0; y < gridHeight; y++) {
-            System.arraycopy(originalTiePoints, 2 + endFixedGrid.getGridWidth() * y, tiePoints, gridWidth * y, gridWidth);
-        }
-
-        return new TiePointGrid(grid.getName(), gridWidth, gridHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
-    }
-
-    private static TiePointGrid getFixedTiePointGrid(TiePointGrid grid, boolean isAngle) {
-        int firstFillIndex = -1;
-        int gridWidth = grid.getGridWidth();
-        float[] originalTiePoints = grid.getTiePoints();
-        for (int i = 0; i < originalTiePoints.length - 6; i++) {
-            if (isAngle) {
-                // check if 6 times fill value in a column: then cut at the end.
-                if (Math.abs(originalTiePoints[i] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 1] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 2] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 3] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 4] - ANGLE_FILL_VALUE) < 1E-2
-                        && Math.abs(originalTiePoints[i + 5] - ANGLE_FILL_VALUE) < 1E-2) {
-                    firstFillIndex = i;
-                    break;
-                }
-            } else {
-                if (originalTiePoints[i] == FILL_VALUE) {
-                    firstFillIndex = i;
-                    break;
-                }
-            }
-        }
-
-        if (firstFillIndex == -1) {
-            return grid;
-        } else {
-            int line = firstFillIndex / grid.getGridWidth();
-            int newHeight = line - 1;
-
-            float[] tiePoints = new float[gridWidth * newHeight];
-            System.arraycopy(originalTiePoints, 0, tiePoints, 0, tiePoints.length);
-            return new TiePointGrid(grid.getName(), gridWidth, newHeight, grid.getOffsetX(), grid.getOffsetY(), grid.getSubSamplingX(), grid.getSubSamplingY(), tiePoints, true);
-        }
     }
 
     protected short[] getResolutions(String gridIndex) {

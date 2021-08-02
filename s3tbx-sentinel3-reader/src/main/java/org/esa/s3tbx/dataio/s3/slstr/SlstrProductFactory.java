@@ -117,10 +117,11 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
     @Override
     protected boolean isNodeSpecial(Band sourceBand, Product targetProduct) {
         String identifier = getGridIndex(sourceBand.getName());
-        return super.isNodeSpecial(sourceBand, targetProduct) || getStartOffset(identifier) != referenceStartOffset ||
-                getTrackOffset(identifier) != referenceTrackOffset ||
-                getResolutions(identifier)[0] != getReferenceResolutions()[0] ||
-                getResolutions(identifier)[1] != getReferenceResolutions()[1];
+        return super.isNodeSpecial(sourceBand, targetProduct)
+               || getStartOffset(identifier) != referenceStartOffset
+               || getTrackOffset(identifier) != referenceTrackOffset
+               || getResolutions(identifier)[0] != getReferenceResolutions()[0]
+               || getResolutions(identifier)[1] != getReferenceResolutions()[1];
     }
 
     RenderedImage createSourceImage(Product masterProduct, Band sourceBand, float[] offsets,
@@ -148,7 +149,7 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         return new float[]{offsetX, offsetY};
     }
 
-    RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset,
+    protected RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset,
                                     double sourceTrackOffset, short[] sourceResolutions) {
         final int subSamplingX = sourceResolutions[0] / referenceResolutions[0];
         final int subSamplingY = sourceResolutions[1] / referenceResolutions[1];
@@ -158,8 +159,8 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
                                       tiePointGridOffsets[0], tiePointGridOffsets[1]);
     }
 
-    private float[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
-                                           int subSamplingX, int subSamplingY) {
+    protected float[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
+                                             int subSamplingX, int subSamplingY) {
         float[] tiePointGridOffsets = new float[2];
         tiePointGridOffsets[0] = (float) (referenceTrackOffset - sourceTrackOffset * subSamplingX);
         tiePointGridOffsets[1] = (float) (sourceStartOffset * subSamplingY - referenceStartOffset);

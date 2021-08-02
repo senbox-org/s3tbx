@@ -80,11 +80,11 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     private final Map<String, String> gridTypeToGridIndex;
     private final Map<String, Double> gridIndexToTrackOffset;
     private final Map<String, Double> gridIndexToStartOffset;
-    private Map<String, Float> nameToWavelengthMap;
-    private Map<String, Float> nameToBandwidthMap;
-    private Map<String, Integer> nameToIndexMap;
-    private Map<String, GeoCoding> geoCodingMap;
-    private List<NetcdfFile> netcdfFileList;
+    private final Map<String, Float> nameToWavelengthMap;
+    private final Map<String, Float> nameToBandwidthMap;
+    private final Map<String, Integer> nameToIndexMap;
+    private final Map<String, GeoCoding> geoCodingMap;
+    private final List<NetcdfFile> netcdfFileList;
 
 
     public SlstrLevel1ProductFactory(Sentinel3ProductReader productReader) {
