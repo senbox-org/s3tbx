@@ -108,29 +108,29 @@ public class C2rccMsiAlgorithm {
         nnNames = new ArrayList<>();
 
         // rtosa auto NN
-        nn_rtosa_aann = nnhs(nnFilePaths[IDX_rtosa_aann], loadFromResources, false);
+        nn_rtosa_aann = nnhs(nnFilePaths[IDX_rtosa_aann], loadFromResources, true);
 
         // rtosa-rw NN
-        nn_rtosa_rw = nnhs(nnFilePaths[IDX_rtosa_rw], loadFromResources, true);
+        nn_rtosa_rw = nnhs(nnFilePaths[IDX_rtosa_rw], loadFromResources, false);
 
         // rw-IOP inverse NN
-        nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources, false);
+        nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources, true);
 
         // IOP-rw forward NN
-        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources, false);
+        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources, true);
 
         // rw-kd NN, output are kdmin and kd449
-        nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources, false);
+        nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources, true);
 
         // uncertainty NN for IOPs after bias corretion
-        nn_iop_unciop = nnhs(nnFilePaths[IDX_iop_unciop], loadFromResources, false);
+        nn_iop_unciop = nnhs(nnFilePaths[IDX_iop_unciop], loadFromResources, true);
         // uncertainty for atot, adg, btot and kd
-        nn_iop_uncsumiop_unckd = nnhs(nnFilePaths[IDX_iop_uncsumiop_unckd], loadFromResources, false);
+        nn_iop_uncsumiop_unckd = nnhs(nnFilePaths[IDX_iop_uncsumiop_unckd], loadFromResources, true);
 
         // todo RD20151007
-        nn_rw_rwnorm = nnhs(nnFilePaths[IDX_rw_rwnorm], loadFromResources, false);
-        nn_rtosa_trans = nnhs(nnFilePaths[IDX_rtosa_trans], loadFromResources, false);
-        nn_rtosa_rpath = nnhs(nnFilePaths[IDX_rtosa_rpath], loadFromResources, false);
+        nn_rw_rwnorm = nnhs(nnFilePaths[IDX_rw_rwnorm], loadFromResources, true);
+        nn_rtosa_trans = nnhs(nnFilePaths[IDX_rtosa_trans], loadFromResources, true);
+        nn_rtosa_rpath = nnhs(nnFilePaths[IDX_rtosa_rpath], loadFromResources, true);
     }
 
     public void setThresh_absd_log_rtosa(double thresh_absd_log_rtosa) {
