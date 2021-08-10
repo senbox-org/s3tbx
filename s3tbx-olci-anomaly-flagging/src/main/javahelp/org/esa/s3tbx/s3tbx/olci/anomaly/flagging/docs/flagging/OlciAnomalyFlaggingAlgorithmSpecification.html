@@ -38,10 +38,10 @@
 <h3>Algorithm Specification</h3>
 
 <p>
-    An inconsistency has been identified in OLCI data around areas of saturation. Anomalously low radiances occur in some
-    bands for pixels at the edge of saturated areas, and they do not correspond to geophysical expectations.
-    The issue is present over bright surfaces, and currently detected at the edges of clouds for both OLCI-A and OLCI-B
-    instruments.<br>
+    An inconsistency has been identified in OLCI data around areas of saturation. Due to partial saturarion anomalously
+    low radiances occur in some bands for pixels at the edge of saturated areas, and they do not correspond to
+    geophysical expectations. The issue is present over bright surfaces, and currently detected at the edges of clouds
+    for both OLCI-A and OLCI-B instruments.<br>
 
     Due to an issue in a base library, it can happen (very rare cases have been observed) that the altitude values
     calculated are beyond the valid data range (e.g. +29153 m)<br>
@@ -49,12 +49,12 @@
     This processor identifies both issues in the data and adds an additional flag-data variable that flags pixels
     identified being affected by these issues so that these can be excluded from further downstream processing.<br>
 
-<h4>Spectral Inconsistency Detection</h4>
-    Inconsistent spectra are detected by calculating the spectral slope between band-centers and thresholding the maximal
-    absolute value of the slope with an appropriate value (0.15 / nm). For this approach, the spectral measurements in
-    atmospheric absorption bands are excluded form the calculation. The radiances are first converted to reflectances,
-    and a spectral slope is calculated for bands [1-12, 16-18, 21]. If the maximal absolute value of any of the slope
-    values exceeds the threshold, the pixel is flagged.
+<h4>Partial saturation (Spectral Inconsistency) Detection</h4>
+    Partial saturation (inconsistent spectra) are detected by calculating the spectral slope between band-centers and
+    thresholding the maximal absolute value of the slope with an appropriate value (0.15 / nm). For this approach, the
+    spectral measurements in atmospheric absorption bands are excluded form the calculation. The radiances are first
+    converted to reflectances, and a spectral slope is calculated for bands [1-12, 16-18, 21]. If the maximal absolute
+    value of any of the slope values exceeds the threshold, the pixel is flagged.
 
 <h4>Altitude Outlier Detection</h4>
     Altitude outliers are detected by checking that the data for each pixel is within the geophysical meaningful range of
