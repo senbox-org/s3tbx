@@ -108,7 +108,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final int NN_SPECTRUM_COUNT = NN_SOURCE_BAND_REFL_NAMES.length;
     private static final int NORM_NN_SPECTRUM_COUNT = NN_SPECTRUM_COUNT - 2;
     private static final int FULL_SPECTRUM_COUNT = SOURCE_BAND_REFL_NAMES.length;
-    private static final int SINGLE_IX = FULL_SPECTRUM_COUNT + 7 * NN_SPECTRUM_COUNT;
+    private static final int SINGLE_IX = FULL_SPECTRUM_COUNT + 8 * NN_SPECTRUM_COUNT;
 
     private static final int RTOA_IX = 0;
     private static final int RTOSA_IX = FULL_SPECTRUM_COUNT;
@@ -117,7 +117,8 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final int TDOWN_IX = FULL_SPECTRUM_COUNT + 3 * NN_SPECTRUM_COUNT;
     private static final int TUP_IX = FULL_SPECTRUM_COUNT + 4 * NN_SPECTRUM_COUNT;
     private static final int AC_REFLEC_IX = FULL_SPECTRUM_COUNT + 5 * NN_SPECTRUM_COUNT;
-    private static final int RHOWN_IX = FULL_SPECTRUM_COUNT + 6 * NN_SPECTRUM_COUNT;
+    private static final int AC_REFLEC_IX_TL = FULL_SPECTRUM_COUNT + 6 * NN_SPECTRUM_COUNT;
+    private static final int RHOWN_IX = FULL_SPECTRUM_COUNT + 7 * NN_SPECTRUM_COUNT;
 
     private static final int OOS_RTOSA_IX = SINGLE_IX;
     private static final int OOS_AC_REFLEC_IX = SINGLE_IX + 1;
@@ -512,6 +513,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         if (outputAcReflectance) {
             for (int i = 0; i < result.rwa.length; i++) {
                 targetSamples[AC_REFLEC_IX + i].set(outputAsRrs ? result.rwa[i] / Math.PI : result.rwa[i]);
+                targetSamples[AC_REFLEC_IX_TL + i].set(outputAsRrs ? result.rwa_tl[i] / Math.PI : result.rwa_tl[i]);
             }
         }
 
@@ -611,8 +613,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
                 if (outputAsRrs) {
                     tsc.defineSample(AC_REFLEC_IX + i, "rrs_" + NN_SOURCE_BAND_REFL_NAMES[i]);
+                    tsc.defineSample(AC_REFLEC_IX_TL + i, "rrs_tl_" + NN_SOURCE_BAND_REFL_NAMES[i]);
                 } else {
                     tsc.defineSample(AC_REFLEC_IX + i, "rhow_" + NN_SOURCE_BAND_REFL_NAMES[i]);
+                    tsc.defineSample(AC_REFLEC_IX_TL + i, "rhow_tl_" + NN_SOURCE_BAND_REFL_NAMES[i]);
                 }
             }
         }
