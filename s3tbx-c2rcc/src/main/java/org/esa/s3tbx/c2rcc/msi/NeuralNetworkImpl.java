@@ -114,7 +114,6 @@ class NeuralNetworkImpl implements NeuralNetwork {
         return inmin;
     }
 
-    @Override
     public void setInmin(double[] inmin) {
         this.inmin = inmin;
     }
@@ -124,7 +123,6 @@ class NeuralNetworkImpl implements NeuralNetwork {
         return inmax;
     }
 
-    @Override
     public void setInmax(double[] inmax) {
         this.inmax = inmax;
     }
@@ -291,7 +289,6 @@ class NeuralNetworkImpl implements NeuralNetwork {
      *              be in right order).
      * @return The output and corresponding Jacobi matrix of the NN.
      */
-    @Override
     public NNCalc calcJacobi(double[] nnInp) {
         final NNCalc res = NNresjacob;
         for (int i = 0; i < nn_in; i++) {
@@ -399,13 +396,14 @@ class NeuralNetworkImpl implements NeuralNetwork {
     }
 
     @Override
-    public double[] calc_vtl(double[] nninp, double[][] nninp_vtl) {
-        final double[][] g = calcJacobi(nninp).getJacobiMatrix();
-        final double[] result = new double[g.length];
+    public double[] calc_tl(double[] x, double[] x_tl) {
+        final double[][] g = calcJacobi(x).getJacobiMatrix();
+        final double[] y_tl = new double[g.length];
         for (int i = 0; i < g.length; i++) {
-            result[i] = scp(g[i], nninp_vtl[i]);
+            //noinspection SuspiciousNameCombination
+            y_tl[i] = scp(g[i], x_tl);
         }
-        return result;
+        return y_tl;
     }
 
 }

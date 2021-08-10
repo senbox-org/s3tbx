@@ -233,6 +233,7 @@ public class C2rccMsiAlgorithm {
         double[] transd_nn = new double[0];
         double[] transu_nn = new double[0];
         double[] rwa = new double[0];
+        double[] rwa_tl = new double[0];
         double[] rwn = new double[0];
         double[] iops_nn = new double[0];
         double rwa_oos = 0;
@@ -374,38 +375,33 @@ public class C2rccMsiAlgorithm {
 
             // (9.4.6)
             double[] log_rw;
+            double[] log_rw_tl;
             if (deriveRwFromPathAndTransmittance) {
                 // needs outputRpath & outputTdown & outputTup
                 log_rw = new double[r_tosa.length];
+                log_rw_tl = new double[r_tosa.length];
                 for (int i = 0; i < r_tosa.length; i++) {
                     log_rw[i] = r_tosa[i] - rpath_nn[i] / (transu_nn[i] * transd_nn[i]);
                 }
             } else {
+                // calculate unit view azimuth perturbations
+                final double[] nn_in_tl = new double[nn_in.length];
+                final double x_tl = -y * toRadians(1.0);
+                final double y_tl =  x * toRadians(1.0);
+                nn_in_tl[1] = x_tl;
+                nn_in_tl[2] = y_tl;
+
                 log_rw = nn_rtosa_rw.get().calc(nn_in);
-
-                // TODO: shall be input
-                final int count = log_rw.length;
-                final double[] view_azi_tl = new double[count];
-                for (int i = 0; i < count; i++) {
-                    view_azi_tl[i] = 1.0;
-                }
-
-                final double[][] nn_in_vtl = new double[count][nn_in.length];
-                for (int i = 0; i < count; i++) {
-                    final double x_tl = -y * toRadians(view_azi_tl[i]);
-                    final double y_tl =  x * toRadians(view_azi_tl[i]);
-                    nn_in_vtl[i][1] = x_tl;
-                    nn_in_vtl[i][2] = y_tl;
-                }
-                final double[] log_rw_vtl = nn_rtosa_rw.get().calc_vtl(nn_in, nn_in_vtl);
-                for (int i = 0; i < count; i++) {
-                    log_rw[i] = log_rw[i] + log_rw_vtl[i];
-                }
+                log_rw_tl = nn_rtosa_rw.get().calc_tl(nn_in, nn_in_tl);
             }
 
-            rwa = new double[0];
+            rwa = new double[log_rw.length];
+            rwa_tl = new double[log_rw.length];
             if (outputRwa) {
                 rwa = a_exp(log_rw);
+                for (int i = 0; i < log_rw.length; i++) {
+                    rwa_tl[i] = rwa[i] * log_rw_tl[i];
+                }
             }
 
             // (9.5) water part
@@ -605,7 +601,7 @@ public class C2rccMsiAlgorithm {
 
         flags = BitSetter.setFlag(flags, FLAG_INDEX_VALID_PE, validPixel);
 
-        return new Result(r_toa, r_tosa, rtosa_aann, rpath_nn, transd_nn, transu_nn, rwa, rwn, rtosa_oos, rwa_oos,
+        return new Result(r_toa, r_tosa, rtosa_aann, rpath_nn, transd_nn, transu_nn, rwa, rwa_tl, rwn, rtosa_oos, rwa_oos,
                 iops_nn, kd489_nn, kdmin_nn, unc_iop_abs, unc_abs_adg, unc_abs_atot, unc_abs_btot,
                 unc_abs_chl, unc_abs_tsm, unc_abs_kd489, unc_abs_kdmin, flags);
     }
@@ -668,6 +664,7 @@ public class C2rccMsiAlgorithm {
         public final double[] transd_nn;
         public final double[] transu_nn;
         public final double[] rwa;
+        public final double[] rwa_tl;
         public final double rwa_oos;
         public final double[] rwn;
         public final double[] iops_nn;
@@ -683,7 +680,7 @@ public class C2rccMsiAlgorithm {
         public final double unc_abs_kdmin;
         public final int flags;
 
-        public Result(double[] r_toa, double[] r_tosa, double[] rtosa_aann, double[] rpath_nn, double[] transd_nn, double[] transu_nn, double[] rwa,
+        public Result(double[] r_toa, double[] r_tosa, double[] rtosa_aann, double[] rpath_nn, double[] transd_nn, double[] transu_nn, double[] rwa, double[] rwa_tl,
                       double[] rwn, double rtosa_oos, double rwa_oos, double[] iops_nn,
                       double kd489_nn, double kdmin_nn, double[] unc_iop_abs,
                       double unc_abs_adg, double unc_abs_atot, double unc_abs_btot, double unc_abs_chl,
@@ -697,6 +694,7 @@ public class C2rccMsiAlgorithm {
             this.transd_nn = transd_nn;
             this.transu_nn = transu_nn;
             this.rwa = rwa;
+            this.rwa_tl = rwa_tl;
             this.rwa_oos = rwa_oos;
             this.rwn = rwn;
             this.iops_nn = iops_nn;
