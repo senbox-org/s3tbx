@@ -1,6 +1,5 @@
 package org.esa.s3tbx.c2rcc.msi;
 
-import org.esa.snap.core.nn.NNffbpAlphaTabFast;
 import org.esa.snap.core.util.BitSetter;
 
 import java.io.BufferedReader;
@@ -69,16 +68,16 @@ public class C2rccMsiAlgorithm {
     static String[] SOURCE_BAND_REFL_NAMES = new String[]{"B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9", "B10", "B11", "B12",};
     static String[] NN_SOURCE_BAND_REFL_NAMES = new String[]{"B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8A",};
 
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_aann; // Rtosa -> Rtosa' 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_rpath; //Rtosa -> Rpath 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rtosa_trans; // Rtosa -> transd, transu 12 bands
-    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_rw; // IOPs(5) -> Rw' (10 bands)
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_kd; // Rw (10 bands) -> kd489, kdmin
-    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_unciop; // IOPs (5) -> uncertainties of IOPs (5)
-    final ThreadLocal<NNffbpAlphaTabFast> nn_iop_uncsumiop_unckd; // IOPs (5) -> unc_adg, unc_atot, unc_btot, unc_kd489, unc_kdmin
-    final ThreadLocal<NNffbpAlphaTabFast> nn_rw_rwnorm; // Rw (10) -> Rwn (10)
+    final ThreadLocal<NeuralNetwork> nn_rw_iop; // NN Rw -< IOPs input 10 bands, 5 IOPs
+    final ThreadLocal<NeuralNetwork> nn_rtosa_rw; // NN Rtosa -> Rw 12 bands
+    final ThreadLocal<NeuralNetwork> nn_rtosa_aann; // Rtosa -> Rtosa' 12 bands
+    final ThreadLocal<NeuralNetwork> nn_rtosa_rpath; //Rtosa -> Rpath 12 bands
+    final ThreadLocal<NeuralNetwork> nn_rtosa_trans; // Rtosa -> transd, transu 12 bands
+    final ThreadLocal<NeuralNetwork> nn_iop_rw; // IOPs(5) -> Rw' (10 bands)
+    final ThreadLocal<NeuralNetwork> nn_rw_kd; // Rw (10 bands) -> kd489, kdmin
+    final ThreadLocal<NeuralNetwork> nn_iop_unciop; // IOPs (5) -> uncertainties of IOPs (5)
+    final ThreadLocal<NeuralNetwork> nn_iop_uncsumiop_unckd; // IOPs (5) -> unc_adg, unc_atot, unc_btot, unc_kd489, unc_kdmin
+    final ThreadLocal<NeuralNetwork> nn_rw_rwnorm; // Rw (10) -> Rwn (10)
     private final ArrayList<String> nnNames;
     double salinity = 35.0;
     double temperature = 15.0;
@@ -109,29 +108,29 @@ public class C2rccMsiAlgorithm {
         nnNames = new ArrayList<>();
 
         // rtosa auto NN
-        nn_rtosa_aann = nnhs(nnFilePaths[IDX_rtosa_aann], loadFromResources);
+        nn_rtosa_aann = nnhs(nnFilePaths[IDX_rtosa_aann], loadFromResources, true);
 
         // rtosa-rw NN
-        nn_rtosa_rw = nnhs(nnFilePaths[IDX_rtosa_rw], loadFromResources);
+        nn_rtosa_rw = nnhs(nnFilePaths[IDX_rtosa_rw], loadFromResources, false);
 
         // rw-IOP inverse NN
-        nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources);
+        nn_rw_iop = nnhs(nnFilePaths[IDX_rw_iop], loadFromResources, true);
 
         // IOP-rw forward NN
-        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources);
+        nn_iop_rw = nnhs(nnFilePaths[IDX_iop_rw], loadFromResources, true);
 
         // rw-kd NN, output are kdmin and kd449
-        nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources);
+        nn_rw_kd = nnhs(nnFilePaths[IDX_rw_kd], loadFromResources, true);
 
         // uncertainty NN for IOPs after bias corretion
-        nn_iop_unciop = nnhs(nnFilePaths[IDX_iop_unciop], loadFromResources);
+        nn_iop_unciop = nnhs(nnFilePaths[IDX_iop_unciop], loadFromResources, true);
         // uncertainty for atot, adg, btot and kd
-        nn_iop_uncsumiop_unckd = nnhs(nnFilePaths[IDX_iop_uncsumiop_unckd], loadFromResources);
+        nn_iop_uncsumiop_unckd = nnhs(nnFilePaths[IDX_iop_uncsumiop_unckd], loadFromResources, true);
 
         // todo RD20151007
-        nn_rw_rwnorm = nnhs(nnFilePaths[IDX_rw_rwnorm], loadFromResources);
-        nn_rtosa_trans = nnhs(nnFilePaths[IDX_rtosa_trans], loadFromResources);
-        nn_rtosa_rpath = nnhs(nnFilePaths[IDX_rtosa_rpath], loadFromResources);
+        nn_rw_rwnorm = nnhs(nnFilePaths[IDX_rw_rwnorm], loadFromResources, true);
+        nn_rtosa_trans = nnhs(nnFilePaths[IDX_rtosa_trans], loadFromResources, true);
+        nn_rtosa_rpath = nnhs(nnFilePaths[IDX_rtosa_rpath], loadFromResources, true);
     }
 
     public void setThresh_absd_log_rtosa(double thresh_absd_log_rtosa) {
@@ -207,7 +206,6 @@ public class C2rccMsiAlgorithm {
                                boolean validPixel,
                                double atm_press,
                                double ozone) {
-
         //  (9.2) compute angles
         double cos_sun = cos(toRadians(sun_zeni));
         double cos_view = cos(toRadians(view_zeni));
@@ -235,6 +233,7 @@ public class C2rccMsiAlgorithm {
         double[] transd_nn = new double[0];
         double[] transu_nn = new double[0];
         double[] rwa = new double[0];
+        double[] rwa_tl = new double[0];
         double[] rwn = new double[0];
         double[] iops_nn = new double[0];
         double rwa_oos = 0;
@@ -376,19 +375,33 @@ public class C2rccMsiAlgorithm {
 
             // (9.4.6)
             double[] log_rw;
-            if(deriveRwFromPathAndTransmittance) {
+            double[] log_rw_tl;
+            if (deriveRwFromPathAndTransmittance) {
                 // needs outputRpath & outputTdown & outputTup
                 log_rw = new double[r_tosa.length];
+                log_rw_tl = new double[r_tosa.length];
                 for (int i = 0; i < r_tosa.length; i++) {
                     log_rw[i] = r_tosa[i] - rpath_nn[i] / (transu_nn[i] * transd_nn[i]);
                 }
-            }else {
+            } else {
+                // calculate unit view azimuth perturbations
+                final double[] nn_in_tl = new double[nn_in.length];
+                final double x_tl = -y * toRadians(1.0);
+                final double y_tl =  x * toRadians(1.0);
+                nn_in_tl[1] = x_tl;
+                nn_in_tl[2] = y_tl;
+
                 log_rw = nn_rtosa_rw.get().calc(nn_in);
+                log_rw_tl = nn_rtosa_rw.get().calc_tl(nn_in, nn_in_tl);
             }
 
-            rwa = new double[0];
+            rwa = new double[log_rw.length];
+            rwa_tl = new double[log_rw.length];
             if (outputRwa) {
                 rwa = a_exp(log_rw);
+                for (int i = 0; i < log_rw.length; i++) {
+                    rwa_tl[i] = rwa[i] * log_rw_tl[i];
+                }
             }
 
             // (9.5) water part
@@ -402,7 +415,7 @@ public class C2rccMsiAlgorithm {
             nn_in_inv[2] = azi_diff_deg;
             nn_in_inv[3] = temperature;
             nn_in_inv[4] = salinity;
-            System.arraycopy(log_rw, 0, nn_in_inv, ancNnInvInputCount, nn_in_inv.length - ancNnInvInputCount );
+            System.arraycopy(log_rw, 0, nn_in_inv, ancNnInvInputCount, nn_in_inv.length - ancNnInvInputCount);
 
             // (9.5.1)check input to rw -> IOP NN out of range
             mi = nn_rw_iop.get().getInmin();
@@ -411,6 +424,7 @@ public class C2rccMsiAlgorithm {
             for (int iv = 0; iv < nn_in_inv.length; iv++) {
                 if (nn_in_inv[iv] < mi[iv] | nn_in_inv[iv] > ma[iv]) {
                     rwa_oor_flag = true; // (ipix)
+                    break;
                 }
             }
             flags = BitSetter.setFlag(flags, FLAG_INDEX_RHOW_OOR, rwa_oor_flag);
@@ -587,17 +601,16 @@ public class C2rccMsiAlgorithm {
 
         flags = BitSetter.setFlag(flags, FLAG_INDEX_VALID_PE, validPixel);
 
-        return new Result(r_toa, r_tosa, rtosa_aann, rpath_nn, transd_nn, transu_nn, rwa, rwn, rtosa_oos, rwa_oos,
-                          iops_nn, kd489_nn, kdmin_nn, unc_iop_abs, unc_abs_adg, unc_abs_atot, unc_abs_btot,
-                          unc_abs_chl, unc_abs_tsm, unc_abs_kd489, unc_abs_kdmin, flags);
+        return new Result(r_toa, r_tosa, rtosa_aann, rpath_nn, transd_nn, transu_nn, rwa, rwa_tl, rwn, rtosa_oos, rwa_oos,
+                iops_nn, kd489_nn, kdmin_nn, unc_iop_abs, unc_abs_adg, unc_abs_atot, unc_abs_btot,
+                unc_abs_chl, unc_abs_tsm, unc_abs_kd489, unc_abs_kdmin, flags);
     }
 
     public String[] getUsedNeuronalNetNames() {
         return nnNames.toArray(new String[nnNames.size()]);
     }
 
-    private ThreadLocal<NNffbpAlphaTabFast> nnhs(String sourcePath, boolean loadFromResource) throws IOException {
-
+    private ThreadLocal<NeuralNetwork> nnhs(String sourcePath, boolean loadFromResource, boolean fast) throws IOException {
 //        Files.
 
         final InputStream stream;
@@ -611,22 +624,16 @@ public class C2rccMsiAlgorithm {
         } else {
             final Path path = Paths.get(sourcePath);
             stream = Files.newInputStream(path, StandardOpenOption.READ);
-            if (stream == null) {
-                throw new IllegalStateException("file not found: " + path.toString());
-            }
             nnNames.add(path.toString());
         }
         final String nnCode = readFully(stream);
-        return new ThreadLocal<NNffbpAlphaTabFast>() {
-            @Override
-            protected NNffbpAlphaTabFast initialValue() {
-                try {
-                    return new NNffbpAlphaTabFast(nnCode);
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
+        return ThreadLocal.withInitial(() -> {
+            try {
+                return new NeuralNetworkImpl(nnCode, fast);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
             }
-        };
+        });
     }
 
     private String readFully(InputStream stream) throws IOException {
@@ -657,6 +664,7 @@ public class C2rccMsiAlgorithm {
         public final double[] transd_nn;
         public final double[] transu_nn;
         public final double[] rwa;
+        public final double[] rwa_tl;
         public final double rwa_oos;
         public final double[] rwn;
         public final double[] iops_nn;
@@ -672,7 +680,7 @@ public class C2rccMsiAlgorithm {
         public final double unc_abs_kdmin;
         public final int flags;
 
-        public Result(double[] r_toa, double[] r_tosa, double[] rtosa_aann, double[] rpath_nn, double[] transd_nn, double[] transu_nn, double[] rwa,
+        public Result(double[] r_toa, double[] r_tosa, double[] rtosa_aann, double[] rpath_nn, double[] transd_nn, double[] transu_nn, double[] rwa, double[] rwa_tl,
                       double[] rwn, double rtosa_oos, double rwa_oos, double[] iops_nn,
                       double kd489_nn, double kdmin_nn, double[] unc_iop_abs,
                       double unc_abs_adg, double unc_abs_atot, double unc_abs_btot, double unc_abs_chl,
@@ -686,6 +694,7 @@ public class C2rccMsiAlgorithm {
             this.transd_nn = transd_nn;
             this.transu_nn = transu_nn;
             this.rwa = rwa;
+            this.rwa_tl = rwa_tl;
             this.rwa_oos = rwa_oos;
             this.rwn = rwn;
             this.iops_nn = iops_nn;
