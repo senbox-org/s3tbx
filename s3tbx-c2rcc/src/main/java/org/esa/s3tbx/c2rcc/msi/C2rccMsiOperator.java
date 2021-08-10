@@ -751,6 +751,17 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
                 ensureSpectralProperties(band, sourceBandName);
                 band.setValidPixelExpression(validPixelExpression);
             }
+            for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
+                String sourceBandName = NN_SOURCE_BAND_REFL_NAMES[i];
+                final Band band;
+                if (outputAsRrs) {
+                    band = addBand(targetProduct, "rrs_tl_" + sourceBandName, "sr^-1", "Unit perturbation of atmospherically corrected Angular dependent remote sensing reflectances");
+                } else {
+                    band = addBand(targetProduct, "rhow_tl_" + sourceBandName, "1", "Unit perturbation of atmospherically corrected Angular dependent water leaving reflectances");
+                }
+                ensureSpectralProperties(band, sourceBandName);
+                band.setValidPixelExpression(validPixelExpression);
+            }
             if (outputAsRrs) {
                 autoGrouping.append(":rrs");
             } else {
