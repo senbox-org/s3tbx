@@ -92,7 +92,7 @@ class NeuralNetworkImpl implements NeuralNetwork {
     public NeuralNetworkImpl(String neuralNet, boolean fast) throws IOException {
         this.fast = fast;
         readNeuralNetFromString(neuralNet);
-        if (!fast) {
+        if (fast) {
             makeAlphaTab();
         }
         NNresjacob = new NNCalc();
