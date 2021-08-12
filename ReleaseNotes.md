@@ -1,124 +1,189 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 9.0.0
+----------------------
+
+### Bug
+
+    [SIIITBX-388] Extent of OLCI scene is wrong after resampling
+    [SIIITBX-386] Fill value is not considered for Landsat Level-2 data
+    [SIIITBX-383] Update information regarding the structure of ancillary directory
+    [SIIITBX-381] NPE in SeadasFileReader can occur for VIIRS L1B files due to null attributes
+    [SIIITBX-380] O2AHarmonisation cannot use OLCI subset products
+    [SIIITBX-373] Location information of SLSTR L2 WST data since 2019 behaves strange
+    [SIIITBX-365] S3 scenes close to the pole might be wrongly reprojected
+    [SIIITBX-364] S3 data containing gaps not correctly handled
+
+### New Feature
+
+    [SIIITBX-392] S3 data to use pixel-based geo-location information by default
+    [SIIITBX-389] Support NASA distributed MERIS and OLCI files
+    [SIIITBX-385] Support for new version of OLCI L2 water
+    [SIIITBX-384] Support for Hawkeye data
+    [SIIITBX-375] Extend C2RCC S2 with new neural nets
+    [SIIITBX-368] Support MetOp-C data
+    [SIIITBX-367] MERIS operators shall be able to use data from 4th reprocessing
+    [SIIITBX-362] Support S3 QWG recommended flags
+    [SIIITBX-361] OLCI Anomaly Detection operator
+    [SIIITBX-359] Tutorial on Rayleigh Correction
+    [SIIITBX-354] New S3 A/B Harmonisation
+    [SIIITBX-353] New Dark Object Subtraction (DOS) operator
+    [SIIITBX-324] Support AATSR 4th reprocessing
+
+### Improvement
+
+    [SIIITBX-393] Implement OLCI anomaly detection OP S3MPC requests
+    [SIIITBX-390] FU operator to optionally compute dominant wavelength
+    [SIIITBX-378] Help pages for reader shall be moved to S3TBX
+    [SIIITBX-366] Update O2 Harmonisation for OLCI A/B
+    [SIIITBX-363] Use time_coordinates.nc file of Sentinel-3 data
+    [SIIITBX-355] Update FU operator for S2A/B and enhanced documentation
+    [SIIITBX-339] Update OLCI O2A Harmonisation
+
+### Requirement
+
+    [SIIITBX-121] MERIS processors need to be updated for the 4th reprocessing
+
+### Task
+
+    [SIIITBX-360] Check for GeoCoding and reprojection for S3 data at pols and ant-meridian
+    [SIIITBX-336] Document how to collocate S3 with S1 and S2                  
+
+A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our
+[issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12706)
+
 Changes in S3TBX 8.0.0
---------------------
+----------------------
 
-Bug
-[SIIITBX-085] - Proba-V reader should use original band names from metadata
-[SIIITBX-306] - SLSTR L1 product oblique view bands after applying Reprojection are not shown correctly
-[SIIITBX-328] - Rad2Refl Operator cannot handle latest SLSTR input products
-[SIIITBX-329] - Setting pins on OLCI RGB after reprojection is not working
-[SIIITBX-332] - SLSTR L2 FRP products cannot be read
-[SIIITBX-341] - The 'Use pixel-based GeoCoding' is not considered for SLSTR products when opened on fixed resolution
-[SIIITBX-342] - Reading OLCI L1 products in SAFE format is slow
-[SIIITBX-344] - Wrong band index in Rayleigh correction for MERIS
+### Bug
 
-Task
-[SIIITBX-285] - Obsolete and not working tutorial should be removed from web
-[SIIITBX-288] - Recommended graphs shall be available in GraphBuilder
-[SIIITBX-347] - Remove chris-reader from S3TBX
+    [SIIITBX-085] - Proba-V reader should use original band names from metadata
+    [SIIITBX-306] - SLSTR L1 product oblique view bands after applying Reprojection are not shown correctly
+    [SIIITBX-328] - Rad2Refl Operator cannot handle latest SLSTR input products
+    [SIIITBX-329] - Setting pins on OLCI RGB after reprojection is not working
+    [SIIITBX-332] - SLSTR L2 FRP products cannot be read
+    [SIIITBX-341] - The 'Use pixel-based GeoCoding' is not considered for SLSTR products when opened on fixed resolution
+    [SIIITBX-342] - Reading OLCI L1 products in SAFE format is slow
+    [SIIITBX-344] - Wrong band index in Rayleigh correction for MERIS
 
-Improvement
-[SIIITBX-179] - Meris l2Auxdata module is logging to much
-[SIIITBX-267] - SPOT VGT product reader shall support VGT P collection 3 products
-[SIIITBX-283] - Update operators according to doExecute() changes
-[SIIITBX-289] - All help material shall be revised
-[SIIITBX-290] - Dependencies to 3rd-party libraries shall be cleaned up
-[SIIITBX-330] - Provide better names vor conversion parameter for TSM and CHL
-[SIIITBX-345] - Include support for PACE and Dscovr/Epic to SeadasProductReader
+### Task
 
-A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
+    [SIIITBX-285] - Obsolete and not working tutorial should be removed from web
+    [SIIITBX-288] - Recommended graphs shall be available in GraphBuilder
+    [SIIITBX-347] - Remove chris-reader from S3TBX
+
+### Improvement
+
+    [SIIITBX-179] - Meris l2Auxdata module is logging to much
+    [SIIITBX-267] - SPOT VGT product reader shall support VGT P collection 3 products
+    [SIIITBX-283] - Update operators according to doExecute() changes
+    [SIIITBX-289] - All help material shall be revised
+    [SIIITBX-290] - Dependencies to 3rd-party libraries shall be cleaned up
+    [SIIITBX-330] - Provide better names vor conversion parameter for TSM and CHL
+    [SIIITBX-345] - Include support for PACE and Dscovr/Epic to SeadasProductReader
+
+A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our
 [issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12705)
 
 
 Changes in S3TBX 7.0.4
 --------------------
 
-Improvement 
-* [SIIITBX-332] - SLSTR L2 FRP products cannot be read
+### Improvement
 
-A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
-[issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12761) 
+    [SIIITBX-332] - SLSTR L2 FRP products cannot be read
+
+A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our
+[issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12761)
 
 Changes in S3TBX 7.0.3
 --------------------
 
-Bug
-* [SIIITBX-328] - Rad2Refl Operator cannot handle latest SLSTR input products
+### Bug
 
-Improvement 
-* [SIIITBX-267] - SPOT VGT product reader shall support VGT P collection 3 products
+    [SIIITBX-328] - Rad2Refl Operator cannot handle latest SLSTR input products
 
-A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
-[issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12755)  
+### Improvement
+
+    [SIIITBX-267] - SPOT VGT product reader shall support VGT P collection 3 products
+
+A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our
+[issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12755)
+
 
 Changes in S3TBX 7.0.2
 --------------------
 
-Bug
-* [SIIITBX-301] - SLSTR L2 LST products can not be read
-* [SIIITBX-302] - SLSTR L2 WST products can not be read
-* [SIIITBX-303] - AATSR products from 4th Reprocessing can not be read
-* [SIIITBX-308] - KLM AVHRR reader channel 3a/3b detection not correct
+### Bug
 
-Improvement
-* [SIIITBX-305] - Description of copied masks should not be altered
+    [SIIITBX-301] - SLSTR L2 LST products can not be read
+    [SIIITBX-302] - SLSTR L2 WST products can not be read
+    [SIIITBX-303] - AATSR products from 4th Reprocessing can not be read
+    [SIIITBX-308] - KLM AVHRR reader channel 3a/3b detection not correct
 
+### Improvement
 
-A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
+    [SIIITBX-305] - Description of copied masks should not be altered
+
+A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our
 [issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12754)
 
 
 Changes in S3TBX 7.0.1
 --------------------
 
-Bug
-[SIIITBX-176] - Rayleigh Correction expects tie-point grids to be present
-[SIIITBX-270] - Wrong bands used for computing the Rhow_OOS
-[SIIITBX-273] - Rayleigh correction does not compute correct values
-[SIIITBX-300] - PPE operator does not copy the masks of the source
-New Feature
-[SIIITBX-249] - Coefficient have change for SLSTR S5 and S6
-[SIIITBX-295] - Support new version of SLSTR L1 RBT
-[SIIITBX-296] - Add Reader for SLSTR L2 FRP products
-[SIIITBX-297] - Add Reader for SLSTR SYN L2 products
-Improvement
-[SIIITBX-172] - Use new SRF for Sentinel-2 in Rayleigh Correction processor
-[SIIITBX-269] - OOS thresholds should have different default values
-[SIIITBX-272] - TSM computation shall use new equation
+### Bug
 
-A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
+    [SIIITBX-176] - Rayleigh Correction expects tie-point grids to be present
+    [SIIITBX-270] - Wrong bands used for computing the Rhow_OOS
+    [SIIITBX-273] - Rayleigh correction does not compute correct values
+    [SIIITBX-300] - PPE operator does not copy the masks of the source
+
+### New Feature
+
+    [SIIITBX-249] - Coefficient have change for SLSTR S5 and S6
+    [SIIITBX-295] - Support new version of SLSTR L1 RBT
+    [SIIITBX-296] - Add Reader for SLSTR L2 FRP products
+    [SIIITBX-297] - Add Reader for SLSTR SYN L2 products
+
+### Improvement
+
+    [SIIITBX-172] - Use new SRF for Sentinel-2 in Rayleigh Correction processor
+    [SIIITBX-269] - OOS thresholds should have different default values
+    [SIIITBX-272] - TSM computation shall use new equation
+
+A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our
 [issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12742)
 
 Changes in S3TBX 7.0.0
---------------------
+----------------------
 
-* [SIIITBX-265] Include new neural nets for OLCI in C2RCC
-* [SIIITBX-263]	Include OLCI Harmonisation operator in S3TBX
-* [SIIITBX-260]	SMAC changes source product while processing
-* [SIIITBX-259]	SMAC gives different results for two runs
-* [SIIITBX-258]	Add Reader Tests for S3B
-* [SIIITBX-257]	SMAC shall be tested
-* [SIIITBX-256]	Aatsr.SST shall be tested
-* [SIIITBX-255]	ARC.SST shall be tested
-* [SIIITBX-254]	FUB.Water shall be tested
-* [SIIITBX-253]	MphChl shall be tested
-* [SIIITBX-252]	FuClassification shall be tested
-* [SIIITBX-251]	Provide gpf tests for more operators
-* [SIIITBX-250]	Remove Idepix from the S3-Toolbox
-* [SIIITBX-247]	PDU Stitching may fail due to missing elements
-* [SIIITBX-246]	Create reader tests for Sentinel-3 data
-* [SIIITBX-244]	Colours of Idepix masks are random 
-* [SIIITBX-233]	Source product of ARC SST processor is wrongly named AATSR
-* [SIIITBX-231]	Add graph tests to the snap-gpt-tests project
-* [SIIITBX-220]	Provide default graphs for S3TBX use-cases
-* [SIIITBX-205]	Integrated software building, testing and QA scheme
-* [SIIITBX-204]	Adapt PDU Stitching Op to SLSTR format change for the F1 channel
-* [SIIITBX-203]	Adapt reader to SLSTR format change for the F1 channel
-* [SIIITBX-197]	Update Reader for AATSR data in SAFE format
-* [SIIITBX-194]	Implement PPE-processor
-* [SIIITBX-169]	Rayleigh correction operator fails in case of extreme sun angles
+    [SIIITBX-265] Include new neural nets for OLCI in C2RCC
+    [SIIITBX-263] Include OLCI Harmonisation operator in S3TBX
+    [SIIITBX-260] SMAC changes source product while processing
+    [SIIITBX-259] SMAC gives different results for two runs
+    [SIIITBX-258] Add Reader Tests for S3B
+    [SIIITBX-257] SMAC shall be tested
+    [SIIITBX-256] Aatsr.SST shall be tested
+    [SIIITBX-255] ARC.SST shall be tested
+    [SIIITBX-254] FUB.Water shall be tested
+    [SIIITBX-253] MphChl shall be tested
+    [SIIITBX-252] FuClassification shall be tested
+    [SIIITBX-251] Provide gpf tests for more operators
+    [SIIITBX-250] Remove Idepix from the S3-Toolbox
+    [SIIITBX-247] PDU Stitching may fail due to missing elements
+    [SIIITBX-246] Create reader tests for Sentinel-3 data
+    [SIIITBX-244] Colours of Idepix masks are random 
+    [SIIITBX-233] Source product of ARC SST processor is wrongly named AATSR
+    [SIIITBX-231] Add graph tests to the snap-gpt-tests project
+    [SIIITBX-220] Provide default graphs for S3TBX use-cases
+    [SIIITBX-205] Integrated software building, testing and QA scheme
+    [SIIITBX-204] Adapt PDU Stitching Op to SLSTR format change for the F1 channel
+    [SIIITBX-203] Adapt reader to SLSTR format change for the F1 channel
+    [SIIITBX-197] Update Reader for AATSR data in SAFE format
+    [SIIITBX-194] Implement PPE-processor
+    [SIIITBX-169] Rayleigh correction operator fails in case of extreme sun angles
 
 A comprehensive list of all issues resolved in this version of the Sentinel-3 Toolbox can be found in our 
 [issue tracking system](https://senbox.atlassian.net/secure/ReleaseNote.jspa?projectId=10200&version=12301)
