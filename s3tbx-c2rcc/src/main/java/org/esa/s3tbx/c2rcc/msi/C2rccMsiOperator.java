@@ -99,6 +99,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final int VIEW_ZEN_IX = SOURCE_BAND_REFL_NAMES.length + 2;
     private static final int VIEW_AZI_IX = SOURCE_BAND_REFL_NAMES.length + 3;
     private static final int VALID_PIXEL_IX = SOURCE_BAND_REFL_NAMES.length + 4;
+    private static final int VIEW_AZI_BAND_IX = VALID_PIXEL_IX + 1;
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
         see https://senbox.atlassian.net/browse/SNAP-395
@@ -117,7 +118,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final int TDOWN_IX = FULL_SPECTRUM_COUNT + 3 * NN_SPECTRUM_COUNT;
     private static final int TUP_IX = FULL_SPECTRUM_COUNT + 4 * NN_SPECTRUM_COUNT;
     private static final int AC_REFLEC_IX = FULL_SPECTRUM_COUNT + 5 * NN_SPECTRUM_COUNT;
-    private static final int AC_REFLEC_IX_TL = FULL_SPECTRUM_COUNT + 6 * NN_SPECTRUM_COUNT;
+    private static final int AC_REFLEC_IX_CORR = FULL_SPECTRUM_COUNT + 6 * NN_SPECTRUM_COUNT;
     private static final int RHOWN_IX = FULL_SPECTRUM_COUNT + 7 * NN_SPECTRUM_COUNT;
 
     private static final int OOS_RTOSA_IX = SINGLE_IX;
@@ -512,8 +513,17 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
         if (outputAcReflectance) {
             for (int i = 0; i < result.rwa.length; i++) {
-                targetSamples[AC_REFLEC_IX + i].set(outputAsRrs ? result.rwa[i] / Math.PI : result.rwa[i]);
-                targetSamples[AC_REFLEC_IX_TL + i].set(outputAsRrs ? result.rwa_tl[i] / Math.PI : result.rwa_tl[i]);
+                final double rwa = result.rwa[i];
+                final double phiMean = sourceSamples[VIEW_AZI_IX].getDouble();
+                final double phiBand = sourceSamples[VIEW_AZI_BAND_IX + i].getDouble();
+                final double rwaCorrected = rwa + result.rwa_tl[i] * (phiBand - phiMean);
+                if (outputAsRrs) {
+                    targetSamples[AC_REFLEC_IX + i].set(rwa / Math.PI);
+                    targetSamples[AC_REFLEC_IX_CORR + i].set(rwaCorrected / Math.PI);
+                } else {
+                    targetSamples[AC_REFLEC_IX + i].set(rwa);
+                    targetSamples[AC_REFLEC_IX_CORR + i].set(rwaCorrected);
+                }
             }
         }
 
@@ -567,7 +577,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         } else {
             sc.defineComputedSample(VALID_PIXEL_IX, ProductData.TYPE_UINT8, "true");
         }
-
+        for (int i = 0; i < NN_SOURCE_BAND_REFL_NAMES.length; i++) {
+            sc.defineSample(VIEW_AZI_BAND_IX + i, String.format("view_azimuth_%s", NN_SOURCE_BAND_REFL_NAMES[i]));
+        }
     }
 
     @Override
@@ -613,10 +625,10 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             for (int i = 0; i < NN_SPECTRUM_COUNT; i++) {
                 if (outputAsRrs) {
                     tsc.defineSample(AC_REFLEC_IX + i, "rrs_" + NN_SOURCE_BAND_REFL_NAMES[i]);
-                    tsc.defineSample(AC_REFLEC_IX_TL + i, "rrs_tl_" + NN_SOURCE_BAND_REFL_NAMES[i]);
+                    tsc.defineSample(AC_REFLEC_IX_CORR + i, "rrs_corr_" + NN_SOURCE_BAND_REFL_NAMES[i]);
                 } else {
                     tsc.defineSample(AC_REFLEC_IX + i, "rhow_" + NN_SOURCE_BAND_REFL_NAMES[i]);
-                    tsc.defineSample(AC_REFLEC_IX_TL + i, "rhow_tl_" + NN_SOURCE_BAND_REFL_NAMES[i]);
+                    tsc.defineSample(AC_REFLEC_IX_CORR + i, "rhow_corr_" + NN_SOURCE_BAND_REFL_NAMES[i]);
                 }
             }
         }
@@ -755,9 +767,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
                 String sourceBandName = NN_SOURCE_BAND_REFL_NAMES[i];
                 final Band band;
                 if (outputAsRrs) {
-                    band = addBand(targetProduct, "rrs_tl_" + sourceBandName, "sr^-1", "Unit perturbation of atmospherically corrected Angular dependent remote sensing reflectances");
+                    band = addBand(targetProduct, "rrs_corr_" + sourceBandName, "sr^-1", "Corrected atmospherically corrected Angular dependent remote sensing reflectances");
                 } else {
-                    band = addBand(targetProduct, "rhow_tl_" + sourceBandName, "1", "Unit perturbation of atmospherically corrected Angular dependent water leaving reflectances");
+                    band = addBand(targetProduct, "rhow_corr_" + sourceBandName, "1", "Corrected atmospherically corrected Angular dependent water leaving reflectances");
                 }
                 ensureSpectralProperties(band, sourceBandName);
                 band.setValidPixelExpression(validPixelExpression);

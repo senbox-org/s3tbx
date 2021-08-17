@@ -386,6 +386,8 @@ public class C2rccMsiAlgorithm {
             } else {
                 // calculate unit view azimuth perturbations
                 final double[] nn_in_tl = new double[nn_in.length];
+                // x = sin_view * cos_azi_diff => x' = -y
+                // y = sin_view * sin_azi_diff => y' =  x
                 final double x_tl = -y * toRadians(1.0);
                 final double y_tl =  x * toRadians(1.0);
                 nn_in_tl[1] = x_tl;
