@@ -16,10 +16,6 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.ProductNode;
-import org.esa.snap.core.datamodel.ProductNodeEvent;
-import org.esa.snap.core.datamodel.ProductNodeListener;
-import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.dataop.dem.ElevationModel;
@@ -197,28 +193,28 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     private Product sourceProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-                                 "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Ozone interpolation start product (TOMSOMI)")
-    private Product tomsomiStartProduct;
+            label = "Ozone interpolation start product (TOMSOMI or CAMS)")
+    private Product ozoneStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-                                 "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Ozone interpolation end product (TOMSOMI)")
-    private Product tomsomiEndProduct;
+            label = "Ozone interpolation end product (TOMSOMI or CAMS)")
+    private Product ozoneEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-                                 "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Air pressure interpolation start product (NCEP)")
-    private Product ncepStartProduct;
+            label = "Air pressure interpolation start product (NCEP or CAMS)")
+    private Product pressureStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-                                 "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Air pressure interpolation end product (NCEP)")
-    private Product ncepEndProduct;
+            label = "Air pressure interpolation end product (NCEP or CAMS)")
+    private Product pressureEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
             defaultValue = "",
@@ -330,6 +326,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     private C2rccLandsat8Algorithm algorithm;
     private AtmosphericAuxdata atmosphericAuxdata;
     private TimeCoding timeCoding;
+    private ProductData.UTC sourceTime;
     private double[] reflectance_offset;
     private double[] reflectance_scale;
     private double sunAzimuth;
@@ -348,23 +345,23 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
     }
 
     @Override
-    public void setTomsomiStartProduct(Product tomsomiStartProduct) {
-        this.tomsomiStartProduct = tomsomiStartProduct;
+    public void setOzoneStartProduct(Product ozoneStartProduct) {
+        this.ozoneStartProduct = ozoneStartProduct;
     }
 
     @Override
-    public void setTomsomiEndProduct(Product tomsomiEndProduct) {
-        this.tomsomiEndProduct = tomsomiEndProduct;
+    public void setOzoneEndProduct(Product ozoneEndProduct) {
+        this.ozoneEndProduct = ozoneEndProduct;
     }
 
     @Override
-    public void setNcepStartProduct(Product ncepStartProduct) {
-        this.ncepStartProduct = ncepStartProduct;
+    public void setPressureStartProduct(Product pressureStartProduct) {
+        this.pressureStartProduct = pressureStartProduct;
     }
 
     @Override
-    public void setNcepEndProduct(Product ncepEndProduct) {
-        this.ncepEndProduct = ncepEndProduct;
+    public void setPressureEndProduct(Product pressureEndProduct) {
+        this.pressureEndProduct = pressureEndProduct;
     }
 
     @Override
@@ -1128,6 +1125,7 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             addNnNamesMetadata();
             pm.worked(1);
             pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            sourceTime = sourceProduct.getStartTime();
             initAtmosphericAuxdata();
             pm.worked(1);
         } catch (IOException e) {
@@ -1158,8 +1156,9 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
         auxdataBuilder.setOzone(ozone);
         auxdataBuilder.setSurfacePressure(press);
         auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
-        auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
-        auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
+        auxdataBuilder.useTomsomiCamsProducts(ozoneStartProduct, ozoneEndProduct);
+        auxdataBuilder.useNcepCamsProducts(pressureStartProduct, pressureEndProduct);
+        auxdataBuilder.setSourceTime(sourceTime);
         try {
             atmosphericAuxdata = auxdataBuilder.create();
         } catch (Exception e) {

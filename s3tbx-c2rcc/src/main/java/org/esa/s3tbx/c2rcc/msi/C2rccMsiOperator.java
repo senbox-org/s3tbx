@@ -170,28 +170,28 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private Product sourceProduct;
 
     @SourceProduct(description = "The first product providing ozone values for ozone interpolation. " +
-            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Ozone interpolation start product (TOMSOMI)")
-    private Product tomsomiStartProduct;
+            label = "Ozone interpolation start product (TOMSOMI or CAMS)")
+    private Product ozoneStartProduct;
 
     @SourceProduct(description = "The second product providing ozone values for ozone interpolation. " +
-            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Ozone interpolation end product (TOMSOMI)")
-    private Product tomsomiEndProduct;
+            label = "Ozone interpolation end product (TOMSOMI or CAMS)")
+    private Product ozoneEndProduct;
 
     @SourceProduct(description = "The first product providing air pressure values for pressure interpolation. " +
-            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Air pressure interpolation start product (NCEP)")
-    private Product ncepStartProduct;
+            label = "Air pressure interpolation start product (NCEP or CAMS)")
+    private Product pressureStartProduct;
 
     @SourceProduct(description = "The second product providing air pressure values for pressure interpolation. " +
-            "Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
+            "Use either the TOMSOMI and NCEP products or CAMS products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
             optional = true,
-            label = "Air pressure interpolation end product (NCEP)")
-    private Product ncepEndProduct;
+            label = "Air pressure interpolation end product (NCEP or CAMS)")
+    private Product pressureEndProduct;
 
     @Parameter(label = "Valid-pixel expression",
             defaultValue = "B8 > 0 && B8 < 0.1",
@@ -303,6 +303,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private ElevationModel elevationModel;
     private double[] solflux;
     private TimeCoding timeCoding;
+    private ProductData.UTC sourceTime;
 
 
     @Override
@@ -311,23 +312,23 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     }
 
     @Override
-    public void setTomsomiStartProduct(Product tomsomiStartProduct) {
-        this.tomsomiStartProduct = tomsomiStartProduct;
+    public void setOzoneStartProduct(Product ozoneStartProduct) {
+        this.ozoneStartProduct = ozoneStartProduct;
     }
 
     @Override
-    public void setTomsomiEndProduct(Product tomsomiEndProduct) {
-        this.tomsomiEndProduct = tomsomiEndProduct;
+    public void setOzoneEndProduct(Product ozoneEndProduct) {
+        this.ozoneEndProduct = ozoneEndProduct;
     }
 
     @Override
-    public void setNcepStartProduct(Product ncepStartProduct) {
-        this.ncepStartProduct = ncepStartProduct;
+    public void setPressureStartProduct(Product pressureStartProduct) {
+        this.pressureStartProduct = pressureStartProduct;
     }
 
     @Override
-    public void setNcepEndProduct(Product ncepEndProduct) {
-        this.ncepEndProduct = ncepEndProduct;
+    public void setPressureEndProduct(Product pressureEndProduct) {
+        this.pressureEndProduct = pressureEndProduct;
     }
 
     @Override
@@ -995,6 +996,13 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             addNnNamesMetadata();
             pm.worked(1);
             pm.setSubTaskName("Initialising atmospheric auxiliary data");
+            if (sourceProduct.getStartTime() == null) {
+                // if no start/end time is set, read it from the metadata
+                // (should not happen anymore from SNAP 4.0.2 on)
+                sourceTime = getStartTime();
+            } else {
+                sourceTime = sourceProduct.getStartTime();
+            }
             initAtmosphericAuxdata();
             pm.worked(1);
         } catch (IOException e) {
@@ -1116,8 +1124,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         auxdataBuilder.setOzone(ozone);
         auxdataBuilder.setSurfacePressure(press);
         auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
-        auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
-        auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
+        auxdataBuilder.useTomsomiCamsProducts(ozoneStartProduct, ozoneEndProduct);
+        auxdataBuilder.useNcepCamsProducts(pressureStartProduct, pressureEndProduct);
+        auxdataBuilder.setSourceTime(sourceTime);
         try {
             atmosphericAuxdata = auxdataBuilder.create();
         } catch (Exception e) {
