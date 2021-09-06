@@ -574,7 +574,7 @@ class PrismProductDirectory {
         final double lonUL = shr.getSceneCornerUpperLeftLon();
         final double lonUR = shr.getSceneCornerUpperRightLon();
         final double lonLL = shr.getSceneCornerLowerLeftLon();
-        final double lonLR = shr.getSceneCornerLowerLeftLat();
+        final double lonLR = shr.getSceneCornerLowerRightLon();
         return new double[]{lonUL, lonUR, lonLL, lonLR};
     }
 

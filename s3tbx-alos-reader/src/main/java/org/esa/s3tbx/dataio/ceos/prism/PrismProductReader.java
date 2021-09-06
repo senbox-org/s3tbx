@@ -103,8 +103,6 @@ public class PrismProductReader extends AbstractProductReader {
      */
     @Override
     protected Product readProductNodesImpl() throws IOException {
-        final ProductReaderPlugIn readerPlugIn = getReaderPlugIn();
-        final Object input = getInput();
         final File fileFromInput = CeosHelper.getFileFromInput(getInput());
         final Product product;
         try {

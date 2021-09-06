@@ -103,8 +103,6 @@ public class Avnir2ProductReader extends AbstractProductReader {
      */
     @Override
     protected Product readProductNodesImpl() throws IOException {
-        final ProductReaderPlugIn readerPlugIn = getReaderPlugIn();
-        final Object input = getInput();
         final File fileFromInput = CeosHelper.getFileFromInput(getInput());
         Product product;
         try {

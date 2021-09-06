@@ -99,7 +99,7 @@ class Avnir2LeaderFile {
         final double lonUL = _sceneHeaderRecord.getSceneCornerUpperLeftLon();
         final double lonUR = _sceneHeaderRecord.getSceneCornerUpperRightLon();
         final double lonLL = _sceneHeaderRecord.getSceneCornerLowerLeftLon();
-        final double lonLR = _sceneHeaderRecord.getSceneCornerLowerLeftLat();
+        final double lonLR = _sceneHeaderRecord.getSceneCornerLowerRightLon();
         return new double[]{lonUL, lonUR, lonLL, lonLR};
     }
 
