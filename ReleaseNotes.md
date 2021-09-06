@@ -6,6 +6,7 @@ Changes in S3TBX 9.0.0
 
 ### Bug
 
+    [SIIITBX-395] Metadata value SCENE_LOWER_RIGHT_LONGITUDE is not correct for ALOS
     [SIIITBX-388] Extent of OLCI scene is wrong after resampling
     [SIIITBX-386] Fill value is not considered for Landsat Level-2 data
     [SIIITBX-383] Update information regarding the structure of ancillary directory
