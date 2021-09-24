@@ -157,7 +157,7 @@ public abstract class SeadasFileReader {
 
     public FlagCoding readFlagCoding(Product product, Band bandName) {
         Variable variable = variableMap.get(bandName);
-        if (variable.getFullName().contains("flag")){
+        if (variable.getFullName().contains("flag")) {
             final String codingName = variable.getShortName() + "_coding";
             return readFlagCoding(variable, codingName);
         } else {
@@ -230,9 +230,9 @@ public abstract class SeadasFileReader {
     protected void addFlagsAndMasks(Product product) {
 
         if (product.getProductType().contains("VIIRS L1B")) {
-            for(Band bandName:product.getBands()){
+            for (Band bandName : product.getBands()) {
                 FlagCoding flagCoding = readFlagCoding(product, bandName);
-                if (flagCoding != null){
+                if (flagCoding != null) {
                     product.getFlagCodingGroup().add(flagCoding);
                     bandName.setSampleCoding(flagCoding);
                 }
@@ -797,7 +797,7 @@ public abstract class SeadasFileReader {
         }
     }
 
-    protected Map<Band, Variable> add3DNewBands(Product product, Variable variable, Map<Band, Variable> bandToVariableMap ) {
+    protected Map<Band, Variable> add3DNewBands(Product product, Variable variable, Map<Band, Variable> bandToVariableMap) {
         final int sceneRasterWidth = product.getSceneRasterWidth();
         final int sceneRasterHeight = product.getSceneRasterHeight();
 
@@ -813,103 +813,112 @@ public abstract class SeadasFileReader {
             // final List<Attribute> list = variable.getAttributes();
 
             Variable wvl = ncFile.findVariable("sensor_band_parameters/wavelength");
-            try {
-                wavelengths = wvl.read();
-            } catch (IOException e) {
+            // wavenlengths for modis L2 files
+            if (wvl == null) {
+                if (bands == 2 || bands == 3) {
+                    wvl = ncFile.findVariable("HDFEOS/SWATHS/Aerosol_NearUV_Swath/Data_Fields/Wavelength");
+                    // wavelenghs for DSCOVR EPIC L2 files
+                }
             }
+            if (wvl != null) {
+                try {
+                    wavelengths = wvl.read();
+                } catch (IOException e) {
+                }
 
-            for (int i = 0; i < bands; i++) {
-                final String shortname = variable.getShortName();
-                StringBuilder longname = new StringBuilder(shortname);
-                longname.append("_");
-                longname.append(wavelengths.getInt(i));
-                String name = longname.toString();
-                final int dataType = getProductDataType(variable);
+                for (int i = 0; i < bands; i++) {
+                    final String shortname = variable.getShortName();
+                    StringBuilder longname = new StringBuilder(shortname);
+                    longname.append("_");
+                    longname.append(wavelengths.getInt(i));
+                    String name = longname.toString();
+                    final int dataType = getProductDataType(variable);
 
-                if(!product.containsBand(name)) {
+                    if (!product.containsBand(name)) {
 
-                    final Band band = new Band(name, dataType, width, height);
-                    product.addBand(band);
+                        final Band band = new Band(name, dataType, width, height);
+                        product.addBand(band);
 
-                    Variable sliced = null;
-                    try {
-                        sliced = variable.slice(2, i);
-                    } catch (InvalidRangeException e) {
-                        e.printStackTrace();  //Todo change body of catch statement.
-                    }
-                    bandToVariableMap.put(band, sliced);
-
-                    try {
-                        Attribute fillValue = variable.findAttribute("_FillValue");
-                        if (fillValue == null) {
-                            fillValue = variable.findAttribute("bad_value_scaled");
+                        Variable sliced = null;
+                        try {
+                            sliced = variable.slice(2, i);
+                        } catch (InvalidRangeException e) {
+                            e.printStackTrace();  //Todo change body of catch statement.
                         }
-                        band.setNoDataValue((double) fillValue.getNumericValue().floatValue());
-                        band.setNoDataValueUsed(true);
-                    } catch (Exception ignored) {
-                    }
+                        bandToVariableMap.put(band, sliced);
 
-                    final List<Attribute> list = variable.getAttributes();
-                    double[] validMinMax = {0.0, 0.0};
-                    for (Attribute attribute : list) {
-                        final String attribName = attribute.getShortName();
-                        if ("units".equals(attribName)) {
-                            band.setUnit(attribute.getStringValue());
-                        } else if ("long_name".equals(attribName)) {
-                            band.setDescription(attribute.getStringValue());
-                        } else if ("slope".equals(attribName)) {
-                            band.setScalingFactor(attribute.getNumericValue(0).doubleValue());
-                        } else if ("intercept".equals(attribName)) {
-                            band.setScalingOffset(attribute.getNumericValue(0).doubleValue());
-                        } else if ("scale_factor".equals(attribName)) {
-                            band.setScalingFactor(attribute.getNumericValue(0).doubleValue());
-                        } else if ("add_offset".equals(attribName)) {
-                            band.setScalingOffset(attribute.getNumericValue(0).doubleValue());
-                        } else if (attribName.startsWith("valid_")) {
-                            if ("valid_min".equals(attribName)) {
-                                if (attribute.getDataType().isUnsigned()) {
-                                    validMinMax[0] = getUShortAttribute(attribute);
-                                } else {
+                        try {
+                            Attribute fillValue = variable.findAttribute("_FillValue");
+                            if (fillValue == null) {
+                                fillValue = variable.findAttribute("bad_value_scaled");
+                            }
+                            band.setNoDataValue((double) fillValue.getNumericValue().floatValue());
+                            band.setNoDataValueUsed(true);
+                        } catch (Exception ignored) {
+                        }
+
+                        final List<Attribute> list = variable.getAttributes();
+                        double[] validMinMax = {0.0, 0.0};
+                        for (Attribute attribute : list) {
+                            final String attribName = attribute.getShortName();
+                            if ("units".equals(attribName)) {
+                                band.setUnit(attribute.getStringValue());
+                            } else if ("long_name".equals(attribName)) {
+                                band.setDescription(attribute.getStringValue());
+                            } else if ("slope".equals(attribName)) {
+                                band.setScalingFactor(attribute.getNumericValue(0).doubleValue());
+                            } else if ("intercept".equals(attribName)) {
+                                band.setScalingOffset(attribute.getNumericValue(0).doubleValue());
+                            } else if ("scale_factor".equals(attribName)) {
+                                band.setScalingFactor(attribute.getNumericValue(0).doubleValue());
+                            } else if ("add_offset".equals(attribName)) {
+                                band.setScalingOffset(attribute.getNumericValue(0).doubleValue());
+                            } else if (attribName.startsWith("valid_")) {
+                                if ("valid_min".equals(attribName)) {
+                                    if (attribute.getDataType().isUnsigned()) {
+                                        validMinMax[0] = getUShortAttribute(attribute);
+                                    } else {
+                                        validMinMax[0] = attribute.getNumericValue(0).doubleValue();
+                                    }
+                                } else if ("valid_max".equals(attribName)) {
+                                    if (attribute.getDataType().isUnsigned()) {
+                                        validMinMax[1] = getUShortAttribute(attribute);
+                                    } else {
+                                        validMinMax[1] = attribute.getNumericValue(0).doubleValue();
+                                    }
+                                } else if ("valid_range".equals(attribName)) {
                                     validMinMax[0] = attribute.getNumericValue(0).doubleValue();
+                                    validMinMax[1] = attribute.getNumericValue(1).doubleValue();
                                 }
-                            } else if ("valid_max".equals(attribName)) {
-                                if (attribute.getDataType().isUnsigned()) {
-                                    validMinMax[1] = getUShortAttribute(attribute);
-                                } else {
-                                    validMinMax[1] = attribute.getNumericValue(0).doubleValue();
-                                }
-                            } else if ("valid_range".equals(attribName)) {
-                                validMinMax[0] = attribute.getNumericValue(0).doubleValue();
-                                validMinMax[1] = attribute.getNumericValue(1).doubleValue();
                             }
                         }
-                    }
-                    if (validMinMax[0] != validMinMax[1]) {
-                        String validExp;
-                        if (ncFile.getFileTypeId().equalsIgnoreCase("HDF4")) {
-                            validExp = format("%s >= %.05f && %s <= %.05f", name, validMinMax[0], name, validMinMax[1]);
+                        if (validMinMax[0] != validMinMax[1]) {
+                            String validExp;
+                            if (ncFile.getFileTypeId().equalsIgnoreCase("HDF4")) {
+                                validExp = format("%s >= %.05f && %s <= %.05f", name, validMinMax[0], name, validMinMax[1]);
 
-                        } else {
-                            double[] minmax = {0.0, 0.0};
-                            minmax[0] = validMinMax[0];
-                            minmax[1] = validMinMax[1];
+                            } else {
+                                double[] minmax = {0.0, 0.0};
+                                minmax[0] = validMinMax[0];
+                                minmax[1] = validMinMax[1];
 
-                            if (band.getScalingFactor() != 1.0) {
-                                minmax[0] *= band.getScalingFactor();
-                                minmax[1] *= band.getScalingFactor();
+                                if (band.getScalingFactor() != 1.0) {
+                                    minmax[0] *= band.getScalingFactor();
+                                    minmax[1] *= band.getScalingFactor();
+                                }
+                                if (band.getScalingOffset() != 0.0) {
+                                    minmax[0] += band.getScalingOffset();
+                                    minmax[1] += band.getScalingOffset();
+                                }
+                                validExp = format("%s >= %.05f && %s <= %.05f", name, minmax[0], name, minmax[1]);
+
                             }
-                            if (band.getScalingOffset() != 0.0) {
-                                minmax[0] += band.getScalingOffset();
-                                minmax[1] += band.getScalingOffset();
-                            }
-                            validExp = format("%s >= %.05f && %s <= %.05f", name, minmax[0], name, minmax[1]);
-
+                            band.setValidPixelExpression(validExp);//.format(name, validMinMax[0], name, validMinMax[1]));
                         }
-                        band.setValidPixelExpression(validExp);//.format(name, validMinMax[0], name, validMinMax[1]));
+                    } else {
+                        logger.log(Level.WARNING, "The Product '" + product.getName() + "' contains duplicate bands" +
+                                " with the name '" + name + "', one will be ignored.");
                     }
-                } else {
-                    logger.log(Level.WARNING, "The Product '" + product.getName() + "' contains duplicate bands" +
-                            " with the name '" + name + "', one will be ignored.");
                 }
             }
         }
@@ -1252,7 +1261,8 @@ public abstract class SeadasFileReader {
             return attribute.getNumericValue(0).intValue();
         }
     }
-    public int getUShortAttribute(Attribute attribute)  {
+
+    public int getUShortAttribute(Attribute attribute) {
         return (attribute.getNumericValue(0).shortValue() & 0xffff);
     }
 
@@ -1481,12 +1491,11 @@ public abstract class SeadasFileReader {
                 }
                 if (!find_valstart) {
                     leadLineSkip++;
-                }
-                else{
+                } else {
                     break;
                 }
             }
-            for (int i = lineCount; i-- > 0;) {
+            for (int i = lineCount; i-- > 0; ) {
                 boolean find_valstart = false;
                 for (int j = 0; j < shape[1]; j++) {
                     float valstart = array.getFloat(i * shape[1] + j);
@@ -1497,8 +1506,7 @@ public abstract class SeadasFileReader {
                 }
                 if (!find_valstart) {
                     tailLineSkip++;
-                }
-                else{
+                } else {
                     break;
                 }
             }
