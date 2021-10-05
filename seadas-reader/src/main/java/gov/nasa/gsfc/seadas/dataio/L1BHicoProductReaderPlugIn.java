@@ -74,25 +74,28 @@ public class L1BHicoProductReaderPlugIn implements ProductReaderPlugIn {
         try {
             ncfile = NetcdfFileOpener.open(file.getPath());
             if (ncfile != null) {
-                Attribute instrumentName = ncfile.findGlobalAttribute("metadata_FGDC_Instrument_Information_Instrument_Name");
+                Attribute instrumentName = ncfile.findGlobalAttribute("instrument");
+                Attribute processingLevel = ncfile.findGlobalAttribute("processing_level");
 
                 //metadata/FGDC/Instrument_Information/Instrument_Name = "Hyperspectral Imager for Coastal Oceans"
 
                 if (instrumentName != null) {
-                    if (instrumentName.toString().contains("Hyperspectral Imager for Coastal Oceans")) {
-                        if (DEBUG) {
-                            System.out.println(file);
+                    if (processingLevel != null) {
+                        if (instrumentName.getStringValue().equals("HICO") && processingLevel.getStringValue().equals("L1B")) {
+                            if (DEBUG) {
+                                System.out.println(file);
+                            }
+                            ncfile.close();
+                            return DecodeQualification.INTENDED;
                         }
-                        ncfile.close();
-                        return DecodeQualification.INTENDED;
                     } else {
                         if (DEBUG) {
-                            System.out.println("# Unrecognized instrument name=[" + instrumentName + "]: " + file);
+                            System.out.println("# Missing processing_level attribute: " + file);
                         }
                     }
                 } else {
                     if (DEBUG) {
-                        System.out.println("# Missing Instrument_Name attribute': " + file);
+                        System.out.println("# Missing instrument attribute': " + file);
                     }
                 }
             } else {
