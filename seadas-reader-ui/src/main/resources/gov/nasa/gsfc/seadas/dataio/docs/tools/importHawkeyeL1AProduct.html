@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Sentinel Toolbox Help - Import MODIS L1B Products</title>
+    <title>Sentinel Toolbox Help - Import Hawkeye L1A Products</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -22,19 +22,17 @@
     </tr>
 </table>
 
-<h2 class="center">NASA MODIS Level-1B Product Reader</h2>
+<h2 class="center">NASA Hawkeye Level-1A Product Reader</h2>
 
 
 
-<p>This SeaDAS product reader is for the L1B data of the
-    Moderate Resolution Imaging Spectrometer [https://modis.gsfc.nasa.gov]
-    (MODIS) instruments operating on both the Terra and Aqua spacecraft.  The files are in the HDF-EOS format.</p>
+<p>This HawkEye product reader is for the L1A data of the
+    HawkEye [https://uncw.edu/socon/hawkeye.html]
+     instrument operating on the SeaHawk cubesat.  The files are in the NetCDF4 format.
+See also [https://oceancolor.gsfc.nasa.gov/data/hawkeye/summary]</p>
 <p>The reader will attempt to identify the corresponding geolocation file to use
-for navigating the product.  If one does not exist (or cannont be identified), the
+for navigating the product.  If one does not exist (or cannot be identified), the
 product will be loaded without any georeferencing capabilities.</p>
-
-<p>If geolocation is possible, the reader implements a correction for the "bow-tie" effect.
-This is only for navigation/reprojection purposes.  The underlying data are not modified.</p>
 
 </body>
 </html>
