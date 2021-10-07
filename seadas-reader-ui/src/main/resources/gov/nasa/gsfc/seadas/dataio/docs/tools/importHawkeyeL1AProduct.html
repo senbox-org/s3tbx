@@ -1,12 +1,11 @@
 <html>
 <head>
-    <title>Sentinel Toolbox Help - Import VIIRS Products</title>
+    <title>Sentinel Toolbox Help - Import Hawkeye L1A Products</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
-
 
 <table class="header">
     <tr class="header">
@@ -23,23 +22,17 @@
     </tr>
 </table>
 
-<h2 class="center">NASA VIIRS Products Readers</h2>
+<h2 class="center">NASA Hawkeye Level-1A Product Reader</h2>
 
 
 
-<p>This SeaDAS product reader is for the Visible Infrared Imaging Radiometer Suite
-    [https://npp.gsfc.nasa.gov/viirs.html]
-    (VIIRS) data products.  The reader recognizes the HDF5 formatted:</p>
-<ul>
-    <li>Level 1B: Sensor Data Records (SDR)</li>
-    <li>Level 2:Environmental Data Records (EDR)</li>
-</ul>
+<p>This HawkEye product reader is for the L1A data of the
+    HawkEye [https://uncw.edu/socon/hawkeye.html]
+    instrument operating on the SeaHawk cubesat.  The files are in the NetCDF4 format.
+    See also [https://oceancolor.gsfc.nasa.gov/data/hawkeye/summary]</p>
 <p>The reader will attempt to identify the corresponding geolocation file to use
-    for navigating the product.  If one does not exist (or cannont be identified), the
+    for navigating the product.  If one does not exist (or cannot be identified), the
     product will be loaded without any georeferencing capabilities.</p>
-
-<p>If geolocation is possible, the reader implements a correction for the "bow-tie" effect.
-    This is only for navigation/reprojection purposes.  The underlying data are not modified.</p>
 
 </body>
 </html>
