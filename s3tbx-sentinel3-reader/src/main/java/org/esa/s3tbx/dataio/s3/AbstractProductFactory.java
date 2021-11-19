@@ -456,7 +456,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         final MultiLevelImage mlImage = getImageForTpg(tpgName);
         final Raster tpData = mlImage.getImage(0).getData();
         final double[] tiePoints = new double[tpData.getWidth() * tpData.getHeight()];
-        tpData.getPixels(0, 0, tpData.getWidth(), tpData.getHeight(), tiePoints);
+        tpData.getPixels(tpData.getMinX(), tpData.getMinY(), tpData.getWidth(), tpData.getHeight(), tiePoints);
         return tiePoints;
     }
 
