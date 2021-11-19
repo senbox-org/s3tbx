@@ -153,17 +153,17 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
                                     double sourceTrackOffset, short[] sourceResolutions) {
         final int subSamplingX = sourceResolutions[0] / referenceResolutions[0];
         final int subSamplingY = sourceResolutions[1] / referenceResolutions[1];
-        final float[] tiePointGridOffsets = getTiePointGridOffsets(sourceStartOffset, sourceTrackOffset,
-                                                                   subSamplingX, subSamplingY);
+        final double[] tiePointGridOffsets = getTiePointGridOffsets(sourceStartOffset, sourceTrackOffset,
+                                                                    subSamplingX, subSamplingY);
         return copyBandAsTiePointGrid(sourceBand, targetProduct, subSamplingX, subSamplingY,
                                       tiePointGridOffsets[0], tiePointGridOffsets[1]);
     }
 
-    protected float[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
-                                             int subSamplingX, int subSamplingY) {
-        float[] tiePointGridOffsets = new float[2];
-        tiePointGridOffsets[0] = (float) (referenceTrackOffset - sourceTrackOffset * subSamplingX);
-        tiePointGridOffsets[1] = (float) (sourceStartOffset * subSamplingY - referenceStartOffset);
+    protected double[] getTiePointGridOffsets(double sourceStartOffset, double sourceTrackOffset,
+                                              int subSamplingX, int subSamplingY) {
+        double[] tiePointGridOffsets = new double[2];
+        tiePointGridOffsets[0] = referenceTrackOffset - sourceTrackOffset * subSamplingX;
+        tiePointGridOffsets[1] = sourceStartOffset * subSamplingY - referenceStartOffset;
         return tiePointGridOffsets;
     }
 
