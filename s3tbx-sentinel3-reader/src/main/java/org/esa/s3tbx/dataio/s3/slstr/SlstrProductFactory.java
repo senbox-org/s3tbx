@@ -98,8 +98,16 @@ public abstract class SlstrProductFactory extends AbstractProductFactory {
         return resolutions;
     }
 
+    protected double getReferenceStartOffset() {
+        return referenceStartOffset;
+    }
+
     void setReferenceStartOffset(double startOffset) {
         referenceStartOffset = startOffset;
+    }
+
+    protected double getReferenceTrackOffset() {
+        return referenceTrackOffset;
     }
 
     void setReferenceTrackOffset(double trackOffset) {
