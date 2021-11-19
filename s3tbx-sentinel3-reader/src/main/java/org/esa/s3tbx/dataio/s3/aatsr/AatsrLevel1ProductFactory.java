@@ -1,15 +1,27 @@
 package org.esa.s3tbx.dataio.s3.aatsr;
 
 import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.glevel.support.DefaultMultiLevelImage;
+import com.bc.ceres.glevel.support.DefaultMultiLevelSource;
 import org.esa.s3tbx.dataio.s3.Manifest;
 import org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory;
 import org.esa.s3tbx.dataio.s3.util.MetTxReader;
 import org.esa.s3tbx.dataio.s3.util.S3NetcdfReader;
+import org.esa.snap.core.dataio.geocoding.ComponentFactory;
+import org.esa.snap.core.dataio.geocoding.ComponentGeoCoding;
+import org.esa.snap.core.dataio.geocoding.ForwardCoding;
+import org.esa.snap.core.dataio.geocoding.GeoChecks;
+import org.esa.snap.core.dataio.geocoding.GeoRaster;
+import org.esa.snap.core.dataio.geocoding.InverseCoding;
+import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
+import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TiePointGrid;
 
+import javax.media.jai.RenderedOp;
+import javax.media.jai.operator.CropDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -21,9 +33,6 @@ import java.util.List;
 public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
 
     private Product masterProduct;
-
-//    private static final double ANGLE_FILL_VALUE = 9969209968386869000000000000000000000.0;
-//    private static final double FILL_VALUE = -1.0E9;
 
     public AatsrLevel1ProductFactory(AatsrLevel1ProductReader productReader) {
         super(productReader);
@@ -101,16 +110,28 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
     }
 
     @Override
-    protected RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset, double sourceTrackOffset, short[] sourceResolutions) {
+    protected void configureTargetNode(Band sourceBand, RasterDataNode targetNode) {
+        if (targetNode.getName().matches("l\\w{2,3}itude_i[on]")) {
+            targetNode.setValidPixelExpression(String.format("%s.raw != -999", targetNode.getName()));
+        }
+    }
+
+    @Override
+    protected RasterDataNode copyTiePointGrid(Band sourceBand, Product targetProduct, double sourceStartOffset,
+                                              double sourceTrackOffset, short[] sourceResolutions) {
         final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
         final String tpgName = sourceBand.getName();
-        putTiePointSourceImage(tpgName, sourceImage);
-        // offset computation is done according to page 9-11 of (A)ATSR Expert Support Laboratory FAST Level 1b Product Definition (Ref: PO-TN-RAL-AT-0568 Issue: 1.4)
-        // https://earth.esa.int/documents/700255/2482719/PO-TN-RAL-AT-0568+-+FAST+Level+1b+Product+Definition+Issue+1.4/ecb0344b-32c4-4172-b7a7-e32bddf40309
-        final int subSamplingXY = 16;
-        final float[] tiePointGridOffsets = getTiePointGridOffsets(sourceStartOffset, sourceTrackOffset, subSamplingXY, subSamplingXY);
-        final TiePointGrid tiePointGrid = new TiePointGrid(tpgName, sourceBand.getRasterWidth(), sourceBand.getRasterHeight(),
-                                                           tiePointGridOffsets[0] + 0.5, tiePointGridOffsets[1] + 0.5, subSamplingXY, subSamplingXY);
+        final float cutOff = 0.0f;
+        final RenderedOp tpgImage = CropDescriptor.create(sourceImage, 0.0f, cutOff,
+                                                          (float) sourceBand.getRasterWidth(), (float) sourceBand.getRasterHeight() - cutOff, null);
+        putTiePointSourceImage(tpgName, new DefaultMultiLevelImage(new DefaultMultiLevelSource(tpgImage, 1)));
+        final short[] referenceResolutions = getReferenceResolutions();
+        final int subSamplingX = sourceResolutions[0] / referenceResolutions[0];
+        final int subSamplingY = sourceResolutions[1] / referenceResolutions[1];
+        final double[] tiePointGridOffsets = getTiePointGridOffsets(sourceStartOffset, sourceTrackOffset, subSamplingX, subSamplingY);
+        final TiePointGrid tiePointGrid = new TiePointGrid(tpgName, tpgImage.getWidth(), tpgImage.getHeight(),
+                                                           tiePointGridOffsets[0], tiePointGridOffsets[1],
+                                                           subSamplingX, subSamplingY);
 
         final String unit = sourceBand.getUnit();
         tiePointGrid.setUnit(unit);
@@ -129,12 +150,22 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         return tiePointGrid;
     }
 
+    protected double[] getTiePointGridOffsets(double tpStartOffset, double tpTrackOffset,
+                                              int subSamplingX, int subSamplingY) {
+        double[] tiePointGridOffsets = new double[2];
+        final double referenceTrackOffset = getReferenceTrackOffset();
+        final double referenceStartOffset = getReferenceStartOffset();
+        tiePointGridOffsets[0] = referenceTrackOffset - ((tpTrackOffset - 1) * subSamplingX);
+        tiePointGridOffsets[1] = (tpStartOffset - 1) * subSamplingY - referenceStartOffset + 1;
+        return tiePointGridOffsets;
+    }
+
     @Override
     protected void setGeoCoding(Product targetProduct) {
 // TODO https://senbox.atlassian.net/browse/SIIITBX-394
 // Not setting GeoCoding. We can't get a good geolocation with the tie-points and the geo-location bands are not usable
 // because they contain fill_values.
-/*
+
         final String lonVariableName = "longitude_tx";
         final String latVariableName = "latitude_tx";
         final TiePointGrid lonGrid = targetProduct.getTiePointGrid(lonVariableName);
@@ -158,11 +189,11 @@ public class AatsrLevel1ProductFactory extends SlstrLevel1ProductFactory {
         sceneGeoCoding.initialize();
 
         targetProduct.setSceneGeoCoding(sceneGeoCoding);
-*/
+
     }
 
     @Override
-    protected void setBandGeoCodings(Product product) throws IOException {
+    protected void setBandGeoCodings(Product product) {
         // empty implementation to prevent using pixel-based GeoCodings for AATSR.
         // They are not usable due to no-data in the bands.
     }
