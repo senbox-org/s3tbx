@@ -158,19 +158,19 @@ public abstract class AbstractProductFactory implements ProductFactory {
 
     protected TiePointGrid copyBandAsTiePointGrid(Band sourceBand, Product targetProduct, int subSamplingX,
                                                   int subSamplingY,
-                                                  float offsetX, float offsetY) {
+                                                  double offsetX, double offsetY) {
         final MultiLevelImage sourceImage = sourceBand.getGeophysicalImage();
         final String unit = sourceBand.getUnit();
 
-        float newOffsetX = offsetX % subSamplingX;
-        float dataOffsetX = (newOffsetX - offsetX) / subSamplingX;
+        double newOffsetX = offsetX % subSamplingX;
+        double dataOffsetX = (newOffsetX - offsetX) / subSamplingX;
         double newWidth = Math.min(sourceBand.getRasterWidth(),
                                    Math.ceil((targetProduct.getSceneRasterWidth() - newOffsetX) / subSamplingX));
-        float newOffsetY = offsetY % subSamplingY;
-        float dataOffsetY = (newOffsetY - offsetY) / subSamplingY;
+        double newOffsetY = offsetY % subSamplingY;
+        double dataOffsetY = (newOffsetY - offsetY) / subSamplingY;
         double newHeight = Math.min(sourceBand.getRasterHeight(),
                                     Math.ceil((targetProduct.getSceneRasterHeight() - newOffsetY) / subSamplingY));
-        RenderedOp translatedSourceImage = TranslateDescriptor.create(sourceImage, -dataOffsetX, -dataOffsetY,
+        RenderedOp translatedSourceImage = TranslateDescriptor.create(sourceImage, (float) -dataOffsetX, (float) -dataOffsetY,
                                                                       Interpolation.getInstance(Interpolation.INTERP_NEAREST), null);
         RenderedImage croppedSourceImage = CropDescriptor.create(translatedSourceImage, 0f, 0f,
                                                                  (float) newWidth, (float) newHeight, null);
