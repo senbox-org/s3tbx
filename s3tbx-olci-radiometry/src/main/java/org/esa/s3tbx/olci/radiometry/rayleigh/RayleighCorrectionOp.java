@@ -146,8 +146,8 @@ public class RayleighCorrectionOp extends Operator {
 
 
     // for debugging set to true
-    private boolean addRrayDebug = false;
-    private boolean addS2GeometryBandsDebug = false;
+    private final boolean addRrayDebug = false;
+    private final boolean addS2GeometryBandsDebug = false;
 
     private RayleighCorrAlgorithm algorithm;
     private Sensor sensor;
@@ -174,7 +174,19 @@ public class RayleighCorrectionOp extends Operator {
                                                                                    sourceBandNames,
                                                                                    s2MsiTargetResolution);
             }
+        } else { // for OLCI and MERIS and MERIS 4th
+            for (String bandName : sourceBandNames) {
+                if (isWavelength709(sourceProduct.getBand(bandName).getSpectralWavelength())) {
+                    final boolean lowerBandPresent = sourceProduct.containsBand(Sensor.OLCI.getLowerWvBandName());
+                    final boolean upperBandPresent = sourceProduct.containsBand(Sensor.OLCI.getUpperWvBandName());
+                    if (!lowerBandPresent || !upperBandPresent) {
+                        throw new OperatorException(String.format("In order to process band '%s' also the bands '%s' and '%s' need to be available.",
+                                                                  bandName, Sensor.OLCI.getLowerWvBandName(), Sensor.OLCI.getUpperWvBandName()));
+                    }
+                }
+            }
         }
+
         Product targetProduct = new Product(productToProcess.getName() + "_rayleigh", productToProcess.getProductType(),
                                             productToProcess.getSceneRasterWidth(), productToProcess.getSceneRasterHeight());
         addTargetBands(productToProcess, targetProduct);
@@ -249,7 +261,7 @@ public class RayleighCorrectionOp extends Operator {
                         reflectance = getReflectance(rayleighAux);
                     }
 
-                    if (Math.ceil(rayleighAux.getWaveLength()) == WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION) {
+                    if (isWavelength709(rayleighAux.getWaveLength())) {
                         reflectance = waterVaporCorrection709(reflectance, targetRectangle, sensor);
                     }
                     double[] corrOzoneRefl = getCorrectOzone(rayleighAux, reflectance, sourceBandIndex, targetBandName);
@@ -275,6 +287,10 @@ public class RayleighCorrectionOp extends Operator {
                 setTargetSamples(qualityFlagsTile, targetTile, targetData);
             }
         });
+    }
+
+    private boolean isWavelength709(double waveLength) {
+        return Math.ceil(waveLength) == WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION;
     }
 
     private void setTargetSamples(Tile qualityFlagsTile, Tile targetTile, double[] targetData) {
@@ -316,10 +332,8 @@ public class RayleighCorrectionOp extends Operator {
     }
 
     private double[] waterVaporCorrection709(double[] reflectances, Rectangle targetRectangle, Sensor sensor) {
-        String bandNameFormat = sensor.getNameFormat();
-        int[] upperLowerBounds = sensor.getBounds();
-        double[] bWVRefTile = getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNameFormat, upperLowerBounds[1])), targetRectangle));
-        double[] bWVTile = getSampleDoubles(getSourceTile(sourceProduct.getBand(String.format(bandNameFormat, upperLowerBounds[0])), targetRectangle));
+        double[] bWVRefTile = getSampleDoubles(getSourceTile(sourceProduct.getBand(sensor.getUpperWvBandName()), targetRectangle));
+        double[] bWVTile = getSampleDoubles(getSourceTile(sourceProduct.getBand(sensor.getLowerWvBandName()), targetRectangle));
         return algorithm.waterVaporCorrection709(reflectances, bWVRefTile, bWVTile);
     }
 
