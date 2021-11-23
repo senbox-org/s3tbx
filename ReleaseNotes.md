@@ -6,7 +6,11 @@ Changes in S3TBX 9.0.0
 
 ### Bug
 
+    [SIIITBX-402] The help generation shows errors during the build process
+    [SIIITBX-401] Rayleigh Correction fails if band Oa11_radiance is included for correction
+    [SIIITBX-397] Fixes for seadas reader fo PACE HICO and MERIS data L1B/L2
     [SIIITBX-395] Metadata value SCENE_LOWER_RIGHT_LONGITUDE is not correct for ALOS
+    [SIIITBX-394] AATSR data of 4th reprocessing does not provide geo-location information
     [SIIITBX-388] Extent of OLCI scene is wrong after resampling
     [SIIITBX-386] Fill value is not considered for Landsat Level-2 data
     [SIIITBX-383] Update information regarding the structure of ancillary directory
@@ -18,6 +22,7 @@ Changes in S3TBX 9.0.0
 
 ### New Feature
 
+    [SIIITBX-398] SeaDAS 3D reader which can output 2D bands for each wavelength in the 3D input file
     [SIIITBX-392] S3 data to use pixel-based geo-location information by default
     [SIIITBX-389] Support NASA distributed MERIS and OLCI files
     [SIIITBX-385] Support for new version of OLCI L2 water
@@ -34,6 +39,7 @@ Changes in S3TBX 9.0.0
 
 ### Improvement
 
+    [SIIITBX-399] Update help pages for SeaDAS reader
     [SIIITBX-393] Implement OLCI anomaly detection OP S3MPC requests
     [SIIITBX-390] FU operator to optionally compute dominant wavelength
     [SIIITBX-378] Help pages for reader shall be moved to S3TBX
