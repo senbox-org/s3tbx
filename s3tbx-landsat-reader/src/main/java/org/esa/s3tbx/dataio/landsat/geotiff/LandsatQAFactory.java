@@ -24,9 +24,11 @@ public class LandsatQAFactory {
             FileReader fileReader = new FileReader(mtlFile);
             reader = new BufferedReader(fileReader);
             String line = reader.readLine();
+            int collection = 1;
             while (line != null) {
                 if (line.contains("COLLECTION_NUMBER")) {
                     isCollectionProduct = true;
+                    collection = Integer.parseInt(line.substring(line.indexOf('=') + 1).trim());
                 }
                 if (line.contains("SENSOR_ID")) {
                     if (line.contains("OLI")) {
@@ -39,7 +41,7 @@ public class LandsatQAFactory {
                 }
 
                 if(isCollectionProduct && isMSS) return new CollectionMSSLandsatQA();
-                if(isCollectionProduct && isOLI) return new CollectionOLILandsatQA();
+                if(isCollectionProduct && isOLI) return collection == 1 ? new CollectionOLILandsatQA() : new Collection2OLILandsatQA();
                 if(isCollectionProduct && isTM) return new CollectionTMLandsatQA();
                 if(!isCollectionProduct && isOLI) return new PreCollectionLandsatQA();
 
