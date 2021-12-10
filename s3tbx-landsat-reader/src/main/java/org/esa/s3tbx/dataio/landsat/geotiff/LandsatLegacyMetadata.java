@@ -161,7 +161,7 @@ class LandsatLegacyMetadata extends AbstractLandsatMetadata {
 
     boolean isLegacyFormat() {
         MetadataElement metadata = getProductMetadata();
-        return metadata != null && metadata.getAttribute("BAND1_FILE_NAME") != null;
+        return metadata.getAttribute("BAND1_FILE_NAME") != null;
     }
 
 }

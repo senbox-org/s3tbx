@@ -102,9 +102,7 @@ public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
         } catch (IOException e) {
             return false;
         }
-        return firstLine != null &&
-                (firstLine.trim().matches("GROUP = L1_METADATA_FILE") ||
-                        firstLine.trim().matches("GROUP = LANDSAT_METADATA_FILE"));
+        return firstLine != null && firstLine.trim().matches("GROUP = L1_METADATA_FILE");
     }
 
     @Override
