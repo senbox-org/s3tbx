@@ -177,11 +177,11 @@ public class RayleighCorrectionOp extends Operator {
         } else { // for OLCI and MERIS and MERIS 4th
             for (String bandName : sourceBandNames) {
                 if (isWavelength709(sourceProduct.getBand(bandName).getSpectralWavelength())) {
-                    final boolean lowerBandPresent = sourceProduct.containsBand(Sensor.OLCI.getLowerWvBandName());
-                    final boolean upperBandPresent = sourceProduct.containsBand(Sensor.OLCI.getUpperWvBandName());
+                    final boolean lowerBandPresent = sourceProduct.containsBand(sensor.getLowerWvBandName());
+                    final boolean upperBandPresent = sourceProduct.containsBand(sensor.getUpperWvBandName());
                     if (!lowerBandPresent || !upperBandPresent) {
                         throw new OperatorException(String.format("In order to process band '%s' also the bands '%s' and '%s' need to be available.",
-                                                                  bandName, Sensor.OLCI.getLowerWvBandName(), Sensor.OLCI.getUpperWvBandName()));
+                                                                  bandName, sensor.getLowerWvBandName(), sensor.getUpperWvBandName()));
                     }
                 }
             }
