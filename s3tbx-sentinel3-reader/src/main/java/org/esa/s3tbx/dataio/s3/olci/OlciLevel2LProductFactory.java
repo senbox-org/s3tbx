@@ -19,8 +19,14 @@ public class OlciLevel2LProductFactory extends OlciProductFactory {
 
     @Override
     protected void setAutoGrouping(Product[] sourceProducts, Product targetProduct) {
-        targetProduct.setAutoGrouping("IWV:OGVI:OTCI:RC681:RC865:atmospheric_temperature_profile:" +
-                "lambda0:FWHM:solar_flux");
+
+        final String vegVariable = containsGifapar(targetProduct) ? "GIFAPAR" : "OGVI";
+        targetProduct.setAutoGrouping("IWV:" + vegVariable + ":OTCI:RC681:RC865:atmospheric_temperature_profile:" +
+                                              "lambda0:FWHM:solar_flux");
+    }
+
+    private boolean containsGifapar(Product targetProduct) {
+        return targetProduct.getBandGroup().contains("GIFAPAR");
     }
 
     @Override
@@ -36,11 +42,19 @@ public class OlciLevel2LProductFactory extends OlciProductFactory {
                                       "LQSF.SNOW_ICE or LQSF.OTCI_FAIL or LQSF.OTCI_CLASS_CLSN",
                               "Excluding pixels that are deemed unreliable for OTCI. Flag recommended by QWG.",
                               getColorProvider().getMaskColor(otciMaskName), 0.5);
-        String ogviMaskName = "LQSF_OGVI_RECOM";
-        targetProduct.addMask(ogviMaskName, "LQSF.CLOUD or LQSF.CLOUD_AMBIGUOUS or LQSF.CLOUD_MARGIN or " +
-                                      "LQSF.SNOW_ICE or LQSF.OGVI_FAIL",
-                              "Excluding pixels that are deemed unreliable for OGVI. Flag recommended by QWG.",
-                              getColorProvider().getMaskColor(ogviMaskName), 0.5);
+        if (containsGifapar(targetProduct)) {
+            String gifaparMaskName = "LQSF_GIFAPAR_RECOM";
+            targetProduct.addMask(gifaparMaskName, "LQSF.CLOUD or LQSF.CLOUD_AMBIGUOUS or LQSF.CLOUD_MARGIN or " +
+                                          "LQSF.SNOW_ICE or LQSF.GIFAPAR_FAIL",
+                                  "Excluding pixels that are deemed unreliable for OGVI. Flag recommended by QWG.",
+                                  getColorProvider().getMaskColor(gifaparMaskName), 0.5);
+        } else {
+            String ogviMaskName = "LQSF_OGVI_RECOM";
+            targetProduct.addMask(ogviMaskName, "LQSF.CLOUD or LQSF.CLOUD_AMBIGUOUS or LQSF.CLOUD_MARGIN or " +
+                                          "LQSF.SNOW_ICE or LQSF.OGVI_FAIL",
+                                  "Excluding pixels that are deemed unreliable for OGVI. Flag recommended by QWG.",
+                                  getColorProvider().getMaskColor(ogviMaskName), 0.5);
+        }
         String iwvMaskName = "LQSF_IWV_RECOM";
         targetProduct.addMask(iwvMaskName, "LQSF.CLOUD or LQSF.CLOUD_AMBIGUOUS or LQSF.CLOUD_MARGIN or " +
                                       "LQSF.SNOW_ICE or LQSF.WV_FAIL",

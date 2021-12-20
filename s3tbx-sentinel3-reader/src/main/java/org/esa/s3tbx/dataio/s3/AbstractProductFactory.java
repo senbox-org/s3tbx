@@ -212,6 +212,7 @@ public abstract class AbstractProductFactory implements ProductFactory {
         for (Band band : bands) {
             final String bandName = band.getName();
             final String errorBandName = bandName + "_err";
+            final String uncBandName = bandName + "_unc";
             final String uncertaintyBandName = bandName + "_uncertainty";
             if (product.containsBand(errorBandName)) {
                 final Band errorBand = product.getBand(errorBandName);
@@ -221,6 +222,10 @@ public abstract class AbstractProductFactory implements ProductFactory {
                 final Band uncertaintyBand = product.getBand(uncertaintyBandName);
                 band.addAncillaryVariable(uncertaintyBand, "uncertainty");
                 addUncertaintyImageInfo(uncertaintyBand);
+            } else if (product.containsBand(uncBandName)) {
+                final Band uncBand = product.getBand(uncBandName);
+                band.addAncillaryVariable(uncBand, "uncertainty");
+                addUncertaintyImageInfo(uncBand);
             }
         }
     }
