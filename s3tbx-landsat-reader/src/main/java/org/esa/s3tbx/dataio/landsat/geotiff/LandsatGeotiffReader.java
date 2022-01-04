@@ -20,18 +20,11 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.VirtualDir;
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.dataio.AbstractProductReader;
-import org.esa.snap.core.dataio.ProductReader;
+import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.Mask;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.SourceImageScaler;
-import org.esa.snap.dataio.geotiff.GeoTiffProductReaderPlugIn;
 import org.esa.snap.runtime.Config;
 
 import javax.media.jai.ImageLayout;
@@ -163,7 +156,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
     }
 
     private void addBands(Product product) throws IOException {
-        final GeoTiffProductReaderPlugIn plugIn = new GeoTiffProductReaderPlugIn();
+        //final GeoTiffProductReaderPlugIn plugIn = new GeoTiffProductReaderPlugIn();
         final MetadataAttribute[] productAttributes = landsatMetadata.getProductMetadata().getAttributes();
         final Pattern pattern = landsatMetadata.getOpticalBandFileNamePattern();
 
@@ -176,8 +169,9 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                 String fileName = metadataAttribute.getData().getElemString();
 
                 File bandFile = virtualDir.getFile(basePath + fileName);
-                ProductReader productReader = plugIn.createReaderInstance();
-                Product bandProduct = productReader.readProductNodes(bandFile, null);
+                //ProductReader productReader = plugIn.createReaderInstance();
+                //Product bandProduct = productReader.readProductNodes(bandFile, null);
+                final Product bandProduct = ProductIO.readProduct(bandFile);
                 if (bandProduct != null) {
                     bandProducts.add(bandProduct);
                     Band srcBand = bandProduct.getBandAt(0);
@@ -204,52 +198,52 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                                 break;
                             default:
                                 LOG.warning(String.format("Property '%s' has unsupported value '%s'",
-                                                          LandsatGeotiffReader.SYSPROP_READ_AS, readAs));
+                                        LandsatGeotiffReader.SYSPROP_READ_AS, readAs));
                         }
                     }
                 }
-            } else if (attributeName.equals(landsatMetadata.getQualityBandNameKey()) && landsatQA != null) {
+            } else if (attributeName.startsWith(landsatMetadata.getQualityBandNameKey()) && landsatQA != null) {
                 String fileName = metadataAttribute.getData().getElemString();
                 File bandFile = virtualDir.getFile(basePath + fileName);
-                ProductReader productReader = plugIn.createReaderInstance();
-                Product bandProduct = productReader.readProductNodes(bandFile, null);
+                //ProductReader productReader = plugIn.createReaderInstance();
+                //Product bandProduct = productReader.readProductNodes(bandFile, null);
+                final Product bandProduct = ProductIO.readProduct(bandFile);
                 if (bandProduct != null) {
                     bandProducts.add(bandProduct);
                     Band srcBand = bandProduct.getBandAt(0);
-                    String bandName = "flags";
+                    String bandName = attributeName.endsWith("SATURATION") ? "satflags" : "flags";
 
                     Band band = addBandToProduct(bandName, srcBand, product);
                     band.setNoDataValue(0.0);
                     band.setNoDataValueUsed(true);
-                    band.setDescription("Quality Band");
+                    band.setDescription(attributeName.endsWith("SATURATION") ? "Saturation Band" : "Quality Band");
 
                     FlagCoding flagCoding = landsatQA.createFlagCoding(bandName);
                     band.setSampleCoding(flagCoding);
                     product.getFlagCodingGroup().add(flagCoding);
-                    List<Mask> masks;
-
-                    if (Resolution.DEFAULT.equals(targetResolution)) {
-                        Dimension dimension = landsatMetadata.getReflectanceDim();
-                        if (dimension == null) {
-                            dimension = landsatMetadata.getThermalDim();
-                        }
-                        masks = landsatQA.createMasks(dimension != null ? dimension : product.getSceneRasterSize());
-                    } else {
-                        masks = landsatQA.createMasks(product.getSceneRasterSize());
-                    }
-                    for (Mask mask : masks) {
-                        product.getMaskGroup().add(mask);
-                    }
-
                 }
             }
         }
-
+        if (landsatQA != null) {
+            List<Mask> masks;
+            if (Resolution.DEFAULT.equals(targetResolution)) {
+                Dimension dimension = landsatMetadata.getReflectanceDim();
+                if (dimension == null) {
+                    dimension = landsatMetadata.getThermalDim();
+                }
+                masks = landsatQA.createMasks(dimension != null ? dimension : product.getSceneRasterSize());
+            } else {
+                masks = landsatQA.createMasks(product.getSceneRasterSize());
+            }
+            for (Mask mask : masks) {
+                product.getMaskGroup().add(mask);
+            }
+        }
         ImageLayout imageLayout = new ImageLayout();
         for (Product bandProduct : bandProducts) {
             if (product.getSceneGeoCoding() == null &&
-                product.getSceneRasterWidth() == bandProduct.getSceneRasterWidth() &&
-                product.getSceneRasterHeight() == bandProduct.getSceneRasterHeight()) {
+                    product.getSceneRasterWidth() == bandProduct.getSceneRasterWidth() &&
+                    product.getSceneRasterHeight() == bandProduct.getSceneRasterHeight()) {
                 product.setSceneGeoCoding(bandProduct.getSceneGeoCoding());
                 Dimension tileSize = bandProduct.getPreferredTileSize();
                 if (tileSize == null) {
@@ -275,7 +269,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
             MultiLevelImage targetImage = null;
             for (Product bandProduct : bandProducts) {
                 if (product.getSceneRasterWidth() == bandProduct.getSceneRasterWidth() &&
-                    product.getSceneRasterHeight() == bandProduct.getSceneRasterHeight()) {
+                        product.getSceneRasterHeight() == bandProduct.getSceneRasterHeight()) {
                     targetImage = bandProduct.getBandAt(0).getSourceImage();
                     break;
                 }
@@ -293,8 +287,8 @@ public class LandsatGeotiffReader extends AbstractProductReader {
 
                 Band band = product.getBandAt(i);
                 PlanarImage image = SourceImageScaler.scaleMultiLevelImage(targetImage, sourceImage, scalings, null, renderingHints,
-                                                                           band.getNoDataValue(),
-                                                                           Interpolation.getInstance(Interpolation.INTERP_NEAREST));
+                        band.getNoDataValue(),
+                        Interpolation.getInstance(Interpolation.INTERP_NEAREST));
                 band.setSourceImage(image);
             }
         }
