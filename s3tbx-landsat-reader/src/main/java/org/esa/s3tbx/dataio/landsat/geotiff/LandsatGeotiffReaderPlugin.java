@@ -25,11 +25,7 @@ import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.io.FileUtils;
 import org.esa.snap.core.util.io.SnapFileFilter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Locale;
 
 /**
@@ -102,7 +98,9 @@ public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
         } catch (IOException e) {
             return false;
         }
-        return firstLine != null && firstLine.trim().matches("GROUP = L1_METADATA_FILE");
+        return firstLine != null &&
+                (firstLine.trim().matches("GROUP = L1_METADATA_FILE") ||
+                        firstLine.trim().matches("GROUP = LANDSAT_METADATA_FILE"));
     }
 
     @Override

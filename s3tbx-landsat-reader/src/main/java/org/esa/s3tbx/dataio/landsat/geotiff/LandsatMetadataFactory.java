@@ -43,10 +43,15 @@ class LandsatMetadataFactory {
                 FileReader fileReader = new FileReader(mtlFile);
                 reader = new BufferedReader(fileReader);
                 String line = reader.readLine();
+                int collection = 1;
                 while (line != null) {
-                    if (line.contains("SPACECRAFT_ID")) {
+                    if (line.contains("COLLECTION_NUMBER")) {
+                        collection = Integer.parseInt(line.substring(line.indexOf('=') + 1).trim());
+                    } else if (line.contains("SPACECRAFT_ID")) {
                         if (line.contains("LANDSAT_8")) {
-                            return new Landsat8Metadata(new FileReader(mtlFile));
+                            return collection == 1 ?
+                                    new Landsat8Metadata(new FileReader(mtlFile)) :
+                                    new Landsat8C2Metadata(new FileReader(mtlFile));
                         } else {
                             return new LandsatReprocessedMetadata(new FileReader(mtlFile));
                         }

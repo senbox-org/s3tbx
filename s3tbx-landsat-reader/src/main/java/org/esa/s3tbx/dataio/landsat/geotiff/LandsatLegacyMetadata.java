@@ -19,7 +19,7 @@ package org.esa.s3tbx.dataio.landsat.geotiff;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
@@ -161,7 +161,7 @@ class LandsatLegacyMetadata extends AbstractLandsatMetadata {
 
     boolean isLegacyFormat() {
         MetadataElement metadata = getProductMetadata();
-        return metadata.getAttribute("BAND1_FILE_NAME") != null;
+        return metadata != null && metadata.getAttribute("BAND1_FILE_NAME") != null;
     }
 
 }
