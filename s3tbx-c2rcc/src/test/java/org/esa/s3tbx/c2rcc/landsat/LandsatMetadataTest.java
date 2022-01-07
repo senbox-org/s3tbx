@@ -47,8 +47,10 @@ public class LandsatMetadataTest {
     private final LandsatMetadata metadata;
 
     public LandsatMetadataTest(int colNum) {
-        final MetadataElement testRoot = createMetadata(colNum);
         this.colNum = colNum;
+        final MetadataElement landsatMetadata = createMetadata(colNum);
+        final MetadataElement testRoot = new MetadataElement("root");
+        testRoot.addElement(landsatMetadata);
         metadata = new LandsatMetadata(testRoot);
     }
 
@@ -86,10 +88,8 @@ public class LandsatMetadataTest {
     }
 
     // 0 = pre-collection data; 1 = collection 1; 2 = collection 2
-    private static MetadataElement createMetadata(int collection) {
-        final MetadataElement root = new MetadataElement("root");
+    public static MetadataElement createMetadata(int collection) {
         final MetadataElement metadataFile = new MetadataElement(collection == 2 ? "LANDSAT_METADATA_FILE" : "L1_METADATA_FILE");
-        root.addElement(metadataFile);
 
         final MetadataElement contentsInfo = new MetadataElement(collection == 2 ? "PRODUCT_CONTENTS" : "METADATA_FILE_INFO");
         final MetadataAttribute colNumAttribute = new MetadataAttribute("COLLECTION_NUMBER", ProductData.createInstance(new double[]{collection}), true);
@@ -112,6 +112,6 @@ public class LandsatMetadataTest {
         imageAttributes.addAttribute(new MetadataAttribute("SUN_ELEVATION", ProductData.createInstance(new double[]{67.89}), true));
         metadataFile.addElement(imageAttributes);
 
-        return root;
+        return metadataFile;
     }
 }
