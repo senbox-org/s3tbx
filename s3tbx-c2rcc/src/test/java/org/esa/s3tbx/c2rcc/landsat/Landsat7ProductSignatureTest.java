@@ -1,7 +1,6 @@
 package org.esa.s3tbx.c2rcc.landsat;
 
 import org.esa.snap.core.datamodel.CrsGeoCoding;
-import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
@@ -220,34 +219,19 @@ public class Landsat7ProductSignatureTest {
     private C2rccLandsat7Operator createDefaultOperator() throws FactoryException, TransformException {
         C2rccLandsat7Operator operator = new C2rccLandsat7Operator();
         operator.setParameterDefaultValues();
-        operator.setSourceProduct(createLandsat8TestProduct());
+        operator.setSourceProduct(createLandsat7TestProduct());
         return operator;
     }
 
-    private Product createLandsat8TestProduct() throws FactoryException, TransformException {
+    private Product createLandsat7TestProduct() throws FactoryException, TransformException {
         Product product = new Product("test-L7", "t", 1, 1);
         for (int i = 0; i < C2rccLandsat7Operator.L7_BAND_COUNT; i++) {
             String expression = String.valueOf(i);
             product.addBand(C2rccLandsat7Operator.EXPECTED_BANDNAMES[i], expression);
         }
         MetadataElement metadataRoot = product.getMetadataRoot();
-        MetadataElement l1MetadataFile = new MetadataElement("L1_METADATA_FILE");
-        MetadataElement imageAttributes = new MetadataElement("IMAGE_ATTRIBUTES");
-        imageAttributes.addAttribute(new MetadataAttribute("SUN_AZIMUTH", ProductData.createInstance(new double[]{42}), true));
-        imageAttributes.addAttribute(new MetadataAttribute("SUN_ELEVATION", ProductData.createInstance(new double[]{10}), true));
-        l1MetadataFile.addElement(imageAttributes);
-
-        MetadataElement radiometricRescaling = new MetadataElement("RADIOMETRIC_RESCALING");
-        for (int i = 0; i < C2rccLandsat8Operator.L8_BAND_COUNT; i++) {
-            radiometricRescaling.addAttribute(new MetadataAttribute(String.format("REFLECTANCE_ADD_BAND_%d", i + 1),
-                                                                    ProductData.createInstance(new double[]{0.1}), true));
-            radiometricRescaling.addAttribute(new MetadataAttribute(String.format("REFLECTANCE_MULT_BAND_%d", i + 1),
-                                                                    ProductData.createInstance(new double[]{2.4}), true));
-        }
-
-        l1MetadataFile.addElement(radiometricRescaling);
-
-        metadataRoot.addElement(l1MetadataFile);
+        final MetadataElement metadata = LandsatMetadataTest.createMetadata(0);
+        metadataRoot.addElement(metadata);
 
         Date time = new Date();
         product.setStartTime(ProductData.UTC.create(time, 0));

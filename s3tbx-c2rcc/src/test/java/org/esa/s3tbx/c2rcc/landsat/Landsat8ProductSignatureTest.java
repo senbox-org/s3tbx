@@ -3,7 +3,6 @@ package org.esa.s3tbx.c2rcc.landsat;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
@@ -234,23 +233,8 @@ public class Landsat8ProductSignatureTest {
             product.addBand(C2rccLandsat8Operator.EXPECTED_BANDNAMES[i], expression);
         }
         MetadataElement metadataRoot = product.getMetadataRoot();
-        MetadataElement l1MetadataFile = new MetadataElement("L1_METADATA_FILE");
-        MetadataElement imageAttributes = new MetadataElement("IMAGE_ATTRIBUTES");
-        imageAttributes.addAttribute(new MetadataAttribute("SUN_AZIMUTH", ProductData.createInstance(new double[]{42}), true));
-        imageAttributes.addAttribute(new MetadataAttribute("SUN_ELEVATION", ProductData.createInstance(new double[]{10}), true));
-        l1MetadataFile.addElement(imageAttributes);
-
-        MetadataElement radiometricRescaling = new MetadataElement("RADIOMETRIC_RESCALING");
-        for (int i = 0; i < C2rccLandsat8Operator.L8_BAND_COUNT; i++) {
-            radiometricRescaling.addAttribute(new MetadataAttribute(String.format("REFLECTANCE_ADD_BAND_%d", i + 1),
-                                                                    ProductData.createInstance(new double[]{0.1}), true));
-            radiometricRescaling.addAttribute(new MetadataAttribute(String.format("REFLECTANCE_MULT_BAND_%d", i + 1),
-                                                                    ProductData.createInstance(new double[]{2.4}), true));
-        }
-
-        l1MetadataFile.addElement(radiometricRescaling);
-
-        metadataRoot.addElement(l1MetadataFile);
+        final MetadataElement metadata = LandsatMetadataTest.createMetadata(0);
+        metadataRoot.addElement(metadata);
 
         Date time = new Date();
         product.setStartTime(ProductData.UTC.create(time, 0));
