@@ -21,21 +21,29 @@ import com.bc.ceres.core.VirtualDir;
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.dataio.AbstractProductReader;
 import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.FlagCoding;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.MetadataElement;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.SourceImageScaler;
+import org.esa.snap.dataio.geotiff.GeoTiffProductReaderPlugIn;
 import org.esa.snap.runtime.Config;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.RenderingHints;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -157,6 +165,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
     }
 
     private void addBands(Product product) throws IOException {
+        final GeoTiffProductReaderPlugIn plugIn = new GeoTiffProductReaderPlugIn();
         final MetadataAttribute[] productAttributes = landsatMetadata.getProductMetadata().getAttributes();
         final Pattern pattern = landsatMetadata.getOpticalBandFileNamePattern();
         product.setAutoGrouping("sun:view");
@@ -170,7 +179,8 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                 String fileName = metadataAttribute.getData().getElemString();
 
                 File bandFile = virtualDir.getFile(basePath + fileName);
-                final Product bandProduct = ProductIO.readProduct(bandFile);
+                ProductReader productReader = plugIn.createReaderInstance();
+                Product bandProduct = productReader.readProductNodes(bandFile, null);
                 if (bandProduct != null) {
                     bandProducts.add(bandProduct);
                     Band srcBand = bandProduct.getBandAt(0);
@@ -202,7 +212,8 @@ public class LandsatGeotiffReader extends AbstractProductReader {
             } else if (qualityBandNameKey != null && landsatQA != null && attributeName.startsWith(qualityBandNameKey) ) {
                 String fileName = metadataAttribute.getData().getElemString();
                 File bandFile = virtualDir.getFile(basePath + fileName);
-                final Product bandProduct = ProductIO.readProduct(bandFile);
+                ProductReader productReader = plugIn.createReaderInstance();
+                Product bandProduct = productReader.readProductNodes(bandFile, null);
                 if (bandProduct != null) {
                     bandProducts.add(bandProduct);
                     Band srcBand = bandProduct.getBandAt(0);
@@ -334,81 +345,6 @@ public class LandsatGeotiffReader extends AbstractProductReader {
         }
     }
 
-   /* private List<Mask> createMasks(Dimension size) {
-        ArrayList<Mask> masks = new ArrayList<>();
-        final int width = size.width;
-        final int height = size.height;
-
-        masks.add(Mask.BandMathsType.create("designated_fill",
-                                            "Designated Fill",
-                                            width, height,
-                                            "flags.designated_fill",
-                                            ColorIterator.next(),
-                                            0.5));
-        masks.add(Mask.BandMathsType.create("dropped_frame",
-                                            "Dropped Frame",
-                                            width, height,
-                                            "flags.dropped_frame",
-                                            ColorIterator.next(),
-                                            0.5));
-        masks.add(Mask.BandMathsType.create("terrain_occlusion",
-                                            "Terrain Occlusion",
-                                            width, height,
-                                            "flags.terrain_occlusion",
-                                            ColorIterator.next(),
-                                            0.5));
-        masks.addAll(createConfidenceMasks("water_confidence", "Water confidence", width, height));
-        //masks.addAll(createConfidenceMasks("vegetation_confidence", "Vegetation confidence", width, height));
-        masks.addAll(createConfidenceMasks("snow_ice_confidence", "Snow/ice confidence", width, height));
-        masks.addAll(createConfidenceMasks("cirrus_confidence", "Cirrus confidence", width, height));
-        masks.addAll(createConfidenceMasks("cloud_confidence", "Cloud confidence", width, height));
-
-        return masks;
-    }*/
-
-    /*private List<Mask> createConfidenceMasks(String flagMaskBaseName, String descriptionBaseName, int width, int height) {
-        List<Mask> masks = new ArrayList<>();
-        masks.add(Mask.BandMathsType.create(flagMaskBaseName + "_low",
-                                            descriptionBaseName + " 0-35%",
-                                            width, height,
-                                            "flags." + flagMaskBaseName + "_one and not flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
-                                            0.5));
-        masks.add(Mask.BandMathsType.create(flagMaskBaseName + "_mid",
-                                            descriptionBaseName + " 36-64%",
-                                            width, height,
-                                            "not flags." + flagMaskBaseName + "_one and flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
-                                            0.5));
-        masks.add(Mask.BandMathsType.create(flagMaskBaseName + "_high",
-                                            descriptionBaseName + " 65-100%",
-                                            width, height,
-                                            "flags." + flagMaskBaseName + "_one and flags." + flagMaskBaseName + "_two",
-                                            ColorIterator.next(),
-                                            0.5));
-        return masks;
-    }*/
-
-    /*private FlagCoding createFlagCoding(String bandName) {
-        FlagCoding flagCoding = new FlagCoding(bandName);
-        flagCoding.addFlag("designated_fill", 1, "Designated Fill");
-        flagCoding.addFlag("dropped_frame", 2, "Dropped Frame");
-        flagCoding.addFlag("terrain_occlusion", 4, "Terrain Occlusion");
-        flagCoding.addFlag("reserved_1", 8, "Reserved for a future 1-bit class artifact designation");
-        flagCoding.addFlag("water_confidence_one", 16, "Water confidence bit one");
-        flagCoding.addFlag("water_confidence_two", 32, "Water confidence bit two");
-        flagCoding.addFlag("reserved_2_one", 64, "Reserved for a future 2-bit class artifact designation");
-        flagCoding.addFlag("reserved_2_two", 128, "Reserved for a future 2-bit class artifact designation");
-        flagCoding.addFlag("reserved_3_one", 256, "Vegetation confidence bit one");
-        flagCoding.addFlag("reserved_3_two", 512, "Vegetation confidence bit two");
-        flagCoding.addFlag("snow_ice_confidence_one", 1024, "Snow/ice confidence bit one");
-        flagCoding.addFlag("snow_ice_confidence_two", 2048, "Snow/ice confidence bit two");
-        flagCoding.addFlag("cirrus_confidence_one", 4096, "Cirrus confidence bit one");
-        flagCoding.addFlag("cirrus_confidence_two", 8192, "Cirrus confidence bit two");
-        flagCoding.addFlag("cloud_confidence_one", 16384, "Cloud confidence bit one");
-        flagCoding.addFlag("cloud_confidence_two", 32768, "Cloud confidence bit two");
-        return flagCoding;
-    }*/
 
     @Override
     protected void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight, int sourceStepX, int sourceStepY,
@@ -427,42 +363,6 @@ public class LandsatGeotiffReader extends AbstractProductReader {
         virtualDir.close();
         virtualDir = null;
         super.close();
-    }
-
-    private static class ColorIterator {
-
-        static ArrayList<Color> colors;
-        static Iterator<Color> colorIterator;
-
-        static {
-            colors = new ArrayList<>();
-            colors.add(Color.red);
-            colors.add(Color.red.darker());
-            colors.add(Color.red.darker().darker());
-            colors.add(Color.blue);
-            colors.add(Color.blue.darker());
-            colors.add(Color.blue.darker().darker());
-            colors.add(Color.green);
-            colors.add(Color.green.darker());
-            colors.add(Color.green.darker().darker());
-            colors.add(Color.yellow);
-            colors.add(Color.yellow.darker());
-            colors.add(Color.yellow.darker().darker());
-            colors.add(Color.magenta);
-            colors.add(Color.magenta.darker());
-            colors.add(Color.magenta.darker().darker());
-            colors.add(Color.pink);
-            colors.add(Color.pink.darker());
-            colors.add(Color.pink.darker().darker());
-            colorIterator = colors.iterator();
-        }
-
-        static Color next() {
-            if (!colorIterator.hasNext()) {
-                colorIterator = colors.iterator();
-            }
-            return colorIterator.next();
-        }
     }
 
 }
