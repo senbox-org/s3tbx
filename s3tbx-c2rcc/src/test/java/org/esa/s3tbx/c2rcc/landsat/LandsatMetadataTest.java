@@ -40,7 +40,7 @@ public class LandsatMetadataTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{{1}, {2}});
+        return Arrays.asList(new Object[][]{{0}, {1}, {2}});
     }
 
     private final int colNum;
@@ -85,17 +85,20 @@ public class LandsatMetadataTest {
         assertArrayEquals(expected, reflectanceScalingValues, 1.e-8);
     }
 
+    // 0 = pre-collection data; 1 = collection 1; 2 = collection 2
     private static MetadataElement createMetadata(int collection) {
         final MetadataElement root = new MetadataElement("root");
-        final MetadataElement metadataFile = new MetadataElement(collection == 1 ? "L1_METADATA_FILE" : "LANDSAT_METADATA_FILE");
+        final MetadataElement metadataFile = new MetadataElement(collection == 2 ? "LANDSAT_METADATA_FILE" : "L1_METADATA_FILE");
         root.addElement(metadataFile);
 
-        final MetadataElement contentsInfo = new MetadataElement(collection == 1 ? "METADATA_FILE_INFO" : "PRODUCT_CONTENTS");
+        final MetadataElement contentsInfo = new MetadataElement(collection == 2 ? "PRODUCT_CONTENTS" : "METADATA_FILE_INFO");
         final MetadataAttribute colNumAttribute = new MetadataAttribute("COLLECTION_NUMBER", ProductData.createInstance(new double[]{collection}), true);
-        contentsInfo.addAttribute(colNumAttribute);
+        if (collection >= 1) { // only add if collection 1 or 2
+            contentsInfo.addAttribute(colNumAttribute);
+        }
         metadataFile.addElement(contentsInfo);
 
-        final MetadataElement rescaling = new MetadataElement(collection == 1 ? "RADIOMETRIC_RESCALING" : "LEVEL1_RADIOMETRIC_RESCALING");
+        final MetadataElement rescaling = new MetadataElement(collection == 2 ? "LEVEL1_RADIOMETRIC_RESCALING" : "RADIOMETRIC_RESCALING");
         for (int i = 0; i < L8_BAND_COUNT; i++) {
             final MetadataAttribute addAttribute = new MetadataAttribute(String.format("REFLECTANCE_ADD_BAND_%d", i + 1), ProductData.createInstance(new double[]{i}), true);
             final MetadataAttribute multAttribute = new MetadataAttribute(String.format("REFLECTANCE_MULT_BAND_%d", i + 1), ProductData.createInstance(new double[]{i}), true);

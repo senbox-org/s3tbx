@@ -93,7 +93,7 @@ public class LandsatMetadata {
     }
 
     private MetadataElement getRadiometricRescaling() {
-        return getMetadataFile().getElement(colNum == 1 ? "RADIOMETRIC_RESCALING" : "LEVEL1_RADIOMETRIC_RESCALING");
+        return getMetadataFile().getElement(colNum == 2 ? "LEVEL1_RADIOMETRIC_RESCALING" : "RADIOMETRIC_RESCALING");
     }
 
     private int collectionNumber() {
@@ -105,8 +105,15 @@ public class LandsatMetadata {
         } else {
             contentsInfo = metadataFile.getElement("METADATA_FILE_INFO");
         }
-        final int number = contentsInfo.getAttributeInt("COLLECTION_NUMBER");
-        if (number == 1 || number == 2) {
+
+        final int number;
+        if (contentsInfo.containsAttribute("COLLECTION_NUMBER")) {
+            number = contentsInfo.getAttributeInt("COLLECTION_NUMBER");
+        } else {
+            number = 0; // pre collection data - handle like Col1
+        }
+
+        if (number >= 0 && number <= 2) {
             return number;
         } else {
             throw new IllegalStateException(String.format("Unknown collection number: %d", colNum));
