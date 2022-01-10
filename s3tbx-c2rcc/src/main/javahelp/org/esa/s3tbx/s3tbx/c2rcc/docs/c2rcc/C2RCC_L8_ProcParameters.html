@@ -25,7 +25,8 @@
 <table class="header">
     <tr class="header">
         <td class="header">C2RCC Landsat-8 Processing Parameters</td>
-        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
                 src="../images/snap_header.jpg"
                 border=0></a>
         </td>
@@ -38,8 +39,21 @@
 
 <ul>
     <li><b>Valid-pixel expression</b><br>
-        The arithmetic expression defines the pixels which are valid for processing. Pixels which are not valid will be marked as no-data in the
-        target product.
+        The arithmetic expression defines the pixels which are valid for processing. Pixels which are not valid will be
+        marked as no-data in the
+        target product. For Landsat 8 no default expression is provided. There are multiple way of doing defining an
+        expression. Usually one would want to discriminate between land and water.
+        The expression depends on how the landsat reader is configured.
+        <p>
+            By default the values are radiances.<br>
+            <b>near_infrared > 0 && near_infrared < 25</b><br>
+            If you have switched to reflectances, the following should work.<br>
+            <b>near_infrared > 0 && near_infrared < 0.1</b><br>
+            The exact values might need to be adjusted.
+        </p>
+        Alternatively, Idepix can be used for preprocessing and adding a land/water mask, or an elevation band can
+        be added and based on the elevation value land and water can be discriminated. Or the land-sea mask operator
+        can be used.
     </li>
     <li><b>Salinity</b><br>
         The value used as water salinity for the scene.
@@ -78,7 +92,8 @@
         Threshold for cloud test based on downwelling transmittance @865.
     </li>
     <li><b>Atmospheric aux data path</b><br>
-        Path to the atmospheric auxiliary data directory. Use either this or the specified products on the I/O Parameters (ozone, air pressure) tab. If the auxiliary data is
+        Path to the atmospheric auxiliary data directory. Use either this or the specified products on the I/O
+        Parameters (ozone, air pressure) tab. If the auxiliary data is
         not available at this path, the data will automatically be downloaded.
     </li>
     <li><b>Alternative NN Path</b><br>
@@ -92,7 +107,8 @@
         Write remote sensing reflectances instead of water leaving reflectances.
     </li>
     <li><b>Derive water reflectance from path radiance and transmittance</b><br>
-        Alternative way of calculating water reflectance. <span style="background-color:yellow">Still experimental.</span>
+        Alternative way of calculating water reflectance. <span
+                style="background-color:yellow">Still experimental.</span>
     </li>
     <li><b>Output gas corrected TOSA reflectances</b><br>
         Can be enabled to include the TOSA reflectances in the target product.

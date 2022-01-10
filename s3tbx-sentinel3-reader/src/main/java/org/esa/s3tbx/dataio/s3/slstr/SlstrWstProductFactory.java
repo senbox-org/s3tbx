@@ -125,4 +125,9 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
     protected void setBandGeoCodings(Product product) {
         // this is intended - we do not have band geo-codings for this product type tb 2020-04-20
     }
+
+    @Override
+    protected void setTimeCoding(Product targetProduct) throws IOException {
+        // empty by design - prevents the SlstrSstProductFactory implementation from being called tb 2021-01-19
+    }
 }

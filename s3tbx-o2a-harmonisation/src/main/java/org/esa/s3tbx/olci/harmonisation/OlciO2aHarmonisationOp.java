@@ -1,11 +1,7 @@
 package org.esa.s3tbx.olci.harmonisation;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.OperatorSpi;
@@ -20,13 +16,14 @@ import org.esa.snap.core.util.math.MathUtils;
 import org.json.simple.parser.ParseException;
 import smile.neighbor.KDTree;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 /**
  * Performs O2A band harmonisation on OLCI L1b product.
+ * Implements last update v4 provided by R.Preusker, June 2020.
  * Authors: R.Preusker (algorithm, Python breadboard), O.Danne, M.Peters (Java conversion), 2018-2019
  * <p/>
  *
@@ -34,11 +31,11 @@ import java.util.regex.Pattern;
  * @author Olaf Danne
  * @author Marco Peters
  */
-@OperatorMetadata(alias = "OlciO2aHarmonisation", version = "1.1",
+@OperatorMetadata(alias = "OlciO2aHarmonisation", version = "1.2",
         authors = "R.Preusker, O.Danne, M.Peters",
         category = "Optical/Preprocessing",
-        copyright = "Copyright (C) 2018 by Brockmann Consult",
-        description = "Performs O2A band harmonisation on OLCI L1b product.")
+        copyright = "Copyright (C) 2018-2020 by Brockmann Consult",
+        description = "Performs O2A band harmonisation on OLCI L1b product. Implements update v4 of R.Preusker, June 2020.")
 public class OlciO2aHarmonisationOp extends Operator {
 
     @SourceProduct(description = "OLCI L1b or fully compatible product. " +
@@ -76,12 +73,12 @@ public class OlciO2aHarmonisationOp extends Operator {
     private Band detectorIndexBand;
 
     private Band[] radianceBands;
-    private Band[] cwlBands;
-    private Band[] fwhmBands;
     private Band[] solarFluxBands;
 
     private KDTree<double[]>[] desmileKdTrees;
     private DesmileLut[] desmileLuts;
+    private OlciHarmonisationIO.SpectralCharacteristics specChar;
+    private double[][] dwlCorrOffsets;
 
     @Override
     public void initialize() throws OperatorException {
@@ -93,10 +90,22 @@ public class OlciO2aHarmonisationOp extends Operator {
                 demAltitudeBand = l1bProduct.getBand(alternativeAltitudeBandName);
             } else {
                 String message = String.format("Specified alternative altitude band '%s' is not contained in OLCI L1B product.",
-                                               alternativeAltitudeBandName);
+                        alternativeAltitudeBandName);
                 throw new OperatorException(message);
             }
         }
+
+        int orbitNumber = OlciHarmonisationIO.getOrbitNumber(l1bProduct);
+        final String platform = OlciHarmonisationIO.getPlatform(l1bProduct);
+        Product modelProduct;
+        try {
+            modelProduct = OlciHarmonisationIO.getModelProduct(platform);
+            specChar = OlciHarmonisationIO.getSpectralCharacteristics(orbitNumber, modelProduct);
+            dwlCorrOffsets = OlciHarmonisationIO.getDwlCorrOffsets(platform);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         createTargetProduct();
     }
 
@@ -111,13 +120,9 @@ public class OlciO2aHarmonisationOp extends Operator {
             detectorIndexBand = l1bProduct.getBand("detector_index");
             altitudeBand = l1bProduct.getBand("altitude");
             radianceBands = new Band[5];
-            cwlBands = new Band[5];
-            fwhmBands = new Band[5];
             solarFluxBands = new Band[5];
             for (int i = 12; i < 17; i++) {
                 radianceBands[i - 12] = l1bProduct.getBand("Oa" + i + "_radiance");
-                cwlBands[i - 12] = l1bProduct.getBand("lambda0_band_" + i);
-                fwhmBands[i - 12] = l1bProduct.getBand("FWHM_band_" + i);
                 solarFluxBands[i - 12] = l1bProduct.getBand("solar_flux_band_" + i);
             }
             pm.worked(1);
@@ -145,13 +150,9 @@ public class OlciO2aHarmonisationOp extends Operator {
         final Tile l1FlagsTile = getSourceTile(l1bProduct.getRasterDataNode("quality_flags"), targetRectangle);
 
         Tile[] radianceTiles = new Tile[5];
-        Tile[] cwlTiles = new Tile[5];
-        Tile[] fwhmTiles = new Tile[5];
         Tile[] solarFluxTiles = new Tile[5];
         for (int i = 0; i < 5; i++) {
             radianceTiles[i] = getSourceTile(radianceBands[i], targetRectangle);
-            cwlTiles[i] = getSourceTile(cwlBands[i], targetRectangle);
-            fwhmTiles[i] = getSourceTile(fwhmBands[i], targetRectangle);
             solarFluxTiles[i] = getSourceTile(solarFluxBands[i], targetRectangle);
         }
 
@@ -182,28 +183,30 @@ public class OlciO2aHarmonisationOp extends Operator {
                     double[] cwl = new double[5];
                     double[] fwhm = new double[5];
                     double[] solarFlux = new double[5];
+
                     for (int i = 0; i < 5; i++) {    // 12, 13, 14, 15, 16
                         radiance[i] = radianceTiles[i].getSampleDouble(x, y);
-                        cwl[i] = cwlTiles[i].getSampleDouble(x, y);
-                        fwhm[i] = fwhmTiles[i].getSampleDouble(x, y);
+                        cwl[i] = specChar.getCwvl()[i][(int) detectorIndex];
+                        fwhm[i] = specChar.getFwhm()[i][(int) detectorIndex];
                         solarFlux[i] = solarFluxTiles[i].getSampleDouble(x, y);
                         r[i] = radiance[i] / solarFlux[i];
                     }
 
                     final double dlam = cwl[4] - cwl[0];
                     final double drad = r[4] - r[0];
+                    final double grad = drad / dlam;
                     double[] trans = new double[5];
                     double[] radianceAbsFree = new double[5];
+
+                    final int camera = (int) (detectorIndex / 740);
                     for (int i = 0; i < 3; i++) {   // 13, 14, 15 !!
                         if (dlam > 0.0001) {
-                            final double grad = drad / dlam;
                             radianceAbsFree[i + 1] = r[0] + grad * (cwl[i + 1] - cwl[0]);
                         } else {
                             radianceAbsFree[i + 1] = Float.NaN;
                         }
                         trans[i + 1] = r[i + 1] / radianceAbsFree[i + 1];
-                        cwl[i + 1] += OlciHarmonisationAlgorithm.overcorrectLambda(detectorIndex,
-                                                                                   OlciHarmonisationConstants.DWL_CORR_OFFSET[i]);
+                        cwl[i + 1] += dwlCorrOffsets[i][camera];
                     }
 
                     // Processing data...
@@ -212,15 +215,17 @@ public class OlciO2aHarmonisationOp extends Operator {
                     final int bandIndex = Integer.parseInt(targetBandName.split(Pattern.quote("_"))[1]) - 13;
                     final double dwl = cwl[bandIndex + 1] - OlciHarmonisationConstants.cwvl[bandIndex];
                     final double transDesmiled = OlciHarmonisationAlgorithm.desmileTransmission(dwl, fwhm[bandIndex + 1],
-                                                                                                amf,
-                                                                                                trans[bandIndex + 1],
-                                                                                                desmileKdTrees[bandIndex],
-                                                                                                desmileLuts[bandIndex]);
+                            amf,
+                            trans[bandIndex + 1],
+                            desmileKdTrees[bandIndex],
+                            desmileLuts[bandIndex]);
                     final double transDesmiledRectified =
                             OlciHarmonisationAlgorithm.rectifyDesmiledTransmission(transDesmiled, amf, bandIndex + 13);
 
-                    if (targetBandName.startsWith("trans")) {
+                    if (targetBandName.startsWith("trans_1")) {
                         targetTile.setSample(x, y, transDesmiledRectified);
+                    } else if (targetBandName.startsWith("transDesmiled_1")) {
+                        targetTile.setSample(x, y, transDesmiled);
                     } else if (targetBandName.startsWith("press")) {
                         final double transPress = OlciHarmonisationAlgorithm.trans2Press(transDesmiledRectified, bandIndex + 13);
                         targetTile.setSample(x, y, transPress);
@@ -234,7 +239,7 @@ public class OlciO2aHarmonisationOp extends Operator {
                         targetTile.setSample(x, y, harmonisedRadiance);
                     } else {
                         throw new OperatorException("Unexpected target band name: '" +
-                                                            targetBandName + "' - exiting.");
+                                targetBandName + "' - exiting.");
                     }
                 } else {
                     targetTile.setSample(x, y, Float.NaN);
@@ -258,7 +263,7 @@ public class OlciO2aHarmonisationOp extends Operator {
 
     private void createTargetProduct() {
         targetProduct = new Product("HARMONIZED", "HARMONIZED",
-                                    l1bProduct.getSceneRasterWidth(), l1bProduct.getSceneRasterHeight());
+                l1bProduct.getSceneRasterWidth(), l1bProduct.getSceneRasterHeight());
         targetProduct.setDescription("Harmonisation product");
         targetProduct.setStartTime(l1bProduct.getStartTime());
         targetProduct.setEndTime(l1bProduct.getEndTime());
@@ -266,6 +271,8 @@ public class OlciO2aHarmonisationOp extends Operator {
         for (int i = 13; i <= lastBandToProcess; i++) {
             Band transBand = targetProduct.addBand("trans_" + i, ProductData.TYPE_FLOAT32);
             transBand.setUnit("dl");
+            Band transDesmiledBand = targetProduct.addBand("transDesmiled_" + i, ProductData.TYPE_FLOAT32);
+            transDesmiledBand.setUnit("dl");
             Band pressBand = targetProduct.addBand("press_" + i, ProductData.TYPE_FLOAT32);
             pressBand.setUnit("hPa");
             Band surfaceBand = targetProduct.addBand("surface_" + i, ProductData.TYPE_FLOAT32);
