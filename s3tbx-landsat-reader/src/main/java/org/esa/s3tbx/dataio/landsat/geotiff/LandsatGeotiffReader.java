@@ -22,7 +22,13 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.dataio.AbstractProductReader;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.FlagCoding;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.MetadataAttribute;
+import org.esa.snap.core.datamodel.MetadataElement;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.SourceImageScaler;
 import org.esa.snap.runtime.Config;
@@ -31,7 +37,9 @@ import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.RenderingHints;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -156,7 +164,6 @@ public class LandsatGeotiffReader extends AbstractProductReader {
     }
 
     private void addBands(Product product) throws IOException {
-        //final GeoTiffProductReaderPlugIn plugIn = new GeoTiffProductReaderPlugIn();
         final MetadataAttribute[] productAttributes = landsatMetadata.getProductMetadata().getAttributes();
         final Pattern pattern = landsatMetadata.getOpticalBandFileNamePattern();
 
@@ -169,8 +176,6 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                 String fileName = metadataAttribute.getData().getElemString();
 
                 File bandFile = virtualDir.getFile(basePath + fileName);
-                //ProductReader productReader = plugIn.createReaderInstance();
-                //Product bandProduct = productReader.readProductNodes(bandFile, null);
                 final Product bandProduct = ProductIO.readProduct(bandFile);
                 if (bandProduct != null) {
                     bandProducts.add(bandProduct);
@@ -191,36 +196,35 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                     final Preferences preferences = Config.instance("s3tbx").load().preferences();
                     final String readAs = preferences.get(LandsatGeotiffReader.SYSPROP_READ_AS, null);
                     if (readAs != null) {
-                        switch (readAs.toLowerCase()) {
-                            case READ_AS_REFLECTANCE:
-                                band.setDescription(landsatMetadata.getBandDescription(bandNumber) + " , as TOA Reflectance");
-                                band.setUnit(REFLECTANCE_UNITS);
-                                break;
-                            default:
-                                LOG.warning(String.format("Property '%s' has unsupported value '%s'",
-                                        LandsatGeotiffReader.SYSPROP_READ_AS, readAs));
+                        if (READ_AS_REFLECTANCE.equalsIgnoreCase(readAs)) {
+                            band.setDescription(landsatMetadata.getBandDescription(bandNumber) + " , as TOA Reflectance");
+                            band.setUnit(REFLECTANCE_UNITS);
+                        } else {
+                            LOG.warning(String.format("Property '%s' has unsupported value '%s'",
+                                                      LandsatGeotiffReader.SYSPROP_READ_AS, readAs));
                         }
                     }
                 }
-            } else if (attributeName.startsWith(landsatMetadata.getQualityBandNameKey()) && landsatQA != null) {
-                String fileName = metadataAttribute.getData().getElemString();
-                File bandFile = virtualDir.getFile(basePath + fileName);
-                //ProductReader productReader = plugIn.createReaderInstance();
-                //Product bandProduct = productReader.readProductNodes(bandFile, null);
-                final Product bandProduct = ProductIO.readProduct(bandFile);
-                if (bandProduct != null) {
-                    bandProducts.add(bandProduct);
-                    Band srcBand = bandProduct.getBandAt(0);
-                    String bandName = attributeName.endsWith("SATURATION") ? "satflags" : "flags";
+            } else {
+                final String qualityBandNameKey = landsatMetadata.getQualityBandNameKey();
+                if (landsatQA != null && qualityBandNameKey != null && attributeName.startsWith(qualityBandNameKey)) {
+                    String fileName = metadataAttribute.getData().getElemString();
+                    File bandFile = virtualDir.getFile(basePath + fileName);
+                    final Product bandProduct = ProductIO.readProduct(bandFile);
+                    if (bandProduct != null) {
+                        bandProducts.add(bandProduct);
+                        Band srcBand = bandProduct.getBandAt(0);
+                        String bandName = attributeName.endsWith("SATURATION") ? "satflags" : "flags";
 
-                    Band band = addBandToProduct(bandName, srcBand, product);
-                    band.setNoDataValue(0.0);
-                    band.setNoDataValueUsed(true);
-                    band.setDescription(attributeName.endsWith("SATURATION") ? "Saturation Band" : "Quality Band");
+                        Band band = addBandToProduct(bandName, srcBand, product);
+                        band.setNoDataValue(0.0);
+                        band.setNoDataValueUsed(true);
+                        band.setDescription(attributeName.endsWith("SATURATION") ? "Saturation Band" : "Quality Band");
 
-                    FlagCoding flagCoding = landsatQA.createFlagCoding(bandName);
-                    band.setSampleCoding(flagCoding);
-                    product.getFlagCodingGroup().add(flagCoding);
+                        FlagCoding flagCoding = landsatQA.createFlagCoding(bandName);
+                        band.setSampleCoding(flagCoding);
+                        product.getFlagCodingGroup().add(flagCoding);
+                    }
                 }
             }
         }
