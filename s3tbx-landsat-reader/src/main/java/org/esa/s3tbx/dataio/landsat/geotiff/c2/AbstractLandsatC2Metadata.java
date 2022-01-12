@@ -66,22 +66,26 @@ abstract class AbstractLandsatC2Metadata extends AbstractLandsatMetadata {
 
     @Override
     public String getAngleSensorAzimuthBandName() {
-        return getProductContents().getAttributeString("FILE_NAME_ANGLE_SENSOR_AZIMUTH_BAND_4");
+        final MetadataAttribute attribute = getProductContents().getAttribute("FILE_NAME_ANGLE_SENSOR_AZIMUTH_BAND_4");
+        return attribute != null ? attribute.getData().getElemString() : null;
     }
 
     @Override
     public String getAngleSensorZenithBandName() {
-        return getProductContents().getAttributeString("FILE_NAME_ANGLE_SENSOR_ZENITH_BAND_4");
+        final MetadataAttribute attribute = getProductContents().getAttribute("FILE_NAME_ANGLE_SENSOR_ZENITH_BAND_4");
+        return attribute != null ? attribute.getData().getElemString() : null;
     }
 
     @Override
     public String getAngleSolarAzimuthBandName() {
-        return getProductContents().getAttributeString("FILE_NAME_ANGLE_SOLAR_AZIMUTH_BAND_4");
+        final MetadataAttribute attribute = getProductContents().getAttribute("FILE_NAME_ANGLE_SOLAR_AZIMUTH_BAND_4");
+        return attribute != null ? attribute.getData().getElemString() : null;
     }
 
     @Override
     public String getAngleSolarZenithBandName() {
-        return getProductContents().getAttributeString("FILE_NAME_ANGLE_SOLAR_ZENITH_BAND_4");
+        final MetadataAttribute attribute = getProductContents().getAttribute("FILE_NAME_ANGLE_SOLAR_ZENITH_BAND_4");
+        return attribute != null ? attribute.getData().getElemString() : null;
     }
 
     @Override
