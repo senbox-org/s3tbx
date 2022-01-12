@@ -22,13 +22,7 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.dataio.AbstractProductReader;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.FlagCoding;
-import org.esa.snap.core.datamodel.Mask;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.MetadataElement;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.SourceImageScaler;
 import org.esa.snap.runtime.Config;
@@ -37,9 +31,7 @@ import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -69,7 +61,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
 
     private static final String RADIANCE_UNITS = "W/(m^2*sr*µm)";
     private static final String REFLECTANCE_UNITS = "dl";
-    private static final String DEGREE_UNITS = "0.01 deg";
+    private static final String DEGREE_UNITS = "deg";
 
     private final Resolution targetResolution;
 
@@ -319,6 +311,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
             band.setNoDataValue(0.0);
             band.setNoDataValueUsed(true);
             band.setDescription(bandName);
+            band.setScalingFactor(.01);
             band.setUnit(DEGREE_UNITS);
         }
     }
