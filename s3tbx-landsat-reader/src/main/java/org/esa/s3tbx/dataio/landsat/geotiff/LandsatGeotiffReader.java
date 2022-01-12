@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  */
 public class LandsatGeotiffReader extends AbstractProductReader {
 
-    static final String SYSPROP_READ_AS = "s3tbx.landsat.readAs";
+    public static final String SYSPROP_READ_AS = "s3tbx.landsat.readAs";
 
     enum Resolution {
         DEFAULT,
@@ -61,6 +61,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
 
     private static final String RADIANCE_UNITS = "W/(m^2*sr*µm)";
     private static final String REFLECTANCE_UNITS = "dl";
+    private static final String DEGREE_UNITS = "0.01 deg";
 
     private final Resolution targetResolution;
 
@@ -159,11 +160,12 @@ public class LandsatGeotiffReader extends AbstractProductReader {
         //final GeoTiffProductReaderPlugIn plugIn = new GeoTiffProductReaderPlugIn();
         final MetadataAttribute[] productAttributes = landsatMetadata.getProductMetadata().getAttributes();
         final Pattern pattern = landsatMetadata.getOpticalBandFileNamePattern();
-
+        product.setAutoGrouping("sun:view");
         bandProducts = new ArrayList<>();
         for (MetadataAttribute metadataAttribute : productAttributes) {
             String attributeName = metadataAttribute.getName();
             Matcher matcher = pattern.matcher(attributeName);
+            final String qualityBandNameKey = landsatMetadata.getQualityBandNameKey();
             if (matcher.matches()) {
                 String bandNumber = matcher.group(1);
                 String fileName = metadataAttribute.getData().getElemString();
@@ -202,7 +204,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                         }
                     }
                 }
-            } else if (attributeName.startsWith(landsatMetadata.getQualityBandNameKey()) && landsatQA != null) {
+            } else if (qualityBandNameKey != null && attributeName.startsWith(qualityBandNameKey) && landsatQA != null) {
                 String fileName = metadataAttribute.getData().getElemString();
                 File bandFile = virtualDir.getFile(basePath + fileName);
                 //ProductReader productReader = plugIn.createReaderInstance();
@@ -223,6 +225,19 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                     product.getFlagCodingGroup().add(flagCoding);
                 }
             }
+        }
+        String angleBand;
+        if ((angleBand = landsatMetadata.getAngleSensorAzimuthBandName()) != null) {
+            addAngleBand(angleBand, "view_azimuth", product);
+        }
+        if ((angleBand = landsatMetadata.getAngleSensorZenithBandName()) != null) {
+            addAngleBand(angleBand, "view_zenith", product);
+        }
+        if ((angleBand = landsatMetadata.getAngleSolarAzimuthBandName()) != null) {
+            addAngleBand(angleBand, "sun_azimuth", product);
+        }
+        if ((angleBand = landsatMetadata.getAngleSolarZenithBandName()) != null) {
+            addAngleBand(angleBand, "sun_zenith", product);
         }
         if (landsatQA != null) {
             List<Mask> masks;
@@ -255,7 +270,6 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                 break;
             }
         }
-
 
         if (Resolution.DEFAULT.equals(targetResolution)) {
             for (int i = 0; i < bandProducts.size(); i++) {
@@ -291,6 +305,20 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                         Interpolation.getInstance(Interpolation.INTERP_NEAREST));
                 band.setSourceImage(image);
             }
+        }
+    }
+
+    private void addAngleBand(String bandFileName, String bandName, Product product) throws IOException {
+        File bandFile = virtualDir.getFile(basePath + bandFileName);
+        final Product bandProduct = ProductIO.readProduct(bandFile);
+        if (bandProduct != null) {
+            bandProducts.add(bandProduct);
+            Band srcBand = bandProduct.getBandAt(0);
+            Band band = addBandToProduct(bandName, srcBand, product);
+            band.setNoDataValue(0.0);
+            band.setNoDataValueUsed(true);
+            band.setDescription(bandName);
+            band.setUnit(DEGREE_UNITS);
         }
     }
 

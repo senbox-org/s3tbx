@@ -20,7 +20,7 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.runtime.Config;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.logging.Logger;
@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * @author Thomas Storm
  */
-class Landsat8Metadata extends AbstractLandsatMetadata {
+public class Landsat8Metadata extends AbstractLandsatMetadata {
     private static final double DEFAULT_SCALE_FACTOR = 1.0;
     private static final double DEFAULT_OFFSET = 0.0;
 

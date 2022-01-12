@@ -1,5 +1,12 @@
 package org.esa.s3tbx.dataio.landsat.geotiff;
 
+import org.esa.s3tbx.dataio.landsat.geotiff.c1.CollectionMSSLandsatQA;
+import org.esa.s3tbx.dataio.landsat.geotiff.c1.CollectionOLILandsatQA;
+import org.esa.s3tbx.dataio.landsat.geotiff.c1.CollectionTMLandsatQA;
+import org.esa.s3tbx.dataio.landsat.geotiff.c2.Collection2MSSLandsatQA;
+import org.esa.s3tbx.dataio.landsat.geotiff.c2.Collection2OLILandsatQA;
+import org.esa.s3tbx.dataio.landsat.geotiff.c2.Collection2TMLandsatQA;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,23 +18,18 @@ import java.io.IOException;
 public class LandsatQAFactory {
 
     static LandsatQA create(File mtlFile) throws IOException {
-
-        boolean isCollectionProduct = false;
         boolean isOLI = false;
         boolean isMSS = false;
         boolean isTM = false;
 
         BufferedReader reader = null;
+        int collection = LandsatTypeInfo.getCollectionNumber(mtlFile.getName());
+        boolean isCollectionProduct = collection > 0;
         try {
             FileReader fileReader = new FileReader(mtlFile);
             reader = new BufferedReader(fileReader);
             String line = reader.readLine();
-            int collection = 1;
             while (line != null) {
-                if (line.contains("COLLECTION_NUMBER")) {
-                    isCollectionProduct = true;
-                    collection = Integer.parseInt(line.substring(line.indexOf('=') + 1).trim());
-                }
                 if (line.contains("SENSOR_ID")) {
                     if (line.contains("OLI")) {
                         isOLI = true;
@@ -37,11 +39,13 @@ public class LandsatQAFactory {
                         isTM = true;
                     }
                 }
-
-                if(isCollectionProduct && isMSS) return new CollectionMSSLandsatQA();
-                if(isCollectionProduct && isOLI) return collection == 1 ? new CollectionOLILandsatQA() : new Collection2OLILandsatQA();
-                if(isCollectionProduct && isTM) return new CollectionTMLandsatQA();
-                if(!isCollectionProduct && isOLI) return new PreCollectionLandsatQA();
+                if (isCollectionProduct && isMSS)
+                    return collection == 1 ? new CollectionMSSLandsatQA() : new Collection2MSSLandsatQA();
+                if (isCollectionProduct && isOLI)
+                    return collection == 1 ? new CollectionOLILandsatQA() : new Collection2OLILandsatQA();
+                if (isCollectionProduct && isTM)
+                    return collection == 1 ? new CollectionTMLandsatQA() : new Collection2TMLandsatQA();
+                if (!isCollectionProduct && isOLI) return new PreCollectionLandsatQA();
 
                 line = reader.readLine();
             }
