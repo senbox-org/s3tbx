@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+ *
+ * Copyright (c) 2022.  Brockmann Consult GmbH (info@brockmann-consult.de)
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -12,6 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
+ *
  */
 
 package org.esa.s3tbx.dataio.landsat.geotiff;
@@ -37,9 +39,7 @@ import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,10 +54,9 @@ import java.util.regex.Pattern;
  * This reader is capable of reading Landsat data products
  * where each bands is distributes as a single GeoTIFF image.
  */
-public class LandsatGeotiffReader extends AbstractProductReader {
+public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
 
     static final String SYSPROP_READ_AS = "s3tbx.landsat.readAs";
-    static final String READ_AS_REFLECTANCE = "reflectance";
 
     enum Resolution {
         DEFAULT,
@@ -65,7 +64,8 @@ public class LandsatGeotiffReader extends AbstractProductReader {
         L8_REFLECTIVE,
     }
 
-    private static final Logger LOG = Logger.getLogger(LandsatGeotiffReader.class.getName());
+    private static final String READ_AS_REFLECTANCE = "reflectance";
+    private static final Logger LOG = Logger.getLogger(LandsatGeotiffColl2L2Reader.class.getName());
 
     private static final String RADIANCE_UNITS = "W/(m^2*sr*µm)";
     private static final String REFLECTANCE_UNITS = "dl";
@@ -78,11 +78,11 @@ public class LandsatGeotiffReader extends AbstractProductReader {
     private VirtualDir virtualDir;
     private String basePath;
 
-    public LandsatGeotiffReader(ProductReaderPlugIn readerPlugin) {
+    public LandsatGeotiffColl2L2Reader(ProductReaderPlugIn readerPlugin) {
         this(readerPlugin, Resolution.DEFAULT);
     }
 
-    public LandsatGeotiffReader(ProductReaderPlugIn readerPlugin, Resolution targetResolution) {
+    public LandsatGeotiffColl2L2Reader(ProductReaderPlugIn readerPlugin, Resolution targetResolution) {
         super(readerPlugin);
         this.targetResolution = targetResolution;
     }
@@ -164,6 +164,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
     }
 
     private void addBands(Product product) throws IOException {
+        //final GeoTiffProductReaderPlugIn plugIn = new GeoTiffProductReaderPlugIn();
         final MetadataAttribute[] productAttributes = landsatMetadata.getProductMetadata().getAttributes();
         final Pattern pattern = landsatMetadata.getOpticalBandFileNamePattern();
 
@@ -176,6 +177,8 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                 String fileName = metadataAttribute.getData().getElemString();
 
                 File bandFile = virtualDir.getFile(basePath + fileName);
+                //ProductReader productReader = plugIn.createReaderInstance();
+                //Product bandProduct = productReader.readProductNodes(bandFile, null);
                 final Product bandProduct = ProductIO.readProduct(bandFile);
                 if (bandProduct != null) {
                     bandProducts.add(bandProduct);
@@ -194,37 +197,38 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                     band.setDescription(landsatMetadata.getBandDescription(bandNumber));
                     band.setUnit(RADIANCE_UNITS);
                     final Preferences preferences = Config.instance("s3tbx").load().preferences();
-                    final String readAs = preferences.get(LandsatGeotiffReader.SYSPROP_READ_AS, null);
+                    final String readAs = preferences.get(LandsatGeotiffColl2L2Reader.SYSPROP_READ_AS, null);
                     if (readAs != null) {
-                        if (READ_AS_REFLECTANCE.equalsIgnoreCase(readAs)) {
-                            band.setDescription(landsatMetadata.getBandDescription(bandNumber) + " , as TOA Reflectance");
-                            band.setUnit(REFLECTANCE_UNITS);
-                        } else {
-                            LOG.warning(String.format("Property '%s' has unsupported value '%s'",
-                                                      LandsatGeotiffReader.SYSPROP_READ_AS, readAs));
+                        switch (readAs.toLowerCase()) {
+                            case READ_AS_REFLECTANCE:
+                                band.setDescription(landsatMetadata.getBandDescription(bandNumber) + " , as TOA Reflectance");
+                                band.setUnit(REFLECTANCE_UNITS);
+                                break;
+                            default:
+                                LOG.warning(String.format("Property '%s' has unsupported value '%s'",
+                                                          LandsatGeotiffColl2L2Reader.SYSPROP_READ_AS, readAs));
                         }
                     }
                 }
-            } else {
-                final String qualityBandNameKey = landsatMetadata.getQualityBandNameKey();
-                if (landsatQA != null && qualityBandNameKey != null && attributeName.startsWith(qualityBandNameKey)) {
-                    String fileName = metadataAttribute.getData().getElemString();
-                    File bandFile = virtualDir.getFile(basePath + fileName);
-                    final Product bandProduct = ProductIO.readProduct(bandFile);
-                    if (bandProduct != null) {
-                        bandProducts.add(bandProduct);
-                        Band srcBand = bandProduct.getBandAt(0);
-                        String bandName = attributeName.endsWith("SATURATION") ? "satflags" : "flags";
+            } else if (attributeName.startsWith(landsatMetadata.getQualityBandNameKey()) && landsatQA != null) {
+                String fileName = metadataAttribute.getData().getElemString();
+                File bandFile = virtualDir.getFile(basePath + fileName);
+                //ProductReader productReader = plugIn.createReaderInstance();
+                //Product bandProduct = productReader.readProductNodes(bandFile, null);
+                final Product bandProduct = ProductIO.readProduct(bandFile);
+                if (bandProduct != null) {
+                    bandProducts.add(bandProduct);
+                    Band srcBand = bandProduct.getBandAt(0);
+                    String bandName = attributeName.endsWith("SATURATION") ? "satflags" : "flags";
 
-                        Band band = addBandToProduct(bandName, srcBand, product);
-                        band.setNoDataValue(0.0);
-                        band.setNoDataValueUsed(true);
-                        band.setDescription(attributeName.endsWith("SATURATION") ? "Saturation Band" : "Quality Band");
+                    Band band = addBandToProduct(bandName, srcBand, product);
+                    band.setNoDataValue(0.0);
+                    band.setNoDataValueUsed(true);
+                    band.setDescription(attributeName.endsWith("SATURATION") ? "Saturation Band" : "Quality Band");
 
-                        FlagCoding flagCoding = landsatQA.createFlagCoding(bandName);
-                        band.setSampleCoding(flagCoding);
-                        product.getFlagCodingGroup().add(flagCoding);
-                    }
+                    FlagCoding flagCoding = landsatQA.createFlagCoding(bandName);
+                    band.setSampleCoding(flagCoding);
+                    product.getFlagCodingGroup().add(flagCoding);
                 }
             }
         }

@@ -51,7 +51,7 @@ class LandsatMetadataFactory {
                         if (line.contains("LANDSAT_8")) {
                             return collection == 1 ?
                                     new Landsat8Metadata(new FileReader(mtlFile)) :
-                                    new Landsat8C2Metadata(new FileReader(mtlFile));
+                                    new Landsat8L1C2Metadata(new FileReader(mtlFile));
                         } else {
                             return new LandsatReprocessedMetadata(new FileReader(mtlFile));
                         }

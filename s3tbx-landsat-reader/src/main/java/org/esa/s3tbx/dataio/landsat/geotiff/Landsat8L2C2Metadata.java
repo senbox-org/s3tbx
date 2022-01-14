@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2011 Brockmann Consult GmbH (info@brockmann-consult.de)
- * 
+ *
+ * Copyright (c) 2022.  Brockmann Consult GmbH (info@brockmann-consult.de)
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 3 of the License, or (at your option)
@@ -9,28 +10,33 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
+ *
  */
 
 package org.esa.s3tbx.dataio.landsat.geotiff;
 
+import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.runtime.Config;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.IOException;
 import java.io.Reader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 /**
- * @author Thomas Storm
+ * @author Thomas Storm, Sabine Embacher
  */
-class Landsat8Metadata extends AbstractLandsatMetadata {
+class Landsat8L2C2Metadata extends AbstractLandsatMetadata implements LandsatMetadata {
     private static final double DEFAULT_SCALE_FACTOR = 1.0;
     private static final double DEFAULT_OFFSET = 0.0;
 
@@ -92,17 +98,17 @@ class Landsat8Metadata extends AbstractLandsatMetadata {
             1010
     };
 
-    public Landsat8Metadata(Reader fileReader) throws IOException {
+    public Landsat8L2C2Metadata(Reader fileReader) throws IOException {
         super(fileReader);
     }
 
-    public Landsat8Metadata(MetadataElement root) throws IOException {
+    public Landsat8L2C2Metadata(MetadataElement root) throws IOException {
         super(root);
     }
 
     @Override
     public MetadataElement getProductMetadata() {
-        return getMetaDataElementRoot().getElement("PRODUCT_METADATA");
+        return getMetaDataElementRoot().getElement("PRODUCT_CONTENTS");
     }
 
     @Override
@@ -122,14 +128,14 @@ class Landsat8Metadata extends AbstractLandsatMetadata {
 
     @Override
     public String getProductType() {
-        return getProductType("DATA_TYPE");
+        return getProductType("PROCESSING_LEVEL");
     }
 
     @Override
     public double getScalingFactor(String bandId) {
         final String spectralInput = getSpectralInputString();
         String attributeKey = String.format("%s_MULT_BAND_%s", spectralInput, bandId);
-        MetadataElement radiometricRescalingElement = getMetaDataElementRoot().getElement("RADIOMETRIC_RESCALING");
+        MetadataElement radiometricRescalingElement = getMetaDataElementRoot().getElement("LEVEL1_RADIOMETRIC_RESCALING");
         if (radiometricRescalingElement.getAttribute(attributeKey) == null) {
             return DEFAULT_SCALE_FACTOR;
         }
@@ -144,7 +150,7 @@ class Landsat8Metadata extends AbstractLandsatMetadata {
     public double getScalingOffset(String bandId) {
         final String spectralInput = getSpectralInputString();
         String attributeKey = String.format("%s_ADD_BAND_%s", spectralInput, bandId);
-        MetadataElement radiometricRescalingElement = getMetaDataElementRoot().getElement("RADIOMETRIC_RESCALING");
+        MetadataElement radiometricRescalingElement = getMetaDataElementRoot().getElement("LEVEL1_RADIOMETRIC_RESCALING");
         if (radiometricRescalingElement.getAttribute(attributeKey) == null) {
             return DEFAULT_OFFSET;
         }
@@ -167,7 +173,7 @@ class Landsat8Metadata extends AbstractLandsatMetadata {
 
     @Override
     public String getQualityBandNameKey() {
-        return "FILE_NAME_BAND_QUALITY";
+        return "FILE_NAME_QUALITY_L1";
     }
 
     @Override
@@ -194,6 +200,56 @@ class Landsat8Metadata extends AbstractLandsatMetadata {
         return BAND_NAMES[index];
     }
 
+    @Override
+    protected Dimension getDimension(String widthAttributeName, String heightAttributeName) {
+        MetadataElement metadata = getProjectionAttributes();
+        MetadataAttribute widthAttribute = metadata.getAttribute(widthAttributeName);
+        MetadataAttribute heightAttribute = metadata.getAttribute(heightAttributeName);
+        if (widthAttribute != null && heightAttribute != null) {
+            int width = widthAttribute.getData().getElemInt();
+            int height = heightAttribute.getData().getElemInt();
+            return new Dimension(width, height);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    protected ProductData.UTC getCenterTime(String acquisitionDateKey, String sceneCenterScanTimeKey) {
+        MetadataElement metadata = getImageAttributes();
+        String dateString = metadata.getAttributeString(acquisitionDateKey);
+        String timeString = metadata.getAttributeString(sceneCenterScanTimeKey);
+
+        try {
+            if (dateString != null && timeString != null) {
+                timeString = timeString.substring(0, 12);
+                final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                final Date date = dateFormat.parse(dateString + " " + timeString);
+                String milliSeconds = timeString.substring(timeString.length() - 3);
+                return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
+            }
+        } catch (ParseException ignored) {
+            // ignore
+        }
+        return null;
+    }
+
+    @Override
+    protected String getProductType(String productTypeKey) {
+        final MetadataAttribute product_type = getProductMetadata().getAttribute(productTypeKey);
+        final MetadataAttribute spacecraft_id = getImageAttributes().getAttribute("SPACECRAFT_ID");
+        final MetadataAttribute sensor_id = getImageAttributes().getAttribute("SENSOR_ID");
+
+        final StringBuilder result = new StringBuilder();
+        result.append(spacecraft_id.getData().getElemString());
+        result.append("_");
+        result.append(sensor_id.getData().getElemString());
+        result.append("_");
+        result.append(product_type.getData().getElemString());
+
+        return result.toString();
+    }
+
     private static int getIndex(String bandIndexNumber) {
         return Integer.parseInt(bandIndexNumber) - 1;
     }
@@ -213,8 +269,8 @@ class Landsat8Metadata extends AbstractLandsatMetadata {
                 default:
                     spectralInput = "RADIANCE";
                     LOG.warning(String.format("Property '%s' has unsupported value '%s'.%n" +
-                                              "Interpreting values as radiance.",
-                                              LandsatGeotiffReader.SYSPROP_READ_AS, readAs));
+                                    "Interpreting values as radiance.",
+                            LandsatGeotiffReader.SYSPROP_READ_AS, readAs));
 
             }
         }else {
@@ -238,5 +294,17 @@ class Landsat8Metadata extends AbstractLandsatMetadata {
             }
         }
         return sunAngleCorrectionFactor;
+    }
+
+    private MetadataElement getProductContents() {
+        return getMetaDataElementRoot().getElement("PRODUCT_CONTENTS");
+    }
+
+    private MetadataElement getImageAttributes() {
+        return getMetaDataElementRoot().getElement("IMAGE_ATTRIBUTES");
+    }
+
+    private MetadataElement getProjectionAttributes() {
+        return getMetaDataElementRoot().getElement("PROJECTION_ATTRIBUTES");
     }
 }

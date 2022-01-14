@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 /**
  * @author Thomas Storm
  */
-class Landsat8C2Metadata extends AbstractLandsatMetadata {
+class Landsat8L1C2Metadata extends AbstractLandsatMetadata {
     private static final double DEFAULT_SCALE_FACTOR = 1.0;
     private static final double DEFAULT_OFFSET = 0.0;
 
@@ -96,11 +96,11 @@ class Landsat8C2Metadata extends AbstractLandsatMetadata {
             1010
     };
 
-    public Landsat8C2Metadata(Reader fileReader) throws IOException {
+    public Landsat8L1C2Metadata(Reader fileReader) throws IOException {
         super(fileReader);
     }
 
-    public Landsat8C2Metadata(MetadataElement root) throws IOException {
+    public Landsat8L1C2Metadata(MetadataElement root) throws IOException {
         super(root);
     }
 
@@ -258,7 +258,7 @@ class Landsat8C2Metadata extends AbstractLandsatMetadata {
         String spectralInput;
         if (readAs != null) {
             switch (readAs.toLowerCase()) {
-                case "reflectance":
+                case LandsatGeotiffReader.READ_AS_REFLECTANCE:
                     spectralInput = "REFLECTANCE";
                     break;
                 case "radiance":
