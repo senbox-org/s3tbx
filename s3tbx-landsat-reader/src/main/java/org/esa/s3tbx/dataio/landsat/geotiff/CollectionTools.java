@@ -23,24 +23,37 @@ import java.util.regex.Pattern;
 
 public class CollectionTools {
 
-    private static final Pattern COLLECTION_FILENAME_PATTERN = Pattern.compile("L[COTEM]\\d{2}_L\\d\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)");
-    private static final Pattern ESA_PATTERN = Pattern.compile("_(MTI|KIS)");
-    private static final int COLL_PATTERN_END = 40;
+    public static final String collectionExpression = "L[COTEM]\\d{2}_L\\d\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)";
+    public static final String esaCollectionExpression = collectionExpression + "_(MTI|KIS)";
+    public static final Pattern LANDSAT_COLLECTION_PATTERN = Pattern.compile(collectionExpression);
+    public static final Pattern ESA_LANDSAT_COLLECTION_PATTERN = Pattern.compile(esaCollectionExpression);
+    public static final int COLL_PATTERN_END = 40;
+    public static final int ESA_COLL_PATTERN_END = 44;
 
     static boolean isLandsatCollection(String filename) {
-        if (filename == null) {
-            return false;
-        }
-        final Matcher matcher = COLLECTION_FILENAME_PATTERN.matcher(filename);
-        return matcher.find() && matcher.start() == 0 && matcher.end() == COLL_PATTERN_END;
+        return isCollection(filename, LANDSAT_COLLECTION_PATTERN, COLL_PATTERN_END);
     }
 
     static boolean isEsaLandsatCollection(String filename) {
-        if (!isLandsatCollection(filename)) {
+        return isCollection(filename, ESA_LANDSAT_COLLECTION_PATTERN, ESA_COLL_PATTERN_END);
+    }
+
+    private static boolean isCollection(String filename, Pattern pattern, int patternEnd) {
+        if (filename == null) {
             return false;
         }
-        final Matcher matcher = ESA_PATTERN.matcher(filename.substring(COLL_PATTERN_END));
-        return matcher.find() && matcher.start() == 0;
+        final Matcher matcher = pattern.matcher(filename);
+        return matcher.find() && matcher.start() == 0 && matcher.end() == patternEnd;
+    }
+
+    static String getPatternSubtractedFilename(String filename) {
+        if (isEsaLandsatCollection(filename)) {
+            return filename.substring(ESA_COLL_PATTERN_END);
+        }
+        if(isLandsatCollection(filename)) {
+            return filename.substring(COLL_PATTERN_END);
+        }
+        return null;
     }
 
     static int getCollectionFromFilename(String filename) {

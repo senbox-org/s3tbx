@@ -46,12 +46,12 @@ class LandsatMetadataFactory {
                 int collection = 1;
                 while (line != null) {
                     if (line.contains("COLLECTION_NUMBER")) {
-                        collection = Integer.parseInt(line.substring(line.indexOf('=') + 1).trim());
+                        collection = Integer.parseInt(getValue(line));
                     } else if (line.contains("SPACECRAFT_ID")) {
                         if (line.contains("LANDSAT_8")) {
-                            return collection == 1 ?
-                                    new Landsat8Metadata(new FileReader(mtlFile)) :
-                                    new Landsat8L1C2Metadata(new FileReader(mtlFile));
+                            return collection == 1
+                                    ? new Landsat8Metadata(new FileReader(mtlFile))
+                                    : new Landsat8L1C2Metadata(new FileReader(mtlFile));
                         } else {
                             return new LandsatReprocessedMetadata(new FileReader(mtlFile));
                         }
@@ -66,5 +66,9 @@ class LandsatMetadataFactory {
             throw new IllegalStateException(
                     "File '" + mtlFile + "' does not contain spacecraft information. (Field 'SPACECRAFT_ID' missing)");
         }
+    }
+
+    private static String getValue(String line) {
+        return line.substring(line.indexOf('=') + 1).trim();
     }
 }
