@@ -349,7 +349,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
     @Override
     protected void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight, int sourceStepX, int sourceStepY,
                                           Band destBand, int destOffsetX, int destOffsetY, int destWidth, int destHeight, ProductData destBuffer,
-                                          ProgressMonitor pm) throws IOException {
+                                          ProgressMonitor pm) {
         // all bands use source images as source for its data
         throw new IllegalStateException();
     }
