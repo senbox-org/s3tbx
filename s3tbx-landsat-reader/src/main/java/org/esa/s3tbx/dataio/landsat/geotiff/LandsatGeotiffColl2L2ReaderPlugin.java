@@ -41,7 +41,7 @@ public class LandsatGeotiffColl2L2ReaderPlugin implements ProductReaderPlugIn {
 
     private static final Class[] READER_INPUT_TYPES = new Class[]{String.class, File.class};
     private static final String[] FORMAT_NAMES = new String[]{"LandsatC2L2GeoTIFF"};
-    private static final String[] DEFAULT_FILE_EXTENSIONS = new String[]{".txt", ".TXT", ".gz", ".tgz"};
+    private static final String[] DEFAULT_FILE_EXTENSIONS = new String[]{".txt", ".gz", ".tgz", ".tar"};
     private static final String READER_DESCRIPTION = "Landsat Collection 2 Level 2 Data Products (GeoTIFF)";
 
     @Override

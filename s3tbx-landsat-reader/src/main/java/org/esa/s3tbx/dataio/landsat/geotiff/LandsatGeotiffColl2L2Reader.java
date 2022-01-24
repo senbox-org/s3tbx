@@ -90,6 +90,15 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
         put("st_emis", "Emissivity of Band 10 estimated from ASTER GED");
         put("st_emsd", "Emissivity standard deviation");
         put("st_cdist", "Pixel distance to cloud");
+        put("qa_pixel", "Level-1 QA Band. The output from the CFMask algorithm is used as an input for the Quality " +
+                        "Assessment Application, which calculates values for all fields in the QA Band file. " +
+                        "The QA Band file contains quality statistics gathered from the cloud mask and statistics " +
+                        "information for the scene.");
+        put("qa_radsat", "Level-1 Radiometric Saturation QA and Terrain Occlusion");
+        put("sr_qa_aerosol", "The SR Aerosol QA file provides low-level details about factors that may have " +
+                             "influenced the final product. The default value for bits 6 and 7, “Aerosol Level’, is " +
+                             "Climatology (00). A value of Climatology means no aerosol correction was applied.");
+        put("st_qa", "The ST QA file indicates uncertainty of the temperatures given in the ST band file");
     }});
 
     private static final Map<String, Double> scalingFactors = Collections.unmodifiableMap(new HashMap<String, Double>() {{
@@ -137,6 +146,9 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
         put("st_emis", -9999.0);
         put("st_emsd", -9999.0);
         put("st_cdist", -9999.0);
+        put("qa_pixel", 1.0);
+        put("sr_qa_aerosol", 1.0);
+        put("st_qa", -9999.0);
     }});
 
     private static final Map<String, String> units = Collections.unmodifiableMap(new HashMap<String, String>() {{
@@ -145,6 +157,7 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
         put("st_urad", "W/m^2 sr µm)");
         put("st_drad", "W/m^2 sr µm)");
         put("st_cdist", "km");
+        put("st_qa", "Kelvin");
     }});
 
     private static final Map<String, Float> wavelengths = Collections.unmodifiableMap(new HashMap<String, Float>() {{
@@ -176,37 +189,37 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
             Collections.unmodifiableMap(new LinkedHashMap<String, FlagCodingArgs>() {{
                 ArrayList<FlagCodingArgs> args = new ArrayList<FlagCodingArgs>() {{
                     add(new FlagCodingArgs(0b01 << 0, "designated_fill", "Designated Fill", new Color(255, 0, 0), 0.0f));
-                    add(new FlagCodingArgs(0b01 << 1, "dillated_cloud", "Dillated Cloud", new Color(255, 200, 0), 0.75f));
-                    add(new FlagCodingArgs(0b01 << 2, "cirrus", "Cirrus", new Color(128, 128, 128), 0.0f));
-                    add(new FlagCodingArgs(0b01 << 3, "cloud", "Cloud", new Color(255, 255, 255), 0.0f));
-                    add(new FlagCodingArgs(0b01 << 4, "cloud_shadow", "Cloud Shadow", new Color(255, 0, 0), 0.5f));
-                    add(new FlagCodingArgs(0b01 << 5, "snow", "Snow/Ice Cover", new Color(255, 255, 153), 0.5f));
-                    add(new FlagCodingArgs(0b01 << 6, "clear", "Cloud and Dilated Cloud bits are not set", new Color(192, 192, 192), 0.4f));
+                    add(new FlagCodingArgs(0b01 << 1, "dillated_cloud", "Dillated Cloud", new Color(196, 174, 78), 0.0f));
+                    add(new FlagCodingArgs(0b01 << 2, "cirrus", "Cirrus", new Color(220, 204, 178), 0.0f));
+                    add(new FlagCodingArgs(0b01 << 3, "cloud", "Cloud", new Color(175, 159, 122), 0.0f));
+                    add(new FlagCodingArgs(0b01 << 4, "cloud_shadow", "Cloud Shadow", new Color(91, 34, 143), 0.0f));
+                    add(new FlagCodingArgs(0b01 << 5, "snow", "Snow/Ice Cover", new Color(255, 255, 153), 0.0f));
+                    add(new FlagCodingArgs(0b01 << 6, "clear", "Cloud and Dilated Cloud bits are not set", new Color(192, 192, 192), 0.0f));
                     add(new FlagCodingArgs(0b01 << 7, "water", "WATER (false = land or cloud)", new Color(0, 0, 0), 0.0f));
 
                     Color cloudColor = new Color(255, 255, 255);
-                    add(new FlagCodingArgs(0b11 << 8, 0b00 << 8, "cloud_confidence_not_set", "Cloud confidence level is not set", darker(3, cloudColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 8, 0b01 << 8, "cloud_confidence_low", "Cloud confidence level is low", darker(2, cloudColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 8, 0b10 << 8, "cloud_confidence_medium", "Cloud confidence level is medium", darker(1, cloudColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 8, 0b11 << 8, "cloud_confidence_high", "Cloud confidence level is high", cloudColor, 0.0f));
+                    add(new FlagCodingArgs(0b11 << 8, 0b00 << 8, "cloud_confidence_not_set", "Cloud confidence level is not set", darker(3, cloudColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 8, 0b01 << 8, "cloud_confidence_low", "Cloud confidence level is low", darker(2, cloudColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 8, 0b10 << 8, "cloud_confidence_medium", "Cloud confidence level is medium", darker(1, cloudColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 8, 0b11 << 8, "cloud_confidence_high", "Cloud confidence level is high", cloudColor, 0.5f));
 
                     Color cloudShadowColor = new Color(52, 18, 18);
-                    add(new FlagCodingArgs(0b11 << 10, 0b00 << 10, "cloud_shadow_confidence_not_set", "Cloud shadow confidence is not set", brighter(3, cloudShadowColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 10, 0b01 << 10, "cloud_shadow_confidence_low", "Cloud shadow confidence level is low", brighter(2, cloudShadowColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 10, 0b10 << 10, "cloud_shadow_confidence_medium", "Cloud shadow confidence level is medium", brighter(1, cloudShadowColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 10, 0b11 << 10, "cloud_shadow_confidence_high", "Cloud shadow confidence level is high", cloudShadowColor, 0.0f));
+                    add(new FlagCodingArgs(0b11 << 10, 0b00 << 10, "cloud_shadow_confidence_not_set", "Cloud shadow confidence is not set", brighter(3, cloudShadowColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 10, 0b01 << 10, "cloud_shadow_confidence_low", "Cloud shadow confidence level is low", brighter(2, cloudShadowColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 10, 0b10 << 10, "cloud_shadow_confidence_medium", "Cloud shadow confidence level is medium", brighter(1, cloudShadowColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 10, 0b11 << 10, "cloud_shadow_confidence_high", "Cloud shadow confidence level is high", cloudShadowColor, 0.5f));
 
                     Color snowIceColor = new Color(255, 255, 153);
-                    add(new FlagCodingArgs(0b11 << 12, 0b00 << 12, "snow_ice_confidence_not_set", "Snow/ice confidence is not set", darker(3, snowIceColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 12, 0b01 << 12, "snow_ice_confidence_low", "Snow/ice confidence level is low", darker(2, snowIceColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 12, 0b10 << 12, "snow_ice_confidence_medium", "Snow/ice confidence level is medium", darker(1, snowIceColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 12, 0b11 << 12, "snow_ice_confidence_high", "Snow/ice confidence level is high", snowIceColor, 0.0f));
+                    add(new FlagCodingArgs(0b11 << 12, 0b00 << 12, "snow_ice_confidence_not_set", "Snow/ice confidence is not set", darker(3, snowIceColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 12, 0b01 << 12, "snow_ice_confidence_low", "Snow/ice confidence level is low", darker(2, snowIceColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 12, 0b10 << 12, "snow_ice_confidence_medium", "Snow/ice confidence level is medium", darker(1, snowIceColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 12, 0b11 << 12, "snow_ice_confidence_high", "Snow/ice confidence level is high", snowIceColor, 0.5f));
 
                     Color cirrusColor = new Color(128, 128, 128);
-                    add(new FlagCodingArgs(0b11 << 14, 0b00 << 14, "cirrus_confidence_not_set", "Cirrus confidence is not set", brighter(3, cirrusColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 14, 0b01 << 14, "cirrus_confidence_low", "Cirrus confidence level is low", brighter(2, cirrusColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 14, 0b10 << 14, "cirrus_confidence_medium", "Cirrus confidence level is medium", brighter(1, cirrusColor), 0.0f));
-                    add(new FlagCodingArgs(0b11 << 14, 0b11 << 14, "cirrus_confidence_high", "Cirrus confidence level is high", cirrusColor, 0.0f));
+                    add(new FlagCodingArgs(0b11 << 14, 0b00 << 14, "cirrus_confidence_not_set", "Cirrus confidence is not set", brighter(3, cirrusColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 14, 0b01 << 14, "cirrus_confidence_low", "Cirrus confidence level is low", brighter(2, cirrusColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 14, 0b10 << 14, "cirrus_confidence_medium", "Cirrus confidence level is medium", brighter(1, cirrusColor), 0.5f));
+                    add(new FlagCodingArgs(0b11 << 14, 0b11 << 14, "cirrus_confidence_high", "Cirrus confidence level is high", cirrusColor, 0.5f));
                 }};
                 for (FlagCodingArgs arg : args) {
                     put(arg.getName(), arg);
@@ -238,7 +251,7 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
                 ArrayList<FlagCodingArgs> args = new ArrayList<FlagCodingArgs>() {{
                     add(new FlagCodingArgs(0b01 << 0, "fill", "Pixel is fill", new Color(255, 0, 0), 0.0f));
                     add(new FlagCodingArgs(0b01 << 1, "aerosol_retrieval_valid", "Pixel aerosol retrieval is valid", new Color(0, 180, 0), 0.0f));
-                    add(new FlagCodingArgs(0b01 << 2, "water", "Pixel is water", new Color(0, 0, 0), 0.0f));
+                    add(new FlagCodingArgs(0b01 << 2, "water", "Pixel is water", new Color(46, 77, 145), 0.0f));
                     // positions 3 and 4 not used
                     add(new FlagCodingArgs(0b01 << 5, "interpolated_aerosol", " Pixel is aerosol interpolated", new Color(255, 0, 255), 0.0f));
 
@@ -291,7 +304,7 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
 
         Product product = new Product(getProductName(mtlFile), getProductType(), productDim.width, productDim.height);
         product.setFileLocation(mtlFile);
-        product.setAutoGrouping("sr_b:st_b:qa");
+        product.setAutoGrouping("sr:st:qa");
         final MetadataElement metadataRoot = product.getMetadataRoot();
         metadataRoot.addElement(productMetadata);
         final MetadataElement angleMetadata = getAngleData();
@@ -304,6 +317,7 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
         product.setEndTime(utcCenter);
 
         addBands(product);
+        setAncillaryVariables(product);
         return product;
     }
 
@@ -313,7 +327,7 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
             if (file != null && file.trim().toLowerCase().endsWith("_ang.txt")) {
                 final MetadataElement parsed = OdlParser.parse(virtualDir.getFile(basePath + file));
                 if (parsed != null && parsed.getNumElements() > 0) {
-                    final MetadataElement angleElement = new MetadataElement(file);
+                    final MetadataElement angleElement = new MetadataElement("Angle Coefficient File");
                     Arrays.stream(parsed.getElements()).forEach(angleElement::addElement);
                     return angleElement;
                 }
@@ -367,8 +381,12 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
 //            if (bandnames.containsKey(key)) {
 //                bandname = bandnames.get(key);
 //            }
-            final ProductReader geoTiffReader = geoTiffPlugIn.createReaderInstance();
             final File geoTiffFile = virtualDir.getFile(basePath + tiffFile);
+            if (!geoTiffFile.exists()) {
+                LOG.warning("The expected geotiff file " + geoTiffFile.getAbsolutePath() + " does not exist.");
+                continue;
+            }
+            final ProductReader geoTiffReader = geoTiffPlugIn.createReaderInstance();
             final Product bandProduct = geoTiffReader.readProductNodes(geoTiffFile, null);
             bandProducts.add(bandProduct);
             final Band band = addBandToProduct(bandname, bandProduct.getBandAt(0), product);
@@ -395,7 +413,9 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
                 band.setUnit(units.get(bandname));
             }
             if (flagCodings.containsKey(bandname)) {
-                band.setSampleCoding(createFlagCoding(bandname, flagCodings.get(bandname).values()));
+                final FlagCoding flagCoding = createFlagCoding(bandname, flagCodings.get(bandname).values());
+                band.setSampleCoding(flagCoding);
+                product.getFlagCodingGroup().add(flagCoding);
                 addMasks(product, band);
             }
         }
@@ -428,12 +448,26 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
         }
     }
 
+    private void setAncillaryVariables(Product product) {
+        final Band st_qa = product.getBand("st_qa");
+        final Band st_b10 = product.getBand("st_b10");
+        if (st_qa == null || st_b10 == null) {
+            return;
+        }
+        st_b10.addAncillaryVariable(st_qa, "uncertainty");
+        st_b10.setAncillaryRelations("uncertainty");
+    }
+
     private ArrayList<String> getTiffFiles() throws IOException {
-        final String[] strings = virtualDir.listAllFiles();
         final ArrayList<String> tiffFiles = new ArrayList<>();
-        for (String filename : strings) {
-            if (filename.toLowerCase().endsWith(".tif")) {
-                tiffFiles.add(filename);
+        final MetadataAttribute[] attributes = getProductMetadata().getAttributes();
+        for (MetadataAttribute attribute : attributes) {
+            final String name = attribute.getName();
+            if (name.startsWith("FILE_NAME_")) {
+                String filename = attribute.getData().getElemString();
+                if (filename.toLowerCase().endsWith(".tif")) {
+                    tiffFiles.add(filename);
+                }
             }
         }
         return tiffFiles;
