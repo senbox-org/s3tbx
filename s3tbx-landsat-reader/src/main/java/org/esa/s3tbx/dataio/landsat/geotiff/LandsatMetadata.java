@@ -19,7 +19,7 @@ package org.esa.s3tbx.dataio.landsat.geotiff;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.util.regex.Pattern;
 
 /**
@@ -56,4 +56,12 @@ interface LandsatMetadata {
     String getQualityBandNameKey();
 
     String getBandNamePrefix(String bandNumber);
+
+    default String getAngleSensorAzimuthBandName() { return null; }
+
+    default String getAngleSensorZenithBandName() { return null; }
+
+    default String getAngleSolarAzimuthBandName() { return null; }
+
+    default String getAngleSolarZenithBandName() { return null; }
 }

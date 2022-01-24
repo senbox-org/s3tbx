@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 
-class LandsatLegacyMetadata extends AbstractLandsatMetadata {
+public class LandsatLegacyMetadata extends AbstractLandsatMetadata {
 
     private static final Map<String, String> BAND_DESCRIPTIONS = new HashMap<>();
 

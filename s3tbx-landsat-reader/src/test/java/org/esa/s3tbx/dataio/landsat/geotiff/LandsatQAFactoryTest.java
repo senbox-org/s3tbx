@@ -1,5 +1,7 @@
 package org.esa.s3tbx.dataio.landsat.geotiff;
 
+import org.esa.s3tbx.dataio.landsat.geotiff.c1.CollectionOLILandsatQA;
+import org.esa.s3tbx.dataio.landsat.geotiff.c2.Collection2OLILandsatQA;
 import org.junit.Test;
 
 import java.io.File;
@@ -22,9 +24,15 @@ public class LandsatQAFactoryTest {
     }
     @Test
     public void testCollectionOLIQA() throws Exception {
-        File testFile = getTestFile("test_CollectionOLI.txt");
+        File testFile = getTestFile("LC08_L1TP_204030_20180226_20180226_01_T1_MTL.txt");
         LandsatQA landsatQA = LandsatQAFactory.create(testFile);
         assertTrue(landsatQA instanceof CollectionOLILandsatQA);
+    }
+    @Test
+    public void testCollection2OLIQA() throws Exception {
+        File testFile = getTestFile("LC08_L1TP_204030_20180226_20180226_02_T1_MTL.txt");
+        LandsatQA landsatQA = LandsatQAFactory.create(testFile);
+        assertTrue(landsatQA instanceof Collection2OLILandsatQA);
     }
     @Test
     public void testNoQA() throws Exception {

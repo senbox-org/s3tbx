@@ -1,5 +1,6 @@
-package org.esa.s3tbx.dataio.landsat.geotiff;
+package org.esa.s3tbx.dataio.landsat.geotiff.c2;
 
+import org.esa.s3tbx.dataio.landsat.geotiff.AbstractLandsatQA;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Mask;
 
@@ -10,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Definition of Landsat8/9 QA flags
+ * Definition of Landsat8/9 QA flags (Collection 2)
+ * Reference: https://www.usgs.gov/media/files/landsat-8-9-olitirs-collection-2-level-1-data-format-control-book
+ *
  * @author Cosmin Cara
  */
 public class Collection2OLILandsatQA extends AbstractLandsatQA {
@@ -141,29 +144,5 @@ public class Collection2OLILandsatQA extends AbstractLandsatQA {
 
 
         return masks;
-    }
-
-    private static class FlagCodingArgs {
-        final String name;
-        final int flagMask;
-        final String description;
-
-        FlagCodingArgs(String name, int flagMask, String description) {
-            this.name = name;
-            this.flagMask = flagMask;
-            this.description = description;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getFlagMask() {
-            return flagMask;
-        }
-
-        public String getDescription() {
-            return description;
-        }
     }
 }

@@ -20,7 +20,7 @@ import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -31,7 +31,9 @@ import java.util.Date;
 /**
  * @author Thomas Storm
  */
-abstract class AbstractLandsatMetadata implements LandsatMetadata {
+public abstract class AbstractLandsatMetadata implements LandsatMetadata {
+    protected static final double DEFAULT_SCALE_FACTOR = 1.0;
+    protected static final double DEFAULT_OFFSET = 0.0;
 
     private final MetadataElement root;
 
