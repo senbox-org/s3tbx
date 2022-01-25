@@ -1,15 +1,12 @@
 package org.esa.s3tbx.dataio.landsat.geotiff;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * @author Marco Peters
  */
 public class LandsatTypeInfo {
 
-    private static final String COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_(\\d{2})_(T1|T2|RT)";
-    private static final String ESA_COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_(\\d{2})_(T1|T2|RT)_(MTI|KIS)";
+    private static final String COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L[12]\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)";
+    private static final String ESA_COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)_(MTI|KIS)";
     private static final String L4_FILENAME_REGEX = "LT4\\d{13}\\w{3}\\d{2}";
     private static final String L5_FILENAME_REGEX = "LT5\\d{13}\\w{3}\\d{2}";
     private static final String L7_FILENAME_REGEX = "LE7\\d{13}\\w{3}\\d{2}";
@@ -166,18 +163,7 @@ public class LandsatTypeInfo {
     }
 
     static int getCollectionNumber(String fileName) {
-        Pattern pattern = Pattern.compile(COLLECTION_FILENAME_REGEX + "_MTL" + getTxtExtension());
-        Matcher matcher = pattern.matcher(fileName);
-        if (matcher.find()) {
-            return Integer.parseInt(matcher.group(1));
-        } else {
-            pattern = Pattern.compile(COLLECTION_FILENAME_REGEX + getCompressionExtension());
-            matcher = pattern.matcher(fileName);
-            if (matcher.find()) {
-                return Integer.parseInt(matcher.group(1));
-            }
-        }
-        return 0;
+        return CollectionTools.getCollectionFromFilename(fileName);
     }
 
     private static String getCompressionExtension() {

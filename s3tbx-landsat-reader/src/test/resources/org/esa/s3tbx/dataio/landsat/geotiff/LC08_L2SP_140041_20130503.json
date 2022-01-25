@@ -1,0 +1,965 @@
+{
+  "id": "LC08_L2SP_140041_20130503",
+  "decodeQualification": "INTENDED",
+  "expectedContent": {
+    "sceneWidth": 7551,
+    "sceneHeight": 7351,
+    "startTime": "03-MAY-2013 04:43:58.042000",
+    "endTime": "03-MAY-2013 04:43:58.042000",
+    "geoCoding": {
+      "coordinates": [
+        {
+          "x": 3256.0,
+          "y": 3951.0,
+          "lat": 27.35219164307461,
+          "lon": 86.68115716111055
+        },
+        {
+          "x": 5606.0,
+          "y": 4770.0,
+          "lat": 27.13018021433675,
+          "lon": 87.39318416694626
+        }
+      ],
+      "reverseAccuracy": 0.0003
+    },
+    "flagCodings": [
+      {
+        "name": "sr_qa_aerosol",
+        "samples": [
+          {
+            "name": "fill",
+            "value": 1,
+            "description": "Pixel is fill"
+          },
+          {
+            "name": "aerosol_retrieval_valid",
+            "value": 2,
+            "description": "Pixel aerosol retrieval is valid"
+          },
+          {
+            "name": "water",
+            "value": 4,
+            "description": "Pixel is water"
+          },
+          {
+            "name": "interpolated_aerosol",
+            "value": 32,
+            "description": " Pixel is aerosol interpolated"
+          },
+          {
+            "name": "aerosol_level_climatology",
+            "value": 192,
+            "description": "Aerosol level climatology"
+          },
+          {
+            "name": "aerosol_level_low",
+            "value": 192,
+            "description": "Aerosol level low"
+          },
+          {
+            "name": "aerosol_level_medium",
+            "value": 192,
+            "description": "Aerosol level medium"
+          },
+          {
+            "name": "aerosol_level_high",
+            "value": 192,
+            "description": "Aerosol level high"
+          }
+        ]
+      },
+      {
+        "name": "qa_pixel",
+        "samples": [
+          {
+            "name": "designated_fill",
+            "value": 1,
+            "description": "Designated Fill"
+          },
+          {
+            "name": "dillated_cloud",
+            "value": 2,
+            "description": "Dillated Cloud"
+          },
+          {
+            "name": "cirrus",
+            "value": 4,
+            "description": "Cirrus"
+          },
+          {
+            "name": "cloud",
+            "value": 8,
+            "description": "Cloud"
+          },
+          {
+            "name": "cloud_shadow",
+            "value": 16,
+            "description": "Cloud Shadow"
+          },
+          {
+            "name": "snow",
+            "value": 32,
+            "description": "Snow/Ice Cover"
+          },
+          {
+            "name": "clear",
+            "value": 64,
+            "description": "Cloud and Dilated Cloud bits are not set"
+          },
+          {
+            "name": "water",
+            "value": 128,
+            "description": "WATER (false = land or cloud)"
+          },
+          {
+            "name": "cloud_confidence_not_set",
+            "value": 768,
+            "description": "Cloud confidence level is not set"
+          },
+          {
+            "name": "cloud_confidence_low",
+            "value": 768,
+            "description": "Cloud confidence level is low"
+          },
+          {
+            "name": "cloud_confidence_medium",
+            "value": 768,
+            "description": "Cloud confidence level is medium"
+          },
+          {
+            "name": "cloud_confidence_high",
+            "value": 768,
+            "description": "Cloud confidence level is high"
+          },
+          {
+            "name": "cloud_shadow_confidence_not_set",
+            "value": 3072,
+            "description": "Cloud shadow confidence is not set"
+          },
+          {
+            "name": "cloud_shadow_confidence_low",
+            "value": 3072,
+            "description": "Cloud shadow confidence level is low"
+          },
+          {
+            "name": "cloud_shadow_confidence_medium",
+            "value": 3072,
+            "description": "Cloud shadow confidence level is medium"
+          },
+          {
+            "name": "cloud_shadow_confidence_high",
+            "value": 3072,
+            "description": "Cloud shadow confidence level is high"
+          },
+          {
+            "name": "snow_ice_confidence_not_set",
+            "value": 12288,
+            "description": "Snow/ice confidence is not set"
+          },
+          {
+            "name": "snow_ice_confidence_low",
+            "value": 12288,
+            "description": "Snow/ice confidence level is low"
+          },
+          {
+            "name": "snow_ice_confidence_medium",
+            "value": 12288,
+            "description": "Snow/ice confidence level is medium"
+          },
+          {
+            "name": "snow_ice_confidence_high",
+            "value": 12288,
+            "description": "Snow/ice confidence level is high"
+          },
+          {
+            "name": "cirrus_confidence_not_set",
+            "value": 49152,
+            "description": "Cirrus confidence is not set"
+          },
+          {
+            "name": "cirrus_confidence_low",
+            "value": 49152,
+            "description": "Cirrus confidence level is low"
+          },
+          {
+            "name": "cirrus_confidence_medium",
+            "value": 49152,
+            "description": "Cirrus confidence level is medium"
+          },
+          {
+            "name": "cirrus_confidence_high",
+            "value": 49152,
+            "description": "Cirrus confidence level is high"
+          }
+        ]
+      },
+      {
+        "name": "qa_radsat",
+        "samples": [
+          {
+            "name": "radiometric_saturation_b1",
+            "value": 1,
+            "description": "Band 1 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b2",
+            "value": 2,
+            "description": "Band 2 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b3",
+            "value": 4,
+            "description": "Band 3 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b4",
+            "value": 8,
+            "description": "Band 4 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b5",
+            "value": 16,
+            "description": "Band 5 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b6",
+            "value": 32,
+            "description": "Band 6 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b7",
+            "value": 64,
+            "description": "Band 7 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b9",
+            "value": 256,
+            "description": "Band 9 data saturation"
+          },
+          {
+            "name": "terrain_occlusion",
+            "value": 2048,
+            "description": "Terrain occlusion"
+          }
+        ]
+      }
+    ],
+    "bands": [
+      {
+        "name": "sr_b1",
+        "description": "Coastal Aerosol (Operational Land Imager (OLI))",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.2",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "443.0",
+        "spectralBandwidth": "16.0",
+        "expectedPixels": [
+          {
+            "x": 393,
+            "y": 1309,
+            "value": "NaN"
+          },
+          {
+            "x": 5173,
+            "y": 6252,
+            "value": 0.0258025
+          }
+        ]
+      },
+      {
+        "name": "sr_b2",
+        "description": "Blue (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.2",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "482.0",
+        "spectralBandwidth": "60.0",
+        "expectedPixels": [
+          {
+            "x": 2196,
+            "y": 1888,
+            "value": 0.0596275
+          },
+          {
+            "x": 4609,
+            "y": 2685,
+            "value": 0.027755
+          }
+        ]
+      },
+      {
+        "name": "sr_b3",
+        "description": "Green (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.2",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "561.5",
+        "spectralBandwidth": "57.0",
+        "expectedPixels": [
+          {
+            "x": 4153,
+            "y": 5479,
+            "value": 0.1980625
+          },
+          {
+            "x": 4593,
+            "y": 6825,
+            "value": 0.1072575
+          }
+        ]
+      },
+      {
+        "name": "sr_b4",
+        "description": "Red (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.2",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "654.5",
+        "spectralBandwidth": "37.0",
+        "expectedPixels": [
+          {
+            "x": 1195,
+            "y": 4896,
+            "value": 0.0748625
+          },
+          {
+            "x": 3920,
+            "y": 6715,
+            "value": 0.0959275
+          }
+        ]
+      },
+      {
+        "name": "sr_b5",
+        "description": "Near-Infrared (NIR) (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.2",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "865.0",
+        "spectralBandwidth": "28.0",
+        "expectedPixels": [
+          {
+            "x": 5709,
+            "y": 3562,
+            "value": 0.2219875
+          },
+          {
+            "x": 7179,
+            "y": 3571,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "sr_b6",
+        "description": "Short Wavelength Infrared (SWIR) 1 (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.2",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "1608.5",
+        "spectralBandwidth": "85.0",
+        "expectedPixels": [
+          {
+            "x": 2570,
+            "y": 6611,
+            "value": "NaN"
+          },
+          {
+            "x": 75,
+            "y": 3460,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "sr_b7",
+        "description": "SWIR 2 (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.2",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "2200.5",
+        "spectralBandwidth": "187.0",
+        "expectedPixels": [
+          {
+            "x": 2472,
+            "y": 1448,
+            "value": 0.2233075
+          },
+          {
+            "x": 2062,
+            "y": 317,
+            "value": 0.04046
+          }
+        ]
+      },
+      {
+        "name": "st_b10",
+        "description": "Thermal Infrared Sensor (TIRS) 1",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "Kelvin",
+        "noDataValue": "149.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "10895.0",
+        "spectralBandwidth": "590.0",
+        "expectedPixels": [
+          {
+            "x": 7335,
+            "y": 4445,
+            "value": "NaN"
+          },
+          {
+            "x": 4321,
+            "y": 5269,
+            "value": 299.88507
+          }
+        ]
+      },
+      {
+        "name": "st_trad",
+        "description": "Thermal band converted to radiance",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/m^2 sr µm)",
+        "noDataValue": "-9.999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 1751,
+            "y": 3657,
+            "value": 11.01
+          },
+          {
+            "x": 2424,
+            "y": 5311,
+            "value": 10.96
+          }
+        ]
+      },
+      {
+        "name": "st_urad",
+        "description": "Upwelled Radiance",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/m^2 sr µm)",
+        "noDataValue": "-9.999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2704,
+            "y": 3662,
+            "value": 0.287
+          },
+          {
+            "x": 3041,
+            "y": 3251,
+            "value": 0.172
+          }
+        ]
+      },
+      {
+        "name": "st_drad",
+        "description": "Downwelled Radiance",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/m^2 sr µm)",
+        "noDataValue": "-9.999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4339,
+            "y": 675,
+            "value": 0.059
+          },
+          {
+            "x": 4872,
+            "y": 116,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "st_atran",
+        "description": "Atmospheric Transmittance",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.9999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 7363,
+            "y": 2700,
+            "value": "NaN"
+          },
+          {
+            "x": 7174,
+            "y": 6956,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "st_emis",
+        "description": "Emissivity of Band 10 estimated from ASTER GED",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.9999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 837,
+            "y": 3321,
+            "value": 0.9819
+          },
+          {
+            "x": 4310,
+            "y": 4134,
+            "value": 0.9791
+          }
+        ]
+      },
+      {
+        "name": "st_emsd",
+        "description": "Emissivity standard deviation",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "-0.9999",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3819,
+            "y": 3834,
+            "value": 0.0079
+          },
+          {
+            "x": 3403,
+            "y": 4270,
+            "value": 0.0147
+          }
+        ]
+      },
+      {
+        "name": "st_cdist",
+        "description": "Pixel distance to cloud",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "km",
+        "noDataValue": "-99.99000000000001",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 108,
+            "y": 3121,
+            "value": "NaN"
+          },
+          {
+            "x": 529,
+            "y": 7298,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "sr_qa_aerosol",
+        "description": "The SR Aerosol QA file provides low-level details about factors that may have influenced the final product. The default value for bits 6 and 7, “Aerosol Level’, is Climatology (00). A value of Climatology means no aerosol correction was applied.",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2240,
+            "y": 5477,
+            "value": 224.0
+          },
+          {
+            "x": 6067,
+            "y": 5413,
+            "value": 194.0
+          }
+        ]
+      },
+      {
+        "name": "st_qa",
+        "description": "The ST QA file indicates uncertainty of the temperatures given in the ST band file",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "Kelvin",
+        "noDataValue": "-9999.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 6301,
+            "y": 6950,
+            "value": "NaN"
+          },
+          {
+            "x": 1877,
+            "y": 3909,
+            "value": 186.0
+          }
+        ]
+      },
+      {
+        "name": "qa_pixel",
+        "description": "Level-1 QA Band. The output from the CFMask algorithm is used as an input for the Quality Assessment Application, which calculates values for all fields in the QA Band file. The QA Band file contains quality statistics gathered from the cloud mask and statistics information for the scene.",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "1.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 4613,
+            "y": 1911,
+            "value": 30048.0
+          },
+          {
+            "x": 4174,
+            "y": 1109,
+            "value": 29986.0
+          }
+        ]
+      },
+      {
+        "name": "qa_radsat",
+        "description": "Level-1 Radiometric Saturation QA and Terrain Occlusion",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "0.0",
+        "noDataValueUsed": "false",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3590,
+            "y": 4110,
+            "value": 0.0
+          },
+          {
+            "x": 720,
+            "y": 6247,
+            "value": 0.0
+          }
+        ]
+      }
+    ],
+    "masks": [
+      {
+        "name": "fill",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Pixel is fill"
+      },
+      {
+        "name": "aerosol_retrieval_valid",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,180,0",
+        "description": "Pixel aerosol retrieval is valid"
+      },
+      {
+        "name": "water",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "46,77,145",
+        "description": "Pixel is water"
+      },
+      {
+        "name": "interpolated_aerosol",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,255",
+        "description": " Pixel is aerosol interpolated"
+      },
+      {
+        "name": "aerosol_level_climatology",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,172,14",
+        "description": "Aerosol level climatology"
+      },
+      {
+        "name": "aerosol_level_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "181,121,10",
+        "description": "Aerosol level low"
+      },
+      {
+        "name": "aerosol_level_medium",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "127,85,7",
+        "description": "Aerosol level medium"
+      },
+      {
+        "name": "aerosol_level_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "89,60,5",
+        "description": "Aerosol level high"
+      },
+      {
+        "name": "designated_fill",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Designated Fill"
+      },
+      {
+        "name": "dillated_cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "196,174,78",
+        "description": "Dillated Cloud"
+      },
+      {
+        "name": "cirrus",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "220,204,178",
+        "description": "Cirrus"
+      },
+      {
+        "name": "cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "175,159,122",
+        "description": "Cloud"
+      },
+      {
+        "name": "cloud_shadow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "91,34,143",
+        "description": "Cloud Shadow"
+      },
+      {
+        "name": "snow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,153",
+        "description": "Snow/Ice Cover"
+      },
+      {
+        "name": "clear",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "192,192,192",
+        "description": "Cloud and Dilated Cloud bits are not set"
+      },
+      {
+        "name": "water",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,0",
+        "description": "WATER (false = land or cloud)"
+      },
+      {
+        "name": "cloud_confidence_not_set",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "86,86,86",
+        "description": "Cloud confidence level is not set"
+      },
+      {
+        "name": "cloud_confidence_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "124,124,124",
+        "description": "Cloud confidence level is low"
+      },
+      {
+        "name": "cloud_confidence_medium",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "178,178,178",
+        "description": "Cloud confidence level is medium"
+      },
+      {
+        "name": "cloud_confidence_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "Cloud confidence level is high"
+      },
+      {
+        "name": "cloud_shadow_confidence_not_set",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "150,50,50",
+        "description": "Cloud shadow confidence is not set"
+      },
+      {
+        "name": "cloud_shadow_confidence_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "105,35,35",
+        "description": "Cloud shadow confidence level is low"
+      },
+      {
+        "name": "cloud_shadow_confidence_medium",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "74,25,25",
+        "description": "Cloud shadow confidence level is medium"
+      },
+      {
+        "name": "cloud_shadow_confidence_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "52,18,18",
+        "description": "Cloud shadow confidence level is high"
+      },
+      {
+        "name": "snow_ice_confidence_not_set",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "86,86,51",
+        "description": "Snow/ice confidence is not set"
+      },
+      {
+        "name": "snow_ice_confidence_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "124,124,74",
+        "description": "Snow/ice confidence level is low"
+      },
+      {
+        "name": "snow_ice_confidence_medium",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "178,178,107",
+        "description": "Snow/ice confidence level is medium"
+      },
+      {
+        "name": "snow_ice_confidence_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,153",
+        "description": "Snow/ice confidence level is high"
+      },
+      {
+        "name": "cirrus_confidence_not_set",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "Cirrus confidence is not set"
+      },
+      {
+        "name": "cirrus_confidence_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,255",
+        "description": "Cirrus confidence level is low"
+      },
+      {
+        "name": "cirrus_confidence_medium",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "182,182,182",
+        "description": "Cirrus confidence level is medium"
+      },
+      {
+        "name": "cirrus_confidence_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "128,128,128",
+        "description": "Cirrus confidence level is high"
+      },
+      {
+        "name": "radiometric_saturation_b1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Band 1 data saturation"
+      },
+      {
+        "name": "radiometric_saturation_b2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Band 2 data saturation"
+      },
+      {
+        "name": "radiometric_saturation_b3",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Band 3 data saturation"
+      },
+      {
+        "name": "radiometric_saturation_b4",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Band 4 data saturation"
+      },
+      {
+        "name": "radiometric_saturation_b5",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Band 5 data saturation"
+      },
+      {
+        "name": "radiometric_saturation_b6",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Band 6 data saturation"
+      },
+      {
+        "name": "radiometric_saturation_b7",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Band 7 data saturation"
+      },
+      {
+        "name": "radiometric_saturation_b9",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Band 9 data saturation"
+      },
+      {
+        "name": "terrain_occlusion",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Terrain occlusion"
+      }
+    ],
+    "metadata": [
+      {
+        "path": "LANDSAT_METADATA_FILE/IMAGE_ATTRIBUTES/IMAGE_QUALITY_TIRS",
+        "value": "9"
+      },
+      {
+        "path": "Angle Coefficient File/RPC_BAND03/BAND03_SCA13_MEAN_HEIGHT",
+        "value": "4250.0"
+      },
+      {
+        "path": "Angle Coefficient File/RPC_BAND06/BAND06_SCA14_MEAN_L1T_LINE_SAMP",
+        "value": "4036.6,6693.165"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/IMAGE_ATTRIBUTES/SATURATION_BAND_2",
+        "value": "Y"
+      },
+      {
+        "path": "Angle Coefficient File/RPC_BAND05/BAND05_SCA14_LINE_NUM_COEF",
+        "value": "0.07804856,1.003406,-0.2582404,-5.596563E-4,-9.81353E-6"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL2_SURFACE_TEMPERATURE_PARAMETERS/TEMPERATURE_MINIMUM_BAND_ST_B10",
+        "value": "149.003418"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_MIN_MAX_REFLECTANCE/REFLECTANCE_MINIMUM_BAND_6",
+        "value": "-0.09998"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_PROCESSING_RECORD/FILE_NAME_ANGLE_SENSOR_AZIMUTH_BAND_4",
+        "value": "LC08_L1TP_140041_20130503_20200912_02_T1_VAA.TIF"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/PROJECTION_ATTRIBUTES/REFLECTIVE_SAMPLES",
+        "value": "7551"
+      },
+      {
+        "path": "Angle Coefficient File/RPC_BAND11/BAND11_SCA01_MEAN_HEIGHT",
+        "value": "4250.0"
+      }
+    ]
+  }
+}

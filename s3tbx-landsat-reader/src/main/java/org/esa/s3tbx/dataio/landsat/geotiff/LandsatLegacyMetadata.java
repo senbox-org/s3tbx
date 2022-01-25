@@ -19,7 +19,7 @@ package org.esa.s3tbx.dataio.landsat.geotiff;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
@@ -71,7 +71,7 @@ public class LandsatLegacyMetadata extends AbstractLandsatMetadata {
         super(mtlReader);
     }
 
-    public LandsatLegacyMetadata(MetadataElement root) throws IOException {
+    public LandsatLegacyMetadata(MetadataElement root) {
         super(root);
     }
 

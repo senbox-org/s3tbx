@@ -19,7 +19,7 @@ package org.esa.s3tbx.dataio.landsat.geotiff;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Pattern;

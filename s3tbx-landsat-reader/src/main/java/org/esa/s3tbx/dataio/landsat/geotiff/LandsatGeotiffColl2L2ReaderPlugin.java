@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2011 Brockmann Consult GmbH (info@brockmann-consult.de)
- * 
+ *
+ * Copyright (c) 2022.  Brockmann Consult GmbH (info@brockmann-consult.de)
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 3 of the License, or (at your option)
@@ -9,9 +10,10 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
+ *
  */
 
 package org.esa.s3tbx.dataio.landsat.geotiff;
@@ -25,23 +27,27 @@ import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.io.FileUtils;
 import org.esa.snap.core.util.io.SnapFileFilter;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Locale;
 
 /**
- * @author Thomas Storm
+ * @author Thomas Storm, Sabine Embacher
  */
-public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
+public class LandsatGeotiffColl2L2ReaderPlugin implements ProductReaderPlugIn {
 
     private static final Class[] READER_INPUT_TYPES = new Class[]{String.class, File.class};
-    private static final String[] FORMAT_NAMES = new String[]{"LandsatGeoTIFF"};
-    private static final String[] DEFAULT_FILE_EXTENSIONS = new String[]{".txt", ".TXT", ".gz", ".tgz"};
-    private static final String READER_DESCRIPTION = "Landsat Data Products (GeoTIFF)";
+    private static final String[] FORMAT_NAMES = new String[]{"LandsatC2L2GeoTIFF"};
+    private static final String[] DEFAULT_FILE_EXTENSIONS = new String[]{".txt", ".gz", ".tgz", ".tar"};
+    private static final String READER_DESCRIPTION = "Landsat Collection 2 Level 2 Data Products (GeoTIFF)";
 
     @Override
     public DecodeQualification getDecodeQualification(Object input) {
         String filename = new File(input.toString()).getName();
-        if (!LandsatTypeInfo.isLandsat(filename)) {
+        if (!CollectionTools.isLandsatCollection(filename) || (CollectionTools.getLevelFromFilename(filename) != 2)) {
             return DecodeQualification.UNABLE;
         }
 
@@ -53,7 +59,6 @@ public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
         }
 
         return getDecodeQualification(virtualDir);
-
     }
 
     static DecodeQualification getDecodeQualification(VirtualDir virtualDir) {
@@ -73,13 +78,7 @@ public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
 
         for (String filePath : allFiles) {
             try {
-                final String filename = new File(filePath).getName();
-                if (isMetadataFilename(filename)) {
-                    if (CollectionTools.isLandsatCollection(filename)
-                        && CollectionTools.getCollectionFromFilename(filename) == 2
-                        && CollectionTools.getLevelFromFilename(filename) == 2){
-                        continue;
-                    }
+                if (isMetadataFilename(new File(filePath).getName())) {
                     InputStream inputStream = virtualDir.getInputStream(filePath);
                     if (isMetadataFile(inputStream)) {
                         return DecodeQualification.INTENDED;
@@ -104,9 +103,7 @@ public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
         } catch (IOException e) {
             return false;
         }
-        return firstLine != null &&
-                (firstLine.trim().matches("GROUP = L1_METADATA_FILE") ||
-                        firstLine.trim().matches("GROUP = LANDSAT_METADATA_FILE"));
+        return firstLine != null && firstLine.trim().matches("GROUP = LANDSAT_METADATA_FILE");
     }
 
     @Override
@@ -116,7 +113,7 @@ public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
 
     @Override
     public ProductReader createReaderInstance() {
-        return new LandsatGeotiffReader(this);
+        return new LandsatGeotiffColl2L2Reader(this);
     }
 
     @Override
@@ -178,12 +175,12 @@ public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
         extension = extension.toLowerCase();
 
         return extension.contains("zip")
-                || extension.contains("tar")
-                || extension.contains("tgz")
-                || extension.contains("gz")
-                || extension.contains("tbz")
-                || extension.contains("bz")
-                || extension.contains("tbz2")
-                || extension.contains("bz2");
+               || extension.contains("tar")
+               || extension.contains("tgz")
+               || extension.contains("gz")
+               || extension.contains("tbz")
+               || extension.contains("bz")
+               || extension.contains("tbz2")
+               || extension.contains("bz2");
     }
 }
