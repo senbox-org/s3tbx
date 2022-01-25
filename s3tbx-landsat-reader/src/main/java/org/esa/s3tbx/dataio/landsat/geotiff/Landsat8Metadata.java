@@ -20,7 +20,7 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.runtime.Config;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.logging.Logger;
@@ -96,7 +96,7 @@ public class Landsat8Metadata extends AbstractLandsatMetadata {
         super(fileReader);
     }
 
-    public Landsat8Metadata(MetadataElement root) throws IOException {
+    public Landsat8Metadata(MetadataElement root) {
         super(root);
     }
 
@@ -204,7 +204,7 @@ public class Landsat8Metadata extends AbstractLandsatMetadata {
         String spectralInput;
         if (readAs != null) {
             switch (readAs.toLowerCase()) {
-                case "reflectance":
+                case LandsatGeotiffReader.READ_AS_REFLECTANCE:
                     spectralInput = "REFLECTANCE";
                     break;
                 case "radiance":

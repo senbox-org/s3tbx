@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2011 Brockmann Consult GmbH (info@brockmann-consult.de)
- * 
+ *
+ * Copyright (c) 2022.  Brockmann Consult GmbH (info@brockmann-consult.de)
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 3 of the License, or (at your option)
@@ -9,9 +10,10 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
+ *
  */
 
 package org.esa.s3tbx.dataio.landsat.geotiff;
@@ -19,13 +21,13 @@ package org.esa.s3tbx.dataio.landsat.geotiff;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.util.regex.Pattern;
 
 /**
  * @author Thomas Storm
  */
-interface LandsatMetadata {
+interface LandsatColl2L2Metadata {
 
     MetadataElement getMetaDataElementRoot();
 
@@ -56,20 +58,4 @@ interface LandsatMetadata {
     String getQualityBandNameKey();
 
     String getBandNamePrefix(String bandNumber);
-
-    default String getAngleSensorAzimuthBandName() {
-        return null;
-    }
-
-    default String getAngleSensorZenithBandName() {
-        return null;
-    }
-
-    default String getAngleSolarAzimuthBandName() {
-        return null;
-    }
-
-    default String getAngleSolarZenithBandName() {
-        return null;
-    }
 }

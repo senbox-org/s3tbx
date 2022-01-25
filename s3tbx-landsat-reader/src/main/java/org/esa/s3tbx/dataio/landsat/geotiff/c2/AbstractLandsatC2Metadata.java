@@ -8,7 +8,7 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.runtime.Config;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.Reader;
 import java.text.DateFormat;
@@ -33,7 +33,7 @@ abstract class AbstractLandsatC2Metadata extends AbstractLandsatMetadata {
         sensorId = getImageAttributes().getAttribute("SENSOR_ID").getData().getElemString();
     }
 
-    public AbstractLandsatC2Metadata(MetadataElement root) throws IOException {
+    public AbstractLandsatC2Metadata(MetadataElement root) {
         super(root);
         sensorId = root.getAttribute("SENSOR_ID").getData().getElemString();
     }
@@ -227,11 +227,11 @@ abstract class AbstractLandsatC2Metadata extends AbstractLandsatMetadata {
                 default:
                     spectralInput = "RADIANCE";
                     logger.warning(String.format("Property '%s' has unsupported value '%s'.%n" +
-                                                      "Interpreting values as radiance.",
+                                                         "Interpreting values as radiance.",
                                                  LandsatGeotiffReader.SYSPROP_READ_AS, readAs));
 
             }
-        }else {
+        } else {
             spectralInput = "RADIANCE";
         }
         return spectralInput;

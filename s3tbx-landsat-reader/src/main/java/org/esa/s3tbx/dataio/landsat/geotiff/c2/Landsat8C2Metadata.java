@@ -85,7 +85,7 @@ public class Landsat8C2Metadata extends AbstractLandsatC2Metadata {
         super(fileReader);
     }
 
-    public Landsat8C2Metadata(MetadataElement root) throws IOException {
+    public Landsat8C2Metadata(MetadataElement root) {
         super(root);
     }
 

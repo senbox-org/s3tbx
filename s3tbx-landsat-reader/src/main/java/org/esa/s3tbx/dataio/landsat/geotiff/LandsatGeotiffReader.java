@@ -20,7 +20,6 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.VirtualDir;
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.dataio.AbstractProductReader;
-import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
 import org.esa.snap.core.datamodel.Band;
@@ -57,6 +56,8 @@ import java.util.regex.Pattern;
 public class LandsatGeotiffReader extends AbstractProductReader {
 
     public static final String SYSPROP_READ_AS = "s3tbx.landsat.readAs";
+    static final String READ_AS_REFLECTANCE = "reflectance";
+    private static final GeoTiffProductReaderPlugIn BAND_READER_PLUGIN = new GeoTiffProductReaderPlugIn();
 
     enum Resolution {
         DEFAULT,
@@ -64,7 +65,6 @@ public class LandsatGeotiffReader extends AbstractProductReader {
         L8_REFLECTIVE,
     }
 
-    private static final String READ_AS_REFLECTANCE = "reflectance";
     private static final Logger LOG = Logger.getLogger(LandsatGeotiffReader.class.getName());
 
     private static final String RADIANCE_UNITS = "W/(m^2*sr*µm)";
@@ -165,7 +165,6 @@ public class LandsatGeotiffReader extends AbstractProductReader {
     }
 
     private void addBands(Product product) throws IOException {
-        final GeoTiffProductReaderPlugIn plugIn = new GeoTiffProductReaderPlugIn();
         final MetadataAttribute[] productAttributes = landsatMetadata.getProductMetadata().getAttributes();
         final Pattern pattern = landsatMetadata.getOpticalBandFileNamePattern();
         product.setAutoGrouping("sun:view");
@@ -179,7 +178,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                 String fileName = metadataAttribute.getData().getElemString();
 
                 File bandFile = virtualDir.getFile(basePath + fileName);
-                ProductReader productReader = plugIn.createReaderInstance();
+                ProductReader productReader = BAND_READER_PLUGIN.createReaderInstance();
                 Product bandProduct = productReader.readProductNodes(bandFile, null);
                 if (bandProduct != null) {
                     bandProducts.add(bandProduct);
@@ -209,10 +208,10 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                         }
                     }
                 }
-            } else if (qualityBandNameKey != null && landsatQA != null && attributeName.startsWith(qualityBandNameKey) ) {
+            } else if (qualityBandNameKey != null && landsatQA != null && attributeName.startsWith(qualityBandNameKey)) {
                 String fileName = metadataAttribute.getData().getElemString();
                 File bandFile = virtualDir.getFile(basePath + fileName);
-                ProductReader productReader = plugIn.createReaderInstance();
+                ProductReader productReader = BAND_READER_PLUGIN.createReaderInstance();
                 Product bandProduct = productReader.readProductNodes(bandFile, null);
                 if (bandProduct != null) {
                     bandProducts.add(bandProduct);
@@ -305,8 +304,8 @@ public class LandsatGeotiffReader extends AbstractProductReader {
 
                 Band band = product.getBandAt(i);
                 PlanarImage image = SourceImageScaler.scaleMultiLevelImage(targetImage, sourceImage, scalings, null, renderingHints,
-                        band.getNoDataValue(),
-                        Interpolation.getInstance(Interpolation.INTERP_NEAREST));
+                                                                           band.getNoDataValue(),
+                                                                           Interpolation.getInstance(Interpolation.INTERP_NEAREST));
                 band.setSourceImage(image);
             }
         }
@@ -314,7 +313,8 @@ public class LandsatGeotiffReader extends AbstractProductReader {
 
     private void addAngleBand(String bandFileName, String bandName, Product product) throws IOException {
         File bandFile = virtualDir.getFile(basePath + bandFileName);
-        final Product bandProduct = ProductIO.readProduct(bandFile);
+        ProductReader productReader = BAND_READER_PLUGIN.createReaderInstance();
+        Product bandProduct = productReader.readProductNodes(bandFile, null);
         if (bandProduct != null) {
             bandProducts.add(bandProduct);
             Band srcBand = bandProduct.getBandAt(0);
