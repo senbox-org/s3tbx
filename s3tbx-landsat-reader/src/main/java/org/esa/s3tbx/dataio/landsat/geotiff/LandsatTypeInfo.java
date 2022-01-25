@@ -5,11 +5,6 @@ package org.esa.s3tbx.dataio.landsat.geotiff;
  */
 public class LandsatTypeInfo {
 
-    // TODO: 04.01.2022 SE -- the name "COLLECTION_FILENAME_REGEX" was de facto a L1 expression.
-//    private static final String COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)";
-    // TODO: 04.01.2022 SE -- should there also be an expression for L2?
-//    private static final String COLLECTION_L2_FILENAME_REGEX = "L[COTEM]\\d{2}_L2\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)";
-    // TODO: 04.01.2022 SE -- or Shall "L1" be replaced by "L[12]"?
     private static final String COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L[12]\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)";
     private static final String ESA_COLLECTION_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)_(MTI|KIS)";
     private static final String L4_FILENAME_REGEX = "LT4\\d{13}\\w{3}\\d{2}";
@@ -23,7 +18,6 @@ public class LandsatTypeInfo {
     private static final String L7LEGACY_FILENAME_REGEX_2 = "L7\\d{7}_\\d{11}";
 
     private static final String LANDSAT_LEVEL2_FILENAME_REGEX = "L[COTEM]\\d{2}\\d{16}(T1|T2|RT)-SC\\d{14}";
-    // TODO: 03.01.2022 SE -- QUESTION ... why is "L1" in expression for LEVEL2 Metadata filename
     private static final String LANDSAT_LEVEL2_METADATA_FILENAME_REGEX = "L[COTEM]\\d{2}_L1\\w{2}_\\d{3}\\d{3}_\\d{8}_\\d{8}_\\d{2}_(T1|T2|RT)";
 
     private enum LandsatType {
@@ -107,8 +101,6 @@ public class LandsatTypeInfo {
         abstract boolean matchesFileNamepattern(String filename);
     }
 
-
-
     private LandsatTypeInfo() {
     }
 
@@ -168,6 +160,10 @@ public class LandsatTypeInfo {
 
     public static boolean isLandsatLevel2(String fileName) {
         return LandsatL2Type.LANDSAT_LEVEL2.matchesFileNamepattern(fileName);
+    }
+
+    static int getCollectionNumber(String fileName) {
+        return CollectionTools.getCollectionFromFilename(fileName);
     }
 
     private static String getCompressionExtension() {

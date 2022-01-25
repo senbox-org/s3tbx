@@ -1,11 +1,12 @@
 package org.esa.s3tbx.dataio.landsat.geotiff;
 
+import org.esa.s3tbx.dataio.landsat.geotiff.c1.CollectionOLILandsatQA;
 import org.esa.snap.core.datamodel.Mask;
 import org.junit.Test;
 
 import java.awt.Dimension;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by obarrile on 09/01/2019.

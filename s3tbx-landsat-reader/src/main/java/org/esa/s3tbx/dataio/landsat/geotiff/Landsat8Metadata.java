@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * @author Thomas Storm
  */
-class Landsat8Metadata extends AbstractLandsatMetadata {
+public class Landsat8Metadata extends AbstractLandsatMetadata {
     private static final double DEFAULT_SCALE_FACTOR = 1.0;
     private static final double DEFAULT_OFFSET = 0.0;
 
@@ -96,7 +96,7 @@ class Landsat8Metadata extends AbstractLandsatMetadata {
         super(fileReader);
     }
 
-    public Landsat8Metadata(MetadataElement root) throws IOException {
+    public Landsat8Metadata(MetadataElement root) {
         super(root);
     }
 

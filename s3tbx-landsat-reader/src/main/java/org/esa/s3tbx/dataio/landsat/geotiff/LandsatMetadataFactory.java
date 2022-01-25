@@ -15,6 +15,8 @@
  */
 package org.esa.s3tbx.dataio.landsat.geotiff;
 
+import org.esa.s3tbx.dataio.landsat.geotiff.c2.Landsat8C2Metadata;
+import org.esa.s3tbx.dataio.landsat.geotiff.c2.LandsatC2ReprocessedMetadata;
 import org.esa.snap.core.dataio.ProductIOException;
 
 import java.io.BufferedReader;
@@ -49,11 +51,13 @@ class LandsatMetadataFactory {
                         collection = Integer.parseInt(getValue(line));
                     } else if (line.contains("SPACECRAFT_ID")) {
                         if (line.contains("LANDSAT_8")) {
-                            return collection == 1
-                                    ? new Landsat8Metadata(new FileReader(mtlFile))
-                                    : new Landsat8L1C2Metadata(new FileReader(mtlFile));
+                            return collection == 1 ?
+                                    new Landsat8Metadata(new FileReader(mtlFile)) :
+                                    new Landsat8C2Metadata(new FileReader(mtlFile));
                         } else {
-                            return new LandsatReprocessedMetadata(new FileReader(mtlFile));
+                            return collection == 1 ?
+                                    new LandsatReprocessedMetadata(new FileReader(mtlFile)) :
+                                    new LandsatC2ReprocessedMetadata((new FileReader(mtlFile)));
                         }
                     }
                     line = reader.readLine();

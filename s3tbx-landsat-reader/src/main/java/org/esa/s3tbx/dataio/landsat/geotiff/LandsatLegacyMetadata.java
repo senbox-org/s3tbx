@@ -19,7 +19,7 @@ package org.esa.s3tbx.dataio.landsat.geotiff;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.ProductData;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 
-class LandsatLegacyMetadata extends AbstractLandsatMetadata {
+public class LandsatLegacyMetadata extends AbstractLandsatMetadata {
 
     private static final Map<String, String> BAND_DESCRIPTIONS = new HashMap<>();
 
@@ -71,7 +71,7 @@ class LandsatLegacyMetadata extends AbstractLandsatMetadata {
         super(mtlReader);
     }
 
-    public LandsatLegacyMetadata(MetadataElement root) throws IOException {
+    public LandsatLegacyMetadata(MetadataElement root) {
         super(root);
     }
 

@@ -30,7 +30,9 @@ import java.util.Date;
 /**
  * @author Thomas Storm
  */
-abstract class AbstractLandsatMetadata implements LandsatMetadata {
+public abstract class AbstractLandsatMetadata implements LandsatMetadata {
+    protected static final double DEFAULT_SCALE_FACTOR = 1.0;
+    protected static final double DEFAULT_OFFSET = 0.0;
 
     private final MetadataElement root;
 
@@ -38,7 +40,7 @@ abstract class AbstractLandsatMetadata implements LandsatMetadata {
         root = OdlParser.parse(fileReader).getElementAt(0);
     }
 
-    public AbstractLandsatMetadata(MetadataElement root) throws IOException {
+    public AbstractLandsatMetadata(MetadataElement root) {
         this.root = root;
     }
 
@@ -84,14 +86,10 @@ abstract class AbstractLandsatMetadata implements LandsatMetadata {
         final MetadataAttribute spacecraft_id = getProductMetadata().getAttribute("SPACECRAFT_ID");
         final MetadataAttribute sensor_id = getProductMetadata().getAttribute("SENSOR_ID");
 
-        final StringBuilder result = new StringBuilder();
-        result.append(spacecraft_id.getData().getElemString());
-        result.append("_");
-        result.append(sensor_id.getData().getElemString());
-        result.append("_");
-        result.append(product_type.getData().getElemString());
-
-        return result.toString();
+        return String.format("%s_%s_%s",
+                             spacecraft_id.getData().getElemString(),
+                             sensor_id.getData().getElemString(),
+                             product_type.getData().getElemString());
     }
 
     protected double getScalingFactor(String bandId, String minMaxRadianceKey, String minRadianceBandPrefix, String maxRadianceBandPrefix, String minMaxPixelValueKey, String minPixelValuePrefix, String maxPixelValuePrefix) {

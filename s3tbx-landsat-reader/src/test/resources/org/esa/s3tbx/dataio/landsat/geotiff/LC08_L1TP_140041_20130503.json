@@ -1,0 +1,732 @@
+{
+  "id": "LC08_L1TP_140041_20130503",
+  "decodeQualification": "INTENDED",
+  "expectedContent": {
+    "sceneWidth": 15101,
+    "sceneHeight": 14701,
+    "startTime": "03-MAY-2013 04:43:58.042000",
+    "endTime": "03-MAY-2013 04:43:58.042000",
+    "geoCoding": {
+      "coordinates": [
+        {
+          "x": 6513.0,
+          "y": 7902.0,
+          "lat": 27.352124452248407,
+          "lon": 86.68138484412223
+        },
+        {
+          "x": 11211.0,
+          "y": 9539.0,
+          "lat": 27.13024813782316,
+          "lon": 87.39310872491049
+        }
+      ],
+      "reverseAccuracy": 0.00009
+    },
+    "flagCodings": [
+      {
+        "name": "flags",
+        "samples": [
+          {
+            "name": "designated_fill",
+            "value": 1,
+            "description": "Designated Fill"
+          },
+          {
+            "name": "dillated_cloud",
+            "value": 2,
+            "description": "Dillated Cloud"
+          },
+          {
+            "name": "cirrus",
+            "value": 4,
+            "description": "Cirrus"
+          },
+          {
+            "name": "cloud",
+            "value": 8,
+            "description": "Cloud"
+          },
+          {
+            "name": "cloud_shadow",
+            "value": 16,
+            "description": "Cloud Shadow"
+          },
+          {
+            "name": "snow",
+            "value": 32,
+            "description": "Snow/Ice Cover"
+          },
+          {
+            "name": "water",
+            "value": 64,
+            "description": "Water"
+          },
+          {
+            "name": "cloud_confidence_one",
+            "value": 128,
+            "description": "Cloud confidence bit one"
+          },
+          {
+            "name": "cloud_confidence_two",
+            "value": 256,
+            "description": "Cloud confidence bit two"
+          },
+          {
+            "name": "cloud_shadow_confidence_one",
+            "value": 512,
+            "description": "Cloud shadow confidence bit one"
+          },
+          {
+            "name": "cloud_shadow_confidence_two",
+            "value": 1024,
+            "description": "Cloud shadow confidence bit two"
+          },
+          {
+            "name": "snow_ice_confidence_one",
+            "value": 2048,
+            "description": "Snow/ice confidence bit one"
+          },
+          {
+            "name": "snow_ice_confidence_two",
+            "value": 4096,
+            "description": "Snow/ice confidence bit two"
+          },
+          {
+            "name": "cirrus_confidence_one",
+            "value": 8192,
+            "description": "Cirrus confidence bit one"
+          },
+          {
+            "name": "cirrus_confidence_two",
+            "value": 16384,
+            "description": "Cirrus confidence bit two"
+          }
+        ]
+      },
+      {
+        "name": "satflags",
+        "samples": [
+          {
+            "name": "radiometric_saturation_b1",
+            "value": 1,
+            "description": "Band 1 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b2",
+            "value": 2,
+            "description": "Band 2 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b3",
+            "value": 4,
+            "description": "Band 3 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b4",
+            "value": 8,
+            "description": "Band 4 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b5",
+            "value": 16,
+            "description": "Band 5 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b6",
+            "value": 32,
+            "description": "Band 6 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b7",
+            "value": 64,
+            "description": "Band 7 data saturation"
+          },
+          {
+            "name": "radiometric_saturation_b9",
+            "value": 256,
+            "description": "Band 9 data saturation"
+          },
+          {
+            "name": "terrain_occlusion",
+            "value": 2048,
+            "description": "Terrain occlusion"
+          }
+        ]
+      }
+    ],
+    "bands": [
+      {
+        "name": "coastal_aerosol",
+        "description": "Coastal Aerosol (Operational Land Imager (OLI))",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "-61.77469",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "440.0",
+        "spectralBandwidth": "20.0",
+        "expectedPixels": [
+          {
+            "x": 393,
+            "y": 1309,
+            "value": "NaN"
+          },
+          {
+            "x": 5173,
+            "y": 6252,
+            "value": 70.76975
+          }
+        ]
+      },
+      {
+        "name": "blue",
+        "description": "Blue (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "-63.25803",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "480.0",
+        "spectralBandwidth": "60.0",
+        "expectedPixels": [
+          {
+            "x": 2196,
+            "y": 1888,
+            "value": 59.58024
+          },
+          {
+            "x": 4609,
+            "y": 2685,
+            "value": 50.458145
+          }
+        ]
+      },
+      {
+        "name": "green",
+        "description": "Green (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "-58.29174",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "560.0",
+        "spectralBandwidth": "60.0",
+        "expectedPixels": [
+          {
+            "x": 4153,
+            "y": 5479,
+            "value": 135.06784
+          },
+          {
+            "x": 4593,
+            "y": 6825,
+            "value": 69.87631
+          }
+        ]
+      },
+      {
+        "name": "red",
+        "description": "Red (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "-49.15488",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "655.0",
+        "spectralBandwidth": "30.0",
+        "expectedPixels": [
+          {
+            "x": 1195,
+            "y": 4896,
+            "value": 38.675274
+          },
+          {
+            "x": 3920,
+            "y": 6715,
+            "value": 51.249123
+          }
+        ]
+      },
+      {
+        "name": "near_infrared",
+        "description": "Near-Infrared (NIR) (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "-30.08033",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "865.0",
+        "spectralBandwidth": "30.0",
+        "expectedPixels": [
+          {
+            "x": 5709,
+            "y": 3562,
+            "value": 62.42924
+          },
+          {
+            "x": 7179,
+            "y": 3571,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "swir_1",
+        "description": "Short Wavelength Infrared (SWIR) 1 (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "-7.48071",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "1610.0",
+        "spectralBandwidth": "80.0",
+        "expectedPixels": [
+          {
+            "x": 2570,
+            "y": 6611,
+            "value": "NaN"
+          },
+          {
+            "x": 75,
+            "y": 3460,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "swir_2",
+        "description": "SWIR 2 (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "-2.5214",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "2200.0",
+        "spectralBandwidth": "180.0",
+        "expectedPixels": [
+          {
+            "x": 2472,
+            "y": 1448,
+            "value": 4.9343796
+          },
+          {
+            "x": 2062,
+            "y": 317,
+            "value": 0.9354394
+          }
+        ]
+      },
+      {
+        "name": "panchromatic",
+        "description": "Panchromatic (OLI)",
+        "bandWidth": 15101,
+        "bandHeight": 14701,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "-55.62979",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "590.0",
+        "spectralBandwidth": "180.0",
+        "expectedPixels": [
+          {
+            "x": 14670,
+            "y": 8890,
+            "value": "NaN"
+          },
+          {
+            "x": 8642,
+            "y": 10537,
+            "value": 38.028877
+          }
+        ]
+      },
+      {
+        "name": "cirrus",
+        "description": "Cirrus (OLI)",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "-11.75608",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "1370.0",
+        "spectralBandwidth": "20.0",
+        "expectedPixels": [
+          {
+            "x": 1751,
+            "y": 3657,
+            "value": 0.4678088
+          },
+          {
+            "x": 2424,
+            "y": 5311,
+            "value": 0.2562008
+          }
+        ]
+      },
+      {
+        "name": "thermal_infrared_(tirs)_1",
+        "description": "Thermal Infrared Sensor (TIRS) 1",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "0.1",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "10895.0",
+        "spectralBandwidth": "590.0",
+        "expectedPixels": [
+          {
+            "x": 2704,
+            "y": 3662,
+            "value": 9.157154
+          },
+          {
+            "x": 3041,
+            "y": 3251,
+            "value": 8.321654
+          }
+        ]
+      },
+      {
+        "name": "thermal_infrared_(tirs)_2",
+        "description": "TIRS 2",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "W/(m^2*sr*µm)",
+        "noDataValue": "0.1",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "12005.0",
+        "spectralBandwidth": "1010.0",
+        "expectedPixels": [
+          {
+            "x": 4339,
+            "y": 675,
+            "value": 9.318238
+          },
+          {
+            "x": 4872,
+            "y": 116,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "flags",
+        "description": "Quality Band",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "0.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 7363,
+            "y": 2700,
+            "value": 1.0
+          },
+          {
+            "x": 7174,
+            "y": 6956,
+            "value": 1.0
+          }
+        ]
+      },
+      {
+        "name": "satflags",
+        "description": "Saturation Band",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "noDataValue": "0.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 837,
+            "y": 3321,
+            "value": "NaN"
+          },
+          {
+            "x": 4310,
+            "y": 4134,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "view_azimuth",
+        "description": "view_azimuth",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "deg",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 3819,
+            "y": 3834,
+            "value": -149.31
+          },
+          {
+            "x": 3403,
+            "y": 4270,
+            "value": 78.33
+          }
+        ]
+      },
+      {
+        "name": "view_zenith",
+        "description": "view_zenith",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "deg",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 108,
+            "y": 3121,
+            "value": "NaN"
+          },
+          {
+            "x": 529,
+            "y": 7298,
+            "value": "NaN"
+          }
+        ]
+      },
+      {
+        "name": "sun_azimuth",
+        "description": "sun_azimuth",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "deg",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 2240,
+            "y": 5477,
+            "value": 114.56
+          },
+          {
+            "x": 6067,
+            "y": 5413,
+            "value": 116.15
+          }
+        ]
+      },
+      {
+        "name": "sun_zenith",
+        "description": "sun_zenith",
+        "bandWidth": 7551,
+        "bandHeight": 7351,
+        "geophysicalUnit": "deg",
+        "noDataValue": "0.0",
+        "noDataValueUsed": "true",
+        "spectralWavelength": "0.0",
+        "spectralBandwidth": "0.0",
+        "expectedPixels": [
+          {
+            "x": 6301,
+            "y": 6950,
+            "value": "NaN"
+          },
+          {
+            "x": 1877,
+            "y": 3909,
+            "value": 23.44
+          }
+        ]
+      }
+    ],
+    "masks": [
+      {
+        "name": "designated_fill",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Designated Fill"
+      },
+      {
+        "name": "terrain_occlusion",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "178,0,0",
+        "description": "Terrain Occlusion"
+      },
+      {
+        "name": "cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "124,0,0",
+        "description": "Cloud"
+      },
+      {
+        "name": "Saturation for band 1",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,255",
+        "description": "Saturation for band 1"
+      },
+      {
+        "name": "Saturation for band 2",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,178",
+        "description": "Saturation for band 2"
+      },
+      {
+        "name": "Saturation for band 3",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,124",
+        "description": "Saturation for band 3"
+      },
+      {
+        "name": "Saturation for band 4",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,0",
+        "description": "Saturation for band 4"
+      },
+      {
+        "name": "Saturation for band 5",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,178,0",
+        "description": "Saturation for band 5"
+      },
+      {
+        "name": "Saturation for band 6",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,124,0",
+        "description": "Saturation for band 6"
+      },
+      {
+        "name": "Saturation for band 7",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,255,0",
+        "description": "Saturation for band 7"
+      },
+      {
+        "name": "Saturation for band 9",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "178,178,0",
+        "description": "Saturation for band 9"
+      },
+      {
+        "name": "snow_ice_confidence_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "124,124,0",
+        "description": "Snow/ice confidence 0-35%"
+      },
+      {
+        "name": "snow_ice_confidence_mid",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,255",
+        "description": "Snow/ice confidence 36-64%"
+      },
+      {
+        "name": "snow_ice_confidence_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "178,0,178",
+        "description": "Snow/ice confidence 65-100%"
+      },
+      {
+        "name": "cloud_confidence_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "124,0,124",
+        "description": "Cloud confidence 0-35%"
+      },
+      {
+        "name": "cloud_confidence_mid",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,175,175",
+        "description": "Cloud confidence 36-64%"
+      },
+      {
+        "name": "cloud_confidence_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "178,122,122",
+        "description": "Cloud confidence 65-100%"
+      },
+      {
+        "name": "cloud_shadow_confidence_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "124,85,85",
+        "description": "Cloud shadow confidence 0-35%"
+      },
+      {
+        "name": "cloud_shadow_confidence_mid",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "255,0,0",
+        "description": "Cloud shadow confidence 36-64%"
+      },
+      {
+        "name": "cloud_shadow_confidence_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "178,0,0",
+        "description": "Cloud shadow confidence 65-100%"
+      },
+      {
+        "name": "cirrus_confidence_low",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "124,0,0",
+        "description": "Cirrus confidence 0-35%"
+      },
+      {
+        "name": "cirrus_confidence_mid",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,255",
+        "description": "Cirrus confidence 36-64%"
+      },
+      {
+        "name": "cirrus_confidence_high",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,178",
+        "description": "Cirrus confidence 65-100%"
+      }
+    ],
+    "metadata": [
+      {
+        "path": "LANDSAT_METADATA_FILE/PROJECTION_ATTRIBUTES/CORNER_UR_LAT_PRODUCT",
+        "value": "28.41882"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_MIN_MAX_RADIANCE/RADIANCE_MAXIMUM_BAND_7",
+        "value": "30.52657"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_THERMAL_CONSTANTS/K1_CONSTANT_BAND_10",
+        "value": "774.8853"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_MIN_MAX_RADIANCE/RADIANCE_MAXIMUM_BAND_8",
+        "value": "673.50989"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_THERMAL_CONSTANTS/K2_CONSTANT_BAND_11",
+        "value": "1201.1442"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_PROJECTION_PARAMETERS/UTM_ZONE",
+        "value": "45"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_MIN_MAX_REFLECTANCE/REFLECTANCE_MINIMUM_BAND_7",
+        "value": "-0.09998"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_PROJECTION_PARAMETERS/DATUM",
+        "value": "WGS84"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/PROJECTION_ATTRIBUTES/GRID_CELL_SIZE_THERMAL",
+        "value": "30.0"
+      },
+      {
+        "path": "LANDSAT_METADATA_FILE/LEVEL1_MIN_MAX_PIXEL_VALUE/QUANTIZE_CAL_MIN_BAND_5",
+        "value": "1"
+      }
+    ]
+  }
+}

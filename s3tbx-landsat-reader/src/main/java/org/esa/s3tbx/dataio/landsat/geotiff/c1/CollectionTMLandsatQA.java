@@ -1,9 +1,10 @@
-package org.esa.s3tbx.dataio.landsat.geotiff;
+package org.esa.s3tbx.dataio.landsat.geotiff.c1;
 
+import org.esa.s3tbx.dataio.landsat.geotiff.AbstractLandsatQA;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Mask;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
