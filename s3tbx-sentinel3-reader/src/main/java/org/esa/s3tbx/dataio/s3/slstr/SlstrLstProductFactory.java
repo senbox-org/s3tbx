@@ -22,9 +22,7 @@ import org.esa.snap.core.dataio.geocoding.ForwardCoding;
 import org.esa.snap.core.dataio.geocoding.GeoChecks;
 import org.esa.snap.core.dataio.geocoding.GeoRaster;
 import org.esa.snap.core.dataio.geocoding.InverseCoding;
-import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
 import org.esa.snap.core.dataio.geocoding.forward.TiePointBilinearForward;
-import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.inverse.TiePointInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
@@ -41,7 +39,6 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
 
     private static final double RESOLUTION_IN_KM = 1.0;
     private final static String SYSPROP_SLSTR_LST_TIE_POINT_FORWARD = "s3tbx.reader.slstr.lst.tiePointGeoCoding.forward";
-    private final static String SYSPROP_SLSTR_LST_PIXEL_FORWARD = "s3tbx.reader.slstr.lst.pixelGeoCoding.forward";
     private final static String SYSPROP_SLSTR_LST_PIXEL_INVERSE = "s3tbx.reader.slstr.lst.pixelGeoCoding.inverse";
 
     public SlstrLstProductFactory(Sentinel3ProductReader productReader) {
@@ -98,20 +95,15 @@ public class SlstrLstProductFactory extends SlstrProductFactory {
     }
 
     private void setPixelGeoCoding(Product targetProduct, Band lonBand, Band latBand) throws IOException {
-        final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
-        lonBand.unloadRasterData();
-        final double[] latitudes = RasterUtils.loadDataScaled(latBand);
-        latBand.unloadRasterData();
+        final double[] longitudes = RasterUtils.loadGeoData(lonBand);
+        final double[] latitudes = RasterUtils.loadGeoData(latBand);
 
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonBand.getName(), latBand.getName(),
                                                   targetProduct.getSceneRasterWidth(), targetProduct.getSceneRasterHeight(), RESOLUTION_IN_KM);
 
-        final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String fwdKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_FORWARD, PixelForward.KEY);
-        final String inverseKey = preferences.get(SYSPROP_SLSTR_LST_PIXEL_INVERSE, PixelQuadTreeInverse.KEY);
-
-        final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
-        final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+        final String[] keys = getForwardAndInverseKeys_pixelCoding(SYSPROP_SLSTR_LST_PIXEL_INVERSE);
+        final ForwardCoding forward = ComponentFactory.getForward(keys[0]);
+        final InverseCoding inverse = ComponentFactory.getInverse(keys[1]);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();

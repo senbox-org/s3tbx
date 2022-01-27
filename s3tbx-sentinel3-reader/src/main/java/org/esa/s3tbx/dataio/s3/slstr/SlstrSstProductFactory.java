@@ -25,8 +25,6 @@ import org.esa.snap.core.dataio.geocoding.ForwardCoding;
 import org.esa.snap.core.dataio.geocoding.GeoChecks;
 import org.esa.snap.core.dataio.geocoding.GeoRaster;
 import org.esa.snap.core.dataio.geocoding.InverseCoding;
-import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
-import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.esa.snap.core.dataio.geocoding.util.RasterUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoCoding;
@@ -48,12 +46,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.prefs.Preferences;
 
 public class SlstrSstProductFactory extends SlstrProductFactory {
 
     public final static String SLSTR_L2_SST_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl2sst.pixelGeoCodings";
-    private final static String SLSTR_L2_SST_PIXEL_CODING_FORWARD = "s3tbx.reader.slstrl2sst.pixelGeoCodings.forward";
     private final static String SLSTR_L2_SST_PIXEL_CODING_INVERSE = "s3tbx.reader.slstrl2sst.pixelGeoCodings.inverse";
 
     private Map<String, GeoCoding> geoCodingMap;
@@ -104,8 +100,8 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
             if (slstrElementName.endsWith("ImageSize")) {
                 MetadataAttribute startOffsetElem = slstrElement.getAttribute("startOffset");
                 MetadataAttribute trackOffsetElem = slstrElement.getAttribute("trackOffset");
-                Double startOffset = startOffsetElem != null ? Double.parseDouble(startOffsetElem.getData().getElemString()) : 0.0;
-                Double trackOffset = trackOffsetElem != null ? Double.parseDouble(trackOffsetElem.getData().getElemString()) : 0.0;
+                double startOffset = startOffsetElem != null ? Double.parseDouble(startOffsetElem.getData().getElemString()) : 0.0;
+                double trackOffset = trackOffsetElem != null ? Double.parseDouble(trackOffsetElem.getData().getElemString()) : 0.0;
                 if (slstrElementName.equals("nadirImageSize")) {
                     nadirStartOffset = startOffset;
                     nadirTrackOffset = trackOffset;
@@ -297,22 +293,17 @@ public class SlstrSstProductFactory extends SlstrProductFactory {
                 return null;
             }
 
-            final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
-            lonBand.unloadRasterData();
-            final double[] latitudes = RasterUtils.loadDataScaled(latBand);
-            latBand.unloadRasterData();
+            final double[] longitudes = RasterUtils.loadGeoData(lonBand);
+            final double[] latitudes = RasterUtils.loadGeoData(latBand);
 
             final int width = product.getSceneRasterWidth();
             final int height = product.getSceneRasterHeight();
             final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
                                                       width, height, 1.0);
 
-            final Preferences preferences = Config.instance("s3tbx").preferences();
-            final String fwdKey = preferences.get(SLSTR_L2_SST_PIXEL_CODING_FORWARD, PixelForward.KEY);
-            final String inverseKey = preferences.get(SLSTR_L2_SST_PIXEL_CODING_INVERSE, PixelQuadTreeInverse.KEY);
-
-            final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
-            final InverseCoding inverse = ComponentFactory.getInverse(inverseKey);
+            final String[] keys = getForwardAndInverseKeys_pixelCoding(SLSTR_L2_SST_PIXEL_CODING_INVERSE);
+            final ForwardCoding forward = ComponentFactory.getForward(keys[0]);
+            final InverseCoding inverse = ComponentFactory.getInverse(keys[1]);
 
             final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
             geoCoding.initialize();

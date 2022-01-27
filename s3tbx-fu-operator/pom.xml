@@ -23,14 +23,14 @@
     <parent>
         <groupId>org.esa.s3tbx</groupId>
         <artifactId>s3tbx</artifactId>
-        <version>8.0.1cv</version>
+        <version>8.0.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>s3tbx-fu-operator</artifactId>
     <name>Forel-Ule Processor</name>
     <packaging>nbm</packaging>
     <description>SNAP operator implementing an algorithm for true colour classification with the discrete Forel–Ule
-        scale (OLCI, MERIS, SeaWiFS and MODIS).
+        scale (OLCI, MERIS, S2A/B, SeaWiFS and MODIS).
     </description>
 
     <properties>

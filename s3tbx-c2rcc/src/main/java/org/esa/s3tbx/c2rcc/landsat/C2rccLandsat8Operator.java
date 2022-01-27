@@ -16,10 +16,6 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.ProductNode;
-import org.esa.snap.core.datamodel.ProductNodeEvent;
-import org.esa.snap.core.datamodel.ProductNodeListener;
-import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.dataop.dem.ElevationModel;
@@ -104,16 +100,14 @@ import static org.esa.s3tbx.c2rcc.landsat.C2rccLandsat8Algorithm.Result;
         copyright = "Copyright (C) 2016 by Brockmann Consult",
         description = "Performs atmospheric correction and IOP retrieval with uncertainties on Landsat-8 L1 data products.")
 public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigurable {
+    // Landsat sources
+    static final String[] EXPECTED_BANDNAMES = new String[]{"coastal_aerosol", "blue", "green", "red", "near_infrared"};
+    static final int L8_BAND_COUNT = EXPECTED_BANDNAMES.length;
+    static final String[] ANGEL_BANDNAMES = new String[]{"view_azimuth", "view_zenith", "sun_azimuth", "sun_zenith"};
     /*
         c2rcc ops have been removed from Graph Builder. In the layer xml they are disabled
         see https://senbox.atlassian.net/browse/SNAP-395
     */
-
-    // Landsat sources
-    static final String[] EXPECTED_BANDNAMES = new String[]{"coastal_aerosol", "blue", "green", "red", "near_infrared"};
-    static final int L8_BAND_COUNT = EXPECTED_BANDNAMES.length;
-    private static final String[] ANGEL_BANDNAMES = new String[]{"view_azimuth", "view_zenith", "sun_azimuth", "sun_zenith"};
-
 
     private static final int VALID_PIXEL_IX = L8_BAND_COUNT + 1;
 
@@ -1044,11 +1038,9 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
                 assertSourceBand(bandname);
             }
         }
-        MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
-        MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
-        MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
-        sunAzimuth = imageAttributes.getAttribute("SUN_AZIMUTH").getData().getElemDouble();
-        double sunElevation = imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
+        final LandsatMetadata metadata = new LandsatMetadata(sourceProduct.getMetadataRoot());
+        sunAzimuth = metadata.getSunAzimuth();
+        double sunElevation = metadata.getSunElevation();
         sunZenith = 90 - sunElevation;
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
@@ -1070,26 +1062,11 @@ public class C2rccLandsat8Operator extends PixelOperator implements C2rccConfigu
             pm.setSubTaskName("Setting reflectance offsets and scales");
             MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
             SubsetInfo subsetInfo = getSubsetInfo(metadataRoot);
-            MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
-            MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
-            double sunElevation = imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
-            double sunAngleCorrectionFactor = Math.sin(Math.toRadians(sunElevation));
             geometryAnglesBuilder = new GeometryAnglesBuilder(subsetInfo.subsampling_x, subsetInfo.offset_x,
-                    subsetInfo.center_x, sunAzimuth, sunZenith);
-            MetadataElement radiometricRescaling = l1MetadataFile.getElement("RADIOMETRIC_RESCALING");
-            reflectance_offset = new double[L8_BAND_COUNT];
-            reflectance_scale = new double[L8_BAND_COUNT];
-            for (int i = 0; i < L8_BAND_COUNT; i++) {
-                // this follows:
-                // http://landsat.usgs.gov/Landsat8_Using_Product.php, section 'Conversion to TOA Reflectance'
-                // also see org.esa.s3tbx.dataio.landsat.geotiff.Landsat8Metadata#getSunAngleCorrectionFactor
-                double scalingOffset = radiometricRescaling.getAttributeDouble(
-                        String.format("REFLECTANCE_ADD_BAND_%d", i + 1));
-                reflectance_offset[i] = scalingOffset / sunAngleCorrectionFactor;
-                double scalingFactor = radiometricRescaling.getAttributeDouble(
-                        String.format("REFLECTANCE_MULT_BAND_%d", i + 1));
-                reflectance_scale[i] = scalingFactor / sunAngleCorrectionFactor;
-            }
+                                                              subsetInfo.center_x, sunAzimuth, sunZenith);
+            final LandsatMetadata metadata = new LandsatMetadata(metadataRoot);
+            reflectance_offset = metadata.getReflectanceScalingOffsets(L8_BAND_COUNT);
+            reflectance_scale = metadata.getReflectanceScalingValues(L8_BAND_COUNT);
             pm.worked(1);
             pm.setSubTaskName("Creating DEM");
             ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30");

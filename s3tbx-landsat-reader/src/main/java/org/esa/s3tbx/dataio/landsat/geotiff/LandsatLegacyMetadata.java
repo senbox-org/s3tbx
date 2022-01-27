@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 
-class LandsatLegacyMetadata extends AbstractLandsatMetadata {
+public class LandsatLegacyMetadata extends AbstractLandsatMetadata {
 
     private static final Map<String, String> BAND_DESCRIPTIONS = new HashMap<>();
 
@@ -71,7 +71,7 @@ class LandsatLegacyMetadata extends AbstractLandsatMetadata {
         super(mtlReader);
     }
 
-    public LandsatLegacyMetadata(MetadataElement root) throws IOException {
+    public LandsatLegacyMetadata(MetadataElement root) {
         super(root);
     }
 
@@ -161,7 +161,7 @@ class LandsatLegacyMetadata extends AbstractLandsatMetadata {
 
     boolean isLegacyFormat() {
         MetadataElement metadata = getProductMetadata();
-        return metadata.getAttribute("BAND1_FILE_NAME") != null;
+        return metadata != null && metadata.getAttribute("BAND1_FILE_NAME") != null;
     }
 
 }

@@ -132,7 +132,8 @@ class LandsatReprocessedMetadata extends AbstractLandsatMetadata {
 
     @Override
     public String getQualityBandNameKey() {
-        return landsatLegacyMetadataDelegate.getQualityBandNameKey();
+        return getMetaDataElementRoot().getElement("PRODUCT_METADATA").getAttribute("FILE_NAME_BAND_QUALITY") != null ?
+                "FILE_NAME_BAND_QUALITY" : landsatLegacyMetadataDelegate.getQualityBandNameKey();
     }
 
     @Override

@@ -1,9 +1,15 @@
 package org.esa.s3tbx.dataio.s3.slstr;
 
+import org.esa.snap.core.dataio.geocoding.forward.PixelForward;
+import org.esa.snap.core.dataio.geocoding.forward.PixelInterpolatingForward;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelGeoIndexInverse;
+import org.esa.snap.core.dataio.geocoding.inverse.PixelQuadTreeInverse;
 import org.junit.Test;
 
 import java.io.IOException;
 
+import static org.esa.s3tbx.dataio.s3.slstr.SlstrLevel1ProductFactory.SLSTR_L1B_PIXEL_GEOCODING_INVERSE;
+import static org.esa.snap.core.dataio.geocoding.ComponentGeoCoding.SYSPROP_SNAP_PIXEL_CODING_FRACTION_ACCURACY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -75,6 +81,5 @@ public class SlstrLevel1ProductFactoryTest {
             fail("IOException expected");
         } catch (IOException expected) {
         }
-
     }
 }

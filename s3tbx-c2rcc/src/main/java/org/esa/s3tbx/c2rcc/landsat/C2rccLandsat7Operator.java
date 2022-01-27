@@ -16,10 +16,6 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.ProductNode;
-import org.esa.snap.core.datamodel.ProductNodeEvent;
-import org.esa.snap.core.datamodel.ProductNodeListener;
-import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TimeCoding;
 import org.esa.snap.core.dataop.dem.ElevationModel;
@@ -998,11 +994,9 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
             assertSourceBand(EXPECTED_BANDNAME);
         }
 
-        MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
-        MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
-        MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
-        sunAzimuth = imageAttributes.getAttribute("SUN_AZIMUTH").getData().getElemDouble();
-        double sunElevation = imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
+        final LandsatMetadata metadata = new LandsatMetadata(sourceProduct.getMetadataRoot());
+        sunAzimuth = metadata.getSunAzimuth();
+        double sunElevation = metadata.getSunElevation();
         sunZenith = 90 - sunElevation;
         if (sourceProduct.getSceneGeoCoding() == null) {
             throw new OperatorException("The source product must be geo-coded.");
@@ -1030,26 +1024,11 @@ public class C2rccLandsat7Operator extends PixelOperator implements C2rccConfigu
             pm.setSubTaskName("Setting reflectance offsets and scales");
             MetadataElement metadataRoot = sourceProduct.getMetadataRoot();
             SubsetInfo subsetInfo = getSubsetInfo(metadataRoot);
-            MetadataElement l1MetadataFile = metadataRoot.getElement("L1_METADATA_FILE");
-            MetadataElement imageAttributes = l1MetadataFile.getElement("IMAGE_ATTRIBUTES");
-            double sunElevation = imageAttributes.getAttribute("SUN_ELEVATION").getData().getElemDouble();
             geometryAnglesBuilder = new GeometryAnglesBuilder(subsetInfo.subsampling_x, subsetInfo.offset_x,
-                    subsetInfo.center_x, sunAzimuth, sunZenith);
-            MetadataElement radiometricRescaling = l1MetadataFile.getElement("RADIOMETRIC_RESCALING");
-            double sunAngleCorrectionFactor = Math.sin(Math.toRadians(sunElevation));
-            reflectance_offset = new double[L7_BAND_COUNT];
-            reflectance_scale = new double[L7_BAND_COUNT];
-            for (int i = 0; i < L7_BAND_COUNT; i++) {
-                // this follows:
-                // https://landsat.gsfc.nasa.gov/wp-content/uploads/2016/08/Landsat7_Handbook.pdf,
-                // section 'Radiance to Reflectance'
-                double scalingOffset = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_ADD_BAND_%d",
-                        i + 1));
-                reflectance_offset[i] = scalingOffset / sunAngleCorrectionFactor;
-                double scalingFactor = radiometricRescaling.getAttributeDouble(String.format("REFLECTANCE_MULT_BAND_%d",
-                        i + 1));
-                reflectance_scale[i] = scalingFactor / sunAngleCorrectionFactor;
-            }
+                                                              subsetInfo.center_x, sunAzimuth, sunZenith);
+            final LandsatMetadata metadata = new LandsatMetadata(metadataRoot);
+            reflectance_offset = metadata.getReflectanceScalingOffsets(L7_BAND_COUNT);
+            reflectance_scale = metadata.getReflectanceScalingValues(L7_BAND_COUNT);
             pm.worked(1);
             pm.setSubTaskName("Defining algorithm");
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {

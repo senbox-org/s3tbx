@@ -56,4 +56,20 @@ interface LandsatMetadata {
     String getQualityBandNameKey();
 
     String getBandNamePrefix(String bandNumber);
+
+    default String getAngleSensorAzimuthBandName() {
+        return null;
+    }
+
+    default String getAngleSensorZenithBandName() {
+        return null;
+    }
+
+    default String getAngleSolarAzimuthBandName() {
+        return null;
+    }
+
+    default String getAngleSolarZenithBandName() {
+        return null;
+    }
 }

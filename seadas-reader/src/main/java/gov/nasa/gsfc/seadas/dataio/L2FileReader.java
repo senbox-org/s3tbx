@@ -35,7 +35,7 @@ import java.util.List;
  * User: seadas
  * Date: 11/14/11
  * Time: 2:23 PM
-  */
+ */
 public class L2FileReader extends SeadasFileReader {
 
     private static final String KEEP_BAD_NAV_PROPERTY = "snap.seadasl2reader.keepBadNavLines";
@@ -54,12 +54,12 @@ public class L2FileReader extends SeadasFileReader {
         List<Dimension> dims = ncFile.getDimensions();
         for (Dimension d: dims){
             if ((d.getShortName().equalsIgnoreCase("number_of_lines"))
-            ||(d.getShortName().equalsIgnoreCase("Number_of_Scan_Lines")))
-                    {
+                    ||(d.getShortName().equalsIgnoreCase("Number_of_Scan_Lines")))
+            {
                 sceneHeight = d.getLength();
             }
             if ((d.getShortName().equalsIgnoreCase("pixels_per_line"))
-            || (d.getShortName().equalsIgnoreCase("Pixels_per_Scan_Line"))){
+                    || (d.getShortName().equalsIgnoreCase("Pixels_per_Scan_Line"))){
                 sceneWidth = d.getLength();
             }
         }
@@ -98,7 +98,9 @@ public class L2FileReader extends SeadasFileReader {
         mustFlipX = mustFlipY = getDefaultFlip();
         SeadasProductReader.ProductType productType = productReader.getProductType();
         if (productType == SeadasProductReader.ProductType.Level1A_CZCS ||
-                productType == SeadasProductReader.ProductType.Level2_CZCS)
+                productType == SeadasProductReader.ProductType.Level2_CZCS ||
+                productType == SeadasProductReader.ProductType.Level2_PaceOCI ||
+                productType == SeadasProductReader.ProductType.Level2_PaceOCIS)
             mustFlipX = false;
 
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
@@ -242,11 +244,11 @@ public class L2FileReader extends SeadasFileReader {
                         latTiePoints = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
                         lonTiePoints = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
                     } else if (!mustFlipX && mustFlipY) {
-                            latTiePoints = (float[]) latarr.flip(0).copyTo1DJavaArray();
-                            lonTiePoints = (float[]) lonarr.flip(0).copyTo1DJavaArray();
+                        latTiePoints = (float[]) latarr.flip(0).copyTo1DJavaArray();
+                        lonTiePoints = (float[]) lonarr.flip(0).copyTo1DJavaArray();
                     } else if (mustFlipX && !mustFlipY) {
-                            latTiePoints = (float[]) latarr.flip(1).copyTo1DJavaArray();
-                            lonTiePoints = (float[]) lonarr.flip(1).copyTo1DJavaArray();
+                        latTiePoints = (float[]) latarr.flip(1).copyTo1DJavaArray();
+                        lonTiePoints = (float[]) lonarr.flip(1).copyTo1DJavaArray();
                     } else {
                         latTiePoints = (float[]) latarr.getStorage();
                         lonTiePoints = (float[]) lonarr.getStorage();
@@ -257,7 +259,7 @@ public class L2FileReader extends SeadasFileReader {
                     product.addTiePointGrid(latGrid);
 
                     final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1], dims[0], 0, 0,
-			    subSampleX, subSampleY, lonTiePoints, TiePointGrid.DISCONT_AT_180);
+                            subSampleX, subSampleY, lonTiePoints, TiePointGrid.DISCONT_AT_180);
                     product.addTiePointGrid(lonGrid);
 
                     product.setSceneGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanHeight));
@@ -338,7 +340,7 @@ public class L2FileReader extends SeadasFileReader {
                             latRawData, lonRawData, colPoints);
 
                 } catch (IOException e) {
-                   throw new ProductIOException(e.getMessage(), e);
+                    throw new ProductIOException(e.getMessage(), e);
                 }
             }
         }

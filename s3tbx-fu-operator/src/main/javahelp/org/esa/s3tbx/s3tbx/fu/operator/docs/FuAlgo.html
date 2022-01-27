@@ -30,14 +30,15 @@
 </table>
 
 <h3>Introduction</h3>
-<p>This algorithm is used for deriving the hue angle and FU (Forel-Ule) value from remote sensing reflectance. The data is used
+<p>This algorithm is used for deriving the hue angle and FU (Forel-Ule) value from remote sensing reflectance. The data
+    is used
     with the weighted linear sum of the remote sensing reflectance in which visual bands plus a correction term
     for the specific band-setting of each instrument. The algorithm is validated by a set of 603 hyperspectral
     measurements from inland, coastal and near-ocean waters.
     The processor supports the the following sensors:</p>
 <ul>
     <li>Sentinel-3 OLCI Level2 W(F/R)R</li>
-    <li>Sentinel-2 MSI L1C</li>
+    <li>Sentinel-2 A/B MSI L1C - For A and B sensor specific polynomial coefficients are used</li>
     <li>MERIS L2</li>
     <li>MODIS (1km LAC OC), MODIS-500 (M[O|Y]D09)</li>
     <li>SeaWiFS</li>
@@ -46,22 +47,45 @@
 <p>The algorithm is described in the following articles which are available online.</p>
 
 <dl>
-    <dt>Extending the derivation of the hue angle to more instruments.</dt>
+    <dt>An introduction to the SNAP FU-processor and examples of potential applications</dt>
     <dd>
         <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
-            <param name="content" value="http://www.mdpi.com/2072-4292/10/2/180">
-            <param name="text" value="Van der Woerd, H.J., Wernand, M.R, 2018.
-                   Hue-Angle Product for Low to Medium Spatial Resolution Optical Satellite Sensors (http://dx.doi.org/10.3390/rs10020180)">
+            <param name="content"
+                   value="https://www.researchgate.net/publication/308991071_True_color_analysis_of_natural_waters_with_SeaWiFS_MODIS_MERIS_and_OLCI_by_SNAP">
+            <param name="text" value="Van der Woerd, H.J., Wernand, M., Peters, M., Bala, M., Brockmann, C., 2016.
+            True Color Analysis of Natural Waters with SeaWiFS, MODIS, MERIS and OLCI by SNAP. Proceedings of the Ocean Optics XXIII, Victoria, BC, Canada, pp. 23?28.">
+            <param name="textFontSize" value="bigger">
+        </object>
+    </dd>
+
+    <dt>A worldwide investigation of the spectral characteristics of FU- and hue properties.</dt>
+    <dd>
+        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+            <param name="content" value="https://doi.org/10.1016/j.rse.2019.111249">
+            <param name="text" value="Pitarch, J., Van der Woerd, H.J., Brewin, R.J.W., Zielinski, O., 2018.
+                   Optical properties of Forel-Ule water types deduced from 15 years of global satellite ocean color observations (https://doi.org/10.1016/j.rse.2019.111249)">
+            <param name="textFontSize" value="bigger">
         </object>
     </dd>
 
     <dt>The derivation of the hue angle for the instruments SeaWiFS, MODIS, MERIS and OLCI are described in:</dt>
     <dd>
         <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
-            <param name="content" value="http://www.mdpi.com/1424-8220/15/10/25663">
+            <param name="content" value="https://doi.org/10.3390/s151025663">
             <param name="text" value="Van der Woerd, H.J., Wernand, M.R., 2015. True colour classification of natural
     waters with medium-spectral resolution satellites: SeaWiFS, MODIS, MERIS and OLCI. Sensors 15, 25663-25680. doi:
     10.3339/s151025663 (Open Access)">
+            <param name="textFontSize" value="bigger">
+        </object>
+    </dd>
+
+    <dt>The algorithms to convert instruments like MSI on Sentinel 2:</dt>
+    <dd>
+        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+            <param name="content" value="https://doi.org/10.3390/rs10020180">
+            <param name="text" value="Van der Woerd, H.J., Wernand, M.R., 2018. Hue-Angle Product for Low to Medium Spatial
+            Resolution Optical Satellite Sensors. Remote Sens. 2018, 10, 180. doi:10.3390/rs10020180">
+            <param name="textFontSize" value="bigger">
         </object>
     </dd>
 
@@ -72,6 +96,18 @@
             <param name="text" value="Novoa, S., Wernand, M.R, Van der Woerd, H.J., 2013. The Forel-Ule scale revisited
     spectrally: preparation protocols, transmission measurements and chromaticity. JEOS RP 8, 13057.
     DOI: http://dx.doi.org/10.2971/jeos.2013.13057 (Open Access)">
+            <param name="textFontSize" value="bigger">
+        </object>
+    </dd>
+
+    <dt>The conversion of the global CCI ocean colour set to hue angle and FU:</dt>
+    <dd>
+        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+            <param name="content" value="https://doi.org/10.5194/essd-13-481-2021">
+            <param name="text" value="Pitarch, J., Bellacicco, M., Marullo, S., and van der Woerd, H. J.:
+            Global maps of Forel?Ule index, hue angle and Secchi disk depth derived from 21 years of monthly ESA Ocean Colour Climate Change Initiative data,
+            Earth Syst. Sci. Data, 13, 481?490, https://doi.org/10.5194/essd-13-481-2021">
+            <param name="textFontSize" value="bigger">
         </object>
     </dd>
 
@@ -81,6 +117,7 @@
             <param name="content" value="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0063766">
             <param name="text" value="Wernand, M.R, Van der Woerd, H.J., Gieskes. W.W.C, 2013. Trends in ocean colour and
     chlorophyll concentration from 1889 to present. Plos One. http://dx.plos.org/10.1371/journal.pone0063766 (open access)">
+            <param name="textFontSize" value="bigger">
         </object>
     </dd>
 </dl>

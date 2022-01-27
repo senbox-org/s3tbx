@@ -27,7 +27,6 @@ public class AODProductFactory extends AbstractProductFactory {
     private static final double FILL_VALUE = -999.0;
     private static final double RESOLUTION_IN_KM = 4.5;
 
-    private final static String SYSPROP_SYN_AOD_PIXEL_GEO_CODING_FORWARD = "s3tbx.reader.syn.aod.pixelGeoCoding.forward";
     private final static String SYSPROP_SYN_AOD_PIXEL_GEO_CODING_INVERSE = "s3tbx.reader.syn.aod.pixelGeoCoding.inverse";
 
     public AODProductFactory(Sentinel3ProductReader productReader) {
@@ -58,10 +57,8 @@ public class AODProductFactory extends AbstractProductFactory {
             return;
         }
 
-        final double[] longitudes = RasterUtils.loadDataScaled(lonBand);
-        lonBand.unloadRasterData();
-        final double[] latitudes = RasterUtils.loadDataScaled(latBand);
-        latBand.unloadRasterData();
+        final double[] longitudes = RasterUtils.loadGeoData(lonBand);
+        final double[] latitudes = RasterUtils.loadGeoData(latBand);
 
         // replace fill value with NaN
         for (int i = 0; i < longitudes.length; i++) {
@@ -78,12 +75,9 @@ public class AODProductFactory extends AbstractProductFactory {
         final GeoRaster geoRaster = new GeoRaster(longitudes, latitudes, lonVariableName, latVariableName,
                                                   width, height, RESOLUTION_IN_KM);
 
-        final Preferences preferences = Config.instance("s3tbx").preferences();
-        final String fwdKey = preferences.get(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_FORWARD, PixelForward.KEY);
-        final String invKey = preferences.get(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_INVERSE, PixelQuadTreeInverse.KEY);
-
-        final ForwardCoding forward = ComponentFactory.getForward(fwdKey);
-        final InverseCoding inverse = ComponentFactory.getInverse(invKey);
+        final String[] keys = getForwardAndInverseKeys_pixelCoding(SYSPROP_SYN_AOD_PIXEL_GEO_CODING_INVERSE);
+        final ForwardCoding forward = ComponentFactory.getForward(keys[0]);
+        final InverseCoding inverse = ComponentFactory.getInverse(keys[1]);
 
         final ComponentGeoCoding geoCoding = new ComponentGeoCoding(geoRaster, forward, inverse, GeoChecks.ANTIMERIDIAN);
         geoCoding.initialize();

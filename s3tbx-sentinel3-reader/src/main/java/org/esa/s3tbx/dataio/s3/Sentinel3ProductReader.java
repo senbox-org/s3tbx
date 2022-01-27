@@ -55,7 +55,7 @@ public class Sentinel3ProductReader extends AbstractProductReader {
     @Override
     protected Product readProductNodesImpl() throws IOException {
         final String dirName = getInputFileParentDirectory().getName();
-        if (dirName.matches("S3.?_OL_1_E[RF]R_.*.SEN3")) { // OLCI L1b
+        if (dirName.matches("S3.?_OL_1_E[RF]R_.*")) { // OLCI L1b
             setFactory(new OlciLevel1ProductFactory(this));
         } else if (dirName.matches("S3.?_OL_2_(L[FR]R)_.*.SEN3")) { // OLCI L2 L -
             setFactory(new OlciLevel2LProductFactory(this));
