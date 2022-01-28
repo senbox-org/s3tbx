@@ -22,6 +22,8 @@ Changes in S3TBX 9.0.0
 
 ### New Feature
 
+    [SIIITBX-408] Updated C2RCC for changes in Landsat8 Col2 data
+    [SIIITBX-404} Support USGS Landsat Collection 2
     [SIIITBX-398] SeaDAS 3D reader which can output 2D bands for each wavelength in the 3D input file
     [SIIITBX-392] S3 data to use pixel-based geo-location information by default
     [SIIITBX-389] Support NASA distributed MERIS and OLCI files
@@ -39,6 +41,7 @@ Changes in S3TBX 9.0.0
 
 ### Improvement
 
+    [SIIITBX-403] Update reader according PB2.70-A/1.57-B (OGVI->GIFAPAR)
     [SIIITBX-399] Update help pages for SeaDAS reader
     [SIIITBX-393] Implement OLCI anomaly detection OP S3MPC requests
     [SIIITBX-390] FU operator to optionally compute dominant wavelength
