@@ -68,8 +68,8 @@ public class OlciO2aHarmonisationOp extends Operator {
     private int lastBandToProcess;
     private int numBandsToProcess;
 
-    private TiePointGrid szaBand;
-    private TiePointGrid ozaBand;
+    private RasterDataNode szaBand;
+    private RasterDataNode ozaBand;
 
     private RasterDataNode demAltitudeBand;
     private RasterDataNode altitudeBand;
@@ -99,11 +99,10 @@ public class OlciO2aHarmonisationOp extends Operator {
             }
         }
 
-        int orbitNumber = OlciO2aHarmonisationIO.getOrbitNumber(l1bProduct);
-        final String platform = OlciO2aHarmonisationIO.getPlatform(l1bProduct);
-        Product modelProduct;
         try {
-            modelProduct = OlciO2aHarmonisationIO.getModelProduct(platform);
+            int orbitNumber = OlciO2aHarmonisationIO.getOrbitNumber(l1bProduct);
+            final String platform = OlciO2aHarmonisationIO.getPlatform(l1bProduct);
+            Product modelProduct = OlciO2aHarmonisationIO.getModelProduct(platform);
             specChar = OlciO2aHarmonisationIO.getSpectralCharacteristics(orbitNumber, modelProduct);
             dwlCorrOffsets = OlciO2aHarmonisationIO.getDwlCorrOffsets(platform);
         } catch (IOException e) {
@@ -118,9 +117,9 @@ public class OlciO2aHarmonisationOp extends Operator {
         pm.beginTask("Initializing Desmile Auxiliary Data", (numBandsToProcess * 2) + 2);
         try {
             initDesmileAuxdata(pm);
-            szaBand = l1bProduct.getTiePointGrid("SZA");
-            ozaBand = l1bProduct.getTiePointGrid("OZA");
-            slpBand = l1bProduct.getTiePointGrid("sea_level_pressure");
+            szaBand = l1bProduct.getRasterDataNode("SZA");
+            ozaBand = l1bProduct.getRasterDataNode("OZA");
+            slpBand = l1bProduct.getRasterDataNode("sea_level_pressure");
             detectorIndexBand = l1bProduct.getBand("detector_index");
             altitudeBand = l1bProduct.getBand("altitude");
             radianceBands = new Band[5];

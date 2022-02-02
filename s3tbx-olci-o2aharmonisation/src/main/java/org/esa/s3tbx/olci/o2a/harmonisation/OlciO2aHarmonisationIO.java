@@ -281,7 +281,12 @@ class OlciO2aHarmonisationIO {
         return new SpectralCharacteristics(cwvl_2D, fwhm_2D);
     }
 
-    static int getOrbitNumber(Product product) {
+    static int getOrbitNumber(Product product) throws IOException {
+        final String productName = product.getName();
+        if (productName.contains("S3A_SY_1_SYN") || productName.contains("S3B_SY_1_SYN")) {
+            return getSynAbsoluteOrbitNumber(productName);
+        }
+
         final MetadataElement metadataRoot = product.getMetadataRoot();
         if (metadataRoot != null) {
             final MetadataElement manifestElement = metadataRoot.getElement("Manifest");
@@ -307,6 +312,11 @@ class OlciO2aHarmonisationIO {
 
     static String getPlatform(Product product) {
         String platform = null;
+        final String productName = product.getName();
+        if (productName.contains("S3A_SY_1_SYN") || productName.contains("S3B_SY_1_SYN")) {
+            return getPlatformIdentifier(productName);
+        }
+
         final MetadataElement metadataRoot = product.getMetadataRoot();
         if (metadataRoot != null) {
             final MetadataElement manifestElement = metadataRoot.getElement("Manifest");
@@ -361,6 +371,48 @@ class OlciO2aHarmonisationIO {
         return platform.equals("A") ?
                 OlciO2aHarmonisationConstants.OLCI_A_DWL_CORR_OFFSET :
                 OlciO2aHarmonisationConstants.OLCI_B_DWL_CORR_OFFSET;
+    }
+
+    public static int getCycleFromS3SynFilename(String synFileName) throws IOException {
+        // e.g. S3A_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_073_022_2160_LN2_O_NT____.SEN3.nc
+        if (synFileName.contains("S3A_SY_1_SYN") || synFileName.contains("S3B_SY_1_SYN")) {
+            final int s3PrefixStart = synFileName.indexOf("SY_1_SYN") - 4;
+            final int cycleStart = s3PrefixStart + 69;
+            final String cycleString = synFileName.substring(cycleStart, cycleStart + 3);
+            return Integer.parseInt(cycleString);
+        }
+        throw new IOException("Cannot parse SYN input product name - please check!");
+    }
+
+    public static int getRelOrbitFromS3SynFilename(String synFileName) throws IOException {
+        // e.g. S3A_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_073_022_2160_LN2_O_NT____.SEN3.nc
+        if (synFileName.contains("S3A_SY_1_SYN") || synFileName.contains("S3B_SY_1_SYN")) {
+            final int s3PrefixStart = synFileName.indexOf("SY_1_SYN") - 4;
+            final int cycleStart = s3PrefixStart + 73;
+            final String cycleString = synFileName.substring(cycleStart, cycleStart + 3);
+            return Integer.parseInt(cycleString);
+        }
+        throw new IOException("Cannot parse SYN input product name - please check!");
+    }
+
+    public static int getSynAbsoluteOrbitNumber(String synFileName) throws IOException {
+        final int cycle = getCycleFromS3SynFilename(synFileName);
+        final int relOrbit = getRelOrbitFromS3SynFilename(synFileName);
+        final String platform = getPlatformIdentifier(synFileName);  // A or B
+        if (platform.equals("A")) {
+            // S3A cycles from [1..86]. See email GK, 20220201.
+            return OlciO2aHarmonisationConstants.s3aFirstAO[cycle-1] + relOrbit - 1;
+        } else if (platform.equals("B")) {
+            // S3A cycles from [20..67]. See email GK, 20220201.
+            return OlciO2aHarmonisationConstants.s3bFirstAO[cycle-20] + relOrbit - 1;
+        } else {
+            throw new IOException("Cannot retrieve SYN absolute orbit number - exiting.");
+        }
+    }
+
+    static String getPlatformIdentifier(String productName) {
+        final int s3PrefixStart = productName.indexOf("SY_1_SYN") - 2;
+        return productName.substring(s3PrefixStart, s3PrefixStart + 1);
     }
 
     static class SpectralCharacteristics {

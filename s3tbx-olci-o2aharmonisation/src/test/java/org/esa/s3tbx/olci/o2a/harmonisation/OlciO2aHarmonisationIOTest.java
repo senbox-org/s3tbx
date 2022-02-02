@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -49,7 +50,7 @@ public class OlciO2aHarmonisationIOTest {
         DesmileLut lut = new DesmileLut(L, M, N, X, Y, jacobians, MEAN, VARI, cwvl, cbwd, leafsize, sequ);
         assertNotNull(lut);
         assertJSONParsedObjects(lut.getL(), lut.getM(), lut.getN(), lut.getJACO(), lut.getX(), lut.getY(), lut.getVARI(),
-                                lut.getCbwd(), lut.getCwvl(), lut.getLeafsize(), lut.getSequ(), lut.getMEAN());
+                lut.getCbwd(), lut.getCwvl(), lut.getLeafsize(), lut.getSequ(), lut.getMEAN());
     }
 
     private void assertJSONParsedObjects(long l, long m, long n,
@@ -184,11 +185,51 @@ public class OlciO2aHarmonisationIOTest {
     }
 
     @Test
-//    @Ignore
     public void testInstallAuxdata() throws Exception {
         Path auxPath = OlciO2aHarmonisationIO.installAuxdata();
         assertNotNull(auxPath);
 
     }
 
+    @Test
+    public void testGetCycleAndRelOrbitFromS3SynFilename() throws IOException {
+        final String synFileNameA =
+                "S3A_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_073_022_2160_LN2_O_NT____.SEN3.nc";
+        assertEquals(73, OlciO2aHarmonisationIO.getCycleFromS3SynFilename(synFileNameA));
+        assertEquals(22, OlciO2aHarmonisationIO.getRelOrbitFromS3SynFilename(synFileNameA));
+
+        final String synFileNameB =
+                "S3B_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_246_345_2160_LN2_O_NT____.SEN3.nc";
+        assertEquals(246, OlciO2aHarmonisationIO.getCycleFromS3SynFilename(synFileNameB));
+        assertEquals(345, OlciO2aHarmonisationIO.getRelOrbitFromS3SynFilename(synFileNameB));
+
+        final String synFileNameB2 =
+                "S3B_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_001_007_2160_LN2_O_NT____.SEN3.nc";
+        assertEquals(1, OlciO2aHarmonisationIO.getCycleFromS3SynFilename(synFileNameB2));
+        assertEquals(7, OlciO2aHarmonisationIO.getRelOrbitFromS3SynFilename(synFileNameB2));
+    }
+
+    @Test
+    public void testGetSynAbsoluteOrbitNumber() throws IOException {
+        String synFileNameA =
+                "S3A_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_058_041_2160_LN2_O_NT____.SEN3.nc";
+        assertEquals(21959, OlciO2aHarmonisationIO.getSynAbsoluteOrbitNumber(synFileNameA));
+
+        synFileNameA =
+                "S3A_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_058_106_2160_LN2_O_NT____.SEN3.nc";
+        assertEquals(22024, OlciO2aHarmonisationIO.getSynAbsoluteOrbitNumber(synFileNameA));
+
+        synFileNameA =
+                "S3A_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_080_138_2160_LN2_O_NT____.SEN3.nc";
+        assertEquals(30526, OlciO2aHarmonisationIO.getSynAbsoluteOrbitNumber(synFileNameA));
+
+        String synFileNameB =
+                "S3B_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_060_366_2160_LN2_O_NT____.SEN3.nc";
+        assertEquals(19118, OlciO2aHarmonisationIO.getSynAbsoluteOrbitNumber(synFileNameB));
+
+        synFileNameB =
+                "S3B_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_053_335_2160_LN2_O_NT____.SEN3.nc";
+        assertEquals(16392, OlciO2aHarmonisationIO.getSynAbsoluteOrbitNumber(synFileNameB));
+
+    }
 }
