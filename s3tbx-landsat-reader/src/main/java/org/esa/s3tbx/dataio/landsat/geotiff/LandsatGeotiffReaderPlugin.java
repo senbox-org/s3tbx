@@ -21,6 +21,8 @@ import org.esa.s3tbx.dataio.landsat.tgz.VirtualDirTgz;
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
+import org.esa.snap.core.datamodel.RGBImageProfile;
+import org.esa.snap.core.datamodel.RGBImageProfileManager;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.io.FileUtils;
 import org.esa.snap.core.util.io.SnapFileFilter;
@@ -37,6 +39,11 @@ public class LandsatGeotiffReaderPlugin implements ProductReaderPlugIn {
     private static final String[] FORMAT_NAMES = new String[]{"LandsatGeoTIFF"};
     private static final String[] DEFAULT_FILE_EXTENSIONS = new String[]{".txt", ".TXT", ".gz", ".tgz"};
     private static final String READER_DESCRIPTION = "Landsat Data Products (GeoTIFF)";
+
+    public LandsatGeotiffReaderPlugin() {
+        RGBImageProfileManager manager = RGBImageProfileManager.getInstance();
+        manager.addProfile(new RGBImageProfile("Landsat-8/9 L1 red,green,blue", new String[]{"red", "green", "blue"}));
+    }
 
     @Override
     public DecodeQualification getDecodeQualification(Object input) {

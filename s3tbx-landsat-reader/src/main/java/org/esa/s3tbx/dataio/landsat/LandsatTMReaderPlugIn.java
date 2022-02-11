@@ -40,7 +40,6 @@ public final class LandsatTMReaderPlugIn implements ProductReaderPlugIn {
         RGBImageProfileManager manager = RGBImageProfileManager.getInstance();
         manager.addProfile(new RGBImageProfile("Landsat-TM 3,2,1", new String[]{"radiance_3", "radiance_2", "radiance_1"}));
         manager.addProfile(new RGBImageProfile("Landsat-TM 4,3,2", new String[]{"radiance_4", "radiance_3", "radiance_2"}));
-        manager.addProfile(new RGBImageProfile("Landsat-8 red,green,blue", new String[]{"red", "green", "blue"}));
     }
 
     /**
