@@ -16,15 +16,15 @@
 
 package org.esa.s3tbx.dataio.landsat.geotiff;
 
+import org.esa.s3tbx.dataio.landsat.geotiff.c2.Landsat8C2Metadata;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Thomas Storm
@@ -60,10 +60,24 @@ public class LandsatMetadataFactoryTest {
     }
 
     @Test
-    public void testCreate_8() throws Exception {
-        File testFile = getTestFile("test_L8_MTL.txt");
+    public void testCreate_8C1L1() throws Exception {
+        File testFile = getTestFile("test_L8C1L1_MTL.txt");
         LandsatMetadata landsatMetadata = LandsatMetadataFactory.create(testFile);
         assertTrue(landsatMetadata instanceof Landsat8Metadata);
+    }
+
+    @Test
+    public void testCreate_8C2L1() throws Exception {
+        File testFile = getTestFile("test_L8C2L1_MTL.txt");
+        LandsatMetadata landsatMetadata = LandsatMetadataFactory.create(testFile);
+        assertTrue(landsatMetadata instanceof Landsat8C2Metadata);
+    }
+
+    @Test
+    public void testCreate_9C2L1() throws Exception {
+        File testFile = getTestFile("test_L9C2L1_MTL.txt");
+        LandsatMetadata landsatMetadata = LandsatMetadataFactory.create(testFile);
+        assertTrue(landsatMetadata instanceof Landsat8C2Metadata);
     }
 
     @Test
