@@ -22,6 +22,16 @@
                 <attr name="helpId" stringvalue="importLandsatProduct"/>
                 <attr name="ShortDescription" stringvalue="Import a Landsat (in GeoTIFF format) data product."/>
             </file>
+            <file name="org-esa-s3tbx-dataio-landsat-ImportLandsatCol2L2GeoTIFFProduct.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.file.ImportProductAction.create"/>
+                <attr name="displayName" stringvalue="Landsat Collection-2 Level2 (GeoTIFF)"/>
+                <attr name="formatName" stringvalue="LandsatC2L2GeoTIFF"/>
+                <attr name="useAllFileFilter" boolvalue="true"/>
+                <attr name="helpId" stringvalue="importLandsatProduct"/>
+                <attr name="ShortDescription"
+                      stringvalue="Import a Landsat Collection-2 Level2 (in GeoTIFF format) data product."/>
+            </file>
             <file name="org-esa-s3tbx-dataio-landsat-ImportLandsat815GeoTIFFProduct.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.rcp.actions.file.ImportProductAction.create"/>

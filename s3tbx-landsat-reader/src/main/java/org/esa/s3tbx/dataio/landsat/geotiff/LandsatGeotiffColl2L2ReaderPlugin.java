@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -47,7 +48,9 @@ public class LandsatGeotiffColl2L2ReaderPlugin implements ProductReaderPlugIn {
     @Override
     public DecodeQualification getDecodeQualification(Object input) {
         String filename = new File(input.toString()).getName();
-        if (!CollectionTools.isLandsatCollection(filename) || (CollectionTools.getLevelFromFilename(filename) != 2)) {
+        if (!CollectionTools.isLandsatCollection(filename) ||
+                CollectionTools.getLevelFromFilename(filename) != 2 ||
+                !endsWithDefaultExtension(filename)) {
             return DecodeQualification.UNABLE;
         }
 
@@ -59,6 +62,10 @@ public class LandsatGeotiffColl2L2ReaderPlugin implements ProductReaderPlugIn {
         }
 
         return getDecodeQualification(virtualDir);
+    }
+
+    static boolean endsWithDefaultExtension(String filename) {
+        return Arrays.asList(DEFAULT_FILE_EXTENSIONS).contains(FileUtils.getExtension(filename));
     }
 
     static DecodeQualification getDecodeQualification(VirtualDir virtualDir) {

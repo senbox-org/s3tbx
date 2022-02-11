@@ -28,7 +28,7 @@
         "name": "sr_qa_aerosol",
         "samples": [
           {
-            "name": "fill",
+            "name": "aerosol_fill",
             "value": 1,
             "description": "Pixel is fill"
           },
@@ -38,12 +38,12 @@
             "description": "Pixel aerosol retrieval is valid"
           },
           {
-            "name": "water",
+            "name": "aerosol_water",
             "value": 4,
             "description": "Pixel is water"
           },
           {
-            "name": "interpolated_aerosol",
+            "name": "aerosol_interpolated",
             "value": 32,
             "description": " Pixel is aerosol interpolated"
           },
@@ -673,7 +673,7 @@
     ],
     "masks": [
       {
-        "name": "fill",
+        "name": "aerosol_fill",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "255,0,0",
         "description": "Pixel is fill"
@@ -685,13 +685,13 @@
         "description": "Pixel aerosol retrieval is valid"
       },
       {
-        "name": "water",
+        "name": "aerosol_water",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "46,77,145",
         "description": "Pixel is water"
       },
       {
-        "name": "interpolated_aerosol",
+        "name": "aerosol_interpolated",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "255,0,255",
         "description": " Pixel is aerosol interpolated"

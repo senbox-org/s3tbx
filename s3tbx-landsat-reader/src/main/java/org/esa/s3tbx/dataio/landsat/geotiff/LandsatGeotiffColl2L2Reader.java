@@ -35,7 +35,8 @@ import org.esa.snap.core.util.io.FileUtils;
 import org.esa.snap.dataio.geotiff.GeoTiffProductReaderPlugIn;
 
 import javax.media.jai.ImageLayout;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -249,11 +250,11 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
         put("sr_qa_aerosol", // SR Aerosol QA File
             Collections.unmodifiableMap(new LinkedHashMap<String, FlagCodingArgs>() {{
                 ArrayList<FlagCodingArgs> args = new ArrayList<FlagCodingArgs>() {{
-                    add(new FlagCodingArgs(0b01 << 0, "fill", "Pixel is fill", new Color(255, 0, 0), 0.0f));
+                    add(new FlagCodingArgs(0b01 << 0, "aerosol_fill", "Pixel is fill", new Color(255, 0, 0), 0.0f));
                     add(new FlagCodingArgs(0b01 << 1, "aerosol_retrieval_valid", "Pixel aerosol retrieval is valid", new Color(0, 180, 0), 0.0f));
-                    add(new FlagCodingArgs(0b01 << 2, "water", "Pixel is water", new Color(46, 77, 145), 0.0f));
+                    add(new FlagCodingArgs(0b01 << 2, "aerosol_water", "Pixel is water", new Color(46, 77, 145), 0.0f));
                     // positions 3 and 4 not used
-                    add(new FlagCodingArgs(0b01 << 5, "interpolated_aerosol", " Pixel is aerosol interpolated", new Color(255, 0, 255), 0.0f));
+                    add(new FlagCodingArgs(0b01 << 5, "aerosol_interpolated", " Pixel is aerosol interpolated", new Color(255, 0, 255), 0.0f));
 
                     final Color aerosolLevelColor = new Color(89, 60, 5);
                     add(new FlagCodingArgs(0b11 << 6, 0b00 << 6, "aerosol_level_climatology", "Aerosol level climatology", brighter(3, aerosolLevelColor), 0.0f));

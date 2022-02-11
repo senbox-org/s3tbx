@@ -1,0 +1,9 @@
+{
+  "testProducts": [
+    {
+      "id": "LC08_L2SP_140041_20130503",
+      "relativePath": "sensors_platforms/LANDSAT/L8_Col2L2/LC08_L2SP_140041_20130503_20200912_02_T1/LC08_L2SP_140041_20130503_20200912_02_T1_MTL.txt",
+      "description": "Landsat 8 Collection-2 Level-2"
+    }
+  ]
+}
