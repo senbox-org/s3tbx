@@ -37,7 +37,7 @@ public class Landsat8MetadataTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = getClass().getResource("test_L8_MTL.txt");
+        URL url = getClass().getResource("test_L8C1L1_MTL.txt");
         URI uri = new URI(url.toString());
         metadata = new Landsat8Metadata(new FileReader(new File(uri.getPath())));
     }

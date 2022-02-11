@@ -50,7 +50,7 @@ class LandsatMetadataFactory {
                     if (line.contains("COLLECTION_NUMBER")) {
                         collection = Integer.parseInt(getValue(line));
                     } else if (line.contains("SPACECRAFT_ID")) {
-                        if (line.contains("LANDSAT_8")) {
+                        if (line.contains("LANDSAT_8") || line.contains("LANDSAT_9")) {
                             return collection == 1 ?
                                     new Landsat8Metadata(new FileReader(mtlFile)) :
                                     new Landsat8C2Metadata(new FileReader(mtlFile));

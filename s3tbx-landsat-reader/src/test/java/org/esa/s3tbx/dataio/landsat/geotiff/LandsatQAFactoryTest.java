@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class LandsatQAFactoryTest {
     @Test
     public void testPreCollectionQA() throws Exception {
-        File testFile = getTestFile("test_L8_MTL.txt");
+        File testFile = getTestFile("test_L8C1L1_MTL.txt");
         LandsatQA landsatQA = LandsatQAFactory.create(testFile);
         assertTrue(landsatQA instanceof PreCollectionLandsatQA);
     }
