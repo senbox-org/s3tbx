@@ -64,17 +64,6 @@ public class LandsatGeotiffColl2L2Reader extends AbstractProductReader {
 
     private static final Logger LOG = Logger.getLogger(LandsatGeotiffColl2L2Reader.class.getName());
 
-//    private static final Map<String, String> bandnames = Collections.unmodifiableMap(new HashMap<String, String>() {{
-//        put("_SR_B1", "coastal_aerosol");
-//        put("_SR_B2", "blue");
-//        put("_SR_B3", "green");
-//        put("_SR_B4", "red");
-//        put("_SR_B5", "near_infrared");
-//        put("_SR_B6", "swir_1");
-//        put("_SR_B7", "swir_2");
-//        put("_ST_B10", "thermal_infrared_(tirs)_1");
-//    }});
-
     private static final Map<String, String> bandDescriptions = Collections.unmodifiableMap(new HashMap<String, String>() {{
         put("sr_b1", "Coastal Aerosol (Operational Land Imager (OLI))");
         put("sr_b2", "Blue (OLI)");

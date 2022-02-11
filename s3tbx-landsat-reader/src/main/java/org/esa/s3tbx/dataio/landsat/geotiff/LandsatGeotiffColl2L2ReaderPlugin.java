@@ -23,6 +23,8 @@ import org.esa.s3tbx.dataio.landsat.tgz.VirtualDirTgz;
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
+import org.esa.snap.core.datamodel.RGBImageProfile;
+import org.esa.snap.core.datamodel.RGBImageProfileManager;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.io.FileUtils;
 import org.esa.snap.core.util.io.SnapFileFilter;
@@ -44,6 +46,11 @@ public class LandsatGeotiffColl2L2ReaderPlugin implements ProductReaderPlugIn {
     private static final String[] FORMAT_NAMES = new String[]{"LandsatC2L2GeoTIFF"};
     private static final String[] DEFAULT_FILE_EXTENSIONS = new String[]{".txt", ".gz", ".tgz", ".tar"};
     private static final String READER_DESCRIPTION = "Landsat Collection 2 Level 2 Data Products (GeoTIFF)";
+
+    public LandsatGeotiffColl2L2ReaderPlugin() {
+        RGBImageProfileManager manager = RGBImageProfileManager.getInstance();
+        manager.addProfile(new RGBImageProfile("Landsat-8/9 L2 RGB", new String[]{"sr_b4", "sr_b3", "sr_b2"}));
+    }
 
     @Override
     public DecodeQualification getDecodeQualification(Object input) {
@@ -182,12 +189,12 @@ public class LandsatGeotiffColl2L2ReaderPlugin implements ProductReaderPlugIn {
         extension = extension.toLowerCase();
 
         return extension.contains("zip")
-               || extension.contains("tar")
-               || extension.contains("tgz")
-               || extension.contains("gz")
-               || extension.contains("tbz")
-               || extension.contains("bz")
-               || extension.contains("tbz2")
-               || extension.contains("bz2");
+                || extension.contains("tar")
+                || extension.contains("tgz")
+                || extension.contains("gz")
+                || extension.contains("tbz")
+                || extension.contains("bz")
+                || extension.contains("tbz2")
+                || extension.contains("bz2");
     }
 }
