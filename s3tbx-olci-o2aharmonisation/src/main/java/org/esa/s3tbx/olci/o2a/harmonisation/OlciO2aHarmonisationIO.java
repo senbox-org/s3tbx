@@ -21,7 +21,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -281,10 +284,11 @@ class OlciO2aHarmonisationIO {
         return new SpectralCharacteristics(cwvl_2D, fwhm_2D);
     }
 
-    static int getOrbitNumber(Product product) throws IOException {
+    static int getOrbitNumber(Product product) throws IOException, java.text.ParseException {
         final String productName = product.getName();
         if (productName.contains("S3A_SY_1_SYN") || productName.contains("S3B_SY_1_SYN")) {
-            return getSynAbsoluteOrbitNumber(productName);
+//            return getSynAbsoluteOrbitNumber(productName);
+            return getSynAbsoluteOrbitNumberFromDateTime(productName);  // requested by RQ, 20220209
         }
 
         final MetadataElement metadataRoot = product.getMetadataRoot();
@@ -395,7 +399,21 @@ class OlciO2aHarmonisationIO {
         throw new IOException("Cannot parse SYN input product name - please check!");
     }
 
-    public static int getSynAbsoluteOrbitNumber(String synFileName) throws IOException {
+    public static String getDateTimeStringFromS3SynFilename(String synFileName) throws IOException {
+        // e.g. S3A_SY_1_SYN____20210613T095432_20210613T095732_20220113T121245_0179_073_022_2160_LN2_O_NT____.SEN3.nc
+        if (synFileName.contains("S3A_SY_1_SYN") || synFileName.contains("S3B_SY_1_SYN")) {
+            final int s3PrefixStart = synFileName.indexOf("SY_1_SYN") - 4;
+            final int dateStart = s3PrefixStart + 16;
+            final int timeStart = s3PrefixStart + 25;
+            final String dateString = synFileName.substring(dateStart, dateStart + 8);
+            final String timeString = synFileName.substring(timeStart, timeStart + 6);
+            return dateString + " " + timeString;
+        }
+        throw new IOException("Cannot parse SYN input product name - please check!");
+    }
+
+
+    public static int getSynAbsoluteOrbitNumberFromCycleAndRelativeOrbit(String synFileName) throws IOException {
         final int cycle = getCycleFromS3SynFilename(synFileName);
         final int relOrbit = getRelOrbitFromS3SynFilename(synFileName);
         final String platform = getPlatformIdentifier(synFileName);  // A or B
@@ -409,6 +427,31 @@ class OlciO2aHarmonisationIO {
             throw new IOException("Cannot retrieve SYN absolute orbit number - exiting.");
         }
     }
+
+    public static int getSynAbsoluteOrbitNumberFromDateTime(String synFileName) throws IOException, java.text.ParseException {
+        final SimpleDateFormat synDateTimeFormat = new SimpleDateFormat("yyyyMMdd hhmmss");
+        final String platform = getPlatformIdentifier(synFileName);  // A or B
+
+        String dateTimeStringOfFirstOrbit;
+        if (platform.equals("A")) {
+            dateTimeStringOfFirstOrbit = "20160216 191843";
+        } else if (platform.equals("B")) {
+            dateTimeStringOfFirstOrbit = "20180425 191855";
+        } else {
+            throw new IOException("Cannot retrieve SYN absolute orbit number - exiting.");
+        }
+        final Date dateOfFirstOrbit = synDateTimeFormat.parse(dateTimeStringOfFirstOrbit);
+        final String dateStringOfCurrentOrbit = getDateTimeStringFromS3SynFilename(synFileName);
+        final Date dateOfCurrentOrbit = synDateTimeFormat.parse(dateStringOfCurrentOrbit);
+        final long diffDates = dateOfCurrentOrbit.getTime() - dateOfFirstOrbit.getTime();
+        final long diffDatesAsSeconds = TimeUnit.SECONDS.convert(diffDates, TimeUnit.MILLISECONDS);
+
+        // The orbital cycle is 27 days (14+7/27 orbits per day, 385 orbits per cycle):
+        final double orbitsPerSecond = (14.0 + 7.0/27.0) / 86400.0;
+
+        return (int) (1 + (diffDatesAsSeconds * orbitsPerSecond));
+    }
+
 
     static String getPlatformIdentifier(String productName) {
         final int s3PrefixStart = productName.indexOf("SY_1_SYN") - 2;

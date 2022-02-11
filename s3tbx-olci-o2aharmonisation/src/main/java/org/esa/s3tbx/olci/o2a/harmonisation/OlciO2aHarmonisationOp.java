@@ -105,8 +105,9 @@ public class OlciO2aHarmonisationOp extends Operator {
             Product modelProduct = OlciO2aHarmonisationIO.getModelProduct(platform);
             specChar = OlciO2aHarmonisationIO.getSpectralCharacteristics(orbitNumber, modelProduct);
             dwlCorrOffsets = OlciO2aHarmonisationIO.getDwlCorrOffsets(platform);
-        } catch (IOException e) {
+        } catch (IOException | java.text.ParseException e) {
             e.printStackTrace();
+            throw new OperatorException(e.getMessage());
         }
 
         createTargetProduct();
