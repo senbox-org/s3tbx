@@ -71,14 +71,14 @@ public class LandsatGeotiffReaderPluginTest {
 
     @Test
     public void testIsMetadataFilename() throws Exception {
-        assertTrue(LandsatGeotiffReaderPlugin.isMetadataFilename("test_L8_MTL.txt"));
+        assertTrue(LandsatGeotiffReaderPlugin.isMetadataFilename("test_L8C1L1_MTL.txt"));
         assertTrue(LandsatGeotiffReaderPlugin.isMetadataFilename("test_legacy_L5_WithTrailingWhiteSpace_MTL.txt"));
         assertFalse(LandsatGeotiffReaderPlugin.isMetadataFilename("test_MTL_L7.txt"));
     }
 
     @Test
     public void testIsMetadataFile() throws Exception {
-        InputStream positiveFile1 = getClass().getResourceAsStream("test_L8_MTL.txt");
+        InputStream positiveFile1 = getClass().getResourceAsStream("test_L8C1L1_MTL.txt");
         assertTrue(LandsatGeotiffReaderPlugin.isMetadataFile(positiveFile1));
 
         InputStream positiveFile2 = getClass().getResourceAsStream("test_legacy_L5_WithTrailingWhiteSpace_MTL.txt");
