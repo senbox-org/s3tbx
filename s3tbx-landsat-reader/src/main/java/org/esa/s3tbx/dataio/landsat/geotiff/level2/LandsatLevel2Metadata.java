@@ -238,14 +238,28 @@ public class LandsatLevel2Metadata extends XmlMetadata {
         MetadataElement[] bandElements = getRootElement().getElement("bands").getElements();
         for (MetadataElement bandElement : bandElements) {
             String name = bandElement.getAttribute("file_name").getData().toString();
-            if(filename.equals(name)) {
+            if (filename.equals(name)) {
                 MetadataAttribute attribute = bandElement.getAttribute("scale_factor");
-                if(attribute != null) {
-                    return Double.parseDouble(bandElement.getAttribute("scale_factor").getData().toString());
+                if (attribute != null) {
+                    return Double.parseDouble(attribute.getData().toString());
                 }
             }
         }
         return 1.0;
+    }
+
+    public double getFillValue(String filename) {
+        MetadataElement[] bandElements = getRootElement().getElement("bands").getElements();
+        for (MetadataElement bandElement : bandElements) {
+            String name = bandElement.getAttribute("file_name").getData().toString();
+            if (filename.equals(name)) {
+                MetadataAttribute attribute = bandElement.getAttribute("fill_value");
+                if (attribute != null) {
+                    return Double.parseDouble(attribute.getData().toString());
+                }
+            }
+        }
+        return Double.NaN;
     }
 
     public double getScalingOffset(String filename) {
@@ -256,7 +270,7 @@ public class LandsatLevel2Metadata extends XmlMetadata {
         String instrument = getInstrument();
         int index1 = filename.indexOf("sr_band");
         int index2 = filename.indexOf(".tif");
-        if(index1<0 || index2<index1) {
+        if (index1 < 0 || index2 < index1) {
             return 0;
         }
         Integer.parseInt(filename.substring(index1+"sr_band".length(),index2));
