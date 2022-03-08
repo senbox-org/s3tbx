@@ -18,6 +18,26 @@
 
 package org.esa.s3tbx.olci.radiometry;
 
+import org.esa.s3tbx.olci.radiometry.rayleigh.L8Utils;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.gpf.OperatorException;
+
+import java.util.stream.Stream;
+
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_ALT_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_INVALID_BIT;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_L1B_FLAGS_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_LAT_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_LON_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_NAME_FORMAT;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_NUM_BANDS;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_OZONE_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_SLP_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_SPECTRAL_BAND_NAMES;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_VZA_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_ALT_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_BAND_INFO_FILE_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_BOUNDS;
@@ -26,6 +46,7 @@ import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_L1B_FLAGS_
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_LAT_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_LON_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_NAME_FORMAT;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_NAME_PATTERN;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_NUM_BANDS;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_OZONE_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_SAA_NAME;
@@ -42,6 +63,7 @@ import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_L1B_FLAGS_NAME
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_LAT_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_LON_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_NAME_FORMAT;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_NAME_PATTERN;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_NUM_BANDS;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_OZONE_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_SAA_NAME;
@@ -58,6 +80,7 @@ import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_L1B_FLAGS_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_LAT_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_LON_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_NAME_FORMAT;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_NAME_PATTERN;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_NUM_BANDS;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_OZONE_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.OLCI_SAA_NAME;
@@ -74,6 +97,7 @@ import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_L1B_FLAGS_NAM
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_LAT_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_LON_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_NAME_FORMAT;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_NAME_PATTERN;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_NUM_BANDS;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_OZONE_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_SAA_NAME;
@@ -108,32 +132,37 @@ public enum Sensor {
     S2_MSI("S2_MSI", S2_MSI_NUM_BANDS, S2_MSI_SPECTRAL_BAND_NAMES, S2_MSI_SZA_NAME, S2_MSI_VZA_NAME, S2_MSI_SAA_NAME, S2_MSI_VAA_NAME, S2_MSI_OZONE_NAME,
            S2_MSI_LAT_NAME, S2_MSI_LON_NAME, S2_MSI_ALT_NAME, S2_MSI_SLP_NAME,
            S2_MSI_BOUNDS, S2_MSI_NAME_FORMAT, S2_MSI_BAND_INFO_FILE_NAME,
-           S2_MSI_L1B_FLAGS_NAME, S2_MSI_INVALID_BIT);
+           S2_MSI_L1B_FLAGS_NAME, S2_MSI_INVALID_BIT),
 
-    private String name;
-    private int numBands;
-    private String[] spectralBandNames;
-    private String szaName;
-    private String vzaName;
-    private String saaName;
-    private String vaaName;
-    private String ozoneName;
-    private String latName;
-    private String lonName;
-    private String altName;
-    private String slpName;
-    private int[] wvBounds;
-    private String nameFormat;
-    private String bandInfoFileName;
-    private String l1bFlagsName;
-    private int invalidBit;
+    LANDSAT_8("Landsat8", L8_NUM_BANDS, L8_SPECTRAL_BAND_NAMES, L8_SZA_NAME, L8_VZA_NAME, L8_SAA_NAME, L8_VAA_NAME, L8_OZONE_NAME,
+              L8_LAT_NAME, L8_LON_NAME, L8_ALT_NAME, L8_SLP_NAME,
+              null, L8_NAME_FORMAT, null,
+              L8_L1B_FLAGS_NAME, L8_INVALID_BIT);
+
+    private final String name;
+    private final int numBands;
+    private final String[] spectralBandNames;
+    private final String szaName;
+    private final String vzaName;
+    private final String saaName;
+    private final String vaaName;
+    private final String ozoneName;
+    private final String latName;
+    private final String lonName;
+    private final String altName;
+    private final String slpName;
+    private final int[] wvBounds;
+    private final String nameFormat;
+    private final String bandInfoFileName;
+    private final String l1bFlagsName;
+    private final int invalidBit;
 
     Sensor(String name, int numBands, String[] spectralBandNames, String szaName, String vzaName, String saaName, String vaaName,
            String ozoneName, String latName, String lonName, String altName, String slpName, int[] wvBoundBandNumbers,
            String nameFormat, String bandInfoFileName, String l1bFlagsName, int invalidBit) {
         this.name = name;
         this.numBands = numBands;
-        this.spectralBandNames= spectralBandNames;
+        this.spectralBandNames = spectralBandNames;
         this.szaName = szaName;
         this.vzaName = vzaName;
         this.saaName = saaName;
@@ -148,6 +177,29 @@ public enum Sensor {
         this.bandInfoFileName = bandInfoFileName;
         this.l1bFlagsName = l1bFlagsName;
         this.invalidBit = invalidBit;
+    }
+
+    public static Sensor getSensorType(Product sourceProduct) {
+        String[] bandNames = sourceProduct.getBandNames();
+
+        if (Stream.of(bandNames).anyMatch(name -> name.matches(OLCI_NAME_PATTERN))) {
+            return OLCI;
+        }
+        if (Stream.of(bandNames).anyMatch(name -> name.matches(MERIS_NAME_PATTERN))) {
+            return MERIS;
+        }
+        if (Stream.of(bandNames).anyMatch(name -> name.matches(MERIS_4TH_NAME_PATTERN))) {
+            return MERIS_4TH;
+        }
+        if (Stream.of(bandNames).anyMatch(name -> name.matches(S2_MSI_NAME_PATTERN))) {
+            return S2_MSI;
+        }
+        if (Stream.of(bandNames).anyMatch(L8Utils.BAND_NAME_LIST::contains)) {
+            return LANDSAT_8;
+        }
+
+        throw new OperatorException("No supported sensor found for given source product.\n" +
+                                            "Only OLCI, S2_MSI, MERIS and LANDSAT are supported");
     }
 
     public String getName() {
@@ -196,6 +248,10 @@ public enum Sensor {
 
     public String getSlpName() {
         return slpName;
+    }
+
+    public boolean hasWvBands() {
+        return wvBounds != null;
     }
 
     public String getUpperWvBandName() {

@@ -45,7 +45,7 @@ public class SmileCorrectionUtilsTest {
         sourceProduct.addBand("Oa1_radiance", ProductData.TYPE_UINT8);
         sourceProduct.addBand("Oa2_radiance", ProductData.TYPE_UINT8);
         sourceProduct.addBand("Oa3_radiance", ProductData.TYPE_UINT8);
-        Sensor sensorType = SmileCorrectionUtils.getSensorType(sourceProduct);
+        Sensor sensorType = Sensor.getSensorType(sourceProduct);
         assertEquals(Sensor.OLCI, sensorType);
     }
 
@@ -53,7 +53,7 @@ public class SmileCorrectionUtilsTest {
     public void testSensorTypeMeris() throws Exception {
         Product sourceProduct = new Product("bla", "what", 300, 300);
         sourceProduct.addBand("radiance_1", ProductData.TYPE_UINT8);
-        Sensor sensorType = SmileCorrectionUtils.getSensorType(sourceProduct);
+        Sensor sensorType = Sensor.getSensorType(sourceProduct);
         assertEquals(Sensor.MERIS, sensorType);
     }
 
@@ -61,7 +61,7 @@ public class SmileCorrectionUtilsTest {
     public void testSensorTypeMeris_4th() throws Exception {
         Product sourceProduct = new Product("bla", "what", 300, 300);
         sourceProduct.addBand("M05_radiance", ProductData.TYPE_UINT8);
-        Sensor sensorType = SmileCorrectionUtils.getSensorType(sourceProduct);
+        Sensor sensorType = Sensor.getSensorType(sourceProduct);
         assertEquals(Sensor.MERIS_4TH, sensorType);
     }
 }

@@ -20,7 +20,6 @@ package org.esa.s3tbx.olci.radiometry.gasabsorption;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.s3tbx.olci.radiometry.Sensor;
-import org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
@@ -55,7 +54,7 @@ public class GaseousAbsorptionOp extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-        Sensor sensorType = SmileCorrectionUtils.getSensorType(sourceProduct);
+        Sensor sensorType = Sensor.getSensorType(sourceProduct);
         if (!Sensor.OLCI.equals(sensorType)) {
             throw new OperatorException("The sensor type is not supported with this operator.");
         }

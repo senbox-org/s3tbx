@@ -34,6 +34,7 @@ import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.util.BitSetter;
 import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.dataio.envisat.EnvisatConstants;
 import org.json.simple.parser.ParseException;
 
@@ -43,6 +44,13 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
+import static org.esa.s3tbx.olci.radiometry.Sensor.getSensorType;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_BAND_MetadataIndexes;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_SAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_SPECTRAL_BAND_NAMES;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_SZA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_VAA_NAME;
+import static org.esa.s3tbx.olci.radiometry.SensorConstants.L8_VZA_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_OZONE_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_SAA_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.MERIS_4TH_SLP_NAME;
@@ -68,7 +76,6 @@ import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_SZA_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_VAA_NAME;
 import static org.esa.s3tbx.olci.radiometry.SensorConstants.S2_MSI_VZA_NAME;
 import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSampleDoubles;
-import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSensorType;
 import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSourceBandIndex;
 
 /**
@@ -132,18 +139,16 @@ public class RayleighCorrectionOp extends Operator {
     @Parameter(defaultValue = "false", label = "Add air mass")
     private boolean addAirMass;
 
+    @Parameter(defaultValue = "1013.25", label = "Sea level pressure in hPa (S2 MSI and Landsat 8 only)")
+    private double seaLevelPressure;
+
+    @Parameter(defaultValue = "300.0", label = "Ozone in DU (S2 MSI and Landsat 8 only)")
+    private double ozone;
+
     @Parameter(defaultValue = "20",
             valueSet = {"10", "20", "60"},
             label = "Image resolution in m in target product. Resampling is only applied if source product is not resampled yet (S2 MSI only)")
     private int s2MsiTargetResolution;
-
-
-    @Parameter(defaultValue = "1013.25", label = "Sea level pressure in hPa (S2 MSI only)")
-    private double s2MsiSeaLevelPressure;
-
-    @Parameter(defaultValue = "300.0", label = "Ozone in DU (S2 MSI only)")
-    private double s2MsiOzone;
-
 
     // for debugging set to true
     private final boolean addRrayDebug = false;
@@ -174,9 +179,21 @@ public class RayleighCorrectionOp extends Operator {
                                                                                    sourceBandNames,
                                                                                    s2MsiTargetResolution);
             }
+        } else if (sensor == Sensor.LANDSAT_8) {
+            for (String sourceBandName : sourceBandNames) {
+                if (L8Utils.getSpectralBandIndex(sourceBandName) == -1) {
+                    final String msg = String.format("Rayleigh correction for band '%s' is not supported.%n" +
+                                                             "Please select one of '%s'", sourceBandName,
+                                                     StringUtils.arrayToString(L8_SPECTRAL_BAND_NAMES, ","));
+                    throw new OperatorException(msg);
+
+                }
+
+            }
         } else { // for OLCI and MERIS and MERIS 4th
             for (String bandName : sourceBandNames) {
-                if (isWavelength709(sourceProduct.getBand(bandName).getSpectralWavelength())) {
+                if (sensor.hasWvBands() &&
+                        isWavelength709(sourceProduct.getBand(bandName).getSpectralWavelength())) {
                     final boolean lowerBandPresent = sourceProduct.containsBand(sensor.getLowerWvBandName());
                     final boolean upperBandPresent = sourceProduct.containsBand(sensor.getUpperWvBandName());
                     if (!lowerBandPresent || !upperBandPresent) {
@@ -217,10 +234,10 @@ public class RayleighCorrectionOp extends Operator {
 
     @Override
     public void computeTileStack(Map<Band, Tile> targetTiles, Rectangle targetRectangle, ProgressMonitor pm) throws OperatorException {
-        checkForCancellation();
 
         Set<Map.Entry<Band, Tile>> entries = targetTiles.entrySet();
         entries.forEach(targetTileStream -> {
+            checkForCancellation();
             Tile targetTile = targetTileStream.getValue();
             Band targetBand = targetTileStream.getKey();
 
@@ -248,6 +265,14 @@ public class RayleighCorrectionOp extends Operator {
                 if (targetBandNameMatches(targetBandName, RTOA_PATTERN) && computeRtoa) {
                     if (sensor == Sensor.S2_MSI) {
                         targetData = rayleighAux.getSourceSampleRad();
+                    } else if (sensor == Sensor.LANDSAT_8) {
+                        // test if input is rad or refl --> convert or not
+                        Band band = sourceProduct.getBand(SensorConstants.L8_SPECTRAL_BAND_NAMES[sourceBandIndex - 1]);
+                        if (band.getDescription().contains("TOA Reflectance")) {
+                            targetData = rayleighAux.getSourceSampleRad();
+                        } else {
+                            targetData = getL8Reflectances(rayleighAux, band);
+                        }
                     } else {
                         targetData = getReflectance(rayleighAux);
                     }
@@ -257,6 +282,14 @@ public class RayleighCorrectionOp extends Operator {
                     double[] reflectance;
                     if (sensor == Sensor.S2_MSI) {
                         reflectance = rayleighAux.getSourceSampleRad();
+                    } else if (sensor == Sensor.LANDSAT_8) {
+                        // test if input is rad or refl --> convert or not
+                        Band band = sourceProduct.getBand(SensorConstants.L8_SPECTRAL_BAND_NAMES[sourceBandIndex - 1]);
+                        if (band.getDescription().contains("TOA Reflectance")) {
+                            reflectance = rayleighAux.getSourceSampleRad();
+                        } else {
+                            reflectance = getL8Reflectances(rayleighAux, band);
+                        }
                     } else {
                         reflectance = getReflectance(rayleighAux);
                     }
@@ -289,6 +322,24 @@ public class RayleighCorrectionOp extends Operator {
         });
     }
 
+    private double[] getL8Reflectances(RayleighAux rayleighAux, Band band) {
+        final LandsatMetadata metadata = new LandsatMetadata(productToProcess.getMetadataRoot());
+        double[] refl_offsets = metadata.getReflectanceScalingOffsets(sensor.getNumBands() + 1);
+        double[] refl_scales = metadata.getReflectanceScalingValues(sensor.getNumBands() + 1);
+        double radianceOffset = band.getScalingOffset();
+        double radianceScaling = band.getScalingFactor();
+        final int bandIndex = L8Utils.getSpectralBandIndex(band.getName());
+        final int l8_band_metadataIndex = L8_BAND_MetadataIndexes[bandIndex];
+        final double reflectance_offset = refl_offsets[l8_band_metadataIndex];
+        final double reflectance_scale = refl_scales[l8_band_metadataIndex];
+        double[] targetData = rayleighAux.getSourceSampleRad();
+        for (int i = 0; i < targetData.length; i++) {
+            targetData[i] = L8Utils.toReflectances(targetData[i], radianceOffset, radianceScaling,
+                                                   reflectance_offset, reflectance_scale);
+        }
+        return targetData;
+    }
+
     private boolean isWavelength709(double waveLength) {
         return Math.ceil(waveLength) == WV_709_FOR_GASEOUS_ABSORPTION_CALCULATION;
     }
@@ -300,7 +351,7 @@ public class RayleighCorrectionOp extends Operator {
             if (sensor == Sensor.MERIS) {
                 qualityFlags = qualityFlagsTile.getSamplesByte();
                 filterInvalid(targetData, (byte[]) qualityFlags);
-            } else if (sensor == Sensor.MERIS_4TH || sensor == Sensor.OLCI) {
+            } else if (sensor == Sensor.MERIS_4TH || sensor == Sensor.OLCI || sensor == Sensor.LANDSAT_8) {
                 qualityFlags = qualityFlagsTile.getSamplesInt();
                 filterInvalid(targetData, (int[]) qualityFlags);
             }
@@ -417,6 +468,7 @@ public class RayleighCorrectionOp extends Operator {
                     targetBand.setNoDataValue(RayleighConstants.INVALID_VALUE);
                     targetBand.setNoDataValueUsed(true);
                     ProductUtils.copySpectralBandProperties(sourceBand, targetBand);
+                    targetBand.setSpectralBandIndex(spectralBandIndex);
                 }
             }
         }
@@ -425,6 +477,8 @@ public class RayleighCorrectionOp extends Operator {
     private String getTargetBandName(String bandCategory, Band sourceBand) {
         if (sensor == Sensor.S2_MSI) {
             return S2Utils.getS2TargetBandName(bandCategory, sourceBand.getName());
+        } else if (sensor == Sensor.LANDSAT_8) {
+            return String.format(bandCategory, getSpectralBandIndex(sourceBand) + 1);
         } else {
             return String.format(bandCategory, sourceBand.getSpectralBandIndex() + 1);
         }
@@ -433,6 +487,8 @@ public class RayleighCorrectionOp extends Operator {
     private int getSpectralBandIndex(Band sourceBand) {
         if (sensor == Sensor.S2_MSI) {
             return S2Utils.getS2SpectralBandIndex(sourceBand.getName());
+        } else if (sensor == Sensor.LANDSAT_8) {
+            return L8Utils.getSpectralBandIndex(sourceBand.getName());
         } else {
             return sourceBand.getSpectralBandIndex();
         }
@@ -479,6 +535,12 @@ public class RayleighCorrectionOp extends Operator {
             double[] solarFlux = fillDefaultArray(length, SensorConstants.S2_SOLAR_FLUXES[sourceBand.getSpectralBandIndex()]);
 
             rayleighAux.setSolarFluxs(solarFlux);
+        } else if (sensor.equals(Sensor.LANDSAT_8)) {
+            Band sourceBand = sourceProduct.getBand(sourceBandName);
+            rayleighAux.setSourceSampleRad(getSourceTile(sourceBand, rectangle));
+
+            // not used for Landsat8
+            rayleighAux.setSolarFluxs(new double[0]);
         }
     }
 
@@ -486,6 +548,9 @@ public class RayleighCorrectionOp extends Operator {
         String sourceBandName = String.format(sensor.getNameFormat(), sourceBandIndex);
         if (sensor == Sensor.S2_MSI && targetBandName.endsWith("8A")) {
             return sourceBandName.concat("A");
+        }
+        if (sensor == Sensor.LANDSAT_8) {
+            return L8Utils.BAND_NAME_LIST.get(sourceBandIndex - 1);
         }
         return sourceBandName;
     }
@@ -544,8 +609,21 @@ public class RayleighCorrectionOp extends Operator {
             rayleighAux.setSunAzimuthAngles(saaTile);
             final Tile vaaTile = getSourceTile(sourceProduct.getRasterDataNode(S2_MSI_VAA_NAME), rectangle);
             rayleighAux.setViewAzimuthAngles(vaaTile);
-            rayleighAux.setS2MsiSeaLevelsPressures(s2MsiSeaLevelPressure, rectangle);
-            rayleighAux.setS2MsiTotalOzones(s2MsiOzone, rectangle);
+            rayleighAux.setSeaLevelsPressures(seaLevelPressure, rectangle);
+            rayleighAux.setTotalOzones(ozone, rectangle);
+
+            rayleighAux.setS2MsiAngles(productToProcess.getSceneGeoCoding(), szaTile, vzaTile, saaTile, vaaTile, rectangle);
+        } else if (sensor.equals(Sensor.LANDSAT_8)) {
+            final Tile szaTile = getSourceTile(sourceProduct.getRasterDataNode(L8_SZA_NAME), rectangle);
+            rayleighAux.setSunZenithAngles(szaTile);
+            final Tile vzaTile = getSourceTile(sourceProduct.getRasterDataNode(L8_VZA_NAME), rectangle);
+            rayleighAux.setViewZenithAngles(vzaTile);
+            final Tile saaTile = getSourceTile(sourceProduct.getRasterDataNode(L8_SAA_NAME), rectangle);
+            rayleighAux.setSunAzimuthAngles(saaTile);
+            final Tile vaaTile = getSourceTile(sourceProduct.getRasterDataNode(L8_VAA_NAME), rectangle);
+            rayleighAux.setViewAzimuthAngles(vaaTile);
+            rayleighAux.setSeaLevelsPressures(seaLevelPressure, rectangle);
+            rayleighAux.setTotalOzones(ozone, rectangle);
 
             rayleighAux.setS2MsiAngles(productToProcess.getSceneGeoCoding(), szaTile, vzaTile, saaTile, vaaTile, rectangle);
         }

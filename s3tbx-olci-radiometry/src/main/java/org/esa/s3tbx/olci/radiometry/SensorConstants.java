@@ -28,7 +28,11 @@ public class SensorConstants {
     public static final String MERIS_BAND_INFO_FILE_NAME = "band_info_meris.txt";
 
     public static final int MERIS_4TH_NUM_BANDS = MERIS_NUM_BANDS;
-    public static final String[] MERIS_4TH_SPECTRAL_BAND_NAMES = MERIS_SPECTRAL_BAND_NAMES;
+    public static final String[] MERIS_4TH_SPECTRAL_BAND_NAMES = new String[]{
+            "M01_radiance", "M02_radiance", "M03_radiance", "M04_radiance", "M05_radiance",
+            "M06_radiance", "M07_radiance", "M08_radiance", "M09_radiance", "M10_radiance",
+            "M11_radiance", "M12_radiance", "M13_radiance", "M14_radiance", "M15_radiance",
+    };
     public static final String MERIS_4TH_SZA_NAME = "SZA";
     public static final String MERIS_4TH_VZA_NAME = "OZA";
     public static final String MERIS_4TH_SAA_NAME = "SAA";
@@ -80,7 +84,7 @@ public class SensorConstants {
     public static final String S2_MSI_SLP_NAME = null;
     public static final String S2_MSI_L1B_FLAGS_NAME = null;
     public static final int S2_MSI_INVALID_BIT = -1;
-    public static final int[] S2_MSI_BOUNDS = {5, 6};
+    public static final int[] S2_MSI_BOUNDS = null;
     public static final String S2_MSI_NAME_FORMAT = "B%d";
     public static final String S2_MSI_NAME_PATTERN = "B\\d+";
     public static final String S2_MSI_BAND_INFO_FILE_NAME = "band_info_S2_msi.txt";
@@ -110,4 +114,27 @@ public class SensorConstants {
     public static final String[] S2_BANDS_TO_COPY_10 = {"B2", "B3", "B4", "B8"};
     public static final String[] S2_BANDS_TO_COPY_20 = {"B5", "B6", "B7", "B8A", "B11", "B12"};
     public static final String[] S2_BANDS_TO_COPY_60 = {"B1", "B9", "B10"};
+
+
+    public static final int L8_NUM_BANDS = 8;
+    public static final String L8_SZA_NAME = "sun_zenith";
+    public static final String L8_VZA_NAME = "view_zenith";
+    public static final String L8_SAA_NAME = "sun_azimuth";
+    public static final String L8_VAA_NAME = "view_azimuth";
+    public static final String L8_OZONE_NAME = null;
+    public static final String L8_LAT_NAME = "lat";
+    public static final String L8_LON_NAME = "lon";
+    public static final String L8_ALT_NAME = null;
+    public static final String L8_SLP_NAME = null;
+    public static final String L8_L1B_FLAGS_NAME = "flags";
+    public static final int L8_INVALID_BIT = 0;
+    public static final String L8_NAME_FORMAT = ".*";
+    public static final String L8_BAND_INFO_FILE_NAME = "band_info_L8_msi.txt";
+
+    public static final String[] L8_SPECTRAL_BAND_NAMES =
+            {"coastal_aerosol", "blue", "green", "red", "near_infrared", "cirrus", "swir_1", "swir_2"};
+    public static final int[] L8_BAND_MetadataIndexes = {0, 1, 2, 3, 4, 8, 5, 6};
+    public static final String[] L8_GEOMETRY_BANDS = {L8_SZA_NAME, L8_VZA_NAME, L8_SAA_NAME, L8_VAA_NAME};
+
+
 }

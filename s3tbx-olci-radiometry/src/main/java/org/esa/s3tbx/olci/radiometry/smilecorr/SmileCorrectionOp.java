@@ -45,7 +45,8 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.io.IOException;
 
-import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
+import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSampleFloats;
+import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.getSourceBandIndex;
 
 
 /**
@@ -53,11 +54,11 @@ import static org.esa.s3tbx.olci.radiometry.smilecorr.SmileCorrectionUtils.*;
  */
 @OperatorMetadata(alias = "SmileCorrection.Olci",
         internal = true,
-        description = "Performs radiometric corrections on OLCI L1b data products.",
+        description = "Performs radiometric corrections on OLCI and MERIS L1b data products.",
         authors = " Marco Peters, Muhammad Bala (Brockmann Consult)",
         copyright = "(c) 2015 by Brockmann Consult",
         category = "Optical/Preprocessing",
-        version = "1.2.2")
+        version = "1.3")
 public class SmileCorrectionOp extends Operator {
 
 
@@ -121,7 +122,10 @@ public class SmileCorrectionOp extends Operator {
 
     @Override
     public void initialize() throws OperatorException {
-        sensor = getSensorType(getSourceProduct());
+        sensor = Sensor.getSensorType(getSourceProduct());
+        if (sensor != Sensor.OLCI && sensor != Sensor.MERIS && sensor != Sensor.MERIS_4TH) {
+            throw new OperatorException(String.format("Sensor is not supported. Only %s and %s", Sensor.OLCI, Sensor.MERIS));
+        }
         smileAuxdata = new SmileCorrectionAuxdata(sensor);
         Product targetProduct = createTargetBands(sensor);
         setTargetProduct(targetProduct);

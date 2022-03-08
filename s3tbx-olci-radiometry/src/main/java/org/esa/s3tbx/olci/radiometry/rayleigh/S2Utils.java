@@ -17,7 +17,7 @@ class S2Utils {
      * Returns spectral band index of given S2 band.
      * Needs to consider the nasty 'B8A' special case.
      *
-     * @param bandName - the S2 spectral band nams
+     * @param bandName - the S2 spectral band name
      * @return spectralBandIndex
      */
     static int getS2SpectralBandIndex(String bandName) {
@@ -129,20 +129,20 @@ class S2Utils {
             double sumRf = 0.0;
 
             // the integrals over the RFs per band are not normalized to 1 - we have to do this first
-            for (int j = 0; j < s2RfList.size(); j++) {
-                final double rf = s2RfList.get(j).getRf(i);
+            for (S2ResponseFunctions.ResponseFunction responseFunction : s2RfList) {
+                final double rf = responseFunction.getRf(i);
                 if (rf > 0.0) {
-                    sumRf += (rf *incr);
+                    sumRf += (rf * incr);
                 }
             }
-            for (int j = 0; j < s2RfList.size(); j++) {
-                final double wvl = s2RfList.get(j).getWvl();
-                final double rf = s2RfList.get(j).getRf(i) / sumRf;
+            for (S2ResponseFunctions.ResponseFunction responseFunction : s2RfList) {
+                final double wvl = responseFunction.getWvl();
+                final double rf = responseFunction.getRf(i) / sumRf;
                 if (rf > 0.0) {
-                    sum += (rf *incr * Math.pow(wvl, -wvlPower));
+                    sum += (rf * incr * Math.pow(wvl, -wvlPower));
                 }
             }
-            s2TrueWvls[i] = Math.pow(sum, -1./wvlPower);
+            s2TrueWvls[i] = Math.pow(sum, -1. / wvlPower);
         }
 
         return s2TrueWvls;

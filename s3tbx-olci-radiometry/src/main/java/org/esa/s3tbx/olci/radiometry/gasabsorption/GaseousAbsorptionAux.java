@@ -109,45 +109,42 @@ public class GaseousAbsorptionAux {
 
 
     public double[] absorptionOzone(String instrument) {
-        List<Number> o3absorpInstrument = new ArrayList<>();
-
         double[] lamC;
-        if (instrument.equals("MERIS")) {
-            lamC = new double[]{412.5, 442.0, 490.0, 510.0, 560.0, 620.0, 665.0, 681.25, 708.75, 753.0, 761.25, 779.0, 865.0,
-                    885.0, 900};
-            double[] lamW = new double[]{10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 3.075, 10.0, 20.0, 20.0, 40.0};
-            for (int i = 0; i < lamC.length; i++) {
-                double lower = lamC[i] - lamW[i] / 2;
-                double upper = lamC[i] + lamW[i] / 2;
-                o3absorpInstrument.add(convolve(lower, upper, this.coeffhighres));
-            }
-        }
-        if (instrument.equals("OLCI")) {
-            lamC = new double[]{
-                    400.0, 412.5, 442.0, 490.0, 510.0, 560.0, 620.0, 665.0, 673.75, 681.25, 708.75, 753.75, 761.25, 764.375, 767.5, 778.75, 865.0,
-                    885.0, 900.0, 940.0, 1020.0};
-            double[] lamW = new double[]{15.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 7.05, 7.05, 10.0, 7.05, 2.05, 3.075, 2.05, 15.0, 20.0, 10.0, 10.0, 20.0, 40.0};
+        double[] lamW;
+        switch (instrument) {
+            case "MERIS":
+                lamC = new double[]{412.5, 442.0, 490.0, 510.0, 560.0, 620.0, 665.0, 681.25, 708.75, 753.0, 761.25, 779.0, 865.0,
+                        885.0, 900};
+                lamW = new double[]{10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 3.075, 10.0, 20.0, 20.0, 40.0};
+                break;
+            case "OLCI":
+                lamC = new double[]{400.0, 412.5, 442.0, 490.0, 510.0, 560.0, 620.0, 665.0, 673.75, 681.25, 708.75,
+                        753.75, 761.25, 764.375, 767.5, 778.75, 865.0, 885.0, 900.0, 940.0, 1020.0};
+                lamW = new double[]{15.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 7.05, 7.05, 10.0,
+                        7.05, 2.05, 3.075, 2.05, 15.0, 20.0, 10.0, 10.0, 20.0, 40.0};
+                break;
+            case "S2_MSI":
+                lamC = new double[]{442.0, 490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 945.0, 1375.0, 1610.0, 2190.0};
+                // http://www.gdal.org/frmt_sentinel2.html
+                lamW = new double[]{20.0, 65.0, 35.0, 30.0, 15.0, 15.0, 20.0, 115.0, 20.0, 20.0, 30.0, 90.0, 180.0};
 
-            for (int i = 0; i < lamC.length; i++) {
-                double lower = lamC[i] - lamW[i] / 2;
-                double upper = lamC[i] + lamW[i] / 2;
-                o3absorpInstrument.add(convolve(lower, upper, this.coeffhighres));
-            }
-        }
-        if (instrument.equals("S2_MSI")) {
-            lamC = new double[]{
-                    442.0, 490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 945.0,
-                    1375.0, 1610.0, 2190.0};
-            double[] lamW = new double[]{20.0, 65.0, 35.0, 30.0, 15.0, 15.0, 20.0, 115.0, 20.0, 20.0,
-                    30.0, 90.0, 180.0}; // http://www.gdal.org/frmt_sentinel2.html
-
-            for (int i = 0; i < lamC.length; i++) {
-                double lower = lamC[i] - lamW[i] / 2;
-                double upper = lamC[i] + lamW[i] / 2;
-                o3absorpInstrument.add(convolve(lower, upper, this.coeffhighres));
-            }
+                break;
+            case "Landsat8":
+                // todo-DM
+                lamC = new double[]{440, 480, 560, 655, 865, 1370, 1610, 2200};
+                lamW = new double[]{20.0, 60.0, 60.0, 30.0, 30, 20, 80, 180};
+                break;
+            default:
+                lamC = new double[0];
+                lamW = new double[0];
         }
 
+        List<Number> o3absorpInstrument = new ArrayList<>();
+        for (int i = 0; i < lamC.length; i++) {
+            double lower = lamC[i] - lamW[i] / 2;
+            double upper = lamC[i] + lamW[i] / 2;
+            o3absorpInstrument.add(convolve(lower, upper, this.coeffhighres));
+        }
         return Doubles.toArray(o3absorpInstrument);
     }
 

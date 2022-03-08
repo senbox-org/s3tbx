@@ -18,16 +18,12 @@
 
 package org.esa.s3tbx.olci.radiometry.smilecorr;
 
-import org.esa.s3tbx.olci.radiometry.Sensor;
-import org.esa.s3tbx.olci.radiometry.SensorConstants;
-import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.Tile;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * @author muhammad.bc.
@@ -123,30 +119,4 @@ public class SmileCorrectionUtils {
         return Integer.parseInt(group);
     }
 
-    public static Sensor getSensorType(Product sourceProduct) {
-        String[] bandNames = sourceProduct.getBandNames();
-
-        boolean isSensor = Stream.of(bandNames).anyMatch(p -> p.matches(SensorConstants.OLCI_NAME_PATTERN));
-        if (isSensor) {
-            return Sensor.OLCI;
-        }
-
-        isSensor = Stream.of(bandNames).anyMatch(p -> p.matches(SensorConstants.MERIS_NAME_PATTERN));
-        if (isSensor) {
-            return Sensor.MERIS;
-        }
-
-        isSensor = Stream.of(bandNames).anyMatch(p -> p.matches(SensorConstants.MERIS_4TH_NAME_PATTERN));
-        if (isSensor) {
-            return Sensor.MERIS_4TH;
-        }
-
-        isSensor = Stream.of(bandNames).anyMatch(p -> p.matches(SensorConstants.S2_MSI_NAME_PATTERN));
-        if (isSensor) {
-            return Sensor.S2_MSI;
-        }
-
-        throw new OperatorException("No supported sensor found for given source product.\n" +
-                                            "Only OLCI and MERIS are supported");
-    }
 }

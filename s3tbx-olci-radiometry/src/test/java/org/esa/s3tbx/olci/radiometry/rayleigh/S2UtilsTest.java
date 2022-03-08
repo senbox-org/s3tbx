@@ -18,22 +18,21 @@
 
 package org.esa.s3tbx.olci.radiometry.rayleigh;
 
-import org.esa.s3tbx.olci.radiometry.Sensor;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.ProductData;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class S2UtilsTest {
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
     }
 
     @Test
-    public void testGetS2SpectralBandIndex() throws Exception {
+    public void testGetS2SpectralBandIndex() {
         int s2SpectralBandIndex = S2Utils.getS2SpectralBandIndex("B1");
         assertEquals(0, s2SpectralBandIndex);
 
@@ -48,7 +47,7 @@ public class S2UtilsTest {
     }
 
     @Test
-    public void testGetS2TargetBandName() throws Exception {
+    public void testGetS2TargetBandName() {
         String s2TargetBandName = S2Utils.getS2TargetBandName(RayleighCorrectionOp.BAND_CATEGORIES[0], "B1");
         assertEquals("taur_B1", s2TargetBandName);
 
@@ -63,7 +62,7 @@ public class S2UtilsTest {
     }
 
     @Test
-    public void testTargetS2BandNameMatches() throws Exception {
+    public void testTargetS2BandNameMatches() {
         String targetBandName = "taur_01";
         assertFalse(S2Utils.targetS2BandNameMatches(targetBandName, RayleighCorrectionOp.TAUR_PATTERN));
         targetBandName = "taur_B1";
@@ -85,19 +84,8 @@ public class S2UtilsTest {
         assertTrue(S2Utils.targetS2BandNameMatches(targetBandName, RayleighCorrectionOp.RTOA_PATTERN));
     }
 
-//    @Test
-//    public void testGetS2SourceBandIndex() throws Exception {
-//        assertEquals(1, S2Utils.getS2SourceBandIndex(1, "rBRR_B1"));
-//        assertEquals(3, S2Utils.getS2SourceBandIndex(3, "rBRR_B3"));
-//        assertEquals(7, S2Utils.getS2SourceBandIndex(7, "rBRR_B7"));
-//        assertEquals(8, S2Utils.getS2SourceBandIndex(8, "rBRR_B8"));
-//        assertEquals(9, S2Utils.getS2SourceBandIndex(8, "rBRR_B8A"));
-//        assertEquals(10, S2Utils.getS2SourceBandIndex(9, "rBRR_B9"));
-//        assertEquals(13, S2Utils.getS2SourceBandIndex(12, "rBRR_B12"));
-//    }
-
     @Test
-    public void testGetNumBandsToRcCorrect() throws Exception {
+    public void testGetNumBandsToRcCorrect() {
         String[] inputBands = new String[]{"B1", "B4", "B7", "B8A"};
         assertEquals(4, S2Utils.getNumBandsToRcCorrect(inputBands));
 

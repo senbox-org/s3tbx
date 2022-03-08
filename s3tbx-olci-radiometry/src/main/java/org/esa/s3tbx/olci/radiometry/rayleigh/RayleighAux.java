@@ -406,12 +406,12 @@ public class RayleighAux {
         this.seaLevels = seaLevels;
     }
 
-    public void setS2MsiSeaLevelsPressures(double seaLevel, Rectangle rectangle) {
+    public void setSeaLevelsPressures(double seaLevel, Rectangle rectangle) {
         this.seaLevels = new double[rectangle.width * rectangle.height];
         Arrays.fill(this.seaLevels, seaLevel);
     }
 
-    public void setS2MsiTotalOzones(double ozone, Rectangle rectangle) {
+    public void setTotalOzones(double ozone, Rectangle rectangle) {
         this.totalOzones = new double[rectangle.width * rectangle.height];
         Arrays.fill(this.totalOzones, ozone);
     }

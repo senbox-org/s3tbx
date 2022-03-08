@@ -54,6 +54,10 @@ public class RayleighCorrAlgorithm {
             // use 'true' instead of central wavelengths instead
             // CB/GK 20170721, following https://earth.esa.int/documents/247904/685211/Sentinel-2+MSI+Spectral+Responses/
             return getCrossSection(S2Utils.getS2TrueWavelengths());
+        }
+        if (sensor != null && sensor == Sensor.LANDSAT_8) {
+            // todo-DM - update wavelength/crosssection
+            return getCrossSection(new double[]{440, 480, 560, 655, 865, 1370, 1610, 2200});
         } else if (sensor != null && sensor == Sensor.OLCI) {
             double[] wavelength;
             if (isSentinelB(sourceProduct)) {

@@ -42,15 +42,15 @@ public class SmileCorrectionAuxdata {
     private static final String SUN_SPECTRAL_FLUX_RR_FILENAME = "sun_spectral_flux_rr.txt";
     private static final int NUM_DETECTORS_FR = 3700;
     private static final int NUM_DETECTORS_RR = 925;
-    private int[] bandIndices;
-    private boolean[] landRefCorrectionSwitches;
-    private boolean[] waterRefCorrectionSwitches;
-    private int[] waterLowerBands;
-    private int[] waterUpperBands;
-    private int[] landLowerBands;
-    private int[] landUpperBands;
-    private float[] refCentralWaveLengths;
-    private float[] solarIrradiances;
+    private final int[] bandIndices;
+    private final boolean[] landRefCorrectionSwitches;
+    private final boolean[] waterRefCorrectionSwitches;
+    private final int[] waterLowerBands;
+    private final int[] waterUpperBands;
+    private final int[] landLowerBands;
+    private final int[] landUpperBands;
+    private final float[] refCentralWaveLengths;
+    private final float[] solarIrradiances;
 
     private double[][] detectorWavelengths;
     private double[][] detectorSunSpectralFluxes;
