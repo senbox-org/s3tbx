@@ -559,7 +559,7 @@
                         <!--<skip>true</skip>-->
                         <printSummary>true</printSummary>
                         <useFile>false</useFile>
-                        <argLine>-Xmx1024M -Dfile.encoding=UTF-8 @{argLine}</argLine>
+                        <argLine>-Xmx4096M -Dfile.encoding=UTF-8 @{argLine}</argLine>
                     </configuration>
                 </plugin>
 
