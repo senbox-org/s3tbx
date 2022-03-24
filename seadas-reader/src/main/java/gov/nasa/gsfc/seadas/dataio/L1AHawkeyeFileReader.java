@@ -31,14 +31,7 @@ public class L1AHawkeyeFileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
 
-        String historyName = getStringAttribute("history");
-        String productName = "SEAHAWK1_HAWKEYE20210319T084332.L1A.nc";
-        if (historyName != null) {
-            int indexSEAHAWK = historyName.indexOf("SEAHAWK");
-            int indexL1Anc = historyName.indexOf("L1A.nc");
-            productName = historyName.substring(indexSEAHAWK, (indexL1Anc + 6));
-        }
-
+        String productName = productReader.getInputFile().getName();
         numPixels = getDimension("number_of_pixels");
         numScans = getDimension("number_of_scans");
         title = getStringAttribute("title");
@@ -108,7 +101,7 @@ public class L1AHawkeyeFileReader extends SeadasFileReader {
                 lats = geoNcFile.findVariable("geolocation_data/latitude");
                 lons = geoNcFile.findVariable("geolocation_data/longitude");
 
-                //Use lat/lon with PixelGeoCoding
+                //Use lat/lon with TiePointGeoCoding
                 int[] dims = lats.getShape();
                 float[] latTiePoints;
                 float[] lonTiePoints;
@@ -132,6 +125,7 @@ public class L1AHawkeyeFileReader extends SeadasFileReader {
                 ProductData longitudes = ProductData.createInstance(lonTiePoints);
                 lonBand.setData(longitudes);
                 product.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 10));
+
                 geoNcFile.close();
 
             }
