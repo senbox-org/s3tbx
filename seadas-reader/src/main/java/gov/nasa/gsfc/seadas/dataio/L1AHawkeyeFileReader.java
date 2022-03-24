@@ -6,11 +6,12 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import org.esa.snap.core.dataio.ProductIOException;
-import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCodingFactory;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.ma2.Array;
-import ucar.ma2.InvalidRangeException;
-import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -19,8 +20,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.lang.String.format;
 
 public class L1AHawkeyeFileReader extends SeadasFileReader {
 
@@ -37,14 +36,7 @@ public class L1AHawkeyeFileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
 
-        String historyName = getStringAttribute("history");
-        String productName ="SEAHAWK1_HAWKEYE20210319T084332.L1A.nc";
-        if (historyName != null){
-            int indexSEAHAWK = historyName.indexOf("SEAHAWK");
-            int indexL1Anc = historyName.indexOf("L1A.nc");
-            productName = historyName.substring(indexSEAHAWK, (indexL1Anc + 6));
-        }
-
+        String productName = productReader.getInputFile().getName();
         numPixels = getDimension("number_of_pixels");
         numScans = getDimension("number_of_scans");
         title = getStringAttribute("title");
