@@ -84,8 +84,9 @@ public class OlciO2aHarmonisationAlgorithm {
         final double[] distances = new double[neighbors.length];
         final int[] indices = new int[neighbors.length];
         for (int i = 0; i < distances.length; i++) {
-            distances[i] = neighbors[i].distance;
-            indices[distances.length - i - 1] = neighbors[i].index;
+            final Neighbor<double[], double[]> neighbor = neighbors[i];
+            distances[i] = neighbor.distance;
+            indices[distances.length - i - 1] = neighbor.index;
         }
 
         double[] weight = new double[distances.length];
@@ -100,9 +101,11 @@ public class OlciO2aHarmonisationAlgorithm {
             final boolean valid = !Double.isInfinite(distances[j]);
             if (valid) {
                 double dxCrossJaco = 0.0;
+                final double[] lutX = lut.getX()[indices[j]];
+                final double[] lutJaco = lut.getJACO()[indices[j]][0];
                 for (int k = 0; k < wo.length; k++) {
-                    final double dx = (wo[k] - lut.getX()[indices[j]][k]) * lut.getVARI()[k];
-                    final double jaco = lut.getJACO()[indices[j]][0][k];
+                    final double dx = (wo[k] - lutX[k]) * lut.getVARI()[k];
+                    final double jaco = lutJaco[k];
                     dxCrossJaco += (dx * jaco);
                 }
                 temp += (lut.getY()[indices[j]][0] + dxCrossJaco * weight[j]);
