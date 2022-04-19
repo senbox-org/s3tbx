@@ -167,7 +167,7 @@ public class LandsatTypeInfo {
     }
 
     private static String getCompressionExtension() {
-        return "\\.(tar\\.gz|tgz|tar\\.bz|tbz|tar\\.bz2|tbz2|zip|ZIP)";
+        return "\\.(tar\\.gz|tgz|tar\\.bz|tbz|tar\\.bz2|tbz2|zip|ZIP|tar)";
     }
 
     private static String getTxtExtension() {
