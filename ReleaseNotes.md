@@ -4,6 +4,7 @@ Sentinel-3 Toolbox Release Notes
 Changes in S3TBX 9.0.4
 ----------------------
 ### Improvement
+    [SIIITBX-432] Support tar packages from USGS for Landsat C2 data
     [SIIITBX-422] Sentinel-3 WST products have issues with geolocation since PUG v3.35
 
 
