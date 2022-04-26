@@ -25,6 +25,7 @@ public enum ReprocessingVersion {
 
 
     AUTO_DETECT(-1),
+    REPROCESSING_1(1), // Reprocessing 1 is not supported
     REPROCESSING_2(2),
     REPROCESSING_3(3);
 
@@ -57,19 +58,19 @@ public enum ReprocessingVersion {
                     if (StringUtils.isNotNullAndNotEmpty(calibrationFileName)) {
                         final boolean reduced = product.getProductType().startsWith(REDUCED_RESOLUTION_PREFIX);
                         final ReprocessingVersion version = detectReprocessingVersion(calibrationFileName, reduced);
-                        if (!ReprocessingVersion.AUTO_DETECT.equals(version)) {
+                        if (!AUTO_DETECT.equals(version)) {
                             return version;
                         }
                     }
                 }
             }
         }
-        return ReprocessingVersion.AUTO_DETECT;
+        return AUTO_DETECT;
     }
 
     static ReprocessingVersion detectReprocessingVersion(String calibrationFileName, boolean isReduced) {
         if (StringUtils.isNullOrEmpty(calibrationFileName)) {
-            return ReprocessingVersion.AUTO_DETECT;
+            return AUTO_DETECT;
         }
         final String parsedDate = calibrationFileName.substring(14, 22);
         final int date = Integer.parseInt(parsedDate);
@@ -80,13 +81,13 @@ public enum ReprocessingVersion {
         }
     }
 
-    private static ReprocessingVersion getReprocessingVersion(int date, int repro2RrStartDate, int repro3FrStartDate) {
-        if (date >= repro2RrStartDate && date < repro3FrStartDate) {
-            return ReprocessingVersion.REPROCESSING_2;
-        } else if (date >= repro3FrStartDate) {
-            return ReprocessingVersion.REPROCESSING_3;
+    private static ReprocessingVersion getReprocessingVersion(int date, int repro2StartDate, int repro3StartDate) {
+        if (date < repro2StartDate) {
+            return REPROCESSING_1;
+        } else if (date < repro3StartDate) {
+            return REPROCESSING_2;
         } else {
-            return ReprocessingVersion.AUTO_DETECT;
+            return REPROCESSING_3;
         }
     }
 

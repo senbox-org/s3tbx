@@ -48,7 +48,25 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.esa.snap.dataio.envisat.EnvisatConstants.*;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_DETECTOR_INDEX_DS_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_FLAGS_DS_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_10_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_11_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_12_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_13_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_14_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_15_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_1_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_2_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_3_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_4_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_5_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_6_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_7_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_8_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1B_RADIANCE_9_BAND_NAME;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_L1_TYPE_PATTERN;
+import static org.esa.snap.dataio.envisat.EnvisatConstants.MERIS_SUN_ZENITH_DS_NAME;
 
 
 /**
@@ -367,8 +385,16 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
                                        getSourceProduct().getProductType());
             getLogger().warning(msg);
         }
-        boolean isReprocessing2 = reproVersion == ReprocessingVersion.REPROCESSING_2 ||
-                                  ReprocessingVersion.autoDetect(getSourceProduct()) == ReprocessingVersion.REPROCESSING_2;
+        if (reproVersion.getVersion() == -1) { // auto-detection is enabled
+            reproVersion = ReprocessingVersion.autoDetect(getSourceProduct());
+        }
+        if (reproVersion.equals(ReprocessingVersion.REPROCESSING_1)) {
+            throw new OperatorException("Source product is before reprocessing version 2. Check if you can get the data from a more recent dataset.");
+        }
+        if (reproVersion.equals(ReprocessingVersion.AUTO_DETECT)) {
+            throw new OperatorException("Reprocessing could not be detected. Check if the source product is valid.");
+        }
+        boolean isReprocessing2 = reproVersion == ReprocessingVersion.REPROCESSING_2;
         if (!isReprocessing2 && doCalibration) {
             getLogger().warning("Skipping calibration. Source product is already of 3rd reprocessing.");
             doCalibration = false;
