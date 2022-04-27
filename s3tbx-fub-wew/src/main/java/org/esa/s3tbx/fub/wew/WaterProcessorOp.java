@@ -39,7 +39,7 @@ import java.awt.Color;
 import java.awt.image.Raster;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -81,7 +81,6 @@ public class WaterProcessorOp extends PixelOperator {
             defaultValue = "true", label = "Check whether '" + WaterProcessorOpConstant.SUSPECT_FLAG_NAME + "' is valid")
     private boolean checkWhetherSuspectIsValid;
 
-    // TODO (mp/20160704) -  For OLCI: !quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)
     @Parameter(description = "Band maths expression which defines valid pixels. If the expression is empty," +
                              "all pixels will be considered.",
             defaultValue = "not l1_flags.GLINT_RISK and not l1_flags.BRIGHT and not l1_flags.INVALID " + WaterProcessorOpConstant.SUSPECT_EXPRESSION_TERM,
@@ -606,16 +605,12 @@ public class WaterProcessorOp extends PixelOperator {
 
     private Sensor getSensor() {
         Stream<RasterDataNode> nodeStream = getSourceProduct().getRasterDataNodes().stream();
-        List<String> rasterNames = nodeStream.map(ProductNode::getName).collect(Collectors.toList());
-
-        if (rasterNames.containsAll(Arrays.asList(Sensor.OLCI.getRasterNames()))) {
-            return Sensor.OLCI;
-        }
+        Set<String> rasterNames = nodeStream.map(ProductNode::getName).collect(Collectors.toSet());
 
         if (rasterNames.containsAll(Arrays.asList(Sensor.MERIS.getRasterNames()))) {
             return Sensor.MERIS;
         }
-        throw new OperatorException("The operator can't be applied on the sensor");
+        throw new OperatorException("The operator can only be applied on MERIS data");
     }
 
 
