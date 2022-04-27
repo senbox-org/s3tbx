@@ -43,13 +43,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.esa.s3tbx.fub.wew.WaterProcessorOpConstant.*;
+import static org.esa.s3tbx.fub.wew.WaterProcessorOpConstant.SOURCE_SAMPLE_VALID_MASK;
 
 @OperatorMetadata(alias = "FUB.Water", authors = "Thomas Schroeder, Michael Schaale",
         copyright = "Institute for Space Sciences (WeW), Freie Universitaet Berlin",
         category = "Optical/Thematic Water Processing",
         version = "4.0.1",
-        description = "FUB/WeW WATER Processor to retrieve case II water properties and atmospheric properties")
+        description = "MERIS FUB-CSIRO Coastal Water Processor to retrieve case II water properties and atmospheric properties")
 public class WaterProcessorOp extends PixelOperator {
 
     private float[] solarFlux;

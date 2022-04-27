@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>s3tbx-fub-wew</artifactId>
-    <name>FUB/WeW Water Processor</name>
+    <name>MERIS FUB-CSIRO Coastal Water Processor</name>
 
     <packaging>nbm</packaging>
 
