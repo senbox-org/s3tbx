@@ -132,8 +132,9 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
     @Parameter(label = "Reprocessing version", valueSet = {"AUTO_DETECT", "REPROCESSING_2", "REPROCESSING_3"},
             defaultValue = "AUTO_DETECT",
             description = "The version of the reprocessing the product comes from. Is only used if " +
-                          "equalisation is enabled.")
+                    "equalisation is enabled.")
     private ReprocessingVersion reproVersion;
+    private transient ReprocessingVersion effectiveReproVersion = ReprocessingVersion.AUTO_DETECT;
 
     @Parameter(defaultValue = "false",
             label = "Perform radiance-to-reflectance conversion",
@@ -351,7 +352,7 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
                     throw new OperatorException(e);
                 }
                 // If calibration is performed the equalization  has to use the LUTs of Reprocessing 3
-                reproVersion = ReprocessingVersion.REPROCESSING_3;
+                effectiveReproVersion = ReprocessingVersion.REPROCESSING_3;
                 pm.worked(1);
             }
             if (doSmile) {
@@ -361,7 +362,7 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
             }
             if (doEqualization) {
                 pm.setSubTaskName("Initializing equalization algorithm");
-                equalizationAlgorithm = new EqualizationAlgorithm(getSourceProduct(), reproVersion);
+                equalizationAlgorithm = new EqualizationAlgorithm(getSourceProduct(), effectiveReproVersion);
                 pm.worked(1);
             }
         } catch (Exception e) {
@@ -386,15 +387,15 @@ public class MerisRadiometryCorrectionOp extends SampleOperator {
             getLogger().warning(msg);
         }
         if (reproVersion.getVersion() == -1) { // auto-detection is enabled
-            reproVersion = ReprocessingVersion.autoDetect(getSourceProduct());
+            effectiveReproVersion = ReprocessingVersion.autoDetect(getSourceProduct());
         }
-        if (reproVersion.equals(ReprocessingVersion.REPROCESSING_1)) {
+        if (effectiveReproVersion.equals(ReprocessingVersion.REPROCESSING_1)) {
             throw new OperatorException("Source product is before reprocessing version 2. Check if you can get the data from a more recent dataset.");
         }
-        if (reproVersion.equals(ReprocessingVersion.AUTO_DETECT)) {
+        if (effectiveReproVersion.equals(ReprocessingVersion.AUTO_DETECT)) {
             throw new OperatorException("Reprocessing could not be detected. Check if the source product is valid.");
         }
-        boolean isReprocessing2 = reproVersion == ReprocessingVersion.REPROCESSING_2;
+        boolean isReprocessing2 = effectiveReproVersion == ReprocessingVersion.REPROCESSING_2;
         if (!isReprocessing2 && doCalibration) {
             getLogger().warning("Skipping calibration. Source product is already of 3rd reprocessing.");
             doCalibration = false;
