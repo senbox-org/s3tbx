@@ -58,48 +58,53 @@
             "description": "Snow/Ice Cover"
           },
           {
-            "name": "water",
+            "name": "clear",
             "value": 64,
+            "description": "Clear"
+          },
+          {
+            "name": "water",
+            "value": 128,
             "description": "Water"
           },
           {
             "name": "cloud_confidence_one",
-            "value": 128,
+            "value": 256,
             "description": "Cloud confidence bit one"
           },
           {
             "name": "cloud_confidence_two",
-            "value": 256,
+            "value": 512,
             "description": "Cloud confidence bit two"
           },
           {
             "name": "cloud_shadow_confidence_one",
-            "value": 512,
+            "value": 1024,
             "description": "Cloud shadow confidence bit one"
           },
           {
             "name": "cloud_shadow_confidence_two",
-            "value": 1024,
+            "value": 2048,
             "description": "Cloud shadow confidence bit two"
           },
           {
             "name": "snow_ice_confidence_one",
-            "value": 2048,
+            "value": 4096,
             "description": "Snow/ice confidence bit one"
           },
           {
             "name": "snow_ice_confidence_two",
-            "value": 4096,
+            "value": 8192,
             "description": "Snow/ice confidence bit two"
           },
           {
             "name": "cirrus_confidence_one",
-            "value": 8192,
+            "value": 16384,
             "description": "Cirrus confidence bit one"
           },
           {
             "name": "cirrus_confidence_two",
-            "value": 16384,
+            "value": 32768,
             "description": "Cirrus confidence bit two"
           }
         ]
@@ -560,129 +565,159 @@
         "description": "Terrain Occlusion"
       },
       {
-        "name": "cloud",
+        "name": "cirrus",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "124,0,0",
+        "description": "Cirrus"
+      },
+      {
+        "name": "cloud",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,255",
         "description": "Cloud"
+      },
+      {
+        "name": "cloud_shadow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,178",
+        "description": "Cloud Shadow"
+      },
+      {
+        "name": "snow",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,0,124",
+        "description": "Snow/Ice Cover"
+      },
+      {
+        "name": "clear",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,255,0",
+        "description": "Clear"
+      },
+      {
+        "name": "water",
+        "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
+        "color": "0,178,0",
+        "description": "Water"
       },
       {
         "name": "Saturation for band 1",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,255",
+        "color": "0,124,0",
         "description": "Saturation for band 1"
       },
       {
         "name": "Saturation for band 2",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,178",
+        "color": "255,255,0",
         "description": "Saturation for band 2"
       },
       {
         "name": "Saturation for band 3",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,124",
+        "color": "178,178,0",
         "description": "Saturation for band 3"
       },
       {
         "name": "Saturation for band 4",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,255,0",
+        "color": "124,124,0",
         "description": "Saturation for band 4"
       },
       {
         "name": "Saturation for band 5",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,178,0",
+        "color": "255,0,255",
         "description": "Saturation for band 5"
       },
       {
         "name": "Saturation for band 6",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,124,0",
+        "color": "178,0,178",
         "description": "Saturation for band 6"
       },
       {
         "name": "Saturation for band 7",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,255,0",
+        "color": "124,0,124",
         "description": "Saturation for band 7"
       },
       {
         "name": "Saturation for band 9",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,178,0",
+        "color": "255,175,175",
         "description": "Saturation for band 9"
       },
       {
         "name": "snow_ice_confidence_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,124,0",
+        "color": "178,122,122",
         "description": "Snow/ice confidence 0-35%"
       },
       {
         "name": "snow_ice_confidence_mid",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,0,255",
+        "color": "124,85,85",
         "description": "Snow/ice confidence 36-64%"
       },
       {
         "name": "snow_ice_confidence_high",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,0,178",
+        "color": "255,0,0",
         "description": "Snow/ice confidence 65-100%"
       },
       {
         "name": "cloud_confidence_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,0,124",
+        "color": "178,0,0",
         "description": "Cloud confidence 0-35%"
       },
       {
         "name": "cloud_confidence_mid",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,175,175",
+        "color": "124,0,0",
         "description": "Cloud confidence 36-64%"
       },
       {
         "name": "cloud_confidence_high",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,122,122",
+        "color": "0,0,255",
         "description": "Cloud confidence 65-100%"
       },
       {
         "name": "cloud_shadow_confidence_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,85,85",
+        "color": "0,0,178",
         "description": "Cloud shadow confidence 0-35%"
       },
       {
         "name": "cloud_shadow_confidence_mid",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "255,0,0",
+        "color": "0,0,124",
         "description": "Cloud shadow confidence 36-64%"
       },
       {
         "name": "cloud_shadow_confidence_high",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "178,0,0",
+        "color": "0,255,0",
         "description": "Cloud shadow confidence 65-100%"
       },
       {
         "name": "cirrus_confidence_low",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "124,0,0",
+        "color": "0,178,0",
         "description": "Cirrus confidence 0-35%"
       },
       {
         "name": "cirrus_confidence_mid",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,255",
+        "color": "0,124,0",
         "description": "Cirrus confidence 36-64%"
       },
       {
         "name": "cirrus_confidence_high",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
-        "color": "0,0,178",
+        "color": "255,255,0",
         "description": "Cirrus confidence 65-100%"
       }
     ],
