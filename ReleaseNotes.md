@@ -6,6 +6,8 @@ Changes in S3TBX 9.0.0
 
 ### Bug
 
+    [SIIITBX-416] Clear flag is not considered for Landsat Collection 2 OLI data
+    [SIIITBX-411] Landsat 9 L1 data cannot be opened
     [SIIITBX-402] The help generation shows errors during the build process
     [SIIITBX-401] Rayleigh Correction fails if band Oa11_radiance is included for correction
     [SIIITBX-397] Fixes for seadas reader fo PACE HICO and MERIS data L1B/L2
@@ -22,8 +24,11 @@ Changes in S3TBX 9.0.0
 
 ### New Feature
 
+    [SIIITBX-409] Support Level 1 of Landsat TM, MSS and ETM+ from USGS Collection2    
     [SIIITBX-408] Updated C2RCC for changes in Landsat8 Col2 data
-    [SIIITBX-404} Support USGS Landsat Collection 2
+    [SIIITBX-406] Support Level 1 of Landsat8 Collection 2
+    [SIIITBX-405] Support Level 2 of Landsat8 Collection 2
+    [SIIITBX-404] Support USGS Landsat Collection 2
     [SIIITBX-398] SeaDAS 3D reader which can output 2D bands for each wavelength in the 3D input file
     [SIIITBX-392] S3 data to use pixel-based geo-location information by default
     [SIIITBX-389] Support NASA distributed MERIS and OLCI files
@@ -41,6 +46,9 @@ Changes in S3TBX 9.0.0
 
 ### Improvement
 
+    [SIIITBX-415] Rename FUB Water processor
+    [SIIITBX-414] Autodetection of repro version failed without mentioning the reason
+    [SIIITBX-407] Enhance Landsat L1/Col2 support
     [SIIITBX-403] Update reader according PB2.70-A/1.57-B (OGVI->GIFAPAR)
     [SIIITBX-399] Update help pages for SeaDAS reader
     [SIIITBX-393] Implement OLCI anomaly detection OP S3MPC requests
