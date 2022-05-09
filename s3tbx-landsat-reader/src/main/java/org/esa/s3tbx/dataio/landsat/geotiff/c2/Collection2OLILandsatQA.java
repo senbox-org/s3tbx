@@ -108,8 +108,8 @@ public class Collection2OLILandsatQA extends AbstractLandsatQA {
                                             "satflags.terrain_occlusion",
                                             colorIterator.next(),
                                             0.5));
-        masks.add(Mask.BandMathsType.create("cirrus",
-                                            "Cirrus",
+        masks.add(Mask.BandMathsType.create("cirrus_cloud",
+                                            "Cirrus Cloud",
                                             width, height,
                                             "flags.cirrus",
                                             colorIterator.next(),

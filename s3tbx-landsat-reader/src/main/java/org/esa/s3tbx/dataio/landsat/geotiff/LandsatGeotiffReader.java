@@ -254,7 +254,7 @@ public class LandsatGeotiffReader extends AbstractProductReader {
                 masks = landsatQA.createMasks(product.getSceneRasterSize());
             }
             for (Mask mask : masks) {
-                product.getMaskGroup().add(mask);
+                product.addMask(mask);
             }
         }
         ImageLayout imageLayout = new ImageLayout();

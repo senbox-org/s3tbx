@@ -565,10 +565,10 @@
         "description": "Terrain Occlusion"
       },
       {
-        "name": "cirrus",
+        "name": "cirrus_cloud",
         "type": "org.esa.snap.core.datamodel.Mask$BandMathsType",
         "color": "124,0,0",
-        "description": "Cirrus"
+        "description": "Cirrus Cloud"
       },
       {
         "name": "cloud",
