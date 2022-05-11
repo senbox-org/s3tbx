@@ -55,85 +55,65 @@
 
 </p>
 <div align="center">
-<table width="800" style="border:none;padding: 0" cellspacing="0" cellpadding="0" border="0">
-    <tr>
-        <td colspan="2">
-            <font size="+1"><b>COASTAL</b></font>
-        </td>
-    </tr>
-    <tr>
-        <td><p>
-            This type should be primarily used, as the name suggests, in coastal areas. It contains a classification
-            with a maximum of 16 classes and represents a wide range of coastal water conditions. These conditions
-            are not unique to any particular region. The clusters are representations of averaged conditions
-            governed by the optical properties of the water column. The last 8 classes are combined into one during
-            the processing, therefore the result has only 9 different classes. <br>
-            This type needs the following wavelengths: 410, 443, 490, 510, 555
-        </p></td>
-        <td><img src="images/OWT_TYPE_COASTAL_Spectra.png" border=0></td>
-    <tr>
-        <td colspan="2">
-            <font size="+1"><b>INLAND</b></font>
-        </td>
-    </tr>
-    <tr>
-        <td><p>
-            This type is intended for the use with rivers and lakes, but it also contains in situ coastal data as
-            input. The maximum number of clusters is 7. The clusters are not unique to any particular lake, region,
-            or a result of differences between freshwater and marine waters. Marine and freshwater stations can be
-            found in the same clusters. The OWTs show a pattern of increasing absorption in the blue/green for low
-            red/NIR features (classes 1 through 3), followed by increasing peak magnitude at 555 nm (classes 4
-            through 7). OWTs 1 through 5 show increasing chlorophyll-a concentrations, while OWTs 6 and 7 have lower
-            mean chlorophyll-a values. <br>
-            This type needs the following wavelengths: 412, 443, 490, 510, 560, 620, 665, 680, 709, 754
-        </p></td>
-        <td><img src="images/OWT_TYPE_INLAND_Spectra.png" border=0></td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <font size="+1"><b>GLASS_5C</b></font>
-        </td>
-    </tr>
-    <tr>
-        <td><p>
-            This type is intended for the use with lakes and was developed in the frame of the EU-GLaSS project. The
-            in situ reflectance used to train the fuzzy classifier come exclusively from lake waters, which marks
-            the distance with the INLAND option. The water composition of the lakes has a higher mix and includes
-            many CDOM samples from Finnish lakes. Only 5 clusters are considered as the optimal number of classes.
-            The classes are sorted purely on remote sensing reflectance distribution and are representations of
-            optical conditions governed by the total absorption and scattering properties (IOPs). The wavelength
-            dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to higher
-            turbid waters due to the increase in the sediment load. <br>
-            This type needs the following wavelengths: 442.6, 489.9, 509.8, 559.7, 619.6, 664.6, 680.8, 708.3, 753.4
+    <table width="800" style="border:none;padding: 0" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td colspan="2">
+                <font size="+1"><b>COASTAL</b></font>
+            </td>
+        </tr>
+        <tr>
+            <td><p>
+                This type should be primarily used, as the name suggests, in coastal areas. It contains a classification
+                with a maximum of 16 classes and represents a wide range of coastal water conditions. These conditions
+                are not unique to any particular region. The clusters are representations of averaged conditions
+                governed by the optical properties of the water column. The last 8 classes are combined into one during
+                the processing, therefore the result has only 9 different classes. <br>
+                This type needs the following wavelengths: 410, 443, 490, 510, 555
             </p></td>
-        <td><img src="images/OWT_TYPE_GLASS_5C_Spectra.png" border=0></td>
-    <tr>
-        <td colspan="2">
-            <font size="+1"><b>GLASS_6C</b></font>
-        </td>
-    </tr>
-    <tr>
-        <td><p>
-            This type is intended for the use with lakes and was developed in the frame of the EU-GLaSS project. The
-            in situ reflectance used to train the fuzzy classifier come exclusively from lake waters, which marks
-            the distance with the INLAND option. The water composition of the lakes has a higher mix and includes
-            many CDOM samples from Finnish lakes. Here 6 clusters are considered as the optimal number of classes.
-            The classes are sorted purely on remote sensing reflectance distribution and are representations of
-            optical conditions governed by the total absorption and scattering properties (IOPs). The wavelength
-            dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to higher
-            turbid waters due to the increase in the sediment load. <br>
-            This type needs the following wavelengths: 442.6, 489.9, 509.8, 559.7, 619.6, 664.6, 680.8, 708.3, 753.4
-        </p></td>
-        <td><img src="images/OWT_TYPE_GLASS_6C_Spectra.png" border=0></td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <font size="+1"><b>GLASS_6C_NORMALISED</b></font>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p>
+            <td><img src="images/OWT_TYPE_COASTAL_Spectra.png" border=0></td>
+        <tr>
+            <td colspan="2">
+                <font size="+1"><b>INLAND</b></font>
+            </td>
+        </tr>
+        <tr>
+            <td><p>
+                This type is intended for the use with rivers and lakes, but it also contains in situ coastal data as
+                input. The maximum number of clusters is 7. The clusters are not unique to any particular lake, region,
+                or a result of differences between freshwater and marine waters. Marine and freshwater stations can be
+                found in the same clusters. The OWTs show a pattern of increasing absorption in the blue/green for low
+                red/NIR features (classes 1 through 3), followed by increasing peak magnitude at 555 nm (classes 4
+                through 7). OWTs 1 through 5 show increasing chlorophyll-a concentrations, while OWTs 6 and 7 have lower
+                mean chlorophyll-a values. <br>
+                This type needs the following wavelengths: 412, 443, 490, 510, 560, 620, 665, 680, 709, 754
+            </p></td>
+            <td><img src="images/OWT_TYPE_INLAND_Spectra.png" border=0></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <font size="+1"><b>GLASS_5C</b></font>
+            </td>
+        </tr>
+        <tr>
+            <td><p>
+                This type is intended for the use with lakes and was developed in the frame of the EU-GLaSS project. The
+                in situ reflectance used to train the fuzzy classifier come exclusively from lake waters, which marks
+                the distance with the INLAND option. The water composition of the lakes has a higher mix and includes
+                many CDOM samples from Finnish lakes. Only 5 clusters are considered as the optimal number of classes.
+                The classes are sorted purely on remote sensing reflectance distribution and are representations of
+                optical conditions governed by the total absorption and scattering properties (IOPs). The wavelength
+                dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to higher
+                turbid waters due to the increase in the sediment load. <br>
+                This type needs the following wavelengths: 442.6, 489.9, 509.8, 559.7, 619.6, 664.6, 680.8, 708.3, 753.4
+            </p></td>
+            <td><img src="images/OWT_TYPE_GLASS_5C_Spectra.png" border=0></td>
+        <tr>
+            <td colspan="2">
+                <font size="+1"><b>GLASS_6C</b></font>
+            </td>
+        </tr>
+        <tr>
+            <td><p>
                 This type is intended for the use with lakes and was developed in the frame of the EU-GLaSS project. The
                 in situ reflectance used to train the fuzzy classifier come exclusively from lake waters, which marks
                 the distance with the INLAND option. The water composition of the lakes has a higher mix and includes
@@ -141,20 +121,45 @@
                 The classes are sorted purely on remote sensing reflectance distribution and are representations of
                 optical conditions governed by the total absorption and scattering properties (IOPs). The wavelength
                 dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to higher
-                turbid waters due to the increase in the sediment load. The normalised classification shows different
-                results than the 6C because the reflectance values were normalised integrating the area under the curve.
-                This removes magnitude effects and focuses more on the spectral shape. <br>
+                turbid waters due to the increase in the sediment load. <br>
                 This type needs the following wavelengths: 442.6, 489.9, 509.8, 559.7, 619.6, 664.6, 680.8, 708.3, 753.4
             </p></td>
-        <td><img src="images/OWT_TYPE_GLASS_6C_NORMALISED_Spectra.png" border=0></td>
-    </tr>
-</table>
+            <td><img src="images/OWT_TYPE_GLASS_6C_Spectra.png" border=0></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <font size="+1"><b>GLASS_6C_NORMALISED</b></font>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>
+                    This type is intended for the use with lakes and was developed in the frame of the EU-GLaSS project.
+                    Thein situ reflectance used to train the fuzzy classifier come exclusively from lake waters, which
+                    marks the distance with the INLAND option. The water composition of the lakes has a higher mix and
+                    includes many CDOM samples from Finnish lakes. Here 6 clusters are considered as the optimal number
+                    of
+                    classes.
+                    The classes are sorted purely on remote sensing reflectance distribution and are representations of
+                    optical conditions governed by the total absorption and scattering properties (IOPs). The wavelength
+                    dependency gives clues for the interpretation: from chlorophyll_a absorbing dominant waters to
+                    higher turbid waters due to the increase in the sediment load. The normalised classification shows
+                    different results than the 6C because the reflectance values were normalised integrating the area
+                    under the
+                    curve.
+                    This removes magnitude effects and focuses more on the spectral shape. <br>
+                    This type needs the following wavelengths: 442.6, 489.9, 509.8, 559.7, 619.6, 664.6, 680.8, 708.3,
+                    753.4
+                </p></td>
+            <td><img src="images/OWT_TYPE_GLASS_6C_NORMALISED_Spectra.png" border=0></td>
+        </tr>
+    </table>
 </div>
 
 <h3>References</h3>
 <p class="i1">
-    <b>M. A. Eleveld, A. B. Ruescas , A. Hommersom , S. W. M. Peters and C. Brockmann<br>
-        An Optical Classification Tool for Global Lake Waters<br></b>
+    <b>An Optical Classification Tool for Global Lake Waters<br>
+        M. A. Eleveld, A. B. Ruescas , A. Hommersom , S. W. M. Peters and C. Brockmann<br></b>
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
         <param name="content" value="http://dx.doi.org/10.3390/rs9050420">
         <param name="text" value="<html><u>https://www.mdpi.com/2072-4292/9/5/420</u></html>">
@@ -163,8 +168,8 @@
 
     <br><br>
 
-    <b>Moore, T. S., Campbell J. W., Feng, H. (2001)<br>
-        A fuzzy logic classification scheme for selecting and blending ocean color algorithms<br></b>
+    <b>A fuzzy logic classification scheme for selecting and blending ocean color algorithms<br>
+        Moore, T. S., Campbell J. W., Feng, H. (2001)<br></b>
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
         <param name="content"
                value="https://www.researchgate.net/publication/3202679_A_fuzzy_logic_classification_scheme_for_selecting_and_blending_satellite_ocean_color_algorithms_IEEE_Transactions_on_Geoscience_and_Remote_Sensing_39_1764-1776">
@@ -175,9 +180,9 @@
 
     <br><br>
 
-    <b>Moore, T. S., Dowell, M. D., Bradt, S., Ruiz Verdu, A. (2014)<br>
-        An optical water type framework for selecting and blending retrievals from bio-optical algorithms in lakes
-        and coastal waters<br></b>
+    <b>An optical water type framework for selecting and blending retrievals from bio-optical algorithms in lakes
+        and coastal waters<br>
+        Moore, T. S., Dowell, M. D., Bradt, S., Ruiz Verdu, A. (2014)<br></b>
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
         <param name="content"
                value="https://www.sciencedirect.com/science/article/abs/pii/S0034425713004434?via%3Dihub">
@@ -187,14 +192,13 @@
 
     <br><br>
 
-    <!-- probably deleted
-    <b>GLaSS Deliverable 3.3 2014, VU/VUmc, BC, WI<br>
-            Optical pre-classification method<br></b>
-        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
-            <param name="content" value=http://www.glass-project.eu/downloads">
-            <param name="text" value="<html><u>www.glass-project.eu/downloads</u></html>">
-            <param name="textFontSize" value="bigger">
-        </object>-->
+    <b>GLaSS Deliverable 3.3 2014 - Optical pre-classification method<br>
+        Marieke A. Eleveld, Ana Ruescas, Annelies Hommersom (VU/VUmc, BC, WI)<br></b>
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="https://step.esa.int/docs/extra/GLaSS-D3.3.pdf">
+        <param name="text" value="<html><u>https://step.esa.int/docs/extra/GLaSS-D3.3.pdf</u></html>">
+        <param name="textFontSize" value="bigger">
+    </object>
 
 </p>
 
