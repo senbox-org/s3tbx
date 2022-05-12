@@ -24,7 +24,7 @@
     </parent>
 
     <artifactId>s3tbx-mphchl-beta</artifactId>
-    <version>8.0.0.1-SNAPSHOT</version>
+    <version>8.0.6.1-SNAPSHOT</version>
 
     <packaging>nbm</packaging>
     <properties>
