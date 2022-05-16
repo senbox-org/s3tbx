@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.esa.s3tbx</groupId>
         <artifactId>s3tbx</artifactId>
-        <version>9.0.0-SNAPSHOT</version>
+        <version>9.0.0</version>
     </parent>
 
     <artifactId>s3tbx-insitu-client-ui</artifactId>
@@ -142,4 +142,3 @@
         </plugins>
     </build>
 </project>
-
