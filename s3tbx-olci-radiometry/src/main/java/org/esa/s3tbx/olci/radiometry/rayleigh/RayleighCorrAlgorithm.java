@@ -56,8 +56,14 @@ public class RayleighCorrAlgorithm {
             return getCrossSection(S2Utils.getS2TrueWavelengths());
         }
         if (sensor != null && sensor == Sensor.LANDSAT_8) {
-            // todo-DM - update wavelength/crosssection
-            return getCrossSection(new double[]{440, 480, 560, 655, 865, 1370, 1610, 2200});
+            // PAN is omitted, because of large bandwidth
+            //Bands are: coastal, blue, green, red, NIR, SWIR1, SWIR2, cirrus
+//            double[] wavelength = new double[]{442.98221107806575, 482.58885989752395, 561.3321416459181,654.6055091346834,
+//                    864.570827584894, 1609.0905268131812, 2201.248335978548, 1373.4761739935636};
+            //wavelengths are adjusted, so that the crosssection is the same for this single wavelength and the SRF convolution
+            double[] wavelength = new double[]{442.84270278503936, 480.9275707481116, 560.0407717798489, 654.1336756414217,
+                    864.3504561762736, 1607.9946386141337, 2197.7003396698724, 1373.394946188435};
+            return getCrossSection(wavelength);
         } else if (sensor != null && sensor == Sensor.OLCI) {
             double[] wavelength;
             if (isSentinelB(sourceProduct)) {
@@ -163,6 +169,12 @@ public class RayleighCorrAlgorithm {
         double trans_ozone12 = trans_ozoned12 * trans_ozoneu12;
         return rho_ng / trans_ozone12;
     }
+
+    //todo: water vapour absorption for Landsat8 SWIR2
+    // use fixed value for scene? or: derive water vapour from cirrus band?
+
+    //todo: NO2 absortion for Landsat8 coastal, blue, green
+
 
     double[] getRhoBrr(RayleighAux rayleighAux, double[] rayleighOpticalThickness, double[] corrOzoneRefl) {
         final double[] airMasses = rayleighAux.getAirMass();
@@ -405,21 +417,26 @@ public class RayleighCorrAlgorithm {
 
     double getRayleighOpticalThickness(double sigma, double seaLevelPressure, double altitude,
                                        double latitude) {
-        double pressure = seaLevelPressure * Math.pow((1.0 - 0.0065 * altitude / 288.15), 5.255) * 1000;
+        double pressure = seaLevelPressure * Math.pow((1.0 - 0.0065 * altitude / 288.15), 5.255) * 1000.;
         return getRayleightOptThickness(sigma, altitude, latitude, pressure);
     }
 
     private double getRayleightOptThickness(double sigma, double altitude, double latitude, double pressure) {
         double latRad = Math.toRadians(latitude);
         double cos2LatRad = Math.cos(2 * latRad);
-        double g0 = 980.616 * (1 - 0.0026373 * cos2LatRad + 0.0000059 * Math.pow(cos2LatRad, 2));
+        double g0 = 980.616 * (1 - 0.0026372 * cos2LatRad + 0.0000059 * Math.pow(cos2LatRad, 2));
         double effectiveMassWeightAltitude = 0.73737 * altitude + 5517.56;
 
         double g = g0 - (3.085462E-4 + 2.27E-7 * cos2LatRad) * effectiveMassWeightAltitude +
-                (7.254E-11 + 1E-13 * cos2LatRad) * Math.pow(effectiveMassWeightAltitude, 2) -
-                (1.517E-17 + 6E-20 * cos2LatRad) * Math.pow(effectiveMassWeightAltitude, 3);
+                (7.254E-11 + 1.E-13 * cos2LatRad) * Math.pow(effectiveMassWeightAltitude, 2.) -
+                (1.517E-17 + 6.E-20 * cos2LatRad) * Math.pow(effectiveMassWeightAltitude, 3.);
+
+        double p1 = (3.085462E-4 + 2.27E-7 * cos2LatRad) * effectiveMassWeightAltitude;
+        double p2 = (7.254E-11 + 1.E-13 * cos2LatRad) * Math.pow(effectiveMassWeightAltitude, 2.);
+        double p3 = (1.517E-17 + 6.E-20 * cos2LatRad) * Math.pow(effectiveMassWeightAltitude, 3.);
 
         double factor = (pressure * RayleighConstants.AVOGADRO_NUMBER) / (RayleighConstants.MEAN_MOLECULAR_WEIGHT_C02 * g);
+//        System.out.println(latitude + " " + p1 + " " + p2 + " " +p3 +" " + sigma + " "+ factor + " " + g + " " + g0 + " " + cos2LatRad + " "+ altitude);
         return factor * sigma;
     }
 

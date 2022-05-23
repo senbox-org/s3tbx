@@ -294,9 +294,15 @@ public class RayleighCorrectionOp extends Operator {
                         reflectance = getReflectance(rayleighAux);
                     }
 
+
                     if (isWavelength709(rayleighAux.getWaveLength())) {
                         reflectance = waterVaporCorrection709(reflectance, targetRectangle, sensor);
                     }
+                    //todo-DM: L8: water vapour correction advisable for cirrus and SWIR2, but needs total columnar water vapour
+
+                    //todo-DM: test ozone correction (Landsat8: SRF convoluted values are hardcoded
+
+
                     double[] corrOzoneRefl = getCorrectOzone(rayleighAux, reflectance, sourceBandIndex, targetBandName);
                     if (targetBandNameMatches(targetBandName, RTOA_NG_PATTERN) && computeRtoaNg) {
                         targetData = corrOzoneRefl;

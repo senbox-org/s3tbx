@@ -22,13 +22,13 @@ package org.esa.s3tbx.olci.radiometry.rayleigh;
  * @author muhammad.bc.
  */
 class RayleighConstants {
-    static double AVOGADRO_NUMBER = 6.0221367E+23;
+    static double AVOGADRO_NUMBER = 6.022140857e+23;//6.0221367E+23;
     static double MEAN_MOLECULAR_ZERO = 28.9595;
     static double Molecular_cm3 = 2.5469E19;
 
     // constants describing the state of the atmosphere and which we don't know; better values may be used if known
-    static double CO2 = 3.6e-4; // CO2 concentration at pixel; typical values are 300 to 360 ppm
-    static double C_CO2 = CO2 * 100;  // CO2 concentration in ppm
+    static double CO2 = 360.0E-6; // CO2 concentration at pixel; typical values are 300 to 360 ppm
+    static double C_CO2 = CO2 * 100.;  // CO2 concentration in ppm
     static double MEAN_MOLECULAR_WEIGHT_C02 = 15.0556 * CO2 + MEAN_MOLECULAR_ZERO;
 
     static double PA = 0.9587256;

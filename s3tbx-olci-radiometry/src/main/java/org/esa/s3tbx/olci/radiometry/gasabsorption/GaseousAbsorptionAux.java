@@ -31,6 +31,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -130,9 +131,10 @@ public class GaseousAbsorptionAux {
 
                 break;
             case "Landsat8":
-                // todo-DM
-                lamC = new double[]{440, 480, 560, 655, 865, 1370, 1610, 2200};
-                lamW = new double[]{20.0, 60.0, 60.0, 30.0, 30, 20, 80, 180};
+                lamC = new double[]{440, 480, 560, 655, 865, 1370, 1610, 2200}; //not used
+                lamW = new double[]{20.0, 60.0, 60.0, 30.0, 30, 20, 80, 180}; //not used
+                //window shapes are not as rectangular as for MERIS or OLCI!
+                //therefore: O3 absorption for Landsat 8 has been derived from the coeffhighres data and the Landsat SRF
                 break;
             default:
                 lamC = new double[0];
@@ -140,12 +142,42 @@ public class GaseousAbsorptionAux {
         }
 
         List<Number> o3absorpInstrument = new ArrayList<>();
-        for (int i = 0; i < lamC.length; i++) {
-            double lower = lamC[i] - lamW[i] / 2;
-            double upper = lamC[i] + lamW[i] / 2;
-            o3absorpInstrument.add(convolve(lower, upper, this.coeffhighres));
+        if (instrument.equals("Landsat8")) {
+            //bands: coastal, blue, green, red, NIR, SWIR1, SWIR2, cirrus
+            o3absorpInstrument = new ArrayList<>(Arrays.asList(0.003212975125370189f, 0.02048547571469443f, 0.10395381457238313f,
+                    0.061928577025922436f, 0.f, 0.f, 0.f, 0.f));
+        }
+        else{
+
+            for (int i = 0; i < lamC.length; i++) {
+                double lower = lamC[i] - lamW[i] / 2;
+                double upper = lamC[i] + lamW[i] / 2;
+                o3absorpInstrument.add(convolve(lower, upper, this.coeffhighres));
+            }
         }
         return Doubles.toArray(o3absorpInstrument);
+    }
+
+    public double[] absorptionH2O(String instrument){
+        List<Number> h2oabsorpInstrument = new ArrayList<>();
+        if (instrument.equals("Landsat8")) {
+            //bands: coastal, blue, green, red, NIR, SWIR1, SWIR2, cirrus
+            // SRF folded specific absorption values
+            h2oabsorpInstrument = new ArrayList<>(Arrays.asList(0.f, 0.f, 0.f, 0.f ,0.f, 0.f, 0.0012702450363651504f, 0.8636940957747286f));
+        }
+        //todo: check water vapour absorption for other sensors!
+        return Doubles.toArray(h2oabsorpInstrument);
+    }
+
+    public double[] absorptionNO2(String instrument){
+        List<Number> no2absorpInstrument = new ArrayList<>();
+        if (instrument.equals("Landsat8")) {
+            //bands: coastal, blue, green, red, NIR, SWIR1, SWIR2, cirrus
+            // SRF folded specific absorption values
+            no2absorpInstrument = new ArrayList<>(Arrays.asList(627.8215662729974f, 418.12849785802166f, 81.40446656092287f, 0.f, 0.f, 0.f, 0.f ,0.f));
+        }
+        //todo: check NO2 absorption for other sensors!
+        return Doubles.toArray(no2absorpInstrument);
     }
 
     private static class Holder {
