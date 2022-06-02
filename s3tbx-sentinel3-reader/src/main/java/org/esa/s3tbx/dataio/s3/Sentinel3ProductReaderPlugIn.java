@@ -121,7 +121,7 @@ public class Sentinel3ProductReaderPlugIn implements ProductReaderPlugIn {
                 (isValidDirectoryName(inputFile.getName()) && new File(inputFile, EarthExplorerManifest.L1C_MANIFEST_FILE_NAME).exists());
     }
 
-    private boolean isValidDirectoryName(String name) {
+    protected boolean isValidDirectoryName(String name) {
         return directoryNamePattern.matcher(name).matches();
     }
 
