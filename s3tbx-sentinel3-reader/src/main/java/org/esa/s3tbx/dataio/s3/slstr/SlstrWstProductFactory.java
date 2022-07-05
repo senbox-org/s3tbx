@@ -90,6 +90,12 @@ public class SlstrWstProductFactory extends SlstrSstProductFactory {
     }
 
     @Override
+    protected boolean isNodeSpecial(Band sourceBand, Product targetProduct) {
+        // None of the nodes needs special treatment
+        return false;
+    }
+
+    @Override
     protected Double getStartOffset(String gridIndex) {
         return 0.0;
     }
