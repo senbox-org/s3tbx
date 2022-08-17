@@ -1,9 +1,7 @@
 package org.esa.s3tbx.c2rcc.olci;
 
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.test.LongTestRunner;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
@@ -14,7 +12,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Marco Peters
  */
-@RunWith(LongTestRunner.class)
 public class OlciProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_" + 1, "rhow_" + 2, "rhow_" + 3, "rhow_" + 4, "rhow_" + 5,

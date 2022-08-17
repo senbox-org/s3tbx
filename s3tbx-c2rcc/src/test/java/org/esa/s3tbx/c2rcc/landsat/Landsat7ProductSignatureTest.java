@@ -4,10 +4,8 @@ import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.test.LongTestRunner;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
@@ -20,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Marco Peters
  */
-@RunWith(LongTestRunner.class)
 public class Landsat7ProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_" + 1, "rhow_" + 2, "rhow_" + 3, "rhow_" + 4};

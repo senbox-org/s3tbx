@@ -5,10 +5,8 @@ import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.test.LongTestRunner;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
@@ -19,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Marco Peters
  */
-@RunWith(LongTestRunner.class)
 public class MsiProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_B" + 1, "rhow_B" + 2, "rhow_B" + 3, "rhow_B" + 4, "rhow_B" + 5,
@@ -235,7 +232,7 @@ public class MsiProductSignatureTest {
         productInfo.addAttribute(new MetadataAttribute("PRODUCT_START_TIME", ProductData.createInstance("2015-08-12T10:40:21.459Z"), true));
         productInfo.addAttribute(new MetadataAttribute("PRODUCT_STOP_TIME", ProductData.createInstance("2015-08-12T10:40:21.459Z"), true));
         MetadataElement imageCharacteristics = new MetadataElement("Product_Image_Characteristics");
-        imageCharacteristics.addAttribute(new MetadataAttribute("QUANTIFICATION_VALUE", ProductData.createInstance("1000"), true));
+        imageCharacteristics.addAttribute(new MetadataAttribute("QUANTIFICATION_VALUE", ProductData.createInstance("10000"), true));
         l1cUserProduct.addElement(generalInfo);
         generalInfo.addElement(productInfo);
         generalInfo.addElement(imageCharacteristics);

@@ -5,10 +5,8 @@ import org.esa.snap.core.datamodel.CrsGeoCoding;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.test.LongTestRunner;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
@@ -22,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Marco Peters
  */
-@RunWith(LongTestRunner.class)
 public class ModisProductSignatureTest {
     private static final String[] EXPECTED_RHOW_BANDS = {
             "rhow_" + 412, "rhow_" + 443, "rhow_" + 488, "rhow_" + 531, "rhow_" + 547,
