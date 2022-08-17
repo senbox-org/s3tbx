@@ -14,7 +14,9 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.PixelPos;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.TimeCoding;
+import org.esa.snap.core.datamodel.VirtualBand;
 import org.esa.snap.core.dataop.dem.ElevationModel;
 import org.esa.snap.core.dataop.dem.ElevationModelDescriptor;
 import org.esa.snap.core.dataop.dem.ElevationModelRegistry;
@@ -88,7 +90,7 @@ import static org.esa.s3tbx.c2rcc.msi.C2rccMsiAlgorithm.SOURCE_BAND_REFL_NAMES;
  *
  * @author Norman Fomferra
  */
-@OperatorMetadata(alias = "c2rcc.msi", version = "1.1",
+@OperatorMetadata(alias = "c2rcc.msi", version = "1.2",
         authors = "Roland Doerffer, Marco Peters, Sabine Embacher (Brockmann Consult)",
         category = "Optical/Thematic Water Processing",
         copyright = "Copyright (C) 2016 by Brockmann Consult",
@@ -150,6 +152,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     static final String RASTER_NAME_SUN_AZIMUTH = "sun_azimuth";
     static final String RASTER_NAME_VIEW_ZENITH = "view_zenith_mean";
     static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth_mean";
+    static final String RASTER_NAME_AIR_PRESSURE = "msl";
+    static final String RASTER_NAME_OZONE = "tco3";
+    static final String RASTER_NAME_WATER_VAPOUR = "tcwv";
 
     private static final String STANDARD_NETS = "C2RCC-Nets";
     private static final String EXTREME_NETS = "C2X-Nets";
@@ -264,6 +269,11 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     @Parameter(defaultValue = "false", description = "Alternative way of calculating water reflectance. Still experimental.",
             label = "Derive water reflectance from path radiance and transmittance")
     private boolean deriveRwFromPathAndTransmittance;
+
+    @Parameter(defaultValue = "false", description =
+            "Use ECMWF auxiliary data (msl and tco3) from the source product, if available.",
+            label = "Use ECMWF data, if available")
+    private boolean useEcmwfAuxData;
 
     @Parameter(defaultValue = "true", label = "Output TOA reflectances")
     private boolean outputRtoa;
@@ -968,7 +978,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             pm.setSubTaskName("Defining algorithm ...");
             if (StringUtils.isNotNullAndNotEmpty(alternativeNNPath)) {
                 String[] nnFilePaths = NNUtils.getNNFilePaths(Paths.get(alternativeNNPath),
-                        NNUtils.ALTERNATIVE_NET_DIR_NAMES);
+                                                              NNUtils.ALTERNATIVE_NET_DIR_NAMES);
                 algorithm = new C2rccMsiAlgorithm(nnFilePaths, false);
             } else {
                 String[] nnFilePaths = c2rccNetSetMap.get(netSet);
@@ -1118,10 +1128,48 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         auxdataBuilder.useAtmosphericAuxDataPath(atmosphericAuxDataPath);
         auxdataBuilder.useTomsomiProducts(tomsomiStartProduct, tomsomiEndProduct);
         auxdataBuilder.useNcepProducts(ncepStartProduct, ncepEndProduct);
+
+        if (useEcmwfAuxData && containsECMWFData(sourceProduct)) {
+            final String ozoneRasterName = getOzoneRasterName(sourceProduct);
+            VirtualBand ozoneIn_Du = new VirtualBand("__ozone_in_du_",
+                                                     ProductData.TYPE_FLOAT32,
+                                                     sourceProduct.getSceneRasterWidth(),
+                                                     sourceProduct.getSceneRasterHeight(),
+                                                     ozoneRasterName + " * 46698"); // convert kg / m² to DU
+            ozoneIn_Du.setOwner(sourceProduct);
+            VirtualBand pressueIn_hPa = new VirtualBand("__pressure_in_hPa_",
+                                                        ProductData.TYPE_FLOAT32,
+                                                        sourceProduct.getSceneRasterWidth(),
+                                                        sourceProduct.getSceneRasterHeight(),
+                                                        RASTER_NAME_AIR_PRESSURE + " / 100"); // convert Pa to hPa
+            pressueIn_hPa.setOwner(sourceProduct);
+            auxdataBuilder.useAtmosphericRaster(ozoneIn_Du, pressueIn_hPa);
+        }
         try {
             atmosphericAuxdata = auxdataBuilder.create();
         } catch (Exception e) {
             throw new OperatorException("Could not create provider for atmospheric auxdata", e);
+        }
+    }
+
+    private boolean containsECMWFData(Product sourceProduct) {
+        return sourceProduct.containsRasterDataNode(RASTER_NAME_AIR_PRESSURE) &&
+                sourceProduct.containsRasterDataNode(RASTER_NAME_OZONE) &&
+                sourceProduct.containsRasterDataNode(RASTER_NAME_WATER_VAPOUR);
+    }
+
+    private static String getOzoneRasterName(Product sourceProduct) {
+        // The data names are swapped, but the description is correct.
+        // So we decide based on the description which raster to use.
+        // This should ensure that the selection still works correct,
+        // even when the issue is fixed. https://senbox.atlassian.net/browse/SIITBX-497
+        // When fixed the selection code can be removed
+        final RasterDataNode tco3 = sourceProduct.getRasterDataNode(RASTER_NAME_OZONE);
+        final RasterDataNode tcwv = sourceProduct.getRasterDataNode(RASTER_NAME_WATER_VAPOUR);
+        if (tco3.getDescription().contains("ozone")) {
+            return tco3.getName();
+        } else {
+            return tcwv.getName();
         }
     }
 

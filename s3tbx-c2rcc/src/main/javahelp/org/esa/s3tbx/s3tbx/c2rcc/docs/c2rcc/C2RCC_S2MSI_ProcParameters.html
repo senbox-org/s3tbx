@@ -25,7 +25,8 @@
 <table class="header">
     <tr class="header">
         <td class="header">C2RCC S2-MSI Processing Parameters</td>
-        <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
+        <td class="header" align="right"><a
+                href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img
                 src="../images/snap_header.jpg"
                 border=0></a>
         </td>
@@ -34,11 +35,40 @@
 
 <h3>Sentinel-2 MSI Processing Parameters</h3>
 
+<p>
+    <b>NOTE 1</b><br>
+    There are different auxiliary data source for air pressure (at surface level) and ozone.
+<ul>
+    <li>TOMSOMI and NCEP data provided by the optional products or by pointing to a directory pre-filled with data
+        products
+    </li>
+    <li>ECMWF data contained in the S2 MSI Products</li>
+    <li>Constant parameter values</li>
+</ul>
+<p>In this order the data is also prioritised. If all sources are specified, first the external data, then the internal
+    and as last option the constant values are used.
+    The impact of the ECMWF data has not yet been validated and should the option should be used with care.
+</p>
+<p>
+    <b>NOTE 2</b><br>
+    At the time of the release of this processor the two auxillary variables <b>tco3</b> and <b>tcwv</b> are swapped.
+    This is considered in the operator by using the description as indicator for the correct data.
+    Even when this is corrected in the S2 reader the processor should still function correctly.
+    See:
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
+        <param name="content" value="https://senbox.atlassian.net/browse/SIITBX-497">
+        <param name="text" value="[SIITBX-497] Names of ECMWF tie-point grids are mixed up">
+        <param name="textFontSize" value="bigger">
+    </object>
+    <br>
+</p>
+
 <img src="images/proc_params/c2rcc_msi_proc_params.png" align="right"/>
 
 <ul>
     <li><b>Valid-pixel expression</b><br>
-        The arithmetic expression defines the pixels which are valid for processing. Pixels which are not valid will be marked as no-data in the
+        The arithmetic expression defines the pixels which are valid for processing. Pixels which are not valid will be
+        marked as no-data in the
         target product.
     </li>
     <li><b>Salinity</b><br>
@@ -86,7 +116,8 @@
     </li>
     <li><b>Alternative NN Path</b><br>
         Path to an alternative set of neuronal nets. Use this to replace the standard set of neuronal nets.
-        For MSI there exits a neural net where ranges of parameters was extended to moderate-to-extreme cases (C2X-Nets).
+        For MSI there exits a neural net where ranges of parameters was extended to moderate-to-extreme cases
+        (C2X-Nets).
         However, this is a parameter which should only used during the development of new neural nets.
     </li>
     <li><b>Set of neural nets.</b><br>
@@ -118,7 +149,12 @@
         Write remote sensing reflectances instead of water leaving reflectances.
     </li>
     <li><b>Derive water reflectance from path radiance and transmittance</b><br>
-        Alternative way of calculating water reflectance. <span style="background-color:yellow">Still experimental.</span>
+        Alternative way of calculating water reflectance. <span
+                style="background-color:yellow">Still experimental.</span>
+    </li>
+    <li><b>Use S2 internal ECMWF data, if available</b><br>
+        Specifies if the ECMWF auxiliary data (msl and tco3) from the Sentinel-2 MSi product shall be used.
+        Please have a look at the notes about data priority and reader issue at the page header.
     </li>
     <li><b>Output gas corrected TOSA reflectances</b><br>
         Can be enabled to include the TOSA reflectances in the target product.
