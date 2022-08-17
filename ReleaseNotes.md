@@ -1,6 +1,13 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 9.0.1
+----------------------
+### Improvement
+
+    [SIIITBX-413] C2RCC for MSI should make use of provided ECMWF data
+
+
 Changes in S3TBX 9.0.0
 ----------------------
 
