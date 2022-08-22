@@ -21,7 +21,7 @@
 
     <groupId>org.esa.s3tbx</groupId>
     <artifactId>s3tbx</artifactId>
-    <version>9.0.1-SNAPSHOT</version>
+    <version>9.0.1</version>
     <name>Sentinel-3 Toolbox</name>
     <description>Tools for the Sentinel-3 Satellite</description>
     <url>https://sentinel.esa.int/web/sentinel/toolboxes/sentinel-3</url>
@@ -75,14 +75,14 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>9.0.1-SNAPSHOT</snap.version>
+        <snap.version>9.0.1</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <s3tbx.version>9.0.1-SNAPSHOT</s3tbx.version>
+        <s3tbx.version>9.0.1</s3tbx.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>5.3.1</netcdf.version>
