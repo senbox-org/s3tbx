@@ -1,6 +1,13 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 9.0.2
+----------------------
+### Improvement
+
+    [SIIITBX-426] S3TBX 9.0.1 breaks help
+
+
 Changes in S3TBX 9.0.1
 ----------------------
 ### Improvement
