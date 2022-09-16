@@ -80,7 +80,7 @@
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
-            This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
+            This is necessary to make NetBeans modules updatable and independent of the Maven version (= snap.version).
         -->
         <s3tbx.version>9.0.2</s3tbx.version>
         <netbeans.version>RELEASE82</netbeans.version>
