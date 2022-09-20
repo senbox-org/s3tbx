@@ -56,7 +56,7 @@ public class LandsatGeotiffReaderPluginTest {
 
     @Test
     public void testGetDefaultFileExtensions() throws Exception {
-        assertArrayEquals(new String[]{".txt", ".TXT", ".gz", ".tgz"}, plugin.getDefaultFileExtensions());
+        assertArrayEquals(new String[]{".txt", ".TXT", ".gz", ".tgz", ".tar"}, plugin.getDefaultFileExtensions());
     }
 
     @Test
