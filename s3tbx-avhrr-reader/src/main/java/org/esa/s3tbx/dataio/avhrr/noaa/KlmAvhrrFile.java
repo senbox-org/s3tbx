@@ -318,6 +318,13 @@ public class KlmAvhrrFile extends AvhrrFile implements AvhrrConstants {
             context.dispose();
             context = null;
         }
-        noaaData = null;
+        if (noaaData != null) {
+            try {
+                noaaData.dispose();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            noaaData = null;
+        }
     }
 }
