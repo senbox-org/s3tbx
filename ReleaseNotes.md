@@ -5,7 +5,8 @@ Changes in S3TBX 9.0.3
 ----------------------
 
 ### Improvement
-
+    [SIIITBX-429] The OLCI Anomaly Flagging operator is missing the Preprocessing category
+    [SIIITBX-428] Category of MERIS 4th to 3rd reprocessing operator is wrongly named    
     [SIIITBX-427] AVHRR-FRAC reader data does not fully release allocated memory
 
 Changes in S3TBX 9.0.2
