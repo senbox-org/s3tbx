@@ -35,7 +35,7 @@ import java.util.Map;
 @OperatorMetadata(alias = "OlciAnomalyFlagging",
         version = "1.0",
         authors = "T. Block",
-        category = "Optical/Masking",
+        category = "Optical/Preprocessing/Masking",
         copyright = "Copyright (C) 2021 by Brockmann Consult",
         description = "Adds a flagging band indicating saturated pixels and altitude data overflows")
 public class OlciAnomalyFlaggingOp extends Operator {
