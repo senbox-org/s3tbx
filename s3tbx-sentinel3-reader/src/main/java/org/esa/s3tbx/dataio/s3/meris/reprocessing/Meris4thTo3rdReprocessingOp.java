@@ -14,7 +14,7 @@ import org.esa.snap.core.gpf.annotations.TargetProduct;
  * @author olafd
  */
 @OperatorMetadata(alias = "Meris.Adapt.4To3",
-        category = "Optical/Pre-Processing",
+        category = "Optical/Preprocessing",
         version = "1.0",
         authors = "Olaf Danne",
         copyright = "(c) 2021 by Brockmann Consult",
