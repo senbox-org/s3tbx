@@ -2,7 +2,6 @@ package org.esa.s3tbx.dataio.modis.netcdf;
 
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.ProductData;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.nc2.Attribute;
@@ -51,7 +50,7 @@ public class NetCDFUtils {
                 break;
             default:
                 System.out.println("dataType = " + dataType);
-                throw new NotImplementedException();
+                throw new IllegalArgumentException("dataType = " + dataType + " not supported");
         }
 
         if (prodData != null) {
