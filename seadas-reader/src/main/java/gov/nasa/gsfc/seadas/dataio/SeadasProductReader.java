@@ -342,7 +342,9 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Level1B_PaceOCI;
             } else if (title.contains("PACE OCIS Level-1B Data")) {
                 return ProductType.Level1B_PaceOCIS;
-            } else if (title.contains("PACE OCI Level-1C Data")) {
+            } else if (title.contains("PACE OCI Level-1C Data")
+                    || title.contains("PACE SPEXone Level-1C Data")
+                    || title.contains("HARP2 Level-1C Data")) {
                 return ProductType.Level1C_Pace;
             } else if (title.equals("OCIS Level-2 Data")) {
                 return ProductType.Level2_PaceOCIS;
