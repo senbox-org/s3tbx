@@ -1,6 +1,12 @@
 Sentinel-3 Toolbox Release Notes
 ================================
 
+Changes in S3TBX 9.0.4
+----------------------
+### Improvement
+    [SIIITBX-422] Sentinel-3 WST products have issues with geolocation since PUG v3.35
+
+
 Changes in S3TBX 9.0.3
 ----------------------
 ### Improvement
