@@ -112,7 +112,7 @@ public class L1CPaceFileReader extends SeadasFileReader {
         if (scene_title.toString().contains("PACE OCI Level-1C Data")) {
             product.setAutoGrouping("I_-20:I_20:obs_per_view:");
         } else if (scene_title.toString().contains("HARP2 Level-1C Data")) {
-            product.setAutoGrouping("I:Q:U:DOLP:I_noise:Q_noise:U:noise:DOLP_noise:Sensor_Zenith:Sensor_Azimuth:Solar_Zenith:Solar_Azimuth:obs_per_view:view_time_offsets");
+            product.setAutoGrouping("I:Q:U:DOLP:I_noise:Q_noise:U_noise:DOLP_noise:Sensor_Zenith:Sensor_Azimuth:Solar_Zenith:Solar_Azimuth:obs_per_view:view_time_offsets");
         } else if (scene_title.toString().contains("PACE SPEXone Level-1C Data")) {
 //            product.setAutoGrouping("QC_58:QC_22:QC_4:QC_-22:QC_-58:QC_bitwise_58:QC_bitwise_22:QC_bitwise_4:QC_bitwise_-22:QC_bitwise_-58:" +
 //                    "QC_polsample_bitwise_58:QC_polsample_bitwise_22:QC_polsample_bitwise_4:QC_polsample_bitwise_-22:QC_polsample_bitwise_-58:" +
