@@ -427,13 +427,13 @@ public class C2rccMerisAlgorithm {
 
             // (9.4.6)
             double[] log_rw;
-            if(deriveRwFromPathAndTransmittance) {
+            if (deriveRwFromPathAndTransmittance) {
                 // needs outputRpath & outputTdown & outputTup
                 log_rw = new double[r_tosa.length];
                 for (int i = 0; i < r_tosa.length; i++) {
-                    log_rw[i] = r_tosa[i] - rpath_nn[i] / (transu_nn[i] * transd_nn[i]);
+                    log_rw[i] = log((r_tosa[i] - rpath_nn[i]) / (transu_nn[i] * transd_nn[i]));
                 }
-            }else {
+            } else {
                 log_rw = nn_rtosa_rw.get().calc(nn_in);
             }
 
