@@ -22,11 +22,12 @@
     <parent>
         <groupId>org.esa.s3tbx</groupId>
         <artifactId>s3tbx</artifactId>
-        <version>9.0.4-SNAPSHOT</version>
+        <version>9.0.3</version>
     </parent>
 
     <artifactId>s3tbx-c2rcc</artifactId>
     <name>Case 2 Regional / CoastColour Processor Operator</name>
+    <version>9.0.3.1-ALPHA</version>
     <packaging>nbm</packaging>
 
     <description>Provides the Case-2 Regional / Coast Colour (C2RCC) Atmospheric Correction (AC) and
