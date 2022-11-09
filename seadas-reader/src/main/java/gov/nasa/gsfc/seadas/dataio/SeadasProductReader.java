@@ -376,7 +376,7 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.ANCNRT2;
             } else if (title.equals("SeaWiFS Climatological Ancillary Data")) {
                 return ProductType.ANCCLIM;
-            } else if (title.contains("Level-3 Standard Mapped Image")) {
+            } else if (title.matches("(.*)Level-3 Standard Mapped Image") || title.matches("(.*)Level-3 Equidistant Cylindrical Mapped Image")) {
                 return ProductType.SMI;
             } else if (title.contains("Level-3 Binned Data") || title.contains("level-3_binned_data")) {
                 return ProductType.Level3_Bin;

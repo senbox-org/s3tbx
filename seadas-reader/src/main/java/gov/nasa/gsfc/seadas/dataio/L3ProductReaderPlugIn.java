@@ -101,25 +101,25 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                 }
 
                 if (titleAttribute != null ) {
-                        final String title = titleAttribute.getStringValue();
-                        if (title != null) {
-                            if (title.matches(".*Level-3 Binned Data")){
-                                System.out.println("Support for visualization of L3 bin files has been disabled.");
-                                ncfile.close();
-                                return DecodeQualification.UNABLE;
+                    final String title = titleAttribute.getStringValue();
+                    if (title != null) {
+                        if (title.matches(".*Level-3 Binned Data")){
+                            System.out.println("Support for visualization of L3 bin files has been disabled.");
+                            ncfile.close();
+                            return DecodeQualification.UNABLE;
+                        }
+                        if(title.matches("(.*)Level-3 Standard Mapped Image") || title.matches("(.*)Level-3 Equidistant Cylindrical Mapped Image")){
+                            if (DEBUG) {
+                                System.out.println(file);
                             }
-                            if(title.matches(".*Level-3 Standard Mapped Image")){
-                                if (DEBUG) {
-                                    System.out.println(file);
-                                }
-                                ncfile.close();
-                                return DecodeQualification.INTENDED;
-                            } else {
-                                if (DEBUG) {
-                                    System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
-                                }
+                            ncfile.close();
+                            return DecodeQualification.INTENDED;
+                        } else {
+                            if (DEBUG) {
+                                System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
                             }
                         }
+                    }
                 } else if (isSeadasMapped) {
                     ncfile.close();
                     return DecodeQualification.INTENDED;
