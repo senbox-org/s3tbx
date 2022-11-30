@@ -503,6 +503,9 @@ public abstract class AbstractProductFactory implements ProductFactory {
 
     private void readProducts(List<String> fileNames) throws IOException {
         for (final String fileName : fileNames) {
+            if ("".equals(fileName)) {  // skip directory
+                continue;
+            }
             Product product = null;
             try {
                 product = readProduct(fileName, manifest);

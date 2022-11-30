@@ -110,6 +110,32 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
         }
     }
 
+    protected void addDataNodes(Product masterProduct, Product targetProduct) throws IOException {
+        for (final Product sourceProduct : getOpenProductList()) {
+            String gridIndex = getGridIndex(sourceProduct.getName());  // one of fn, an, bn, in, tn, tx
+            final Map<String, String> mapping = new HashMap<>();
+            for (final Band sourceBand : sourceProduct.getBands()) {
+                if (!sourceBand.getName().contains("orphan")) {
+                    RasterDataNode targetNode;
+                    if (isNodeSpecial(sourceBand, targetProduct)) {
+                        targetNode = addSpecialNode(gridIndex, sourceBand, targetProduct);
+                    } else {
+                        final String targetBandName =
+                            sourceBand.getName().endsWith("_"+gridIndex)
+                            ? sourceBand.getName()
+                            : sourceBand.getName() + "_" + gridIndex;
+                        targetNode = ProductUtils.copyBand(sourceBand.getName(), sourceProduct, targetBandName, targetProduct, true);
+                    }
+                    if (targetNode != null) {
+                        configureTargetNode(sourceBand, targetNode);
+                        mapping.put(sourceBand.getName(), targetNode.getName());
+                    }
+                }
+            }
+            copyMasks(sourceProduct, targetProduct, mapping);
+        }
+    }
+
     private static String getFrpGridIndex(Band band) {
         // todo wait for name change. If this happens, we can merge this with the method from SlstrLevel1ProductFactory
         String bandName = band.getName();
@@ -120,10 +146,12 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
         return getGridIndex(bandName);
     }
 
-    @Override
-    protected RasterDataNode addSpecialNode(Product masterProduct, Band sourceBand, Product targetProduct) {
-        final String sourceBandName = sourceBand.getName();
-        String gridIndex = getFrpGridIndex(sourceBand);
+    protected RasterDataNode addSpecialNode(String gridIndex, Band sourceBand, Product targetProduct) {
+        final String targetBandName =
+                sourceBand.getName().endsWith("_"+gridIndex)
+                ? sourceBand.getName()
+                : sourceBand.getName() + "_" + gridIndex;
+        //String gridIndex = getFrpGridIndex(sourceBand);
         final Double sourceStartOffset = getStartOffset(gridIndex);
         final Double sourceTrackOffset = getTrackOffset(gridIndex);
         if (sourceStartOffset != null && sourceTrackOffset != null) {
@@ -131,7 +159,7 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
             if (gridIndex.startsWith("t")) {
                 return copyTiePointGrid(sourceBand, targetProduct, sourceStartOffset, sourceTrackOffset, sourceResolutions);
             } else {
-                final Band targetBand = new Band(sourceBandName, sourceBand.getDataType(),
+                final Band targetBand = new Band(targetBandName, sourceBand.getDataType(),
                         sourceBand.getRasterWidth(), sourceBand.getRasterHeight());
                 targetProduct.addBand(targetBand);
                 ProductUtils.copyRasterDataNodeProperties(sourceBand, targetBand);
@@ -145,8 +173,8 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
                 final float[] offsets = getOffsets(sourceStartOffset, sourceTrackOffset, sourceResolutions);
                 imageToModelTransform.translate(offsets[0], offsets[1]);
                 final short[] referenceResolutions = getReferenceResolutions();
-                final int subSamplingX = sourceResolutions[0] / referenceResolutions[0];
-                final int subSamplingY = sourceResolutions[1] / referenceResolutions[1];
+                final double subSamplingX = ((double)sourceResolutions[0]) / referenceResolutions[0];
+                final double subSamplingY = ((double)sourceResolutions[1]) / referenceResolutions[1];
                 imageToModelTransform.scale(subSamplingX, subSamplingY);
                 final DefaultMultiLevelModel targetModel =
                         new DefaultMultiLevelModel(imageToModelTransform,
@@ -157,8 +185,9 @@ public class SlstrFrpProductFactory extends SlstrProductFactory {
 //                }
                 return targetBand;
             }
+        } else {
+            return ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), targetBandName, targetProduct, true);
         }
-        return sourceBand;
     }
 
     @Override
