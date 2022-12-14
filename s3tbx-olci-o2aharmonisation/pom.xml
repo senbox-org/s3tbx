@@ -68,10 +68,15 @@
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
+            <artifactId>snap-netcdf</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
             <artifactId>snap-csv-dataio</artifactId>
             <version>${snap.version}</version>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-raster</artifactId>
             <version>${snap.version}</version>
