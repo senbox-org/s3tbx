@@ -108,7 +108,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                                 ncfile.close();
                                 return DecodeQualification.UNABLE;
                             }
-                            if(title.matches(".*Level-3 Standard Mapped Image")){
+                        if(title.matches("(.*)Level-3 Standard Mapped Image") || title.matches("(.*)Level-3 Equidistant Cylindrical Mapped Image")){
                                 if (DEBUG) {
                                     System.out.println(file);
                                 }

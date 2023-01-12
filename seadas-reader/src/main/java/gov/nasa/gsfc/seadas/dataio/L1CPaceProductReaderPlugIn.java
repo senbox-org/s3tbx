@@ -56,10 +56,12 @@ public class L1CPaceProductReaderPlugIn extends GenericNetCdfReaderPlugIn {
         try {
             ncfile = NetcdfFileOpener.open(file.getPath());
             if (ncfile != null) {
-                Attribute scene_title = ncfile.findGlobalAttribute("Title");
+                Attribute scene_title = ncfile.findGlobalAttributeIgnoreCase("Title");
 
                 if (scene_title != null) {
-                    if (scene_title.toString().contains("PACE OCI Level-1C Data")) {
+                    if (scene_title.toString().contains("PACE OCI Level-1C Data")
+                            || scene_title.toString().contains("PACE SPEXone Level-1C Data")
+                            || scene_title.toString().contains("HARP2 Level-1C Data")){
                         if (DEBUG) {
                             System.out.println(file);
                         }

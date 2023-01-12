@@ -342,7 +342,9 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Level1B_PaceOCI;
             } else if (title.contains("PACE OCIS Level-1B Data")) {
                 return ProductType.Level1B_PaceOCIS;
-            } else if (title.contains("PACE OCI Level-1C Data")) {
+            } else if (title.contains("PACE OCI Level-1C Data")
+                    || title.contains("PACE SPEXone Level-1C Data")
+                    || title.contains("HARP2 Level-1C Data")) {
                 return ProductType.Level1C_Pace;
             } else if (title.equals("OCIS Level-2 Data")) {
                 return ProductType.Level2_PaceOCIS;
@@ -374,7 +376,7 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.ANCNRT2;
             } else if (title.equals("SeaWiFS Climatological Ancillary Data")) {
                 return ProductType.ANCCLIM;
-            } else if (title.contains("Level-3 Standard Mapped Image")) {
+            } else if (title.matches("(.*)Level-3 Standard Mapped Image") || title.matches("(.*)Level-3 Equidistant Cylindrical Mapped Image")) {
                 return ProductType.SMI;
             } else if (title.contains("Level-3 Binned Data") || title.contains("level-3_binned_data")) {
                 return ProductType.Level3_Bin;
