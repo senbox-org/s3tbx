@@ -390,6 +390,21 @@ public abstract class SeadasFileReader {
                         product.getSceneRasterWidth(),
                         product.getSceneRasterHeight(), "l2_flags.PRODFAIL",
                         FailRed, 0.1));
+                product.getMaskGroup().add(Mask.BandMathsType.create("Quality_L2", "Product could be computed (l2_flags composite)",
+                        product.getSceneRasterWidth(),
+
+                        product.getSceneRasterHeight(), "!(l2_flags.ATMFAIL or l2_flags.LAND or l2_flags.HILT or l2_flags.STRAYLIGHT or l2_flags.CLDICE or l2_flags.NAVFAIL)",
+                        DarkGreen, 0.0));
+
+                product.getMaskGroup().add(Mask.BandMathsType.create("Quality_L3", "Best quality (l2_flags composite)",
+                        product.getSceneRasterWidth(),
+
+                        product.getSceneRasterHeight(), "!(l2_flags.ATMFAIL or l2_flags.LAND or l2_flags.HIGLINT or l2_flags.HILT or l2_flags.STRAYLIGHT  or l2_flags.CLDICE or l2_flags.COCCOLITH or l2_flags.HISOLZEN or l2_flags.LOWLW or l2_flags.CHLFAIL or l2_flags.NAVWARN or l2_flags.MAXAERITER or l2_flags.CHLWARN or l2_flags.ATMWARN or l2_flags.NAVFAIL or l2_flags.FILTER)",
+                        Color.GREEN, 0.0));
+                product.getMaskGroup().add(Mask.BandMathsType.create("Water", "Not land (l2_flags.LAND)",
+                        product.getSceneRasterWidth(),
+                        product.getSceneRasterHeight(), "!l2_flags.LAND",
+                        Color.BLUE, 0.0));
 
             }
             Band QFBandSST = product.getBand("flags_sst");
