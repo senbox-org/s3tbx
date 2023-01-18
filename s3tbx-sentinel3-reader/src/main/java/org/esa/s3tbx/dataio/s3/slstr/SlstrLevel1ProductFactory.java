@@ -66,6 +66,7 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
     public final static String SLSTR_L1B_USE_PIXELGEOCODINGS = "s3tbx.reader.slstrl1b.pixelGeoCodings";
     public final static String SLSTR_L1B_PIXEL_GEOCODING_INVERSE = "s3tbx.reader.slstrl1b.pixelGeoCodings.inverse";
     public final static String SLSTR_L1B_LOAD_ORPHAN_PIXELS = "s3tbx.reader.slstrl1b.loadOrphanPixels";
+    public final static String SLSTR_L1B_EXCLUDED_FILES = "s3tbx.reader.slstrl1b.excludedFiles";
     public final static String SLSTR_L1B_CUSTOM_CALIBRATION = "s3tbx.reader.slstrl1b.applyCustomCalibration";
     public final static String SLSTR_L1B_S3MPC_CALIBRATION = "s3tbx.reader.slstrl1b.applyS3MPCCalibration";
     private final static String SLSTR_L1B_CALIBRATION_PATTERN = "s3tbx.reader.slstrl1b.ID.calibration.TYPE";
@@ -335,7 +336,9 @@ public class SlstrLevel1ProductFactory extends SlstrProductFactory {
 
     @Override
     protected List<String> getFileNames(Manifest manifest) {
-        return manifest.getFileNames(EXCLUDED_IDS);
+        String excludedFiles = Config.instance("s3tbx").load().preferences().get(SLSTR_L1B_EXCLUDED_FILES, null);
+        String[] excludedList = (excludedFiles == null) ? EXCLUDED_IDS : excludedFiles.split(",");
+        return manifest.getFileNames(excludedList);
     }
 
     @Override
