@@ -226,6 +226,7 @@ public class L1CPaceFileReader extends SeadasFileReader {
                     band.setDescription(variable.getDescription());
                 }
             } else if (variableRank == 3) {
+                int angularBandIndex = 0;
                 spectralBandIndex = -1;
                 final int[] dimensions = variable.getShape();
                 final int views = dimensions[0];
@@ -269,9 +270,13 @@ public class L1CPaceFileReader extends SeadasFileReader {
                             band.setSpectralWavelength(wavelengths.getFloat(i));
                             if (!wavelength_list.contains(wavelengths.getInt(i))) {
                                 wavelength_list.add(wavelengths.getInt(i));
+                                angularBandIndex = 0;
                                 spectralBandIndex++;
                             }
                             band.setSpectralBandIndex(spectralBandIndex);
+
+                            band.setAngularValue(view_angles.getFloat(i));
+                            band.setAngularBandIndex(angularBandIndex++); // should angularBandIndex be 0 - 89 or 0 - 9 (0 -59)?
 
                             Variable sliced = null;
                             try {
@@ -369,6 +374,8 @@ public class L1CPaceFileReader extends SeadasFileReader {
                     band.setDescription(variable.getDescription());
                 }
             } else if (variableRank == 3) {
+                int angularBandIndex = 0;
+
                 final int[] dimensions = variable.getShape();
                 final int views = dimensions[2];
                 final int height = dimensions[0];
@@ -396,6 +403,9 @@ public class L1CPaceFileReader extends SeadasFileReader {
                             final int dataType = getProductDataType(variable);
                             band = new Band(name, dataType, width, height);
                             product.addBand(band);
+
+                            band.setAngularValue(view_angles.getFloat(i));
+                            band.setAngularBandIndex(angularBandIndex++);
 
                             Variable sliced = null;
                             try {
@@ -481,6 +491,9 @@ public class L1CPaceFileReader extends SeadasFileReader {
 
                                 band.setSpectralWavelength(wavelengths.getFloat(j));
                                 band.setSpectralBandIndex(j);
+
+                                band.setAngularValue(view_angles.getFloat(i));
+                                band.setAngularBandIndex(i);
 
                                 Variable sliced1 = null;
                                 Variable sliced = null;
@@ -582,6 +595,8 @@ public class L1CPaceFileReader extends SeadasFileReader {
                     band.setDescription(variable.getDescription());
                 }
             } else if (variableRank == 3) {
+                int angularBandIndex = 0;
+
                 final int[] dimensions = variable.getShape();
                 final int views = dimensions[2];
                 final int height = dimensions[0];
@@ -613,6 +628,13 @@ public class L1CPaceFileReader extends SeadasFileReader {
                             final int dataType = getProductDataType(variable);
                             band = new Band(name, dataType, width, height);
                             product.addBand(band);
+
+                            if ((i > views / 2) && (view_angles.getInt(i) == view_angles.getInt(views - 1 - i))) {
+                                band.setAngularValue(-view_angles.getFloat(i));
+                            } else {
+                                band.setAngularValue(view_angles.getFloat(i));
+                            }
+                            band.setAngularBandIndex(angularBandIndex++);
 
                             Variable sliced = null;
                             try {
@@ -676,6 +698,12 @@ public class L1CPaceFileReader extends SeadasFileReader {
                             }
                             wavelengths = wvl_sliced.read();
                             wavelengths_pol = wvl_sliced_pol.read();
+//                            wavelengths.setInt(120, wavelengths.getInt(120) + 1);
+//                            wavelengths.setInt(121, wavelengths.getInt(121) + 1);
+//                            wavelengths.setInt(122, wavelengths.getInt(122) + 1);
+//                            wavelengths.setInt(123, wavelengths.getInt(123) + 1);
+//                            wavelengths.setInt(243, wavelengths.getInt(243) + 1);
+//                            wavelengths.setInt(246, wavelengths.getInt(246) + 1);
 
                         } catch (IOException e) {
                         }
@@ -683,6 +711,7 @@ public class L1CPaceFileReader extends SeadasFileReader {
 
                         for (int i = 0; i < views; i++) {
                             for (int j = 0; j < bands; j++) {
+//                                spectralBandIndex = 0;
                                 StringBuilder longname = new StringBuilder(description);
                                 longname.append("_");
                                 if ((i > views / 2) && (view_angles.getInt(i) == view_angles.getInt(views - 1 - i))) {
@@ -708,6 +737,12 @@ public class L1CPaceFileReader extends SeadasFileReader {
                                 }
                                 band.setSpectralBandIndex(j);
 
+                                if ((i > views / 2) && (view_angles.getInt(i) == view_angles.getInt(views - 1 - i))) {
+                                    band.setAngularValue(-view_angles.getFloat(i));
+                                } else {
+                                    band.setAngularValue(view_angles.getFloat(i));
+                                }
+                                band.setAngularBandIndex(i);
 
                                 Variable sliced1 = null;
                                 Variable sliced = null;
