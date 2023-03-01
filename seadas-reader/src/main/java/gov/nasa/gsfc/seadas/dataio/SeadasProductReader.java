@@ -68,6 +68,7 @@ public class SeadasProductReader extends AbstractProductReader {
         Level2_PaceOCI("OCI Level-2"),
         Level2_PaceOCIS("OCIS Level-2"),
         Level3_Bin("Level 3 Binned"),
+        Level3_NSIDC_CDR("Level 3 NSIDC CDR"),
         MEaSUREs("MEaSUREs Mapped"),
         MEaSUREs_Bin("MEaSUREs Binned"),
         OISST("Daily-OI"),
@@ -162,6 +163,9 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case MEaSUREs_Bin:
                     seadasFileReader = new MeasuresL3BinFileReader(this);
+                    break;
+                case Level3_NSIDC_CDR:
+                    seadasFileReader = new NSIDCSeaIceFileReader(this);
                     break;
                 case BrowseFile:
                     seadasFileReader = new BrowseProductReader(this);
@@ -366,6 +370,8 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Level2;
             } else if (title.equals("SeaWiFS Level-1A Data")) {
                 return ProductType.Level1A_Seawifs;
+            } else if (title.equals("NOAA/NSIDC Climate Data Record of Passive Microwave Sea Ice Concentration Version 4")) {
+                return ProductType.Level3_NSIDC_CDR;
             } else if (title.contains("Daily-OI")) {
                 return ProductType.OISST;
             } else if (title.contains("ETOPO")) {
