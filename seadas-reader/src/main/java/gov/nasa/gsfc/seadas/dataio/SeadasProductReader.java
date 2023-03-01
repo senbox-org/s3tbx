@@ -62,6 +62,7 @@ public class SeadasProductReader extends AbstractProductReader {
         Level1B_OCM2("OCM2_L1B"),
         Level1B_PaceOCI("PaceOCI_L1B"),
         Level1B_PaceOCIS("PaceOCIS_L1B"),
+        Level1C_Pace("Pace_L1C"),
         Level2("Level 2"),
         Level2_DscovrEpic("DscovrEpic Level 2"),
         Level2_PaceOCI("OCI Level-2"),
@@ -152,6 +153,9 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case Level1B_PaceOCIS:
                     seadasFileReader = new L1BPaceOcisFileReader(this);
+                    break;
+                case Level1C_Pace:
+                    seadasFileReader = new L1CPaceFileReader(this);
                     break;
                 case Level3_Bin:
                     seadasFileReader = new L3BinFileReader(this);
@@ -338,6 +342,10 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Level1B_PaceOCI;
             } else if (title.contains("PACE OCIS Level-1B Data")) {
                 return ProductType.Level1B_PaceOCIS;
+            } else if (title.contains("PACE OCI Level-1C Data")
+                    || title.contains("PACE SPEXone Level-1C Data")
+                    || title.contains("HARP2 Level-1C Data")) {
+                return ProductType.Level1C_Pace;
             } else if (title.equals("OCIS Level-2 Data")) {
                 return ProductType.Level2_PaceOCIS;
             } else if (title.equals("OCI Level-2 Data")) {
@@ -368,7 +376,7 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.ANCNRT2;
             } else if (title.equals("SeaWiFS Climatological Ancillary Data")) {
                 return ProductType.ANCCLIM;
-            } else if (title.contains("Level-3 Standard Mapped Image")) {
+            } else if (title.matches("(.*)Level-3 Standard Mapped Image") || title.matches("(.*)Level-3 Equidistant Cylindrical Mapped Image")) {
                 return ProductType.SMI;
             } else if (title.contains("Level-3 Binned Data") || title.contains("level-3_binned_data")) {
                 return ProductType.Level3_Bin;

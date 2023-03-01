@@ -111,6 +111,7 @@ public class SMIFileReader extends SeadasFileReader {
             Dimension tileSize = new Dimension(640, 320);
             product.setPreferredTileSize(tileSize);
         }
+        product.setAutoGrouping("Rrs:nLw:Lt:La:Lr:Lw:L_q:L_u:Es:TLg:rhom:rhos:rhot:Taua:Kd:aot:adg:aph_:bbp:vgain:BT:tg_sol:tg_sen");
         return product;
     }
 
@@ -317,11 +318,11 @@ public class SMIFileReader extends SeadasFileReader {
 
             try {
                 product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
-                                                           product.getSceneRasterWidth(),
-                                                           product.getSceneRasterHeight(),
-                                                           easting, northing,
-                                                           pixelSizeX, pixelSizeY,
-                                                           pixelX, pixelY));
+                        product.getSceneRasterWidth(),
+                        product.getSceneRasterHeight(),
+                        easting, northing,
+                        pixelSizeX, pixelSizeY,
+                        pixelX, pixelY));
             } catch (FactoryException | TransformException e) {
                 throw new IllegalStateException(e);
             }
@@ -370,11 +371,11 @@ public class SMIFileReader extends SeadasFileReader {
             }
             try {
                 product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
-                                                           product.getSceneRasterWidth(),
-                                                           product.getSceneRasterHeight(),
-                                                           westing, northing,
-                                                           pixelSizeX, pixelSizeY,
-                                                           pixelX, pixelY));
+                        product.getSceneRasterWidth(),
+                        product.getSceneRasterHeight(),
+                        westing, northing,
+                        pixelSizeX, pixelSizeY,
+                        pixelX, pixelY));
             } catch (FactoryException | TransformException e) {
                 throw new IllegalStateException(e);
             }
