@@ -9,7 +9,7 @@
     <mapID target="c2rccAlgorithmSpec" url="c2rcc/C2RCCAlgorithmSpecification.html"/>
     <mapID target="c2rccProcessorDesc" url="c2rcc/C2RCCProcessorDescription.html"/>
     <mapID target="c2rccIOParameters" url="c2rcc/C2RCCIOParameters.html"/>
-    <mapID target="c2rccModisL1C" url="c2rcc/C2RCCIOParameters.html"/>
-    <mapID target="c2rccAuxDataDir" url="c2rcc/C2RCCIOParameters.html"/>
+    <mapID target="c2rccModisL1C" url="c2rcc/Create_MODIS_L1C.html"/>
+    <mapID target="c2rccAuxDataDir" url="c2rcc/AuxDataDirectory.html"/>
 
 </map>
