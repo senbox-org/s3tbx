@@ -1,69 +1,32 @@
-/*
- * Copyright (C) 2015 Brockmann Consult GmbH (info@brockmann-consult.de)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 3 of the License, or (at your option)
- * any later version.
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, see http://www.gnu.org/licenses/
- */
 package gov.nasa.gsfc.seadas.dataio;
 
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.dataio.ProductReader;
-import org.esa.snap.core.dataio.ProductReaderPlugIn;
 import org.esa.snap.core.util.io.SnapFileFilter;
+import org.esa.snap.dataio.netcdf.GenericNetCdfReaderPlugIn;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
+import ucar.nc2.iosp.hdf5.H5iosp;
+import ucar.nc2.util.DebugFlags;
+import ucar.nc2.util.DebugFlagsImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
-public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
+public class L1CPaceProductReaderPlugIn extends GenericNetCdfReaderPlugIn {
 
     // Set to "true" to output debugging information.
     // Don't forget to setback to "false" in production code!
     //
     private static final boolean DEBUG = false;
 
-    private static final String DEFAULT_FILE_EXTENSION = ".hdf";
-    private static final String DEFAULT_L3B_FILE_EXTENSION = ".L3b*";
-    private static final String DEFAULT_L3M_FILE_EXTENSION = ".L3m*";
+    private static final String DEFAULT_FILE_EXTENSION = ".nc";
 
+    public static final String READER_DESCRIPTION = "PACE OCIS L1C Products";
+    public static final String FORMAT_NAME = "PACE-L1C";
 
-    public static final String READER_DESCRIPTION = "SeaDAS-Supported Level 3 Products";
-    public static final String FORMAT_NAME = "SeaDAS-L3";
-
-    private static final String[] supportedProductTypes = {
-            "CZCS Level-3 Standard Mapped Image",
-            "HMODISA Level-3 Standard Mapped Image",
-            "HMODIST Level-3 Standard Mapped Image",
-            "MODISA Level-3 Standard Mapped Image",
-            "MODIST Level-3 Standard Mapped Image",
-            "MODIS Level-3 Standard Mapped Image",
-            "OCM2 Level-3 Standard Mapped Image",
-            "OCTS Level-3 Standard Mapped Image",
-            "SeaWiFS Level-3 Standard Mapped Image",
-            "VIIRSN Level-3 Standard Mapped Image",
-            "VIIRS Level-3 Standard Mapped Image",
-            "OCRVC Level-3 Standard Mapped Image",
-            "Level-3 Standard Mapped Image",
-            "GSM mapped",
-    };
-    private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
     /**
      * Checks whether the given object is an acceptable input for this product reader and if so, the method checks if it
@@ -88,44 +51,33 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
             return DecodeQualification.UNABLE;
         }
         NetcdfFile ncfile = null;
+        H5iosp.setDebugFlags(new DebugFlagsImpl("HdfEos/turnOff"));
+
         try {
             ncfile = NetcdfFileOpener.open(file.getPath());
             if (ncfile != null) {
-                Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase("Title");
+                Attribute scene_title = ncfile.findGlobalAttributeIgnoreCase("Title");
 
-                List<Variable> seadasMappedVariables = ncfile.getVariables();
-                Boolean isSeadasMapped = false;
-                try {
-                    isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection_Category").isString();
-                } catch (Exception ignored) {
-                }
-
-                if (titleAttribute != null ) {
-                    final String title = titleAttribute.getStringValue();
-                    if (title != null) {
-                        if (title.matches(".*Level-3 Binned Data")){
-                            System.out.println("Support for visualization of L3 bin files has been disabled.");
-                            ncfile.close();
-                            return DecodeQualification.UNABLE;
+                if (scene_title != null) {
+                    if (scene_title.toString().contains("PACE OCI Level-1C Data")
+                            || scene_title.toString().contains("PACE SPEXone Level-1C Data")
+                            || scene_title.toString().contains("HARP2 Level-1C Data")){
+                        if (DEBUG) {
+                            System.out.println(file);
                         }
-                        if(title.matches("(.*)Level-3 Standard Mapped Image") || title.matches("(.*)Level-3 Equidistant Cylindrical Mapped Image")){
-                            if (DEBUG) {
-                                System.out.println(file);
-                            }
-                            ncfile.close();
-                            return DecodeQualification.INTENDED;
-                        } else {
-                            if (DEBUG) {
-                                System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
-                            }
+                        ncfile.close();
+                        DebugFlags debugFlags = new DebugFlagsImpl("HdfEos/turnOff");
+                        debugFlags.set("HdfEos/turnOff", false);
+                        H5iosp.setDebugFlags(debugFlags);
+                        return DecodeQualification.INTENDED;
+                    } else {
+                        if (DEBUG) {
+                            System.out.println("# Unrecognized scene title =[" + scene_title + "]: " + file);
                         }
                     }
-                } else if (isSeadasMapped) {
-                    ncfile.close();
-                    return DecodeQualification.INTENDED;
                 } else {
                     if (DEBUG) {
-                        System.out.println("# Missing attribute 'Title': " + file);
+                        System.out.println("# Missing scene title attribute': " + file);
                     }
                 }
             } else {
@@ -138,6 +90,9 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                 System.out.println("# I/O exception caught: " + file);
             }
         } finally {
+            DebugFlags debugFlags = new DebugFlagsImpl("HdfEos/turnOff");
+            debugFlags.set("HdfEos/turnOff", false);
+            H5iosp.setDebugFlags(debugFlags);
             if (ncfile != null) {
                 try {
                     ncfile.close();
@@ -194,9 +149,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
     public String[] getDefaultFileExtensions() {
         // todo: return regular expression to clean up the extensions.
         return new String[]{
-                DEFAULT_FILE_EXTENSION,
-                DEFAULT_L3B_FILE_EXTENSION,
-                DEFAULT_L3M_FILE_EXTENSION
+                DEFAULT_FILE_EXTENSION
         };
     }
 
