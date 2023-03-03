@@ -29,10 +29,7 @@ import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Section;
-import ucar.nc2.Attribute;
-import ucar.nc2.Group;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
+import ucar.nc2.*;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -823,11 +820,22 @@ public abstract class SeadasFileReader {
         final int bands = dimensions[2];
         final int height = dimensions[0];
         final int width = dimensions[1];
+        int dim = 0;
+        Variable wvl = null;
 
         if (height == sceneRasterHeight && width == sceneRasterWidth) {
             // final List<Attribute> list = variable.getAttributes();
-
-            Variable wvl = ncFile.findVariable("sensor_band_parameters/wavelength");
+            List<Dimension> dims = ncFile.getDimensions();
+            for (Dimension d: dims){
+                if (d.getShortName().equalsIgnoreCase("wavelength_3d")) {
+                    dim = d.getLength();
+                }
+            }
+            if (dim == bands) {
+                wvl = ncFile.findVariable("sensor_band_parameters/wavelength_3d");
+            } else {
+                wvl = ncFile.findVariable("sensor_band_parameters/wavelength");
+            }
             // wavenlengths for modis L2 files
             if (wvl == null) {
                 if (bands == 2 || bands == 3) {
