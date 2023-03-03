@@ -47,7 +47,7 @@ public class S3tbxAboutBox extends JPanel {
 
     private JPanel createSeaDASVersionModPanel() {
 
-        String SEADAS_VERSION = "8.3.0";
+        String SEADAS_VERSION = "8.4.0";
 
         final ModuleInfo moduleInfo = Modules.getDefault().ownerOf(S3tbxAboutBox.class);
         Version specVersion = Version.parseVersion(moduleInfo.getSpecificationVersion().toString());
