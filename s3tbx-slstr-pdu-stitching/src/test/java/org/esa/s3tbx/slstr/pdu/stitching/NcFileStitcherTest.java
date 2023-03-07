@@ -39,9 +39,7 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * @author Tonio Fincke
@@ -58,6 +56,10 @@ public class NcFileStitcherTest {
     @Before
     public void setUp() {
         targetDirectory = new File("test_out");
+        if (targetDirectory.exists()) {
+            // Delete leftovers
+            FileUtils.deleteTree(targetDirectory);
+        }
         if (!targetDirectory.mkdirs()) {
             fail("Unable to create test target directory");
         }

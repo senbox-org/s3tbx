@@ -17,7 +17,8 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Tonio Fincke
@@ -31,6 +32,10 @@ public class ManifestMergerTest {
     @Before
     public void setUp() {
         targetDirectory = new File("test_out");
+        if (targetDirectory.exists()) {
+            // Delete leftovers
+            FileUtils.deleteTree(targetDirectory);
+        }
         if (!targetDirectory.mkdirs()) {
             fail("Unable to create test target directory");
         }
