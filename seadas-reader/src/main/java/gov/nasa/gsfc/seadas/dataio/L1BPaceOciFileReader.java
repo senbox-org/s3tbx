@@ -266,11 +266,11 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
 
     private WvlType getWvlType(String productName) {
         WvlType wvltype = null;
-        if (productName.equals("Lt_blue")) {
+        if (productName.equals("Lt_blue") || productName.equals("rhot_blue")) {
             wvltype = WvlType.BLUE;
-        } else if (productName.equals("Lt_red")) {
+        } else if (productName.equals("Lt_red") || productName.equals("rhot_red")) {
             wvltype = WvlType.RED;
-        } else if (productName.equals("Lt_SWIR")) {
+        } else if (productName.equals("Lt_SWIR") || productName.equals("rhot_SWIR")) {
             wvltype = WvlType.SWIR;
         }
         return wvltype;
