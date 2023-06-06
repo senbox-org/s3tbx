@@ -3,6 +3,7 @@ include:
   - 'https://gitlab.com/senbox-org/snap-engine/raw/9-stable/.gitlab-ci.yml'
 
 mvn-build:
+  image: "registry.hub.docker.com/library/maven:3.9.1-eclipse-temurin-8"
   artifacts:
     paths:
       - "${MAVEN_PROJECT_DIR}/**/target/*.jar"
