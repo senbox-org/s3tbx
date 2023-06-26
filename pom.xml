@@ -73,7 +73,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>8.0.9</snap.version>
+<!--        <snap.version>8.0.9</snap.version>-->
+        <snap.version>8.0.10-SNAPSHOT</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
