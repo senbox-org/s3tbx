@@ -159,6 +159,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     private static final String STANDARD_NETS = "C2RCC-Nets";
     private static final String EXTREME_NETS = "C2X-Nets";
     private static final String COMPLEX_NETS = "C2X-COMPLEX-Nets";
+    private static final String DEFAULT_DEM_NAME = "GETASSE30";
     private static final Map<String, String[]> c2rccNetSetMap = new HashMap<>();
 
     static {
@@ -274,6 +275,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
             "Use ECMWF auxiliary data (msl and tco3) from the source product, if available.",
             label = "Use ECMWF data, if available")
     private boolean useEcmwfAuxData;
+
+    @Parameter(description = "The digital elevation model.", defaultValue = DEFAULT_DEM_NAME, label = "Digital Elevation Model")
+    private String demName = DEFAULT_DEM_NAME;
 
     @Parameter(defaultValue = "true", label = "Output TOA reflectances")
     private boolean outputRtoa;
@@ -950,7 +954,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         }
 
 
-        ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor("GETASSE30");
+        ElevationModelDescriptor getasse30 = ElevationModelRegistry.getInstance().getDescriptor(demName);
         if (getasse30 != null) {
             // if elevation model cannot be initialised the fallback height will be used
             elevationModel = getasse30.createDem(Resampling.BILINEAR_INTERPOLATION);
