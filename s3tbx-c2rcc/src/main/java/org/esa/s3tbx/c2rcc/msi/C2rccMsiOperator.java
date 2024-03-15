@@ -153,7 +153,9 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     static final String RASTER_NAME_VIEW_ZENITH = "view_zenith_mean";
     static final String RASTER_NAME_VIEW_AZIMUTH = "view_azimuth_mean";
     static final String RASTER_NAME_AIR_PRESSURE = "msl";
+    static final String RASTER_NAME_AIR_PRESSURE_INTERPOLATED = "msl_interpolated";
     static final String RASTER_NAME_OZONE = "tco3";
+    static final String RASTER_NAME_OZONE_INTERPOLATED = "tco3_interpolated";
     static final String RASTER_NAME_WATER_VAPOUR = "tcwv";
 
     private static final String STANDARD_NETS = "C2RCC-Nets";
@@ -1141,11 +1143,12 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
                                                      sourceProduct.getSceneRasterHeight(),
                                                      ozoneRasterName + " * 46698"); // convert kg / m² to DU
             ozoneIn_Du.setOwner(sourceProduct);
+            final String pressureRasterName = getPressureRasterName(sourceProduct);
             VirtualBand pressueIn_hPa = new VirtualBand("__pressure_in_hPa_",
                                                         ProductData.TYPE_FLOAT32,
                                                         sourceProduct.getSceneRasterWidth(),
                                                         sourceProduct.getSceneRasterHeight(),
-                                                        RASTER_NAME_AIR_PRESSURE + " / 100"); // convert Pa to hPa
+                                                        pressureRasterName + " / 100"); // convert Pa to hPa
             pressueIn_hPa.setOwner(sourceProduct);
             auxdataBuilder.useAtmosphericRaster(ozoneIn_Du, pressueIn_hPa);
         }
@@ -1157,9 +1160,11 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
     }
 
     private boolean containsECMWFData(Product sourceProduct) {
-        return sourceProduct.containsRasterDataNode(RASTER_NAME_AIR_PRESSURE) &&
+        return (sourceProduct.containsRasterDataNode(RASTER_NAME_OZONE_INTERPOLATED) &&
+                sourceProduct.containsRasterDataNode(RASTER_NAME_AIR_PRESSURE_INTERPOLATED)) ||
+               (sourceProduct.containsRasterDataNode(RASTER_NAME_AIR_PRESSURE) &&
                 sourceProduct.containsRasterDataNode(RASTER_NAME_OZONE) &&
-                sourceProduct.containsRasterDataNode(RASTER_NAME_WATER_VAPOUR);
+                sourceProduct.containsRasterDataNode(RASTER_NAME_WATER_VAPOUR));
     }
 
     private static String getOzoneRasterName(Product sourceProduct) {
@@ -1168,12 +1173,23 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
         // This should ensure that the selection still works correct,
         // even when the issue is fixed. https://senbox.atlassian.net/browse/SIITBX-497
         // When fixed the selection code can be removed
+        if (sourceProduct.containsBand(RASTER_NAME_OZONE_INTERPOLATED)) {
+            return RASTER_NAME_OZONE_INTERPOLATED;
+        }
         final RasterDataNode tco3 = sourceProduct.getRasterDataNode(RASTER_NAME_OZONE);
         final RasterDataNode tcwv = sourceProduct.getRasterDataNode(RASTER_NAME_WATER_VAPOUR);
         if (tco3.getDescription().contains("ozone")) {
             return tco3.getName();
         } else {
             return tcwv.getName();
+        }
+    }
+
+    private static String getPressureRasterName(Product sourceProduct) {
+        if (sourceProduct.containsBand(RASTER_NAME_AIR_PRESSURE_INTERPOLATED)) {
+            return RASTER_NAME_OZONE_INTERPOLATED;
+        } else {
+            return RASTER_NAME_AIR_PRESSURE;
         }
     }
 
