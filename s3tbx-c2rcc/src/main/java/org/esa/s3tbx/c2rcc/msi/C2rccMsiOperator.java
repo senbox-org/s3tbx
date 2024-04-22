@@ -1187,7 +1187,7 @@ public class C2rccMsiOperator extends PixelOperator implements C2rccConfigurable
 
     private static String getPressureRasterName(Product sourceProduct) {
         if (sourceProduct.containsBand(RASTER_NAME_AIR_PRESSURE_INTERPOLATED)) {
-            return RASTER_NAME_OZONE_INTERPOLATED;
+            return RASTER_NAME_AIR_PRESSURE_INTERPOLATED;
         } else {
             return RASTER_NAME_AIR_PRESSURE;
         }
