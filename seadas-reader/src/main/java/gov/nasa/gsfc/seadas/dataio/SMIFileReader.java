@@ -111,6 +111,7 @@ public class SMIFileReader extends SeadasFileReader {
             Dimension tileSize = new Dimension(640, 320);
             product.setPreferredTileSize(tileSize);
         }
+        product.setAutoGrouping("Rrs:nLw:Lt:La:Lr:Lw:L_q:L_u:Es:TLg:rhom:rhos:rhot:Taua:Kd:aot:adg:aph_:bbp:vgain:BT:tg_sol:tg_sen");
         return product;
     }
 
