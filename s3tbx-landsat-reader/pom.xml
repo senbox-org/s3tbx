@@ -40,10 +40,10 @@
             <version>${snap.version}</version>
         </dependency>
         <!-- for bzip2 de-compression-->
-        <dependency>
+        <!-- <dependency>
             <groupId>edu.ucar</groupId>
             <artifactId>netcdfAll</artifactId>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.xeustechnologies</groupId>
             <artifactId>jtar</artifactId>

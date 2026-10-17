@@ -24,7 +24,7 @@
 
     <groupId>org.esa.snap.seadas</groupId>
     <artifactId>seadas-reader</artifactId>
-    <version>${seadas.reader.version}</version>
+    <version>1.10.0</version>
     <packaging>nbm</packaging>
 
     <name>NASA OBPG Ocean Color Product Reader</name>
@@ -32,10 +32,10 @@
     <url>https://earthdata.nasa.gov/data/data-centers/obpg</url>
 
     <dependencies>
-        <dependency>
+        <!-- <dependency>
             <groupId>edu.ucar</groupId>
             <artifactId>netcdfAll</artifactId>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>org.esa.snap</groupId>

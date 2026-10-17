@@ -50,10 +50,10 @@
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-netcdf</artifactId>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>edu.ucar</groupId>
             <artifactId>netcdfAll</artifactId>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>junit</groupId>

@@ -24,7 +24,7 @@
 
     <groupId>org.esa.snap.seadas</groupId>
     <artifactId>seadas-reader-ui</artifactId>
-    <version>${seadas.reader.ui.version}</version>
+    <version>1.10.0</version>
     <packaging>nbm</packaging>
 
     <name>NASA OBPG Ocean Color UI</name>
